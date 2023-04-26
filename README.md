@@ -41,7 +41,7 @@ pip install -r requirements.txt
 wget появится позже
 ```
 
-Распокавать архив:
+Распаковать архив:
 ```
 Папка data в voiceai.wladradchenko.ru/portable/src/backend
 Файл конфигураций config.yaml в voiceai.wladradchenko.ru/portable/src/backend/config.yaml
