@@ -1,0 +1,5 @@
+**/__pycache__/
+src/backend/data
+build
+dist
+logs
