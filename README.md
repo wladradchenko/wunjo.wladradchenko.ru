@@ -1,3 +1,4 @@
+<p align="right">(<a href="README_en.md">EN</a>)</p>
 <div id="top"></div>
 
 <br />
