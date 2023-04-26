@@ -65,6 +65,12 @@ briefcase package
 ```
 
 Подробнее в документации о проекте [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+
+<!-- DOWNLOAD -->
+## Готовые сборки
+Ubuntu / Debian - https://wladradchenko.ru/voice/установка
+
+
 <!-- VIDEO -->
 ## Видео
 
