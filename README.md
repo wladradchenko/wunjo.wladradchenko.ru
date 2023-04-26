@@ -25,51 +25,46 @@
 
 Приложение для синтеза речи из текста и распознования речи в текст. Одной из уникальных особенностей этого приложения является возможность создавать мультидиалоги с несколькими голосами, а количество используемых символов не ограничено, в отличие от аналогичных веб-приложений. Вы также можете проговаривать текст в режиме реального времени, и приложение распознает его по аудио. Эта функция отлично подходит для диктовки текста вместо того, чтобы набирать его вручную.
 
-В целом, это настольное приложение представляет собой удобный и мощный инструмент для всех, кто нуждается в синтезе речи и распознавании голоса в текст. Лучше всего то, что приложение бесплатно, устанавливается локально и проста в использовании! А применить вы его можете, в озвучке роликов, книг, игр, итд.
-
-
-Веб-сервис на Aiohttp созданный для работы с [Tinkoff Invest](https://github.com/Tinkoff/invest-python), при помощи AsyncClient.
-Позволяет распределить указанный капитал на пирог выбранного индекса Московской биржи из открытого API. Работает сервис с акциями Т+: Акции и ДР - безадрес в RUB.
-
-Если происходит работа со счетом Тинькофф, тогда распределение капитала учитывает бумаги, которые находятся в портфеле. Если они не входят в индекс, тогда учитываются к продаже.
-
-Возможности открытой версии:
-* Распределение капитала на пирог,
-* Перераспределение акций на пирог (продажа / покупка),
-* История сделок счёта,
-* Создание пользовательского индекса,
-* Фоновые задачи для получения исторических свечей и работы с ними (применение стратегии трейдинга/создание графиков/расчет индикаторов),
-* Управление приложением через Telegram чат.
-
+В целом, это настольное приложение с нейронными сетями представляет собой удобный и мощный инструмент для всех, кто нуждается в синтезе речи и распознавании голоса в текст. Лучше всего то, что приложение бесплатно, устанавливается локально и проста в использовании! А применить вы его можете, в озвучке роликов, книг, игр, итд.
 
 <!-- FEATURES -->
 ## Запуск
+
+Установить зависимости:
 
 ```
 pip install -r requirements.txt
 ```
 
-В conf.toml
+Скачать модели нейронных сетей, конфигурации и словарь:
 ```
-database="sqlite.db"
-
-[tinkoff]
-readonly = "TOKEN"  # token Tinkoff readonly
-
-[telegram]
-token = "TOKEN"  # token telegram bot
-chat_id = 0  # chat for messages from bot
+wget появится позже
 ```
 
-Как получить Tinkoff [токен](https://tinkoff.github.io/investAPI/token/).
-Как получить Telegram [токен](https://core.telegram.org/bots/api#authorizing-your-bot).
-Как узнать [Chat ID](https://core.telegram.org/bots/api#getchatmember).
-
-Запуск
+Распокавать архив:
 ```
-python run.py
+Папка data в voiceai.wladradchenko.ru/portable/src/backend
+Файл конфигураций config.yaml в voiceai.wladradchenko.ru/portable/src/backend/config.yaml
+Словарь stress.dict в voiceai.wladradchenko.ru/portable/src/backend/tps/data
 ```
 
+
+Запустить:
+```
+briefcase dev
+```
+
+Дополнительно, вы можете создать build
+```
+briefcase build
+```
+
+После, создать установщик:
+```
+briefcase package
+```
+
+Подробнее в документации о проекте [BeeWare](https://beeware.org/project/projects/tools/briefcase)
 <!-- VIDEO -->
 ## Видео
 
@@ -86,18 +81,12 @@ python run.py
 
 Сайт приложения: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
 
-<p align="right">(<a href="#top">вернуться наверх / back to top</a>)</p>
-
 <!-- CREDITS -->
 ## Зависимости
 
-Tacatron 2 - https://github.com/NVIDIA/tacotron2
-Waveglow - https://github.com/NVIDIA/waveglow
-Flask UI - https://github.com/ClimenteA/flaskwebgui
-BeeWare - https://beeware.org/project/projects/tools/briefcase/
+* Tacatron 2 - https://github.com/NVIDIA/tacotron2
+* Waveglow - https://github.com/NVIDIA/waveglow
+* Flask UI - https://github.com/ClimenteA/flaskwebgui
+* BeeWare - https://beeware.org/project/projects/tools/briefcase/
 
-# voiceai.wladradchenko.ru
-
-написать откуда скачать модель и конфиг
-
-написать про то, что нужно скачать voiceai.wladradchenko.ru/portable/src/backend/tps/data/stress.dict
+<p align="right">(<a href="#top">вернуться наверх</a>)</p>
