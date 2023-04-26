@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Briefcase-Version: 0.3.14
+Name: VoiceAI
+Formal-Name: Voice AI
+App-ID: wladradchenko.ru.VoiceAI
+Version: 0.0.1
+Home-page: https://ru.wladradchenko/VoiceAI
+Download-URL: https://ru.wladradchenko/VoiceAI
+Author: Wladislav Radchenko
+Author-email: i@wladradchenko.ru
+Summary: Text to speech bt neural networks

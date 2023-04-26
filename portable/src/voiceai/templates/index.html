@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Voice AI{% endblock %}
+
+{% block head %}
+	<script type="text/javascript" src="{{ url_for('static', filename='speech/js/speech-synthesis.js') }}"></script>
+{% endblock %}
+
+{% block menubar %}
+<div class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
+    <a id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
+    <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
+</div>
+{% endblock %}
+
+{% block sections %}
+    <div id="voice-cards" style="display: flex;flex-direction: column;overflow-x: auto;height: 70vh;">
+        <template id="voice-card-template">
+        <div class="voice-card-container" style="display: flex;">
+            <div class="voice-card-avatar" style="display: flex;flex-direction: column;margin-right:40pt;margin-left: 40pt;">
+                <div class="bubble bubble-bottom-right" style="left: -20%;">
+                    <div class="model-multiselect">
+                        <div class="select-box" onclick="multiVoiceSelect(this.parentElement);" title="Выбор голоса">
+                          <select style="font-size: 14px;">
+                            <option>Голоса</option>
+                          </select>
+                          <div class="model-over-select"></div>
+                        </div>
+                        <div class="model-checkboxes" style="position: absolute;z-index: 10;text-align: initial;margin-left: 10pt;">
+                            {% for key, value in existing_models.items() %}
+                              <label><input type="checkbox" value="{{ key }}" name="{{ value }}" class="model-checkbox-value" /><text>{{ key }}</text></label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="img-area">
+                  <div class="inner-area">
+                      <div class="loader">
+                          <span><i></i></span>
+                          <img class="img-avatar" name="[]" src="{{ url_for('media_file', filename='avatar/Unknown.png') }}" alt="person profile image">
+                      </div>
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <div style="background: #ecf0f3;box-shadow: -3px -3px 7px #ffffff, 3px 3px 5px #ceced1;border-radius: 50%;margin-bottom: 10pt;">
+                        <button class="a-button voice-card-container-plus" style="font-size: 35pt;display: flex;justify-content: center;align-items: center;margin-top: 4pt;color: #ff4f8b;" title="Добавить элемент"><i class="fa fa-plus"></i></button>
+                    </div>
+                    <div style="background: #ecf0f3;box-shadow: -3px -3px 7px #ffffff, 3px 3px 5px #ceced1;border-radius: 50%;margin-top: 10pt;">
+                        <button class="a-button microphone" style="font-size: 35pt;display: flex;justify-content: center;align-items: center;margin-top: 4pt;color: #42abff;" title="Диктовать текст голосом"><i class="fa fa-microphone microphone"></i><i style="display: none;" class="fa fa-microphone-slash microphone"></i></button>
+                    </div>
+                    <div style="background: #ecf0f3;box-shadow: -3px -3px 7px #ffffff, 3px 3px 5px #ceced1;border-radius: 50%;margin-bottom: 10pt;">
+                        <button class="a-button voice-card-container-remove" style="font-size: 35pt;display: flex;justify-content: center;align-items: center;margin-top: 2pt;color: #f1de39" title="Удалить элемент"><i class="fa fa-close"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="voice-card-textarea">
+                <section>
+                    <div class="additional-options">
+                        <label class="neumorphic-slider">Высота
+                            <input style="width: 80pt;" class="range pitch-range" type="range" min="0.75" max="1.5" step="0.05" value="1.0">
+                        </label>
+
+                        <label>Скорость
+                            <input style="width: 80pt;" class="range rate-range" type="range" min="0.5" max="2.0" step="0.1" value="1.0">
+                        </label>
+
+                        <label>Громкость
+                            <input style="width: 80pt;" class="range volume-range" type="range" min="-12" max="12" step="0.5" value="0.0">
+                        </label>
+                    </div>
+                    <textarea class="text-input" placeholder='Введите текст для синтеза в речь' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;"></textarea>
+                    <div style="display: flex;justify-content: end;align-items: center;">
+                        <div style="margin-right: 15pt;flex-direction: row;display: flex;">
+                            <input style="display: none;" type="file" class="audio-file" accept="audio/*" onchange="document.querySelector('.load-audio-button').removeAttribute('disabled');">
+                            <button title="Добавить аудио для распознования" type="button" class="audio-load" style="margin-right: 15pt;" onclick="this.parentElement.querySelector('.audio-file').click();"><i class="fa fa-music"></i></button>
+                            <button title="Перевести аудио в текст" type="button" class="load-audio-button audio-load" onclick="recognitionAudioFile(this.parentElement.parentElement.parentElement);" disabled><i class="fa fa-play"></i></button>
+                            <button title="Остановить перевод аудио" type="button" class="pause-audio-button audio-load" onclick="pauseAllAudioFile(this.parentElement);" style="display: none;"><i class="fa fa-pause"></i></button>
+                        </div>
+                        <div style="margin-right: 15pt;" class="toggle-button toggle-button-voice">
+                          <div title="Флаг выбора текста для озвучивания" class="button toggle-div-voice">
+                            <div class="circle toggle-div-voice">
+                                <i style="display: none" class="fa fa-volume-up toggle-button-voice-on toggle-div-voice"></i>
+                                <i class="fa fa-volume-off toggle-button-voice-off toggle-div-voice"></i>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        </template>
+    </div>
+    <div class="synthesized_field">
+        <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;">
+            <div id="synthesized_result_table" style="overflow-x: auto;">
+                <table id="table_result" style="width: 280pt;table-layout: fixed;">
+                    <thead>
+                    <tr>
+                        <th style="width: 33%;" class="model_audio">Аудио</th>
+                        <th style="width: 33%;" class="model_time">Текст</th>
+                        <th style="width: 33%;" class="model_name">Голос</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body_result">
+                    </tbody>
+                </table>
+            </div>
+            <div id="status-message" style="margin: 5pt;">Подождите... Происходит обработка</div>
+        </div>
+        <div class="buttons">
+            <button title="Выбрать все флаги для озвучивания" id="button-enable-all">Выбрать все</button>
+            <button title="Снять все флаги для озвучивания" id="button-disable-all" style="display: none;margin-right: 10px;">Убрать все</button>
+            <button title="Начать синтез речи" id="button-run-synthesis" style="background: #f7db4d;">Синтезировать речь</button>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='speech/js/index.js') }}" defer></script>
+
+    <script>
+    const link = document.getElementById('a-link-open-folder');
+    link.addEventListener('click', (event) => {
+      event.preventDefault(); // prevent the link from following its href attribute
+      fetch('/open_folder', { method: 'POST' })
+        .then(response => {
+          if (response.ok) {
+            // handle the successful response from the server
+          } else {
+            throw new Error('Network response was not ok.');
+          }
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    });
+</script>
+
+{% endblock %}
