@@ -1,0 +1,94 @@
+# This project was generated with Unknown using template: https://github.com/beeware/briefcase-template@v0.3.14
+[tool.briefcase]
+project_name = "Voice AI"
+bundle = "wladradchenko.ru"
+version = "1.0.0"
+url = "https://ru.wladradchenko/voiceai"
+license = "MIT license"
+author = "Wladislav Radchenko"
+author_email = "i@wladradchenko.ru"
+
+[tool.briefcase.app.voiceai]
+formal_name = "Voice AI"
+description = "Text to speech by neural networks"
+long_description = """More details about the app should go here.
+"""
+icon = "src/voiceai/resources"
+sources = [
+    "src/voiceai",
+    "src/backend",
+]
+test_sources = [
+]
+
+requires = [
+    "Flask",
+    "Flask-Cors",
+    "pyyaml",
+    "loguru",
+    "numpy",
+    "nltk",
+    "Unidecode",
+    "inflect",
+    "librosa==0.8.0",
+    "torch==2.0.0",
+    "torchaudio==2.0.1",
+    "soundfile==0.10.3.post1",
+    "flaskwebgui",
+    "waitress",
+]
+test_requires = [
+]
+
+[tool.briefcase.app.voiceai.macOS]
+requires = [
+    "std-nslog~=1.0.0"
+]
+
+[tool.briefcase.app.voiceai.linux]
+requires = [
+]
+
+[tool.briefcase.app.voiceai.linux.system.debian]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.voiceai.linux.system.rhel]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.voiceai.linux.system.arch]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.voiceai.linux.appimage]
+manylinux = "manylinux2014"
+
+system_requires = [
+]
+linuxdeploy_plugins = []
+
+[tool.briefcase.app.voiceai.linux.flatpak]
+
+[tool.briefcase.app.voiceai.windows]
+requires = []
+
+# Mobile deployments
+[tool.briefcase.app.voiceai.iOS]
+supported = false
+
+[tool.briefcase.app.voiceai.android]
+supported = false
+
+# Web deployments
+[tool.briefcase.app.voiceai.web]
+supported = false
