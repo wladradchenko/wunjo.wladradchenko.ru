@@ -64,11 +64,22 @@ briefcase build
 briefcase package
 ```
 
-Подробнее в документации о проекте [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+Подробнее в документации [BeeWare](https://beeware.org/project/projects/tools/briefcase)
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
 Ubuntu / Debian - https://wladradchenko.ru/voice/установка
+
+```
+// Установка
+sudo dpkg -i voiceai.deb
+
+// Удаление
+sudo dpkg -r voiceai
+
+// Удаление кеша
+rm -rf ~/.voiceai
+```
 
 
 <!-- VIDEO -->
