@@ -39,7 +39,10 @@ pip install -r requirements.txt
 
 Download neural network models, configurations and dictionary:
 ```
-wget появится позже
+wget invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/voiceai.robot.zip 
+mv DOWNLOAD_DIR/voiceai.robot.zip voiceai.wladradchenko.ru/portable/src/backend/voiceai.robot.zip
+cd voiceai.wladradchenko.ru/portable/src/backend/
+unzip voiceai.robot.zip
 ```
 
 Unzip archive:
@@ -74,7 +77,8 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 
 <!-- DOWNLOAD -->
 ## Install packets
-Ubuntu / Debian - https://wladradchenko.ru/voice/установка
+Ubuntu / Debian - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
+
 
 ```
 // Install app
