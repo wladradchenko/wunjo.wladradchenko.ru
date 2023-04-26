@@ -71,10 +71,10 @@ briefcase package
 Ubuntu / Debian - https://wladradchenko.ru/voice/установка
 
 ```
-// Установка
+// Установка приложения
 sudo dpkg -i voiceai.deb
 
-// Удаление
+// Удаление приложения
 sudo dpkg -r voiceai
 
 // Удаление кеша
