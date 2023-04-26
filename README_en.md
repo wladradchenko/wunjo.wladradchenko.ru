@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru">
-    <img src="icons/man.gif" alt="Logo" width="150" height="150">
+    <img src="icons/robot.gif" alt="Logo" width="180" height="180">
   </a>
 
   <h3 align="center">Voice AI</h3>
