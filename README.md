@@ -59,6 +59,11 @@ briefcase dev
 briefcase build
 ```
 
+Запуск build
+```
+briefcase run
+```
+
 После, создать установщик:
 ```
 briefcase package
