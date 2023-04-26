@@ -39,7 +39,10 @@ pip install -r requirements.txt
 
 Скачать модели нейронных сетей, конфигурации и словарь:
 ```
-wget появится позже
+wget invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/voiceai.robot.zip 
+mv DOWNLOAD_DIR/voiceai.robot.zip voiceai.wladradchenko.ru/portable/src/backend/voiceai.robot.zip
+cd voiceai.wladradchenko.ru/portable/src/backend/
+unzip voiceai.robot.zip
 ```
 
 Распаковать архив:
