@@ -1,1 +1,1 @@
-You need to download models from a resource, unpacked and change config.yaml and data folder.
+Вам нужно скачать модели с ресурса, распаковать и изменить config.yaml и папку с данными. Также добавтье словарь stress.dict
