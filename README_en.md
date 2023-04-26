@@ -10,7 +10,7 @@
   <h3 align="center">Voice AI</h3>
 
   <p align="center">
-    Документация о проекте
+    Project documentation
     <br/>
     <br/>
     <br/>
