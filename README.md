@@ -126,5 +126,9 @@ rm -rf ~/.voiceai
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
 * Sad Talker - https://github.com/OpenTalker/SadTalke
+* Face Utils: https://github.com/xinntao/facexlib
+* Face Enhancement: https://github.com/TencentARC/GFPGAN
+* Image/Video Enhancement:https://github.com/xinntao/Real-ESRGAN
+
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>
