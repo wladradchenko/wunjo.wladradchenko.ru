@@ -52,6 +52,18 @@ The file config.yaml to voiceai.wladradchenko.ru/portable/src/backend/config.yam
 The dictionary stress.dict to voiceai.wladradchenko.ru/portable/src/backend/tps/data
 ```
 
+Add models for animation. Move to dir talker
+
+```
+cd voiceai.wladradchenko.ru/talker
+```
+
+Create folder checkpoints and download models by scripts/download_models.sh:
+
+```
+bash scripts/download_models.sh
+```
+
 
 Run:
 ```
@@ -115,5 +127,9 @@ Web site: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
 * Waveglow - https://github.com/NVIDIA/waveglow
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
+* Sad Talker - https://github.com/OpenTalker/SadTalke
+* Face Utils: https://github.com/xinntao/facexlib
+* Face Enhancement: https://github.com/TencentARC/GFPGAN
+* Image/Video Enhancement:https://github.com/xinntao/Real-ESRGAN
 
 <p align="right">(<a href="#top">to top</a>)</p>
