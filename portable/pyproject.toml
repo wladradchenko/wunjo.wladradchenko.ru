@@ -17,6 +17,7 @@ icon = "src/voiceai/resources"
 sources = [
     "src/voiceai",
     "src/backend",
+    "src/talker",
 ]
 test_sources = [
 ]
@@ -26,16 +27,30 @@ requires = [
     "Flask-Cors",
     "pyyaml",
     "loguru",
-    "numpy",
+    "numpy==1.23.5",
     "nltk",
     "Unidecode",
     "inflect",
     "librosa==0.8.0",
     "torch==2.0.0",
     "torchaudio==2.0.1",
+    "torchvision==0.15.1",
     "soundfile==0.10.3.post1",
     "flaskwebgui",
     "waitress",
+    "opencv-python",
+    "Pillow",
+    "scikit-image",
+    "kornia",
+    "face_alignment",
+    "dlib-bin",
+    "yacs",
+    "pydub",
+    "gfpgan",
+    "cog",
+    "imageio==2.19.3",
+    "imageio-ffmpeg==0.4.7",
+    "av",
 ]
 test_requires = [
 ]
