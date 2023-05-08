@@ -52,6 +52,17 @@ unzip voiceai.robot.zip
 Словарь stress.dict в voiceai.wladradchenko.ru/portable/src/backend/tps/data
 ```
 
+Добавить модели для создания анимации. Переходим в директорию talker
+
+```
+cd voiceai.wladradchenko.ru/talker
+```
+
+Создать директорию checkpoints и скачать файлы через скрипт scripts/download_models.sh:
+
+```
+bash scripts/download_models.sh
+```
 
 Запустить:
 ```
@@ -114,5 +125,6 @@ rm -rf ~/.voiceai
 * Waveglow - https://github.com/NVIDIA/waveglow
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
+* Sad Talker - https://github.com/OpenTalker/SadTalke
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>
