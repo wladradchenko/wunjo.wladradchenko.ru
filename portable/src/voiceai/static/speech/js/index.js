@@ -464,7 +464,7 @@ function checkToggleVoiceAll() {
 if (document.cookie.indexOf('introCompleted=true') !== -1) {
    // Not show intro
 } else {
-var intro = introJs();
+    var intro = introJs();
     intro.setOptions({
         steps: [
             {
@@ -519,12 +519,10 @@ var intro = introJs();
           showButtons: true,
           showStepNumbers: false,
           nextLabel: 'Продолжить',
-          prevLabel: 'Вернуться'
+          prevLabel: 'Вернуться',
+          doneLabel: 'Закрыть'
     });
     intro.start();
-    intro.setOptions({
-        doneLabel: 'Close'
-    });
 }
 document.cookie = "introCompleted=true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 ///SUPPORT USER///
