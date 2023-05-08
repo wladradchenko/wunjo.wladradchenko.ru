@@ -5,6 +5,7 @@
 
 {% block head %}
 	<script type="text/javascript" src="{{ url_for('static', filename='speech/js/speech-synthesis.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='speech/js/talker-synthesis.js') }}"></script>
 {% endblock %}
 
 {% block menubar %}
@@ -92,17 +93,32 @@
         </template>
     </div>
     <div class="synthesized_field">
+        <div class="buttons" style="margin-bottom: 20pt;">
+            <button title="Показать результаты синтеза голоса" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_talker_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
+            <button title="Показать результаты синтеза анимации" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_talker_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
+            <button title="Синтезировать анимацию" id="button-run-talker-synthesis" onclick="talkerGeneralPop(event.target);">Анимировать</button>
+        </div>
         <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;">
             <div id="synthesized_result_table" style="overflow-x: auto;">
-                <table id="table_result" style="width: 280pt;table-layout: fixed;">
+                <table id="table_result" style="width: 280pt;table-layout: fixed;display: inline-table;">
                     <thead>
                     <tr>
                         <th style="width: 33%;" class="model_audio">Аудио</th>
-                        <th style="width: 33%;" class="model_time">Текст</th>
-                        <th style="width: 33%;" class="model_name">Голос</th>
+                        <th style="width: 25%;" class="model_time">Текст</th>
+                        <th style="width: 20%;" class="model_name">Голос</th>
                     </tr>
                     </thead>
                     <tbody id="table_body_result">
+                    </tbody>
+                </table>
+                <table id="table_talker_result" style="width: 280pt;table-layout: fixed;display: none;">
+                    <thead>
+                    <tr>
+                        <th style="width: 33%;" class="model_animation">Видео</th>
+                        <th style="width: 33%;" class="model_date">Дата</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body_talker_result">
                     </tbody>
                 </table>
             </div>
