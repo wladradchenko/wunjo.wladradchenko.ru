@@ -105,7 +105,7 @@ rm -rf ~/.voiceai
 <!-- VIDEO -->
 ## Видео
 
-[![Watch the video](https://img.youtube.com/vi/aekVTaJHzqY/maxresdefault.jpg)](https://youtu.be/aekVTaJHzqY)
+[![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/maxresdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
 
 <!-- CONTACT -->
 ## Контакт
