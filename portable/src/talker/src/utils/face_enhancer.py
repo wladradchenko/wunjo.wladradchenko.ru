@@ -1,7 +1,8 @@
 import os
 import torch 
 
-from gfpgan import GFPGANer
+# from gfpgan import GFPGANer
+from src.utils.gfpganer import GFPGANer
 
 from tqdm import tqdm
 
@@ -9,6 +10,8 @@ from src.utils.videoio import load_video_to_cv2
 
 import cv2
 
+root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+talker_root_path = f"{root_path}"
 
 
 def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
@@ -60,14 +63,18 @@ def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
         bg_upsampler = None
 
     # determine model paths
-    model_path = os.path.join('gfpgan/weights', model_name + '.pth')
-    
+
+    # model_path = os.path.join('gfpgan/weights', model_name + '.pth')
+    local_model_path = os.path.join(talker_root_path, './gfpgan/weights')
+    model_path = os.path.join(local_model_path, model_name + '.pth')
+
     if not os.path.isfile(model_path):
         # download pre-trained models from url
         model_path = url
 
     restorer = GFPGANer(
         model_path= model_path,
+        root_dir=local_model_path,
         upscale=2,
         arch=arch,
         channel_multiplier=channel_multiplier,
