@@ -86,7 +86,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 const numExistingRows = synthesisTable.getElementsByTagName("tr").length;
                 // Calculate the number of new rows
                 numNewRows = results.length - numExistingRows;
-                console.log(numNewRows);
 
                 if (response_code === 0 && results && numNewRows > 0) {
                   // Get only the new results
@@ -94,6 +93,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
                   newResults.forEach(function (model_ans, index) {
                     const audioId = `audio-${index + numExistingRows}`;
+                    const videoId = `video-windows-${index + numExistingRows}`;
                     const playBtnId = `play-${index + numExistingRows}`;
                     const pauseBtnId = `pause-${index + numExistingRows}`;
                     const downloadBtnId = `download-${index + numExistingRows}`;
@@ -101,21 +101,22 @@ window.addEventListener("DOMContentLoaded", (event) => {
                     synthesisTable.insertAdjacentHTML(
                       "beforeend",
                       `
-                      <tr style="height: 40pt;">
-                        <td>
+                      <tr style="height: 40pt;text-align: center;">
+                        <td style="width: 33%;">
                           <div class="buttons" style="justify-content: center;">
-                            <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
-                            <a href="${model_ans.response_audio_url}" download="audio.wav">
-                                <button class="download" style="width: 30pt;height: 30pt;"><i class="fa fa-download"></i></button>
+                            <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
+                            <a style="margin-left: 5pt;margin-right: 5pt;" href="${model_ans.response_audio_url}" download="audio.wav">
+                                <button class="download" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-download"></i></button>
                             </a>
+                            <button id="${videoId}" onclick="talkerGeneralPop(event.target, '${model_ans.response_audio_url}', '${model_ans.recognition_text}');" class="synthesis-video" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-solid fa-film"></i></button>
                           </div>
                           <audio id="${audioId}" style="display:none;" controls preload="none">
                             <source src="${model_ans.response_audio_url}" type="audio/wav">
                             Your browser does not support audio.
                           </audio>
                         </td>
-                        <td>${model_ans.recognition_text.length > 10 ? model_ans.recognition_text.slice(0, 10) + "..." : model_ans.recognition_text}</td>
-                        <td>${model_ans.voice}</td>
+                        <td style="width: 25%;">${model_ans.recognition_text.length > 10 ? model_ans.recognition_text.slice(0, 10) + "..." : model_ans.recognition_text}</td>
+                        <td style="width: 20%;">${model_ans.voice}</td>
                       </tr>
                       `
                     );
@@ -155,6 +156,91 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 console.log(err);
             });
     };
+    // function for talker
+    function pollSynthesizedTalkerResults() {
+        var synthesisTalkerTable = document.getElementById("table_body_talker_result");
+
+        fetch("/synthesize_talker_result/")
+            .then((response) => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .then((response) => {
+                response_code = response["response_code"];
+                results = response["response"];
+
+                // Get the number of existing rows in the table
+                const numExistingRows = synthesisTalkerTable.getElementsByTagName("tr").length;
+                // Calculate the number of new rows
+                numNewRows = results.length - numExistingRows;
+
+                if (response_code === 0 && results && numNewRows > 0) {
+                  // Get only the new results
+                  newResults = results.slice(-numNewRows);
+
+                  newResults.forEach(function (model_ans, index) {
+                    const videoID = `video-${index + numExistingRows}`;
+                    const playBtnId = `video-play-${index + numExistingRows}`;
+                    const pauseBtnId = `video-pause-${index + numExistingRows}`;
+                    const downloadBtnId = `video-download-${index + numExistingRows}`;
+
+                    synthesisTalkerTable.insertAdjacentHTML(
+                      "beforeend",
+                      `
+                      <tr style="height: 40pt;">
+                        <td>
+                          <div class="buttons" style="justify-content: center;">
+                            <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
+                            <a href="${model_ans.response_video_url}" download="video.mp4">
+                                <button class="download" style="width: 30pt;height: 30pt;"><i class="fa fa-download"></i></button>
+                            </a>
+                          </div>
+                        </td>
+                        <td style="text-align: center;">${model_ans.response_video_date}</td>
+                      </tr>
+                      `
+                    );
+
+                    const playBtn = document.getElementById(playBtnId);
+                    playBtn.addEventListener("click", function() {
+                        var introVideoTalker = introJs();
+                        introVideoTalker.setOptions({
+                            steps: [
+                                {
+                                    element: playBtn,
+                                    title: "Результат синтеза",
+                                    position: 'left',
+                                    intro: `<div style="width: 300pt;"><video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
+                                              <source src="${model_ans.response_video_url}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                            </video></div>`,
+                                }
+                            ],
+                              showButtons: false,
+                              showStepNumbers: false,
+                              showBullets: false,
+                              nextLabel: 'Продолжить',
+                              prevLabel: 'Вернуться',
+                              doneLabel: 'Закрыть'
+                        });
+                        introVideoTalker.start();
+                    });
+                  });
+                } else if (!results || numNewRows < 1) {
+                    //
+                } else {
+                    alert("Error: " + response);
+                }
+                var textareaTextAll = document.querySelectorAll('.text-input');
+                for (var k = 0; k < textareaTextAll.length; k++) {
+                  textareaTextAll[k].readOnly = false;
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     var intervalSynthesizedResultsId;
 
     // Get a reference to the #status-message element
@@ -173,17 +259,21 @@ window.addEventListener("DOMContentLoaded", (event) => {
           if (data.status_code === 200) {
             if (!intervalSynthesizedResultsId) {
                 setTimeout(pollSynthesizedResults, 5000);
+                setTimeout(pollSynthesizedTalkerResults, 5000);
                 intervalSynthesizedResultsId = undefined;
             }
             // If status_code is 200, hide the #status-message element
             statusMessage.style.display = 'none';
             setTimeout(checkStatus, 5000);  // 5 seconds
+            buttonRunSynthesis.disabled = false;
           } else {
             setTimeout(pollSynthesizedResults, 5000);
+            setTimeout(pollSynthesizedTalkerResults, 5000);
             intervalSynthesizedResultsId = data.status_code;
             // If status_code is not 200, wait for the next interval to check again
             statusMessage.style.display = 'inline';
             setTimeout(checkStatus, 5000);  // 5 seconds
+            buttonRunSynthesis.disabled = true;
           }
         })
         .catch(error => {
