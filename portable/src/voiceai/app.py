@@ -4,11 +4,13 @@ import requests
 import subprocess
 from time import gmtime, strftime
 from base64 import b64encode
+from werkzeug.utils import secure_filename
 
 from flask import Flask, render_template, request, send_from_directory, url_for, redirect
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
+from talker.inference import main_talker
 from backend.file_handler import FileHandler
 from backend.models import models, keys as CONFIG_KEYS
 
@@ -19,6 +21,7 @@ app.config["CORS_HEADERS"] = "Content-Type"
 app.config['DEBUG'] = False
 app.config['SYSNTHESIZE_STATUS'] = 200
 app.config['SYSNTHESIZE_RESULT'] = []
+app.config['SYSNTHESIZE_TALKER_RESULT'] = []
 
 _valid_model_types = [key for key in models]
 # get list of all directories in folder
@@ -30,7 +33,8 @@ if not os.path.exists(MEDIA_FOLDER):
 
 WAVES_FOLDER = os.path.join(MEDIA_FOLDER, 'waves')
 AVATAR_FOLDER = os.path.join(MEDIA_FOLDER, "avatar")
-
+TALKER_FOLDER = os.path.join(MEDIA_FOLDER, 'talker')
+TMP_FOLDER = os.path.join(MEDIA_FOLDER, 'tmp')
 
 def valid_model_types():
     return [key for key in models]
@@ -63,11 +67,27 @@ def index():
     model_avatars.pop("Unknown")
     return render_template("index.html", existing_models=model_avatars)
 
+@app.route('/upload_tmp_talker', methods=['POST'])
+@cross_origin()
+def upload_file_talker():
+    if not os.path.exists(TMP_FOLDER):
+        os.makedirs(TMP_FOLDER)
+
+    if 'file' not in request.files:
+        return {"status": 'No file uploaded'}
+    file = request.files['file']
+    if file.filename == '':
+        return {"status": 'No file selected'}
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(TMP_FOLDER, filename))
+        return {"status": 'File uploaded'}
+
 @app.route('/open_folder', methods=["POST"])
 @cross_origin()
 def open_folder():
-    if os.path.exists(WAVES_FOLDER):
-        path = WAVES_FOLDER
+    if os.path.exists(MEDIA_FOLDER):
+        path = MEDIA_FOLDER
         if sys.platform == 'win32':
             # Open folder for Windows
             subprocess.Popen(r'explorer /select,"{}"'.format(path))
@@ -79,6 +99,57 @@ def open_folder():
             subprocess.Popen(['xdg-open', path])
         return {"status_code": 200} #redirect('/')
     return {"status_code": 300} #redirect('/')
+
+@app.route("/synthesize_talker_result/", methods=["GET"])
+@cross_origin()
+def get_synthesize_talker_result():
+    general_results = app.config['SYSNTHESIZE_TALKER_RESULT']
+    return {
+        "response_code": 0,
+        "response": general_results
+    }
+
+@app.route("/synthesize_talker/", methods=["POST"])
+@cross_origin()
+def synthesize_talker():
+    request_list = request.get_json()
+    app.config['SYSNTHESIZE_STATUS'] = 300
+
+    if not os.path.exists(TALKER_FOLDER):
+        os.makedirs(TALKER_FOLDER)
+
+    face_fields = request_list.get("face_fields")
+
+
+    source_image = os.path.join(TMP_FOLDER, request_list.get("source_image"))
+    driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
+    preprocess = request_list.get("preprocess")
+    still = request_list.get("still")
+    enhancer = request_list.get("enhancer")
+
+    try:
+        talker_result = main_talker(talker_dir=TALKER_FOLDER,
+                                    source_image=source_image,
+                                    driven_audio=driven_audio,
+                                    still=still,
+                                    enhancer=enhancer,
+                                    preprocess=preprocess,
+                                    face_fields=face_fields)
+    except BaseException:
+        app.config['SYSNTHESIZE_TALKER_RESULT'] += [{"response_video_url": "", "response_video_date": "Лицо не найдено"}]
+        app.config['SYSNTHESIZE_STATUS'] = 200
+        return {"status": 400}
+
+
+    talker_filename = "/talker/" + talker_result.split("/talker/")[-1]
+    talker_url = url_for("media_file", filename=talker_filename)
+    talker_date = strftime("%H:%M:%S", gmtime())
+
+    app.config['SYSNTHESIZE_TALKER_RESULT'] += [{"response_video_url": talker_url, "response_video_date": talker_date}]
+
+    app.config['SYSNTHESIZE_STATUS'] = 200
+
+    return {"status": 200}
 
 @app.route("/synthesize_result/", methods=["GET"])
 @cross_origin()
