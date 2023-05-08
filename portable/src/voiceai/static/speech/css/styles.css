@@ -532,3 +532,33 @@ select {
 #button-run-synthesis:hover:before {
     box-shadow: inset -3px -3px 4px #fae88e, inset 3px 3px 5px #d6be45;
 }
+
+/* DRAG AND DROP */
+.dragBox {
+  margin: 0 auto;
+  position: relative;
+  font-weight: bold;
+  color: #999;
+  border: 2px dashed #000;
+  transition: transform 0.3s;
+}
+.dragBox input[type="file"] {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    top: 0;
+    left: 0;
+}
+.draging {
+  transform: scale(1.1);
+}
+#previewTalkerImg {
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+#uploadAudioTalker {
+  visibility: hidden;
+}
