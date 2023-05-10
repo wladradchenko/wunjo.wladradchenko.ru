@@ -64,6 +64,7 @@ Create folder checkpoints and download models by scripts/download_models.sh:
 bash scripts/download_models.sh
 ```
 
+For Windows download checkpoints by link [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
 
 Run:
 ```
@@ -95,6 +96,8 @@ Ubuntu / Debian - [https://wladradchenko.ru/voice](https://invest.wladradchenko.
 ```
 // Install app
 sudo dpkg -i voiceai.deb
+sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
+sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
 
 // Remove app
 sudo dpkg -r voiceai
@@ -107,7 +110,7 @@ rm -rf ~/.voiceai
 <!-- VIDEO -->
 ## Video
 
-[![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/maxresdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
+[![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/hqdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
 
 <!-- CONTACT -->
 ## Контакт
