@@ -66,7 +66,7 @@ bash scripts/download_models.sh
 
 Для Windows, файлы можно установить по [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
 
-При первом запуске модуля синтеза видео. Скачаются файлы для gfpgan.
+При первом запуске модуля синтеза видео скачаются файлы для gfpgan.
 
 Запустить:
 ```
