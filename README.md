@@ -64,6 +64,10 @@ cd voiceai.wladradchenko.ru/talker
 bash scripts/download_models.sh
 ```
 
+Для Windows, файлы можно установить по [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
+
+При первом заупске модуля talker. Скачаются файлы для gfpgan.
+
 Запустить:
 ```
 briefcase dev
@@ -96,6 +100,10 @@ sudo dpkg -i voiceai.deb
 
 // Удаление приложения
 sudo dpkg -r voiceai
+
+// Для создания видео не под sudo
+sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
+sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
 
 // Удаление кеша
 rm -rf ~/.voiceai
