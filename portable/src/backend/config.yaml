@@ -6,30 +6,3 @@ general:
   logging:
     log_level: INFO
     log_file:
-
-Robot:
-  voice_control_cfg: data/robot/voice_robot.yaml
-  user_dict: data/user_dict.json
-
-  text_handler:
-    config: ru
-    out_max_length: 200
-
-  modules:
-    engine: tacotron2
-    vocoder: waveglow
-
-  engine:
-    tacotron2:
-      model_path: data/robot/checkpoint_robot
-      hparams_path:
-      options:
-        steps_per_symbol: 10
-        gate_threshold: 0.5
-
-  vocoder:
-    waveglow:
-      model_path: data/robot/waveglow_robot.pt
-      options:
-        sigma: 0.666
-        strength: 0.1
