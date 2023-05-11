@@ -481,7 +481,7 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
             },
             {
                 element: '.load-audio-button',
-                intro: 'Распознать текст из аудио файла. Hаспознавание закончится после того, как аудио файл будет озвучен полностью',
+                intro: 'Распознать текст из аудио файла. Распознавание закончится после того, как аудио файл будет озвучен полностью',
             },
             {
                 element: '.model-over-select',
@@ -493,7 +493,7 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
             },
             {
                 element: '.voice-card-container-remove',
-                intro: 'Удалите не нужные поля для диалогов',
+                intro: 'Удалите ненужные поля для диалогов',
             },
             {
                 element: '.button.toggle-div-voice',
@@ -513,7 +513,7 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
             },
             {
                 element: '#a-link-open-author',
-                intro: 'Узнать о других проектах автора вы можете на сайте wladradchenko.ru. Приятного пользования!',
+                intro: 'Узнать о других проектах автора вы можете на сайте <a target="_blank" rel="noopener noreferrer" href="https://wladradchenko.ru">wladradchenko.ru</a>. Приятного пользования!',
             }
         ],
           showButtons: true,
