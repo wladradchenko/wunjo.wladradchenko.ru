@@ -2,7 +2,7 @@ Flask
 Flask-Cors
 pyyaml
 loguru
-numpy
+numpy==1.23.5
 nltk
 Unidecode
 inflect
@@ -13,3 +13,17 @@ soundfile==0.10.3.post1
 flaskwebgui
 waitress
 briefcase
+opencv-python
+Pillow
+scikit-image
+kornia
+face_alignment
+dlib-bin
+yacs
+torchvision==0.15.1 --extra-index-url https://download.pytorch.org/whl/cpu --pre
+pydub
+gfpgan
+cog
+imageio==2.19.3
+imageio-ffmpeg==0.4.7
+av
