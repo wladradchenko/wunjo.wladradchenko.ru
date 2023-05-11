@@ -85,7 +85,7 @@ briefcase build
 briefcase run
 ```
 
-После, создать установщик:
+Для создания установщика:
 ```
 briefcase package
 ```
