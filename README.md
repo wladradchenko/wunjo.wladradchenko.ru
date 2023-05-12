@@ -31,7 +31,7 @@
 <!-- FEATURES -->
 ## Запуск
 
-Требуется 3.8 <= (Python)[https://www.python.org/downloads/] <=3.10 и (ffmpeg)[https://ffmpeg.org/download.html].
+Требуется 3.8 <= [Python](https://www.python.org/downloads/) <=3.10 и [ffmpeg](https://ffmpeg.org/download.html).
 
 Создать виртуальную среду и активировать:
 
