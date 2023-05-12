@@ -7,6 +7,9 @@ function sendDataToTalker(elem) {
           if (data.status_code === 200) {
             var synthesisTalkerTable = document.getElementById("table_body_talker_result");
 
+            var messageTalker = elem.querySelector("#message-talker");
+            messageTalker.innerHTML = "";
+
             var previewTalkerImg = elem.querySelector("#previewTalkerImg");
 
             var canvasRectangles = previewTalkerImg.querySelector('#canvasTalker');
@@ -26,6 +29,8 @@ function sendDataToTalker(elem) {
             } else if (videoTalkerSrc) {
               mediaBlobUrl = videoTalkerSrc.src
               mediaName = "video_" + Date.now();
+            } else {
+              messageTalker.innerHTML += "<p style='margin-top: 5pt;'>Вы не загрузили изображение. Нажмите на окно загрузки изображения.</p>";
             }
             if (mediaBlobUrl) {
                 fetch(mediaBlobUrl)
@@ -47,7 +52,9 @@ function sendDataToTalker(elem) {
                         var file = new File([blob], audioName);
                         uploadFile(file);
                     });
-           }
+           } else {
+              messageTalker.innerHTML += "<p style='margin-top: 5pt;'>Вы не загрузили аудиофайл. Нажмите на кнопку загрузить аудиофайл.</p>";
+            }
 
             var cover = elem.querySelector("#cover-talker");
             var resize = elem.querySelector("#resize-talker");
@@ -65,6 +72,10 @@ function sendDataToTalker(elem) {
                 enhancer = "gfpgan";
             } else {
                 enhancer = "RestoreFormer";
+            }
+
+            if (canvasRectanglesList.length === 0) {
+                messageTalker.innerHTML += "<p style='margin-top: 5pt;'>Вы не выделили лицо. Нажмите на кнопку выделить лицо и выделите лицо на изображении.</p>";
             }
 
             if (mediaName && audioName && canvasRectanglesList.length > 0) {
@@ -97,6 +108,11 @@ function sendDataToTalker(elem) {
                 const closeIntroButton = document.querySelector('.introjs-skipbutton');
                 closeIntroButton.click();
             }
+          } else {
+            var synthesisTalkerTable = document.getElementById("table_body_talker_result");
+
+            var messageTalker = elem.querySelector("#message-talker");
+            messageTalker.innerHTML = "<p style='margin-top: 5pt;'>Процесс занят. Дождитесь его окончания.</p>";
           }
         });
 }
@@ -222,6 +238,7 @@ function talkerGeneralPop(button, audio_url = undefined, audio_name = undefined)
                           <input type="checkbox" id="enhancer-talker" name="enhancer" checked>
                           <label for="enhancer-talker">Улучшение лица</label>
                         </div>
+                        <p id="message-talker" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
                         <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="sendDataToTalker(this.parentElement);">Синтезировать видео</button>
                     </div>
                     `,
