@@ -103,7 +103,7 @@ briefcase package
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
-Ubuntu / Debian - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
+[Ubuntu / Debian](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -125,7 +125,7 @@ sudo dpkg -r voiceai
 rm -rf ~/.voiceai
 ```
 
-MacOS - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
+[MacOS](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -144,7 +144,7 @@ MacOS - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/
 rm -rf ~/.voiceai
 ```
 
-Windows - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
+[Windows](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
