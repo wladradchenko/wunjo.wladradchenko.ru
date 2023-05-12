@@ -31,6 +31,15 @@ All in all, this neural network desktop application is a handy and powerful tool
 <!-- FEATURES -->
 ## Setup
 
+Requirements 3.8 <= [Python](https://www.python.org/downloads/) <=3.10 and [ffmpeg](https://ffmpeg.org/download.html).
+
+Create venv and activate ones:
+
+```
+python -m venv venv
+source venv/bin/activate
+```
+
 Install dependencies:
 
 ```
@@ -66,6 +75,10 @@ bash scripts/download_models.sh
 
 For Windows download checkpoints by link [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
 
+There will be two archives in the checkpoints folder: BFM_Fitting.zip and hub.zip - they need to be unpacked.
+
+The first time you run the video synthesis module, the files for gfpgan will be downloaded.
+
 Run:
 ```
 briefcase dev
@@ -90,12 +103,19 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 
 <!-- DOWNLOAD -->
 ## Install packets
-Ubuntu / Debian - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
 
+[Ubuntu / Debian](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
 
 ```
+// Requirement to create animation is ffmpeg
+sudo apt install ffmpeg
+
 // Install app
 sudo dpkg -i voiceai.deb
+
+// Neural network models are downloaded on first launch app
+
+// In order to create video without sudo
 sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
 sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
 
@@ -106,6 +126,64 @@ sudo dpkg -r voiceai
 rm -rf ~/.voiceai
 ```
 
+[MacOS](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
+
+```
+// Requirement to create animation is ffmpeg
+brew install ffmpeg 
+
+// Install app
+Unzip voiceai-macos-version.zip
+
+// For the program to appear in the launcher, move Voice AI.app to Programs
+
+// Neural network models are downloaded on first launch app
+
+// Remove app
+Remove Voice AI.app
+
+// Remove cache
+rm -rf ~/.voiceai
+```
+
+[Windows](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
+
+```
+// Requirement to create animation is ffmpeg
+Install ffmpeg and add Path in windows env to ffmpeg/bin
+
+// Install app
+Unzip voiceai-windows-version.zip
+
+// Neural network models are downloaded on first launch app
+Path to app voiceai\Voice AI.exe
+
+// Remove app
+Remove folder voiceai
+
+//Remove cache
+Remove folder .voiceai in Users\YOUR_USER\.voiceai
+```
+
+<!-- EXAMPLE -->
+## Пример
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Original</th>
+    <th>Move face + Enhancer</th>
+    <th>Fix face + Enhancer</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/original.gif" alt="original" width="228" height="360"></td>
+    <td><img src="example/move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
+    <td><img  src="example/static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+  </tr>
+</table>
+</div>
+
+<!-- EXAMPLE -->
 
 <!-- VIDEO -->
 ## Video
@@ -130,7 +208,7 @@ Web site: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
 * Waveglow - https://github.com/NVIDIA/waveglow
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
-* Sad Talker - https://github.com/OpenTalker/SadTalke
+* Sad Talker - https://github.com/OpenTalker/SadTalker
 * Face Utils: https://github.com/xinntao/facexlib
 * Face Enhancement: https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement:https://github.com/xinntao/Real-ESRGAN
