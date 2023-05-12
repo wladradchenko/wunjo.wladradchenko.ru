@@ -129,7 +129,7 @@ rm -rf ~/.voiceai
 
 ```
 // Для создания анимации понадобится установить ffmpeg
-Ссылка на [ffmpeg](https://ffmpeg.org/download.html)
+brew install ffmpeg 
 
 // Распаковать архив voiceai-macos-version.zip
 
@@ -148,7 +148,7 @@ rm -rf ~/.voiceai
 
 ```
 // Для создания анимации понадобится установить ffmpeg
-Ссылка на ffmpeg
+Установить ffmpeg и прописать путь в Path к ffmpeg/bin
 
 // Установка приложения
 Распаковать архив voiceai-windows-version.zip
