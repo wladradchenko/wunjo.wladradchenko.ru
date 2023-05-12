@@ -174,7 +174,7 @@ rm -rf ~/.voiceai
     <th>Фиксированное лицо + Улучшение лица</th>
   </tr>
   <tr align="center">
-    <td><img src="example/original.png" alt="original" width="228" height="360"></td>
+    <td><img src="example/original.gif" alt="original" width="228" height="360"></td>
     <td><img src="example/move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
     <td><img  src="example/static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
   </tr>
