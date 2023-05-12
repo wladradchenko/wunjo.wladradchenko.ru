@@ -112,17 +112,56 @@ sudo apt install ffmpeg
 // Установка приложения
 sudo dpkg -i voiceai.deb
 
-// Удаление приложения
-sudo dpkg -r voiceai
+// При первом запуске скачаются модели нейронной сети
 
 // Для создания видео не под sudo
 sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
 sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
 
+// Удаление приложения
+sudo dpkg -r voiceai
+
 // Удаление кеша
 rm -rf ~/.voiceai
 ```
 
+MacOS - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
+
+```
+// Для создания анимации понадобится установить ffmpeg
+Ссылка на [ffmpeg](https://ffmpeg.org/download.html)
+
+// Распаковать архив voiceai-macos-version.zip
+
+// Для появления программы в launcher, перенести Voice AI.app в Программы
+
+// При первом запуске скачаются модели нейронной сети
+
+// Удаление приложения
+Удалить Voice AI.app
+
+// Удаление кеша
+rm -rf ~/.voiceai
+```
+
+Windows - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
+
+```
+// Для создания анимации понадобится установить ffmpeg
+Ссылка на ffmpeg
+
+// Установка приложения
+Распаковать архив voiceai-windows-version.zip
+
+// При первом запуске приложения скачаются модели нейронной сети
+Приложение voiceai\Voice AI.exe
+
+// Удаление приложения
+Удалить папку voiceai
+
+// Удаление кеша
+Удалить папку .voiceai в Users\YOUR_USER\.voiceai
+```
 
 <!-- VIDEO -->
 ## Видео
