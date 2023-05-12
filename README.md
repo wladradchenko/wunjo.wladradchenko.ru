@@ -106,6 +106,9 @@ briefcase package
 Ubuntu / Debian - [https://wladradchenko.ru/voice](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
 
 ```
+// Для создания анимации понадобится установить ffmpeg
+sudo apt install ffmpeg
+
 // Установка приложения
 sudo dpkg -i voiceai.deb
 
