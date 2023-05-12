@@ -166,9 +166,20 @@ rm -rf ~/.voiceai
 <!-- VIDEO -->
 ## Пример
 
-|Оригинал|Движение лица + Улучшение лица|Фиксированное лицо + Улучшение лица|
-|--|--|--|
-|![original](example/original.png)|![move_enhancer](example/move_enhancer.gif)|![static_enhancer](example/static_enhancer.gif)|
+<div align="center">
+  <table>
+  <tr>
+    <th>Оригинал</th>
+    <th>Движение лица + Улучшение лица</th>
+    <th>Фиксированное лицо + Улучшение лица</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/original.png" alt="original" width="228" height="360"></td>
+    <td><img src="example/move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
+    <td><img  src="example/static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+  </tr>
+</table>
+</div>
 
 <!-- VIDEO -->
 
