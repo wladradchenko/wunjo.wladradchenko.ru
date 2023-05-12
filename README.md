@@ -164,6 +164,15 @@ rm -rf ~/.voiceai
 ```
 
 <!-- VIDEO -->
+## Пример
+
+|Оригинал|Движение лица + Улучшение лица|Фиксированное лицо + Улучшение лица|
+|--|--|--|
+|![original](example/original.png)|![move_enhancer](example/move_enhancer.gif)|![static_enhancer](example/static_enhancer.gif)|
+
+<!-- VIDEO -->
+
+<!-- VIDEO -->
 ## Видео
 
 [![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/hqdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
