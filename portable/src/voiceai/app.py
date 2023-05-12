@@ -141,7 +141,7 @@ def synthesize_talker():
         return {"status": 400}
 
 
-    talker_filename = "/talker/" + talker_result.split("/talker/").replace("\\", "/")[-1]
+    talker_filename = "/talker/" + talker_result.replace("\\", "/").split("/talker/")[-1]
     talker_url = url_for("media_file", filename=talker_filename)
     talker_date = strftime("%H:%M:%S", gmtime())
 
@@ -191,7 +191,7 @@ def synthesize():
             if response_code == 0:
                 for result in results:
                     filename = result.pop("filename")
-                    filename = "/waves/" + filename.split("/waves/").replace("\\", "/")[-1]
+                    filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                     print(filename)
                     audio_bytes = result.pop("response_audio")
                     result["response_audio_url"] = url_for("media_file", filename=filename)
