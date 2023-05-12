@@ -163,7 +163,7 @@ rm -rf ~/.voiceai
 Удалить папку .voiceai в Users\YOUR_USER\.voiceai
 ```
 
-<!-- VIDEO -->
+<!-- EXAMPLE -->
 ## Пример
 
 <div align="center">
@@ -181,7 +181,7 @@ rm -rf ~/.voiceai
 </table>
 </div>
 
-<!-- VIDEO -->
+<!-- EXAMPLE -->
 
 <!-- VIDEO -->
 ## Видео
