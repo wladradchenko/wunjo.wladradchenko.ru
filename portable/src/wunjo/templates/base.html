@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta property="og:image" content="static/speech/icon/gray/logo.png">
+    <link rel="apple-touch-icon" type="image/png" href="static/speech/icon/gray/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Wunjo AI">
+    <link rel="shortcut icon" type="image/x-icon" href="static/speech/icon/gray/logo.ico">
+    <link rel="icon" type="image/png" href="static/speech/icon/gray/logo.png">
+    <link rel="mask-icon" type="image/x-icon" href="static/speech/icon/gray/logo.svg" color="#111">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/3.4.0/introjs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/3.4.0/intro.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='speech/css/styles.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <header>
+        {% block menubar %}
+        {% endblock %}
+    </header>
+
+    <div class="container">
+        {% block sections %}
+        {% endblock %}
+    </div>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>

@@ -1,0 +1,10 @@
+psola:
+  max_hz: 1050
+  min_hz: 40
+  analysis_win_ms: 40
+  max_change: 1.455
+  min_change: 0.695
+
+phase:
+  nfft: 256
+  hop: 64

@@ -1,0 +1,31 @@
+general:
+  device: "cuda:0"
+  pause_type: "silence"
+  sample_rate: 22050
+
+tacotron2:
+  voice_control_cfg:
+  user_dict:
+
+  text_handler:
+    config_path:
+    out_max_length: 200
+
+  modules:
+    engine: tacotron2
+    vocoder: waveglow
+
+  engine:
+    tacotron2:
+      model_path:
+      hparams_path:
+      options:
+        steps_per_symbol: 10
+        gate_threshold: 0.5
+
+  vocoder:
+    waveglow:
+      model_path:
+      options:
+        sigma: 0.66
+        strength: 0.1

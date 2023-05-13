@@ -1,0 +1,109 @@
+# This project was generated with Unknown using template: https://github.com/beeware/briefcase-template@v0.3.14
+[tool.briefcase]
+project_name = "Wunjo AI"
+bundle = "wladradchenko.ru"
+version = "1.2.0"
+url = "https://ru.wladradchenko/wunjo"
+license = "MIT license"
+author = "Wladislav Radchenko"
+author_email = "i@wladradchenko.ru"
+
+[tool.briefcase.app.wunjo]
+formal_name = "Wunjo Wladradchenko AI"
+description = "Text to speech by neural networks"
+long_description = """More details about the app should go here.
+"""
+icon = "src/wunjo/static/speech/icon/gray/logo.png"
+sources = [
+    "src/wunjo",
+    "src/backend",
+    "src/talker",
+]
+test_sources = [
+]
+
+requires = [
+    "Flask",
+    "Flask-Cors",
+    "pyyaml",
+    "loguru",
+    "numpy==1.23.5",
+    "nltk",
+    "Unidecode",
+    "inflect",
+    "librosa==0.8.0",
+    "torch==2.0.0",
+    "torchaudio==2.0.1",
+    "torchvision==0.15.1",
+    "soundfile==0.10.3.post1",
+    "flaskwebgui",
+    "waitress",
+    "opencv-python",
+    "Pillow",
+    "scikit-image",
+    "kornia",
+    "face_alignment",
+    "dlib-bin",
+    "yacs",
+    "pydub",
+    "gfpgan",
+    "cog",
+    "imageio==2.19.3",
+    "imageio-ffmpeg==0.4.7",
+    "av",
+]
+test_requires = [
+]
+
+[tool.briefcase.app.wunjo.macOS]
+requires = [
+    "std-nslog~=1.0.0"
+]
+
+[tool.briefcase.app.wunjo.linux]
+requires = [
+]
+
+[tool.briefcase.app.wunjo.linux.system.debian]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.wunjo.linux.system.rhel]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.wunjo.linux.system.arch]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.wunjo.linux.appimage]
+manylinux = "manylinux2014"
+
+system_requires = [
+]
+linuxdeploy_plugins = []
+
+[tool.briefcase.app.wunjo.linux.flatpak]
+
+[tool.briefcase.app.wunjo.windows]
+requires = []
+
+# Mobile deployments
+[tool.briefcase.app.wunjo.iOS]
+supported = false
+
+[tool.briefcase.app.wunjo.android]
+supported = false
+
+# Web deployments
+[tool.briefcase.app.wunjo.web]
+supported = false
