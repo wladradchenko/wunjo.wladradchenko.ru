@@ -99,6 +99,14 @@ right: 15px;
     border-radius: 50%;
     border: none;
 }
+
+.social-icons .a-button {
+    background: none;
+    -webkit-appearance: none; /* Remove default appearance */
+    -moz-appearance: none;
+    appearance: none;
+}
+
 .social-icons .a-button:hover::before,
 .container .icon:hover::before,
 .buttons button:hover:before {
@@ -240,7 +248,7 @@ right: 15px;
   border: 6px solid #eaeef0;
   border-radius: 50%;
   box-shadow: -8px -8px 15px rgba(255, 255, 255, 1), 8px 8px 25px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .loader span::before {
@@ -309,6 +317,7 @@ textarea {
 
 ::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
   background: #ecf0f3;
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
@@ -327,11 +336,18 @@ textarea {
   -o-border-radius: 00px;
 }
 
+::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(to right, #ecf0f3, #f7db4d, #f7db4d, #ecf0f3) !important;
+}
+
 select {
     margin: 5pt;
     color: rgb(49, 52, 75);
     border: none;
     background: none;
+    -webkit-appearance: none; /* Remove default appearance */
+    -moz-appearance: none;
+    appearance: none;
 }
 
 #synthesized_result {
@@ -366,6 +382,7 @@ select {
 .range
 {
   appearance:none;
+  -webkit-appearance: none; /* Add this line for Safari */
   background:#edf1f4;
   outline:none;
   border-radius:10px;
@@ -378,7 +395,17 @@ select {
 .range::-moz-range-thumb
 {
   appearance:none;
+  -webkit-appearance: none; /* Add this line for Safari */
   background:#fff;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  cursor:pointer;
+}
+.range::-webkit-slider-thumb {
+  appearance:none;
+  -webkit-appearance: none; /* Add this line for Safari */
+  background: #007bff; /* blue color */
   width:15px;
   height:15px;
   border-radius:50%;
