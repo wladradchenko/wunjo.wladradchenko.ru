@@ -91,14 +91,14 @@ sudo dpkg -r wunjo
 rm -rf ~/.wunjo
 ```
 
-[MacOS](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_1.2.0.app)
+[MacOS](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
 
 ```
 // Requirement to create animation is ffmpeg
 brew install ffmpeg 
 
-// Install app
-wunjo-{vesrion}.app
+// Unzip app
+unzip wunjo_macos_{vesrion}.zip
 
 // Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
@@ -106,14 +106,14 @@ wunjo-{vesrion}.app
 rm -rf ~/.wunjo
 ```
 
-[Windows](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo-1.2.0.msi)
+[Windows](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
 
 ```
-// Requirement to create animation is ffmpeg
-Install ffmpeg and add Path in windows env to ffmpeg/bin
+// Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
+setx PATH "%PATH%;C:\path\to\ffmpeg\bin"
 
 // Install app
-wunjo-{vesrion}.msi
+wunjo_{vesrion}.msi
 
 // Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
