@@ -13,7 +13,7 @@ formal_name = "Wunjo Wladradchenko AI"
 description = "Text to speech by neural networks"
 long_description = """More details about the app should go here.
 """
-icon = "src/wunjo/static/speech/icon/gray/logo.png"
+icon = "src/wunjo/static/speech/icon/gray"
 sources = [
     "src/wunjo",
     "src/backend",

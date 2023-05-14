@@ -46,38 +46,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Download neural network models, configurations and dictionary:
-```
-wget invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/voiceai.robot.zip 
-mv DOWNLOAD_DIR/voiceai.robot.zip voiceai.wladradchenko.ru/portable/src/backend/voiceai.robot.zip
-cd voiceai.wladradchenko.ru/portable/src/backend/
-unzip voiceai.robot.zip
-```
-
-Unzip archive:
-```
-The folder data to voiceai.wladradchenko.ru/portable/src/backend
-The file config.yaml to voiceai.wladradchenko.ru/portable/src/backend/config.yaml
-The dictionary stress.dict to voiceai.wladradchenko.ru/portable/src/backend/tps/data
-```
-
-Add models for animation. Move to dir talker
-
-```
-cd voiceai.wladradchenko.ru/talker
-```
-
-Create folder checkpoints and download models by scripts/download_models.sh:
-
-```
-bash scripts/download_models.sh
-```
-
-For Windows download checkpoints by link [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
-
-There will be two archives in the checkpoints folder: BFM_Fitting.zip and hub.zip - they need to be unpacked.
-
-The first time you run the video synthesis module, the files for gfpgan will be downloaded.
+Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
 Run:
 ```
@@ -104,65 +73,52 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 <!-- DOWNLOAD -->
 ## Install packets
 
-[Ubuntu / Debian](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
+[Ubuntu / Debian](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
 
 ```
 // Requirement to create animation is ffmpeg
 sudo apt install ffmpeg
 
 // Install app
-sudo dpkg -i voiceai.deb
+sudo dpkg -i wunjo_{vesrion}.deb
 
-// Neural network models are downloaded on first launch app
-
-// In order to create video without sudo
-sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
-sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
 // Remove app
-sudo dpkg -r voiceai
+sudo dpkg -r wunjo
 
 // Remove cache
-rm -rf ~/.voiceai
+rm -rf ~/.wunjo
 ```
 
-[MacOS](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
+[MacOS](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_1.2.0.app)
 
 ```
 // Requirement to create animation is ffmpeg
 brew install ffmpeg 
 
 // Install app
-Unzip voiceai-macos-version.zip
+wunjo-{vesrion}.app
 
-// For the program to appear in the launcher, move Voice AI.app to Programs
-
-// Neural network models are downloaded on first launch app
-
-// Remove app
-Remove Voice AI.app
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
 // Remove cache
-rm -rf ~/.voiceai
+rm -rf ~/.wunjo
 ```
 
-[Windows](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
+[Windows](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo-1.2.0.msi)
 
 ```
 // Requirement to create animation is ffmpeg
 Install ffmpeg and add Path in windows env to ffmpeg/bin
 
 // Install app
-Unzip voiceai-windows-version.zip
+wunjo-{vesrion}.msi
 
-// Neural network models are downloaded on first launch app
-Path to app voiceai\Voice AI.exe
-
-// Remove app
-Remove folder voiceai
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
 //Remove cache
-Remove folder .voiceai in Users\YOUR_USER\.voiceai
+%USERPROFILE%/.wunjo
 ```
 
 <!-- EXAMPLE -->
@@ -200,6 +156,11 @@ Email: [i@wladradchenko.ru](i@wladradchenko.ru)
 Project: [https://github.com/wladradchenko/voiceai.wladradchenko.ru](https://github.com/wladradchenko/voiceai.wladradchenko.ru)
 
 Web site: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
+
+<!-- PREMISE -->
+## Premise
+
+Wunjo comes from the ancient runic alphabet and represents joy and contentment, which could tie into the idea of using the application to create engaging and expressive speech. Vunyo (ᚹ) is the eighth rune of the Elder and Anglo-Saxon Futhark. Prior to the introduction of the letter W into the Latin alphabet, the letter Ƿynn (Ƿƿ) was used instead in English, derived from this rune.
 
 <!-- CREDITS -->
 ## Credits

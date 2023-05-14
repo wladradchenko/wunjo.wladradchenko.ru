@@ -7,7 +7,7 @@
     <img src="example/man.gif" alt="Logo" width="180" height="180">
   </a>
 
-  <h3 align="center">Voice AI</h3>
+  <h3 align="center">Wunjo AI</h3>
 
   <p align="center">
     Документация о проекте
@@ -46,38 +46,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Скачать модели нейронных сетей, конфигурации и словарь:
-```
-wget invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/voiceai.robot.zip 
-mv DOWNLOAD_DIR/voiceai.robot.zip voiceai.wladradchenko.ru/portable/src/backend/voiceai.robot.zip
-cd voiceai.wladradchenko.ru/portable/src/backend/
-unzip voiceai.robot.zip
-```
-
-Распаковать архив:
-```
-Папка data в voiceai.wladradchenko.ru/portable/src/backend
-Файл конфигураций config.yaml в voiceai.wladradchenko.ru/portable/src/backend/config.yaml
-Словарь stress.dict в voiceai.wladradchenko.ru/portable/src/backend/tps/data
-```
-
-Добавить модели для создания анимации. Переходим в директорию talker
-
-```
-cd voiceai.wladradchenko.ru/talker
-```
-
-Создать директорию checkpoints и скачать файлы через скрипт scripts/download_models.sh:
-
-```
-bash scripts/download_models.sh
-```
-
-Для Windows, файлы можно установить по [ссылке](https://drive.google.com/drive/folders/1Wd88VDoLhVzYsQ30_qDVluQr_Xm46yHT?usp=sharing).
-
-В папке checkpoints будет два архива: BFM_Fitting.zip и hub.zip - их нужно распаковать. 
-
-При первом запуске модуля синтеза видео скачаются файлы для gfpgan.
+Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
 
 Запустить:
 ```
@@ -103,64 +72,52 @@ briefcase package
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
-[Ubuntu / Debian](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/linux/voiceai_1.0.0-1~ubuntu-jammy_amd64.deb)
+[Ubuntu / Debian](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
 sudo apt install ffmpeg
 
 // Установка приложения
-sudo dpkg -i voiceai.deb
+sudo dpkg -i wunjo_{vesrion}.deb
 
-// При первом запуске скачаются модели нейронной сети
-
-// Для создания видео не под sudo
-sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/gfpgan/weights
-sudo chmod -R a+rwx /usr/lib/voiceai/app/talker/checkpoints
+// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
 
 // Удаление приложения
-sudo dpkg -r voiceai
+sudo dpkg -r wunjo
 
 // Удаление кеша
-rm -rf ~/.voiceai
+rm -rf ~/.wunjo
 ```
 
-[MacOS](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/macos/voiceai-macos-1.1.0.zip)
+[MacOS](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_1.2.0.app)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
 brew install ffmpeg 
 
-// Распаковать архив voiceai-macos-version.zip
+// Установщик
+wunjo-{vesrion}.app
 
-// Для появления программы в launcher, перенести Voice AI.app в Программы
-
-// При первом запуске скачаются модели нейронной сети
-
-// Удаление приложения
-Удалить Voice AI.app
+// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
 
 // Удаление кеша
-rm -rf ~/.voiceai
+rm -rf ~/.wunjo
 ```
 
-[Windows](https://invest.wladradchenko.ru/static/voiceai.wladradchenko.ru/download/windows/voiceai-windows-1.1.0.zip)
+[Windows](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo-1.2.0.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
 Установить ffmpeg и прописать путь в Path к ffmpeg/bin
 
-// Установка приложения
-Распаковать архив voiceai-windows-version.zip
+// Установщик
+wunjo-{vesrion}.msi
 
-// При первом запуске приложения скачаются модели нейронной сети
-Приложение voiceai\Voice AI.exe
-
-// Удаление приложения
-Удалить папку voiceai
+// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
 
 // Удаление кеша
-Удалить папку .voiceai в Users\YOUR_USER\.voiceai
+%USERPROFILE%/.wunjo
 ```
 
 <!-- EXAMPLE -->
@@ -181,11 +138,9 @@ rm -rf ~/.voiceai
 </table>
 </div>
 
-<!-- EXAMPLE -->
 
 <!-- UPDATE -->
-
-Чеклист обновления 1.2.0
+Обновление 1.2.0
 
 - [x] Уменьшить размер приложения
 - [x] Добавить функцию скачивания моделей на выбор
@@ -194,9 +149,7 @@ rm -rf ~/.voiceai
 - [x] Добавить контроль поворота головы по оси Z (продвинутые опции для создания анимации)
 - [x] Добавить улучшения качества фона (продвинутые опции для создания анимации)
 - [x] Добавить контроль мимики говорения (продвинутые опции для создания анимации)
-- [ ] Фикс бага с иконкой приложения
-- [ ] Сделать билды
-<!-- UPDATE -->
+- [x] Сделать билды
 
 <!-- VIDEO -->
 ## Видео
@@ -213,6 +166,11 @@ rm -rf ~/.voiceai
 Проект: [https://github.com/wladradchenko/voiceai.wladradchenko.ru](https://github.com/wladradchenko/voiceai.wladradchenko.ru)
 
 Сайт приложения: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
+
+<!-- PREMISE -->
+## Предпосылки
+
+Wunjo (Ву́ньо) происходит из древнего рунического алфавита и представляет радость и удовлетворение, что может быть связано с идеей использования приложения для создания увлекательной и выразительной речи. Вуньо (ᚹ) — восьмая руна старшего и англосаксонского футарка. До введения буквы W в латинский алфавит вместо неё в английском языке использовалась буква Ƿynn (Ƿƿ), происходящая от этой руны.
 
 <!-- CREDITS -->
 ## Зависимости
