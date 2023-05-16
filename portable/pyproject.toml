@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.2.0"
+version = "1.3.0"
 url = "https://ru.wladradchenko/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
@@ -17,7 +17,8 @@ icon = "src/wunjo/static/speech/icon/gray"
 sources = [
     "src/wunjo",
     "src/backend",
-    "src/talker",
+    "src/deepfake",
+    "src/speech"
 ]
 test_sources = [
 ]

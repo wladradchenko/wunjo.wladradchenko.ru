@@ -5,13 +5,19 @@
 
 {% block head %}
 	<script type="text/javascript" src="{{ url_for('static', filename='speech/js/speech-synthesis.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='speech/js/talker-synthesis.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-synthesis.js') }}"></script>
 {% endblock %}
 
 {% block menubar %}
 <div class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
     <a id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
+    <a id="a-extensions" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i style="padding-left: 2pt;" class="fa-solid fa-puzzle-piece"></i></a>
+    <!--EXTENSIONS-->
+    {% for html_content in extensions_html %}
+        {{ html_content | safe }}
+    {% endfor %}
+    <!--EXTENSIONS-->
 </div>
 {% endblock %}
 
@@ -94,13 +100,13 @@
     </div>
     <div class="synthesized_field">
         <div class="buttons" style="margin-bottom: 20pt;">
-            <button title="Показать результаты синтеза голоса" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_talker_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
-            <button title="Показать результаты синтеза анимации" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_talker_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
-            <button title="Синтезировать анимацию" id="button-run-talker-synthesis" onclick="talkerGeneralPop(event.target);">Анимировать</button>
+            <button title="Показать результаты синтеза голоса" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
+            <button title="Показать результаты синтеза анимации" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
+            <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимировать</button>
         </div>
-        <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;">
+        <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;">
             <div id="synthesized_result_table" style="overflow-x: auto;">
-                <table id="table_result" style="width: 280pt;table-layout: fixed;display: inline-table;">
+                <table id="table_speech_result" style="width: 280pt;table-layout: fixed;display: inline-table;">
                     <thead>
                     <tr>
                         <th style="width: 33%;" class="model_audio">Аудио</th>
@@ -108,21 +114,21 @@
                         <th style="width: 20%;" class="model_name">Голос</th>
                     </tr>
                     </thead>
-                    <tbody id="table_body_result">
+                    <tbody id="table_body_speech_result">
                     </tbody>
                 </table>
-                <table id="table_talker_result" style="width: 280pt;table-layout: fixed;display: none;">
+                <table id="table_deepfake_result" style="width: 280pt;table-layout: fixed;display: none;">
                     <thead>
                     <tr>
                         <th style="width: 33%;" class="model_animation">Видео</th>
                         <th style="width: 33%;" class="model_date">Дата</th>
                     </tr>
                     </thead>
-                    <tbody id="table_body_talker_result">
+                    <tbody id="table_body_deepfake_result">
                     </tbody>
                 </table>
             </div>
-            <div id="status-message" style="margin: 5pt;">Подождите... Происходит обработка</div>
+            <div id="status-message" style="margin: 5pt;text-align: center;"></div>
         </div>
         <div class="buttons">
             <button title="Выбрать все флаги для озвучивания" id="button-enable-all">Выбрать все</button>
@@ -131,24 +137,6 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='speech/js/index.js') }}" defer></script>
-
-    <script>
-    const link = document.getElementById('a-link-open-folder');
-    link.addEventListener('click', (event) => {
-      event.preventDefault(); // prevent the link from following its href attribute
-      fetch('/open_folder', { method: 'POST' })
-        .then(response => {
-          if (response.ok) {
-            // handle the successful response from the server
-          } else {
-            throw new Error('Network response was not ok.');
-          }
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
-    });
-</script>
+    <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
 
 {% endblock %}

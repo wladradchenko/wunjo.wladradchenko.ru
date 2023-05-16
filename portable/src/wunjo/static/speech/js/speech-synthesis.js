@@ -1,6 +1,6 @@
 function sendTextToSpeech() {
     var voiceCardContainers = document.querySelectorAll('.voice-card-container');
-    var synthesisTable = document.getElementById("table_body_result");
+    var synthesisTable = document.getElementById("table_body_speech_result");
     var allCardSend = [];
 
     for (var i = 0; i < voiceCardContainers.length; i++) {
@@ -43,9 +43,9 @@ function sendTextToSpeech() {
 
     if (allCardSend.length > 0) {
         synthesisTable.innerHTML = "";
+        statusMessage.innerText = "Подождите... Происходит обработка";
 
-        statusMessage.style.display = 'inline';
-        fetch("/synthesize/", {
+        fetch("/synthesize_speech/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -53,12 +53,10 @@ function sendTextToSpeech() {
             body: JSON.stringify(allCardSend)
         })
     } else {
-        statusMessage.style.display = 'inline';
         statusMessage.innerText = "Выберите голос или включите флаг!";
 
         setTimeout(() => {
-            statusMessage.style.display = 'none';
-            statusMessage.innerText = "Подождите... Происходит обработка";
+            statusMessage.innerText = "";
         }, 2000);
     }
 };
@@ -70,9 +68,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
 
     function pollSynthesizedResults() {
-        var synthesisTable = document.getElementById("table_body_result");
+        var synthesisTable = document.getElementById("table_body_speech_result");
 
-        fetch("/synthesize_result/")
+        fetch("/synthesize_speech_result/")
             .then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
@@ -108,7 +106,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                             <a style="margin-left: 5pt;margin-right: 5pt;" href="${model_ans.response_audio_url}" download="audio.wav">
                                 <button class="download" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-download"></i></button>
                             </a>
-                            <button id="${videoId}" onclick="talkerGeneralPop(event.target, '${model_ans.response_audio_url}', '${model_ans.recognition_text}');" class="synthesis-video" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-solid fa-film"></i></button>
+                            <button id="${videoId}" onclick="deepfakeGeneralPop(event.target, '${model_ans.response_audio_url}', '${model_ans.recognition_text}');" class="synthesis-video" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-solid fa-film"></i></button>
                           </div>
                           <audio id="${audioId}" style="display:none;" controls preload="none">
                             <source src="${model_ans.response_audio_url}" type="audio/wav">
@@ -156,11 +154,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 console.log(err);
             });
     };
-    // function for talker
-    function pollSynthesizedTalkerResults() {
-        var synthesisTalkerTable = document.getElementById("table_body_talker_result");
+    // function for deepfake
+    function pollSynthesizedDeepfakeResults() {
+        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
 
-        fetch("/synthesize_talker_result/")
+        fetch("/synthesize_deepfake_result/")
             .then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
@@ -170,7 +168,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 results = response["response"];
 
                 // Get the number of existing rows in the table
-                const numExistingRows = synthesisTalkerTable.getElementsByTagName("tr").length;
+                const numExistingRows = synthesisDeepfakeTable.getElementsByTagName("tr").length;
                 // Calculate the number of new rows
                 numNewRows = results.length - numExistingRows;
 
@@ -184,7 +182,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                     const pauseBtnId = `video-pause-${index + numExistingRows}`;
                     const downloadBtnId = `video-download-${index + numExistingRows}`;
 
-                    synthesisTalkerTable.insertAdjacentHTML(
+                    synthesisDeepfakeTable.insertAdjacentHTML(
                       "beforeend",
                       `
                       <tr style="height: 40pt;">
@@ -203,8 +201,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
                     const playBtn = document.getElementById(playBtnId);
                     playBtn.addEventListener("click", function() {
-                        var introVideoTalker = introJs();
-                        introVideoTalker.setOptions({
+                        var introVideoDeepfake = introJs();
+                        introVideoDeepfake.setOptions({
                             steps: [
                                 {
                                     element: playBtn,
@@ -223,7 +221,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                               prevLabel: 'Вернуться',
                               doneLabel: 'Закрыть'
                         });
-                        introVideoTalker.start();
+                        introVideoDeepfake.start();
                     });
                   });
                 } else if (!results || numNewRows < 1) {
@@ -259,19 +257,19 @@ window.addEventListener("DOMContentLoaded", (event) => {
           if (data.status_code === 200) {
             if (!intervalSynthesizedResultsId) {
                 setTimeout(pollSynthesizedResults, 5000);
-                setTimeout(pollSynthesizedTalkerResults, 5000);
+                setTimeout(pollSynthesizedDeepfakeResults, 5000);
                 intervalSynthesizedResultsId = undefined;
             }
             // If status_code is 200, hide the #status-message element
-            statusMessage.style.display = 'none';
+            statusMessage.innerText = data.message;
             setTimeout(checkStatus, 5000);  // 5 seconds
             buttonRunSynthesis.disabled = false;
           } else {
             setTimeout(pollSynthesizedResults, 5000);
-            setTimeout(pollSynthesizedTalkerResults, 5000);
+            setTimeout(pollSynthesizedDeepfakeResults, 5000);
             intervalSynthesizedResultsId = data.status_code;
             // If status_code is not 200, wait for the next interval to check again
-            statusMessage.style.display = 'inline';
+            statusMessage.innerText = data.message;
             setTimeout(checkStatus, 5000);  // 5 seconds
             buttonRunSynthesis.disabled = true;
           }

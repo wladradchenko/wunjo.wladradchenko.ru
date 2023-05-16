@@ -8,7 +8,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru">
+  <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
     <img src="example/man.gif" alt="Logo" width="180" height="180">
   </a>
 
@@ -19,9 +19,9 @@
     <br/>
     <br/>
     <br/>
-    <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru/issues">Сообщить об ошибке</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Сообщить об ошибке</a>
     ·
-    <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru/issues">Запросить функцию</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Запросить функцию</a>
   </p>
 </div>
 
@@ -74,6 +74,11 @@ briefcase package
 ```
 
 Подробнее в документации [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+
+<!-- EXAMPLE -->
+## Расширения
+
+Функционал программы может дополняться пользовательскими расширениями. Пример расширения и формат по [ссылке](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru)
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
@@ -157,6 +162,10 @@ wunjo_{vesrion}.msi
 - [x] Добавить контроль мимики говорения (продвинутые опции для создания анимации)
 - [x] Сделать билды
 
+Обновление 1.3.0
+
+- [x] Добавлена поддержка расширений (любой разработчик может создавать расширения без открытия основного кода)
+
 <!-- VIDEO -->
 ## Видео
 
@@ -169,9 +178,9 @@ wunjo_{vesrion}.msi
 
 Почта: [i@wladradchenko.ru](i@wladradchenko.ru)
 
-Проект: [https://github.com/wladradchenko/voiceai.wladradchenko.ru](https://github.com/wladradchenko/voiceai.wladradchenko.ru)
+Проект: [https://github.com/wladradchenko/wunjo.wladradchenko.ru](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 
-Сайт приложения: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
+Сайт приложения: [wladradchenko.ru/wunjo](https://wladradchenko.ru/wunjo)
 
 <!-- PREMISE -->
 ## Предпосылки

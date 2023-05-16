@@ -1,28 +1,29 @@
 import os
 import sys
+import torch
 import requests
 import subprocess
 from time import gmtime, strftime
 from base64 import b64encode
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, send_from_directory, url_for, redirect
+from flask import Flask, render_template, request, send_from_directory, url_for, abort
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from talker.inference import main_talker
-from backend.file_handler import FileHandler
-from backend.models import load_voice_models, voice_names, file_voice_config
-from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, TALKER_FOLDER, TMP_FOLDER
+from speech.file_handler import FileHandler
+from speech.models import load_voice_models, voice_names, file_voice_config
+from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER
+from backend.download import download_model, unzip, check_download_size, get_download_filename
 
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
-app.config['SYSNTHESIZE_STATUS'] = 200
-app.config['SYSNTHESIZE_RESULT'] = []
-app.config['SYSNTHESIZE_TALKER_RESULT'] = []
+app.config['DEBUG'] = True
+app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
+app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
+app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
 
 app.config['models'], app.config['_valid_model_types'] = {}, []
 # get list of all directories in folder
@@ -30,7 +31,14 @@ app.config['models'], app.config['_valid_model_types'] = {}, []
 def get_avatars_static():
     return {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
 
-def split_input_talker(input_param):
+
+def current_time(format: str = None):
+    if format:
+        return strftime(format, gmtime())
+    return strftime("%Y%m%d%H%M%S", gmtime())
+
+
+def split_input_deepfake(input_param):
     if input_param is not None:
         input_param = input_param.split(",")
         params = []
@@ -52,11 +60,19 @@ def split_input_talker(input_param):
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
-    return render_template("index.html", existing_models=get_avatars_static())
+    return render_template("index.html", existing_models=get_avatars_static(), extensions_html=extensions_html)
 
-@app.route('/upload_tmp_talker', methods=['POST'])
+
+@app.route('/current_processor', methods=["GET"])
 @cross_origin()
-def upload_file_talker():
+def current_processor():
+    if torch.cuda.is_available():
+        return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": True}
+    return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
+
+@app.route('/upload_tmp_deepfake', methods=['POST'])
+@cross_origin()
+def upload_file_deepfake():
     if not os.path.exists(TMP_FOLDER):
         os.makedirs(TMP_FOLDER)
 
@@ -105,23 +121,24 @@ def get_voice_list():
             voice_models_status[voice_name]["waveglow"] = True
     return voice_models_status
 
-@app.route("/synthesize_talker_result/", methods=["GET"])
+
+@app.route("/synthesize_deepfake_result/", methods=["GET"])
 @cross_origin()
-def get_synthesize_talker_result():
-    general_results = app.config['SYSNTHESIZE_TALKER_RESULT']
+def get_synthesize_deepfake_result():
+    general_results = app.config['SYSNTHESIZE_DEEPFAKE_RESULT']
     return {
         "response_code": 0,
         "response": general_results
     }
 
-@app.route("/synthesize_talker/", methods=["POST"])
+@app.route("/synthesize_deepfake/", methods=["POST"])
 @cross_origin()
-def synthesize_talker():
+def synthesize_deepfake():
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = 300
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит обработка"}
 
-    if not os.path.exists(TALKER_FOLDER):
-        os.makedirs(TALKER_FOLDER)
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
 
     face_fields = request_list.get("face_fields")
 
@@ -132,14 +149,21 @@ def synthesize_talker():
     still = request_list.get("still")
     enhancer = request_list.get("enhancer")
     expression_scale = float(request_list.get("expression_scale", 1.0))
-    input_yaw = split_input_talker(request_list.get("input_yaw"))
-    input_pitch = split_input_talker(request_list.get("input_pitch"))
-    input_roll = split_input_talker(request_list.get("input_roll"))
+    input_yaw = split_input_deepfake(request_list.get("input_yaw"))
+    input_pitch = split_input_deepfake(request_list.get("input_pitch"))
+    input_roll = split_input_deepfake(request_list.get("input_roll"))
     background_enhancer = request_list.get("background_enhancer")
 
     try:
-        talker_result = main_talker(
-            talker_dir=TALKER_FOLDER,
+        root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sys.path.insert(0, root_path)
+
+        from deepfake.inference import main_deepfake
+
+        sys.path.pop(0)
+
+        deepfake_result = main_deepfake(
+            deepfake_dir=DEEPFAKE_FOLDER,
             source_image=source_image,
             driven_audio=driven_audio,
             still=still,
@@ -152,47 +176,42 @@ def synthesize_talker():
             input_roll=input_roll,
             background_enhancer=background_enhancer
             )
-    #except BaseException:
+
+        torch.cuda.empty_cache()
     except Exception as e:
         print(e)
-        app.config['SYSNTHESIZE_TALKER_RESULT'] += [{"response_video_url": "", "response_video_date": "Лицо не найдено"}]
-        app.config['SYSNTHESIZE_STATUS'] = 200
+        app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": "Лицо не найдено"}]
+        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
         return {"status": 400}
 
 
-    talker_filename = "/video/" + talker_result.replace("\\", "/").split("/video/")[-1]
-    talker_url = url_for("media_file", filename=talker_filename)
-    talker_date = strftime("%H:%M:%S", gmtime())
+    deepfake_filename = "/video/" + deepfake_result.replace("\\", "/").split("/video/")[-1]
+    deepfake_url = url_for("media_file", filename=deepfake_filename)
+    deepfake_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYSNTHESIZE_TALKER_RESULT'] += [{"response_video_url": talker_url, "response_video_date": talker_date}]
+    app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": deepfake_url, "response_video_date": deepfake_date}]
 
-    app.config['SYSNTHESIZE_STATUS'] = 200
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 
     return {"status": 200}
 
-@app.route("/synthesize_result/", methods=["GET"])
+@app.route("/synthesize_speech_result/", methods=["GET"])
 @cross_origin()
 def get_synthesize_result():
-    general_results = app.config['SYSNTHESIZE_RESULT']
+    general_results = app.config['SYSNTHESIZE_SPEECH_RESULT']
     return {
         "response_code": 0,
         "response": general_results
     }
 
-@app.route("/synthesize_process/", methods=["GET"])
-@cross_origin()
-def get_synthesize_status():
-    status = app.config['SYSNTHESIZE_STATUS']
-    return {"status_code": status}
-
-@app.route("/synthesize/", methods=["POST"])
+@app.route("/synthesize_speech/", methods=["POST"])
 @cross_origin()
 def synthesize():
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = 300
-    app.config['SYSNTHESIZE_RESULT'] = []
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит обработка"}
+    app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 
-    dir_time = strftime("%Y%m%d%H%M%S", gmtime())
+    dir_time = current_time()
 
     for request_json in request_list:
         text = request_json["text"]
@@ -220,99 +239,139 @@ def synthesize():
                     result["response_code"] = response_code
                     result["recognition_text"] = text
 
-                    app.config['SYSNTHESIZE_RESULT'] += results
+                    app.config['SYSNTHESIZE_SPEECH_RESULT'] += results
 
-    app.config['SYSNTHESIZE_STATUS'] = 200
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 
     return {"status": 200}
 
 
+@app.route("/synthesize_process/", methods=["GET"])
+@cross_origin()
+def get_synthesize_status():
+    status = app.config['SYSNTHESIZE_STATUS']
+    return status
+
+
+"""EXTENSIONS"""
+EXTENSIONS_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json"
+
+@app.route('/list_extensions/', methods=["GET"])
+@cross_origin()
+def list_extensions():
+    try:
+        response = requests.get(EXTENSIONS_JSON_URL)
+        return response.json()
+    except:
+        return {}
+
+@app.route('/get_extensions/', methods=["POST"])
+@cross_origin()
+def get_extensions():
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит скачивание доп. пакетов"}
+
+    request_list = request.get_json()  # get key
+    extension_name = request_list.get("extension_name", None)
+    extension_url = request_list.get("extension_url", '')
+    if len(extension_url) > 0:
+        if extension_name:
+            path_extension = os.path.join(EXTENSIONS_FOLDER, extension_name)
+        else:
+            extension_name = get_download_filename(extension_url)
+            if extension_name:
+                path_extension = os.path.join(EXTENSIONS_FOLDER, extension_name)
+
+        if extension_name is None:
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Не является файлом"}
+            return {"status_code": 404}
+
+        support_format = [".zip", ".tar", ".rar", ".7z"]
+        for s in support_format:
+            if s in extension_url:
+                extension_name = extension_name.rsplit(".", 1)[0]
+                break
+        else:
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Не является поддерживаемым форматом zip, tar, rar или 7z"}
+            return {"status_code": 404}
+
+        try:
+            if not os.path.exists(path_extension):
+                if ".zip" in extension_url:
+                    download_model(f"{path_extension}.zip", extension_url)
+                    unzip(f"{path_extension}.zip", EXTENSIONS_FOLDER, extension_name)
+                else:
+                    download_model(path_extension, extension_url)
+            else:
+                if ".zip" in extension_url:
+                    check_download_size(f"{path_extension}.zip", extension_url)
+                    if not os.listdir(path_extension):
+                        unzip(f"{path_extension}.zip", EXTENSIONS_FOLDER, extension_name)
+                else:
+                    check_download_size(path_extension, extension_url)
+
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Доп. пакеты скачаны. Перезагрузите приложение"}
+        except:
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Проблемы с соединением"}
+    else:
+        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Ссылка пустая"}
+
+    return {"status_code": 200}
+
+
+from importlib.util import spec_from_file_location, module_from_spec
+
+
+extensions_html = []
+
+for entry in os.listdir(EXTENSIONS_FOLDER):
+    entry_path = os.path.join(EXTENSIONS_FOLDER, entry)
+    if os.path.isdir(entry_path):
+        # Get the list of files in the extensions folder
+        extension_files = [
+            filename
+            for filename in os.listdir(entry_path)
+            if filename.endswith(".py") and filename != "__init__.py"
+        ]
+
+        # Iterate over the extension files and load them as modules
+        for filename in extension_files:
+            module_name = os.path.splitext(filename)[0]
+            module_path = os.path.join(entry_path, filename)
+
+            # Create a module object
+            spec = spec_from_file_location(module_name, module_path)
+            module = module_from_spec(spec)
+
+            # Load the module
+            spec.loader.exec_module(module)
+
+            # Execute the module's code
+            if hasattr(module, "run"):
+                # Read the HTML content from the file
+                with open(os.path.join(entry_path, 'templates', 'index.html'), 'r') as file:
+                    html_content = file.read()
+
+                # Append the HTML content to the extensions_html list
+                extensions_html.append(html_content)
+
+                module.run(MEDIA_FOLDER, entry_path, app)  # Pass the variables as arguments
+
+
+# Route for accessing static files from the extensions folder
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'js', 'css', 'mp3', 'wav', 'mp4', 'yaml', 'json'}
+@app.route('/extensions/static/<path:filename>')
+def serve_extensions_static(filename):
+    if '.' in filename:
+        extension = filename.rsplit('.', 1)[1].lower()
+        if extension in ALLOWED_EXTENSIONS:
+            return send_from_directory(EXTENSIONS_FOLDER, filename)
+    abort(404)
+
+"""EXTENSIONS"""
+
+
 class InvalidVoice(Exception):
     pass
-
-@app.route("/get_user_dict/", methods=["POST"])
-@cross_origin()
-def get_user_dict():
-    request_json = request.get_json()
-
-    model_type = request_json.get("voice")
-
-    response_code = 1
-    try:
-        if model_type not in app.config['_valid_model_types']:
-            raise InvalidVoice("Parameter 'voice' must be one of the following: {}".format(app.config['_valid_model_types']))
-
-        model = app.config['models'][model_type]
-        result = model.get_user_dict()
-
-        response_code = 0
-    except InvalidVoice as e:
-        result = str(e)
-    except Exception as e:
-        result = str(e)
-
-    return {
-        "response_code": response_code,
-        "response": result
-    }
-
-
-@app.route("/update_user_dict/", methods=["POST"])
-@cross_origin()
-def update_user_dict():
-    request_json = request.get_json()
-
-    model_type = request_json.get("voice")
-    user_dict = request_json.get("user_dict")
-
-    response_code = 1
-    try:
-        if model_type not in app.config['_valid_model_types']:
-            raise InvalidVoice("Parameter 'voice' must be one of the following: {}".format(app.config['_valid_model_types']))
-
-        model = app.config['models'][model_type]
-        model.update_user_dict(user_dict)
-
-        result = "User dictionary has been updated"
-        response_code = 0
-    except InvalidVoice as e:
-        result = str(e)
-    except Exception as e:
-        result = str(e)
-
-    return {
-        "response_code": response_code,
-        "response": result
-    }
-
-
-@app.route("/replace_user_dict/", methods=["POST"])
-@cross_origin()
-def replace_user_dict():
-    request_json = request.get_json()
-
-    model_type = request_json.get("voice")
-    user_dict = request_json.get("user_dict")
-
-    response_code = 1
-    try:
-        if model_type not in app.config['_valid_model_types']:
-            raise InvalidVoice("Parameter 'voice' must be one of the following: {}".format(app.config['_valid_model_types']))
-
-        model = app.config['models'][model_type]
-        model.replace_user_dict(user_dict)
-
-        result = "User dictionary has been replaced"
-        response_code = 0
-    except InvalidVoice as e:
-        result = str(e)
-    except Exception as e:
-        result = str(e)
-
-    return {
-        "response_code": response_code,
-        "response": result
-    }
 
 
 @app.route("/media/<path:filename>", methods=["GET"])
@@ -322,5 +381,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run()

@@ -8,20 +8,20 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru">
+  <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
     <img src="example/robot.gif" alt="Logo" width="180" height="180">
   </a>
 
-  <h3 align="center">Voice AI</h3>
+  <h3 align="center">Wunjo AI</h3>
 
   <p align="center">
     Project documentation
     <br/>
     <br/>
     <br/>
-    <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru/issues">Issue</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Issue</a>
     ·
-    <a href="https://github.com/wladradchenko/voiceai.wladradchenko.ru/issues">Features</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Features</a>
   </p>
 </div>
 
@@ -74,6 +74,11 @@ briefcase package
 ```
 
 Read more in the documentation [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+
+<!-- EXAMPLE -->
+## Extensions
+
+The functionality of the program can be supplemented by custom extensions. Extension example and format at [link](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru/README_en.md)
 
 <!-- DOWNLOAD -->
 ## Install packets
@@ -146,6 +151,22 @@ wunjo_{vesrion}.msi
 
 <!-- EXAMPLE -->
 
+<!-- UPDATE -->
+Update 1.2.0
+
+- [x] Reduce application size
+- [x] Add download feature for models to choose from
+- [x] Add y-axis head rotation control (advanced options for creating animations)
+- [x] Add head rotation control on x axis (advanced options for creating animation)
+- [x] Add head rotation control in Z axis (advanced options for creating animation)
+- [x] Add background quality improvements (advanced options for creating animations)
+- [x] Add speaking facial expression control (advanced options for creating animations)
+- [x] Make builds
+
+Update 1.3.0
+
+- [x] Added support for extensions (any developer can create extensions without opening the main code)
+
 <!-- VIDEO -->
 ## Video
 
@@ -158,9 +179,9 @@ Owner: [Wladislav Radchenko](https://github.com/wladradchenko/)
 
 Email: [i@wladradchenko.ru](i@wladradchenko.ru)
 
-Project: [https://github.com/wladradchenko/voiceai.wladradchenko.ru](https://github.com/wladradchenko/voiceai.wladradchenko.ru)
+Project: [https://github.com/wladradchenko/wunjo.wladradchenko.ru](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 
-Web site: [wladradchenko.ru/voice](https://wladradchenko.ru/voice)
+Web site: [wladradchenko.ru/wunjo](https://wladradchenko.ru/wunjo)
 
 <!-- PREMISE -->
 ## Premise
