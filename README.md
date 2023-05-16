@@ -196,9 +196,9 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
 * Sad Talker - https://github.com/OpenTalker/SadTalker
-* Face Utils: https://github.com/xinntao/facexlib
-* Face Enhancement: https://github.com/TencentARC/GFPGAN
-* Image/Video Enhancement:https://github.com/xinntao/Real-ESRGAN
+* Face Utils - https://github.com/xinntao/facexlib
+* Face Enhancement - https://github.com/TencentARC/GFPGAN
+* Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
 
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>
