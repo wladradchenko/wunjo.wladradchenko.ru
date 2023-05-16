@@ -2,4 +2,5 @@ venv/
 .idea/
 __pycache__/
 icons/
+dataset/
 gitkey
