@@ -239,6 +239,16 @@ window.addEventListener("DOMContentLoaded", (event) => {
             });
     };
 
+    const buttonTurnOnSpeechSynthesisWindows = document.getElementById("button-show-animation-window");
+    if (buttonTurnOnSpeechSynthesisWindows) {
+      buttonTurnOnSpeechSynthesisWindows.addEventListener('click', pollSynthesizedResults);
+    }
+
+    const buttonTurnOnAnimationSynthesisWindows = document.getElementById("button-show-voice-window");
+    if (buttonTurnOnAnimationSynthesisWindows) {
+      buttonTurnOnAnimationSynthesisWindows.addEventListener('click', pollSynthesizedDeepfakeResults);
+    }
+
     var intervalSynthesizedResultsId;
 
     // Get a reference to the #status-message element

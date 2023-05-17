@@ -57,10 +57,10 @@ def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
             bg_upsampler = None
         else:
             from basicsr.archs.rrdbnet_arch import RRDBNet
-            from realesrgan import RealESRGANer  # :TODO add in private version the RealESRGANer
+            from realesrgan import RealESRGANer
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
             os.path.join(DEEPFAKE_MODEL_FOLDER, './gfpgan/weights')
-            model_realesrgan_path = os.path.join(local_model_path, model_name + '.pth')
+            model_realesrgan_path = os.path.join(local_model_path, "RealESRGAN_x2plus.pth" + '.pth')
             url_realesrgan = config_deepfake["gfpgan"]["RealESRGAN_x2plus.pth"]
 
             if not os.path.isfile(model_realesrgan_path):

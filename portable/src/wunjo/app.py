@@ -11,6 +11,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
+from deepfake.inference import main_deepfake
 from speech.file_handler import FileHandler
 from speech.models import load_voice_models, voice_names, file_voice_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER
@@ -155,13 +156,6 @@ def synthesize_deepfake():
     background_enhancer = request_list.get("background_enhancer")
 
     try:
-        root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.insert(0, root_path)
-
-        from deepfake.inference import main_deepfake
-
-        sys.path.pop(0)
-
         deepfake_result = main_deepfake(
             deepfake_dir=DEEPFAKE_FOLDER,
             source_image=source_image,
