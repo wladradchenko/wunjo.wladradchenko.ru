@@ -82,7 +82,8 @@ briefcase package
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
-[Ubuntu / Debian](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
+[Ubuntu / Debian Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
+[Ubuntu / Debian Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -100,7 +101,8 @@ sudo dpkg -r wunjo
 rm -rf ~/.wunjo
 ```
 
-[MacOS](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
+[MacOS Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
+[MacOS Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -115,7 +117,8 @@ unzip wunjo_macos_{vesrion}.zip
 rm -rf ~/.wunjo
 ```
 
-[Windows](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
+[Windows Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
+[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.1.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
