@@ -82,7 +82,9 @@ briefcase package
 
 <!-- DOWNLOAD -->
 ## Готовые сборки
+
 [Ubuntu / Debian Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
+
 [Ubuntu / Debian Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
 
 ```
@@ -102,6 +104,7 @@ rm -rf ~/.wunjo
 ```
 
 [MacOS Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
+
 [MacOS Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
 
 ```
@@ -118,6 +121,7 @@ rm -rf ~/.wunjo
 ```
 
 [Windows Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
+
 [Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.1.msi)
 
 ```
