@@ -80,6 +80,8 @@ briefcase package
 
 Функционал программы может дополняться пользовательскими расширениями. Пример расширения и формат по [ссылке](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru)
 
+Доступный список расширений по [ссылке](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json). 
+
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
