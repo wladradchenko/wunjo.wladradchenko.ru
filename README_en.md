@@ -29,9 +29,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Application for speech synthesis from text and speech recognition to text. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
+Application for speech synthesis from text, speech recognition to text and create deepfake animation. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
 
-All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis and voice-to-text recognition. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
+All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis, voice-to-text recognition and create deepfake animation. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
 
 <!-- FEATURES -->
 ## Setup
