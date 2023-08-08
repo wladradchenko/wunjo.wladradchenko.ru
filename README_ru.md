@@ -122,9 +122,7 @@ unzip wunjo_macos_{vesrion}.zip
 rm -rf ~/.wunjo
 ```
 
-[Windows Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
-
-[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.1.msi)
+[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
@@ -135,6 +133,10 @@ wunjo_{vesrion}.msi
 
 // Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время. 
 // Если у вас стоит файрвол, он может заблокировать автоматическое скачивание моделей, вы их можете скачать самостоятельно из репозитория. 
+
+// Важно! Как настроить deepfake для Windows. Необходимо дать права на чтение моделей нейронной сети в папке gfpgan, после того, как модели будут установлены! Без этой настройки, результат генерации deepfake будет "Лицо не найдено".
+
+icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,W)
 
 // Удаление кеша
 %USERPROFILE%/.wunjo
@@ -171,10 +173,11 @@ wunjo_{vesrion}.msi
 - [x] Добавить контроль мимики говорения (продвинутые опции для создания анимации)
 - [x] Сделать билды
 
-Обновление 1.3.0
+Обновление 1.3.2
 
 - [x] Добавлена поддержка расширений (любой разработчик может создавать расширения без открытия основного кода)
 - [x] Сделать билды
+- [x] Исправлены ошибки с deepfake в Windows
 
 <!-- VIDEO -->
 ## Видео
