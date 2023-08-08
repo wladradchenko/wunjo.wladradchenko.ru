@@ -53,6 +53,11 @@ pip install -r requirements.txt
 
 Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
+Go to portable folder
+```
+cd portable
+```
+
 Run:
 ```
 briefcase dev
