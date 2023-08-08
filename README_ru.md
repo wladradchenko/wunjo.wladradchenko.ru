@@ -78,7 +78,7 @@ briefcase package
 <!-- EXAMPLE -->
 ## Расширения
 
-Функционал программы может дополняться пользовательскими расширениями. Пример расширения и формат по [ссылке](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru)
+Функционал программы может дополняться пользовательскими расширениями. Пример расширения и формат по [ссылке](https://github.com/wladradchenko/advanced.wunjo.wladradchenko.ru/blob/main/README_ru.md)
 
 Доступный список расширений по [ссылке](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json). 
 
