@@ -78,7 +78,7 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 <!-- EXAMPLE -->
 ## Extensions
 
-The functionality of the program can be supplemented by custom extensions. Extension example and format at [link](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru/README_en.md)
+The functionality of the program can be supplemented by custom extensions. Extension example and format at [link](https://github.com/wladradchenko/advanced.wunjo.wladradchenko.ru/README.md)
 
 Available list of extensions at [link](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json).
 
