@@ -208,7 +208,7 @@ class AnimateFromCoeff():
 
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(25))
             
-            save_video_with_watermark(enhanced_path, new_audio_path, av_path_enhancer, watermark= False)
+            save_video_with_watermark(enhanced_path, new_audio_path, av_path_enhancer, video_save_dir, watermark= False)
             print(f'The generated video is named {video_save_dir}/{video_name_enhancer}')
             os.remove(enhanced_path)
 
