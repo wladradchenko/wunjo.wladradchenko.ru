@@ -122,9 +122,7 @@ unzip wunjo_macos_{vesrion}.zip
 rm -rf ~/.wunjo
 ```
 
-[Windows Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
-
-[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.1.msi)
+[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
 
 ```
 // Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
@@ -132,6 +130,10 @@ setx PATH "%PATH%;C:\path\to\ffmpeg\bin"
 
 // Install app
 wunjo_{vesrion}.msi
+
+// Important! How to set up deepfake for Windows. You need to give permission to read the neural network models in the gfpgan folder after the models are installed! Without this setting, the result of deepfake generation will be "Face not found".
+
+icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,W)
 
 // Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
@@ -171,9 +173,10 @@ Update 1.2.0
 - [x] Add speaking facial expression control (advanced options for creating animations)
 - [x] Make builds
 
-Update 1.3.0
+Update 1.3.2
 
 - [x] Added support for extensions (any developer can create extensions without opening the main code)
+- [x] Fix bugs
 
 <!-- VIDEO -->
 ## Video
