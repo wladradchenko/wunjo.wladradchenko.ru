@@ -53,6 +53,11 @@ pip install -r requirements.txt
 
 Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
 
+Необходимо перейти в директорию portable, чтобы использовать briefcase:
+```
+cd portable
+```
+
 Запустить:
 ```
 briefcase dev
