@@ -13,9 +13,9 @@ from torch.multiprocessing import Pool, Process, set_start_method
 
 class KeypointExtractor():
     def __init__(self, device):
-        # face_alignment.LandmarksType.TWO_D is 1
-        self.detector = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, 
-                                                     device=device)   
+        # face_alignment.LandmarksType.TWO_D is 1, before was face_alignment.LandmarksType.2_D
+        # i think maybe the best way will be set 1, because developer of lib renames parameters
+        self.detector = face_alignment.FaceAlignment(1, device=device)   
 
     def extract_keypoint(self, images, name=None, info=True):
         if isinstance(images, list):
