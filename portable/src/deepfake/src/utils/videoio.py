@@ -18,7 +18,9 @@ def load_video_to_cv2(input_path):
     return full_frames
 
 def save_video_with_watermark(video, audio, save_path, watermark=False):
-    temp_file = str(uuid.uuid4())+'.mp4'
+    home_folder = os.path.expanduser('~')
+    media_folder = os.path.join(home_folder, '.wunjo')
+    temp_file = os.path.join(media_folder, str(uuid.uuid4())+'.mp4')
     cmd = r'ffmpeg -y -i "%s" -i "%s" -vcodec copy "%s"' % (video, audio, temp_file)
     os.system(cmd)
     shutil.move(temp_file, save_path)

@@ -50,7 +50,9 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, full_video_path):
         oy1, oy2, ox1, ox2 = cly, cry, clx, crx
 
 
-    tmp_path = str(uuid.uuid4())+'.mp4'
+    home_folder = os.path.expanduser('~')
+    media_folder = os.path.join(home_folder, '.wunjo')
+    tmp_path = os.path.join(media_folder, str(uuid.uuid4())+'.mp4')
     out_tmp = cv2.VideoWriter(tmp_path, cv2.VideoWriter_fourcc(*'MP4V'), fps, (frame_w, frame_h))
     for crop_frame in tqdm(crop_frames, 'seamlessClone:'):
         p = cv2.resize(crop_frame.astype(np.uint8), (crx-clx, cry - cly)) 
