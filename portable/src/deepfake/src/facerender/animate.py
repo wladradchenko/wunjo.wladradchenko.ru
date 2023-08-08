@@ -185,7 +185,7 @@ class AnimateFromCoeff():
         word = word1[start_time:end_time]
         word.export(new_audio_path, format="wav")
 
-        save_video_with_watermark(path, new_audio_path, av_path, video_save_dir, watermark= False)
+        save_video_with_watermark(path, new_audio_path, av_path, watermark= False)
         print(f'The generated video is named {video_name} in {video_save_dir}')
 
         if preprocess.lower() == 'full':
@@ -208,7 +208,7 @@ class AnimateFromCoeff():
 
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(25))
             
-            save_video_with_watermark(enhanced_path, new_audio_path, av_path_enhancer, video_save_dir, watermark= False)
+            save_video_with_watermark(enhanced_path, new_audio_path, av_path_enhancer, watermark= False)
             print(f'The generated video is named {video_save_dir}/{video_name_enhancer}')
             os.remove(enhanced_path)
 
