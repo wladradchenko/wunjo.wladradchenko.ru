@@ -13,6 +13,7 @@ from torch.multiprocessing import Pool, Process, set_start_method
 
 class KeypointExtractor():
     def __init__(self, device):
+        # face_alignment.LandmarksType.TWO_D is 1
         self.detector = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, 
                                                      device=device)   
 
