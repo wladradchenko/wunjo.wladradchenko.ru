@@ -192,6 +192,9 @@ Update 1.4.0
 - [ ] Add TTS models for Chinese speech
 - [ ] Check the possibility of using speech synthesis on TTS user models
 
+New Extensions
+- [ ] Develop extension for face swaps with source in destination.
+      
 <!-- VIDEO -->
 ## Video
 
