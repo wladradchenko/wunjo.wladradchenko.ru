@@ -3,7 +3,7 @@
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 
-<p align="right">(<a href="README_en.md">RU</a>)</p>
+<p align="right">(<a href="README_ru.md">RU</a>)</p>
 <div id="top"></div>
 
 <br />
