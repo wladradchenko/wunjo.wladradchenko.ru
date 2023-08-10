@@ -3,7 +3,7 @@
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 
-<p align="right">(<a href="README_en.md">EN</a>)</p>
+<p align="right">(<a href="README.md">EN</a>)</p>
 <div id="top"></div>
 
 <br />
@@ -183,6 +183,15 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 - [x] Добавлена поддержка расширений (любой разработчик может создавать расширения без открытия основного кода)
 - [x] Сделать билды
 - [x] Исправлены ошибки с deepfake в Windows
+
+Обновление 1.4.0
+- [ ] Добавить дипфейк для работы с исходником видео, который синхронизирует движение губ под аудио
+- [ ] Добавить выбор отрезка видео для дипфейк взависимости от длины аудио дорожки
+- [ ] Добавить возможность смены директории для кеш папки .wunjo
+- [ ] Добавить перевод приложения на различные языки, через вохможности браузера
+- [ ] Добавить модели TTS для английской речи
+- [ ] Добавить модели TTS для китайском речи
+- [ ] Проверить возможность использования синтеза речи на TTS моделях пользователя
 
 <!-- VIDEO -->
 ## Видео
