@@ -193,7 +193,7 @@ Update 1.4.0
 - [ ] Check the possibility of using speech synthesis on TTS user models
 
 New Extensions
-- [ ] Develop extension for face swaps with source in destination.
+- [ ] Develop extension for face swaps from source face to destination face.
       
 <!-- VIDEO -->
 ## Video
