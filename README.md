@@ -183,6 +183,15 @@ Update 1.3.2
 - [x] Added support for extensions (any developer can create extensions without opening the main code)
 - [x] Fix bugs
 
+Update 1.4.0
+- [ ] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
+- [ ] Add selection of video segment for deepfake depending on the length of the audio track
+- [ ] Add ability to change directory for .wunjo cache folder
+- [ ] Add application translation into different languages, through browser options
+- [ ] Add TTS models for English speech
+- [ ] Add TTS models for Chinese speech
+- [ ] Check the possibility of using speech synthesis on TTS user models
+
 <!-- VIDEO -->
 ## Video
 
