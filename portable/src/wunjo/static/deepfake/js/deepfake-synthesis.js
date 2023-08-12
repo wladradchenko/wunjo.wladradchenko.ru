@@ -22,11 +22,14 @@ function sendDataToDeepfake(elem) {
             var videoDeepfakeSrc = previewDeepfakeImg.querySelector('video');
             var mediaName = "";
             var mediaBlobUrl = "";
+            var typeFile = "";
 
             if (imgDeepfakeSrc) {
+               typeFile = "img";
                mediaBlobUrl = imgDeepfakeSrc.src
                mediaName = "image_" + Date.now();
             } else if (videoDeepfakeSrc) {
+              typeFile = "video";
               mediaBlobUrl = videoDeepfakeSrc.src
               mediaName = "video_" + Date.now();
             } else {
@@ -71,7 +74,7 @@ function sendDataToDeepfake(elem) {
             if (enhancer.checked) {
                 enhancer = "gfpgan";
             } else {
-                enhancer = "RestoreFormer";
+                enhancer = "RestoreFormer";  // TODO need to set None
             }
 
             if (canvasRectanglesList.length === 0) {
@@ -104,6 +107,7 @@ function sendDataToDeepfake(elem) {
                     "input_pitch": inputPitchDeepfake.value,
                     "input_roll": inputRollDeepfake.value,
                     "background_enhancer": backgroundEnhancerDeepfake.checked,
+                    "type_file": typeFile,
                 };
 
                 synthesisDeepfakeTable.innerHTML = "";

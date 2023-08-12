@@ -11,7 +11,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import main_deepfake
+from deepfake.inference import main_img_deepfake, main_video_deepfake
 from speech.file_handler import FileHandler
 from speech.models import load_voice_models, voice_names, file_voice_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER
@@ -21,7 +21,7 @@ from backend.download import download_model, unzip, check_download_size, get_dow
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -154,21 +154,32 @@ def synthesize_deepfake():
     input_pitch = split_input_deepfake(request_list.get("input_pitch"))
     input_roll = split_input_deepfake(request_list.get("input_roll"))
     background_enhancer = request_list.get("background_enhancer")
+    type_file = request_list.get("type_file")
 
     try:
-        deepfake_result = main_deepfake(
-            deepfake_dir=DEEPFAKE_FOLDER,
-            source_image=source_image,
-            driven_audio=driven_audio,
-            still=still,
-            enhancer=enhancer,
-            preprocess=preprocess,
-            face_fields=face_fields,
-            expression_scale=expression_scale,
-            input_yaw=input_yaw,
-            input_pitch=input_pitch,
-            input_roll=input_roll,
-            background_enhancer=background_enhancer
+        if type_file == "img":
+            deepfake_result = main_img_deepfake(
+                deepfake_dir=DEEPFAKE_FOLDER,
+                source_image=source_image,
+                driven_audio=driven_audio,
+                still=still,
+                enhancer=enhancer,
+                preprocess=preprocess,
+                face_fields=face_fields,
+                expression_scale=expression_scale,
+                input_yaw=input_yaw,
+                input_pitch=input_pitch,
+                input_roll=input_roll,
+                background_enhancer=background_enhancer
+                )
+        elif type_file == "video":
+            deepfake_result = main_video_deepfake(
+                deepfake_dir=DEEPFAKE_FOLDER,
+                face=source_image,
+                audio=driven_audio,
+                face_fields=face_fields,
+                enhancer=enhancer,
+                background_enhancer=background_enhancer
             )
 
         torch.cuda.empty_cache()
@@ -375,5 +386,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run(port=5001)

@@ -1,5 +1,8 @@
 import torch
-from time import  strftime
+from tqdm import tqdm
+import numpy as np
+import imageio
+from time import strftime
 import os, sys, time
 from argparse import Namespace
 
@@ -7,11 +10,19 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 deepfake_root_path = f"{root_path}/deepfake"
 sys.path.insert(0, f"{root_path}/deepfake")
 
+"""SadTalker"""
 from src.utils.preprocess import CropAndExtract
 from src.test_audio2coeff import Audio2Coeff
 from src.facerender.animate import AnimateFromCoeff
 from src.generate_batch import get_data
 from src.generate_facerender_batch import get_facerender_data
+"""SadTalker"""
+"""Wav22Lip"""
+from src.wav2mel import MelProcessor
+from src.utils.videoio import save_video_with_audio
+from src.utils.face_enhancer import enhancer as face_enhancer
+from src.utils.video2fake import get_frames, GenerateFakeVideo2Lip
+"""Wav22Lip"""
 
 sys.path.pop(0)
 
@@ -47,7 +58,7 @@ def get_config_deepfake() -> dict:
 file_deepfake_config = get_config_deepfake()
 
 
-def main_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: bool = True, still: bool = True, face_fields: list = None,
+def main_img_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: bool = True, still: bool = True, face_fields: list = None,
                 enhancer: str = Input(description="Choose a face enhancer",choices=["gfpgan", "RestoreFormer"],default="gfpgan",),
                 preprocess: str = Input(description="how to preprocess the images", choices=["crop", "resize", "full"], default="full",),
                 expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, background_enhancer=None):
@@ -55,7 +66,7 @@ def main_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: 
     if file_deepfake_config == {}:
         raise "[Error] Config file deepfake.json is not exist"
     # torch.backends.cudnn.enabled = False
-    args = load_default()
+    args = load_img_default()
     args.checkpoint_dir = "checkpoints"
     args.source_image = source_image
     args.driven_audio = driven_audio
@@ -63,10 +74,11 @@ def main_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: 
 
     cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
     print("cpu", cpu)
-    if torch.cuda.is_available() and not cpu:  # :TODO add subscribe
+    if torch.cuda.is_available() and not cpu:
         args.device = "cuda"
     else:
         args.device = "cpu"
+    args.device = "cuda"  # TODO remove line
     args.still = still
     args.enhancer = enhancer
 
@@ -246,12 +258,10 @@ def main_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: 
 
     # coeff2video
     data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, audio_path, batch_size, input_yaw_list, input_pitch_list, input_roll_list, expression_scale=args.expression_scale, still_mode=args.still, preprocess=args.preprocess)
+    mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess)
 
-    animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess)
-
-    mp4_path = None
     for f in os.listdir(save_dir):
-        if "enhanced.mp4" in f:
+        if mp4_path == f:
             mp4_path = os.path.join(save_dir, f)
         else:
             if os.path.isfile(os.path.join(save_dir, f)):
@@ -264,7 +274,7 @@ def main_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, cpu: 
 
     return mp4_path
 
-def load_default():
+def load_img_default():
     return Namespace(
         pose_style=0,
         batch_size=2,
@@ -281,4 +291,107 @@ def load_default():
         camera_d=10.0,
         z_near=5.0,
         z_far=15.0,
+    )
+
+
+def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
+                        enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
+                        box: list = [-1, -1, -1, -1], background_enhancer: str = None):
+    args = load_video_default()
+    args.checkpoint_dir = "checkpoints"
+    args.result_dir = deepfake_dir
+    args.face = face
+    args.audio = audio
+    args.static = static  # ok, we will check what it is video, not img
+    args.box = box  # a constant bounding box for the face. Use only as a last resort if the face is not detected.
+    # Also (about box), might work only if the face is not moving around much. Syntax: (top, bottom, left, right).
+    args.face_fields = face_fields
+    args.enhancer = enhancer
+    args.background_enhancer = background_enhancer
+
+    cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    print("cpu", cpu)
+    if torch.cuda.is_available() and not cpu:
+        args.device = "cuda"
+    else:
+        args.device = "cpu"
+    args.device = "cuda"  # TODO  remove this line
+
+    args.background_enhancer = "realesrgan" if background_enhancer else None
+
+    save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+    os.makedirs(save_dir, exist_ok=True)
+
+    current_root_path = deepfake_root_path  # os.path.split(current_code_path)[0]
+    model_user_path = DEEPFAKE_MODEL_FOLDER
+
+    os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
+    checkpoint_dir_full = os.path.join(model_user_path, args.checkpoint_dir)
+    if not os.path.exists(checkpoint_dir_full):
+        os.makedirs(checkpoint_dir_full)
+
+    wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
+    if not os.path.exists(wav2lip_checkpoint):
+        link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+        download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
+    else:
+        link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+        check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
+
+    # get video frames
+    frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+    # get mel of audio
+    mel_processor = MelProcessor(args=args, save_output=save_dir, fps=fps)
+    mel_chunks = mel_processor.process()
+    # test
+    full_frames = frames[:len(mel_chunks)]
+    batch_size = args.wav2lip_batch_size
+    wav2lip = GenerateFakeVideo2Lip()
+    wav2lip.face_fields = args.face_fields
+    print("Face detected start")
+    gen = wav2lip.datagen(
+        full_frames.copy(), mel_chunks, args.box, args.static, args.img_size, args.wav2lip_batch_size,
+        args.device, args.pads, args.nosmooth
+    )
+    # load wav2lip
+    print("Create mouth move start")
+    wav2lip_processed_video = wav2lip.generate_video_from_chunks(gen, mel_chunks, batch_size, wav2lip_checkpoint, args.device, save_dir, fps)
+    if wav2lip_processed_video is None:
+        return
+    wav2lip_result_video = wav2lip_processed_video
+    # after face or background enchanter
+    if enhancer:
+        video_name_enhancer = 'wav2lip_video_enhanced.mp4'
+        enhanced_path = os.path.join(save_dir, 'temp_' + video_name_enhancer)
+        enhanced_images = face_enhancer(wav2lip_processed_video, method=enhancer, bg_upsampler=background_enhancer)
+        imageio.mimsave(enhanced_path, enhanced_images, fps=float(25))
+        wav2lip_result_video = enhanced_path
+
+    mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
+
+    for f in os.listdir(save_dir):
+        if mp4_path == f:
+            mp4_path = os.path.join(save_dir, f)
+        else:
+            if os.path.isfile(os.path.join(save_dir, f)):
+                os.remove(os.path.join(save_dir, f))
+            elif os.path.isdir(os.path.join(save_dir, f)):
+                shutil.rmtree(os.path.join(save_dir, f))
+
+    for f in os.listdir(TMP_FOLDER):
+        os.remove(os.path.join(TMP_FOLDER, f))
+
+    return mp4_path
+
+
+def load_video_default():
+    return Namespace(
+        pads=[0, 10, 0, 0],
+        face_det_batch_size=16,
+        wav2lip_batch_size=128,
+        resize_factor=1,
+        crop=[0, -1, 0, -1],
+        rotate=False,
+        nosmooth=False,
+        img_size=96
     )

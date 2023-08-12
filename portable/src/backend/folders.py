@@ -1,5 +1,6 @@
 import os
 
+# os.environ["HOME"]
 HOME_FOLDER = os.path.expanduser('~')
 
 MEDIA_FOLDER = os.path.join(HOME_FOLDER, '.wunjo')
