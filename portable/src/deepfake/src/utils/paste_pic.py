@@ -5,7 +5,7 @@ import uuid
 
 from src.utils.videoio import save_video_with_audio
 
-def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir):
+def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4'):
 
     if not os.path.isfile(pic_path):
         raise ValueError('pic_path must be a valid path to video/image file')
@@ -42,8 +42,16 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir):
         clx, cly, crx, cry = crop_info[1]
         oy1, oy2, ox1, ox2 = cly, cry, clx, crx
 
-    tmp_path = os.path.join(video_save_dir, str(uuid.uuid4())+'.mp4')
-    out_tmp = cv2.VideoWriter(tmp_path, cv2.VideoWriter_fourcc(*'MP4V'), fps, (frame_w, frame_h))
+    tmp_path = os.path.join(video_save_dir, str(uuid.uuid4())+video_format)
+
+    if video_format == '.mp4':
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    elif video_format == '.avi':
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    else:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    out_tmp = cv2.VideoWriter(tmp_path, fourcc, fps, (frame_w, frame_h))
     for crop_frame in tqdm(crop_frames, 'seamlessClone:'):
         p = cv2.resize(crop_frame.astype(np.uint8), (crx-clx, cry - cly)) 
 

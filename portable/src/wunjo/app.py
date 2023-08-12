@@ -155,6 +155,7 @@ def synthesize_deepfake():
     input_roll = split_input_deepfake(request_list.get("input_roll"))
     background_enhancer = request_list.get("background_enhancer")
     type_file = request_list.get("type_file")
+    video_start = request_list.get("video_start", 0)
 
     try:
         if type_file == "img":
@@ -179,7 +180,8 @@ def synthesize_deepfake():
                 audio=driven_audio,
                 face_fields=face_fields,
                 enhancer=enhancer,
-                background_enhancer=background_enhancer
+                background_enhancer=background_enhancer,
+                video_start=float(video_start)
             )
 
         torch.cuda.empty_cache()

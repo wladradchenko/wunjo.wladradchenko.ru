@@ -1,9 +1,8 @@
+import os
+import sys
 import torch
-from tqdm import tqdm
-import numpy as np
 import imageio
 from time import strftime
-import os, sys, time
 from argparse import Namespace
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,7 +18,7 @@ from src.generate_facerender_batch import get_facerender_data
 """SadTalker"""
 """Wav22Lip"""
 from src.wav2mel import MelProcessor
-from src.utils.videoio import save_video_with_audio
+from src.utils.videoio import save_video_with_audio, cut_start_video
 from src.utils.face_enhancer import enhancer as face_enhancer
 from src.utils.video2fake import get_frames, GenerateFakeVideo2Lip
 """Wav22Lip"""
@@ -78,7 +77,7 @@ def main_img_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, c
         args.device = "cuda"
     else:
         args.device = "cpu"
-    args.device = "cuda"  # TODO remove line
+
     args.still = still
     args.enhancer = enhancer
 
@@ -296,7 +295,7 @@ def load_img_default():
 
 def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
                         enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                        box: list = [-1, -1, -1, -1], background_enhancer: str = None):
+                        box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0):
     args = load_video_default()
     args.checkpoint_dir = "checkpoints"
     args.result_dir = deepfake_dir
@@ -315,7 +314,6 @@ def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool =
         args.device = "cuda"
     else:
         args.device = "cpu"
-    args.device = "cuda"  # TODO  remove this line
 
     args.background_enhancer = "realesrgan" if background_enhancer else None
 
@@ -337,6 +335,10 @@ def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool =
     else:
         link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
         check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
+
+    # If video_start is not 0 when cut video from start
+    if video_start != 0:
+        args.face = cut_start_video(args.face, video_start)
 
     # get video frames
     frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)

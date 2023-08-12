@@ -74,7 +74,7 @@ function sendDataToDeepfake(elem) {
             if (enhancer.checked) {
                 enhancer = "gfpgan";
             } else {
-                enhancer = "RestoreFormer";  // TODO need to set None
+                enhancer = false;  // TODO need to set false (not RestoreFormer)
             }
 
             if (canvasRectanglesList.length === 0) {
@@ -87,6 +87,7 @@ function sendDataToDeepfake(elem) {
             var inputPitchDeepfake = elem.querySelector('#input-pitch-deepfake');
             var inputRollDeepfake = elem.querySelector('#input-roll-deepfake');
             var backgroundEnhancerDeepfake = elem.querySelector('#background-enhancer-deepfake');
+            var videoStartValue = elem.querySelector('#video-start').value;
 
             if (mediaName && audioName && canvasRectanglesList.length > 0) {
                 // Get a reference to the #status-message element
@@ -108,6 +109,7 @@ function sendDataToDeepfake(elem) {
                     "input_roll": inputRollDeepfake.value,
                     "background_enhancer": backgroundEnhancerDeepfake.checked,
                     "type_file": typeFile,
+                    "video_start": videoStartValue,
                 };
 
                 synthesisDeepfakeTable.innerHTML = "";
@@ -188,6 +190,13 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
         `;
         var playBtn = document.getElementById("audioDeepfakePlay");
         var audio = document.getElementById("audioDeepfakeSrc");
+        // Set audio length on the text element
+        // Wait for metadata to be loaded
+        audio.onloadedmetadata = function() {
+            // Set audio length on the text element
+            var audioLength = document.getElementById("audio-length");
+            audioLength.innerText = audio.duration.toFixed(1);  // rounded to 2 decimal places
+        };
 
         playBtn.addEventListener("click", function() {
           if (audio.paused) {
@@ -231,6 +240,17 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                             <input accept="image/*,video/*" type="file" onChange="dragDropImg(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadFileDeepfake"  />
                             </span>
                         </div>
+
+                        <fieldset id="fieldset-control-duration" style="display: none; padding: 5pt;margin-top: 10pt; ">
+                            <legend></legend>
+                            <div style="justify-content: space-between; margin-top: 5pt; margin-bottom: 5pt; display: flex;">
+                              <label for="video-start">Старт видео (сек) </label>
+                              <input type="number" title="Введите число" id="video-start" name="expression-scale" min="0" max="0" step="0.1" value="0" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                            </div>
+                            <div style="justify-content: space-between; margin-top: 5pt; margin-bottom: 5pt; display: flex;"><text>Длительность аудио (сек) </text><text id="audio-length">0</text></div>
+                            <div style="justify-content: space-between; margin-top: 5pt; margin-bottom: 5pt; display: flex;"><text>Длительность видео (сек) </text><text id="video-length">0</text></div>
+                        </fieldset>
+
                         ${audioInputField}
                     </div>
                     <div style="width: 200pt;">
@@ -299,14 +319,33 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
     });
     introDeepfake.start();
     currentProcessor(document.getElementById("background-enhancer-deepfake-message"));
+    document.getElementById("video-start").addEventListener("change", function() {
+        var videoElement = document.querySelector("#previewDeepfakeImg video"); // get the video element inside the preview
+        if (videoElement) {
+            var startTime = parseFloat(this.value); // get the value of the input and convert it to a float
+            videoElement.currentTime = startTime; // set the video's current playback time to the start time
+        }
+    });
 };
 
 function dragDropImg(event) {
   var file = event.target.files[0];
+  // Getting the video length
+
   var reader = new FileReader();
   reader.onload = function(e) {
     var preview = document.getElementById("previewDeepfakeImg");
+
     if (file.type.includes('image')) {
+      // Get field element
+      var fieldsetControl = document.getElementById("fieldset-control-duration");
+      fieldsetControl.style.display = "none";
+
+      var videoLength = document.getElementById("video-length");
+      videoLength.innerText = 0;  // this is img
+      var videoInputLength = document.getElementById("video-start");
+      videoInputLength.setAttribute('max', '0');
+      videoInputLength.value = 0;
       var previewImg = document.createElement("img");
       previewImg.setAttribute("src", e.target.result);
       previewImg.setAttribute('width', '100%');
@@ -316,6 +355,29 @@ function dragDropImg(event) {
       preview.appendChild(previewImg)
     } else if (file.type.includes('video')) {
       var video = document.createElement('video');
+      video.onloadedmetadata = function() {
+        // Get field element
+        var fieldsetControl = document.getElementById("fieldset-control-duration");
+        var audioLength = document.getElementById("audio-length").innerText;
+        if (audioLength !== '0'){
+           fieldsetControl.style.display = "block";
+        } else {
+           fieldsetControl.style.display = "none";
+        }
+
+        var videoLength = document.getElementById("video-length");
+        videoLength.innerText = video.duration.toFixed(1);
+        var videoInputLength = document.getElementById("video-start");
+        var videoMaxLength;
+        if (video.duration.toFixed(1) > 0.1){
+            videoMaxLength = video.duration.toFixed(1) - 0.1;
+        } else {
+            videoMaxLength = video.duration.toFixed(1);
+        };
+        videoInputLength.setAttribute('max', videoMaxLength.toString());
+        videoInputLength.value = 0;
+
+      };
       video.setAttribute('src', e.target.result);
       video.setAttribute('width', '100%');
       video.setAttribute('height', '100%');
@@ -324,7 +386,7 @@ function dragDropImg(event) {
       preview.innerHTML = '<canvas style="position: absolute;"  id="canvasDeepfake"></canvas>';
       preview.appendChild(video);
     }
-    preview.innerHTML += '<input accept="image/*,video/*" type="file" onChange="dragDropImg(event)" ondragover="drag()" ondrop="drop()" id="uploadFileDeepfake"/>';
+    preview.innerHTML += '<input accept="image/*,video/*" type="file" onChange="dragDropImg(event)" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadFileDeepfake"/>';
 
     // DRAW RECTANGLES //
     var canvasDeepfake = document.getElementById('canvasDeepfake');
@@ -458,8 +520,24 @@ function dragDropImg(event) {
   };
   reader.readAsDataURL(file);
 }
+
 function dragDropAudio(event) {
   var file = URL.createObjectURL(event.target.files[0]);
+  // Get audio length
+  var audioElement = new Audio(file);
+  audioElement.onloadedmetadata = function() {
+     // Set audio length on the text element
+     audioLength = document.getElementById("audio-length");
+     audioLength.innerText = audioElement.duration.toFixed(1);
+     // Get field element and control display
+    var fieldsetControl = document.getElementById("fieldset-control-duration");
+    var videoLength = document.getElementById("video-length").innerText;
+    if (videoLength !== '0'){
+       fieldsetControl.style.display = "block";
+    } else {
+       fieldsetControl.style.display = "none";
+    }
+  };
   var reader = new FileReader();
   var preview = document.getElementById("previewDeepfakeAudio");
   preview.innerHTML = `<button id="audioDeepfakePlay" class="introjs-button" style="display:inline;margin-left: 5pt;">
@@ -491,10 +569,17 @@ function dragDropAudio(event) {
       playBtn.children[1].style.display = "none";
   });
 }
+
 function drag(elem) {
-    elem.parentNode.className = 'draging dragBox';
+    elem.parentNode.className = 'draging dragBox dragBoxMain';
+    // Check if the element has the specific border style applied
+    var dragBoxes = document.querySelectorAll(".dragBoxMain");
+    dragBoxes.forEach(function(box) {
+        box.style.border = "none";
+    });
 }
+
 function drop(elem) {
-    elem.parentNode.className = 'dragBox';
+    elem.parentNode.className = 'dragBox dragBoxMain';
 }
 // ANIMATE WINDOWS //

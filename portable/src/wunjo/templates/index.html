@@ -99,7 +99,9 @@
         </template>
     </div>
     <div class="synthesized_field">
+
         <div class="buttons" style="margin-bottom: 20pt;">
+            <button title="Перевод" id="google_translate_element"></button>
             <button title="Показать результаты синтеза анимации" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
             <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
             <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимировать</button>
@@ -138,5 +140,30 @@
     </div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
+
+    <style>
+        .goog-logo-link {
+           display:none !important;
+        }
+
+        .goog-te-gadget {
+           color: transparent !important;
+        }
+
+        .goog-te-gadget .goog-te-combo {
+           color: blue !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.VERTICAL},
+        'google_translate_element'
+      );
+    }
+    </script>
+
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 {% endblock %}

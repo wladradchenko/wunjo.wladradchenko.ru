@@ -133,6 +133,8 @@ class GenerateFakeVideo2Lip:
                     self.face_fields = [{"x_center": int((x1+x2)/2), "y_center": int((y1+y2)/2)}]
                     # recognition face
                     cropped_face = image[y1:y2, x1:x2]
+                    if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
+                        continue
                     cropped_face_resized = cv2.resize(cropped_face, (160, 160))
                     encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
                     if encoding is not None:
@@ -181,6 +183,8 @@ class GenerateFakeVideo2Lip:
                             self.face_fields = [{"x_center": int((x1+x2)/2), "y_center": int((y1+y2)/2)}]
                             # recognition face
                             cropped_face = image[y1:y2, x1:x2]
+                            if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
+                                continue
                             cropped_face_resized = cv2.resize(cropped_face, (160, 160))
                             encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
                             if encoding is not None:
@@ -194,6 +198,8 @@ class GenerateFakeVideo2Lip:
                                 x2, y2 = np.max(landmarks, axis=0).astype(int)
                                 # recognition face
                                 cropped_face = image[y1:y2, x1:x2]
+                                if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
+                                    continue
                                 cropped_face_resized = cv2.resize(cropped_face, (160, 160))
                                 encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
                                 if encoding is not None:
