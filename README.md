@@ -184,10 +184,10 @@ Update 1.3.2
 - [x] Fix bugs
 
 Update 1.4.0
-- [ ] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
-- [ ] Add selection of video segment for deepfake depending on the length of the audio track
-- [ ] Add ability to change directory for .wunjo cache folder
-- [ ] Add application translation into different languages, through browser options
+- [x] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
+- [x] Add selection of video segment for deepfake depending on the length of the audio track
+- [x] Add ability to change directory for .wunjo cache folder
+- [x] Add application translation into different languages, through browser options
 - [ ] Add TTS models for English speech
 - [ ] Add TTS models for Chinese speech
 - [ ] Check the possibility of using speech synthesis on TTS user models
@@ -226,6 +226,7 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
 * Sad Talker - https://github.com/OpenTalker/SadTalker
+* Wav2lip - https://github.com/Rudrabha/Wav2Lip
 * Face Utils - https://github.com/xinntao/facexlib
 * Face Enhancement - https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN

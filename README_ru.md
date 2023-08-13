@@ -185,10 +185,10 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 - [x] Исправлены ошибки с deepfake в Windows
 
 Обновление 1.4.0
-- [ ] Добавить дипфейк для работы с исходником видео, который синхронизирует движение губ под аудио
-- [ ] Добавить выбор отрезка видео для дипфейк взависимости от длины аудио дорожки
-- [ ] Добавить возможность смены директории для кеш папки .wunjo
-- [ ] Добавить перевод приложения на различные языки, через возможности браузера
+- [x] Добавить дипфейк для работы с исходником видео, который синхронизирует движение губ под аудио
+- [x] Добавить выбор отрезка видео для дипфейк взависимости от длины аудио дорожки
+- [x] Добавить возможность смены директории для кеш папки .wunjo
+- [x] Добавить перевод приложения на различные языки, через возможности браузера
 - [ ] Добавить модели TTS для английской речи
 - [ ] Добавить модели TTS для китайском речи
 - [ ] Проверить возможность использования синтеза речи на TTS моделях пользователя
@@ -227,6 +227,7 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * Flask UI - https://github.com/ClimenteA/flaskwebgui
 * BeeWare - https://beeware.org/project/projects/tools/briefcase/
 * Sad Talker - https://github.com/OpenTalker/SadTalker
+* Wav2lip - https://github.com/Rudrabha/Wav2Lip
 * Face Utils - https://github.com/xinntao/facexlib
 * Face Enhancement - https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN

@@ -13,7 +13,6 @@ class HparamsNotFound(Exception):
 class Tacotron2Wrapper:
     def __init__(self, model_path, device, hparams_path=None, steps_per_symbol=10, gate_threshold=0.5):
         device = os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
-        # self.device = "cpu"  # :TODO add subscribe
         self.device = 'cuda' if torch.cuda.is_available() and 'cpu' not in device else 'cpu'
         self.dtype = torch.float
 
