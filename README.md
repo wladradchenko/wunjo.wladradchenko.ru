@@ -3,103 +3,110 @@
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 
-<p align="right">(<a href="README_en.md">EN</a>)</p>
+<p align="right">(<a href="README_ru.md">RU</a>)</p>
 <div id="top"></div>
 
 <br />
 <div align="center">
   <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
-    <img src="example/man.gif" alt="Logo" width="180" height="180">
+    <img src="example/robot.gif" alt="Logo" width="180" height="180">
   </a>
 
   <h3 align="center">Wunjo AI</h3>
 
   <p align="center">
-    Документация о проекте
+    Project documentation
     <br/>
     <br/>
     <br/>
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Сообщить об ошибке</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Issue</a>
     ·
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Запросить функцию</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Features</a>
   </p>
 </div>
 
 
 <!-- ABOUT THE PROJECT -->
-## О проекте
+## About
 
-Приложение для синтеза речи из текста и распознования речи в текст. Одной из уникальных особенностей этого приложения является возможность создавать мультидиалоги с несколькими голосами, а количество используемых символов не ограничено, в отличие от аналогичных веб-приложений. Вы также можете проговаривать текст в режиме реального времени, и приложение распознает его по аудио. Эта функция отлично подходит для диктовки текста вместо того, чтобы набирать его вручную.
+Application for speech synthesis from text, speech recognition to text and create deepfake animation. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
 
-В целом, это настольное приложение с нейронными сетями представляет собой удобный и мощный инструмент для всех, кто нуждается в синтезе речи и распознавании голоса в текст. Лучше всего то, что приложение бесплатно, устанавливается локально и проста в использовании! А применить вы его можете, в озвучке роликов, книг, игр, итд.
+All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis, voice-to-text recognition and create deepfake animation. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
 
 <!-- FEATURES -->
-## Запуск
+## Setup
 
-Требуется 3.8 <= [Python](https://www.python.org/downloads/) <=3.10 и [ffmpeg](https://ffmpeg.org/download.html).
+Requirements 3.8 <= [Python](https://www.python.org/downloads/) <=3.10 and [ffmpeg](https://ffmpeg.org/download.html).
 
-Создать виртуальную среду и активировать:
+Create venv and activate ones:
 
 ```
 python -m venv venv
 source venv/bin/activate
 ```
 
-Установить зависимости:
+Install dependencies:
 
 ```
 pip install -r requirements.txt
 ```
 
-Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
+Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
-Запустить:
+Go to portable folder
+```
+cd portable
+```
+
+Run:
 ```
 briefcase dev
 ```
 
-Дополнительно, вы можете создать build
+Additionally, you can create a build:
 ```
 briefcase build
 ```
 
-Запуск build
+Run build
 ```
 briefcase run
 ```
 
-Для создания установщика:
+Create install packet for your OS:
 ```
 briefcase package
 ```
 
-Подробнее в документации [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+Read more in the documentation [BeeWare](https://beeware.org/project/projects/tools/briefcase)
 
 <!-- EXAMPLE -->
-## Расширения
+## Extensions
 
-Функционал программы может дополняться пользовательскими расширениями. Пример расширения и формат по [ссылке](https://github.com/wladradchenko/extensions.wunjo.wladradchenko.ru)
+The functionality of the program can be supplemented by custom extensions. Extension example and format at [link](https://github.com/wladradchenko/advanced.wunjo.wladradchenko.ru/README.md)
+
+Available list of extensions at [link](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json).
 
 <!-- DOWNLOAD -->
-## Готовые сборки
+## Install packets
 
 [Ubuntu / Debian Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
 
 [Ubuntu / Debian Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
 
 ```
-// Для создания анимации понадобится установить ffmpeg
+// Requirement to create animation is ffmpeg
 sudo apt install ffmpeg
 
-// Установка приложения
+// Install app
 sudo dpkg -i wunjo_{vesrion}.deb
 
-// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
-// Удаление приложения
+// Remove app
 sudo dpkg -r wunjo
 
-// Удаление кеша
+// Remove cache
 rm -rf ~/.wunjo
 ```
 
@@ -108,33 +115,34 @@ rm -rf ~/.wunjo
 [MacOS Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
 
 ```
-// Для создания анимации понадобится установить ffmpeg
+// Requirement to create animation is ffmpeg
 brew install ffmpeg 
 
-// Разархивировать приложение
+// Unzip app
 unzip wunjo_macos_{vesrion}.zip
 
-// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
 
-// Удаление кеша
+// Remove cache
 rm -rf ~/.wunjo
 ```
 
-[Windows Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.2.0.msi)
-
-[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.1.msi)
+[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
 
 ```
-// Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
+// Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
 setx PATH "%PATH%;C:\path\to\ffmpeg\bin"
 
-// Установщик
+// Install app
 wunjo_{vesrion}.msi
 
-// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время. 
-// Если у вас стоит файрвол, он может заблокировать автоматическое скачивание моделей, вы их можете скачать самостоятельно из репозитория. 
+// Important! How to set up deepfake for Windows. You need to give permission to read the neural network models in the gfpgan folder after the models are installed! Without this setting, the result of deepfake generation will be "Face not found".
 
-// Удаление кеша
+icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,W)
+
+// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
+
+//Remove cache
 %USERPROFILE%/.wunjo
 ```
 
@@ -144,9 +152,9 @@ wunjo_{vesrion}.msi
 <div align="center">
   <table>
   <tr>
-    <th>Оригинал</th>
-    <th>Движение лица + Улучшение лица</th>
-    <th>Фиксированное лицо + Улучшение лица</th>
+    <th>Original</th>
+    <th>Move face + Enhancer</th>
+    <th>Fix face + Enhancer</th>
   </tr>
   <tr align="center">
     <td><img src="example/original.gif" alt="original" width="228" height="360"></td>
@@ -156,47 +164,62 @@ wunjo_{vesrion}.msi
 </table>
 </div>
 
+<!-- EXAMPLE -->
 
 <!-- UPDATE -->
-Обновление 1.2.0
+Update 1.2.0
 
-- [x] Уменьшить размер приложения
-- [x] Добавить функцию скачивания моделей на выбор
-- [x] Добавить контроль поворота головы по оси Y (продвинутые опции для создания анимации)
-- [x] Добавить контроль поворота головы по оси X (продвинутые опции для создания анимации)
-- [x] Добавить контроль поворота головы по оси Z (продвинутые опции для создания анимации)
-- [x] Добавить улучшения качества фона (продвинутые опции для создания анимации)
-- [x] Добавить контроль мимики говорения (продвинутые опции для создания анимации)
-- [x] Сделать билды
+- [x] Reduce application size
+- [x] Add download feature for models to choose from
+- [x] Add y-axis head rotation control (advanced options for creating animations)
+- [x] Add head rotation control on x axis (advanced options for creating animation)
+- [x] Add head rotation control in Z axis (advanced options for creating animation)
+- [x] Add background quality improvements (advanced options for creating animations)
+- [x] Add speaking facial expression control (advanced options for creating animations)
+- [x] Make builds
 
-Обновление 1.3.0
+Update 1.3.2
 
-- [x] Добавлена поддержка расширений (любой разработчик может создавать расширения без открытия основного кода)
-- [x] Сделать билды
+- [x] Added support for extensions (any developer can create extensions without opening the main code)
+- [x] Fix bugs
 
+Update 1.4.0
+- [ ] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
+- [ ] Add selection of video segment for deepfake depending on the length of the audio track
+- [ ] Add ability to change directory for .wunjo cache folder
+- [ ] Add application translation into different languages, through browser options
+- [ ] Add TTS models for English speech
+- [ ] Add TTS models for Chinese speech
+- [ ] Check the possibility of using speech synthesis on TTS user models
+
+New Extensions
+- [ ] Develop extension for face swaps from source face to destination face.
+      
 <!-- VIDEO -->
-## Видео
+## Video
 
 [![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/hqdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
+
+[![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
 
 <!-- CONTACT -->
 ## Контакт
 
-Автор: [Wladislav Radchenko](https://github.com/wladradchenko/)
+Owner: [Wladislav Radchenko](https://github.com/wladradchenko/)
 
-Почта: [i@wladradchenko.ru](i@wladradchenko.ru)
+Email: [i@wladradchenko.ru](i@wladradchenko.ru)
 
-Проект: [https://github.com/wladradchenko/wunjo.wladradchenko.ru](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
+Project: [https://github.com/wladradchenko/wunjo.wladradchenko.ru](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 
-Сайт приложения: [wladradchenko.ru/wunjo](https://wladradchenko.ru/wunjo)
+Web site: [wladradchenko.ru/wunjo](https://wladradchenko.ru/wunjo)
 
 <!-- PREMISE -->
-## Предпосылки
+## Premise
 
-Wunjo (Ву́ньо) происходит из древнего рунического алфавита и представляет радость и удовлетворение, что может быть связано с идеей использования приложения для создания увлекательной и выразительной речи. Вуньо (ᚹ) — восьмая руна старшего и англосаксонского футарка. До введения буквы W в латинский алфавит вместо неё в английском языке использовалась буква Ƿynn (Ƿƿ), происходящая от этой руны.
+Wunjo comes from the ancient runic alphabet and represents joy and contentment, which could tie into the idea of using the application to create engaging and expressive speech. Vunyo (ᚹ) is the eighth rune of the Elder and Anglo-Saxon Futhark. Prior to the introduction of the letter W into the Latin alphabet, the letter Ƿynn (Ƿƿ) was used instead in English, derived from this rune.
 
 <!-- CREDITS -->
-## Зависимости
+## Credits
 
 * Tacatron 2 - https://github.com/NVIDIA/tacotron2
 * Waveglow - https://github.com/NVIDIA/waveglow
@@ -207,5 +230,4 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * Face Enhancement - https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
 
-
-<p align="right">(<a href="#top">вернуться наверх</a>)</p>
+<p align="right">(<a href="#top">to top</a>)</p>
