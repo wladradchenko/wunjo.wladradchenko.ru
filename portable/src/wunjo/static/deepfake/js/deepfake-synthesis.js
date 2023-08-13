@@ -233,9 +233,9 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                             <div style="flex-direction: row;display: flex;margin-bottom: 10pt;justify-content: space-between;">
                                 <button class="introjs-button" style="display: none;margin-right: 5pt;" id="clearButton">Очистить</button>
                                 <!--<button class="introjs-button" style="display: none; margin-left: 5pt;margin-right: 5pt;" id="undoButton"><i class="fa fa-solid fa-reply"></i></button>-->
-                                <button style="width: 100%;display: none;" class="introjs-button" id="drawButton">Выделить лицо</button>
+                                <button style="width: 100%;display: none;" class="introjs-button" id="drawButton" data-controlval="get-face">Выделить лицо</button>
                             </div>
-                            <span id="previewDeepfakeImg" class="dragBox" style="height: 200pt;">
+                            <span id="previewDeepfakeImg" class="dragBox" style="height: 200pt;justify-content: center;">
                               Загрузить изображение или видео
                             <input accept="image/*,video/*" type="file" onChange="dragDropImg(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadFileDeepfake"  />
                             </span>
@@ -484,7 +484,9 @@ function dragDropImg(event) {
     }
 
     drawButton.onclick = function() {
-      if (drawButton.textContent === 'Выделить лицо') {
+      // data-controlval="get-face"
+      if (drawButton.getAttribute("data-controlval") === 'get-face') {
+        drawButton.setAttribute("data-controlval", "put-content");
         drawButton.textContent = 'Выбор файла';
         turnOnDrawMode();
         uploadFileDeepfake.disabled = true;
@@ -492,6 +494,7 @@ function dragDropImg(event) {
         clearButton.style.display = 'inline';
         //undoButton.style.display = 'inline';  // undo
       } else {
+        drawButton.setAttribute("data-controlval", "get-face");
         drawButton.textContent = 'Выделить лицо';
         turnOffDrawMode();
         uploadFileDeepfake.disabled = false;

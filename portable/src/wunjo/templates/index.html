@@ -10,7 +10,7 @@
 
 {% block menubar %}
 <div class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
-    <a id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
+    <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
     <a id="a-extensions" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i style="padding-left: 2pt;" class="fa-solid fa-puzzle-piece"></i></a>
     <!--EXTENSIONS-->
@@ -99,9 +99,16 @@
         </template>
     </div>
     <div class="synthesized_field">
-
         <div class="buttons" style="margin-bottom: 20pt;">
-            <button title="Перевод" id="google_translate_element"></button>
+            <button title="Перевести приложение" id="translate-application-btn" style="width:80pt;">
+                <i class="fa-solid fa-language"></i>
+                <!-- Hidden dropdown for selecting languages -->
+                <select id="language-dropdown" class="notranslate" style="text-align: center;">
+                    {% for key, value in existing_langs.items() %}
+                        <option value="{{value}}" name="{{key}}" class="notranslate">{{key}}</option>
+                    {% endfor %}
+                </select>
+            </button>
             <button title="Показать результаты синтеза анимации" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
             <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
             <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимировать</button>
@@ -141,29 +148,127 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
 
-    <style>
-        .goog-logo-link {
-           display:none !important;
+    <script>
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        .goog-te-gadget {
-           color: transparent !important;
+        async function translateWithGoogle(text, sourceLang, targetLang) {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data && data[0] && data[0][0] && data[0][0][0]) {
+                    return capitalizeFirstLetter(data[0][0][0]);
+                }
+                throw new Error("Failed to parse Google Translate response.");
+            } catch (err) {
+                console.error(err);
+                return text; // default to returning original text
+            }
         }
 
-        .goog-te-gadget .goog-te-combo {
-           color: blue !important;
-        }
-    </style>
+        let targetLang = "{{ user_lang }}";  // Initial value
 
-    <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        {pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.VERTICAL},
-        'google_translate_element'
-      );
-    }
+        async function translateReload(newTargetLang = 'ru') {
+            targetLang = newTargetLang;
+
+            async function translateTextNode(node, sourceLang, targetLang) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const trimmedText = node.nodeValue.trim();
+                    if (trimmedText) {
+                        const translatedText = await translateWithGoogle(trimmedText, sourceLang, targetLang);
+                        node.nodeValue = node.nodeValue.replace(trimmedText, translatedText);
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('notranslate') && node.getAttribute('lang') !== targetLang) {
+                    for (let child of node.childNodes) {
+                        await translateTextNode(child, sourceLang, targetLang);
+                    }
+                    node.setAttribute('lang', targetLang);
+                }
+            }
+
+            async function translatePage() {
+                let allTextAreaElements = document.querySelectorAll('textarea');
+
+                allTextAreaElements.forEach(async (elem) => {
+                    if (!elem.classList.contains('notranslate') && elem.getAttribute('lang') !== targetLang) {
+                        let originalTextArea = elem.placeholder.trim();
+                        if (originalTextArea) {
+                            let translatedTextArea = await translateWithGoogle(originalTextArea, 'auto', targetLang);
+                            elem.placeholder = translatedTextArea;
+                            elem.setAttribute('lang', targetLang);
+                        }
+                    }
+                });
+
+                let allTextElements = document.querySelectorAll('div, p, h1, h2, h3, h4, h5, h6, a, span, li, td, th, option, legend, label, text, button');
+
+                for (const elem of allTextElements) {
+                    await translateTextNode(elem, 'auto', targetLang);
+                }
+            }
+
+            // Initially translate the page
+            translatePage();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            translateReload(targetLang);
+        });
+
+        document.body.addEventListener('click', event => {
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'I') {
+                translateReload(targetLang);
+            }
+        });
+
+        async function translateNewUserLang(lang) {
+            await translateReload(lang);
+        }
+
+        document.getElementById('translate-application-btn').addEventListener('click', function() {
+            const dropdown = document.getElementById('language-dropdown');
+            dropdown.style.display = 'block';
+        });
+
+        document.getElementById('language-dropdown').addEventListener('change', function() {
+            let selectedLangCode = this.value;
+            let selectedOption = this.options[this.selectedIndex];
+            let selectedLangName = selectedOption.getAttribute('name');
+
+            translateNewUserLang(selectedLangCode);
+            updateLangSetting(selectedLangCode, selectedLangName);
+        });
     </script>
+    <script>
+        function updateLangSetting(lang_code, lang_name) {
+            const settingsURL = "/record_settings";
+            const data = {
+                "code": lang_code,
+                "name": lang_name
+            };
 
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+            fetch(settingsURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.response_code === 0) {
+                    console.log(data.response);
+                } else {
+                    console.error("Failed to update language setting");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
 
 {% endblock %}

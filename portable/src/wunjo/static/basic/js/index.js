@@ -545,6 +545,7 @@ extensions.addEventListener('click', (event) => {
         const option = document.createElement("option");
         option.value = extension.url;
         option.text = name;
+        option.dataset.key = name;  // Store the original key.
         selectElement.appendChild(option);
       }
 
@@ -554,10 +555,12 @@ extensions.addEventListener('click', (event) => {
       descriptionElement.innerText = selectedExtension.description;
 
       // Add an event listener to the select element
-      selectElement.addEventListener("change", (event) => {
+      selectElement.addEventListener("change", async (event) => {
         const selectedOption = event.target.value;
-        const selectedExtension = data[event.target.options[event.target.selectedIndex].text];
-        descriptionElement.innerText = selectedExtension.description;
+        const selectedKey = event.target.options[event.target.selectedIndex].dataset.key;
+        const selectedExtension = data[selectedKey];
+        const translatedDescription = await translateWithGoogle(selectedExtension.description, 'auto', targetLang);
+        descriptionElement.innerText = translatedDescription;
       });
     })
     .catch(error => {
