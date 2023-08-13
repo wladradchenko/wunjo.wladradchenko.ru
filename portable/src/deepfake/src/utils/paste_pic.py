@@ -3,9 +3,9 @@ import numpy as np
 from tqdm import tqdm
 import uuid
 
-from src.utils.videoio import save_video_with_watermark 
+from src.utils.videoio import save_video_with_audio
 
-def paste_pic(video_path, pic_path, crop_info, new_audio_path, full_video_path):
+def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4'):
 
     if not os.path.isfile(pic_path):
         raise ValueError('pic_path must be a valid path to video/image file')
@@ -15,8 +15,6 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, full_video_path):
     else:
         # loader for videos
         video_stream = cv2.VideoCapture(pic_path)
-        fps = video_stream.get(cv2.CAP_PROP_FPS)
-        full_frames = [] 
         while 1:
             still_reading, frame = video_stream.read()
             if not still_reading:
@@ -41,19 +39,19 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, full_video_path):
         print("you didn't crop the image")
         return
     else:
-        r_w, r_h = crop_info[0]
         clx, cly, crx, cry = crop_info[1]
-        lx, ly, rx, ry = crop_info[2]
-        lx, ly, rx, ry = int(lx), int(ly), int(rx), int(ry)
-        # oy1, oy2, ox1, ox2 = cly+ly, cly+ry, clx+lx, clx+rx
-        # oy1, oy2, ox1, ox2 = cly+ly, cly+ry, clx+lx, clx+rx
         oy1, oy2, ox1, ox2 = cly, cry, clx, crx
 
+    tmp_path = os.path.join(video_save_dir, str(uuid.uuid4())+video_format)
 
-    home_folder = os.path.expanduser('~')
-    media_folder = os.path.join(home_folder, '.wunjo')
-    tmp_path = os.path.join(media_folder, str(uuid.uuid4())+'.mp4')
-    out_tmp = cv2.VideoWriter(tmp_path, cv2.VideoWriter_fourcc(*'MP4V'), fps, (frame_w, frame_h))
+    if video_format == '.mp4':
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    elif video_format == '.avi':
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    else:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    out_tmp = cv2.VideoWriter(tmp_path, fourcc, fps, (frame_w, frame_h))
     for crop_frame in tqdm(crop_frames, 'seamlessClone:'):
         p = cv2.resize(crop_frame.astype(np.uint8), (crx-clx, cry - cly)) 
 
@@ -64,5 +62,7 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, full_video_path):
 
     out_tmp.release()
 
-    save_video_with_watermark(tmp_path, new_audio_path, full_video_path, watermark=False)
+    new_video_name = save_video_with_audio(tmp_path, new_audio_path, video_save_dir)
     os.remove(tmp_path)
+
+    return new_video_name

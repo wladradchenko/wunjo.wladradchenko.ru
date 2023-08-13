@@ -1,10 +1,15 @@
 import os
 
+# os.environ["HOME"] = ""
 HOME_FOLDER = os.path.expanduser('~')
 
 MEDIA_FOLDER = os.path.join(HOME_FOLDER, '.wunjo')
 if not os.path.exists(MEDIA_FOLDER):
     os.makedirs(MEDIA_FOLDER)
+
+SETTING_FOLDER = os.path.join(MEDIA_FOLDER, 'setting')
+if not os.path.exists(SETTING_FOLDER):
+    os.makedirs(SETTING_FOLDER)
 
 WAVES_FOLDER = os.path.join(MEDIA_FOLDER, 'waves')
 if not os.path.exists(WAVES_FOLDER):

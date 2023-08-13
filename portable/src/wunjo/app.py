@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import torch
 import requests
 import subprocess
@@ -11,23 +12,63 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import main_deepfake
+from deepfake.inference import main_img_deepfake, main_video_deepfake
 from speech.file_handler import FileHandler
 from speech.models import load_voice_models, voice_names, file_voice_config
-from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER
+from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
 
 app.config['models'], app.config['_valid_model_types'] = {}, []
 # get list of all directories in folder
+
+
+def set_settings():
+    default_language = {
+            "English": "en",
+            "Русский": "ru",
+            "Portugal": "pt",
+            "中文": "zh",
+            "한국어": "ko"
+        }
+    standard_language = {
+            "code": "en",
+            "name": "English"
+        }
+
+    default_settings = {
+        "user_language": standard_language,
+        "default_language": default_language
+    }
+    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
+    # Check if the SETTING_FILE exists
+    if not os.path.exists(setting_file):
+        # If not, create it with default settings
+        with open(setting_file, 'w') as f:
+            json.dump(default_settings, f)
+        return default_settings
+    else:
+        # If it exists, read its content
+        with open(setting_file, 'r') as f:
+            try:
+                user_settings = json.load(f)
+                if user_settings.get("user_language") is None:
+                    user_settings["user_language"] = standard_language
+                if user_settings.get("default_language") is None:
+                    user_settings["default_language"] = default_language
+                return user_settings
+            except Exception as e:
+                print(e)
+                return default_settings
+
 
 def get_avatars_static():
     return {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
@@ -61,7 +102,16 @@ def split_input_deepfake(input_param):
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
-    return render_template("index.html", existing_models=get_avatars_static(), extensions_html=extensions_html)
+    settings = set_settings()
+    lang_user = settings["user_language"]
+    lang_code = lang_user.get("code", "en")
+    lang_name = lang_user.get("name", "English")
+    default_lang = settings["default_language"]
+    if default_lang.get(lang_name) is not None:
+        default_lang.pop(lang_name)
+    ordered_lang = {**{lang_name: lang_code}, **default_lang}
+    # Define a dictionary of languages
+    return render_template("index.html", existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static(), extensions_html=extensions_html)
 
 
 @app.route('/current_processor', methods=["GET"])
@@ -103,6 +153,28 @@ def open_folder():
             subprocess.Popen(['xdg-open', path])
         return {"status_code": 200} #redirect('/')
     return {"status_code": 300} #redirect('/')
+
+
+@app.route('/record_settings', methods=["POST"])
+@cross_origin()
+def record_lang_setting():
+    req = request.get_json()
+    lang_code = req.get("code", "en")
+    lang_name = req.get("name", "en")
+    settings = set_settings()
+    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
+    with open(setting_file, 'w') as f:
+        settings["user_language"] = {
+            "code": lang_code,
+            "name": lang_name
+        }
+        json.dump(settings, f)
+
+    return {
+        "response_code": 0,
+        "response": "Set new language"
+    }
+
 
 @app.route("/voice_status/", methods=["GET"])
 @cross_origin()
@@ -154,21 +226,34 @@ def synthesize_deepfake():
     input_pitch = split_input_deepfake(request_list.get("input_pitch"))
     input_roll = split_input_deepfake(request_list.get("input_roll"))
     background_enhancer = request_list.get("background_enhancer")
+    type_file = request_list.get("type_file")
+    video_start = request_list.get("video_start", 0)
 
     try:
-        deepfake_result = main_deepfake(
-            deepfake_dir=DEEPFAKE_FOLDER,
-            source_image=source_image,
-            driven_audio=driven_audio,
-            still=still,
-            enhancer=enhancer,
-            preprocess=preprocess,
-            face_fields=face_fields,
-            expression_scale=expression_scale,
-            input_yaw=input_yaw,
-            input_pitch=input_pitch,
-            input_roll=input_roll,
-            background_enhancer=background_enhancer
+        if type_file == "img":
+            deepfake_result = main_img_deepfake(
+                deepfake_dir=DEEPFAKE_FOLDER,
+                source_image=source_image,
+                driven_audio=driven_audio,
+                still=still,
+                enhancer=enhancer,
+                preprocess=preprocess,
+                face_fields=face_fields,
+                expression_scale=expression_scale,
+                input_yaw=input_yaw,
+                input_pitch=input_pitch,
+                input_roll=input_roll,
+                background_enhancer=background_enhancer
+                )
+        elif type_file == "video":
+            deepfake_result = main_video_deepfake(
+                deepfake_dir=DEEPFAKE_FOLDER,
+                face=source_image,
+                audio=driven_audio,
+                face_fields=face_fields,
+                enhancer=enhancer,
+                background_enhancer=background_enhancer,
+                video_start=float(video_start)
             )
 
         torch.cuda.empty_cache()
@@ -375,5 +460,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run(port=5005)
