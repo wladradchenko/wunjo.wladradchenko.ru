@@ -35,7 +35,7 @@
                           </select>
                           <div class="model-over-select"></div>
                         </div>
-                        <div class="model-checkboxes" style="position: absolute;z-index: 10;text-align: initial;min-width: 140pt;display: block;background: #ffffff7d;border-radius: 10pt;padding: 10pt;">
+                        <div class="model-checkboxes" style="position: absolute;z-index: 10;text-align: initial;min-width: 140pt;display: none;background: #ffffff7d;border-radius: 10pt;padding: 10pt;">
                             {% for key, value in existing_models.items() %}
                               <label><input type="checkbox" value="{{ key }}" name="{{ value }}" class="model-checkbox-value" /><text>{{ key }}</text></label>
                             {% endfor %}
