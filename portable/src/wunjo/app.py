@@ -14,7 +14,7 @@ from flaskwebgui import FlaskUI
 
 from deepfake.inference import main_img_deepfake, main_video_deepfake
 from speech.file_handler import FileHandler
-from speech.models import load_voice_models, voice_names, file_voice_config
+from speech.models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 
@@ -29,6 +29,25 @@ app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
 
 app.config['models'], app.config['_valid_model_types'] = {}, []
 # get list of all directories in folder
+
+
+def get_version_app():
+    version_json_url = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/version_control.json"
+    try:
+        response = requests.get(version_json_url)
+        return json.loads(response.text)
+    except requests.RequestException:
+        print("Error fetching the version information.")
+        return {}
+    except json.JSONDecodeError:
+        print("Error decoding the JSON response.")
+        return {}
+    except:
+        print("An unexpected error occurred.")
+        return {}
+
+
+version_app = get_version_app()
 
 
 def set_settings():
@@ -71,7 +90,9 @@ def set_settings():
 
 
 def get_avatars_static():
-    return {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
+    standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
+    custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
+    return {**standard_voices, **custom_voices}
 
 
 def current_time(format: str = None):
@@ -99,9 +120,11 @@ def split_input_deepfake(input_param):
             return params
     return None
 
+
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
+    # Define a dictionary of languages
     settings = set_settings()
     lang_user = settings["user_language"]
     lang_code = lang_user.get("code", "en")
@@ -110,8 +133,7 @@ def index():
     if default_lang.get(lang_name) is not None:
         default_lang.pop(lang_name)
     ordered_lang = {**{lang_name: lang_code}, **default_lang}
-    # Define a dictionary of languages
-    return render_template("index.html", existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static(), extensions_html=extensions_html)
+    return render_template("index.html", version=json.dumps(version_app), existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static(), extensions_html=extensions_html)
 
 
 @app.route('/current_processor', methods=["GET"])

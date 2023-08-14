@@ -61,6 +61,14 @@ class Synthesizer:
 
         logger.info("Synthesizer {} is ready".format(name))
 
+        self.cyrillic_to_latin = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+            'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'i', 'к': 'k', 'л': 'l', 'м': 'm',
+            'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+            'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '',
+            'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        }
+
 
     def synthesize(self, text, **kwargs):
         audio_list = list(self.text_to_audio_gen(text, **kwargs))
@@ -72,10 +80,48 @@ class Synthesizer:
     def generate(self, text, **kwargs):
         return BackgroundGenerator(self.text_to_audio_gen(text, **kwargs))
 
+    def cyrillic_to_latin_transliterate(self, text):
+        return ''.join(self.cyrillic_to_latin.get(char, char) for char in text.lower())
+
+    def latin_to_cyrillic_transliterate(self, text):
+        latin_to_cyrillic = {
+            'a': 'а', 'b': 'б', 'v': 'в', 'g': 'г', 'd': 'д', 'e': 'е',
+            'zh': 'ж', 'z': 'з', 'i': 'и', 'j': 'дж', 'k': 'к', 'l': 'л',
+            'm': 'м', 'n': 'н', 'o': 'о', 'p': 'п', 'r': 'р', 's': 'с',
+            't': 'т', 'u': 'у', 'f': 'ф', 'h': 'х', 'c': 'ц', 'ch': 'ч',
+            'sh': 'ш', 'sch': 'щ', 'y': 'ы', 'e': 'э', 'yu': 'ю', 'ya': 'я',
+            'w': 'в', 'q': 'ку', 'x': 'кс'
+        }
+
+        translated_text = []
+        skip = 0
+        for idx, char in enumerate(text):
+            if skip:
+                skip -= 1
+                continue
+            # Attempt to get multi-char transliteration
+            if text[idx:idx + 3] in latin_to_cyrillic:
+                translated_text.append(latin_to_cyrillic[text[idx:idx + 3]])
+                skip = 2
+            elif text[idx:idx + 2] in latin_to_cyrillic:
+                translated_text.append(latin_to_cyrillic[text[idx:idx + 2]])
+                skip = 1
+            else:
+                translated_text.append(latin_to_cyrillic.get(char, char))
+        return ''.join(translated_text)
 
     def text_to_audio_gen(self, text, **kwargs):
         logger.info(text)
         logger.debug("kwargs: {}".format(kwargs))
+
+        # Add auto transcript a text
+        text = text.lower()
+        if self.text_handler.language == 'russian' and any(char.isascii() and char.isalpha() for char in text):
+            # Convert the Latin letters to Cyrillic
+            text = self.latin_to_cyrillic_transliterate(text)
+        elif self.text_handler.language == 'english' and any(char in self.cyrillic_to_latin for char in text):
+            # Convert the Cyrillic letters to Latin
+            text = self.cyrillic_to_latin_transliterate(text)
 
         mask_stress = kwargs.pop("mask_stress", False)
         mask_phonemes = kwargs.pop("mask_phonemes", False)

@@ -1,0 +1,23 @@
+handler:
+  out_max_length:
+  charset: ru
+  modules: [emphasizer]
+
+emphasizer:
+  type: rule_based # Union[nn_based, rule_based]
+  prefer_user: true
+
+  dict_source: # [path/to/dict, file_format] -> ["data/stress.dict", "plane"]
+
+  model: # path/to/model
+  device: # Union[cpu, cuda] - where the calculations will be performed
+  max_unit_length:
+
+phonetizer:
+  type: rule_based # Union[nn_based, rule_based, hybrid]
+
+  dict_source: # [path/to/dict, file_format] -> ["data/stress.dict", "plane"]
+
+  model: # path/to/model
+  device: # Union[cpu, cuda] - where the calculations will be performed
+  max_unit_length:

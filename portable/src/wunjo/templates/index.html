@@ -11,6 +11,7 @@
 {% block menubar %}
 <div class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
     <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
+    <a class="notranslate" id="a-link-open-tutorial" href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i class="fa-solid fa-circle-question" title="Учебное пособие"></i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
     <a id="a-extensions" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i style="padding-left: 2pt;" class="fa-solid fa-puzzle-piece"></i></a>
     <!--EXTENSIONS-->
@@ -34,7 +35,7 @@
                           </select>
                           <div class="model-over-select"></div>
                         </div>
-                        <div class="model-checkboxes" style="position: absolute;z-index: 10;text-align: initial;margin-left: 10pt;">
+                        <div class="model-checkboxes" style="position: absolute;z-index: 10;text-align: initial;min-width: 140pt;display: block;background: #ffffff7d;border-radius: 10pt;padding: 10pt;">
                             {% for key, value in existing_models.items() %}
                               <label><input type="checkbox" value="{{ key }}" name="{{ value }}" class="model-checkbox-value" /><text>{{ key }}</text></label>
                             {% endfor %}
@@ -76,7 +77,7 @@
                             <input style="width: 80pt;" class="range volume-range" type="range" min="-12" max="12" step="0.5" value="0.0">
                         </label>
                     </div>
-                    <textarea class="text-input" placeholder='Введите текст для синтеза в речь' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;"></textarea>
+                    <textarea class="text-input" placeholder='Введите текст, используя буквы, соответствующие языку, выбранной модели для синтеза речи' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;"></textarea>
                     <div style="display: flex;justify-content: end;align-items: center;">
                         <div style="margin-right: 15pt;flex-direction: row;display: flex;">
                             <input style="display: none;" type="file" class="audio-file" accept="audio/*" onchange="document.querySelector('.load-audio-button').removeAttribute('disabled');">
@@ -113,7 +114,7 @@
             <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
             <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимировать</button>
         </div>
-        <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;">
+        <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;height: 80%;">
             <div id="synthesized_result_table" style="overflow-x: auto;">
                 <table id="table_speech_result" style="width: 280pt;table-layout: fixed;display: inline-table;">
                     <thead>
@@ -145,130 +146,16 @@
             <button title="Начать синтез речи" id="button-run-synthesis" style="background: #f7db4d;">Синтезировать речь</button>
         </div>
     </div>
+    <div style="position: absolute;left: 0;bottom: 0;padding: 5pt;font-size: 8pt;color: gray;"><p id="version" vers="1.4.0">Версия 1.4.0</p></div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
 
     <script>
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        async function translateWithGoogle(text, sourceLang, targetLang) {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
-
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    return capitalizeFirstLetter(data[0][0][0]);
-                }
-                throw new Error("Failed to parse Google Translate response.");
-            } catch (err) {
-                console.error(err);
-                return text; // default to returning original text
-            }
-        }
-
         let targetLang = "{{ user_lang }}";  // Initial value
-
-        async function translateReload(newTargetLang = 'ru') {
-            targetLang = newTargetLang;
-
-            async function translateTextNode(node, sourceLang, targetLang) {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    const trimmedText = node.nodeValue.trim();
-                    if (trimmedText) {
-                        const translatedText = await translateWithGoogle(trimmedText, sourceLang, targetLang);
-                        node.nodeValue = node.nodeValue.replace(trimmedText, translatedText);
-                    }
-                } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('notranslate') && node.getAttribute('lang') !== targetLang) {
-                    for (let child of node.childNodes) {
-                        await translateTextNode(child, sourceLang, targetLang);
-                    }
-                    node.setAttribute('lang', targetLang);
-                }
-            }
-
-            async function translatePage() {
-                let allTextAreaElements = document.querySelectorAll('textarea');
-
-                allTextAreaElements.forEach(async (elem) => {
-                    if (!elem.classList.contains('notranslate') && elem.getAttribute('lang') !== targetLang) {
-                        let originalTextArea = elem.placeholder.trim();
-                        if (originalTextArea) {
-                            let translatedTextArea = await translateWithGoogle(originalTextArea, 'auto', targetLang);
-                            elem.placeholder = translatedTextArea;
-                            elem.setAttribute('lang', targetLang);
-                        }
-                    }
-                });
-
-                let allTextElements = document.querySelectorAll('div, p, h1, h2, h3, h4, h5, h6, a, span, li, td, th, option, legend, label, text, button');
-
-                for (const elem of allTextElements) {
-                    await translateTextNode(elem, 'auto', targetLang);
-                }
-            }
-
-            // Initially translate the page
-            translatePage();
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            translateReload(targetLang);
-        });
-
-        document.body.addEventListener('click', event => {
-            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'I') {
-                translateReload(targetLang);
-            }
-        });
-
-        async function translateNewUserLang(lang) {
-            await translateReload(lang);
-        }
-
-        document.getElementById('translate-application-btn').addEventListener('click', function() {
-            const dropdown = document.getElementById('language-dropdown');
-            dropdown.style.display = 'block';
-        });
-
-        document.getElementById('language-dropdown').addEventListener('change', function() {
-            let selectedLangCode = this.value;
-            let selectedOption = this.options[this.selectedIndex];
-            let selectedLangName = selectedOption.getAttribute('name');
-
-            translateNewUserLang(selectedLangCode);
-            updateLangSetting(selectedLangCode, selectedLangName);
-        });
     </script>
-    <script>
-        function updateLangSetting(lang_code, lang_name) {
-            const settingsURL = "/record_settings";
-            const data = {
-                "code": lang_code,
-                "name": lang_name
-            };
 
-            fetch(settingsURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.response_code === 0) {
-                    console.log(data.response);
-                } else {
-                    console.error("Failed to update language setting");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
+    <script>
+        const serverVersionData = {{ version|tojson|safe }};
     </script>
 
 {% endblock %}

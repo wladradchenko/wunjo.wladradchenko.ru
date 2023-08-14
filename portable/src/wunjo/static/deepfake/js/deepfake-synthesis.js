@@ -300,7 +300,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                               <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
                               <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
                             </div>
-                            <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">Подробнее о настройках</a>
+                            <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">Подробнее о настройках</a>
                           </div>
                         </fieldset>
                         <p id="message-deepfake" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>

@@ -166,6 +166,16 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 
 <!-- EXAMPLE -->
 
+<!-- TRANSLATION -->
+The application comes with built-in support for the following languages: English, Russian, Chinese, Portuguese, and Korean.
+
+If you wish to add a new language:
+
+Navigate to `.wunjo/settings/settings.json`.
+Add your desired language in the format: `"default_language": {"name": "code"}`.
+To find the appropriate code for your language, please refer to the [Google Cloud Translate Language Codes](https://cloud.google.com/translate/docs/languages).
+<!-- TRANSLATION -->
+
 <!-- UPDATE -->
 Update 1.2.0
 
@@ -187,13 +197,17 @@ Update 1.4.0
 - [x] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
 - [x] Add selection of video segment for deepfake depending on the length of the audio track
 - [x] Add ability to change directory for .wunjo cache folder
-- [x] Add application translation into different languages, through browser options
-- [ ] Add TTS models for English speech
-- [ ] Add TTS models for Chinese speech
-- [ ] Check the possibility of using speech synthesis on TTS user models
+- [x] Add application translation into different languages
+- [x] Train and add TTS models for English speech
+- [x] Add language of model identification on interface
+- [x] Add the possibility to speak on english by russian model and speak on russian by english model
+- [x] Add the possibility of using speech synthesis on TTS user models (ru, en)
+- [x] Add the new update information
+- [x] Integrate links to train video and wiki page
 
-New Extensions
-- [ ] Develop extension for face swaps from source face to destination face.
+Update 1.5.0
+- [ ] Develop modul for face swaps from source face to destination face (Face swap).
+- [ ] Add create deepfake video by text prompts
       
 <!-- VIDEO -->
 ## Video

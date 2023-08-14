@@ -736,3 +736,218 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
 }
 document.cookie = "introCompleted=true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 ///SUPPORT USER///
+
+///TRANSLATE///
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+async function translateWithGoogle(text, sourceLang, targetLang) {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+            return capitalizeFirstLetter(data[0][0][0]);
+        }
+        throw new Error("Failed to parse Google Translate response.");
+    } catch (err) {
+        console.error(err);
+        return text; // default to returning original text
+    }
+}
+
+async function translateTitleAttributes(targetLang) {
+    let elementsWithTitle = document.querySelectorAll('[title]');
+    for (const elem of elementsWithTitle) {
+        if (elem.getAttribute('lang-title') !== targetLang) {
+            let originalTitle = elem.title.trim();
+            if (originalTitle) {
+                let translatedTitle = await translateWithGoogle(originalTitle, 'auto', targetLang);
+                elem.title = translatedTitle;
+            }
+            elem.setAttribute('lang-title', targetLang);
+        }
+    }
+}
+
+async function translateReload(newTargetLang = 'ru') {
+    targetLang = newTargetLang;
+
+    async function translateTextNode(node, sourceLang, targetLang) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const trimmedText = node.nodeValue.trim();
+            if (trimmedText) {
+                const translatedText = await translateWithGoogle(trimmedText, sourceLang, targetLang);
+                node.nodeValue = node.nodeValue.replace(trimmedText, translatedText);
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('notranslate') && node.getAttribute('lang') !== targetLang) {
+            for (let child of node.childNodes) {
+                await translateTextNode(child, sourceLang, targetLang);
+            }
+            node.setAttribute('lang', targetLang);
+        }
+    }
+
+    async function translatePage() {
+        let allTextAreaElements = document.querySelectorAll('textarea');
+
+        allTextAreaElements.forEach(async (elem) => {
+            if (!elem.classList.contains('notranslate') && elem.getAttribute('lang') !== targetLang) {
+                let originalTextArea = elem.placeholder.trim();
+                if (originalTextArea) {
+                    let translatedTextArea = await translateWithGoogle(originalTextArea, 'auto', targetLang);
+                    elem.placeholder = translatedTextArea;
+                    elem.setAttribute('lang', targetLang);
+                }
+            }
+        });
+
+        let allTextElements = document.querySelectorAll('div, p, h1, h2, h3, h4, h5, h6, a, span, li, td, th, option, legend, label, text, button');
+
+        for (const elem of allTextElements) {
+            await translateTextNode(elem, 'auto', targetLang);
+        }
+
+        await translateTitleAttributes(targetLang)
+    }
+
+    // Initially translate the page
+    translatePage();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    translateReload(targetLang);
+});
+
+document.body.addEventListener('click', event => {
+    if (event.target.tagName === 'BUTTON' || event.target.tagName === 'I') {
+        translateReload(targetLang);
+    }
+});
+
+async function translateNewUserLang(lang) {
+    await translateReload(lang);
+}
+
+document.getElementById('translate-application-btn').addEventListener('click', function() {
+    const dropdown = document.getElementById('language-dropdown');
+    dropdown.style.display = 'block';
+});
+
+document.getElementById('language-dropdown').addEventListener('change', function() {
+    let selectedLangCode = this.value;
+    let selectedOption = this.options[this.selectedIndex];
+    let selectedLangName = selectedOption.getAttribute('name');
+
+    translateNewUserLang(selectedLangCode);
+    updateLangSetting(selectedLangCode, selectedLangName);
+});
+
+function updateLangSetting(lang_code, lang_name) {
+    const settingsURL = "/record_settings";
+    const data = {
+        "code": lang_code,
+        "name": lang_name
+    };
+
+    fetch(settingsURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.response_code === 0) {
+            console.log(data.response);
+        } else {
+            console.error("Failed to update language setting");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+///TRANSLATE///
+
+///UPDATE VERSION///
+// Convert version string to array for easy comparison
+function versionUpdateToArray(version) {
+    return version.split(".").map(Number);
+}
+
+function updateVersion(serverVersionData){
+    // Get the version passed from Jinja
+    let serverVersionDataJSON = JSON.parse(serverVersionData);
+    if (Object.keys(serverVersionDataJSON).length !== 0 && serverVersionDataJSON.hasOwnProperty('version')) {
+        let serverVersion = serverVersionDataJSON.version;
+
+        // Get the current version displayed in the HTML
+        let currentVersion = document.getElementById('version').getAttribute('vers');
+
+        // Check if the version from the server is newer
+        if (serverVersion !== currentVersion) {
+            // Get history witch upper current version
+            let allVersionHistory = serverVersionDataJSON.history
+
+            let currentVersionArray = versionUpdateToArray(currentVersion);
+
+            // Filter versions that are less than or equal to the current version
+            let filteredVersions = Object.keys(allVersionHistory)
+                .filter(version => {
+                    let versionArray = versionUpdateToArray(version);
+                    for (let i = 0; i < 3; i++) {
+                        if (versionArray[i] < currentVersionArray[i]) return false;
+                        if (versionArray[i] > currentVersionArray[i]) return true;
+                    }
+                    return false; // if all parts are equal
+                })
+                .sort((a, b) => versionUpdateToArray(b).join('.') - versionUpdateToArray(a).join('.')); // Sort versions in descending order
+
+            // Generate HTML
+            let htmlUpdateInfo = "";
+
+            filteredVersions.forEach(version => {
+                htmlUpdateInfo += `<h3>${version}</h3><ul>`;
+                let items = allVersionHistory[version].split("\n");
+                items.forEach(item => {
+                    htmlUpdateInfo += `<li>${item}</li>`;
+                });
+                htmlUpdateInfo += `<br></ul>`;
+            });
+
+            // Update the content of the paragraph
+            document.getElementById('version').innerHTML = 'Доступно обновление ' + serverVersion + `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">Что нового?</button>`;
+        }
+    }
+};
+
+function openUpdateHistory(elem, info) {
+    var introUpdateVersion = introJs();
+    introUpdateVersion.setOptions({
+        steps: [
+            {
+                element: elem,
+                title: 'Что нового',
+                position: 'left',
+                intro: `
+                <div style="max-width: 400pt;max-height: 70vh;padding-left: 20pt;padding-right: 20pt;">${info}</div>
+                <a class="introjs-button" href="https://wladradchenko.ru/wunjo" target="_blank" rel="noopener noreferrer" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;">Загрузить обновление</a>
+                `
+               }
+        ],
+        showButtons: false,
+        showStepNumbers: false,
+        showBullets: false,
+        nextLabel: 'Продолжить',
+        prevLabel: 'Вернуться',
+        doneLabel: 'Закрыть'
+    });
+    introUpdateVersion.start();
+}
+
+updateVersion(serverVersionData);
+///UPDATE VERSION///
