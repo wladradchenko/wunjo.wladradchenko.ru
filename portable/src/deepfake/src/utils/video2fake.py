@@ -9,6 +9,12 @@ import sys
 import os
 
 
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, f"{root_path}/deepfake")
+from src.video2fake import Wav2Lip
+sys.path.pop(0)
+
+
 def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
     """
     Extract frames from a video, apply resizing, rotation, and cropping.
@@ -115,7 +121,7 @@ class GenerateFakeVideo2Lip:
 
     def face_detect_with_alignment(self, images, device, pads, nosmooth):
         smooth_windows_size = 5
-        fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device=device)
+        fa = face_alignment.FaceAlignment(1, device=device)
 
         predictions = []
         for image in tqdm(images):
@@ -314,11 +320,6 @@ class GenerateFakeVideo2Lip:
 
     def load_model(self, path, device):
         """Load model Wav2Lip"""
-        root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.insert(0, f"{root_path}/deepfake")
-        from src.deepfake.video2fake import Wav2Lip
-        sys.path.pop(0)
-
         # load wav2lip
         wav2lip = Wav2Lip()
         print("Load checkpoint from: {}".format(path))
