@@ -2,8 +2,8 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.3.2"
-url = "https://ru.wladradchenko/wunjo"
+version = "1.4.0"
+url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
 author_email = "i@wladradchenko.ru"
@@ -14,7 +14,7 @@ description = "Text to speech by neural networks"
 long_description = """Application for speech synthesis from text and speech recognition to text. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
 All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis and voice-to-text recognition. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
 """
-icon = "src/wunjo/static/basic/icon/gray"
+icon = "src/wunjo/static/basic/icon"
 sources = [
     "src/wunjo",
     "src/backend",

@@ -22,7 +22,7 @@ from backend.download import download_model, unzip, check_download_size, get_dow
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -482,5 +482,5 @@ def media_file(filename):
 
 
 def main():
-    # FlaskUI(app=app, server="flask").run()
-    app.run(port=5005)
+    FlaskUI(app=app, server="flask").run()
+    # app.run()
