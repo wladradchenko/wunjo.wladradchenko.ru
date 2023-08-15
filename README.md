@@ -186,6 +186,8 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- EXAMPLE -->
 
 <!-- TRANSLATION -->
+## Language
+
 The application comes with built-in support for the following languages: English, Russian, Chinese, Portuguese, and Korean.
 
 If you wish to add a new language:
@@ -227,6 +229,7 @@ Update 1.4.0
 Update 1.5.0
 - [ ] Develop modul for face swaps from source face to destination face (Face swap).
 - [ ] Add create deepfake video by text prompts
+- [ ] Make a version that will include all extensions without extensions download
       
 <!-- VIDEO -->
 ## Video
