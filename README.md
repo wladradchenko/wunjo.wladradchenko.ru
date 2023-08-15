@@ -90,9 +90,9 @@ Available list of extensions at [link](https://wladradchenko.ru/static/wunjo.wla
 <!-- DOWNLOAD -->
 ## Install packets
 
-[Ubuntu / Debian Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
+[Ubuntu / Debian Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
 
-[Ubuntu / Debian Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
+[Ubuntu / Debian Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -110,9 +110,9 @@ sudo dpkg -r wunjo
 rm -rf ~/.wunjo
 ```
 
-[MacOS Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
+[MacOS Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
 
-[MacOS Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
+[MacOS Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -127,7 +127,9 @@ unzip wunjo_macos_{vesrion}.zip
 rm -rf ~/.wunjo
 ```
 
-[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+[Windows Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+
+[Windows Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
 
 ```
 // Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
@@ -198,17 +200,6 @@ To find the appropriate code for your language, please refer to the [Google Clou
 <!-- TRANSLATION -->
 
 <!-- UPDATE -->
-Update 1.2.0
-
-- [x] Reduce application size
-- [x] Add download feature for models to choose from
-- [x] Add y-axis head rotation control (advanced options for creating animations)
-- [x] Add head rotation control on x axis (advanced options for creating animation)
-- [x] Add head rotation control in Z axis (advanced options for creating animation)
-- [x] Add background quality improvements (advanced options for creating animations)
-- [x] Add speaking facial expression control (advanced options for creating animations)
-- [x] Make builds
-
 Update 1.3.2
 
 - [x] Added support for extensions (any developer can create extensions without opening the main code)

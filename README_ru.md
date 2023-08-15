@@ -90,9 +90,9 @@ briefcase package
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-[Ubuntu / Debian Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.2.0.deb)
+[Ubuntu / Debian Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
 
-[Ubuntu / Debian Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
+[Ubuntu / Debian Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -110,9 +110,9 @@ sudo dpkg -r wunjo
 rm -rf ~/.wunjo
 ```
 
-[MacOS Stable v1.2](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.2.0.zip)
+[MacOS Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
 
-[MacOS Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
+[MacOS Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -127,7 +127,9 @@ unzip wunjo_macos_{vesrion}.zip
 rm -rf ~/.wunjo
 ```
 
-[Windows Extensions v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+[Windows Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+
+[Windows Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
@@ -199,17 +201,6 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- TRANSLATION -->
 
 <!-- UPDATE -->
-Обновление 1.2.0
-
-- [x] Уменьшить размер приложения
-- [x] Добавить функцию скачивания моделей на выбор
-- [x] Добавить контроль поворота головы по оси Y (продвинутые опции для создания анимации)
-- [x] Добавить контроль поворота головы по оси X (продвинутые опции для создания анимации)
-- [x] Добавить контроль поворота головы по оси Z (продвинутые опции для создания анимации)
-- [x] Добавить улучшения качества фона (продвинутые опции для создания анимации)
-- [x] Добавить контроль мимики говорения (продвинутые опции для создания анимации)
-- [x] Сделать билды
-
 Обновление 1.3.2
 
 - [x] Добавлена поддержка расширений (любой разработчик может создавать расширения без открытия основного кода)
