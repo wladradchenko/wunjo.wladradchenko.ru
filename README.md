@@ -225,7 +225,11 @@ Update 1.5.0
 <!-- VIDEO -->
 ## Video
 
+### What is new
+
 [![Watch the video](https://img.youtube.com/vi/oHQR1Zx6YOk/hqdefault.jpg)](https://youtu.be/oHQR1Zx6YOk)
+
+### How install
 
 [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
 
