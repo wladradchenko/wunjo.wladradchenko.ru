@@ -147,7 +147,9 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 ```
 
 <!-- EXAMPLE -->
-## Пример
+## Example
+
+### Face animation from image src
 
 <div align="center">
   <table>
@@ -157,9 +159,26 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
     <th>Fix face + Enhancer</th>
   </tr>
   <tr align="center">
-    <td><img src="example/original.gif" alt="original" width="228" height="360"></td>
-    <td><img src="example/move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
-    <td><img  src="example/static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+    <td><img src="example/samurai_original.gif" alt="original" width="228" height="360"></td>
+    <td><img src="example/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
+    <td><img  src="example/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+  </tr>
+</table>
+</div>
+
+### Mouth animation from video src
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Original</th>
+    <th>Mouth animation</th>
+    <th>Mouth animation + Enhancer</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/pirate_original.gif" alt="original" width="228" height="228"></td>
+    <td><img src="example/pirate_mouth.gif" alt="move_enhancer" width="228" height="228"></td>
+    <td><img  src="example/pirate_mouth_enhancer.gif" alt="static_enhancer" width="228" height="228"></td>
   </tr>
 </table>
 </div>

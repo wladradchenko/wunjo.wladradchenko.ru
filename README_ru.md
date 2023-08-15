@@ -150,6 +150,8 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- EXAMPLE -->
 ## Пример
 
+### Анимация лица из изображения
+
 <div align="center">
   <table>
   <tr>
@@ -158,12 +160,31 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
     <th>Фиксированное лицо + Улучшение лица</th>
   </tr>
   <tr align="center">
-    <td><img src="example/original.gif" alt="original" width="228" height="360"></td>
-    <td><img src="example/move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
-    <td><img  src="example/static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+    <td><img src="example/samurai_original.gif" alt="original" width="228" height="360"></td>
+    <td><img src="example/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
+    <td><img  src="example/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
   </tr>
 </table>
 </div>
+
+### Анимация рта из видео
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Оригинал</th>
+    <th>Анимация рта</th>
+    <th>Анимация рта + Улучшение лица</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/pirate_original.gif" alt="original" width="228" height="228"></td>
+    <td><img src="example/pirate_mouth.gif" alt="move_enhancer" width="228" height="228"></td>
+    <td><img  src="example/pirate_mouth_enhancer.gif" alt="static_enhancer" width="228" height="228"></td>
+  </tr>
+</table>
+</div>
+
+<!-- EXAMPLE -->
 
 <!-- TRANSLATION -->
 Приложение поставляется со встроенной поддержкой следующих языков: английский, русский, китайский, португальский и корейский.
