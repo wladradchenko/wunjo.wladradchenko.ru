@@ -235,6 +235,12 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 
 [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
 
+<!-- DONAT -->
+## Поддержка
+
+Вы можете поддержать автора проекта на развитии его креативных идей, либо просто угостить [чашкой кофе](https://wladradchenko.ru/donat).
+<!-- DONAT -->
+
 <!-- CONTACT -->
 ## Контакт
 
