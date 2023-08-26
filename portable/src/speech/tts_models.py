@@ -4,7 +4,7 @@ import sys
 import requests
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, f"{root_path}/backend")
+sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from speech.tts.synthesizer import Synthesizer, set_logger, _load_text_handler
 from backend.folders import MEDIA_FOLDER, AVATAR_FOLDER, VOICE_FOLDER, CUSTOM_VOICE_FOLDER

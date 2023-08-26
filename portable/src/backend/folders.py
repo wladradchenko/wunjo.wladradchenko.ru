@@ -31,6 +31,10 @@ VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'voice')
 if not os.path.exists(VOICE_FOLDER):
     os.makedirs(VOICE_FOLDER)
 
+RTVC_VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'rtvc')
+if not os.path.exists(RTVC_VOICE_FOLDER):
+    os.makedirs(RTVC_VOICE_FOLDER)
+
 CUSTOM_VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'user_trained_voice')
 if not os.path.exists(CUSTOM_VOICE_FOLDER):
     os.makedirs(CUSTOM_VOICE_FOLDER)

@@ -11,9 +11,7 @@ class TextToSpeech:
     def get_synthesized_audio(text, model_type, models, dir_time, **options):
         try:
             results = TextToSpeech.get_models_results(text, model_type, models, dir_time, **options)
-
             return 0, results
-
         except Exception as e:
             logging.exception(e)
             return 1, str(e)
@@ -56,5 +54,31 @@ class VoiceCloneTranslate:
     """
     Real time voice clone and translate
     """
-    def __int__(self):
-        pass
+
+    @staticmethod
+    def get_source_language(text):
+        return "en"
+
+    @staticmethod
+    def get_synthesized_audio(text, encoder, synthesizer, vocoder, dir_time, **options):
+        try:
+            src_lang = VoiceCloneTranslate.get_source_language(text)
+            results = VoiceCloneTranslate.get_models_results(encoder, synthesizer, vocoder, dir_time, **options)
+            return 0, results
+        except Exception as e:
+            logging.exception(e)
+            return 1, str(e)
+
+    @staticmethod
+    def get_models_results(encoder, synthesizer, vocoder, dir_time, **options):
+        # if not os.path.exists(dir_time):
+        #     os.makedirs(dir_time)
+
+        return 1
+
+    @staticmethod
+    def __run__(text, encoder, synthesizer, vocoder, dir_time, **options):
+        VoiceCloneTranslate.get_synthesized_audio(text, encoder, synthesizer, vocoder, dir_time, **options)
+
+
+VoiceCloneTranslate.__run__("text", "encoder", "synthesizer", "vocoder", "dir_time")

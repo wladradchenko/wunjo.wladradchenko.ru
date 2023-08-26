@@ -6,8 +6,8 @@ from time import strftime
 from argparse import Namespace
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-deepfake_root_path = f"{root_path}/deepfake"
-sys.path.insert(0, f"{root_path}/deepfake")
+deepfake_root_path = os.path.join(root_path, "deepfake")
+sys.path.insert(0, deepfake_root_path)
 
 """SadTalker"""
 from src.utils.preprocess import CropAndExtract

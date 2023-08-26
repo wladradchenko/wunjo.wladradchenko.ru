@@ -10,7 +10,7 @@ import os
 
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, f"{root_path}/deepfake")
+sys.path.insert(0, os.path.join(root_path, "deepfake"))
 from src.video2fake import Wav2Lip
 sys.path.pop(0)
 

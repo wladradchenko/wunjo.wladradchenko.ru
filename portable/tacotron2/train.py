@@ -102,7 +102,7 @@ def prepare_dataloaders(hparams, distributed_run=False):
         text_handler.out_max_length = None
         assert text_handler.charset.value == hparams.charset
     else:
-        text_handler = Handler.from_charset(hparams.charset, data_dir=f"{os.path.dirname(os.path.abspath(__file__))}/data", silent=True)
+        text_handler = Handler.from_charset(hparams.charset, data_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"), silent=True)
 
     trainset = TextMelLoader(text_handler, hparams.training_files, hparams)
     valset = TextMelLoader(text_handler, hparams.validation_files, hparams)

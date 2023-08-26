@@ -14,7 +14,8 @@ from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
 from speech.interface import TextToSpeech
-from speech.models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
+from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
+from speech.rtvc_models import load_rtvc_encoder, load_rtvc_synthesizer, load_rtvc_vocoder
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 
@@ -26,8 +27,7 @@ app.config['DEBUG'] = True
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
-
-app.config['models'], app.config['_valid_model_types'] = {}, []
+app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 # get list of all directories in folder
 
 
@@ -90,8 +90,8 @@ def set_settings():
 
 
 def get_avatars_static():
-    standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
-    custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
+    standard_voices = {voice_name: url_for("media_file", filename=os.path.join("avatar", f"{voice_name}.png")) for voice_name in voice_names}
+    custom_voices = {voice_name: url_for("media_file", filename=os.path.join("avatar", "Unknown.png")) for voice_name in custom_voice_names}
     return {**standard_voices, **custom_voices}
 
 
@@ -324,10 +324,10 @@ def synthesize():
             "volume": float(request_json.get("volume", 0.0))
         }
 
-        app.config['models'] = load_voice_models(model_type, app.config['models'])
+        app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
 
         for model in model_type:
-            response_code, results = TextToSpeech.get_synthesized_audio(text, model, app.config['models'], os.path.join(WAVES_FOLDER, dir_time), **options)
+            response_code, results = TextToSpeech.get_synthesized_audio(text, model, app.config['TTS_LOADED_MODELS'], os.path.join(WAVES_FOLDER, dir_time), **options)
 
             if response_code == 0:
                 for result in results:

@@ -1,3 +1,4 @@
+import os.path
 import re
 from collections import defaultdict
 import typing
@@ -446,7 +447,7 @@ def get_symbols_length(charset: str):
 
 
 def _get_file(name, data_dir):
-    return f"{data_dir}/{name}"
+    return os.path.join(data_dir, name)
 
 
 def _get_default_modules(charset, data_dir=None, verify_checksum=True, silent=False):

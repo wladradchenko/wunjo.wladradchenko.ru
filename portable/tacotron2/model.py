@@ -41,7 +41,8 @@ from torch.nn import functional as F
 
 root_path = os.path.dirname(os.path.abspath(__file__))
 tps_path = os.path.dirname(os.path.dirname(os.path.dirname(root_path)))
-sys.path.insert(0, f"{tps_path}/tps")
+
+sys.path.insert(0, os.path.join(tps_path, "tps"))
 
 from tps import get_symbols_length, prob2bool
 

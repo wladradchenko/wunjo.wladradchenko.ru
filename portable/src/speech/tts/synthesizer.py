@@ -358,7 +358,7 @@ def _load_text_handler(config_dict):
     assert config is not None
 
     if config in Charset._member_names_:
-        config_path = f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/tps/data"
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tps", "data")
         handler = Handler.from_charset(config, data_dir=config_path, out_max_length=out_max_length, silent=True)
     else:
         handler_config = Synthesizer.load_config(config)
