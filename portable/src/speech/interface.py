@@ -3,11 +3,14 @@ import time
 import logging
 
 
-class FileHandler:
+class TextToSpeech:
+    """
+    Text to speech
+    """
     @staticmethod
     def get_synthesized_audio(text, model_type, models, dir_time, **options):
         try:
-            results = FileHandler.get_models_results(text, model_type, models, dir_time, **options)
+            results = TextToSpeech.get_models_results(text, model_type, models, dir_time, **options)
 
             return 0, results
 
@@ -47,3 +50,11 @@ class FileHandler:
             )
 
         return results
+
+
+class VoiceCloneTranslate:
+    """
+    Real time voice clone and translate
+    """
+    def __int__(self):
+        pass

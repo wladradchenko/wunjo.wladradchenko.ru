@@ -12,8 +12,8 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import main_img_deepfake, main_video_deepfake
-from speech.file_handler import FileHandler
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
+from speech.interface import TextToSpeech
 from speech.models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
@@ -22,7 +22,7 @@ from backend.download import download_model, unzip, check_download_size, get_dow
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -253,7 +253,7 @@ def synthesize_deepfake():
 
     try:
         if type_file == "img":
-            deepfake_result = main_img_deepfake(
+            deepfake_result = AnimationFaceTalk.main_img_deepfake(
                 deepfake_dir=DEEPFAKE_FOLDER,
                 source_image=source_image,
                 driven_audio=driven_audio,
@@ -268,7 +268,7 @@ def synthesize_deepfake():
                 background_enhancer=background_enhancer
                 )
         elif type_file == "video":
-            deepfake_result = main_video_deepfake(
+            deepfake_result = AnimationMouthTalk.main_video_deepfake(
                 deepfake_dir=DEEPFAKE_FOLDER,
                 face=source_image,
                 audio=driven_audio,
@@ -327,7 +327,7 @@ def synthesize():
         app.config['models'] = load_voice_models(model_type, app.config['models'])
 
         for model in model_type:
-            response_code, results = FileHandler.get_synthesized_audio(text, model, app.config['models'], os.path.join(WAVES_FOLDER, dir_time), **options)
+            response_code, results = TextToSpeech.get_synthesized_audio(text, model, app.config['models'], os.path.join(WAVES_FOLDER, dir_time), **options)
 
             if response_code == 0:
                 for result in results:
@@ -482,5 +482,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run()
