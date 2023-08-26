@@ -126,7 +126,7 @@ class WaveRNN(nn.Module):
     def forward(self, x, mels):
         self.step += 1
         bsize = x.size(0)
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
             h1 = torch.zeros(1, bsize, self.rnn_dims).cuda()
             h2 = torch.zeros(1, bsize, self.rnn_dims).cuda()
         else:
@@ -169,7 +169,7 @@ class WaveRNN(nn.Module):
         rnn2 = self.get_gru_cell(self.rnn2)
 
         with torch.no_grad():
-            if torch.cuda.is_available():
+            if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
                 mels = mels.cuda()
             else:
                 mels = mels.cpu()
@@ -183,7 +183,7 @@ class WaveRNN(nn.Module):
 
             b_size, seq_len, _ = mels.size()
 
-            if torch.cuda.is_available():
+            if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
                 h1 = torch.zeros(b_size, self.rnn_dims).cuda()
                 h2 = torch.zeros(b_size, self.rnn_dims).cuda()
                 x = torch.zeros(b_size, 1).cuda()
@@ -221,7 +221,7 @@ class WaveRNN(nn.Module):
                 if self.mode == 'MOL':
                     sample = sample_from_discretized_mix_logistic(logits.unsqueeze(0).transpose(1, 2))
                     output.append(sample.view(-1))
-                    if torch.cuda.is_available():
+                    if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
                         # x = torch.FloatTensor([[sample]]).cuda()
                         x = sample.transpose(0, 1).cuda()
                     else:
@@ -283,7 +283,7 @@ class WaveRNN(nn.Module):
         # i.e., it won't generalise to other shapes/dims
         b, t, c = x.size()
         total = t + 2 * pad if side == 'both' else t + pad
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
             padded = torch.zeros(b, total, c).cuda()
         else:
             padded = torch.zeros(b, total, c).cpu()
@@ -332,7 +332,7 @@ class WaveRNN(nn.Module):
             padding = target + 2 * overlap - remaining
             x = self.pad_tensor(x, padding, side='after')
 
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
             folded = torch.zeros(num_folds, target + 2 * overlap, features).cuda()
         else:
             folded = torch.zeros(num_folds, target + 2 * overlap, features).cpu()

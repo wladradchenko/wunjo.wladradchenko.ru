@@ -10,7 +10,6 @@ from speech.rtvc.synthesizer.hparams import hparams
 from speech.rtvc.synthesizer.models.tacotron import Tacotron
 from speech.rtvc.synthesizer.utils.symbols import symbols
 from speech.rtvc.synthesizer.utils.text import text_to_sequence
-from speech.rtvc.vocoder.display import simple_table
 
 sys.path.pop(0)
 
@@ -24,21 +23,18 @@ class Synthesizer:
     sample_rate = hparams.sample_rate
     hparams = hparams
 
-    def __init__(self, model_fpath: Path, verbose=True):
+    def __init__(self, model_fpath: Path, verbose=True, device="cpu"):
         """
         The model isn't instantiated and loaded in memory until needed or until load() is called.
 
         :param model_fpath: path to the trained model file
         :param verbose: if False, prints less information when using the model
+        :param device: device
         """
         self.model_fpath = model_fpath
         self.verbose = verbose
+        self.device = torch.device(device)  # set device from choose user
 
-        # Check for GPU
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-        else:
-            self.device = torch.device("cpu")
         if self.verbose:
             print("Synthesizer using device:", self.device)
 
@@ -74,7 +70,7 @@ class Synthesizer:
         self._model.eval()
 
         if self.verbose:
-            print("Loaded synthesizer \"%s\" trained to step %d" % (self.model_fpath.name, self._model.state_dict()["step"]))
+            print("Loaded synthesizer \"%s\" trained to step %d" % (self.model_fpath, self._model.state_dict()["step"]))
 
     def synthesize_spectrograms(self, texts: List[str],
                                 embeddings: Union[np.ndarray, List[np.ndarray]],
@@ -113,7 +109,7 @@ class Synthesizer:
             # Pad texts so they are all the same length
             text_lens = [len(text) for text in batch]
             max_text_len = max(text_lens)
-            chars = [pad1d(text, max_text_len) for text in batch]
+            chars = [self.pad1d(text, max_text_len) for text in batch]
             chars = np.stack(chars)
 
             # Stack speaker embeddings into 2D array for batch processing
@@ -169,6 +165,6 @@ class Synthesizer:
         """
         return audio.inv_mel_spectrogram(mel, hparams)
 
-
-def pad1d(x, max_len, pad_value=0):
-    return np.pad(x, (0, max_len - len(x)), mode="constant", constant_values=pad_value)
+    @staticmethod
+    def pad1d(x, max_len, pad_value=0):
+        return np.pad(x, (0, max_len - len(x)), mode="constant", constant_values=pad_value)

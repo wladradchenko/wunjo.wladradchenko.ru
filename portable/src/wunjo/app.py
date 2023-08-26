@@ -13,13 +13,19 @@ from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
-from speech.interface import TextToSpeech
+from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
-from speech.rtvc_models import load_rtvc_encoder, load_rtvc_synthesizer, load_rtvc_vocoder
+from speech.rtvc_models import load_rtvc
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 
 
+encoder, synthesizer, vocoder = load_rtvc("english")
+in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/test_windows.wav"
+VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "12345"))
+in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/audio.wav"
+VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "123456"))
+exit()
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
@@ -90,6 +96,7 @@ def set_settings():
 
 
 def get_avatars_static():
+    # not need to use os.path.join for windows because it is frontend path to media file with normal symbol use
     standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
     custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
     return {**standard_voices, **custom_voices}

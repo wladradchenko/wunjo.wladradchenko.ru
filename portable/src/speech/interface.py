@@ -56,29 +56,39 @@ class VoiceCloneTranslate:
     """
 
     @staticmethod
-    def get_source_language(text):
+    def get_source_language(audio_file):
         return "en"
 
     @staticmethod
-    def get_synthesized_audio(text, encoder, synthesizer, vocoder, dir_time, **options):
+    def get_synthesized_audio(audio_file, encoder, synthesizer, vocoder, dir_time, **options):
         try:
-            src_lang = VoiceCloneTranslate.get_source_language(text)
-            results = VoiceCloneTranslate.get_models_results(encoder, synthesizer, vocoder, dir_time, **options)
+            src_lang = VoiceCloneTranslate.get_source_language(audio_file)
+            text = "Hello world"
+            results = VoiceCloneTranslate.get_models_results(
+                audio_file,
+                text,
+                encoder,
+                synthesizer,
+                vocoder,
+                dir_time,
+                **options
+            )
             return 0, results
         except Exception as e:
             logging.exception(e)
             return 1, str(e)
 
     @staticmethod
-    def get_models_results(encoder, synthesizer, vocoder, dir_time, **options):
-        # if not os.path.exists(dir_time):
-        #     os.makedirs(dir_time)
+    def get_models_results(audio_file, text, encoder, synthesizer, vocoder, dir_time, **options):
+        from speech.rtvc_models import clone_voice_rtvc
+        # TODO IMPORTANT REMOVE GLOBAL VALUES!!!
 
-        return 1
+        if not os.path.exists(dir_time):
+            os.makedirs(dir_time)
+
+        file_path = clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, dir_time)
+        return file_path
 
     @staticmethod
     def __run__(text, encoder, synthesizer, vocoder, dir_time, **options):
         VoiceCloneTranslate.get_synthesized_audio(text, encoder, synthesizer, vocoder, dir_time, **options)
-
-
-VoiceCloneTranslate.__run__("text", "encoder", "synthesizer", "vocoder", "dir_time")
