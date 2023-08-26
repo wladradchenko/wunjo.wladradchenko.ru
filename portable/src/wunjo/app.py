@@ -90,8 +90,8 @@ def set_settings():
 
 
 def get_avatars_static():
-    standard_voices = {voice_name: url_for("media_file", filename=os.path.join("avatar", f"{voice_name}.png")) for voice_name in voice_names}
-    custom_voices = {voice_name: url_for("media_file", filename=os.path.join("avatar", "Unknown.png")) for voice_name in custom_voice_names}
+    standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
+    custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
     return {**standard_voices, **custom_voices}
 
 
