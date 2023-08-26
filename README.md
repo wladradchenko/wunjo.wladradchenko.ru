@@ -218,9 +218,20 @@ Update 1.4.0
 - [x] Integrate links to train video and wiki page
 
 Update 1.5.0
-- [ ] Develop modul for face swaps from source face to destination face (Face swap).
-- [ ] Add create deepfake video by text prompts
+- [ ] Add voice cloning translation with encoders english, chinese, russian, spanish
+- [ ] Create hub for voice cloning languages models (or download all default models)
+- [ ] Add face swap module for deepfake on video/photo from one photo face
+- [ ] Add enchanter face or enchanter background on user video/photo without deepfake
 - [ ] Make a version that will include all extensions without extensions download
+- [ ] Improve indication and translation of current progress
+- [ ] Add check debug module with python console
+- [ ] Change real time translation on native translate
+- [ ] Improve message about GPU unavailable for user
+- [ ] Add module deepfake emotions
+
+Update 1.6.0
+- [ ] Add create deepfake video by text prompts
+- [ ] Add AI retouch frames in video by user tool
       
 <!-- VIDEO -->
 ## Video
