@@ -13,19 +13,18 @@ from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
-from speech.interface import TextToSpeech, VoiceCloneTranslate
+from speech.interface import TextToSpeech, VoiceCloneTranslate, SpeechToText
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
+from backend.translator import get_translate
 
 
-encoder, synthesizer, vocoder = load_rtvc("english")
-in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/test_windows.wav"
-VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "12345"))
-in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/audio.wav"
-VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "123456"))
-exit()
+# encoder, synthesizer, vocoder = load_rtvc("english")
+# in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/test_windows.wav"
+# VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "12345"))
+
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
@@ -34,6 +33,7 @@ app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
+app.config['USER_LANGUAGE'] = "en"
 # get list of all directories in folder
 
 
@@ -128,6 +128,10 @@ def split_input_deepfake(input_param):
     return None
 
 
+def get_print_translate(text):
+    return get_translate(text=text, targetLang=app.config['USER_LANGUAGE'])
+
+
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
@@ -140,6 +144,7 @@ def index():
     if default_lang.get(lang_name) is not None:
         default_lang.pop(lang_name)
     ordered_lang = {**{lang_name: lang_code}, **default_lang}
+    app.config['USER_LANGUAGE'] = lang_code  # set user language for translate system print
     return render_template("index.html", version=json.dumps(version_app), existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static(), extensions_html=extensions_html)
 
 
@@ -189,7 +194,7 @@ def open_folder():
 def record_lang_setting():
     req = request.get_json()
     lang_code = req.get("code", "en")
-    lang_name = req.get("name", "en")
+    lang_name = req.get("name", "English")
     settings = set_settings()
     setting_file = os.path.join(SETTING_FOLDER, "settings.json")
     with open(setting_file, 'w') as f:
@@ -198,6 +203,8 @@ def record_lang_setting():
             "name": lang_name
         }
         json.dump(settings, f)
+
+    app.config['USER_LANGUAGE'] = lang_code
 
     return {
         "response_code": 0,
@@ -237,7 +244,7 @@ def get_synthesize_deepfake_result():
 @cross_origin()
 def synthesize_deepfake():
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит обработка"}
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит обработка")}
 
     if not os.path.exists(DEEPFAKE_FOLDER):
         os.makedirs(DEEPFAKE_FOLDER)
@@ -288,7 +295,7 @@ def synthesize_deepfake():
         torch.cuda.empty_cache()
     except Exception as e:
         print(e)
-        app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": "Лицо не найдено"}]
+        app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Лицо не найдено")}]
         app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
         return {"status": 400}
 
@@ -316,7 +323,7 @@ def get_synthesize_result():
 @cross_origin()
 def synthesize():
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит обработка"}
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит обработка")}
     app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 
     dir_time = current_time()
@@ -330,14 +337,22 @@ def synthesize():
             "pitch": float(request_json.get("pitch", 1.0)),
             "volume": float(request_json.get("volume", 0.0))
         }
+        # TODO HERE ADD NEW LOGICAL
+        auto_translation = request_json.get("auto_translation", False)
+        lang_translation = request_json.get("lang_translation")
 
         app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
 
         for model in model_type:
+            # TODO if translate when , (1) translate text on language of model and (2) to do voice clone for target
+            # TODO lang tom improve trasnlate quality
+
             response_code, results = TextToSpeech.get_synthesized_audio(text, model, app.config['TTS_LOADED_MODELS'], os.path.join(WAVES_FOLDER, dir_time), **options)
 
             if response_code == 0:
                 for result in results:
+                    # TODO get audio and if translate when , than do voice cloning
+
                     filename = result.pop("filename")
                     filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                     print(filename)
@@ -376,7 +391,7 @@ def list_extensions():
 @app.route('/get_extensions/', methods=["POST"])
 @cross_origin()
 def get_extensions():
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": "Подождите... Происходит скачивание доп. пакетов"}
+    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит скачивание доп. пакетов")}
 
     request_list = request.get_json()  # get key
     extension_name = request_list.get("extension_name", None)
@@ -390,7 +405,7 @@ def get_extensions():
                 path_extension = os.path.join(EXTENSIONS_FOLDER, extension_name)
 
         if extension_name is None:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Не является файлом"}
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Не является файлом")}
             return {"status_code": 404}
 
         support_format = [".zip", ".tar", ".rar", ".7z"]
@@ -399,7 +414,7 @@ def get_extensions():
                 extension_name = extension_name.rsplit(".", 1)[0]
                 break
         else:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Не является поддерживаемым форматом zip, tar, rar или 7z"}
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Не является поддерживаемым форматом zip, tar, rar или 7z")}
             return {"status_code": 404}
 
         try:
@@ -417,11 +432,11 @@ def get_extensions():
                 else:
                     check_download_size(path_extension, extension_url)
 
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Доп. пакеты скачаны. Перезагрузите приложение"}
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Доп. пакеты скачаны. Перезагрузите приложение")}
         except:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Проблемы с соединением"}
+            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Проблемы с соединением")}
     else:
-        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": "Ссылка пустая"}
+        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Ссылка пустая")}
 
     return {"status_code": 200}
 

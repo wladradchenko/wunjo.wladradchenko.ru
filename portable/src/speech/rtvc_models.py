@@ -11,8 +11,6 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from speech.rtvc.encoder.inference import VoiceCloneEncoder
-from speech.rtvc.encoder.params_model import model_embedding_size as speaker_embedding_size
-from speech.rtvc.encoder.params_data import sampling_rate as rtvc_sampling_rate
 from speech.rtvc.encoder.audio import preprocess_wav   # We want to expose this function from here
 from speech.rtvc.synthesizer.inference import Synthesizer
 from speech.rtvc.vocoder.inference import VoiceCloneVocoder
@@ -128,7 +126,6 @@ def load_rtvc(lang: str):
 
     print("Load RTVC encoder")
     encoder = load_rtvc_encoder(lang, device)
-    # speaker_embedding_size
     print("Load RTVC synthesizer")
     synthesizer = load_rtvc_synthesizer(lang, device)
     print("Load RTVC vocoder")
@@ -144,7 +141,7 @@ def translate_text_from_audio():
     pass
 
 
-def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder):
+def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder, num):
     """
 
     :param audio_file: audio file
@@ -153,6 +150,7 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
     :param synthesizer: synthesizer
     :param vocoder: vocoder
     :param save_folder: folder to save
+    :param num: number file
     :return:
     """
     try:
@@ -200,8 +198,6 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
     generated_wav = preprocess_wav(generated_wav)
 
     # Save it on the disk
-    filename = os.path.join(save_folder, "demo_output_%02d.wav" % 0)
+    filename = os.path.join(save_folder, "rtvc_output_part%02d.wav" % num)
     sf.write(filename, generated_wav.astype(np.float32), synthesizer.sample_rate)
     print(f"\nSaved output as {filename}\n\n")
-
-    return filename

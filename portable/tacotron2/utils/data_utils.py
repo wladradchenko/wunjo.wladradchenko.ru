@@ -220,7 +220,7 @@ class TextMelLoader(torch.utils.data.Dataset):
 
             alignment = np.load(filepath)
 
-        # TODO: поправить эту хрень с alignment
+        # TODO: Check alignment, it has error or not
         if alignment is None or alignment.shape != target_shape:
             print("Some problems with {}: expected {} shape, got {}".format(audio_name, target_shape, alignment.shape))
             alignment = np.zeros(shape=target_shape)

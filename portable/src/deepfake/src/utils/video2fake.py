@@ -198,7 +198,6 @@ class GenerateFakeVideo2Lip:
                             break
                     else:
                         if self.face_detected_in_fields:
-                            # TODO try to use face recognition to find similiar face
                             for landmarks in dets:
                                 x1, y1 = np.min(landmarks, axis=0).astype(int)
                                 x2, y2 = np.max(landmarks, axis=0).astype(int)

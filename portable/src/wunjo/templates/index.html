@@ -78,20 +78,25 @@
                         </label>
                     </div>
                     <textarea class="text-input" placeholder='Введите текст, используя буквы, соответствующие языку, выбранной модели для синтеза речи' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;"></textarea>
-                    <div style="display: flex;justify-content: end;align-items: center;">
-                        <div style="margin-right: 15pt;flex-direction: row;display: flex;">
-                            <input style="display: none;" type="file" class="audio-file" accept="audio/*" onchange="document.querySelector('.load-audio-button').removeAttribute('disabled');">
-                            <button title="Добавить аудио для распознования" type="button" class="audio-load" style="margin-right: 15pt;" onclick="this.parentElement.querySelector('.audio-file').click();"><i class="fa fa-music"></i></button>
-                            <button title="Перевести аудио в текст" type="button" class="load-audio-button audio-load" onclick="recognitionAudioFile(this.parentElement.parentElement.parentElement);" disabled><i class="fa fa-play"></i></button>
-                            <button title="Остановить перевод аудио" type="button" class="pause-audio-button audio-load" onclick="pauseAllAudioFile(this.parentElement);" style="display: none;"><i class="fa fa-pause"></i></button>
+                    <div style="display: flex;justify-content: space-between;">
+                        <div style="display: flex;justify-content: start;align-items: center;">
+                            <button title="Настройка для синтеза речи" type="button" class="setting-tts audio-load" style="margin-right: 15pt;" onclick="settingTextToSpeech(this, {{ existing_langs }});" automatic-translate="false" value-translate="{{ user_lang }}"><i class="fa-solid fa-gear"></i></button>
                         </div>
-                        <div style="margin-right: 15pt;" class="toggle-button toggle-button-voice">
-                          <div title="Флаг выбора текста для озвучивания" class="button toggle-div-voice">
-                            <div class="circle toggle-div-voice">
-                                <i style="display: none" class="fa fa-volume-up toggle-button-voice-on toggle-div-voice"></i>
-                                <i class="fa fa-volume-off toggle-button-voice-off toggle-div-voice"></i>
+                        <div style="display: flex;justify-content: end;align-items: center;">
+                            <div style="margin-right: 15pt;flex-direction: row;display: flex;">
+                                <input style="display: none;" type="file" class="audio-file" accept="audio/*" onchange="document.querySelector('.load-audio-button').removeAttribute('disabled');">
+                                <button title="Добавить аудио для распознования" type="button" class="audio-load" style="margin-right: 15pt;" onclick="this.parentElement.querySelector('.audio-file').click();"><i class="fa fa-music"></i></button>
+                                <button title="Перевести аудио в текст" type="button" class="load-audio-button audio-load" onclick="recognitionAudioFile(this.parentElement.parentElement.parentElement);" disabled><i class="fa fa-play"></i></button>
+                                <button title="Остановить перевод аудио" type="button" class="pause-audio-button audio-load" onclick="pauseAllAudioFile(this.parentElement);" style="display: none;"><i class="fa fa-pause"></i></button>
                             </div>
-                          </div>
+                            <div style="margin-right: 15pt;" class="toggle-button toggle-button-voice">
+                              <div title="Флаг выбора текста для озвучивания" class="button toggle-div-voice">
+                                <div class="circle toggle-div-voice">
+                                    <i style="display: none" class="fa fa-volume-up toggle-button-voice-on toggle-div-voice"></i>
+                                    <i class="fa fa-volume-off toggle-button-voice-off toggle-div-voice"></i>
+                                </div>
+                              </div>
+                            </div>
                         </div>
                     </div>
                 </section>

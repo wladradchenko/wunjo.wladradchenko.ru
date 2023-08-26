@@ -20,6 +20,9 @@ function sendTextToSpeech() {
                 var pitchFactor = voiceCardContainers[i].querySelector(".pitch-range");
                 var speedFactor = voiceCardContainers[i].querySelector(".rate-range");
                 var volumeFactor = voiceCardContainers[i].querySelector(".volume-range");
+                var settingTranslation = voiceCardContainers[i].querySelector(".setting-tts");
+                var autoTranslation = (settingTranslation.getAttribute("automatic-translate") === 'true');
+                var langTranslation = settingTranslation.getAttribute("value-translate");
 
                 textareaText.readOnly = true;
 
@@ -29,7 +32,9 @@ function sendTextToSpeech() {
                         "voice": checkedValues,
                         "rate": speedFactor.value,
                         "pitch": pitchFactor.value,
-                        "volume": volumeFactor.value
+                        "volume": volumeFactor.value,
+                        "auto_translation": autoTranslation,
+                        "lang_translation": langTranslation
                     };
 
                     allCardSend.push(oneCardSend);
@@ -41,25 +46,36 @@ function sendTextToSpeech() {
     // Get a reference to the #status-message element
     const statusMessage = document.getElementById('status-message');
 
+    // Call the async function
+    processAsyncSynthesis(allCardSend, synthesisTable, statusMessage).then(() => {
+        console.log("Start to fetch msg for voice");
+    }).catch((error) => {
+        console.log("Error to fetch msg for voice");
+        console.log(error);
+    });
+};
+
+async function processAsyncSynthesis(allCardSend, synthesisTable, statusMessage) {
     if (allCardSend.length > 0) {
         synthesisTable.innerHTML = "";
-        statusMessage.innerText = "Подождите... Происходит обработка";
+        statusMessage.innerText = await translateWithGoogle("Подождите... Происходит обработка", 'auto', targetLang);
 
-        fetch("/synthesize_speech/", {
+        await fetch("/synthesize_speech/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(allCardSend)
-        })
+        });
+
     } else {
-        statusMessage.innerText = "Выберите голос или включите флаг!";
+        statusMessage.innerText = await translateWithGoogle("Выберите голос или включите флаг!", 'auto', targetLang);
 
         setTimeout(() => {
             statusMessage.innerText = "";
         }, 2000);
     }
-};
+}
 
 window.addEventListener("DOMContentLoaded", (event) => {
     const buttonRunSynthesis = document.getElementById("button-run-synthesis");

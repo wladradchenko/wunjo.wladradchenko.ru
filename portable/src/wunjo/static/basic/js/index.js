@@ -341,7 +341,7 @@ recognition.continuous = true;
 recognition.interimResults = true;
 
 // set the recognition parameters
-recognition.lang = "ru-RU";
+recognition.lang = "ja-JP";
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 recognition.onresult = handleRecognitionResult;
@@ -351,6 +351,198 @@ recognition.onend = handleRecognitionEnd;
 // variable to keep track of currently active textarea
 let activeTextarea;
 let isRecording = false;
+
+// SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
+function toDialectCode(langCode) {
+    const langToDialect = {
+        'af': 'af-ZA',
+        'sq': 'sq-AL',
+        'am': 'am-ET',
+        'ar': 'ar-SA',
+        'hy': 'hy-AM',
+        'az': 'az-AZ',
+        'eu': 'eu-ES',
+        'be': 'be-BY',
+        'bn': 'bn-BD',
+        'bs': 'bs-BA',
+        'bg': 'bg-BG',
+        'ca': 'ca-ES',
+        'ceb': 'ceb-PH',
+        'ny': 'ny-MW',
+        'zh': 'zh-CN',
+        'co': 'co-FR',
+        'hr': 'hr-HR',
+        'cs': 'cs-CZ',
+        'da': 'da-DK',
+        'nl': 'nl-NL',
+        'en': 'en-US',
+        'eo': 'eo-EO',
+        'et': 'et-EE',
+        'tl': 'tl-PH',
+        'fi': 'fi-FI',
+        'fr': 'fr-FR',
+        'fy': 'fy-NL',
+        'gl': 'gl-ES',
+        'ka': 'ka-GE',
+        'de': 'de-DE',
+        'el': 'el-GR',
+        'gu': 'gu-IN',
+        'ht': 'ht-HT',
+        'ha': 'ha-NG',
+        'haw': 'haw-US',
+        'iw': 'iw-IL',
+        'hi': 'hi-IN',
+        'hmn': 'hmn-CN',
+        'hu': 'hu-HU',
+        'is': 'is-IS',
+        'ig': 'ig-NG',
+        'id': 'id-ID',
+        'ga': 'ga-IE',
+        'it': 'it-IT',
+        'ja': 'ja-JP',
+        'jw': 'jw-ID',
+        'kn': 'kn-IN',
+        'kk': 'kk-KZ',
+        'km': 'km-KH',
+        'ko': 'ko-KR',
+        'ku': 'ku-IQ',
+        'ky': 'ky-KG',
+        'lo': 'lo-LA',
+        'lv': 'lv-LV',
+        'lt': 'lt-LT',
+        'lb': 'lb-LU',
+        'mk': 'mk-MK',
+        'mg': 'mg-MG',
+        'ms': 'ms-MY',
+        'ml': 'ml-IN',
+        'mt': 'mt-MT',
+        'mi': 'mi-NZ',
+        'mr': 'mr-IN',
+        'mn': 'mn-MN',
+        'my': 'my-MM',
+        'ne': 'ne-NP',
+        'no': 'no-NO',
+        'or': 'or-IN',
+        'ps': 'ps-AF',
+        'fa': 'fa-IR',
+        'pl': 'pl-PL',
+        'pt': 'pt-PT',
+        'pa': 'pa-PK',
+        'ro': 'ro-RO',
+        'ru': 'ru-RU',
+        'sm': 'sm-WS',
+        'gd': 'gd-GB',
+        'sr': 'sr-RS',
+        'st': 'st-ZA',
+        'sn': 'sn-ZW',
+        'sd': 'sd-PK',
+        'si': 'si-LK',
+        'sk': 'sk-SK',
+        'sl': 'sl-SI',
+        'so': 'so-SO',
+        'es': 'es-ES',
+        'su': 'su-ID',
+        'sw': 'sw-TZ',
+        'sv': 'sv-SE',
+        'tg': 'tg-TJ',
+        'ta': 'ta-IN',
+        'te': 'te-IN',
+        'th': 'th-TH',
+        'tr': 'tr-TR',
+        'uk': 'uk-UA',
+        'ur': 'ur-PK',
+        'uz': 'uz-UZ',
+        'vi': 'vi-VN',
+        'cy': 'cy-GB',
+        'xh': 'xh-ZA',
+        'yi': 'yi-YI',
+        'zu': 'zu-ZA'
+    };
+
+    return langToDialect[langCode] || langCode;
+}
+
+function settingTextToSpeech(elem, languages) {
+    var introSettingTextToSpeech = introJs();
+    introSettingTextToSpeech.setOptions({
+        steps: [
+            {
+                element: elem,
+                title: 'Настройки',
+                position: 'left',
+                intro: `<div style="width: 250pt;">
+                    <div style="display: flex;flex-direction: column;">
+                        <div id="setting-tts-lang-select-field" style="display:block;margin-top:5pt;">
+                            <label for="setting-tts-lang-select">Перевод на язык</label>
+                            <select id="setting-tts-user-lang-select" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
+                            </select>
+                        </div>
+                        <i style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;">
+                            <b>Примечание:</b> Вам необходимо выбрать ваш язык, если вы диктуете текст голосом или распознаете аудио. По умолчанию стоит английский. Как добавить любой язык в приложение?
+                            <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
+                        </i>
+                        <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
+                            Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
+                            Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
+                            Чтобы найти соответствующий код для вашего языка, обратитесь к языковым кодам <a class="notranslate" target="_blank" rel="noopener noreferrer" href="https://cloud.google.com/translate/docs/languages">Google Cloud Translate Language Codes</a>.
+                        </i>
+                        <hr>
+                        <div style="margin-bottom:5pt;margin-top: 15pt">
+                          <input onclick="" type="checkbox" id="setting-tts-translation-check-info" name="setting-tts-translation-check">
+                          <label for="setting-tts-translation-check">Автоматический перевод</label>
+                        </div>
+                        <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> Автоматический перевод означает, что текст будет озвучен на выбранном языке с клонированием голоса модели на любой язык, даже если текст введен на другом языке или нейронная сеть имеет голос на другом языке, перевод будет совершен на выбранный язык.</i>
+                    </div>
+                </div>`,
+               }
+        ],
+        showButtons: false,
+        showStepNumbers: false,
+        showBullets: false,
+        nextLabel: 'Продолжить',
+        prevLabel: 'Вернуться',
+        doneLabel: 'Закрыть'
+    });
+    introSettingTextToSpeech.start();
+
+    // Get the select element
+    const selectElementLanguageTTS = document.getElementById("setting-tts-user-lang-select");
+
+    // Get checkbox
+    const checkboxAutomationTranslate= document.getElementById("setting-tts-translation-check-info");
+    const attrValue = elem.getAttribute("automatic-translate")
+    checkboxAutomationTranslate.checked = (attrValue === "true");
+
+    // Populate the select element with options
+    for (const [key, value] of Object.entries(languages)) {
+      const option = document.createElement("option");
+      option.text = key;
+      option.value = value;
+      option.classList.add("notranslate");
+      selectElementLanguageTTS.add(option);
+    }
+
+    // Add event listener for the change event
+    selectElementLanguageTTS.addEventListener("change", function() {
+      const selectedValueLanguageTTS = this.value; // Get the value of the selected option
+      const selectedTextLanguageTTS = this.options[this.selectedIndex].text; // Get the text of the selected option
+      // this value will use for automatic translate to send in backend
+      elem.setAttribute("value-translate", selectedValueLanguageTTS)
+
+      // Do something with the selected value or text
+      recognition.lang = toDialectCode(selectedValueLanguageTTS);
+    });
+
+    checkboxAutomationTranslate.addEventListener("change", function() {
+        if (this.checked) {
+            elem.setAttribute("automatic-translate", true)
+        } else {
+            elem.setAttribute("automatic-translate", false)
+        }
+    });
+
+}
+// SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
 
 /// GET RECOGNITION RESULT ///
 function handleRecognitionResult(event) {

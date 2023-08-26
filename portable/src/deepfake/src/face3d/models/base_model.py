@@ -36,7 +36,6 @@ class BaseModel(ABC):
         self.opt = opt
         self.isTrain = False
         device = os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
-        # self.device = torch.device('cpu')  # :TODO add subscribe (WHY IN TALKER IT WAS CPU?)
         self.device = torch.device('cuda' if torch.cuda.is_available() and 'cpu' not in device else 'cpu')
         self.save_dir = " " # os.path.join(opt.checkpoints_dir, opt.name)  # save all the checkpoints to save_dir
         self.loss_names = []

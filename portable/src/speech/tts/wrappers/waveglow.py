@@ -13,7 +13,6 @@ _waveglow_path = sys.path[0]
 class WaveglowWrapper:
     def __init__(self, model_path, device, sigma=0.666, strength=0.1):
         device = os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
-        # self.device = "cpu"  # :TODO add subscribe
         self.device = 'cuda' if torch.cuda.is_available() and 'cpu' not in device else 'cpu'
         self.dtype = torch.float
 

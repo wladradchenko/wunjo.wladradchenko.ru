@@ -149,18 +149,12 @@ def pad_lr(x, fsize, fshift):
 def librosa_pad_lr(x, fsize, fshift):
     return 0, (x.shape[0] // fshift + 1) * fshift - x.shape[0]
 
-# Conversions
-_mel_basis = None
-_inv_mel_basis = None
-
-def _linear_to_mel(spectogram, hparams):
-    global _mel_basis
+def _linear_to_mel(spectogram, hparams, _mel_basis = None):
     if _mel_basis is None:
         _mel_basis = _build_mel_basis(hparams)
     return np.dot(_mel_basis, spectogram)
 
-def _mel_to_linear(mel_spectrogram, hparams):
-    global _inv_mel_basis
+def _mel_to_linear(mel_spectrogram, hparams, _inv_mel_basis = None):
     if _inv_mel_basis is None:
         _inv_mel_basis = np.linalg.pinv(_build_mel_basis(hparams))
     return np.maximum(1e-10, np.dot(_inv_mel_basis, mel_spectrogram))

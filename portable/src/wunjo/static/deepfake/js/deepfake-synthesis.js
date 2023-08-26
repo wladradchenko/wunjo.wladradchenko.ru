@@ -3,136 +3,149 @@ function sendDataToDeepfake(elem) {
     fetch('/synthesize_process/')
         .then(response => response.json())
         .then(data => {
-          // Check the value of status_code
-          if (data.status_code === 200) {
-            var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
-
-            var messageDeepfake = elem.querySelector("#message-deepfake");
-            messageDeepfake.innerHTML = "";
-
-            var previewDeepfakeImg = elem.querySelector("#previewDeepfakeImg");
-
-            var canvasRectangles = previewDeepfakeImg.querySelector('#canvasDeepfake');
-            var canvasRectanglesList = [];
-            if (canvasRectangles) {
-                canvasRectanglesList = JSON.parse(canvasRectangles.dataset.rectangles);
-            }
-
-            var imgDeepfakeSrc = previewDeepfakeImg.querySelector('img');
-            var videoDeepfakeSrc = previewDeepfakeImg.querySelector('video');
-            var mediaName = "";
-            var mediaBlobUrl = "";
-            var typeFile = "";
-
-            if (imgDeepfakeSrc) {
-               typeFile = "img";
-               mediaBlobUrl = imgDeepfakeSrc.src
-               mediaName = "image_" + Date.now();
-            } else if (videoDeepfakeSrc) {
-              typeFile = "video";
-              mediaBlobUrl = videoDeepfakeSrc.src
-              mediaName = "video_" + Date.now();
-            } else {
-              messageDeepfake.innerHTML += "<p style='margin-top: 5pt;'>Вы не загрузили изображение. Нажмите на окно загрузки изображения.</p>";
-            }
-            if (mediaBlobUrl) {
-                fetch(mediaBlobUrl)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        var file = new File([blob], mediaName);
-                        uploadFile(file);
-                    });
-            }
-
-           var audioDeepfakeSrc = elem.querySelector("#audioDeepfakeSrc");
-           var audioName = "";
-           if (audioDeepfakeSrc) {
-               var audioBlobUrl = audioDeepfakeSrc.querySelector("source").src;
-               audioName = "audio_" + Date.now();
-               fetch(audioBlobUrl)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        var file = new File([blob], audioName);
-                        uploadFile(file);
-                    });
-           } else {
-              messageDeepfake.innerHTML += "<p style='margin-top: 5pt;'>Вы не загрузили аудиофайл. Нажмите на кнопку загрузить аудиофайл.</p>";
-            }
-
-            var cover = elem.querySelector("#cover-deepfake");
-            var resize = elem.querySelector("#resize-deepfake");
-            var full = elem.querySelector("#full-deepfake");
-            var preprocessing = "full";
-            if (cover.checked) {
-                preprocessing = "cover"
-            } else if (resize.checked) {
-                preprocessing = "resize"
-            }
-
-            var still = elem.querySelector("#still-deepfake");
-            var enhancer = elem.querySelector("#enhancer-deepfake");
-            if (enhancer.checked) {
-                enhancer = "gfpgan";
-            } else {
-                enhancer = false;  // TODO need to set false (not RestoreFormer)
-            }
-
-            if (canvasRectanglesList.length === 0) {
-                messageDeepfake.innerHTML += "<p style='margin-top: 5pt;'>Вы не выделили лицо. Нажмите на кнопку выделить лицо и выделите лицо на изображении.</p>";
-            }
-
-            // advanced settings
-            var expressionScaleDeepfake = elem.querySelector('#expression-scale-deepfake');
-            var inputYawDeepfake = elem.querySelector('#input-yaw-deepfake');
-            var inputPitchDeepfake = elem.querySelector('#input-pitch-deepfake');
-            var inputRollDeepfake = elem.querySelector('#input-roll-deepfake');
-            var backgroundEnhancerDeepfake = elem.querySelector('#background-enhancer-deepfake');
-            var videoStartValue = elem.querySelector('#video-start').value;
-
-            if (mediaName && audioName && canvasRectanglesList.length > 0) {
-                // Get a reference to the #status-message element
-                const statusMessage = document.getElementById('status-message');
-
-                const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
-                buttonAnimationWindows.click();
-
-                var predictParametersDeepfake = {
-                    "face_fields": canvasRectanglesList,
-                    "source_image": mediaName,
-                    "driven_audio": audioName,
-                    "preprocess": preprocessing,
-                    "still": still.checked,
-                    "enhancer": enhancer,
-                    "expression_scale": expressionScaleDeepfake.value,
-                    "input_yaw": inputYawDeepfake.value,
-                    "input_pitch": inputPitchDeepfake.value,
-                    "input_roll": inputRollDeepfake.value,
-                    "background_enhancer": backgroundEnhancerDeepfake.checked,
-                    "type_file": typeFile,
-                    "video_start": videoStartValue,
-                };
-
-                synthesisDeepfakeTable.innerHTML = "";
-                statusMessage.innerText = "Подождите... Происходит обработка";
-
-                fetch("/synthesize_deepfake/", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(predictParametersDeepfake)
-                })
-
-                const closeIntroButton = document.querySelector('.introjs-skipbutton');
-                closeIntroButton.click();
-            }
-          } else {
-            var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
-
-            var messageDeepfake = elem.querySelector("#message-deepfake");
-            messageDeepfake.innerHTML = "<p style='margin-top: 5pt;'>Процесс занят. Дождитесь его окончания.</p>";
-          }
+            // Call the async function
+            processAsyncDeepfake(data, elem).then(() => {
+                console.log("Start to fetch msg for deepfake");
+            }).catch((error) => {
+                console.log("Error to fetch msg for deepfake");
+                console.log(error);
+            });
         });
+}
+
+
+async function processAsyncDeepfake(data, elem) {
+    if (data.status_code === 200) {
+        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+
+        var messageDeepfake = elem.querySelector("#message-deepfake");
+        messageDeepfake.innerHTML = "";
+
+        var previewDeepfakeImg = elem.querySelector("#previewDeepfakeImg");
+
+        var canvasRectangles = previewDeepfakeImg.querySelector('#canvasDeepfake');
+        var canvasRectanglesList = [];
+        if (canvasRectangles) {
+            canvasRectanglesList = JSON.parse(canvasRectangles.dataset.rectangles);
+        }
+
+        var imgDeepfakeSrc = previewDeepfakeImg.querySelector('img');
+        var videoDeepfakeSrc = previewDeepfakeImg.querySelector('video');
+        var mediaName = "";
+        var mediaBlobUrl = "";
+        var typeFile = "";
+
+        if (imgDeepfakeSrc) {
+           typeFile = "img";
+           mediaBlobUrl = imgDeepfakeSrc.src
+           mediaName = "image_" + Date.now();
+        } else if (videoDeepfakeSrc) {
+          typeFile = "video";
+          mediaBlobUrl = videoDeepfakeSrc.src
+          mediaName = "video_" + Date.now();
+        } else {
+          var messageSetP = await translateWithGoogle("Вы не загрузили изображение. Нажмите на окно загрузки изображения.", 'auto', targetLang);
+          messageDeepfake.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+        }
+        if (mediaBlobUrl) {
+            fetch(mediaBlobUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    var file = new File([blob], mediaName);
+                    uploadFile(file);
+                });
+        }
+
+       var audioDeepfakeSrc = elem.querySelector("#audioDeepfakeSrc");
+       var audioName = "";
+       if (audioDeepfakeSrc) {
+           var audioBlobUrl = audioDeepfakeSrc.querySelector("source").src;
+           audioName = "audio_" + Date.now();
+           fetch(audioBlobUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    var file = new File([blob], audioName);
+                    uploadFile(file);
+                });
+       } else {
+          var messageSetP = await translateWithGoogle("Вы не загрузили аудиофайл. Нажмите на кнопку загрузить аудиофайл.", 'auto', targetLang);
+          messageDeepfake.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+        }
+
+        var cover = elem.querySelector("#cover-deepfake");
+        var resize = elem.querySelector("#resize-deepfake");
+        var full = elem.querySelector("#full-deepfake");
+        var preprocessing = "full";
+        if (cover.checked) {
+            preprocessing = "cover"
+        } else if (resize.checked) {
+            preprocessing = "resize"
+        }
+
+        var still = elem.querySelector("#still-deepfake");
+        var enhancer = elem.querySelector("#enhancer-deepfake");
+        if (enhancer.checked) {
+            enhancer = "gfpgan";
+        } else {
+            enhancer = false;  // TODO need to set false (not RestoreFormer)
+        }
+
+        if (canvasRectanglesList.length === 0) {
+            messageDeepfake.innerHTML += "<p style='margin-top: 5pt;'>Вы не выделили лицо. Нажмите на кнопку выделить лицо и выделите лицо на изображении.</p>";
+        }
+
+        // advanced settings
+        var expressionScaleDeepfake = elem.querySelector('#expression-scale-deepfake');
+        var inputYawDeepfake = elem.querySelector('#input-yaw-deepfake');
+        var inputPitchDeepfake = elem.querySelector('#input-pitch-deepfake');
+        var inputRollDeepfake = elem.querySelector('#input-roll-deepfake');
+        var backgroundEnhancerDeepfake = elem.querySelector('#background-enhancer-deepfake');
+        var videoStartValue = elem.querySelector('#video-start').value;
+
+        if (mediaName && audioName && canvasRectanglesList.length > 0) {
+            // Get a reference to the #status-message element
+            const statusMessage = document.getElementById('status-message');
+
+            const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
+            buttonAnimationWindows.click();
+
+            var predictParametersDeepfake = {
+                "face_fields": canvasRectanglesList,
+                "source_image": mediaName,
+                "driven_audio": audioName,
+                "preprocess": preprocessing,
+                "still": still.checked,
+                "enhancer": enhancer,
+                "expression_scale": expressionScaleDeepfake.value,
+                "input_yaw": inputYawDeepfake.value,
+                "input_pitch": inputPitchDeepfake.value,
+                "input_roll": inputRollDeepfake.value,
+                "background_enhancer": backgroundEnhancerDeepfake.checked,
+                "type_file": typeFile,
+                "video_start": videoStartValue,
+            };
+
+            synthesisDeepfakeTable.innerHTML = "";
+            statusMessage.innerText = await translateWithGoogle("Подождите... Происходит обработка", 'auto', targetLang);
+
+            fetch("/synthesize_deepfake/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(predictParametersDeepfake)
+            })
+
+            const closeIntroButton = document.querySelector('.introjs-skipbutton');
+            closeIntroButton.click();
+        }
+      } else {
+        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+
+        var messageDeepfake = elem.querySelector("#message-deepfake");
+        var messageSetP = await translateWithGoogle("Процесс занят. Дождитесь его окончания.", 'auto', targetLang);
+        messageDeepfake.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+      }
 }
 
 

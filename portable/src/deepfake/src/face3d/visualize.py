@@ -32,7 +32,7 @@ def gen_composed_video(args, device, first_frame_coeff, coeff_path, audio_path, 
 
         facemodel.forward(cur_coeff_full, device)
 
-        predicted_landmark = facemodel.pred_lm # TODO.
+        predicted_landmark = facemodel.pred_lm  # TODO.
         predicted_landmark = predicted_landmark.cpu().numpy().squeeze()
 
         rendered_img = facemodel.pred_face

@@ -72,7 +72,6 @@ class ParametricFaceModel:
 
         self.persc_proj = perspective_projection(focal, center)
         device = os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
-        # self.device = 'cpu'  # :TODO add subscribe (WHY IN TALKER IT WAS CPU?)
         self.device = 'cuda' if torch.cuda.is_available() and 'cpu' not in device else 'cpu'
         self.camera_distance = camera_distance
         self.SH = SH()

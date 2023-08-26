@@ -47,11 +47,7 @@ def encode_16bits(x) :
     return np.clip(x * 2**15, -2**15, 2**15 - 1).astype(np.int16)
 
 
-mel_basis = None
-
-
-def linear_to_mel(spectrogram):
-    global mel_basis
+def linear_to_mel(spectrogram, mel_basis = None):
     if mel_basis is None:
         mel_basis = build_mel_basis()
     return np.dot(mel_basis, spectrogram)
