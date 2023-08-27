@@ -1,4 +1,3 @@
-from facenet_pytorch import MTCNN, InceptionResnetV1
 import face_alignment
 import numpy as np
 from tqdm import tqdm
@@ -12,6 +11,7 @@ import os
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "deepfake"))
 from src.video2fake import Wav2Lip
+from src.face3d.recognition import FaceRecognition
 sys.path.pop(0)
 
 
@@ -59,52 +59,12 @@ def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
     return full_frames, fps
 
 
-class FaceRecognition:
-    def __init__(self):
-        # Create an InceptionResnetV1 feature extractor object
-        self.resnet = InceptionResnetV1(pretrained='vggface2').eval()
-
-    def detect_and_embed(self, image):
-        # Convert the numpy image to a PyTorch tensor
-        image_tensor = torch.tensor(image, dtype=torch.float32).permute(2, 0, 1)
-
-        # Add the batch dimension
-        image_tensor = image_tensor.unsqueeze(0)
-
-        # Normalize as per ImageNet stats
-        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32).view(1, 3, 1, 1)
-        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32).view(1, 3, 1, 1)
-        image_tensor = (image_tensor - mean) / std
-
-        # Calculate embedding
-        embedding = self.resnet(image_tensor)
-        return embedding
-
-    def is_similar_face(self, embedding, face_pred_list):
-        """
-        Check if the current embedding is similar to any in the face_pred_list.
-        :param  embedding: (torch.Tensor): The embedding of the current face.
-        :param face_pred_list: List of keep faces
-        :return: bool True if similar face is found, False otherwise.
-        """
-        threshold = 0.8  # You might need to adjust this based on your requirements
-
-        for known_embedding in face_pred_list:
-            distance = torch.dist(embedding, known_embedding, p=2)  # Compute L2 distance
-            if distance < threshold:
-                return True
-
-        return False
-
-
 class GenerateFakeVideo2Lip:
-    def __init__(self):
-        self.face_recognition = FaceRecognition()
+    def __init__(self, model_path):
+        self.face_recognition = FaceRecognition(model_path)
         self.face_fields = None
-        self.face_detected_in_fields = False
-        self.face_prediction_list = []
 
-    def get_smoothened_boxes(self, boxes: list, T: int = 5):
+    def get_smoothened_boxes(self, boxes: np.ndarray, T: int = 5):
         """
         Get smoothened boxes
         :param boxes: frames with face boxes
@@ -119,114 +79,111 @@ class GenerateFakeVideo2Lip:
             boxes[i] = np.mean(window, axis=0)
         return boxes
 
-    def face_detect_with_alignment(self, images, device, pads, nosmooth):
-        smooth_windows_size = 5
-        fa = face_alignment.FaceAlignment(1, device=device)
+    def get_real_crop_box(self, image):
+        """
 
-        predictions = []
-        for image in tqdm(images):
-            dets = fa.get_landmarks(image)
-            if dets is None or len(dets) == 0:
-                predictions.append(None)
+        :param image:
+        :return:
+        """
+        if self.face_fields is not None:
+            # user crop face in frontend
+            squareFace = self.face_fields[0]
+            # real size
+            originalHeight, originalWidth, _ = image.shape
+
+            canvasWidth = squareFace["canvasWidth"]
+            canvasHeight = squareFace["canvasHeight"]
+            # Calculate the scale factor
+            scaleFactor = min(originalWidth / canvasWidth, originalHeight / canvasHeight)
+
+            # Calculate the new position and size of the square face on the original image
+            if originalWidth > originalHeight:
+                offsetX = (originalWidth - originalHeight) / 2
+                newX1 = offsetX + (squareFace['x']) * scaleFactor
+                newX2 = offsetX + (squareFace['x'] + squareFace['width']) * scaleFactor
+                newY1 = squareFace['y'] * scaleFactor
+                newY2 = (squareFace['y'] + squareFace['height']) * scaleFactor
             else:
-                # Using the detected landmarks, get the bounding box
-                if self.face_fields is None:
-                    print("Not set crop, take first face")
-                    landmarks = dets[0]  # get first face
-                    x1, y1 = np.min(landmarks, axis=0).astype(int)
-                    x2, y2 = np.max(landmarks, axis=0).astype(int)
-                    predictions.append([x1, y1, x2, y2])
-                    self.face_fields = [{"x_center": int((x1+x2)/2), "y_center": int((y1+y2)/2)}]
-                    # recognition face
-                    cropped_face = image[y1:y2, x1:x2]
-                    if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
-                        continue
-                    cropped_face_resized = cv2.resize(cropped_face, (160, 160))
-                    encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
-                    if encoding is not None:
-                        self.face_prediction_list += encoding  # TODO check format
-                else:
-                    # user crop face in frontend
-                    squareFace = self.face_fields[0]
+                offsetY = (originalHeight - originalWidth) / 2
+                newX1 = squareFace['x'] * scaleFactor
+                newX2 = (squareFace['x'] + squareFace['width']) * scaleFactor
+                newY1 = offsetY + (squareFace['y']) * scaleFactor
+                newY2 = offsetY + (squareFace['y'] + squareFace['height']) * scaleFactor
 
-                    if squareFace.get("x_center") is None and squareFace.get("y_center") is None:
-                        # real size
-                        originalHeight, originalWidth, _ = image.shape
+            d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
+            # get the center point of d_new
+            user_crop_center = d_user_crop.center()
 
-                        canvasWidth = squareFace["canvasWidth"]
-                        canvasHeight = squareFace["canvasHeight"]
-                        # Calculate the scale factor
-                        scaleFactor = min(originalWidth / canvasWidth, originalHeight / canvasHeight)
+            return user_crop_center.x, user_crop_center.y
+        return None, None
 
-                        # Calculate the new position and size of the square face on the original image
-                        if originalWidth > originalHeight:
-                            offsetX = (originalWidth - originalHeight) / 2
-                            newX1 = offsetX + (squareFace['x']) * scaleFactor
-                            newX2 = offsetX + (squareFace['x'] + squareFace['width']) * scaleFactor
-                            newY1 = squareFace['y'] * scaleFactor
-                            newY2 = (squareFace['y'] + squareFace['height']) * scaleFactor
-                        else:
-                            offsetY = (originalHeight - originalWidth) / 2
-                            newX1 = squareFace['x'] * scaleFactor
-                            newX2 = (squareFace['x'] + squareFace['width']) * scaleFactor
-                            newY1 = offsetY + (squareFace['y']) * scaleFactor
-                            newY2 = offsetY + (squareFace['y'] + squareFace['height']) * scaleFactor
+    def face_detect_with_alignment(self, images, device, pads, nosmooth):
+        predictions = []
+        face_embedding_list = []
+        face_gender = None
+        x_center, y_center = self.get_real_crop_box(images[0])
 
-                        d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
-                        # get the center point of d_new
-                        user_crop_center = d_user_crop.center()
-                        print("Change face field param")
-                        self.face_fields = [{"x_center": user_crop_center.x, "y_center": user_crop_center.y}]
-
-                    # check if user_crop_center is inside det
-                    for landmarks in dets:
-                        x1, y1 = np.min(landmarks, axis=0).astype(int)
-                        x2, y2 = np.max(landmarks, axis=0).astype(int)
-                        # Check if user_crop_center is inside the bounding box defined by (x1, y1) and (x2, y2)
-                        if x1 <= self.face_fields[0]["x_center"] <= x2 and y1 <= self.face_fields[0]["y_center"] <= y2:
-                            print("Center is inside bounding box derived from landmarks.")
-                            predictions.append([x1, y1, x2, y2])
-                            self.face_fields = [{"x_center": int((x1+x2)/2), "y_center": int((y1+y2)/2)}]
-                            # recognition face
-                            cropped_face = image[y1:y2, x1:x2]
-                            if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
-                                continue
-                            cropped_face_resized = cv2.resize(cropped_face, (160, 160))
-                            encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
-                            if encoding is not None:
-                                self.face_prediction_list += encoding  # TODO check format
-                            break
+        for image in tqdm(images):
+            dets = self.face_recognition.get_faces(image)
+            if not dets:
+                predictions.append(None)
+                continue
+            # this is init first face
+            if x_center is None or y_center is None:
+                face = dets[0]  # get first face
+                x1, y1, x2, y2 = face.bbox
+                face_gender = face.gender  # face gender
+                predictions.append([x1, y1, x2, y2])  # prediction
+                face_embedding_list += [face.normed_embedding]
+                x_center = int((x1 + x2) / 2)  # set new center
+                y_center = int((y1 + y2) / 2)  # set new center
+            elif not face_embedding_list:  # not face yet, set new face
+                for face in dets:
+                    x1, y1, x2, y2 = face.bbox
+                    if x1 <= x_center <= x2 and y1 <= y_center <= y2:
+                        face_gender = face.gender  # face gender
+                        predictions.append([x1, y1, x2, y2])  # prediction
+                        face_embedding_list += [face.normed_embedding]
+                        x_center = int((x1 + x2) / 2)  # set new center
+                        y_center = int((y1 + y2) / 2)  # set new center
+                        break
+            else:  # here is already recognition
+                local_face_param = []
+                for face in dets:  # TODO can not be art use hasattr
+                    x1, y1, x2, y2 = face.bbox
+                    x_center = int((x1 + x2) / 2)  # set new center
+                    y_center = int((y1 + y2) / 2)  # set new center
+                    normed_embedding = face.normed_embedding
+                    is_similar = self.face_recognition.is_similar_face(normed_embedding, face_embedding_list)
+                    if x1 <= x_center <= x2 and y1 <= y_center <= y2:
+                        local_face_param += [{
+                            "is_center": True, "is_gender": face_gender == face.gender, "is_embed": is_similar,
+                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding
+                        }]
                     else:
-                        if self.face_detected_in_fields:
-                            for landmarks in dets:
-                                x1, y1 = np.min(landmarks, axis=0).astype(int)
-                                x2, y2 = np.max(landmarks, axis=0).astype(int)
-                                # recognition face
-                                cropped_face = image[y1:y2, x1:x2]
-                                if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
-                                    continue
-                                cropped_face_resized = cv2.resize(cropped_face, (160, 160))
-                                encoding = self.face_recognition.detect_and_embed(cropped_face_resized)
-                                if encoding is not None:
-                                    is_similar = self.face_recognition.is_similar_face(encoding, self.face_prediction_list)
-                                    if is_similar:
-                                        print("Recognition new similar face")
-                                        predictions.append([x1, y1, x2, y2])
-                                        self.face_fields = [{"x_center": int((x1 + x2) / 2), "y_center": int((y1 + y2) / 2)}]
-                                        self.face_prediction_list += encoding  # TODO check format
-                                        break
-                            else:
-                                # not similar faces
-                                predictions.append(None)
-                        else:
-                            # not detected yet on first frames
-                            predictions.append(None)
+                        local_face_param += [{
+                            "is_center": False, "is_gender": face_gender == face.gender, "is_embed": is_similar,
+                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding
+                        }]
 
+                for param in local_face_param:
+                    if (param["is_center"] or param["is_gender"]) and param["is_embed"]:
+                        # this predicted
+                        x1, y1, x2, y2 = param["bbox"]
+                        face_gender = param["gender"]  # face gender
+                        predictions.append([x1, y1, x2, y2])  # prediction
+                        face_embedding_list += [param["embed"]]
+                        x_center = int((x1 + x2) / 2)  # set new center
+                        y_center = int((y1 + y2) / 2)  # set new center
+                        break
+                else:
+                    predictions.append(None)
+
+        smooth_windows_size = 5
         results = []
         pady1, pady2, padx1, padx2 = pads
         for rect, image in zip(predictions, images):
             if rect is None:
-                print('Face not detected! Ensure the video contains a face in all frames.')
                 results.append([0, 0, 1, 1])
             else:
                 y1 = max(0, rect[1] - pady1)
@@ -239,7 +196,7 @@ class GenerateFakeVideo2Lip:
         if not nosmooth:
             boxes = self.get_smoothened_boxes(boxes, T=smooth_windows_size)
 
-        results = [[image[y1: y2, x1:x2], (y1, y2, x1, x2)] for image, (x1, y1, x2, y2) in zip(images, boxes)]
+        results = [[image[int(y1): int(y2), int(x1):int(x2)], (int(y1), int(y2), int(x1), int(x2))] for image, (x1, y1, x2, y2) in zip(images, boxes)]
         return results
 
 
@@ -307,7 +264,6 @@ class GenerateFakeVideo2Lip:
 
             yield img_batch, mel_batch, frame_batch, coords_batch
 
-
     def _load(self, checkpoint_path, device):
         """Load mode by torch"""
         if device == 'cuda':
@@ -348,6 +304,10 @@ class GenerateFakeVideo2Lip:
         :return: path to generated video or None.
         """
         video_path = None
+        # in order to find strange coord for mouth
+        coords_mouth = []
+        len_coords_mouth = 3  # find mean center between num coords mouth
+        max_distance_mouth = 20
 
         for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, total=int(np.ceil(float(len(mel_chunks)) / batch_size)))):
 
@@ -380,9 +340,23 @@ class GenerateFakeVideo2Lip:
 
             for p, f, c in zip(pred, frames, coords):
                 y1, y2, x1, x2 = c
+                center_current = np.array([(x1 + x2) / 2, (y1 + y2) / 2])  # Calculate the center of the current bounding box
                 p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
-
-                f[y1:y2, x1:x2] = p
+                # Check if the current bounding box is non-empty
+                if y1 != 0 and y2 != 1 and x1 != 0 and x2 != 1:
+                    # If less than 5 coordinates are stored, add the new one
+                    if len(coords_mouth) < len_coords_mouth:
+                        coords_mouth.append(center_current)
+                        f[y1:y2, x1:x2] = p
+                    else:
+                        # Calculate distances between the current center and the centers stored in keep_coords
+                        distances = [self.face_recognition.calculate_distance(center_current, prev_center) for prev_center in coords_mouth]
+                        # If the current center is near any of the previous centers, update the frame
+                        # if any(distance < max_distance for distance in distances):
+                        if np.mean(distances) < max_distance_mouth:
+                            f[y1:y2, x1:x2] = p
+                        coords_mouth.pop(0)  # Remove the oldest center
+                        coords_mouth.append(center_current)  # Add the current center
                 out.write(f)
         else:
             out.release()

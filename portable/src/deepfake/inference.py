@@ -360,7 +360,7 @@ class AnimationMouthTalk:
         # test
         full_frames = frames[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
-        wav2lip = GenerateFakeVideo2Lip()
+        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER)
         wav2lip.face_fields = args.face_fields
         print("Face detected start")
         gen = wav2lip.datagen(

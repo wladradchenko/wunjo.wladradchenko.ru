@@ -59,7 +59,9 @@ requires = [
     "av",
     "torch-optimizer",
     "realesrgan",
-    "facenet_pytorch",
+    "onnxruntime",
+    "onnxruntime-gpu",
+    "insightface"
 ]
 test_requires = [
 ]

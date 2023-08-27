@@ -1,4 +1,5 @@
 import os
+os.environ['OMP_NUM_THREADS'] = '1'  # TODO writen what increase speed for cuda, need to protest if is right than set if use cuda!
 import sys
 import json
 import torch
@@ -21,10 +22,6 @@ from backend.download import download_model, unzip, check_download_size, get_dow
 from backend.translator import get_translate
 
 
-# encoder, synthesizer, vocoder = load_rtvc("english")
-# in_fpath = "/home/user/Documents/CONDA/wunjo.wladradchenko.ru/example/test_windows.wav"
-# VoiceCloneTranslate.get_synthesized_audio(in_fpath, encoder, synthesizer, vocoder, os.path.join(WAVES_FOLDER, "12345"))
-
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
@@ -36,6 +33,17 @@ app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it 
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
 # get list of all directories in folder
+
+
+# TODO interect code from swapper
+# def pre_check() -> bool:
+#     if sys.version_info < (3, 9):
+#         update_status('Python version is not supported - please upgrade to 3.9 or higher.')
+#         return False
+#     if not shutil.which('ffmpeg'):
+#         update_status('ffmpeg is not installed.')
+#         return False
+#     return True
 
 
 def get_version_app():
@@ -366,7 +374,6 @@ def synthesize():
         rtvc_models_lang = lang_translation  # try to use user lang for rtvc models
 
         use_voice_clone_on_audio = request_json.get("use_voice_clone_on_audio", False)
-        # TODO check what audio more 5 seconds
         rtvc_audio_clone_voice = request_json.get("rtvc_audio_clone_voice", "")
 
         if not rtvc_audio_clone_voice:
