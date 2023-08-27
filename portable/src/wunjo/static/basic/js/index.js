@@ -15,24 +15,10 @@ firstVoiceCard();
 /// APPEND NEW AVATAR CARD FROM TEMPLATE ///
 function addVoiceCard(event) {
   if (event.target.classList.contains('voice-card-container-plus')) {
-    // stop listen file
-    if (audioFile && !audioFile.paused) {
-        audioFile.pause();
-        pauseAllAudioFile();
-    }
-
     var voiceCardContainers = document.querySelectorAll('.voice-card-container');
     var voiceCardContainer = event.target.closest('.voice-card-container');
     var currentVoiceMultiSelect = voiceCardContainer.querySelector('.model-checkboxes');
     currentVoiceMultiSelect.style.display = "none";
-
-    // Set all microphone buttons on off
-    for (var i = 0; i < voiceCardContainers.length; i++) {
-        var buttonMicrophoneOn = voiceCardContainers[i].querySelector(".fa-microphone");
-        var buttonMicrophoneOff = voiceCardContainers[i].querySelector(".fa-microphone-slash");
-        buttonMicrophoneOn.style.display = 'inline';
-        buttonMicrophoneOff.style.display = 'none';
-    }
 
     // Copy element to append
     // var newVoiceCardContainer = voiceCardContainer.cloneNode(true);
@@ -62,10 +48,6 @@ function addVoiceCard(event) {
 
     // Insert the new container at the correct index
     voiceCards.insertBefore(newVoiceCardContainer, voiceCardContainers[newIndex]);
-
-    // Remove recognition voice
-    recognition.stop();
-    isRecording = false;
   };
 };
 /// APPEND NEW AVATAR CARD FROM TEMPLATE ///
@@ -73,12 +55,6 @@ function addVoiceCard(event) {
 /// REMOVE AVATAR CARD ///
 function removeVoiceCard(event) {
   if (event.target.classList.contains('voice-card-container-remove')) {
-    // stop listen file
-    if (audioFile && !audioFile.paused) {
-        audioFile.pause();
-        pauseAllAudioFile();
-    }
-
     var voiceCardContainers = document.querySelectorAll('.voice-card-container');
     if (voiceCardContainers.length > 1) {
         var voiceCardContainer = event.target.closest('.voice-card-container');
@@ -87,15 +63,6 @@ function removeVoiceCard(event) {
 
     // Remove recognition voice
     recognition.stop();
-    isRecording = false;
-
-    // Set all microphone buttons on off
-    for (var i = 0; i < voiceCardContainers.length; i++) {
-        var buttonMicrophoneOn = voiceCardContainers[i].querySelector(".fa-microphone");
-        var buttonMicrophoneOff = voiceCardContainers[i].querySelector(".fa-microphone-slash");
-        buttonMicrophoneOn.style.display = 'inline';
-        buttonMicrophoneOff.style.display = 'none';
-    }
   };
 };
 /// REMOVE AVATAR CARD ///
@@ -123,72 +90,6 @@ function changeVolume(event) {
     };
 };
 /// CHANGE VOLUME TOGGLE ///
-
-/// USING MICROPHONE TO RECOGNITION VOICE ///
-function microphoneRecognition(event) {
-  if (event.target.classList.contains("microphone")) {
-    // stop listen file
-    if (audioFile && !audioFile.paused) {
-        audioFile.pause();
-        pauseAllAudioFile();
-        recognition.stop();
-        isRecording = false;
-    }
-
-    // add event listeners for the new textarea
-    var voiceCardContainer = event.target.closest(".voice-card-container");
-    var textareaText = voiceCardContainer.querySelector(".text-input");
-
-    var buttonMicrophoneOn = voiceCardContainer.querySelector(".fa-microphone");
-    var buttonMicrophoneOff = voiceCardContainer.querySelector(".fa-microphone-slash");
-
-    function recognitionStart() {
-        recognition.start();
-        isRecording = true;
-    };
-
-    if (!isRecording) {
-        if (activeTextarea !== textareaText) {
-          // stop recording on previously active textarea
-          if (activeTextarea) {
-            recognition.stop();
-            isRecording = false;
-          }
-
-          // set new active textarea and start recording
-          activeTextarea = textareaText;
-          setTimeout(recognitionStart, 3500);
-
-          buttonMicrophoneOn.style.display = 'none';
-          buttonMicrophoneOff.style.display = 'inline';
-        } else {
-          // toggle recording
-          if (recognition.recording) {
-            recognition.stop();
-            isRecording = false;
-
-            buttonMicrophoneOn.style.display = 'inline';
-            buttonMicrophoneOff.style.display = 'none';
-          } else {
-            recognition.stop();
-            isRecording = false;
-
-            setTimeout(recognitionStart, 3500);
-
-            buttonMicrophoneOn.style.display = 'none';
-            buttonMicrophoneOff.style.display = 'inline';
-          }
-        }
-    } else {
-      recognition.stop();
-      isRecording = false;
-
-      buttonMicrophoneOn.style.display = 'inline';
-      buttonMicrophoneOff.style.display = 'none';
-    }
-  }
-};
-/// USING MICROPHONE TO RECOGNITION VOICE ///
 
 /// CREATE DYNAMIC CHANGE AVATAR ///
 function changeAvatarSelect(event) {
@@ -264,6 +165,7 @@ function changeAvatarSelect(event) {
 
 function avatarInfoPop(avatar, name) {
     var introAvatarStatus = introJs();
+    // TODO TEST TRANSLATION OF THIS ELEMENT
     introAvatarStatus.setOptions({
         steps: [
             {
@@ -298,8 +200,6 @@ function handleButtonClick(event) {
     removeVoiceCard(event);
   } else if (event.target.classList.contains('toggle-div-voice')) {
     changeVolume(event);
-  } else if (event.target.classList.contains('microphone')) {
-    microphoneRecognition(event);
   } else if (event.target.classList.contains('model-checkbox-value')) {
     changeAvatarSelect(event);
   }
@@ -336,24 +236,15 @@ function multiVoiceSelect(element) {
 // create a new SpeechRecognition object
 const recognition = new window.webkitSpeechRecognition();
 
-// set properties
-recognition.continuous = true;
-recognition.interimResults = true;
+// Set properties
+ recognition.continuous = true;
+ recognition.interimResults = true;
 
-// set the recognition parameters
-recognition.lang = "ja-JP";
-recognition.interimResults = false;
-recognition.maxAlternatives = 1;
-recognition.onresult = handleRecognitionResult;
-recognition.onerror = handleRecognitionError;
-recognition.onend = handleRecognitionEnd;
-
-// variable to keep track of currently active textarea
-let activeTextarea;
-let isRecording = false;
+// Set the recognition parameters
+recognition.lang = toDialectCode(targetLang);  // init by lang
 
 // SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
-function toDialectCode(langCode) {
+function toDialectCode(langCode = "en") {
     const langToDialect = {
         'af': 'af-ZA',
         'sq': 'sq-AL',
@@ -462,36 +353,137 @@ function toDialectCode(langCode) {
     return langToDialect[langCode] || langCode;
 }
 
+function audioDragAndDropSTT(event, elem) {
+  const file = URL.createObjectURL(event.target.files[0]);
+  const audio = document.getElementById("audioSTTSrc");
+
+  // Update the audio src
+  audio.src = file;
+
+  // Set attributes for voice on setting button to send after in Synthesis
+  elem.setAttribute("blob-audio-src", file);
+
+  // Show the play button if hidden
+  const playBtn = document.getElementById("audioSTTPlay");
+  // Show the recognition button and message
+  document.getElementById("cloneVoiceMessage").style.display = "inline";
+  document.getElementById("recognitionSTTAudio").style.display = "inline";
+
+  playBtn.style.display = "inline";
+
+  audio.pause();
+  playBtn.children[0].style.display = "inline";
+  playBtn.children[1].style.display = "none";
+}
+
+async function submittedSTT(elem, activeTextarea) {
+  const audioElement = elem.querySelector('#audioSTTSrc');
+  const audioSrc = audioElement.src;
+
+  if (!audioSrc) {
+    console.error("No audio file selected");
+    return;
+  }
+
+  elem.querySelector("#recognitionSTTAudio").innerText = await translateWithGoogle("Распознавание... Не выключайте", 'auto', targetLang);
+
+  const stream = audioElement.captureStream();
+  // const recognition = new window.webkitSpeechRecognition();
+
+  recognition.onresult = (event) => {
+    const result = event.results[0][0].transcript;
+    activeTextarea.value = result;
+  };
+
+  recognition.onerror = (event) => {
+    console.error(event.error);
+  };
+
+  recognition.onend = () => {
+    console.log('Recognition ended');
+  };
+
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.start();
+
+  const audioTrack = stream.getAudioTracks()[0];
+  audioElement.play();
+
+  // Stop recognition when the audio ends
+  audioElement.addEventListener('ended', () => {
+    recognition.stop();
+    audioTrack.stop();
+    const closeIntroButton = document.querySelector('.introjs-skipbutton');
+    closeIntroButton.click();
+  });
+}
+
+
 function settingTextToSpeech(elem, languages) {
+    var sectionTextTTS = elem.parentElement.parentElement.parentElement.parentElement
+    var textareaTTS = sectionTextTTS.querySelector('.text-input');
+
     var introSettingTextToSpeech = introJs();
     introSettingTextToSpeech.setOptions({
         steps: [
             {
                 element: elem,
                 title: 'Настройки',
-                position: 'left',
-                intro: `<div style="width: 250pt;">
-                    <div style="display: flex;flex-direction: column;">
-                        <div id="setting-tts-lang-select-field" style="display:block;margin-top:5pt;">
-                            <label for="setting-tts-lang-select">Перевод на язык</label>
-                            <select id="setting-tts-user-lang-select" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
-                            </select>
+                position: 'bottom',
+                intro: `<div style="min-height: 180pt;">
+                    <div style="display: flex;flex-direction: row;">
+                        <div style="width: 250pt;margin: 10pt;">
+                            <div id="setting-tts-lang-select-field" style="display:block;margin-top:5pt;">
+                                <label for="setting-tts-lang-select">Выбрать язык</label>
+                                <select id="setting-tts-user-lang-select" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
+                                </select>
+                            </div>
+                            <div>
+                                <div class="uploadSTTAudio" style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
+                                    <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onChange="audioRecordVoiceSTT(event)"  id="recordSTTAudio">Записать голос</button>
+                                    <label id="uploadSTTAudioLabel" for="uploadSTTAudio" class="introjs-button" style="margin-left: 5pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
+                                    <input style="width: 0;" accept="audio/*" type="file" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSTTAudio"  />
+                                    <div id="previewSTTAudio">
+                                      <button id="audioSTTPlay" class="introjs-button" style="display:none;margin-left: 5pt;">
+                                        <i class="fa fa-play"></i>
+                                        <i style="display: none;" class="fa fa-pause"></i>
+                                      </button>
+                                      <audio id="audioSTTSrc" style="display:none;" controls preload="none">
+                                        Your browser does not support audio.
+                                      </audio>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important; display: none;" id="recognitionSTTAudio">Распознать</button>
+                            </div>
+                            <i style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;display: flow;">
+                                <b>Примечание:</b> Как добавить любой язык в приложение?
+                                <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
+                            </i>
+                            <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
+                                Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
+                                Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
+                                Чтобы найти соответствующий код для вашего языка, обратитесь к языковым кодам <a class="notranslate" target="_blank" rel="noopener noreferrer" href="https://cloud.google.com/translate/docs/languages">Google Cloud Translate Language Codes</a>.
+                            </i>
                         </div>
-                        <i style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;">
-                            <b>Примечание:</b> Вам необходимо выбрать ваш язык, если вы диктуете текст голосом или распознаете аудио. По умолчанию стоит английский. Как добавить любой язык в приложение?
-                            <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
-                        </i>
-                        <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
-                            Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
-                            Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
-                            Чтобы найти соответствующий код для вашего языка, обратитесь к языковым кодам <a class="notranslate" target="_blank" rel="noopener noreferrer" href="https://cloud.google.com/translate/docs/languages">Google Cloud Translate Language Codes</a>.
-                        </i>
-                        <hr>
-                        <div style="margin-bottom:5pt;margin-top: 15pt">
-                          <input onclick="" type="checkbox" id="setting-tts-translation-check-info" name="setting-tts-translation-check">
-                          <label for="setting-tts-translation-check">Автоматический перевод</label>
+                        <div style="width: 250pt;margin: 10pt;">
+                            <div style="display: none;" id="cloneVoiceMessage">
+                                <div style="margin-bottom:5pt;margin-top: 15pt;">
+                                  <input onclick="" type="checkbox" id="setting-rtvc-check-info" name="setting-rtvc-check">
+                                  <label for="setting-rtvc-check">Клонировать голос</label>
+                                </div>
+                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Примечание:</b> При клонировании голоса, аудио будет синтезировано на основе текста и прикрепленного / записанного аудио. В этом случая можно не выбирать голос для озвучки.</i>
+                                <hr style="margin-top: 15pt;">
+                            </div>
+                            <div style="margin-bottom:5pt;margin-top: 15pt">
+                              <input onclick="" type="checkbox" id="setting-tts-translation-check-info" name="setting-tts-translation-check">
+                              <label for="setting-tts-translation-check">Автоматический перевод</label>
+                            </div>
+                            <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> Автоматический перевод означает, что текст будет озвучен на выбранном языке с клонированием голоса модели на любой язык, даже если текст введен на другом языке или нейронная сеть имеет голос на другом языке, перевод будет совершен на выбранный язык.</i>
                         </div>
-                        <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> Автоматический перевод означает, что текст будет озвучен на выбранном языке с клонированием голоса модели на любой язык, даже если текст введен на другом языке или нейронная сеть имеет голос на другом языке, перевод будет совершен на выбранный язык.</i>
                     </div>
                 </div>`,
                }
@@ -505,13 +497,21 @@ function settingTextToSpeech(elem, languages) {
     });
     introSettingTextToSpeech.start();
 
+    // Set audio upload onChange
+    const uploadSTTAudio = document.getElementById("uploadSTTAudio");
+    uploadSTTAudio.addEventListener('change', function() {
+      audioDragAndDropSTT(event, elem)
+    });
+
+    // Set recognition button
+    const recognitionSTTAudio = document.getElementById("recognitionSTTAudio");
+
+    recognitionSTTAudio.addEventListener('click', function() {
+      submittedSTT(this.parentElement.parentElement, textareaTTS);
+    });
+
     // Get the select element
     const selectElementLanguageTTS = document.getElementById("setting-tts-user-lang-select");
-
-    // Get checkbox
-    const checkboxAutomationTranslate= document.getElementById("setting-tts-translation-check-info");
-    const attrValue = elem.getAttribute("automatic-translate")
-    checkboxAutomationTranslate.checked = (attrValue === "true");
 
     // Populate the select element with options
     for (const [key, value] of Object.entries(languages)) {
@@ -533,108 +533,126 @@ function settingTextToSpeech(elem, languages) {
       recognition.lang = toDialectCode(selectedValueLanguageTTS);
     });
 
+    // Get checkbox
+    const checkboxAutomationTranslate = document.getElementById("setting-tts-translation-check-info");
+    const attrValueAutomationTranslate = elem.getAttribute("automatic-translate");
+    checkboxAutomationTranslate.checked = (attrValueAutomationTranslate === "true");
     checkboxAutomationTranslate.addEventListener("change", function() {
         if (this.checked) {
-            elem.setAttribute("automatic-translate", true)
+            elem.setAttribute("automatic-translate", true);
         } else {
-            elem.setAttribute("automatic-translate", false)
+            elem.setAttribute("automatic-translate", false);
         }
     });
 
+    // Get checkbox
+    const checkboxCloneAudioVoice = document.getElementById("setting-rtvc-check-info");
+    const attrValueCloneAudioVoice = elem.getAttribute("voice-audio-clone");
+    checkboxCloneAudioVoice.checked = (attrValueCloneAudioVoice === "true");
+    checkboxCloneAudioVoice.addEventListener("change", function() {
+        if (this.checked) {
+            elem.setAttribute("voice-audio-clone", true);
+        } else {
+            elem.setAttribute("voice-audio-clone", false);
+        }
+    });
+
+    // record voice button
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+    let audioStream; // To keep track of the audio stream
+
+    const audio = document.getElementById("audioSTTSrc");
+    // Show the play button if hidden
+    const playBtn = document.getElementById("audioSTTPlay");
+
+    // Existing play/pause logic
+    playBtn.addEventListener("click", function() {
+      if (audio.paused) {
+        audio.play();
+        playBtn.children[0].style.display = "none";
+        playBtn.children[1].style.display = "inline";
+      } else {
+        audio.pause();
+        playBtn.children[0].style.display = "inline";
+        playBtn.children[1].style.display = "none";
+      }
+    });
+
+      // Existing audio ended logic
+      audio.addEventListener("ended", function() {
+        playBtn.children[0].style.display = "inline";
+        playBtn.children[1].style.display = "none";
+      });
+
+    document.getElementById("recordSTTAudio").addEventListener("click", async function() {
+      if (!isRecording) {
+        isRecording = true;
+        this.textContent = await translateWithGoogle("Стоп", 'auto', targetLang);;
+
+        // Initialize MediaRecorder
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioStream = stream; // Store the stream for later use
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = event => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          document.getElementById("audioSTTSrc").src = audioUrl;
+
+          // Set attributes for voice on setting button to send after in Synthesis
+          elem.setAttribute("blob-audio-src", audioUrl);
+
+          // Show the play button
+          document.getElementById("audioSTTPlay").style.display = "inline";
+
+          // Show the recognition button and message
+          document.getElementById("cloneVoiceMessage").style.display = "inline";
+          recognitionSTTAudio.style.display = "inline";
+
+          // Clear old audio chunks
+          audioChunks = [];
+        };
+
+        mediaRecorder.start();
+      } else {
+        isRecording = false;
+        this.textContent = await translateWithGoogle("Записать голос", 'auto', targetLang);
+
+        // Stop the MediaRecorder and close the stream
+        mediaRecorder.stop();
+
+        // Reset play button if playing
+        audio.pause();
+        playBtn.children[0].style.display = "inline";
+        playBtn.children[1].style.display = "none";
+
+        // Close the audio stream to completely stop recording
+        audioStream.getTracks().forEach(track => track.stop());
+      }
+    });
+
+    // If blob already is, when show play button?
+    const voiceCloneBlobUrl = elem.getAttribute("blob-audio-src");
+    if (voiceCloneBlobUrl !== "") {
+        // Show the play button
+        document.getElementById("audioSTTPlay").style.display = "inline";
+
+        // Show the recognition button and message
+        document.getElementById("cloneVoiceMessage").style.display = "inline";
+        recognitionSTTAudio.style.display = "inline";
+
+        // Set prev blob
+        document.getElementById("audioSTTSrc").src = voiceCloneBlobUrl;
+    }
+
 }
 // SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
-
-/// GET RECOGNITION RESULT ///
-function handleRecognitionResult(event) {
-  const lastResult = event.results[event.results.length - 1];
-  const lastTranscript = lastResult[0].transcript;
-  activeTextarea.value += lastTranscript;
-}
-/// GET RECOGNITION RESULT ///
-
-/// GET RECOGNITION ERROR ///
-function handleRecognitionError(event) {
-  console.log(`Speech recognition error occurred: ${event.error}`);
-}
-/// GET RECOGNITION ERROR ///
-
-/// UPDATE RECORD VOICE IF USER SILENCE ///
-function handleRecognitionEnd() {
-  // if still recording, restart recognition
-  if (recognition.recording) {
-    recognition.start();
-  }
-}
-/// UPDATE RECORD VOICE IF USER SILENCE ///
-
-/// SET AUDIO FILE FOR RECOGNITION ///
-// add event listener to load audio button
-let audioFile;
-
-function recognitionAudioFile(elem) {
-  var textareaText = elem.querySelector('.text-input');
-  var file = elem.querySelector('.audio-file').files[0];
-
-  if (!file) {
-    console.error("No audio file selected");
-    return;
-  }
-
-  activeTextarea = textareaText;
-  isRecording = false;
-  recognition.stop();
-
-  const playBtn = elem.querySelector('.load-audio-button');
-  const pauseBtn = elem.querySelector('.pause-audio-button');
-  playBtn.style.display = "none";
-  pauseBtn.style.display = "inline";
-
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-
-  const audioEndedListener = function() {
-    recognition.stop();
-    isRecording = false;
-    playBtn.style.display = "inline";
-    pauseBtn.style.display = "none";
-    audioFile.removeEventListener('ended', audioEndedListener);
-  };
-
-  reader.onload = function() {
-    const audioUrl = reader.result;
-    audioFile = new Audio(audioUrl);
-    audioFile.addEventListener('loadedmetadata', () => {
-      // set recognition duration limit to audio duration
-      recognition.maxDuration = audioFile.duration;
-
-      // transcribe audio
-      recognition.start();
-      isRecording = true;
-      audioFile.play();
-    });
-
-    audioFile.addEventListener('ended', audioEndedListener);
-  }
-};
-/// SET AUDIO FILE FOR RECOGNITION ///
-
-/// PAUSE AUDIO FOR RECOGNITION ///
-function pauseAllAudioFile() {
-    const playBtnAll = document.querySelectorAll('.load-audio-button');
-    const pauseBtnAll = document.querySelectorAll('.pause-audio-button');
-    if (audioFile) {
-        audioFile.pause();
-        recognition.stop();
-        isRecording = false;
-    };
-    playBtnAll.forEach(function(playBtn) {
-        playBtn.style.display = "inline";
-    });
-    pauseBtnAll.forEach(function(pauseBtn) {
-        pauseBtn.style.display = "none";
-    });
-};
-/// PAUSE AUDIO FOR RECOGNITION ///
 
 const buttonEnableAllButton = document.getElementById("button-enable-all");
 const buttonDisableAllButton = document.getElementById("button-disable-all");
@@ -862,16 +880,8 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
                 intro: 'Поле для ввода текста',
             },
             {
-                element: '.a-button.microphone',
-                intro: 'Переключатель микрофона для ввода текста голосом',
-            },
-            {
-                element: '.audio-load',
-                intro: 'Загрузить аудио файл',
-            },
-            {
-                element: '.load-audio-button',
-                intro: 'Распознать текст из аудио файла. Распознавание закончится после того, как аудио файл будет озвучен полностью',
+                element: '.a-button.setting-tts',
+                intro: 'Настройки синтеза речи. Вы можете клонировать свой голос или из аудио. Распознавать текст из голоса и аудио. Автоматически переводить синтезируемую речь на выбранный язык.',
             },
             {
                 element: '.model-over-select',
@@ -934,20 +944,62 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-async function translateWithGoogle(text, sourceLang, targetLang) {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
+let translationsCache = {}; // an object to store translations
 
-    try {
+// Assume fetchJSON() fetches and returns a JSON from a local file
+async function loadTranslations() {
+  try {
+    const response = await fetch('/media/setting/localization.json');
+    if (!response.ok) {
+      // file not create, create file after first init
+      console.log("HTTP error " + response.status + ". File not created yet!. Now file is created");
+    }
+    translationsCache = await response.json();
+  } catch (err) {
+    console.log('Failed to load translations', err);
+  }
+}
+
+loadTranslations();
+
+async function translateWithGoogle(text, sourceLang, targetLang) {
+  // Check if the translation is cached
+  if (translationsCache[text] && translationsCache[text][targetLang]) {
+    return translationsCache[text][targetLang];
+  } else {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
+
+      try {
         const res = await fetch(url);
         const data = await res.json();
         if (data && data[0] && data[0][0] && data[0][0][0]) {
-            return capitalizeFirstLetter(data[0][0][0]);
+          const translatedText = capitalizeFirstLetter(data[0][0][0]);
+
+          // Initialize if not already an object
+          if (!translationsCache[text]) {
+            translationsCache[text] = {};
+          }
+
+          // Update cache
+          translationsCache[text][targetLang] = translatedText;
+
+          // Send updated translations to the server
+          await fetch('/update_translation', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(translationsCache)
+          });
+
+          return translatedText;
         }
         throw new Error("Failed to parse Google Translate response.");
-    } catch (err) {
+      } catch (err) {
         console.error(err);
         return text; // default to returning original text
-    }
+      }
+  }
 }
 
 async function translateTitleAttributes(targetLang) {

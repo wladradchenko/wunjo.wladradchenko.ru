@@ -19,7 +19,7 @@ def get_translate(text: str, targetLang: str, sourceLang: str="auto") -> str:
         response = requests.get(google_url)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
         translation_data = json.loads(response.text)
-        return translation_data[0][0][0]
+        return "".join(item[0] for item in translation_data[0])
     except requests.RequestException as e:
         print(f"Error during the request: {e}")
     except (IndexError, TypeError):

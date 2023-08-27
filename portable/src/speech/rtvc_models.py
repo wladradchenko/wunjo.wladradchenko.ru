@@ -66,7 +66,9 @@ def load_rtvc_encoder(lang: str, device: str):
     :param device: cuda or cpu
     :return: encoder
     """
-    language_dict = rtvc_models_config.get(lang, "english")
+    language_dict = rtvc_models_config.get(lang)
+    if language_dict is None:
+        language_dict = rtvc_models_config.get("en")
     encoder_url = language_dict.get("encoder")
     encoder_path = os.path.join(RTVC_VOICE_FOLDER, lang, "encoder.pt")
     model_path = inspect_rtvc_model(encoder_path, encoder_url)
@@ -84,7 +86,9 @@ def load_rtvc_synthesizer(lang: str, device: str):
     :param device: cuda or cpu
     :return: encoder
     """
-    language_dict = rtvc_models_config.get(lang, "english")
+    language_dict = rtvc_models_config.get(lang)
+    if language_dict is None:
+        language_dict = rtvc_models_config.get("en")
     synthesizer_url = language_dict.get("synthesizer")
     synthesizer_path = os.path.join(RTVC_VOICE_FOLDER, lang, "synthesizer.pt")
     model_path = inspect_rtvc_model(synthesizer_path, synthesizer_url)
@@ -100,7 +104,9 @@ def load_rtvc_vocoder(lang: str, device: str):
     :param device: cuda or cpu
     :return: encoder
     """
-    language_dict = rtvc_models_config.get(lang, "english")
+    language_dict = rtvc_models_config.get(lang)
+    if language_dict is None:
+        language_dict = rtvc_models_config.get("en")
     vocoder_url = language_dict.get("vocoder")
     vocoder_path = os.path.join(RTVC_VOICE_FOLDER, lang, "vocoder.pt")
     model_path = inspect_rtvc_model(vocoder_path, vocoder_url)

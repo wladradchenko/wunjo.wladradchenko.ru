@@ -104,9 +104,10 @@ class VoiceCloneTranslate:
 
     @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, vocoder, save_folder,
-                              text, src_lang, need_translate,  **options):
+                              text, src_lang, need_translate, tts_model_name="Voice Clone", **options):
         try:
             if need_translate:
+                print("Translation text before Voice Clone")
                 text = get_translate(text, src_lang)
 
             results = VoiceCloneTranslate.get_models_results(
@@ -116,6 +117,7 @@ class VoiceCloneTranslate:
                 synthesizer,
                 vocoder,
                 save_folder,
+                tts_model_name,
                 **options
             )
             return 0, results
@@ -124,19 +126,37 @@ class VoiceCloneTranslate:
             return 1, str(e)
 
     @staticmethod
-    def get_models_results(audio_file, text, encoder, synthesizer, vocoder, save_folder, **options):
+    def get_models_results(audio_file, text, encoder, synthesizer, vocoder, save_folder, tts_model_name, **options):
         from speech.rtvc_models import clone_voice_rtvc
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
 
+        start = time.time()
+
         phrases = VoiceCloneTranslate.split_into_phrases(text)
         for i, phrase in enumerate(phrases):
             clone_voice_rtvc(audio_file, phrase, encoder, synthesizer, vocoder, save_folder, i)
 
-        output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", "rtvc_output.wav")
+        waves_format = ".wav"
+        output_name = "rtvc_output" + VoiceCloneTranslate.uniqid() + time.strftime("%Y-%m-%d_%H-%M") + waves_format
+        output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
 
-        return output_file
+        end = time.time()
+
+        with open(output_file, "rb") as f:
+            audio_bytes = f.read()
+
+        result = {
+            "voice": tts_model_name,
+            "sample_rate": 0,
+            "duration_s": 0,
+            "synthesis_time": round(end - start, 3),
+            "filename": output_file,
+            "response_audio": audio_bytes
+        }
+
+        return result
 
     @staticmethod
     def merge_audio_parts(audio_folder: str, audio_part_name: str, output_file_name: str):
@@ -185,3 +205,8 @@ class VoiceCloneTranslate:
         print(f"Merged all .wav files into {output_file_name}")
 
         return output_file_path
+
+    @staticmethod
+    def uniqid():
+        from time import time
+        return hex(int(time() * 1e7))[2:]

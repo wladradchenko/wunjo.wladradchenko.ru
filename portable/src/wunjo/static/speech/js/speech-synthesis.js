@@ -23,10 +23,33 @@ function sendTextToSpeech() {
                 var settingTranslation = voiceCardContainers[i].querySelector(".setting-tts");
                 var autoTranslation = (settingTranslation.getAttribute("automatic-translate") === 'true');
                 var langTranslation = settingTranslation.getAttribute("value-translate");
+                var useVoiceCloneOnAudio = (settingTranslation.getAttribute("voice-audio-clone") === 'true');
+                var voiceCloneBlobUrl = settingTranslation.getAttribute("blob-audio-src");
 
-                textareaText.readOnly = true;
+                var voiceCloneName = "";
 
-                if (checkedValues.length > 0) {
+                if (useVoiceCloneOnAudio) {
+                    if (voiceCloneBlobUrl === "") {
+                        useVoiceCloneOnAudio = false;
+                        console.warn("Voice clone name is empty. Disabling voice clone.");
+                    } else {
+                        voiceCloneName = "rtvc_audio_" + Date.now();
+                        fetch(voiceCloneBlobUrl)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                var file = new File([blob], voiceCloneName);
+                                uploadFile(file);
+                            })
+                            .catch(error => {
+                                console.error("An error occurred while fetching the voice clone blob:", error);
+                            });
+                    }
+                }
+
+                //textareaText.readOnly = true;  // TODO check why this need? Maybe because of this was bug!
+                console.log(useVoiceCloneOnAudio)
+
+                if (checkedValues.length > 0 || useVoiceCloneOnAudio === true) {
                     var oneCardSend = {
                         "text": textareaText.value,
                         "voice": checkedValues,
@@ -34,7 +57,9 @@ function sendTextToSpeech() {
                         "pitch": pitchFactor.value,
                         "volume": volumeFactor.value,
                         "auto_translation": autoTranslation,
-                        "lang_translation": langTranslation
+                        "lang_translation": langTranslation,
+                        "use_voice_clone_on_audio": useVoiceCloneOnAudio,
+                        "rtvc_audio_clone_voice": voiceCloneName
                     };
 
                     allCardSend.push(oneCardSend);

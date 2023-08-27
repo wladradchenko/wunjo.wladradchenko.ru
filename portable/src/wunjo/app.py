@@ -13,9 +13,9 @@ from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
-from speech.interface import TextToSpeech, VoiceCloneTranslate, SpeechToText
+from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
-from speech.rtvc_models import load_rtvc
+from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 from backend.translator import get_translate
@@ -32,6 +32,7 @@ app.config['DEBUG'] = True
 app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
+app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
 # get list of all directories in folder
@@ -132,6 +133,28 @@ def get_print_translate(text):
     return get_translate(text=text, targetLang=app.config['USER_LANGUAGE'])
 
 
+def _create_localization():
+    localization_path = os.path.join(SETTING_FOLDER, "localization.json")
+    with open(localization_path, 'w', encoding='utf-8') as f:
+        json.dump({}, f, ensure_ascii=False)
+
+
+# create localization file
+_create_localization()
+
+
+@app.route("/update_translation", methods=["POST"])
+@cross_origin()
+def update_translation():
+    # create here file if not exist
+    localization_path = os.path.join(SETTING_FOLDER, "localization.json")
+    req = request.get_json()
+    with open(localization_path, 'w', encoding='utf-8') as f:
+            json.dump(req, f, ensure_ascii=False)
+
+    return {"status": 200}
+
+
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
@@ -155,7 +178,7 @@ def current_processor():
         return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": True}
     return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
 
-@app.route('/upload_tmp_deepfake', methods=['POST'])
+@app.route('/upload_tmp', methods=['POST'])
 @cross_origin()
 def upload_file_deepfake():
     if not os.path.exists(TMP_FOLDER):
@@ -337,33 +360,97 @@ def synthesize():
             "pitch": float(request_json.get("pitch", 1.0)),
             "volume": float(request_json.get("volume", 0.0))
         }
-        # TODO HERE ADD NEW LOGICAL
+
         auto_translation = request_json.get("auto_translation", False)
         lang_translation = request_json.get("lang_translation")
+        rtvc_models_lang = lang_translation  # try to use user lang for rtvc models
 
-        app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
+        use_voice_clone_on_audio = request_json.get("use_voice_clone_on_audio", False)
+        # TODO check what audio more 5 seconds
+        rtvc_audio_clone_voice = request_json.get("rtvc_audio_clone_voice", "")
+
+        if not rtvc_audio_clone_voice:
+            use_voice_clone_on_audio = False
+
+        # rtvc doesn't have models by user lang, set english models
+        if rtvc_models_config.get(lang_translation) is None:
+            rtvc_models_lang = "en"
+
+        # init only one time the models for voice clone if it is needs
+        if (auto_translation or rtvc_audio_clone_voice) and app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
+            encoder, synthesizer, vocoder = load_rtvc(rtvc_models_lang)
+            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "vocoder": vocoder}
+
+        if model_type:
+            app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
 
         for model in model_type:
-            # TODO if translate when , (1) translate text on language of model and (2) to do voice clone for target
-            # TODO lang tom improve trasnlate quality
+            # if set auto translate, when get clear translation for source of models to clear synthesis audio
+            # get tacotron2 lang from engine
+            tacotron2_lang = app.config['TTS_LOADED_MODELS'][model].engine.charset
+            if auto_translation:
+                print("Translation text before Tacotron2")
+                tts_text = get_print_translate(get_translate(text=text, targetLang=tacotron2_lang))
+            else:
+                tts_text = text
 
-            response_code, results = TextToSpeech.get_synthesized_audio(text, model, app.config['TTS_LOADED_MODELS'], os.path.join(WAVES_FOLDER, dir_time), **options)
+            response_code, results = TextToSpeech.get_synthesized_audio(tts_text, model, app.config['TTS_LOADED_MODELS'], os.path.join(WAVES_FOLDER, dir_time), **options)
 
             if response_code == 0:
                 for result in results:
-                    # TODO get audio and if translate when , than do voice cloning
-
                     filename = result.pop("filename")
+
+                    # translated audio if user choose lang not equal for model and set auto translation
+                    if tacotron2_lang != lang_translation and auto_translation:
+                        # voice clone on tts audio result
+                        # get models
+                        encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
+                        synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
+                        vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
+
+                        # text translated inside get_synthesized_audio
+                        response_code, result = VoiceCloneTranslate.get_synthesized_audio(
+                            audio_file=filename, encoder=encoder, synthesizer=synthesizer, vocoder=vocoder,
+                            text=text, src_lang=lang_translation, need_translate=auto_translation,
+                            save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model
+                        )
+                        # get new filename
+                        filename = result.pop("filename")
+
                     filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
-                    print(filename)
+                    print("Synthesized file: ", filename)
                     audio_bytes = result.pop("response_audio")
                     result["response_audio_url"] = url_for("media_file", filename=filename)
                     result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
                     result["response_code"] = response_code
                     result["recognition_text"] = text
+                    # Add result in frontend
+                    app.config['SYSNTHESIZE_SPEECH_RESULT'] += [result]
 
-                    app.config['SYSNTHESIZE_SPEECH_RESULT'] += results
+        # here use for voice cloning of audio file without tts
+        if use_voice_clone_on_audio:
+            encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
+            synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
+            vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
+            rtvc_audio_clone_path = os.path.join(TMP_FOLDER, rtvc_audio_clone_voice)
 
+            response_code, result = VoiceCloneTranslate.get_synthesized_audio(
+                audio_file=rtvc_audio_clone_path, encoder=encoder, synthesizer=synthesizer, vocoder=vocoder,
+                text=text, src_lang=lang_translation, need_translate=auto_translation, save_folder= os.path.join(WAVES_FOLDER, dir_time)
+            )
+            if response_code == 0:
+                filename = result.pop("filename")
+                filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
+                print("Synthesized file: ", filename)
+                audio_bytes = result.pop("response_audio")
+                result["response_audio_url"] = url_for("media_file", filename=filename)
+                result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
+                result["response_code"] = response_code
+                result["recognition_text"] = text
+                # Add result in frontend
+                app.config['SYSNTHESIZE_SPEECH_RESULT'] += [result]
+
+    app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
     app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 
     return {"status": 200}

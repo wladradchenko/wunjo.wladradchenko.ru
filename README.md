@@ -218,16 +218,19 @@ Update 1.4.0
 - [x] Integrate links to train video and wiki page
 
 Update 1.5.0
-- [ ] Add voice cloning translation with encoders english, chinese, russian, spanish
-- [ ] Create hub for voice cloning languages models (or download all default models)
+- [x] Add voice translation with encoders english, chinese, russian, spanish
+- [x] Add synthesys audio from text with voice clone from another audio
+- [x] Create hub for voice cloning languages models (or download all default models)
 - [ ] Add face swap module for deepfake on video/photo from one photo face
 - [ ] Add enchanter face or enchanter background on user video/photo without deepfake
 - [ ] Make a version that will include all extensions without extensions download
 - [ ] Improve indication and translation of current progress
 - [ ] Add check debug module with python console
-- [ ] Change real time translation on native translate
+- [x] Change real time translation on native translate
+- [ ] Add translation file on server and create request 
 - [ ] Improve message about GPU unavailable for user
 - [ ] Add module deepfake emotions
+- [ ] Update guid in application 
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts

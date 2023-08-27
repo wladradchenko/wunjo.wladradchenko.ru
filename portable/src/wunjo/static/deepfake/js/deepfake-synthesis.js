@@ -153,7 +153,7 @@ function uploadFile(file) {
   const formData = new FormData();
   formData.append('file', file);
 
-  fetch('/upload_tmp_deepfake', {
+  fetch('/upload_tmp', {
     method: 'POST',
     body: formData
   })

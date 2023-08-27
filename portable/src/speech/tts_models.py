@@ -128,6 +128,7 @@ def update_dict_paths(d, old_path, new_path):
                 d[k] = v
     return d
 
+
 def _create_config_voice(voices: dict) -> dict:
     general = {
         "general": {
@@ -240,6 +241,7 @@ def inspect_model(voice_name: str):
         else:
             waveglow_link = file_voice_config[voice_name]["waveglow_download"]
             check_download_size(waveglow_path, waveglow_link)
+
 
 def load_voice_models(user_voice_names: list, models: dict):
     local_config = {**file_voice_config.copy(), **file_custom_voice_config.copy()}
