@@ -165,7 +165,6 @@ function changeAvatarSelect(event) {
 
 function avatarInfoPop(avatar, name) {
     var introAvatarStatus = introJs();
-    // TODO TEST TRANSLATION OF THIS ELEMENT
     introAvatarStatus.setOptions({
         steps: [
             {
@@ -189,6 +188,7 @@ function avatarInfoPop(avatar, name) {
           doneLabel: 'Закрыть'
     });
     introAvatarStatus.start();
+    translateReload(targetLang);  // Idea how translate open elements!
 }
 /// CREATE DYNAMIC CHANGE AVATAR ///
 

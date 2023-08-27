@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import requests
-import librosa
 import numpy as np
 import soundfile as sf
 import torch
@@ -160,12 +159,11 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
     :return:
     """
     try:
-        # TODO: Choose one method for preprocessing; Why are two methods being used?
-        # TODO: test in frontend and choose one from this, another remove
         # The following two methods are equivalent:
         # - Directly load from the filepath:
         preprocessed_wav = preprocess_wav(audio_file)
         # - If the wav is already loaded:
+        # import librosa
         # original_wav, sampling_rate = librosa.load(str(audio_file))
         # preprocessed_wav = preprocess_wav(original_wav, sampling_rate)
         print("Loaded file successfully")

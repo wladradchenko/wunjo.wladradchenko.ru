@@ -496,11 +496,11 @@ function dragDropImg(event) {
       canvasDeepfake.removeEventListener('mouseup', handleMouseUp);
     }
 
-    drawButton.onclick = function() {
+    drawButton.onclick = async function() {
       // data-controlval="get-face"
       if (drawButton.getAttribute("data-controlval") === 'get-face') {
         drawButton.setAttribute("data-controlval", "put-content");
-        drawButton.textContent = 'Выбор файла';
+        drawButton.textContent = await translateWithGoogle("Выбор файла", 'auto', targetLang);
         turnOnDrawMode();
         uploadFileDeepfake.disabled = true;
         canvasDeepfake.style.zIndex = 20;
@@ -508,7 +508,7 @@ function dragDropImg(event) {
         //undoButton.style.display = 'inline';  // undo
       } else {
         drawButton.setAttribute("data-controlval", "get-face");
-        drawButton.textContent = 'Выделить лицо';
+        drawButton.textContent = await translateWithGoogle("Выделить лицо", 'auto', targetLang);
         turnOffDrawMode();
         uploadFileDeepfake.disabled = false;
         canvasDeepfake.style.zIndex = 0;
