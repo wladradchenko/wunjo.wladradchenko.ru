@@ -117,16 +117,13 @@ def create_voice_instruction():
 # Call the function
 create_voice_instruction()
 
-def update_dict_paths(d, old_path, new_path):
-    for k, v in d.items():
-        if isinstance(v, dict):
-            update_dict_paths(v, old_path, new_path)
-        elif isinstance(v, str) and old_path in v:
-            if not os.path.dirname(os.path.abspath(__file__)) in old_path:
-                d[k] = v.replace(old_path, new_path)
-            else:
-                d[k] = v
-    return d
+
+def cover_windows_media_path_from_str(path_str: str):
+    path_sys = MEDIA_FOLDER
+    for folder_or_file in path_str.split("/"):
+        if folder_or_file:
+            path_sys = os.path.join(path_sys, folder_or_file)
+    return path_sys
 
 
 def _create_config_voice(voices: dict) -> dict:
@@ -158,7 +155,7 @@ def _get_avatars(voices: dict) -> None:
                 file.write(request_png.content)
 
 
-def get_config_voice() -> dict:
+def get_config_voice():
     try:
         response = requests.get(VOICE_JSON_URL)
         with open(os.path.join(VOICE_FOLDER, 'voice.json'), 'wb') as file:
@@ -167,17 +164,30 @@ def get_config_voice() -> dict:
         print("Not internet connection")
     finally:
         if not os.path.isfile(os.path.join(VOICE_FOLDER, 'voice.json')):
-            voices={}
+            voices_config = {}
         else:
             with open(os.path.join(VOICE_FOLDER, 'voice.json'), 'r', encoding="utf8") as file:
-                voices = json.load(file)
+                voices_config = json.load(file)
 
-    _get_avatars(voices=voices)
+    _get_avatars(voices=voices_config)
 
-    if voices.get("Unknown") is not None:
-       voices.pop("Unknown")
+    if voices_config.get("Unknown") is not None:
+       voices_config.pop("Unknown")
 
-    return _create_config_voice(voices=voices), list(voices.keys())
+    voice_names = []
+    for key in voices_config.keys():
+        if voices_config[key].get("engine") and voices_config[key].get("vocoder"):
+            tacotron2 = voices_config[key]["engine"]["tacotron2"]["model_path"]
+            full_tacotron2_path = cover_windows_media_path_from_str(tacotron2)
+            voices_config[key]["engine"]["tacotron2"]["model_path"] = full_tacotron2_path
+
+            waveglow = voices_config[key]["vocoder"]["waveglow"]["model_path"]
+            full_waveglow_path = cover_windows_media_path_from_str(waveglow)
+            voices_config[key]["vocoder"]["waveglow"]["model_path"] = full_waveglow_path
+
+            voice_names += [key]
+
+    return _create_config_voice(voices_config), voice_names
 
 
 def get_custom_config_voice():
@@ -195,11 +205,11 @@ def get_custom_config_voice():
 
                 try:
                     tacotron2 = voices[key]["engine"]["tacotron2"]["model_path"]
-                    full_tacotron2_path = os.path.join(MEDIA_FOLDER, tacotron2)
+                    full_tacotron2_path = cover_windows_media_path_from_str(tacotron2)
                     voices[key]["engine"]["tacotron2"]["model_path"] = full_tacotron2_path
 
                     waveglow = voices[key]["vocoder"]["waveglow"]["model_path"]
-                    full_waveglow_path = os.path.join(MEDIA_FOLDER, waveglow)
+                    full_waveglow_path = cover_windows_media_path_from_str(waveglow)
                     voices[key]["vocoder"]["waveglow"]["model_path"] = full_waveglow_path
                     if not os.path.exists(full_tacotron2_path) or not os.path.exists(full_waveglow_path):
                         print(f"Waveglow ot tactoron2 files don't exist for user voice {key}")
@@ -214,7 +224,6 @@ def get_custom_config_voice():
 
 # app voices
 file_voice_config, voice_names = get_config_voice()
-file_voice_config = update_dict_paths(file_voice_config, "voice", os.path.join(MEDIA_FOLDER, "voice"))
 set_logger(**file_voice_config["general"].pop("logging"))
 # user voices
 file_custom_voice_config, custom_voice_names = get_custom_config_voice()

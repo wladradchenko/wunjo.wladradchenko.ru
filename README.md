@@ -21,7 +21,7 @@
     <br/>
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Issue</a>
     ·
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Features</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Wikipedia</a>
   </p>
 </div>
 
@@ -232,10 +232,14 @@ Update 1.5.0
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 
 
+:TODO check downloads tts models on windows, maybe is bug because of symbols /
+
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
 - [ ] Add AI retouch frames in video by user tool
-      
+- [ ] Add in face animation and mouth approach to workd at the some time with a few heads and difference audio
+- [ ] Indicate user how much space on drive for tmp and result folders
+
 <!-- VIDEO -->
 ## Video
 

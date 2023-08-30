@@ -378,7 +378,7 @@ class AnimationMouthTalk:
             video_name_enhancer = 'wav2lip_video_enhanced.mp4'
             enhanced_path = os.path.join(save_dir, 'temp_' + video_name_enhancer)
             enhanced_images = face_enhancer(wav2lip_processed_video, method=enhancer, bg_upsampler=background_enhancer)
-            imageio.mimsave(enhanced_path, enhanced_images, fps=float(25))
+            imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
             wav2lip_result_video = enhanced_path
 
         mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)

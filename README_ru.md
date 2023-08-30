@@ -21,7 +21,7 @@
     <br/>
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Сообщить об ошибке</a>
     ·
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Запросить функцию</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Википедия</a>
   </p>
 </div>
 

@@ -174,8 +174,9 @@ function avatarInfoPop(avatar, name) {
                 intro: `<div style="width: 200pt">
                             <p style="font-weight: 600;">Выбранный голос еще не загружен на устройство</p>
                             <p style="margin-top: 5pt;">Для синтеза необходима модель checkpoint и waveglow</p>
-                            <p style="margin-top: 5pt;margin-bottom: 5pt;">При запуске синтеза речи, необходимые модели будут скачаны автоматически</p>
-                            <p>Либо вы можете скачать самостоятельно модели из репозитория по <a href="https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice.json" target="_blank" rel="noopener noreferrer" >ссылке</a> и добавить модели в директорию <button style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/${name}</button></p>
+                            <p style="margin-top: 5pt;">При запуске синтеза речи, необходимые модели будут скачаны автоматически</p>
+                            <p style="margin-top: 5pt;margin-bottom: 5pt;">Либо вы можете скачать самостоятельно модели из репозитория по <a style="text-transform: lowercase;" href="https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice.json" target="_blank" rel="noopener noreferrer" >ссылке</a><text style="text-transform: lowercase;"> и добавить модели в директорию </text><button class="notranslate" style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/name/</button></p>
+                            <p><b>Как установить модели ручным способом</b><text style="text-transform: lowercase;"> для синтеза речи, вы найдете в </text><a style="text-transform: lowercase;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">документации проекта</a></p>
                         </div>
                 `,
             }

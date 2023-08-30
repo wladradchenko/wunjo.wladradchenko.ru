@@ -21,6 +21,7 @@ from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOL
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 from backend.translator import get_translate
 
+import logging
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -32,8 +33,8 @@ app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
-# get list of all directories in folder
 
+logging.getLogger('werkzeug').disabled = True
 
 # TODO interect code from swapper
 # def pre_check() -> bool:
