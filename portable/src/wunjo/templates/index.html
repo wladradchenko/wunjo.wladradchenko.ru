@@ -5,7 +5,9 @@
 
 {% block head %}
 	<script type="text/javascript" src="{{ url_for('static', filename='speech/js/speech-synthesis.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-synthesis.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-animation.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-emotion.js') }}"></script>
 {% endblock %}
 
 {% block menubar %}
@@ -13,20 +15,20 @@
     <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
     <a class="notranslate" id="a-link-open-tutorial" href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i class="fa-solid fa-circle-question" title="Учебное пособие"></i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
-    <a id="a-extensions" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i style="padding-left: 2pt;" class="fa-solid fa-puzzle-piece"></i></a>
+    <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно создания дипфейка смены лица" onclick="deepfakeFaceSwap();"><i class="fa-solid fa-masks-theater"></i></a>
+    <a id="button-run-change-emotion" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно дипфейка эмоций"><i class="fa-solid fa-face-grin-tongue-wink"></i></a>
     <!--EXTENSIONS-->
-    {% for html_content in extensions_html %}
-        {{ html_content | safe }}
-    {% endfor %}
+    <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i class="fa-solid fa-microchip"></i></a>
+    <a id="a-speech-train" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;display: none;" title="Панель тренировки голоса"><i class="fa-solid fa-brain"></i></a>
     <!--EXTENSIONS-->
 </div>
 {% endblock %}
 
 {% block sections %}
-    <div id="voice-cards" style="display: flex;flex-direction: column;overflow-x: auto;height: 70vh;">
+    <div id="voice-cards" style="display: flex;flex-direction: column;overflow-x: auto;height: 70vh;width: 100%;">
         <template id="voice-card-template">
-        <div class="voice-card-container" style="display: flex;">
-            <div class="voice-card-avatar" style="display: flex;flex-direction: column;margin-right:40pt;margin-left: 40pt;">
+        <div class="voice-card-container" style="display: flex;justify-content: space-around;">
+            <div class="voice-card-avatar" style="display: flex;flex-direction: column;margin-left: 40pt;margin-right: 20pt;">
                 <div class="bubble bubble-bottom-right" style="left: -20%;">
                     <div class="model-multiselect">
                         <div class="select-box" onclick="multiVoiceSelect(this.parentElement);" title="Выбор голоса">
@@ -66,18 +68,18 @@
                 <section>
                     <div class="additional-options">
                         <label class="neumorphic-slider">Высота
-                            <input style="width: 80pt;" class="range pitch-range" type="range" min="0.75" max="1.5" step="0.05" value="1.0">
+                            <input style="max-width: 80pt;" class="range pitch-range" type="range" min="0.75" max="1.5" step="0.05" value="1.0">
                         </label>
 
-                        <label>Скорость
-                            <input style="width: 80pt;" class="range rate-range" type="range" min="0.5" max="2.0" step="0.1" value="1.0">
+                        <label style="margin-right: 20pt;margin-left: 20pt;">Скорость
+                            <input style="max-width: 80pt;" class="range rate-range" type="range" min="0.5" max="2.0" step="0.1" value="1.0">
                         </label>
 
                         <label>Громкость
-                            <input style="width: 80pt;" class="range volume-range" type="range" min="-12" max="12" step="0.5" value="0.0">
+                            <input style="max-width: 80pt;" class="range volume-range" type="range" min="-12" max="12" step="0.5" value="0.0">
                         </label>
                     </div>
-                    <textarea class="text-input" placeholder='Введите текст, используя буквы, соответствующие языку, выбранной модели для синтеза речи' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;"></textarea>
+                    <textarea class="text-input" placeholder='Введите текст, используя буквы, соответствующие языку, выбранной модели для синтеза речи' title="Текст для озвучки" style="padding: 10pt;font-size: 12pt;resize: vertical;"></textarea>
                     <div style="display: flex;justify-content: end;align-items: center;">
                         <div style="margin-right: 15pt;" class="toggle-button toggle-button-voice">
                           <div title="Флаг выбора текста для озвучивания" class="button toggle-div-voice">
@@ -95,18 +97,18 @@
     </div>
     <div class="synthesized_field">
         <div class="buttons" style="margin-bottom: 20pt;">
-            <button title="Перевести приложение" id="translate-application-btn" style="width:80pt;">
+            <button title="Перевести приложение" id="translate-application-btn" style="width:120pt;">
                 <i class="fa-solid fa-language"></i>
                 <!-- Hidden dropdown for selecting languages -->
-                <select id="language-dropdown" class="notranslate" style="text-align: center;">
+                <select id="language-dropdown" class="notranslate" style="text-align: center;font-size: 12pt;">
                     {% for key, value in existing_langs.items() %}
                         <option value="{{value}}" name="{{key}}" class="notranslate">{{key}}</option>
                     {% endfor %}
                 </select>
             </button>
-            <button title="Показать результаты синтеза анимации" id="button-show-voice-window" style="display: block;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';">Синтез анимации</button>
-            <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;margin-right: 10px;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';">Синтез голоса</button>
-            <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимировать</button>
+            <button title="Показать результаты синтеза анимации" id="button-show-voice-window" style="display: block;width:120pt;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';"><i class="fa-solid fa-clapperboard"></i><p>Видео</p></button>
+            <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;width:120pt;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';"><i class="fa-solid fa-music"></i><p>Аудио</p></button>
+            <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимация лица и губ</button>
         </div>
         <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;height: 80%;">
             <div id="synthesized_result_table" style="overflow-x: auto;">
@@ -132,7 +134,10 @@
                     </tbody>
                 </table>
             </div>
-            <div id="status-message" style="margin: 5pt;text-align: center;"></div>
+        </div>
+        <div id="console-result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;max-height: 20%;">
+            <div class="lds-ring" id="lds-ring"><div></div><div></div><div></div><div></div></div>
+            <code class="notranslate" id="console-log" style="padding: 5pt; padding-left: 20pt;font-size: 10pt; width: 280pt; display: flex; overflow-wrap: break-word;overflow-y: auto;"></code>
         </div>
         <div class="buttons">
             <button title="Выбрать все флаги для озвучивания" id="button-enable-all">Выбрать все</button>
@@ -140,9 +145,10 @@
             <button title="Начать синтез речи" id="button-run-synthesis" style="background: #f7db4d;">Синтезировать речь</button>
         </div>
     </div>
-    <div style="position: absolute;left: 0;bottom: 0;padding: 5pt;font-size: 8pt;color: gray;"><p id="version" vers="1.4.0">Версия 1.4.0</p></div>
+    <div style="position: absolute;left: 0;bottom: 0;padding: 5pt;font-size: 8pt;color: gray;"><p id="version" vers="1.5.0">Версия 1.5.0</p></div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/console/console.js') }}"></script>
 
     <script>
         let targetLang = "{{ user_lang }}";  // Initial value

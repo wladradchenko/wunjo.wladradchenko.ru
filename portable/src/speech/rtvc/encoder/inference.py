@@ -4,7 +4,6 @@ import sys
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
-from speech.rtvc.encoder.params_data import *
 from speech.rtvc.encoder.model import SpeakerEncoder
 from speech.rtvc.encoder.params_data import partials_n_frames, sampling_rate, mel_window_step
 from speech.rtvc.encoder import audio

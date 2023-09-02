@@ -1,6 +1,7 @@
 import os
 import sys
 import torch
+import soundfile
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
@@ -9,6 +10,9 @@ from speech.rtvc.synthesizer import audio
 from speech.rtvc.synthesizer.hparams import hparams
 from speech.rtvc.synthesizer.models.tacotron import Tacotron
 from speech.rtvc.synthesizer.utils.symbols import symbols
+from speech.rtvc.encoder.audio import preprocess_wav
+from speech.tps.tps import Handler, ssml
+from speech.tts.utils.async_utils import BackgroundGenerator
 from speech.rtvc.synthesizer.utils.text import text_to_sequence
 
 sys.path.pop(0)
@@ -20,10 +24,10 @@ import librosa
 
 
 class Synthesizer:
-    sample_rate = hparams.sample_rate
     hparams = hparams
+    sample_rate = hparams.sample_rate
 
-    def __init__(self, model_fpath: Path, verbose=True, device="cpu"):
+    def __init__(self, model_fpath: Path, verbose=True, device="cpu", pause_type="silence", charset="en"):
         """
         The model isn't instantiated and loaded in memory until needed or until load() is called.
 
@@ -40,6 +44,12 @@ class Synthesizer:
 
         # Tacotron model will be instantiated later on first use.
         self._model = None
+
+        self.pause_type = pause_type
+        self.text_handler = self._load_text_handler({
+            "config": charset,
+            "out_max_length": 200
+        }, use_cleaner=False)
 
     def is_loaded(self):
         """
@@ -72,13 +82,64 @@ class Synthesizer:
         if self.verbose:
             print("Loaded synthesizer \"%s\" trained to step %d" % (self.model_fpath, self._model.state_dict()["step"]))
 
-    def synthesize_spectrograms(self, texts: List[str],
-                                embeddings: Union[np.ndarray, List[np.ndarray]],
-                                return_alignments=False):
+    def _sequence_audio_gen(self, sequence_generator, embeddings):
+        spectrograms = []
+        for unit in sequence_generator:
+            if isinstance(unit, ssml.Pause):
+                continue
+            else:
+                unit_value = self.text_handler.check_eos(unit.value)
+                phrases = self.split_into_phrases(unit_value)
+                for phrase in phrases:
+                    print(phrase)
+                    phrase = [text_to_sequence(phrase.replace("~", ""), hparams.tts_cleaner_names)]
+                    batched_inputs = [phrase[i:i + hparams.synthesis_batch_size] for i in range(0, len(phrase), hparams.synthesis_batch_size)]
+                    batched_embeds = [embeddings[i:i + hparams.synthesis_batch_size] for i in range(0, len(embeddings), hparams.synthesis_batch_size)]
+                    for i, batch in enumerate(batched_inputs, 1):
+                        if self.verbose:
+                            print(f"\n| Generating {i}/{len(batched_inputs)}")
+
+                        # Pad texts so they are all the same length
+                        text_lens = [len(text) for text in batch]
+                        max_text_len = max(text_lens)
+                        chars = [self.pad1d(text, max_text_len) for text in batch]
+                        chars = np.stack(chars)
+
+                        # Stack speaker embeddings into 2D array for batch processing
+                        speaker_embeds = np.stack(batched_embeds[i - 1])
+
+                        # Convert to tensor
+                        chars = torch.tensor(chars).long().to(self.device)
+                        speaker_embeddings = torch.tensor(speaker_embeds).float().to(self.device)
+
+                        # Inference
+                        _, mels, alignments = self._model.generate(chars, speaker_embeddings)
+                        mels = mels.detach().cpu().numpy()
+                        for m in mels:
+                            # Trim silence from end of each spectrogram
+                            while np.max(m[:, -1]) < hparams.tts_stop_threshold:
+                                m = m[:, :-1]
+                            spectrograms.append(m)
+        return spectrograms
+
+    def synthesize(self,vocoder, text: str, embeddings: Union[np.ndarray, List[np.ndarray]], return_alignments=False):
+        audio_list = self.synthesize_spectrograms(text=text, embeddings=embeddings)
+        for audio in audio_list:
+            yield vocoder.infer_waveform(audio)
+
+
+    def save(self, audio, path, name, prefix=None):
+        os.makedirs(path, exist_ok=True)
+        file_path = os.path.join(path, name)
+        soundfile.write(file_path, audio.astype(np.float32), self.sample_rate)
+
+        return file_path
+
+    def synthesize_spectrograms(self, text: str, embeddings: Union[np.ndarray, List[np.ndarray]], return_alignments=False):
         """
         Synthesizes mel spectrograms from texts and speaker embeddings.
 
-        :param texts: a list of N text prompts to be synthesized
+        :param text: a list of N text prompts to be synthesized
         :param embeddings: a numpy array or list of speaker embeddings of shape (N, 256)
         :param return_alignments: if True, a matrix representing the alignments between the
         characters
@@ -86,51 +147,31 @@ class Synthesizer:
         :return: a list of N melspectrograms as numpy arrays of shape (80, Mi), where Mi is the
         sequence length of spectrogram i, and possibly the alignments.
         """
+        print(self.text_handler.language)
         # Load the model on the first request.
         if not self.is_loaded():
             self.load()
 
-        # Preprocess text inputs
-        inputs = [text_to_sequence(text.strip(), hparams.tts_cleaner_names) for text in texts]
+        # Add auto transcript a text
+        text = text.lower()
+        cleaners = ("light_punctuation_cleaners",)
+
+        if text.startswith("<speak>") and text.endswith("</speak>"):
+            sequence = ssml.parse_ssml_text(text)
+        else:
+            sequence = self.text_handler.split_to_sentences(text, True, self.text_handler.language)
+            sequence = [
+                ssml.Text(elem) if not isinstance(elem, ssml.Pause) else elem for elem in sequence
+            ]
+
+        sequence_generator = BackgroundGenerator(
+            self._sequence_to_sequence_gen(sequence, cleaners, None, None)
+        )
+
         if not isinstance(embeddings, list):
             embeddings = [embeddings]
 
-        # Batch inputs
-        batched_inputs = [inputs[i:i+hparams.synthesis_batch_size]
-                             for i in range(0, len(inputs), hparams.synthesis_batch_size)]
-        batched_embeds = [embeddings[i:i+hparams.synthesis_batch_size]
-                             for i in range(0, len(embeddings), hparams.synthesis_batch_size)]
-
-        specs = []
-        for i, batch in enumerate(batched_inputs, 1):
-            if self.verbose:
-                print(f"\n| Generating {i}/{len(batched_inputs)}")
-
-            # Pad texts so they are all the same length
-            text_lens = [len(text) for text in batch]
-            max_text_len = max(text_lens)
-            chars = [self.pad1d(text, max_text_len) for text in batch]
-            chars = np.stack(chars)
-
-            # Stack speaker embeddings into 2D array for batch processing
-            speaker_embeds = np.stack(batched_embeds[i-1])
-
-            # Convert to tensor
-            chars = torch.tensor(chars).long().to(self.device)
-            speaker_embeddings = torch.tensor(speaker_embeds).float().to(self.device)
-
-            # Inference
-            _, mels, alignments = self._model.generate(chars, speaker_embeddings)
-            mels = mels.detach().cpu().numpy()
-            for m in mels:
-                # Trim silence from end of each spectrogram
-                while np.max(m[:, -1]) < hparams.tts_stop_threshold:
-                    m = m[:, :-1]
-                specs.append(m)
-
-        if self.verbose:
-            print("\n\nDone.\n")
-        return (specs, alignments) if return_alignments else specs
+        return self._sequence_audio_gen(sequence_generator, embeddings)
 
     @staticmethod
     def load_preprocess_wav(fpath):
@@ -168,3 +209,74 @@ class Synthesizer:
     @staticmethod
     def pad1d(x, max_len, pad_value=0):
         return np.pad(x, (0, max_len - len(x)), mode="constant", constant_values=pad_value)
+
+    @staticmethod
+    def _load_text_handler(config, use_cleaner = True):
+        out_max_length = config["out_max_length"]
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "tps",  "rules")
+        handler = Handler.from_charset(config["config"], data_dir=config_path, out_max_length=out_max_length, silent=True, use_cleaner=use_cleaner)
+
+        return handler
+
+    def _sequence_to_sequence_gen(self, sequence, cleaners, mask_stress, mask_phonemes):
+        for element in sequence:
+            if not isinstance(element, ssml.Pause):
+                sentence = element.value
+
+                sentence = self.text_handler.process(
+                    string=sentence,
+                    cleaners=cleaners,
+                    user_dict=None,
+                    mask_stress=mask_stress,
+                    mask_phonemes=mask_phonemes
+                )
+
+                if self.text_handler.out_max_length is not None:
+                    _units = self.text_handler.split_to_units(sentence, self.text_handler.out_max_length, True)
+
+                    for unit in _units:
+                        yield ssml.Text(unit).inherit(element) if not isinstance(unit, ssml.Pause) else unit
+                else:
+                    element.update_value(sentence)
+                    yield element
+            else:
+                yield element
+
+
+    @staticmethod
+    def split_into_phrases(text: str, max_words: int = 20, min_words: int = 10) -> list:
+        """
+        Split big phrases and phrase not more 20 words
+        :param text: text
+        :param max_words: max words
+        :param min_words: min words after those if will be some symbol, when create phrase
+        :return: phrases
+        """
+        words = text.replace("\n", " ").replace("\t", " ").split(" ")
+        phrases = []
+        phrase = []
+        word_count = 0
+
+        for word in words:
+            if word_count + len(word.split()) <= max_words:
+                phrase.append(word)
+                word_count += len(word.split())
+                # Check for the special condition
+                if word_count > min_words and any(word.endswith(char) for char in ['.', ',', '%', '!', '?']):
+                    strip_phrase = " ".join(phrase).strip()
+                    if strip_phrase:
+                        phrases.append(strip_phrase)
+                    phrase = []
+                    word_count = 0
+            else:
+                strip_phrase = " ".join(phrase).strip()
+                if strip_phrase:
+                    phrases.append(strip_phrase)
+                phrase = [word]
+                word_count = len(word.split())
+
+        strip_phrase = " ".join(phrase).strip()
+        if strip_phrase:
+            phrases.append(strip_phrase)
+
+        return phrases

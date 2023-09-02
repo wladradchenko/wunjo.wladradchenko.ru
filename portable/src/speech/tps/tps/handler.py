@@ -17,7 +17,7 @@ _curly = re.compile("({}.+?{})".format(*smb.shields))
 
 
 class Handler(md.Processor):
-    def __init__(self, charset: str, modules: list=None, out_max_length: int=None, save_state=False, name="Handler"):
+    def __init__(self, charset: str, modules: list=None, out_max_length: int=None, save_state=False, name="Handler", use_cleaner=True):
         """
         This class stores a chain of passed modules and processes texts using this chain.
 
@@ -39,7 +39,7 @@ class Handler(md.Processor):
         self.id_to_symbol = {i: s for i, s in enumerate(self.symbols)}
 
         self.modules = modules if modules is not None else []
-        self._validate_modules()
+        self._validate_modules(use_cleaner)
 
         self.out_max_length = out_max_length
 
@@ -91,7 +91,7 @@ class Handler(md.Processor):
                 if hasattr(tps_cleaners, _cleaner):
                     cleaner = getattr(tps_cleaners, _cleaner)
                 else:
-                    logger.warning("There is no such cleaner {} in tps library.".format(_cleaner))
+                    print("Warning... There is no such cleaner {} in tps library.".format(_cleaner))
                     continue
 
             string = cleaner(string)
@@ -357,7 +357,7 @@ class Handler(md.Processor):
 
     @classmethod
     def from_charset(cls, charset, out_max_length=None, data_dir=None, verify_checksum=True,
-                     silent=False):
+                     silent=False, use_cleaner=True):
         """
         Makes instance of the Handler class that is used by default for the passed charset.
         It's possible that some additional files need to be downloaded before -
@@ -380,17 +380,19 @@ class Handler(md.Processor):
         :return: Handler
         """
         charset = _types.Charset(charset)
-        modules = _get_default_modules(charset, data_dir, verify_checksum, silent)
+        modules = _get_default_modules(charset, data_dir, verify_checksum, silent, use_cleaner)
 
-        return Handler(charset, modules, out_max_length)
+        return Handler(charset=charset, modules=modules, out_max_length=out_max_length, use_cleaner=use_cleaner)
 
 
     def _should_keep_symbol(self, s):
         return s in self.symbol_to_id
 
 
-    def _validate_modules(self):
+    def _validate_modules(self, use_cleaner = True):
+        omograph_exists = False
         emphasizer_exists = False
+        number_exists = False
         lower_exists = False
         cleaner_exists = False
         phonetizer_type = None
@@ -399,6 +401,10 @@ class Handler(md.Processor):
         for i, module in enumerate(self.modules):
             if isinstance(module, md.Lower):
                 lower_exists = True
+            if isinstance(module, md.Number):
+                number_exists = True
+            elif isinstance(module, md.Omograph):
+                omograph_exists = True
             elif isinstance(module, md.Cleaner):
                 cleaner_exists = True
             elif isinstance(module, md.Emphasizer):
@@ -407,20 +413,22 @@ class Handler(md.Processor):
                 phonetizer_type = type(module)
 
                 assert i + 1 == len(self.modules), "Phonetizer module must be the last one"
+                if not omograph_exists:
+                    print("Warning... There is no omographs in modules")
                 if not emphasizer_exists:
-                    logger.warning("There is no emphasizer in modules. "
+                    print("Warning... There is no emphasizer in modules. "
                                    "Phonetizer will process words only with stress tokens set by user")
 
         if not lower_exists:
             self.modules.insert(auxiliary_idx, md.Lower())
             auxiliary_idx += 1
-        if not cleaner_exists:
+        if not number_exists:
+            self.modules.insert(auxiliary_idx, md.Number(self.charset))
+        if not cleaner_exists and use_cleaner:
             self.modules.insert(auxiliary_idx, md.Cleaner(self.charset))
 
         if self.charset == _types.Charset.ru:
             assert phonetizer_type is None
-        # elif self.charset == types.Charset.en_cmu:
-        #     assert phonetizer_type == md.EnPhonetizer
 
 
     def pop(self, item):
@@ -450,27 +458,39 @@ def _get_file(name, data_dir):
     return os.path.join(data_dir, name)
 
 
-def _get_default_modules(charset, data_dir=None, verify_checksum=True, silent=False):
+def _get_default_modules(charset, data_dir=None, verify_checksum=True, silent=False, use_cleaner=True):
     modules = [
         md.Lower(),
-        md.Cleaner(charset)
+        md.Number(charset)
     ]
+    print(f"Using cleaner letters for language {charset} on text: {use_cleaner}")
+
+    if use_cleaner:
+        modules.extend([md.Cleaner(charset)])
 
     if charset == _types.Charset.ru:
-        stress_dict = _get_file("stress.dict", data_dir)
+        stress_a_dict = _get_file("stress.a.dict", data_dir)
+        stress_b_dict = _get_file("stress.b.dict", data_dir)
+        stress_c_dict = _get_file("stress.c.dict", data_dir)
+        stress_d_dict = _get_file("stress.d.dict", data_dir)
+        omographs_dict = _get_file("omographs.dict", data_dir)
         yo_dict = _get_file("yo.dict", data_dir)
         e_dict = _get_file("e.dict", data_dir)
 
         modules.extend([
+            md.RuOmograph([omographs_dict, "plane"], True),
             md.BlindReplacer([e_dict, "plane"], name="Eficator"),
             md.BlindReplacer([yo_dict, "plane"], name="Yoficator"),
-            md.RuEmphasizer([stress_dict, "plane"], True)
+            md.RuEmphasizer([stress_a_dict, "plane"], True),
+            md.RuEmphasizer([stress_b_dict, "plane"], True),
+            md.RuEmphasizer([stress_c_dict, "plane"], True),
+            md.RuEmphasizer([stress_d_dict, "plane"], True)
         ])
     elif charset == _types.Charset.en:
         pass
     elif charset == _types.Charset.en_cmu:
         raise NotImplementedError
     else:
-        raise ValueError
+        raise f"{ValueError}. This is language not support"
 
     return modules

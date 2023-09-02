@@ -25,10 +25,6 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
             # Clean up the temporary directory
             shutil.rmtree(temp_dir)
 
-# def unzip(zip_file_path, extract_dir):
-#     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-#         zip_ref.extractall(extract_dir)
-
 
 def download_model(download_path: str, download_link: str, retry_count: int = 2, retry_delay: int = 5) -> bool:
     for i in range(retry_count + 1):
@@ -44,15 +40,15 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
                         f.write(chunk)
             progress_bar.close()
             if total_size != 0 and progress_bar.n != total_size:
-                print('Download failed: network error')
+                print(f'Download failed: network error. You can download the file yourself from the link {download_link}')
                 continue
             else:
-                print('Download finished')
+                print(f'Download finished in {download_path}')
                 return True
         except requests.exceptions.RequestException:
             if i == retry_count:
                 os.remove(download_path)  # delete not finished file
-                raise "[Error] Internet connection is finished!"
+                raise "Error... Internet connection is failed!"
             time.sleep(retry_delay)
 
 
@@ -70,9 +66,10 @@ def check_download_size(download_path: str, download_link: str) -> bool:
 
     downloaded_size = os.path.getsize(download_path)
     if downloaded_size == total_size:
-        print(download_path, 'File is correct')
+        print(f'File verified {download_path}')
         return True
-    print(download_path, "File is fall, re-download ones")
+    print(f"File is not verified, re-download ones {download_link}")
+
     os.remove(download_path)  # delete not finished file
 
     return download_model(download_path, download_link)

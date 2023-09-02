@@ -59,7 +59,7 @@ class Synthesizer:
 
         assert self.text_handler.charset == self.engine.charset
 
-        logger.info("Synthesizer {} is ready".format(name))
+        print("Synthesizer {} is ready".format(name))
 
         self.cyrillic_to_latin = {
             'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
@@ -111,9 +111,6 @@ class Synthesizer:
         return ''.join(translated_text)
 
     def text_to_audio_gen(self, text, **kwargs):
-        logger.info(text)
-        logger.debug("kwargs: {}".format(kwargs))
-
         # Add auto transcript a text
         text = text.lower()
         if self.text_handler.language == 'russian' and any(char.isascii() and char.isalpha() for char in text):
@@ -222,7 +219,7 @@ class Synthesizer:
         file_path = os.path.join(path, name)
         soundfile.write(file_path, audio, self.sample_rate)
 
-        logger.info("Audio was saved as {}".format(os.path.abspath(file_path)))
+        print("Audio was saved as {}".format(os.path.abspath(file_path)))
 
         return file_path
 
@@ -257,35 +254,35 @@ class Synthesizer:
         if isinstance(user_dict, dict) or user_dict is None:
             if not os.path.exists(data_dir):
                 os.makedirs(data_dir)
-                logger.info("Data folder was created along the path {}".format(os.path.abspath(data_dir)))
+                print("Data folder was created along the path {}".format(os.path.abspath(data_dir)))
             self._dict_source = os.path.join(data_dir, "{}_user_dict.json".format(self.name))
         else:
             self._dict_source = user_dict
         assert self._dict_source.endswith((".json", ".yaml"))
 
         self.user_dict = load_dict(user_dict)
-        logger.info("User dictionary has been loaded")
+        print("User dictionary has been loaded")
 
 
     def get_user_dict(self):
-        logger.info("Request for the user dictionary was received")
+        print("Request for the user dictionary was received")
         return self.user_dict
 
 
     def update_user_dict(self, new_dict):
         self.user_dict.update(new_dict)
-        logger.info("User dictionary has been updated")
+        print("User dictionary has been updated")
 
         save_dict(self.user_dict, self._dict_source)
-        logger.info("User dictionary has been saved")
+        print("User dictionary has been saved")
 
 
     def replace_user_dict(self, new_dict):
         self.user_dict = new_dict
-        logger.info("User dictionary has been replaced")
+        print("User dictionary has been replaced")
 
         save_dict(self.user_dict, self._dict_source)
-        logger.info("User dictionary has been saved")
+        print("User dictionary has been saved")
 
 
     @classmethod
@@ -319,7 +316,7 @@ class Synthesizer:
 
     @staticmethod
     def module_from_config(modules_config, mtype, mname, device):
-        logger.info("Loading {} module".format(mname))
+        print("Loading {} module".format(mname))
 
         module_config = modules_config[mtype][mname]
         module_config["device"] = device
@@ -350,7 +347,7 @@ def generate_pause(duration, eps=1e-4, ptype='white_noise'):
 
 
 def _load_text_handler(config_dict):
-    logger.info("Loading text handler")
+    print("Loading text handler")
 
     out_max_length = config_dict["out_max_length"]
 
@@ -358,7 +355,7 @@ def _load_text_handler(config_dict):
     assert config is not None
 
     if config in Charset._member_names_:
-        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tps", "data")
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tps", "rules")
         handler = Handler.from_charset(config, data_dir=config_path, out_max_length=out_max_length, silent=True)
     else:
         handler_config = Synthesizer.load_config(config)

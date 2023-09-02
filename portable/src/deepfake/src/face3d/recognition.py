@@ -61,6 +61,6 @@ class FaceRecognition:
         self.running_average += change
 
         dynamic_threshold = self.running_average * 0.95  # TODO Maybe did this control param from frontend
-        print(min(distances), dynamic_threshold)
+        # print(min(distances), dynamic_threshold)
 
         return min(distances) < dynamic_threshold

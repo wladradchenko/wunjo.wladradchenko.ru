@@ -5,14 +5,19 @@ from scipy.ndimage.morphology import binary_dilation
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
-from speech.rtvc.encoder.params_data import *
+from speech.rtvc.encoder.params_data import (
+    mel_window_length, mel_window_step, mel_n_channels, sampling_rate, partials_n_frames, inference_n_frames,
+    vad_window_length, vad_moving_average_width, vad_max_silence_length, audio_norm_target_dBFS
+)
 
 sys.path.pop(0)
 
 from pathlib import Path
 from typing import Optional, Union
 from warnings import warn
+import soundfile as sf
 import numpy as np
+from pydub import AudioSegment
 import librosa
 import struct
 
@@ -115,6 +120,22 @@ def trim_long_silences(wav):
     audio_mask = np.repeat(audio_mask, samples_per_window)
     
     return wav[audio_mask == True]
+
+
+def trim_silence_librosa(audio_path, output_path):
+    """Trim silence from audio file by librosa (quality better than pydub)"""
+    y, sr = librosa.load(audio_path)
+    y_trim, index = librosa.effects.trim(y)  # Default top_db=60, adjust if needed
+    sf.write(output_path, y_trim, sr)
+    return output_path
+
+
+def trim_silence_pydub(audio_path, output_path):
+    """Trim silence from audio file by PyDub (files has minimum size than by librosa)"""
+    audio = AudioSegment.from_file(audio_path, format="wav")
+    trimmed_audio = audio.strip_silence(silence_len=100, silence_thresh=-50)  # Adjust parameters as needed
+    trimmed_audio.export(output_path, format="wav")
+    return output_path
 
 
 def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False):

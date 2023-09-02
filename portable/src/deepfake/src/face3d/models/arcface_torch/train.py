@@ -1,5 +1,4 @@
 import argparse
-import logging
 import os
 
 import torch
@@ -50,10 +49,10 @@ def main(args):
             backbone_pth = os.path.join(cfg.output, "backbone.pth")
             backbone.load_state_dict(torch.load(backbone_pth, map_location=torch.device(local_rank)))
             if rank == 0:
-                logging.info("backbone resume successfully!")
+                print("Backbone resume successfully!")
         except (FileNotFoundError, KeyError, IndexError, RuntimeError):
             if rank == 0:
-                logging.info("resume fail, backbone init successfully!")
+                print("Resume fail, backbone init successfully!")
 
     backbone = torch.nn.parallel.DistributedDataParallel(
         module=backbone, broadcast_buffers=False, device_ids=[local_rank])
@@ -92,7 +91,7 @@ def main(args):
 
     for key, value in cfg.items():
         num_space = 25 - len(key)
-        logging.info(": " + key + " " * num_space + str(value))
+        print(": " + key + " " * num_space + str(value))
 
     val_target = cfg.val_targets
     callback_verification = CallBackVerification(2000, rank, val_target, cfg.rec)
@@ -131,11 +130,3 @@ def main(args):
             scheduler_pfc.step()
         callback_checkpoint(global_step, backbone, module_partial_fc)
     dist.destroy_process_group()
-
-
-if __name__ == "__main__":
-    torch.backends.cudnn.benchmark = True
-    parser = argparse.ArgumentParser(description='PyTorch ArcFace Training')
-    parser.add_argument('config', type=str, help='py config file')
-    parser.add_argument('--local_rank', type=int, default=0, help='local_rank')
-    main(parser.parse_args())

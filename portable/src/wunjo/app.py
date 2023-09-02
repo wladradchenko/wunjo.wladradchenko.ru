@@ -9,11 +9,11 @@ from time import gmtime, strftime
 from base64 import b64encode
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, send_from_directory, url_for, abort
+from flask import Flask, render_template, request, send_from_directory, url_for, jsonify
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -27,9 +27,9 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 app.config['DEBUG'] = True
-app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
-app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
-app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] = []
+app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
+app.config['SYNTHESIZE_SPEECH_RESULT'] = []
+app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
@@ -53,13 +53,13 @@ def get_version_app():
         response = requests.get(version_json_url)
         return json.loads(response.text)
     except requests.RequestException:
-        print("Error fetching the version information.")
+        print("Error fetching the version information, when get information about updates of application")
         return {}
     except json.JSONDecodeError:
-        print("Error decoding the JSON response.")
+        print("Error decoding the JSON response, when get information about updates of application")
         return {}
     except:
-        print("An unexpected error occurred.")
+        print("An unexpected error occurred, when get information about updates of application")
         return {}
 
 
@@ -100,8 +100,8 @@ def set_settings():
                 if user_settings.get("default_language") is None:
                     user_settings["default_language"] = default_language
                 return user_settings
-            except Exception as e:
-                print(e)
+            except Exception as err:
+                print(f"Error ... {err}")
                 return default_settings
 
 
@@ -177,7 +177,7 @@ def index():
         default_lang.pop(lang_name)
     ordered_lang = {**{lang_name: lang_code}, **default_lang}
     app.config['USER_LANGUAGE'] = lang_code  # set user language for translate system print
-    return render_template("index.html", version=json.dumps(version_app), existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static(), extensions_html=extensions_html)
+    return render_template("index.html", version=json.dumps(version_app), existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static())
 
 
 @app.route('/current_processor', methods=["GET"])
@@ -186,6 +186,7 @@ def current_processor():
     if torch.cuda.is_available():
         return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": True}
     return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
+
 
 @app.route('/upload_tmp', methods=['POST'])
 @cross_origin()
@@ -266,24 +267,88 @@ def get_voice_list():
 @app.route("/synthesize_deepfake_result/", methods=["GET"])
 @cross_origin()
 def get_synthesize_deepfake_result():
-    general_results = app.config['SYSNTHESIZE_DEEPFAKE_RESULT']
+    general_results = app.config['SYNTHESIZE_DEEPFAKE_RESULT']
     return {
         "response_code": 0,
         "response": general_results
     }
 
+
+@app.route("/synthesize_face_swap/", methods=["POST"])
+@cross_origin()
+def synthesize_face_swap():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        print("The process is already running... ")
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print(get_print_translate("Please wait... Processing is started"))
+
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
+
+    target_content = request_list.get("target_content")
+    face_target_fields = request_list.get("face_target_fields")
+    source_face_fields = request_list.get("source_face_fields")
+    source_content = request_list.get("source_content")
+    type_file_target = request_list.get("type_file_target")
+    type_file_source = request_list.get("type_file_source")
+    video_start_target = request_list.get("video_start_target", 0)
+    video_start_source = request_list.get("video_start_source", 0)
+    enhancer = request_list.get("enhancer")
+    background_enhancer = request_list.get("background_enhancer", False)
+    multiface = request_list.get("multiface", False)
+
+    try:
+        face_swap_result = FaceSwap.main_faceswap(
+            deepfake_dir=DEEPFAKE_FOLDER,
+            target=os.path.join(TMP_FOLDER, target_content),
+            target_face_fields=face_target_fields,
+            source=os.path.join(TMP_FOLDER, source_content),
+            source_face_fields=source_face_fields,
+            type_file_target=type_file_target,
+            type_file_source=type_file_source,
+            target_video_start=video_start_target,
+            source_video_frame=video_start_source,
+            enhancer=enhancer,
+            background_enhancer=background_enhancer,
+            multiface=multiface
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    face_swap_result_filename = "/video/" + face_swap_result.replace("\\", "/").split("/video/")[-1]
+    face_swap_url = url_for("media_file", filename=face_swap_result_filename)
+    face_swap_date = current_time("%H:%M:%S")  # maybe did in js parse of date
+
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": face_swap_url, "response_video_date": face_swap_date}]
+
+    print("Face swap synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
+
+
 @app.route("/synthesize_deepfake/", methods=["POST"])
 @cross_origin()
 def synthesize_deepfake():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        print("The process is already running... ")
+
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит обработка")}
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print(get_print_translate("Please wait... Processing is started"))
 
     if not os.path.exists(DEEPFAKE_FOLDER):
         os.makedirs(DEEPFAKE_FOLDER)
 
     face_fields = request_list.get("face_fields")
-
-
     source_image = os.path.join(TMP_FOLDER, request_list.get("source_image"))
     driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
     preprocess = request_list.get("preprocess")
@@ -325,10 +390,10 @@ def synthesize_deepfake():
             )
 
         torch.cuda.empty_cache()
-    except Exception as e:
-        print(e)
-        app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Лицо не найдено")}]
-        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
 
@@ -336,16 +401,17 @@ def synthesize_deepfake():
     deepfake_url = url_for("media_file", filename=deepfake_filename)
     deepfake_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYSNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": deepfake_url, "response_video_date": deepfake_date}]
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": deepfake_url, "response_video_date": deepfake_date}]
 
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
+    print("Deepfake synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
 
     return {"status": 200}
 
 @app.route("/synthesize_speech_result/", methods=["GET"])
 @cross_origin()
 def get_synthesize_result():
-    general_results = app.config['SYSNTHESIZE_SPEECH_RESULT']
+    general_results = app.config['SYNTHESIZE_SPEECH_RESULT']
     return {
         "response_code": 0,
         "response": general_results
@@ -354,9 +420,14 @@ def get_synthesize_result():
 @app.route("/synthesize_speech/", methods=["POST"])
 @cross_origin()
 def synthesize():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 300:
+        print("The process is already running... ")
+
     request_list = request.get_json()
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит обработка")}
-    app.config['SYSNTHESIZE_SPEECH_RESULT'] = []
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print(get_print_translate("Please wait... Processing is started"))
+    app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 
     dir_time = current_time()
 
@@ -397,7 +468,7 @@ def synthesize():
             # get tacotron2 lang from engine
             tacotron2_lang = app.config['TTS_LOADED_MODELS'][model].engine.charset
             if auto_translation:
-                print("Translation text before Tacotron2")
+                print("User use auto translation. Translate text before TTS.")
                 tts_text = get_print_translate(get_translate(text=text, targetLang=tacotron2_lang))
             else:
                 tts_text = text
@@ -433,7 +504,7 @@ def synthesize():
                     result["response_code"] = response_code
                     result["recognition_text"] = text
                     # Add result in frontend
-                    app.config['SYSNTHESIZE_SPEECH_RESULT'] += [result]
+                    app.config['SYNTHESIZE_SPEECH_RESULT'] += [result]
 
         # here use for voice cloning of audio file without tts
         if use_voice_clone_on_audio:
@@ -456,10 +527,11 @@ def synthesize():
                 result["response_code"] = response_code
                 result["recognition_text"] = text
                 # Add result in frontend
-                app.config['SYSNTHESIZE_SPEECH_RESULT'] += [result]
+                app.config['SYNTHESIZE_SPEECH_RESULT'] += [result]
 
     app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
+    print("Text to speech synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
 
     return {"status": 200}
 
@@ -467,125 +539,59 @@ def synthesize():
 @app.route("/synthesize_process/", methods=["GET"])
 @cross_origin()
 def get_synthesize_status():
-    status = app.config['SYSNTHESIZE_STATUS']
+    status = app.config['SYNTHESIZE_STATUS']
     return status
 
 
-"""EXTENSIONS"""
-EXTENSIONS_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json"
-
-@app.route('/list_extensions/', methods=["GET"])
+@app.route('/change_processor', methods=["POST"])
 @cross_origin()
-def list_extensions():
-    try:
-        response = requests.get(EXTENSIONS_JSON_URL)
-        return response.json()
-    except:
-        return {}
-
-@app.route('/get_extensions/', methods=["POST"])
-@cross_origin()
-def get_extensions():
-    app.config['SYSNTHESIZE_STATUS'] = {"status_code": 300, "message": get_print_translate("Подождите... Происходит скачивание доп. пакетов")}
-
-    request_list = request.get_json()  # get key
-    extension_name = request_list.get("extension_name", None)
-    extension_url = request_list.get("extension_url", '')
-    if len(extension_url) > 0:
-        if extension_name:
-            path_extension = os.path.join(EXTENSIONS_FOLDER, extension_name)
+def change_processor():
+    current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        if not torch.cuda.is_available():
+            return {"current_processor": 'none'}  # will be message how install cuda or hust hidden changer
+        if current_processor == "cpu":
+            os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
+            return {"current_processor": 'cuda'}
         else:
-            extension_name = get_download_filename(extension_url)
-            if extension_name:
-                path_extension = os.path.join(EXTENSIONS_FOLDER, extension_name)
-
-        if extension_name is None:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Не является файлом")}
-            return {"status_code": 404}
-
-        support_format = [".zip", ".tar", ".rar", ".7z"]
-        for s in support_format:
-            if s in extension_url:
-                extension_name = extension_name.rsplit(".", 1)[0]
-                break
-        else:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Не является поддерживаемым форматом zip, tar, rar или 7z")}
-            return {"status_code": 404}
-
-        try:
-            if not os.path.exists(path_extension):
-                if ".zip" in extension_url:
-                    download_model(f"{path_extension}.zip", extension_url)
-                    unzip(f"{path_extension}.zip", EXTENSIONS_FOLDER, extension_name)
-                else:
-                    download_model(path_extension, extension_url)
-            else:
-                if ".zip" in extension_url:
-                    check_download_size(f"{path_extension}.zip", extension_url)
-                    if not os.listdir(path_extension):
-                        unzip(f"{path_extension}.zip", EXTENSIONS_FOLDER, extension_name)
-                else:
-                    check_download_size(path_extension, extension_url)
-
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Доп. пакеты скачаны. Перезагрузите приложение")}
-        except:
-            app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Проблемы с соединением")}
-    else:
-        app.config['SYSNTHESIZE_STATUS'] = {"status_code": 200, "message": get_print_translate("Ссылка пустая")}
-
-    return {"status_code": 200}
+            os.environ['WUNJO_TORCH_DEVICE'] = 'cpu'
+            return {"current_processor": 'cpu'}
+    return {"current_processor": current_processor}
 
 
-from importlib.util import spec_from_file_location, module_from_spec
+if not app.config['DEBUG']:
+    from io import StringIO
+
+    console_stdout = StringIO()
+    console_stderr = StringIO()
+    sys.stdout = console_stdout  # prints
+    sys.stderr = console_stderr  # https and model process
 
 
-extensions_html = []
+    @app.route('/console_log', methods=['GET'])
+    def console_log():
+        max_len_logs = 20
+        # Retrieve the captured console output from the StringIO object
+        captured_stdout = console_stdout.getvalue()
+        captured_stderr = console_stderr.getvalue()
 
-for entry in os.listdir(EXTENSIONS_FOLDER):
-    entry_path = os.path.join(EXTENSIONS_FOLDER, entry)
-    if os.path.isdir(entry_path):
-        # Get the list of files in the extensions folder
-        extension_files = [
-            filename
-            for filename in os.listdir(entry_path)
-            if filename.endswith(".py") and filename != "__init__.py"
-        ]
-
-        # Iterate over the extension files and load them as modules
-        for filename in extension_files:
-            module_name = os.path.splitext(filename)[0]
-            module_path = os.path.join(entry_path, filename)
-
-            # Create a module object
-            spec = spec_from_file_location(module_name, module_path)
-            module = module_from_spec(spec)
-
-            # Load the module
-            spec.loader.exec_module(module)
-
-            # Execute the module's code
-            if hasattr(module, "run"):
-                # Read the HTML content from the file
-                with open(os.path.join(entry_path, 'templates', 'index.html'), 'r') as file:
-                    html_content = file.read()
-
-                # Append the HTML content to the extensions_html list
-                extensions_html.append(html_content)
-
-                module.run(MEDIA_FOLDER, entry_path, app)  # Pass the variables as arguments
+        # Split the captured output into individual log lines
+        logs = (captured_stdout + captured_stderr).splitlines()
+        return jsonify(logs[-max_len_logs:])
+else:
+    @app.route('/console_log', methods=['GET'])
+    def console_log():
+        logs = ["Debug mode. Console is turned off"]
+        return jsonify(logs)
 
 
-# Route for accessing static files from the extensions folder
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'js', 'css', 'mp3', 'wav', 'mp4', 'yaml', 'json'}
-@app.route('/extensions/static/<path:filename>')
-def serve_extensions_static(filename):
-    if '.' in filename:
-        extension = filename.rsplit('.', 1)[1].lower()
-        if extension in ALLOWED_EXTENSIONS:
-            return send_from_directory(EXTENSIONS_FOLDER, filename)
-    abort(404)
-
-"""EXTENSIONS"""
+@app.route('/console_log_print', methods=['POST'])
+def console_log_print():
+    resp = request.get_json()
+    msg = resp.get("print", None)
+    if msg:
+        print(msg)  # show message in backend console
+    return jsonify({"status": 200})
 
 
 class InvalidVoice(Exception):

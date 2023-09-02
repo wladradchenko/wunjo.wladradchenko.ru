@@ -1,4 +1,3 @@
-import logging
 import os
 
 import torch
@@ -68,18 +67,18 @@ class PartialFC(Module):
                 self.weight_mom: torch.Tensor = torch.load(self.weight_mom_name)
                 if self.weight.shape[0] != self.num_local or self.weight_mom.shape[0] != self.num_local:
                     raise IndexError
-                logging.info("softmax weight resume successfully!")
-                logging.info("softmax weight mom resume successfully!")
+                print("Softmax weight resume successfully!")
+                print("Softmax weight mom resume successfully!")
             except (FileNotFoundError, KeyError, IndexError):
                 self.weight = torch.normal(0, 0.01, (self.num_local, self.embedding_size), device=self.device)
                 self.weight_mom: torch.Tensor = torch.zeros_like(self.weight)
-                logging.info("softmax weight init!")
-                logging.info("softmax weight mom init!")
+                print("Softmax weight init!")
+                print("Softmax weight mom init!")
         else:
             self.weight = torch.normal(0, 0.01, (self.num_local, self.embedding_size), device=self.device)
             self.weight_mom: torch.Tensor = torch.zeros_like(self.weight)
-            logging.info("softmax weight init successfully!")
-            logging.info("softmax weight mom init successfully!")
+            print("Softmax weight init successfully!")
+            print("Softmax weight mom init successfully!")
         self.stream: torch.cuda.Stream = torch.cuda.Stream(local_rank)
 
         self.index = None

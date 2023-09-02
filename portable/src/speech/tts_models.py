@@ -161,7 +161,7 @@ def get_config_voice():
         with open(os.path.join(VOICE_FOLDER, 'voice.json'), 'wb') as file:
             file.write(response.content)
     except:
-        print("Not internet connection")
+        print("Not internet connection to update available server voice list")
     finally:
         if not os.path.isfile(os.path.join(VOICE_FOLDER, 'voice.json')):
             voices_config = {}
@@ -212,13 +212,13 @@ def get_custom_config_voice():
                     full_waveglow_path = cover_windows_media_path_from_str(waveglow)
                     voices[key]["vocoder"]["waveglow"]["model_path"] = full_waveglow_path
                     if not os.path.exists(full_tacotron2_path) or not os.path.exists(full_waveglow_path):
-                        print(f"Waveglow ot tactoron2 files don't exist for user voice {key}")
+                        print(f"Waveglow or Tactoron2 models don't exist for user voice {key}")
                     else:
                         new_key = key + " " + SUB_CUSTOM_VOICE
                         file_custom_voice_config[new_key] = voices[key]
                         custom_voice_names += [new_key]
-                except Exception as e:
-                    print(e)
+                except Exception as err:
+                    print(f"Error when load custom voices ... {err}")
         return file_custom_voice_config, custom_voice_names
 
 
@@ -259,7 +259,7 @@ def load_voice_models(user_voice_names: list, models: dict):
     if sorted(user_voice_names) == sorted(list(models.keys())):
         # if models and user request was equal or after pop the model start to equal to user request
         # it means not need load need model
-        print("Not need load new voice models")
+        print("Loaded TTS models already is loaded")
         return models
 
     if models == {}:
@@ -288,5 +288,5 @@ def load_voice_models(user_voice_names: list, models: dict):
             )
             models[voice_name] = voice_synthesizer_other
 
-    print("New voice models added")
+    print("Update loaded TTS models")
     return models

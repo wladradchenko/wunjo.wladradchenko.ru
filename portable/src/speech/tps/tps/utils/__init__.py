@@ -51,7 +51,7 @@ def load_dict(dict_source, fmt=None):
             elif fmt == "plane":
                 _dict = stream.read().splitlines()
                 _dict = tuple(line.split("|") for line in _dict)
-                _dict = {elem[0]: elem[1] for elem in _dict}
+                _dict = {elem[0]: elem[1] for elem in _dict if elem}
             else:
                 raise ValueError("File format must be specified ['json', 'yaml', 'plane']")
 

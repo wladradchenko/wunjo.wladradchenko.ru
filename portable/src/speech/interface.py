@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import logging
 import subprocess
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +20,9 @@ class TextToSpeech:
         try:
             results = TextToSpeech.get_models_results(text, model_type, models, dir_time, **options)
             return 0, results
-        except Exception as e:
-            logging.exception(e)
-            return 1, str(e)
+        except Exception as err:
+            print(f"Error when get synthesized audio... {err}")
+            return 1, str(err)
 
     @staticmethod
     def get_models_results(text, model_type, models, dir_time, **options):
@@ -65,49 +64,11 @@ class VoiceCloneTranslate:
     """
 
     @staticmethod
-    def split_into_phrases(text: str, max_words: int = 20, min_words: int = 10) -> list:
-        """
-        Split big phrases and phrase not more 20 words
-        :param text: text
-        :param max_words: max words
-        :param min_words: min words after those if will be some symbol, when create phrase
-        :return: phrases
-        """
-        words = text.replace("\n", " ").replace("\t", " ").split(" ")
-        phrases = []
-        phrase = []
-        word_count = 0
-
-        for word in words:
-            if word_count + len(word.split()) <= max_words:
-                phrase.append(word)
-                word_count += len(word.split())
-                # Check for the special condition
-                if word_count > min_words and any(word.endswith(char) for char in ['.', ',', '%', '!', '?']):
-                    strip_phrase = " ".join(phrase).strip()
-                    if strip_phrase:
-                        phrases.append(strip_phrase)
-                    phrase = []
-                    word_count = 0
-            else:
-                strip_phrase = " ".join(phrase).strip()
-                if strip_phrase:
-                    phrases.append(strip_phrase)
-                phrase = [word]
-                word_count = len(word.split())
-
-        strip_phrase = " ".join(phrase).strip()
-        if strip_phrase:
-            phrases.append(strip_phrase)
-
-        return phrases
-
-    @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, vocoder, save_folder,
                               text, src_lang, need_translate, tts_model_name="Voice Clone", **options):
         try:
             if need_translate:
-                print("Translation text before Voice Clone")
+                print("Translation text before voice clone")
                 text = get_translate(text, src_lang)
 
             results = VoiceCloneTranslate.get_models_results(
@@ -121,22 +82,20 @@ class VoiceCloneTranslate:
                 **options
             )
             return 0, results
-        except Exception as e:
-            logging.exception(e)
-            return 1, str(e)
+        except Exception as err:
+            print(f"Error ... {err}")
+            return 1, str(err)
 
     @staticmethod
     def get_models_results(audio_file, text, encoder, synthesizer, vocoder, save_folder, tts_model_name, **options):
-        from speech.rtvc_models import clone_voice_rtvc
+        from speech.rtvc_models import clone_voice_rtvc  # TODO check how it will work after build
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
 
         start = time.time()
 
-        phrases = VoiceCloneTranslate.split_into_phrases(text)
-        for i, phrase in enumerate(phrases):
-            clone_voice_rtvc(audio_file, phrase, encoder, synthesizer, vocoder, save_folder, i)
+        clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder)
 
         waves_format = ".wav"
         output_name = "rtvc_output" + VoiceCloneTranslate.uniqid() + time.strftime("%Y-%m-%d_%H-%M") + waves_format
@@ -167,24 +126,29 @@ class VoiceCloneTranslate:
         :param output_file_name: output audio merged file name
         :return: output audio merged file path
         """
+        from speech.rtvc.encoder.audio import trim_silence_librosa  # TODO check how it will work after build
+
         # List all files in the directory
         files = os.listdir(audio_folder)
 
         # Filter out the relevant files and sort them
         relevant_files = sorted([f for f in files if f.startswith(audio_part_name) and f.endswith(".wav")])
+        trim_relevant_files = []
 
         # File output path
         output_file_path = os.path.join(audio_folder, output_file_name)
 
         if not relevant_files:
-            print("No relevant files found")
+            print("No matching files found during merge voice clone audio")
             return
 
         # Create a text file that lists all the .wav files to be concatenated
         merged_files = os.path.join(audio_folder, "merged_files.txt")
         with open(merged_files, "w") as f:
             for wav_file in relevant_files:
-                f.write(f"file '{os.path.join(audio_folder, wav_file)}'\n")
+                trim_wav_path = trim_silence_librosa(os.path.join(audio_folder, wav_file), os.path.join(audio_folder, f"trimmed_{wav_file}"))
+                trim_relevant_files.append(trim_wav_path)  # append already full path
+                f.write(f"file '{trim_wav_path}'\n")
 
         # Use ffmpeg to concatenate the .wav files
         subprocess.run([
@@ -201,6 +165,8 @@ class VoiceCloneTranslate:
 
         for wav_file in relevant_files:
             os.remove(os.path.join(audio_folder, wav_file))
+        for trim_wav_file in trim_relevant_files:
+            os.remove(trim_wav_file)
 
         print(f"Merged all .wav files into {output_file_name}")
 

@@ -46,9 +46,6 @@ function sendTextToSpeech() {
                     }
                 }
 
-                //textareaText.readOnly = true;  // TODO check why this need? Maybe because of this was bug!
-                console.log(useVoiceCloneOnAudio)
-
                 if (checkedValues.length > 0 || useVoiceCloneOnAudio === true) {
                     var oneCardSend = {
                         "text": textareaText.value,
@@ -67,12 +64,8 @@ function sendTextToSpeech() {
             }
         }
     };
-
-    // Get a reference to the #status-message element
-    const statusMessage = document.getElementById('status-message');
-
     // Call the async function
-    processAsyncSynthesis(allCardSend, synthesisTable, statusMessage).then(() => {
+    processAsyncSynthesis(allCardSend, synthesisTable).then(() => {
         console.log("Start to fetch msg for voice");
     }).catch((error) => {
         console.log("Error to fetch msg for voice");
@@ -80,10 +73,11 @@ function sendTextToSpeech() {
     });
 };
 
-async function processAsyncSynthesis(allCardSend, synthesisTable, statusMessage) {
+async function processAsyncSynthesis(allCardSend, synthesisTable) {
     if (allCardSend.length > 0) {
         synthesisTable.innerHTML = "";
-        statusMessage.innerText = await translateWithGoogle("Подождите... Происходит обработка", 'auto', targetLang);
+        const buttonVoiceResultWindows = document.querySelector('#button-show-animation-window');
+        buttonVoiceResultWindows.click();
 
         await fetch("/synthesize_speech/", {
             method: "POST",
@@ -92,13 +86,8 @@ async function processAsyncSynthesis(allCardSend, synthesisTable, statusMessage)
             },
             body: JSON.stringify(allCardSend)
         });
-
     } else {
-        statusMessage.innerText = await translateWithGoogle("Выберите голос или включите флаг!", 'auto', targetLang);
-
-        setTimeout(() => {
-            statusMessage.innerText = "";
-        }, 2000);
+        sendPrintToBackendConsole("Choose your voice or turn on the flag!");
     }
 }
 
@@ -117,7 +106,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 return response.json();
             })
             .then((response) => {
-                //synthesisTable.innerHTML = "";
                 response_code = response["response_code"];
                 results = response["response"];
 
@@ -240,6 +228,27 @@ window.addEventListener("DOMContentLoaded", (event) => {
                       `
                     );
 
+                    // Check the file extension to determine the media type
+                    let mediaURLElementResult = model_ans.response_video_url;
+                    let extensionElementResult = mediaURLElementResult.split('.').pop();
+                    let mediaPlayElementResult = "<div>Unsupported media format.</div>";
+                    if (["mp4", "avi", "mkv", "mov", "flv", "wmv"].includes(extensionElementResult)) {
+                      mediaPlayElementResult = `
+                        <div>
+                          <video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
+                            <source src="${mediaURLElementResult}" type="video/${extensionElementResult}">
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                      `;
+                    } else if (["jpg", "jpeg", "png", "gif"].includes(extensionElementResult)) {
+                      mediaPlayElementResult = `
+                        <div>
+                          <img src="${mediaURLElementResult}" id="${videoID}" style="border: 2px dashed #000;" width="250" height="auto" />
+                        </div>
+                      `;
+                    };
+
                     const playBtn = document.getElementById(playBtnId);
                     playBtn.addEventListener("click", function() {
                         var introVideoDeepfake = introJs();
@@ -249,10 +258,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                                     element: playBtn,
                                     title: "Результат синтеза",
                                     position: 'left',
-                                    intro: `<div><video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
-                                              <source src="${model_ans.response_video_url}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                            </video></div>`,
+                                    intro: `${mediaPlayElementResult}`,
                                 }
                             ],
                               showButtons: false,
@@ -292,9 +298,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     var intervalSynthesizedResultsId;
 
-    // Get a reference to the #status-message element
-    const statusMessage = document.getElementById('status-message');
-
     // Define the URL of the /synthesize_process/ page
     const synthesizeProcessUrl = '/synthesize_process/';
 
@@ -312,7 +315,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 intervalSynthesizedResultsId = undefined;
             }
             // If status_code is 200, hide the #status-message element
-            statusMessage.innerText = data.message;
+            document.getElementById("lds-ring").style.display = 'none';  // Indicate loading
             setTimeout(checkStatus, 5000);  // 5 seconds
             buttonRunSynthesis.disabled = false;
           } else {
@@ -320,7 +323,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
             setTimeout(pollSynthesizedDeepfakeResults, 5000);
             intervalSynthesizedResultsId = data.status_code;
             // If status_code is not 200, wait for the next interval to check again
-            statusMessage.innerText = data.message;
+            document.getElementById("lds-ring").style.display = 'flex';
             setTimeout(checkStatus, 5000);  // 5 seconds
             buttonRunSynthesis.disabled = true;
           }

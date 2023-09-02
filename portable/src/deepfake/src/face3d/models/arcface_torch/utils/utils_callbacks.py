@@ -1,4 +1,3 @@
-import logging
 import os
 import time
 from typing import List
@@ -25,12 +24,13 @@ class CallBackVerification(object):
         for i in range(len(self.ver_list)):
             acc1, std1, acc2, std2, xnorm, embeddings_list = verification.test(
                 self.ver_list[i], backbone, 10, 10)
-            logging.info('[%s][%d]XNorm: %f' % (self.ver_name_list[i], global_step, xnorm))
-            logging.info('[%s][%d]Accuracy-Flip: %1.5f+-%1.5f' % (self.ver_name_list[i], global_step, acc2, std2))
+            print('[%s][%d]XNorm: %f' % (self.ver_name_list[i], global_step, xnorm))
+            print('[%s][%d]Accuracy-Flip: %1.5f+-%1.5f' % (self.ver_name_list[i], global_step, acc2, std2))
             if acc2 > self.highest_acc_list[i]:
                 self.highest_acc_list[i] = acc2
-            logging.info(
-                '[%s][%d]Accuracy-Highest: %1.5f' % (self.ver_name_list[i], global_step, self.highest_acc_list[i]))
+            print(
+                '[%s][%d]Accuracy-Highest: %1.5f' % (self.ver_name_list[i], global_step, self.highest_acc_list[i])
+            )
             results.append(acc2)
 
     def init_dataset(self, val_targets, data_dir, image_size):
@@ -94,7 +94,7 @@ class CallBackLogging(object):
                           "Required: %1.f hours" % (
                               speed_total, loss.avg, learning_rate, epoch, global_step, time_for_end
                           )
-                logging.info(msg)
+                print(msg)
                 loss.reset()
                 self.tic = time.time()
             else:
@@ -111,7 +111,7 @@ class CallBackModelCheckpoint(object):
         if global_step > 100 and self.rank == 0:
             path_module = os.path.join(self.output, "backbone.pth")
             torch.save(backbone.module.state_dict(), path_module)
-            logging.info("Pytorch Model Saved in '{}'".format(path_module))
+            print("PyTorch model saved in '{}'".format(path_module))
 
         if global_step > 100 and partial_fc is not None:
             partial_fc.save_params()

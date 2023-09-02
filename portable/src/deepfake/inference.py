@@ -9,19 +9,23 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 deepfake_root_path = os.path.join(root_path, "deepfake")
 sys.path.insert(0, deepfake_root_path)
 
-"""SadTalker"""
+"""Animation Face"""
 from src.utils.preprocess import CropAndExtract
 from src.test_audio2coeff import Audio2Coeff
 from src.facerender.animate import AnimateFromCoeff
 from src.generate_batch import get_data
 from src.generate_facerender_batch import get_facerender_data
-"""SadTalker"""
+"""Animation Face"""
 """Wav22Lip"""
 from src.wav2mel import MelProcessor
-from src.utils.videoio import save_video_with_audio, cut_start_video
+from src.utils.videoio import save_video_with_audio, cut_start_video, get_frames, get_first_frame, check_media_type, extract_audio_from_video
+from src.utils.imageio import save_image
 from src.utils.face_enhancer import enhancer as face_enhancer
-from src.utils.video2fake import get_frames, GenerateFakeVideo2Lip
+from src.utils.video2fake import GenerateFakeVideo2Lip
 """Wav22Lip"""
+"""Face Swap"""
+from src.utils.faceswap import FaceSwapDeepfake
+"""Face Swap"""
 
 sys.path.pop(0)
 
@@ -43,7 +47,7 @@ def get_config_deepfake() -> dict:
         with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'wb') as file:
             file.write(response.content)
     except:
-        print("Not internet connection")
+        print("Not internet connection to get actual versions of deepfake models")
     finally:
         if not os.path.isfile(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json')):
             deepfake = {}
@@ -77,10 +81,12 @@ class AnimationFaceTalk:
         args.result_dir = deepfake_dir
 
         cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-        print("cpu", cpu)
+
         if torch.cuda.is_available() and not cpu:
+            print("Processing will run on GPU")
             args.device = "cuda"
         else:
+            print("Processing will run on CPU")
             args.device = "cpu"
 
         args.still = still
@@ -210,31 +216,30 @@ class AnimationFaceTalk:
             facerender_yaml_path = os.path.join(current_root_path, 'src', 'config', 'facerender.yaml')
 
         # init model
-        print(path_of_net_recon_model)
+        print("Starting to crop and extract frames")
         preprocess_model = CropAndExtract(path_of_lm_croper, path_of_net_recon_model, dir_of_BFM_fitting, device, face_fields)
 
-        print(audio2pose_checkpoint)
-        print(audio2exp_checkpoint)
+        print("Starting get audio coefficient")
         audio_to_coeff = Audio2Coeff(audio2pose_checkpoint, audio2pose_yaml_path, audio2exp_checkpoint, audio2exp_yaml_path, wav2lip_checkpoint, device)
 
-        print(free_view_checkpoint)
-        print(mapping_checkpoint)
+        print("Starting animate face from audio coefficient")
         animate_from_coeff = AnimateFromCoeff(free_view_checkpoint, mapping_checkpoint, facerender_yaml_path, device)
 
         # crop image and extract 3dmm from image
         first_frame_dir = os.path.join(save_dir, 'first_frame_dir')
         os.makedirs(first_frame_dir, exist_ok=True)
-        print('3DMM Extraction for source image')
+
+        print('Extraction 3DMM for source image')
         first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(pic_path, first_frame_dir, args.preprocess, source_image_flag=True)
         if first_coeff_path is None:
-            print("Can't get the coeffs of the input")
+            print("Can't get the coefficients by 3DMM of the input")
             return
 
         if ref_eyeblink is not None:
             ref_eyeblink_videoname = os.path.splitext(os.path.split(ref_eyeblink)[-1])[0]
             ref_eyeblink_frame_dir = os.path.join(save_dir, ref_eyeblink_videoname)
             os.makedirs(ref_eyeblink_frame_dir, exist_ok=True)
-            print('3DMM Extraction for the reference video providing eye blinking')
+            print('Extraction 3DMM for the reference video providing eye blinking')
             ref_eyeblink_coeff_path, _, _ = preprocess_model.generate(ref_eyeblink, ref_eyeblink_frame_dir)
         else:
             ref_eyeblink_coeff_path = None
@@ -246,7 +251,7 @@ class AnimationFaceTalk:
                 ref_pose_videoname = os.path.splitext(os.path.split(ref_pose)[-1])[0]
                 ref_pose_frame_dir = os.path.join(save_dir, ref_pose_videoname)
                 os.makedirs(ref_pose_frame_dir, exist_ok=True)
-                print('3DMM Extraction for the reference video providing pose')
+                print('Extraction 3DMM for the reference video providing pose')
                 ref_pose_coeff_path, _, _ = preprocess_model.generate(ref_pose, ref_pose_frame_dir)
         else:
             ref_pose_coeff_path = None
@@ -289,7 +294,7 @@ class AnimationFaceTalk:
             net_recon="resnet50",
             init_path=None,
             use_last_fc=False,
-            bfm_folder="./checkpoints/BFM_Fitting/",
+            bfm_folder=os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints", "BFM_Fitting"),  # TODO test this
             bfm_model="BFM_model_front.mat",
             focal=1015.0,
             center=112.0,
@@ -303,7 +308,6 @@ class AnimationMouthTalk:
     """
     Animation mouth talk on video
     """
-
     @staticmethod
     def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
@@ -311,6 +315,7 @@ class AnimationMouthTalk:
         args = AnimationMouthTalk.load_video_default()
         args.checkpoint_dir = "checkpoints"
         args.result_dir = deepfake_dir
+        args.video_start = float(video_start)
         args.face = face
         args.audio = audio
         args.static = static  # ok, we will check what it is video, not img
@@ -321,10 +326,12 @@ class AnimationMouthTalk:
         args.background_enhancer = background_enhancer
 
         cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-        print("cpu", cpu)
+
         if torch.cuda.is_available() and not cpu:
+            print("Processing will run on GPU")
             args.device = "cuda"
         else:
+            print("Processing will run on CPU")
             args.device = "cpu"
 
         args.background_enhancer = "realesrgan" if background_enhancer else None
@@ -332,7 +339,6 @@ class AnimationMouthTalk:
         save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
 
-        current_root_path = deepfake_root_path  # os.path.split(current_code_path)[0]
         model_user_path = DEEPFAKE_MODEL_FOLDER
 
         os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
@@ -349,26 +355,27 @@ class AnimationMouthTalk:
             check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         # If video_start is not 0 when cut video from start
-        if video_start != 0:
-            args.face = cut_start_video(args.face, video_start)
+        if args.video_start != 0:  # TODO inspect type values. I think can str(0) != 0
+            args.face = cut_start_video(args.face, args.video_start)
 
         # get video frames
         frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
         # get mel of audio
         mel_processor = MelProcessor(args=args, save_output=save_dir, fps=fps)
         mel_chunks = mel_processor.process()
-        # test
+        # create wav to lip
         full_frames = frames[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
         wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER)
         wav2lip.face_fields = args.face_fields
-        print("Face detected start")
+
+        print("Face detect starting")
         gen = wav2lip.datagen(
             full_frames.copy(), mel_chunks, args.box, args.static, args.img_size, args.wav2lip_batch_size,
-            args.device, args.pads, args.nosmooth
+            args.pads, args.nosmooth
         )
         # load wav2lip
-        print("Create mouth move start")
+        print("Starting mouth animate")
         wav2lip_processed_video = wav2lip.generate_video_from_chunks(gen, mel_chunks, batch_size, wav2lip_checkpoint, args.device, save_dir, fps)
         if wav2lip_processed_video is None:
             return
@@ -408,4 +415,133 @@ class AnimationMouthTalk:
             rotate=False,
             nosmooth=False,
             img_size=96
+        )
+
+
+
+class FaceSwap:
+    """
+    Face swap by one photo
+    """
+    @staticmethod
+    def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
+                             type_file_target: str, type_file_source: str, target_video_start: float = 0, source_video_frame: float = 0,
+                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
+                             background_enhancer: str = None, multiface: bool = False):
+        args = FaceSwap.load_faceswap_default()
+        # Folders
+        args.checkpoint_dir = "checkpoints"
+        args.result_dir = deepfake_dir
+        # Target
+        args.target = target
+        args.target_face_fields = target_face_fields
+        args.type_file_target = type_file_target
+        args.target_video_start = float(target_video_start)
+        # Source
+        args.source = source
+        args.source_face_fields = source_face_fields
+        args.type_file_source = type_file_source
+        args.source_video_frame = float(source_video_frame)
+        # Additionally processing
+        args.multiface = multiface
+        args.enhancer = enhancer
+        args.background_enhancer = background_enhancer
+
+        cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+
+        if torch.cuda.is_available() and not cpu:
+            print("Processing will run on GPU")
+            args.device = "cuda"
+        else:
+            print("Processing will run on CPU")
+            args.device = "cpu"
+
+        args.background_enhancer = "realesrgan" if background_enhancer else None
+
+        save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        os.makedirs(save_dir, exist_ok=True)
+
+        model_user_path = DEEPFAKE_MODEL_FOLDER
+
+        os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
+        checkpoint_dir_full = os.path.join(model_user_path, args.checkpoint_dir)
+        if not os.path.exists(checkpoint_dir_full):
+            os.makedirs(checkpoint_dir_full)
+
+        faceswap_checkpoint = os.path.join(checkpoint_dir_full, 'faceswap.onnx')
+        if not os.path.exists(faceswap_checkpoint):
+            link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
+            download_model(faceswap_checkpoint, link_faceswap_checkpoint)
+        else:
+            link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
+            check_download_size(faceswap_checkpoint, link_faceswap_checkpoint)
+
+        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint)
+
+        # get source for face
+        if args.type_file_source == "video":
+            if float(args.source_video_frame) != 0:
+                args.source = cut_start_video(args.source, args.source_video_frame)
+        # get frame
+        source_frame = get_first_frame(args.source)
+        source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, args.source_face_fields)
+
+        # if this is video target
+        args.type_file_target = check_media_type(args.target)
+        if args.type_file_target == "animated":
+            # If video_start for target is not 0 when cut video from start
+            if float(args.target_video_start) != 0:
+                args.target = cut_start_video(args.target, args.target_video_start)
+
+            # get video frame for source if type is video
+            target_frames, fps = get_frames(video=args.target, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+            # create face swap
+            file_name = "swap_result.mp4"
+            saved_file = os.path.join(save_dir, file_name)
+            faceswap.swap_video(target_frames, source_face, args.target_face_fields, saved_file, args.multiface, fps)
+
+            # after face or background enchanter
+            if enhancer:
+                enhanced_images = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer)
+                file_name = "swap_result_enhanced.mp4"
+                saved_file = os.path.join(save_dir, file_name)
+                imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
+
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(args.target, save_dir)
+            # combine audio and video
+            file_name = save_video_with_audio(saved_file, os.path.join(save_dir, audio_file_name), save_dir)
+
+        else:  # static file
+            # create face swap on image
+            target_frame = get_first_frame(args.target)
+            target_image = faceswap.swap_image(target_frame, source_face, args.target_face_fields, save_dir, args.multiface)
+            file_name = "swap_result.png"
+            saved_file = save_image(os.path.join(save_dir, file_name), target_image)
+            if enhancer:
+                enhanced_image = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer)
+                file_name = "swap_result_enhanced.png"
+                saved_file = os.path.join(save_dir, file_name)
+                imageio.imsave(saved_file, enhanced_image[0])
+
+        for f in os.listdir(save_dir):
+            if file_name == f:
+                file_name = os.path.join(save_dir, f)
+            else:
+                if os.path.isfile(os.path.join(save_dir, f)):
+                    os.remove(os.path.join(save_dir, f))
+                elif os.path.isdir(os.path.join(save_dir, f)):
+                    shutil.rmtree(os.path.join(save_dir, f))
+
+        for f in os.listdir(TMP_FOLDER):
+            os.remove(os.path.join(TMP_FOLDER, f))
+
+        return file_name
+
+    @staticmethod
+    def load_faceswap_default():
+        return Namespace(
+            resize_factor=1,
+            crop=[0, -1, 0, -1],
+            rotate=False,
         )

@@ -4,6 +4,7 @@ import uuid
 import os
 
 import cv2
+import numpy as np
 
 
 def load_video_to_cv2(input_path):
@@ -27,6 +28,14 @@ def save_video_with_audio(video, audio, save_path):
     return file_name
 
 
+def extract_audio_from_video(video_path, save_path):
+    file_name = str(uuid.uuid4()) + '.wav'
+    save_file = os.path.join(save_path, file_name)
+    cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
+    os.system(cmd)
+    return file_name
+
+
 def seconds_to_hms(seconds):
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -40,3 +49,90 @@ def cut_start_video(video, video_start):
     cmd = f"ffmpeg -ss {hms_format} -i {video} -c copy {new_video}"
     os.system(cmd)
     return new_video
+
+
+def check_media_type(file_path):
+    # Initialize a VideoCapture object
+    cap = cv2.VideoCapture(file_path)
+
+    # Count the number of frames
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Clean up
+    cap.release()
+
+    # Check the number of frames to determine the type of media
+    if frame_count > 1:
+        return "animated"
+    else:
+        return "static"
+
+
+def get_first_frame(file_path):
+    """
+    Get first frame from content
+    :param file_path: file path
+    :return: frame or NOne
+    """
+    type_file = check_media_type(file_path)
+    if type_file == "static":
+        # It's an image or GIF
+        img = cv2.imread(file_path)
+        if img is not None:
+            return img
+    elif type_file == "animated":
+        # It's a video
+        cap = cv2.VideoCapture(file_path)
+        ret, frame = cap.read()
+        if ret:
+            return frame
+        else:
+            raise ValueError("Could not read the video file.")
+    else:
+        raise ValueError("Unsupported file format.")
+
+    return None
+
+
+def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
+    """
+    Extract frames from a video, apply resizing, rotation, and cropping.
+
+    :param video: path to the video file
+    :param rotate: number of 90-degree rotations
+    :param crop: list with cropping coordinates [y1, y2, x1, x2]
+    :param resize_factor: factor by which the frame should be resized
+    :return: list of processed frames, fps of the video
+    """
+    print("Start reading video")
+
+    video_stream = cv2.VideoCapture(video)
+    fps = video_stream.get(cv2.CAP_PROP_FPS)
+    full_frames = []
+
+    try:
+        while True:
+            still_reading, frame = video_stream.read()
+
+            if not still_reading:
+                break
+
+            if resize_factor > 1:
+                frame = cv2.resize(frame, (frame.shape[1] // resize_factor, frame.shape[0] // resize_factor))
+
+            for _ in range(rotate):
+                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+            y1, y2, x1, x2 = crop
+            x2 = x2 if x2 != -1 else frame.shape[1]
+            y2 = y2 if y2 != -1 else frame.shape[0]
+
+            frame = frame[y1:y2, x1:x2]
+            full_frames.append(frame)
+
+    finally:
+        video_stream.release()
+
+    print(f"Number of frames available for inference: {len(full_frames)}")
+
+    return full_frames, fps

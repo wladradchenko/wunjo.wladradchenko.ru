@@ -64,8 +64,7 @@ def build_optimizer(parameters, hparams):
 class FakeScheduler(optim.lr_scheduler._LRScheduler):
     def get_lr(self):
         if not self._get_lr_called_within_step:
-            warnings.warn("To get the last learning rate computed by the scheduler, "
-                          "please use `get_last_lr()`.", DeprecationWarning)
+            print("Warning... To get the last learning rate computed by the scheduler, please use `get_last_lr()`.", DeprecationWarning)
 
         return [group['lr'] for group in self.optimizer.param_groups]
 

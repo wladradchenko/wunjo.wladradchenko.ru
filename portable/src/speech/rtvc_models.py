@@ -3,7 +3,6 @@ import sys
 import json
 import requests
 import numpy as np
-import soundfile as sf
 import torch
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +27,7 @@ def get_config_voice() -> dict:
         with open(os.path.join(RTVC_VOICE_FOLDER, 'rtvc.json'), 'wb') as file:
             file.write(response.content)
     except:
-        print("Not internet connection")
+        print("Not internet connection to get clone voice models")
     finally:
         if not os.path.isfile(os.path.join(RTVC_VOICE_FOLDER, 'rtvc.json')):
             rtvc_models = {}
@@ -93,7 +92,7 @@ def load_rtvc_synthesizer(lang: str, device: str):
     model_path = inspect_rtvc_model(synthesizer_path, synthesizer_url)
     if not os.path.exists(model_path):
         raise f"Model {synthesizer_path} not found. Check you internet connection to download"
-    return Synthesizer(model_fpath=model_path, device=device)
+    return Synthesizer(model_fpath=model_path, device=device, charset=lang)
 
 
 def load_rtvc_vocoder(lang: str, device: str):
@@ -123,10 +122,11 @@ def load_rtvc(lang: str):
     :return:
     """
     cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-    print("cpu", cpu)
     if torch.cuda.is_available() and not cpu:
+        print("Processing will run on GPU")
         device = "cuda"
     else:
+        print("Processing will run on CPU")
         device = "cpu"
 
     print("Load RTVC encoder")
@@ -146,7 +146,7 @@ def translate_text_from_audio():
     pass
 
 
-def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder, num):
+def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder):
     """
 
     :param audio_file: audio file
@@ -155,53 +155,33 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
     :param synthesizer: synthesizer
     :param vocoder: vocoder
     :param save_folder: folder to save
-    :param num: number file
     :return:
     """
     try:
-        # The following two methods are equivalent:
-        # - Directly load from the filepath:
-        preprocessed_wav = preprocess_wav(audio_file)
-        # - If the wav is already loaded:
-        # import librosa
-        # original_wav, sampling_rate = librosa.load(str(audio_file))
-        # preprocessed_wav = preprocess_wav(original_wav, sampling_rate)
-        print("Loaded file successfully")
+        original_wav = synthesizer.load_preprocess_wav(str(audio_file))
+        print("Loaded audio successfully")
     except Exception as e:
-        print(f"Could not load file: {e}")
+        print(f"Could not load audio file: {e}")
         return None
 
     try:
-        embed = encoder.embed_utterance(preprocessed_wav)
-        print("Created the embedding")
+        embed = encoder.embed_utterance(original_wav, using_partials=False)
+        print("Created the embedding for audio")
     except Exception as e:
-        print(f"Could not create embedding: {e}")
+        print(f"Could not create embedding for audio: {e}")
         return None
 
-    # Generating the spectrogram
-    texts = [text]
-    embeds = [embed]
+    # Generating the spectrogram and the waveform
     try:
-        specs = synthesizer.synthesize_spectrograms(texts, embeds)
-        spec = specs[0]
-        print("Created the mel spectrogram")
+        generated_wavs = synthesizer.synthesize(text=text, embeddings=embed, vocoder=vocoder)
+        print("Created the mel spectrogram and waveform")
     except Exception as e:
-        print(f"Could not create spectrogram: {e}")
+        print(f"Could not create spectrogram or waveform: {e}\n")
         return None
 
-    # Generating the waveform
-    print("Synthesizing the waveform:")
-    try:
-        generated_wav = vocoder.infer_waveform(spec)
-    except Exception as e:
-        print(f"Could not synthesize waveform: {e}")
-        return None
-
-    # Post-generation
-    generated_wav = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
-    generated_wav = preprocess_wav(generated_wav)
-
-    # Save it on the disk
-    filename = os.path.join(save_folder, "rtvc_output_part%02d.wav" % num)
-    sf.write(filename, generated_wav.astype(np.float32), synthesizer.sample_rate)
-    print(f"\nSaved output as {filename}\n\n")
+    for i, generated_wav in enumerate(generated_wavs):
+        audio = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
+        audio = preprocess_wav(fpath_or_wav=audio)
+        # Save to disk
+        synthesizer.save(audio=audio, path=save_folder, name="rtvc_output_part%02d.wav" % i)
+        print(f"\nSaved output as tvc_output_part%02d.wav\n\n" % i)

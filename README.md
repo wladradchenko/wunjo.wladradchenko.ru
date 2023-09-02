@@ -218,27 +218,30 @@ Update 1.4.0
 - [x] Integrate links to train video and wiki page
 
 Update 1.5.0
-- [x] Add voice translation with encoders english, chinese, russian, spanish
+- [x] Add voice translation with encoders english, russian
 - [x] Add synthesys audio from text with voice clone from another audio
 - [x] Create hub for voice cloning languages models (or download all default models)
-- [ ] Add face swap module for deepfake on video/photo from one photo face
+- [x] Add face swap module for deepfake on video/photo from one photo face
 - [ ] Add enchanter face or enchanter background on user video/photo without deepfake
 - [ ] Make a version that will include all extensions without extensions download
-- [ ] Improve indication and translation of current progress
-- [ ] Add check debug module with python console
+- [x] Improve indication and translation of current progress
+- [x] Add check debug module with python console
 - [x] Change real time translation on native translate
 - [ ] Add translation file on server and create request 
 - [ ] Improve message about GPU unavailable for user
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 
 
-:TODO check downloads tts models on windows, maybe is bug because of symbols /
+:TODO check downloads tts models on windows, maybe is bug because of symbols
+:TODO check dicts from tacotron2/data after build, will be errors because of torch lib logical
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
 - [ ] Add AI retouch frames in video by user tool
-- [ ] Add in face animation and mouth approach to workd at the some time with a few heads and difference audio
+- [ ] Add in face animation and mouth approach to worked at the some time with a few heads and difference audio
 - [ ] Indicate user how much space on drive for tmp and result folders
+- [ ] Imitate emotions in voice
+- [ ] Train voices for Chinese and add logical to work with chinese grammatical
 
 <!-- VIDEO -->
 ## Video

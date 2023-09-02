@@ -15,50 +15,6 @@ from src.face3d.recognition import FaceRecognition
 sys.path.pop(0)
 
 
-def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
-    """
-    Extract frames from a video, apply resizing, rotation, and cropping.
-
-    :param video: path to the video file
-    :param rotate: number of 90-degree rotations
-    :param crop: list with cropping coordinates [y1, y2, x1, x2]
-    :param resize_factor: factor by which the frame should be resized
-    :return: list of processed frames, fps of the video
-    """
-    print("Start reading video")
-
-    video_stream = cv2.VideoCapture(video)
-    fps = video_stream.get(cv2.CAP_PROP_FPS)
-    full_frames = []
-
-    try:
-        while True:
-            still_reading, frame = video_stream.read()
-
-            if not still_reading:
-                break
-
-            if resize_factor > 1:
-                frame = cv2.resize(frame, (frame.shape[1] // resize_factor, frame.shape[0] // resize_factor))
-
-            for _ in range(rotate):
-                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
-
-            y1, y2, x1, x2 = crop
-            x2 = x2 if x2 != -1 else frame.shape[1]
-            y2 = y2 if y2 != -1 else frame.shape[0]
-
-            frame = frame[y1:y2, x1:x2]
-            full_frames.append(frame)
-
-    finally:
-        video_stream.release()
-
-    print(f"Number of frames available for inference: {len(full_frames)}")
-
-    return full_frames, fps
-
-
 class GenerateFakeVideo2Lip:
     def __init__(self, model_path):
         self.face_recognition = FaceRecognition(model_path)
@@ -117,7 +73,7 @@ class GenerateFakeVideo2Lip:
             return user_crop_center.x, user_crop_center.y
         return None, None
 
-    def face_detect_with_alignment(self, images, device, pads, nosmooth):
+    def face_detect_with_alignment(self, images, pads, nosmooth):
         predictions = []
         face_embedding_list = []
         face_gender = None
@@ -201,7 +157,7 @@ class GenerateFakeVideo2Lip:
 
 
     def datagen(self, frames: list, mels: list, box: list, static: bool, img_size: int, wav2lip_batch_size: int,
-                device: str = 'cpu', pads: list =[0, 10, 0, 0], nosmooth: bool = False):
+                pads: list =[0, 10, 0, 0], nosmooth: bool = False):
         """
         Generator function that processes frames and their corresponding mel spectrograms
         for feeding into a Wav2Lip model.
@@ -211,7 +167,6 @@ class GenerateFakeVideo2Lip:
         :param static: Whether to use only the first frame for all mels.
         :param img_size: The target size to which detected faces will be resized.
         :param wav2lip_batch_size: Batch size for the Wav2Lip model.
-        :param device: Device for torch (e.g., 'cuda', 'cpu').
         :param pads: Padding for the face bounding box.
         :param nosmooth: Whether to apply a smoothing function to detected bounding boxes.
         :yield: Batches of processed images, mel spectrograms, original frames, and face coordinates.
@@ -221,9 +176,9 @@ class GenerateFakeVideo2Lip:
 
         if box[0] == -1:
             if not static:
-                face_det_results = self.face_detect_with_alignment(frames, device, pads, nosmooth)  # BGR2RGB for CNN face detection
+                face_det_results = self.face_detect_with_alignment(frames, pads, nosmooth)  # BGR2RGB for CNN face detection
             else:
-                face_det_results = self.face_detect_with_alignment([frames[0]], device, pads, nosmooth)
+                face_det_results = self.face_detect_with_alignment([frames[0]], pads, nosmooth)
         else:
             print('Using the specified bounding box instead of face detection...')
             y1, y2, x1, x2 = box

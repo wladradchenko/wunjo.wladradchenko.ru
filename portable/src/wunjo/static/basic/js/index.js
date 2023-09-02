@@ -432,7 +432,7 @@ function settingTextToSpeech(elem, languages) {
             {
                 element: elem,
                 title: 'Настройки',
-                position: 'bottom',
+                position: 'right',
                 intro: `<div style="min-height: 180pt;">
                     <div style="display: flex;flex-direction: row;">
                         <div style="width: 250pt;margin: 10pt;">
@@ -464,6 +464,7 @@ function settingTextToSpeech(elem, languages) {
                                 <b>Примечание:</b> Как добавить любой язык в приложение?
                                 <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
                             </i>
+                            <i id="message-language-cloning-voice" style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;display: none;">Клонирование голоса возможно с любого языка, однако синтез голоса на данный момент поддерживается на английском и русском.</i>
                             <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
                                 Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
                                 Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
@@ -553,8 +554,10 @@ function settingTextToSpeech(elem, languages) {
     checkboxCloneAudioVoice.addEventListener("change", function() {
         if (this.checked) {
             elem.setAttribute("voice-audio-clone", true);
+            document.getElementById("message-language-cloning-voice").style.display = "flow";
         } else {
             elem.setAttribute("voice-audio-clone", false);
+            document.getElementById("message-language-cloning-voice").style.display = "none";
         }
     });
 
@@ -736,137 +739,58 @@ link.addEventListener('click', (event) => {
 });
 /// OPEN FOLDER ///
 
-/// EXTENSIONS ///
-const extensions = document.getElementById('a-extensions');
-extensions.addEventListener('click', (event) => {
-
-  // Fetch the data from the URL
-  fetch("/list_extensions/", {
-    method: "GET"
-  })
+/// CURRENT PROCESSOR ///
+const processor = document.getElementById('a-change-processor');
+processor.addEventListener('click', (event) => {
+  event.preventDefault(); // prevent the link from following its href attribute
+  fetch('/change_processor', { method: 'POST' })
     .then(response => response.json())
     .then(data => {
-      // Access the data and populate the select element
-      const selectElement = document.getElementById("extensions-user-select");
-      const descriptionElement = document.getElementById("extensions-user-select-description");
-
-      // Iterate over the data and create an option for each entry
-      for (const name in data) {
-        const extension = data[name];
-        const option = document.createElement("option");
-        option.value = extension.url;
-        option.text = name;
-        option.dataset.key = name;  // Store the original key.
-        selectElement.appendChild(option);
-      }
-
-      // Set initial description
-      const firstOption = selectElement.querySelector("option");
-      const selectedExtension = data[firstOption.text];
-      descriptionElement.innerText = selectedExtension.description;
-
-      // Add an event listener to the select element
-      selectElement.addEventListener("change", async (event) => {
-        const selectedOption = event.target.value;
-        const selectedKey = event.target.options[event.target.selectedIndex].dataset.key;
-        const selectedExtension = data[selectedKey];
-        const translatedDescription = await translateWithGoogle(selectedExtension.description, 'auto', targetLang);
-        descriptionElement.innerText = translatedDescription;
-      });
+      currentProcessor();
     })
     .catch(error => {
-      console.error("Not internet connection:", error);
+        console.log(error);
     });
-
-   var extensionsPanel = introJs();
-   extensionsPanel.setOptions({
-     steps: [
-        {
-            element: extensions,
-            title: 'Расширения',
-            position: 'right',
-            intro: `<div style="width: 250pt;">
-                    <div style="display: flex;flex-direction: column;">
-                        <div style="margin-bottom:5pt;">
-                          <input onclick="document.getElementById('extensions-url-field').style.display = this.checked ? 'block' : 'none';document.getElementById('extensions-select-field').style.display = this.checked ? 'none' : 'block';" type="checkbox" id="extensions-url-check-info" name="extensions-url-check">
-                          <label for="extensions-url-check">Скачать по ссылке</label>
-                        </div>
-                        <div id="extensions-url-field" style="display:none;margin-top:5pt;">
-                            <label for="extensions-url">Ссылка на скачивания расширения</label>
-                            <input type="text" id="extensions-user-url" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
-                        </div>
-                        <div id="extensions-select-field" style="display:block;margin-top:5pt;">
-                            <label for="extensions-select">Выбор расширения для скачивания</label>
-                            <select id="extensions-user-select" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
-                            </select>
-                            <div id="extensions-user-select-description"></div>
-                        </div>
-                    </div>
-                    <p style="margin-top: 10pt; margin-bottom: 10pt;">Угостите автора i@wladradchenko.ru <a href="https://wladradchenko.ru/donat" target="_blank" rel="noopener noreferrer">чашкой кофе</a> за труды и развития проекта</p>
-                    <button class="introjs-button" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;" onclick="sendExtensionsKey(this.parentElement);">Загрузить</button>
-                    <p style="margin-top: 15pt;font-size: 10pt;">Примечание: Расширения можно скачать самостоятельно в директорию .wunjo/extensions/{folder}. Подробнее о формате расширения по <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru" target="_blank" rel="noopener noreferrer">ссылке</a></p>
-                </div>`,
-        },
-    ],
-      showButtons: false,
-      showStepNumbers: false,
-      showBullets: false,
-      nextLabel: 'Продолжить',
-      prevLabel: 'Вернуться',
-      doneLabel: 'Закрыть'
-   });
-   extensionsPanel.start();
 });
 
-
-function currentProcessor(elem = undefined) {
+function availableFeaturesByCUDA(elem = undefined) {
+  // inspect what can be use torch cuda is available
   fetch('/current_processor', { method: 'GET' })
     .then(response => response.json())
     .then(data => {
       var deviceStatus = data.current_processor;
       var deviceUpgrade = data.upgrade_gpu;
-
-      if (elem && deviceStatus == 'cpu') {
-        elem.style.display = 'none';
-      } else if (elem) {
+      if (elem && deviceStatus == 'cuda') {
         elem.style.display = 'block';
+      } else if (elem) {
+        elem.style.display = 'none';
       };
     })
     .catch(error => {
       console.log(error);
     });
 };
+
+function currentProcessor() {
+    fetch('/current_processor', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+          var deviceStatus = data.current_processor;
+          var deviceUpgrade = data.upgrade_gpu;
+          if (deviceStatus == 'cuda') {
+            processor.style.color = 'green';
+          } else {
+            processor.style.color = 'red';
+          };
+          availableFeaturesByCUDA(document.getElementById('a-speech-train'));  // train tts mode
+        })
+        .catch(error => {
+          console.log(error);
+    });
+}
+
 currentProcessor();
-
-function sendExtensionsKey(elem) {
-    const extensionsCheckbox = document.getElementById('extensions-url-check-info');
-    const extensionsUrlInput = document.getElementById('extensions-user-url');
-    const extensionsUrlSelect = document.getElementById('extensions-user-select');
-    let extensionSend;
-
-    if (extensionsCheckbox.checked) {
-      const extensionUrlValue = extensionsUrlInput.value;
-      extensionSend = { "extension_name": null, "extension_url": extensionUrlValue };
-    } else {
-      const selectedOption = extensionsUrlSelect.options[extensionsUrlSelect.selectedIndex];
-      const extensionName = selectedOption.text;
-      const extensionUrlValue = selectedOption.value;
-      extensionSend = { "extension_name": extensionName, "extension_url": extensionUrlValue };
-    }
-    console.log(extensionSend)
-
-    fetch("/get_extensions/", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(extensionSend)
-    })
-
-    const closeIntroButton = document.querySelector('.introjs-skipbutton');
-    closeIntroButton.click();
-};
-/// EXTENSIONS ///
+/// CURRENT PROCESSOR ///
 
 
 ///SUPPORT USER///
@@ -919,10 +843,6 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
             {
                 element: '#a-link-open-folder',
                 intro: 'Ненужные файлы можно удалить из директории',
-            },
-            {
-                element: '#a-extensions',
-                intro: 'Вы можете скачать доступные расширения',
             },
             {
                 element: '#a-link-open-author',
@@ -1196,3 +1116,14 @@ function openUpdateHistory(elem, info) {
 
 updateVersion(serverVersionData);
 ///UPDATE VERSION///
+
+///GENERATE RANDOM NAME///
+function getRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomName = '';
+  for (let i = 0; i < length; i++) {
+    randomName += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return randomName;
+}
+///GENERATE RANDOM NAME///

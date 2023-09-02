@@ -179,7 +179,7 @@ right: 15px;
     outline: none;
     padding: 8px 0;
     color: #31344b;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 400;
     cursor: pointer;
     z-index: 4;
@@ -307,8 +307,7 @@ textarea {
     margin-right: 10px;
     border-radius: 0.55rem;
     margin-bottom: 15pt;
-    min-width: 35vw;
-    max-width: 35vw;
+    width: 100%;
     min-height: 140pt;
     max-height: 180pt;
     scrollbar-width: thin;
@@ -350,7 +349,7 @@ select {
     appearance: none;
 }
 
-#synthesized_result {
+#synthesized_result, #console-result {
     height: 90%;
     display: flex;
     justify-content: flex-start;
@@ -413,7 +412,8 @@ select {
 }
 
 .additional-options {
-    margin-bottom: 40pt;
+    text-align: center;
+    margin-bottom: 35pt;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -505,11 +505,16 @@ select {
   color: #42abff;
 }
 
-.swapped #voice-card-avatar {
+.voice-card-textarea {
+  margin-right: 40pt;
+  margin-left: 20pt;
+}
+
+.swapped .voice-card-avatar {
   order: 2;
 }
 
-.swapped #voice-card-textarea {
+.swapped .voice-card-textarea {
   order: 1;
 }
 
@@ -577,10 +582,12 @@ select {
     top: 0;
     left: 0;
 }
+
 .draging {
   transform: scale(1.1);
 }
-#previewDeepfakeImg {
+
+#previewDeepfakeImg, #previewFaceSwapTarget, #previewFaceSwapSource {
   text-align: center;
   display: flex;
   align-items: center;
@@ -593,3 +600,40 @@ select {
 .introjs-tooltip {
     max-width: 700px;
  }
+
+/* LOADER */
+.lds-ring {
+  display: none;
+  position: relative;
+  width: 100%;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  margin: 8px;
+  border: 3px solid #f7db4db3;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #f7db4d transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* LOADER */

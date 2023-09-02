@@ -6,8 +6,7 @@ from tps.modules import Processor
 
 
 class Replacer(Processor):
-    def __init__(self, dict_source: Union[str, tuple, list, dict]=None,
-                 name: str="Replacer"):
+    def __init__(self, dict_source: Union[str, tuple, list, dict]=None,name: str="Replacer"):
         """
         Base class for replacer-type processors.
 
@@ -46,19 +45,29 @@ class Replacer(Processor):
         :return: str
         """
         mask = kwargs.get("mask", False)
+        rules = kwargs.get("rules", False)
         tokens = self.split_to_tokens(string)
 
-        for idx, token in enumerate(tokens):
-            if token in punctuation:
-                continue
-            token = self._process_token(token, mask)
-            tokens[idx] = token
+        if rules == "Omograph":
+            string = self._process_omograph(string)
+            return string
+        else:
+            for idx, token in enumerate(tokens):
+                if token in punctuation:
+                    continue
+                token = self._process_token(token, mask)
+                tokens[idx] = token
 
         return self.join_tokens(tokens)
 
-
     def _process_token(self, token, mask):
         return token if prob2bool(mask) else self.entries.get(token, token)
+
+    def _process_omograph(self, string):
+        for k, v in self.entries.items():
+            if k in string:
+                string = string.replace(k, v)
+        return string
 
 
 class BlindReplacer(Replacer):

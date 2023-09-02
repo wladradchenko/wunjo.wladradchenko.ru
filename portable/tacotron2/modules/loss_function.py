@@ -212,7 +212,7 @@ class OverallLoss(nn.Module):
         if self.attention_criterion is not None:
             alignments = kwargs.get("alignments", None)
             if alignments is None and self.attention_criterion.type == AttentionTypes.prealigned:
-                warnings.warn("Insufficient number of arguments to calculate the attention loss")
+                print("Warning... Insufficient number of arguments to calculate the attention loss")
             else:
                 attention_loss = self.attention_criterion(
                     outputs.alignments, alignments,
@@ -225,7 +225,7 @@ class OverallLoss(nn.Module):
             inputs_ctc = kwargs.get("inputs_ctc", None)
             decoder_outputs = kwargs.get("decoder_outputs", None)
             if inputs_ctc is None or decoder_outputs is None:
-                warnings.warn("Insufficient number of arguments to calculate the mi loss")
+                print("Warning... Insufficient number of arguments to calculate the mi loss")
             else:
                 mi_loss = self.mmi_criterion(
                     decoder_outputs, inputs_ctc.text,
