@@ -8,10 +8,11 @@
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-animation.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-emotion.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/train/train.js') }}"></script>
 {% endblock %}
 
 {% block menubar %}
-<div class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
+<div id="menubar" class="social-icons" style="flex-direction: column;position: absolute;left: 1pt;top: 5vh;">
     <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
     <a class="notranslate" id="a-link-open-tutorial" href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i class="fa-solid fa-circle-question" title="Учебное пособие"></i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
@@ -19,7 +20,6 @@
     <a id="button-run-change-emotion" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно дипфейка эмоций"><i class="fa-solid fa-face-grin-tongue-wink"></i></a>
     <!--EXTENSIONS-->
     <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i class="fa-solid fa-microchip"></i></a>
-    <a id="a-speech-train" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;display: none;" title="Панель тренировки голоса"><i class="fa-solid fa-brain"></i></a>
     <!--EXTENSIONS-->
 </div>
 {% endblock %}

@@ -59,7 +59,6 @@ from tacotron2.utils import gradient_adaptive_factor
 
 sys.path.pop(0)
 
-#
 torch.cuda.empty_cache()
 torch.cuda.memory_summary(device=None, abbreviated=False)
 
@@ -411,20 +410,3 @@ def main(hparams_path: str = None, distributed_run: bool = False, gpus_ranks: st
     print("cuDNN Benchmark:", hparams.cudnn_benchmark)
 
     train(hparams, distributed_run=distributed_run, rank=rank, n_gpus=n_gpus)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--hparams_path", type=str, default="./data/hparams.yaml",
-                        required=False, help="hparams path")
-    parser.add_argument("-d", "--distributed_run", action="store_true",
-                        required=False, help="switch script to distributed work mode")
-    parser.add_argument("--gpus_ranks", type=str, default="",
-                        required=False, help="gpu's indices for distributed run (separated by commas)")
-    parser.add_argument("--gpu_idx", type=int, default=0,
-                        required=False, help="device index for the current run")
-    parser.add_argument("--group_name", type=str, default="group_name",
-                        required=False, help="Distributed group name")
-    args = parser.parse_args()
-
-    main(hparams_path=args.hparams_path, distributed_run=args.distributed_run, gpus_ranks=args.gpus_ranks, gpu_idx=args.gpu_idx, group_name=args.group_name)

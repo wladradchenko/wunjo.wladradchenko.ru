@@ -39,10 +39,10 @@ from torch.autograd import Variable
 from torch import nn
 from torch.nn import functional as F
 
-root_path = os.path.dirname(os.path.abspath(__file__))
-tps_path = os.path.dirname(os.path.dirname(os.path.dirname(root_path)))
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+tps_path = os.path.join(root_path, "src", "speech", "tps")
 
-sys.path.insert(0, os.path.join(tps_path, "tps"))
+sys.path.insert(0, tps_path)
 
 from tps import get_symbols_length, prob2bool
 

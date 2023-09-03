@@ -17,7 +17,8 @@ from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
-from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER
+from train.utils import training_route  # TODO Add in pyproject file
+from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_download_filename
 from backend.translator import get_translate
 
@@ -592,6 +593,34 @@ def console_log_print():
     if msg:
         print(msg)  # show message in backend console
     return jsonify({"status": 200})
+
+
+"""TRAIN MODULE"""
+@app.route('/training_voice', methods=["POST"])
+@cross_origin()
+def common_training_route():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
+        print("The process is already running... ")
+
+    try:
+        # clear keep models
+        os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
+        app.config['RTVC_LOADED_MODELS'] = {}
+        app.config['TTS_LOADED_MODELS'] = {}
+        # get params and send
+        print("Sending parameters to route... ")
+        param = request.get_json()
+        training_route(param)
+    except Exception as err:
+        print(f"Error training... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    print("Trained finished successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    return {"status_code": 200}
+"""TRAIN MODULE"""
 
 
 class InvalidVoice(Exception):

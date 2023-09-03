@@ -29,7 +29,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Application for speech synthesis from text, speech recognition to text and create deepfake animation. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
+Synthesis of speech from text, voice clone, speech to text and creation of deepfake animation face, lips, face swap by Wunjo AI neural networks
+
+Application for speech synthesis from text, speech recognition to text, voice clone and create deepfake animation face, lips, face swap by one photo. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, clone voices from audio files of real time record voice, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio to text. This feature is great for dictating text instead of manually typing it.
+
+Also, deepfakes are another approach to use the application. You can animate face by photo and audio, use deepfake lips of user audio, and use face swap deepfake on video, gif animation and photo by one photo face. 
 
 All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis, voice-to-text recognition and create deepfake animation. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
 

@@ -782,7 +782,6 @@ function currentProcessor() {
           } else {
             processor.style.color = 'red';
           };
-          availableFeaturesByCUDA(document.getElementById('a-speech-train'));  // train tts mode
         })
         .catch(error => {
           console.log(error);

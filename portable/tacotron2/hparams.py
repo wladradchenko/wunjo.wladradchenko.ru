@@ -29,6 +29,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+import os.path
+
 import yaml
 
 
@@ -70,3 +72,20 @@ def create_hparams(config_source):
             config = yaml.safe_load(stream)
 
     return AttributeDict(config)
+
+
+def read_default_hparams():
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    config_source = os.path.join(root_path, "hparams", "hparams.yaml")
+    with open(config_source, "r", encoding="utf-8") as stream:
+        config = yaml.safe_load(stream)
+    return config
+
+
+def save_hparams(path, config):
+    if isinstance(config, dict):
+        hparams_file = os.path.join(path, "started_hparams.yaml")
+        with open(hparams_file, "w", encoding="utf-8") as file:
+            yaml.dump(config, file)
+        return hparams_file
+    return None
