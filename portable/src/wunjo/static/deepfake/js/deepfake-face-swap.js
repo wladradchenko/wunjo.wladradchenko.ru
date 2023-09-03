@@ -11,10 +11,17 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                     <div>
                         <fieldset style="padding: 5pt;margin: 13pt;margin-top: 0;flex-direction: row;display: flex;">
                             <legend>Настройки</legend>
+                            <div>
                             <div style="padding: 5pt;">
                               <input type="checkbox" id="multiface-deepfake" name="multiface">
                               <label for="multiface-deepfake">Заменить все лица</label>
                             </div>
+                            <div style="padding: 5pt;">
+                              <input type="checkbox" id="similarface-deepfake" name="similarface">
+                              <label for="similarface-deepfake">Несколько одинаковых лиц</label>
+                            </div>
+                            </div>
+                            <div>
                             <div style="padding: 5pt;">
                               <input type="checkbox" id="enhancer-deepfake" name="enhancer" checked>
                               <label for="enhancer-deepfake">Улучшение лица</label>
@@ -22,6 +29,7 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                             <div style="padding: 5pt;" id="background-enhancer-deepfake-message">
                               <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
                               <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
+                            </div>
                             </div>
                         </fieldset>
                     </div>
@@ -226,6 +234,7 @@ async function processAsyncFaceSwap(data, elem) {
         }
 
         var multiface = elem.querySelector("#multiface-deepfake");
+        var similarface = elem.querySelector("#similarface-deepfake");
         var enhancer = elem.querySelector("#enhancer-deepfake");
         if (enhancer.checked) {
             enhancer = "gfpgan";
@@ -260,6 +269,7 @@ async function processAsyncFaceSwap(data, elem) {
                 "video_start_source": videoStartValueSource,
                 "type_file_source": typeFileSource,
                 "multiface": multiface.checked,
+                "similarface": similarface.checked,
                 "enhancer": enhancer,
                 "background_enhancer": backgroundEnhancerFaceSwap.checked,
             };

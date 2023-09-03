@@ -13,16 +13,17 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
-from train.utils import training_route  # TODO Add in pyproject file
-from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, EXTENSIONS_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
-from backend.download import download_model, unzip, check_download_size, get_download_filename
+from train.utils import training_route
+from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
 
 import logging
+os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
+# Retouch.main_retouch(DEEPFAKE_FOLDER, "target", "mask", "retouch_object")
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -301,6 +302,7 @@ def synthesize_face_swap():
     enhancer = request_list.get("enhancer")
     background_enhancer = request_list.get("background_enhancer", False)
     multiface = request_list.get("multiface", False)
+    similarface = request_list.get("similarface", False)
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
@@ -315,7 +317,8 @@ def synthesize_face_swap():
             source_video_frame=video_start_source,
             enhancer=enhancer,
             background_enhancer=background_enhancer,
-            multiface=multiface
+            multiface=multiface,
+            similarface=similarface
         )
     except Exception as err:
         app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
@@ -605,7 +608,6 @@ def common_training_route():
 
     try:
         # clear keep models
-        os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
         app.config['RTVC_LOADED_MODELS'] = {}
         app.config['TTS_LOADED_MODELS'] = {}
         # get params and send

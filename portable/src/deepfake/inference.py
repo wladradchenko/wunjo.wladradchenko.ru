@@ -9,6 +9,13 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 deepfake_root_path = os.path.join(root_path, "deepfake")
 sys.path.insert(0, deepfake_root_path)
 
+"""Video and image"""
+from src.utils.videoio import (
+    save_video_with_audio, cut_start_video, get_frames, get_first_frame,
+    check_media_type, extract_audio_from_video, save_video_from_frames
+)
+from src.utils.imageio import save_image_cv2, read_image_cv2
+"""Video and image"""
 """Animation Face"""
 from src.utils.preprocess import CropAndExtract
 from src.test_audio2coeff import Audio2Coeff
@@ -16,16 +23,17 @@ from src.facerender.animate import AnimateFromCoeff
 from src.generate_batch import get_data
 from src.generate_facerender_batch import get_facerender_data
 """Animation Face"""
-"""Wav22Lip"""
+"""Wav2Lip"""
 from src.wav2mel import MelProcessor
-from src.utils.videoio import save_video_with_audio, cut_start_video, get_frames, get_first_frame, check_media_type, extract_audio_from_video
-from src.utils.imageio import save_image
 from src.utils.face_enhancer import enhancer as face_enhancer
 from src.utils.video2fake import GenerateFakeVideo2Lip
-"""Wav22Lip"""
+"""Wav2Lip"""
 """Face Swap"""
 from src.utils.faceswap import FaceSwapDeepfake
 """Face Swap"""
+"""Retouch"""
+from src.retouch import InpaintModel, process_retouch, read_retouch_mask, convert_cv2_to_pil
+"""Retouch"""
 
 sys.path.pop(0)
 
@@ -425,9 +433,9 @@ class FaceSwap:
     """
     @staticmethod
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
-                             type_file_target: str, type_file_source: str, target_video_start: float = 0, source_video_frame: float = 0,
-                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                             background_enhancer: str = None, multiface: bool = False):
+                      type_file_target: str, type_file_source: str, target_video_start: float = 0, source_video_frame: float = 0,
+                      enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
+                      background_enhancer: str = None, multiface: bool = False, similarface: bool = False):
         args = FaceSwap.load_faceswap_default()
         # Folders
         args.checkpoint_dir = "checkpoints"
@@ -476,7 +484,7 @@ class FaceSwap:
             link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
             check_download_size(faceswap_checkpoint, link_faceswap_checkpoint)
 
-        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint)
+        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface)
 
         # get source for face
         if args.type_file_source == "video":
@@ -517,7 +525,7 @@ class FaceSwap:
             target_frame = get_first_frame(args.target)
             target_image = faceswap.swap_image(target_frame, source_face, args.target_face_fields, save_dir, args.multiface)
             file_name = "swap_result.png"
-            saved_file = save_image(os.path.join(save_dir, file_name), target_image)
+            saved_file = save_image_cv2(os.path.join(save_dir, file_name), target_image)
             if enhancer:
                 enhanced_image = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer)
                 file_name = "swap_result_enhanced.png"
@@ -545,3 +553,75 @@ class FaceSwap:
             crop=[0, -1, 0, -1],
             rotate=False,
         )
+
+
+class Retouch:
+    """Retouch image or video"""
+    @staticmethod
+    def main_retouch(output, source, mask, model_type):
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        os.makedirs(save_dir, exist_ok=True)
+        checkpoint_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
+
+        if model_type == "retouch_object":
+            model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")
+        elif model_type == "retouch_face":
+            model_retouch_path = os.path.join(checkpoint_folder, "retouch_face.pth")
+        else:
+            raise "Not correct retouch model type!"
+
+        if not os.path.exists(model_retouch_path):
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{model_type}.pth"]
+            download_model(model_retouch_path, link_model_retouch)
+        else:
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{model_type}.pth"]
+            check_download_size(model_retouch_path, link_model_retouch)
+
+        model_retouch = InpaintModel(model_path=model_retouch_path)
+
+        mask = "/home/user/Documents/CONDA/crfill/static/masks/258_vlcsnap-2023-09-03-18h58m57s163.png"
+        source = "/home/user/Downloads/1605352b-d81a-44d6-b4bb-f7b64b255b96.mp4"
+
+        mask = read_retouch_mask(mask)
+        source_type = check_media_type(source)
+
+        if source_type == "static":
+            frame = read_image_cv2(source)
+            frame_pil = convert_cv2_to_pil(frame)
+            save_frame = process_retouch(img=frame_pil, mask=mask, model=model_retouch)
+            save_name = "retouch_image.png"
+            save_frame.save(os.path.join(save_dir, save_name))
+        elif source_type == "animated":
+            from tqdm import tqdm
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(source, save_dir)
+            frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+
+            progress_bar = tqdm(total=len(frames), unit='it', unit_scale=True)
+            for i, frame in enumerate(frames):
+                frame_pil = convert_cv2_to_pil(frame)
+                save_frame = process_retouch(img=frame_pil, mask=mask, model=model_retouch)
+                save_name = "retouch_image_%s.png" % i
+                save_frame.save(os.path.join(save_dir, save_name))
+                progress_bar.update(1)
+            progress_bar.close()
+            # get saved file as merge frames to video
+            video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
+            # combine audio and video
+            save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, audio_file_name), save_dir)
+        else:
+            raise "Source is not detected as image or video"
+
+        for f in os.listdir(save_dir):
+            if save_name == f:
+                save_name = os.path.join(save_dir, f)
+            else:
+                if os.path.isfile(os.path.join(save_dir, f)):
+                    os.remove(os.path.join(save_dir, f))
+                elif os.path.isdir(os.path.join(save_dir, f)):
+                    shutil.rmtree(os.path.join(save_dir, f))
+
+        for f in os.listdir(TMP_FOLDER):
+            os.remove(os.path.join(TMP_FOLDER, f))
+
+        return save_name

@@ -227,11 +227,10 @@ Update 1.5.0
 - [x] Create hub for voice cloning languages models (or download all default models)
 - [x] Add face swap module for deepfake on video/photo from one photo face
 - [ ] Add enchanter face or enchanter background on user video/photo without deepfake
-- [ ] Make a version that will include all extensions without extensions download
+- [x] Make a version that will include all extensions without extensions download
 - [x] Improve indication and translation of current progress
 - [x] Add check debug module with python console
 - [x] Change real time translation on native translate
-- [ ] Add translation file on server and create request 
 - [ ] Improve message about GPU unavailable for user
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 

@@ -396,30 +396,54 @@ function dragDropImgOrVideo(event, previewId, canvasId, uploadFileElem, clearBut
   // Getting the video length
 
   var reader = new FileReader();
-  reader.onload = function(e) {
-    var preview = document.getElementById(previewId);
+  reader.onload = async function(e) {
+      let dimensions;
+      var preview = document.getElementById(previewId);
+      var widthPreview = parseFloat(preview.style.width);
+      var heightPreview = parseFloat(preview.style.height);
+      if (widthPreview > heightPreview) {
+        var maxPreviewSide = widthPreview;
+      } else {
+        var maxPreviewSide = heightPreview;
+      }
+      var uploadFileElemOuterHTML = uploadFileElem.outerHTML;
 
-    var uploadFileElemOuterHTML = uploadFileElem.outerHTML;
-
-    if (file.type.includes('image')) {
-      var previewImg = document.createElement("img");
-      previewImg.setAttribute("src", e.target.result);
-      previewImg.setAttribute('width', '100%');
-      previewImg.setAttribute('height', '100%');
-      previewImg.style.objectFit = 'cover';
-      preview.innerHTML = `<canvas style="position: absolute;" id=${canvasId}></canvas>`;
-      preview.appendChild(previewImg)
-    } else if (file.type.includes('video')) {
-      var video = document.createElement('video');
-
-      video.setAttribute('src', e.target.result);
-      video.setAttribute('width', '100%');
-      video.setAttribute('height', '100%');
-      video.setAttribute('preload', 'metadata');
-      video.style.objectFit = 'cover';
-      preview.innerHTML = `<canvas style="position: absolute;"  id='${canvasId}'></canvas>`;
-      preview.appendChild(video);
-    }
+      if (file.type.includes('image')) {
+        dimensions = await loadImage(e);
+        var aspectRatio = dimensions.width / dimensions.height;
+        if (dimensions.width >= dimensions.height) {
+          preview.style.width = maxPreviewSide + 'pt';
+          preview.style.height = maxPreviewSide / aspectRatio + 'pt';
+          dimensions.element.setAttribute('width', '100%');
+          dimensions.element.setAttribute('height', 'auto');
+        } else {
+          preview.style.width = maxPreviewSide * aspectRatio + 'pt';
+          preview.style.height = maxPreviewSide + 'pt';
+          dimensions.element.setAttribute('width', 'auto');
+          dimensions.element.setAttribute('height', '100%');
+        }
+        dimensions.element.style.objectFit = 'cover';
+        preview.innerHTML = `<canvas style="position: absolute;" id=${canvasId}></canvas>`;
+        preview.appendChild(dimensions.element);
+      } else if (file.type.includes('video')) {
+        dimensions = await loadVideo(e);
+        var aspectRatio = dimensions.width / dimensions.height;
+        if (dimensions.width >= dimensions.height) {
+          preview.style.width = maxPreviewSide + 'pt';
+          preview.style.height = maxPreviewSide / aspectRatio + 'pt';
+          dimensions.element.setAttribute('width', '100%');
+          dimensions.element.setAttribute('height', 'auto');
+        } else {
+          preview.style.width = maxPreviewSide * aspectRatio + 'pt';
+          preview.style.height = maxPreviewSide + 'pt';
+          dimensions.element.setAttribute('width', 'auto');
+          dimensions.element.setAttribute('height', '100%');
+        }
+        dimensions.element.setAttribute('preload', 'metadata');
+        dimensions.element.style.objectFit = 'cover';
+        preview.innerHTML = `<canvas style="position: absolute;"  id='${canvasId}'></canvas>`;
+        preview.appendChild(dimensions.element);
+      }
     preview.innerHTML += uploadFileElemOuterHTML;  // set prev parameters of upload input
 
     // DRAW RECTANGLES //
@@ -622,3 +646,23 @@ function handleDragLeaveOrEnd(event) {
     event.currentTarget.removeEventListener('dragend', handleDragLeaveOrEnd);
 }
 // ANIMATE WINDOWS //
+
+function loadImage(e) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = function() {
+      resolve({ width: this.width, height: this.height, element: img });
+    };
+    img.src = e.target.result;
+  });
+}
+
+function loadVideo(e) {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.onloadedmetadata = function() {
+      resolve({ width: this.videoWidth, height: this.videoHeight, element: video });
+    };
+    video.src = e.target.result;
+  });
+}

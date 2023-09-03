@@ -42,7 +42,3 @@ if not os.path.exists(CUSTOM_VOICE_FOLDER):
 TMP_FOLDER = os.path.join(MEDIA_FOLDER, 'tmp')
 if not os.path.exists(TMP_FOLDER):
     os.makedirs(TMP_FOLDER)
-
-EXTENSIONS_FOLDER = os.path.join(MEDIA_FOLDER, 'extensions')
-if not os.path.exists(EXTENSIONS_FOLDER):
-    os.makedirs(EXTENSIONS_FOLDER)

@@ -28,6 +28,16 @@ def save_video_with_audio(video, audio, save_path):
     return file_name
 
 
+def save_video_from_frames(frame_names, save_path, fps):
+    # frames has to have name from 0
+    frame_path = os.path.join(save_path, frame_names)
+    file_name = str(uuid.uuid4())+'.mp4'
+    save_file = os.path.join(save_path, file_name)
+    cmd = f"ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -pix_fmt yuv420p {save_file}"
+    os.system(cmd)
+    return file_name
+
+
 def extract_audio_from_video(video_path, save_path):
     file_name = str(uuid.uuid4()) + '.wav'
     save_file = os.path.join(save_path, file_name)

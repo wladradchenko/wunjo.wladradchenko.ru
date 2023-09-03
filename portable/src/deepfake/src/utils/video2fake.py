@@ -50,21 +50,15 @@ class GenerateFakeVideo2Lip:
             canvasWidth = squareFace["canvasWidth"]
             canvasHeight = squareFace["canvasHeight"]
             # Calculate the scale factor
-            scaleFactor = min(originalWidth / canvasWidth, originalHeight / canvasHeight)
+            scaleFactorX = originalWidth / canvasWidth
+            scaleFactorY = originalHeight / canvasHeight
 
             # Calculate the new position and size of the square face on the original image
-            if originalWidth > originalHeight:
-                offsetX = (originalWidth - originalHeight) / 2
-                newX1 = offsetX + (squareFace['x']) * scaleFactor
-                newX2 = offsetX + (squareFace['x'] + squareFace['width']) * scaleFactor
-                newY1 = squareFace['y'] * scaleFactor
-                newY2 = (squareFace['y'] + squareFace['height']) * scaleFactor
-            else:
-                offsetY = (originalHeight - originalWidth) / 2
-                newX1 = squareFace['x'] * scaleFactor
-                newX2 = (squareFace['x'] + squareFace['width']) * scaleFactor
-                newY1 = offsetY + (squareFace['y']) * scaleFactor
-                newY2 = offsetY + (squareFace['y'] + squareFace['height']) * scaleFactor
+            # Convert canvas square face coordinates to original image coordinates
+            newX1 = squareFace['x'] * scaleFactorX
+            newX2 = (squareFace['x'] + squareFace['width']) * scaleFactorX
+            newY1 = squareFace['y'] * scaleFactorY
+            newY2 = (squareFace['y'] + squareFace['height']) * scaleFactorY
 
             d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
             # get the center point of d_new
