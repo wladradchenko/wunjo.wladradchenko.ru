@@ -541,7 +541,6 @@ function dragDropImgOrVideo(event, previewId, canvasId, uploadFileElem, clearBut
     }
 
     drawButton.onclick = async function() {
-      // data-controlval="get-face"
       if (drawButton.getAttribute("data-controlval") === 'get-face') {
         drawButton.setAttribute("data-controlval", "put-content");
         drawButton.textContent = await translateWithGoogle("Выбор файла", 'auto', targetLang);

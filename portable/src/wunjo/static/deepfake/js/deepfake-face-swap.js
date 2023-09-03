@@ -6,7 +6,7 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
             {
                 element: button,
                 title: 'Панель смены лица',
-                position: 'left',
+                position: 'right',
                 intro: `
                     <div>
                         <fieldset style="padding: 5pt;margin: 13pt;margin-top: 0;flex-direction: row;display: flex;">
@@ -42,7 +42,7 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                             </div>
                             <span id="previewFaceSwapTarget" class="dragBox" style="height: 200pt;justify-content: center;">
                               Загрузить целевое изображение или видео
-                            <input accept="image/*,video/*" type="file" onChange="dragDropImgOrVideo(event, 'previewFaceSwapTarget', 'canvasTarget', this, 'clearButtonTarget', 'drawButtonTarget');handleMetadataFaceSwap(event, 'fieldsetTarget', 'videoLengthTarget', 'videoStartTarget');"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadTarget"  />
+                            <input accept="image/*,video/*" type="file" onChange="dragDropImgOrVideo(event, 'previewFaceSwapTarget', 'canvasTarget', this, 'clearButtonTarget', 'drawButtonTarget');handleMetadataMedia(event, 'fieldsetTarget', 'videoLengthTarget', 'videoStartTarget');"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadTarget"  />
                             </span>
                         </div>
 
@@ -63,7 +63,7 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                             </div>
                             <span id="previewFaceSwapSource" class="dragBox" style="height: 200pt;justify-content: center;">
                               Загрузить исходное изображение или видео
-                            <input accept="image/*,video/*" type="file" onChange="dragDropImgOrVideo(event, 'previewFaceSwapSource', 'canvasSource', this, 'clearButtonSource', 'drawButtonSource');handleMetadataFaceSwap(event, 'fieldsetSource', 'videoLengthSource', 'videoStartSource');"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSource"  />
+                            <input accept="image/*,video/*" type="file" onChange="dragDropImgOrVideo(event, 'previewFaceSwapSource', 'canvasSource', this, 'clearButtonSource', 'drawButtonSource');handleMetadataMedia(event, 'fieldsetSource', 'videoLengthSource', 'videoStartSource');"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSource"  />
                             </span>
                         </div>
 
@@ -91,25 +91,39 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
     });
     introFaceSwap.start();
     availableFeaturesByCUDA(document.getElementById("background-enhancer-deepfake-message"));
+    document.getElementById("videoStartTarget").addEventListener("change", function() {
+        var videoElement = document.querySelector("#previewFaceSwapTarget video"); // get the video element inside the preview
+        if (videoElement) {
+            var startTime = parseFloat(this.value); // get the value of the input and convert it to a float
+            videoElement.currentTime = startTime; // set the video's current playback time to the start time
+        }
+    });
+    document.getElementById("videoStartSource").addEventListener("change", function() {
+        var videoElement = document.querySelector("#previewFaceSwapSource video"); // get the video element inside the preview
+        if (videoElement) {
+            var startTime = parseFloat(this.value); // get the value of the input and convert it to a float
+            videoElement.currentTime = startTime; // set the video's current playback time to the start time
+        }
+    });
 };
 
 
-function handleMetadataFaceSwap(event, fieldsetControlId, videoLengthId, videoStartId) {
+function handleMetadataMedia(event, fieldsetControlId, videoLengthId, videoStartId) {
     const file = event.target.files[0];
 
     if (file.type.includes('image')) {
-      handleImageMetadataFaceSwap(fieldsetControlId,videoLengthId, videoStartId);
+      handleImageMetadataMedia(fieldsetControlId,videoLengthId, videoStartId);
     } else if (file.type.includes('video')) {
       // You can use a Promise or setTimeout to wait until the metadata is loaded
       const video = document.createElement('video');
       video.setAttribute('src', URL.createObjectURL(file));
       video.onloadedmetadata = function() {
-        handleVideoMetadataFaceSwap(video, fieldsetControlId, videoLengthId, videoStartId);
+        handleVideoMetadataMedia(video, fieldsetControlId, videoLengthId, videoStartId);
       };
     }
 }
 
-function handleVideoMetadataFaceSwap(video, fieldsetControlId, videoLengthId, videoStartId) {
+function handleVideoMetadataMedia(video, fieldsetControlId, videoLengthId, videoStartId) {
     const fieldsetControl = document.getElementById(fieldsetControlId);
     fieldsetControl.style.display = "block";
 
@@ -127,7 +141,7 @@ function handleVideoMetadataFaceSwap(video, fieldsetControlId, videoLengthId, vi
     videoInputLength.value = 0;
 }
 
-function handleImageMetadataFaceSwap(fieldsetControlId, videoLengthId, videoStartId) {
+function handleImageMetadataMedia(fieldsetControlId, videoLengthId, videoStartId) {
     const fieldsetControl = document.getElementById(fieldsetControlId);
     fieldsetControl.style.display = "none";
 
