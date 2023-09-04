@@ -28,7 +28,7 @@ function updateConsoleLog() {
 updateConsoleLog();
 
 // Update console log every 5 seconds
-consoleBackendLogSetInterval = setInterval(updateConsoleLog, 5000);
+consoleBackendLogSetInterval = setInterval(updateConsoleLog, 1000);  // It is ok if check each one second?
 /// CONSOLE UPDATE LOGICAL ///
 
 

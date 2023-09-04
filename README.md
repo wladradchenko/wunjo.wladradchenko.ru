@@ -12,7 +12,7 @@
     <img src="example/robot.gif" alt="Logo" width="180" height="180">
   </a>
 
-  <h3 align="center">Wunjo AI</h3>
+  <h3 align="center">Wunjo AI: Advanced Speech & Deepfake Neural Network Tool</h3>
 
   <p align="center">
     Project documentation
@@ -29,13 +29,33 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Synthesis of speech from text, voice clone, speech to text and creation of deepfake animation face, lips, face swap by Wunjo AI neural networks
+Harness the power of neural networks with Wunjo AI for an array of applications—from speech synthesis to deepfake animations.
 
-Application for speech synthesis from text, speech recognition to text, voice clone and create deepfake animation face, lips, face swap by one photo. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, clone voices from audio files of real time record voice, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio to text. This feature is great for dictating text instead of manually typing it.
+**Key Features:**
 
-Also, deepfakes are another approach to use the application. You can animate face by photo and audio, use deepfake lips of user audio, and use face swap deepfake on video, gif animation and photo by one photo face. 
+- **Speech Synthesis:** Effortlessly convert text into human-like speech.
+- **Voice Cloning:** Clone voices from provided audio files or directly record your voice within the app for real-time cloning.
+- **Multilingual Support:** Currently supports Russian and English for voice cloning and synthesis, with plans to extend to Chinese soon.
+- **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
+- **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
+- **Deepfake Animation:**
+  - Animate faces using just one photo combined with audio.
+  - Achieve precise lip syncing with your audio using our deepfake lips feature.
+  - Effortlessly swap faces in videos, GIFs, and photos using just a single photograph with our "Face Swap" feature.
+  - Change the emotions of a person in the video, with the help of a text description.
+- **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes.
 
-All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis, voice-to-text recognition and create deepfake animation. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
+**Applications:**
+From voiceovers in commercials to character voicing in games, from audiobook narrations to fun deepfake projects, Wunjo AI offers endless possibilities and all is free and local on your device.
+
+**Why Choose Wunjo AI?:**
+
+- **All-in-One:** A comprehensive tool catering to both your voice and visual AI needs.
+- **User-friendly:** Designed for all, from beginners to professionals.
+- **Privacy First:** Functions locally on your desktop, ensuring your data remains private.
+- **Open-source & Free:** Benefit from community-driven enhancements and enjoy the app without any cost.
+
+Step into the future of AI-powered creativity with Wunjo AI.
 
 <!-- FEATURES -->
 ## Setup
@@ -226,22 +246,20 @@ Update 1.5.0
 - [x] Add synthesys audio from text with voice clone from another audio
 - [x] Create hub for voice cloning languages models (or download all default models)
 - [x] Add face swap module for deepfake on video/photo from one photo face
-- [ ] Add enchanter face or enchanter background on user video/photo without deepfake
+- [x] Add enchanter face or enchanter background on user video/photo without deepfake
 - [x] Make a version that will include all extensions without extensions download
 - [x] Improve indication and translation of current progress
 - [x] Add check debug module with python console
 - [x] Change real time translation on native translate
-- [ ] Improve message about GPU unavailable for user
+- [x] Improve message about GPU unavailable for user
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 
 - [x] Add AI retouch frames in video by user tool
 
 :TODO check downloads tts models on windows, maybe is bug because of symbols
-:TODO check dicts from tacotron2/data after build, will be errors because of torch lib logical
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
-- [ ] Add in face animation and mouth approach to worked at the some time with a few heads and difference audio
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
 - [ ] Train voices for Chinese and add logical to work with chinese grammatical
