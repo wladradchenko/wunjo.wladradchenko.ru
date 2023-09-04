@@ -279,7 +279,9 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- DONAT -->
 ## Поддержка
 
-You can support the author of the project in the development of his creative ideas, or just treat him to [a cup of coffee](https://wladradchenko.ru/donat). More details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
+Вы можете поддержать автора проекта на развитии его креативных идей, либо просто угостить [чашкой кофе](https://wladradchenko.ru/donat). Есть и другие способы поддержать развитие проекта, подробнее на [странице](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Поддержите-проект).
+
+<img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="donat" width="250" height="250">
 
 <!-- DONAT -->
 

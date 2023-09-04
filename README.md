@@ -278,7 +278,9 @@ Update 1.6.0
 <!-- DONAT -->
 ## Support the Project
 
+You can support the author of the project in the development of his creative ideas, or just treat him to [a cup of coffee](https://wladradchenko.ru/donat). There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
 
+<img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="donat" width="250" height="250">
 
 <!-- CONTACT -->
 ## Contact
