@@ -579,31 +579,80 @@ class Retouch:
 
         model_retouch = InpaintModel(model_path=model_retouch_path)
 
-        mask = "/home/user/Documents/CONDA/crfill/static/masks/258_vlcsnap-2023-09-03-18h58m57s163.png"
-        source = "/home/user/Downloads/1605352b-d81a-44d6-b4bb-f7b64b255b96.mp4"
+        print(mask)
 
-        mask = read_retouch_mask(mask)
         source_type = check_media_type(source)
 
         if source_type == "static":
+            #read mask
+            mask_name = mask[0].get("mediaNameMask")
+            maks_path = os.path.join(TMP_FOLDER, mask_name)
+            mask = read_retouch_mask(maks_path)
+            # read frame
             frame = read_image_cv2(source)
             frame_pil = convert_cv2_to_pil(frame)
-            save_frame = process_retouch(img=frame_pil, mask=mask, model=model_retouch)
+            # Get size of frame_pil
+            frame_size = frame_pil.size
+            # Resize mask to frame_size
+            mask_resized = mask.resize(frame_size)
+            # Use retouch
+            save_frame = process_retouch(img=frame_pil, mask=mask_resized, model=model_retouch)
             save_name = "retouch_image.png"
             save_frame.save(os.path.join(save_dir, save_name))
         elif source_type == "animated":
+            # work with frame
             from tqdm import tqdm
             # get audio from video target
             audio_file_name = extract_audio_from_video(source, save_dir)
             frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            first_frame_pil = convert_cv2_to_pil(frames[0])
+            # Get size of frame_pil
+            frame_size = first_frame_pil.size
+
+            # Create a list to hold all masks with their details
+            mask_details = []
+
+            for m in mask:
+                mask_name = m.get("mediaNameMask")
+                mask_set_start = m.get("startFrameMask")
+                mask_set_start_frame = float(mask_set_start) * fps if mask_set_start else 0
+                mask_set_end = m.get("endFrameMask")
+                mask_set_end_frame = float(mask_set_end) * fps if mask_set_end else 0
+                maks_path = os.path.join(TMP_FOLDER, mask_name)
+                mask_img = read_retouch_mask(maks_path)
+                # Resize mask to frame_size
+                mask_resized = mask_img.resize(frame_size)
+
+                # Store mask details in a dictionary and append to our list
+                mask_detail = {
+                    "start_frame": mask_set_start_frame,
+                    "end_frame": mask_set_end_frame,
+                    "mask": mask_resized
+                }
+                mask_details.append(mask_detail)
 
             progress_bar = tqdm(total=len(frames), unit='it', unit_scale=True)
             for i, frame in enumerate(frames):
                 frame_pil = convert_cv2_to_pil(frame)
-                save_frame = process_retouch(img=frame_pil, mask=mask, model=model_retouch)
+
+                # Check if current frame is within any mask's start and end frames
+                mask_to_apply = None
+                for detail in mask_details:
+                    if detail["start_frame"] <= i <= detail["end_frame"]:
+                        mask_to_apply = detail["mask"]
+                        break
+
+                if mask_to_apply:
+                    # If a mask is applicable, process and save
+                    save_frame = process_retouch(img=frame_pil, mask=mask_to_apply, model=model_retouch)
+                else:
+                    # Otherwise, just use the original frame
+                    save_frame = frame_pil
+
                 save_name = "retouch_image_%s.png" % i
                 save_frame.save(os.path.join(save_dir, save_name))
                 progress_bar.update(1)
+
             progress_bar.close()
             # get saved file as merge frames to video
             video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)

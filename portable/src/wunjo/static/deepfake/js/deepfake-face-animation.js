@@ -241,7 +241,6 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                         <div class="uploadOuterDeepfake">
                             <div style="flex-direction: row;display: flex;margin-bottom: 10pt;justify-content: space-between;">
                                 <button class="introjs-button" style="display: none;margin-right: 5pt;" id="clearButton">Очистить</button>
-                                <!--<button class="introjs-button" style="display: none; margin-left: 5pt;margin-right: 5pt;" id="undoButton"><i class="fa fa-solid fa-reply"></i></button>-->
                                 <button style="width: 100%;display: none;" class="introjs-button" id="drawButton" data-controlval="get-face">Выделить лицо</button>
                             </div>
                             <span id="previewDeepfakeImg" class="dragBox" style="height: 200pt;justify-content: center;">

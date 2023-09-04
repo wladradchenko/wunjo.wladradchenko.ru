@@ -23,7 +23,6 @@ from backend.translator import get_translate
 
 import logging
 os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
-# Retouch.main_retouch(DEEPFAKE_FOLDER, "target", "mask", "retouch_object")
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -276,6 +275,49 @@ def get_synthesize_deepfake_result():
     }
 
 
+@app.route("/synthesize_retouch/", methods=["POST"])
+@cross_origin()
+def synthesize_retouch():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        print("The process is already running... ")
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print("Please wait... Processing is started")
+
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
+
+    source = request_list.get("source")
+    mask = request_list.get("mask", [])
+    model_type = request_list.get("model_type", "retouch_face")
+
+    try:
+        retouch_result = Retouch.main_retouch(
+            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
+            mask=mask, model_type=model_type
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
+            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
+    retouch_url = url_for("media_file", filename=retouch_result_filename)
+    retouch_date = current_time("%H:%M:%S")  # maybe did in js parse of date
+
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": retouch_url, "response_video_date": retouch_date}]
+
+    print("Face swap synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
+
+
 @app.route("/synthesize_face_swap/", methods=["POST"])
 @cross_origin()
 def synthesize_face_swap():
@@ -286,7 +328,7 @@ def synthesize_face_swap():
     # get parameters
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print(get_print_translate("Please wait... Processing is started"))
+    print("Please wait... Processing is started")
 
     if not os.path.exists(DEEPFAKE_FOLDER):
         os.makedirs(DEEPFAKE_FOLDER)
