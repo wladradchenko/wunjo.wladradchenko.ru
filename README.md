@@ -224,11 +224,6 @@ To find the appropriate code for your language, please refer to the [Google Clou
 <!-- TRANSLATION -->
 
 <!-- UPDATE -->
-Update 1.3.2
-
-- [x] Added support for extensions (any developer can create extensions without opening the main code)
-- [x] Fix bugs
-
 Update 1.4.0
 - [x] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
 - [x] Add selection of video segment for deepfake depending on the length of the audio track
