@@ -60,7 +60,7 @@ Step into the future of AI-powered creativity with Wunjo AI.
 <!-- FEATURES -->
 ## Setup
 
-Requirements 3.8 <= [Python](https://www.python.org/downloads/) <=3.10 and [ffmpeg](https://ffmpeg.org/download.html).
+Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html).
 
 Create venv and activate ones:
 
