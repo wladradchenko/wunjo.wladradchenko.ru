@@ -15,13 +15,13 @@
   <h3 align="center">Wunjo AI: Advanced Speech & Deepfake Neural Network Tool</h3>
 
   <p align="center">
-    Project documentation
-    <br/>
-    <br/>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Documentation</a>
     <br/>
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Issue</a>
     ·
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Wikipedia</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions">Discussions</a>
+    ·
+    <a href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared">Tutorial</a>
   </p>
 </div>
 

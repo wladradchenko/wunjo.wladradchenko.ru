@@ -15,13 +15,13 @@
   <h3 align="center">Wunjo AI</h3>
 
   <p align="center">
-    Документация о проекте
-    <br/>
-    <br/>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Документация о проекте</a>
     <br/>
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Сообщить об ошибке</a>
     ·
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Википедия</a>
+    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions">Предложить улучшения</a>
+    ·
+    <a href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared">Видео курс</a>
   </p>
 </div>
 
