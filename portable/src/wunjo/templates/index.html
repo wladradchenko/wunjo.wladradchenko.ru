@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-emotion.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-retouch.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/video-editor.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/train/train.js') }}"></script>
 {% endblock %}
 
@@ -20,6 +21,7 @@
     <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно создания дипфейка смены лица" onclick="deepfakeFaceSwap(this);"><i class="fa-solid fa-masks-theater"></i></a>
     <a id="button-run-change-emotion" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно дипфейка эмоций"><i class="fa-solid fa-face-grin-tongue-wink"></i></a>
     <a id="button-run-retouch" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно удаления объектов и ретуши" onclick="deepfakeRetouch(this);"><i class="fa-solid fa-eraser"></i></a>
+    <a id="button-run-editor-video" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно работы с видео" onclick="editorVideo(this);"><i class="fa-solid fa-screwdriver-wrench"></i></a>
     <!--EXTENSIONS-->
     <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i class="fa-solid fa-microchip"></i></a>
     <!--EXTENSIONS-->

@@ -234,13 +234,13 @@ Update 1.5.0
 - [ ] Improve message about GPU unavailable for user
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 
+- [x] Add AI retouch frames in video by user tool
 
 :TODO check downloads tts models on windows, maybe is bug because of symbols
 :TODO check dicts from tacotron2/data after build, will be errors because of torch lib logical
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
-- [ ] Add AI retouch frames in video by user tool
 - [ ] Add in face animation and mouth approach to worked at the some time with a few heads and difference audio
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice

@@ -23,7 +23,10 @@ def load_video_to_cv2(input_path):
 def save_video_with_audio(video, audio, save_path):
     file_name = str(uuid.uuid4())+'.mp4'
     save_file = os.path.join(save_path, file_name)
-    cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart "%s"' % (video, audio, save_file)
+    # if audio length than video, when will show video last frame
+    # cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart "%s"' % (video, audio, save_file)
+    # if audio length than video, when will audio cut
+    cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart -shortest "%s"' % (video, audio, save_file)
     os.system(cmd)
     return file_name
 
@@ -36,6 +39,13 @@ def save_video_from_frames(frame_names, save_path, fps):
     cmd = f"ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -pix_fmt yuv420p {save_file}"
     os.system(cmd)
     return file_name
+
+
+def video_to_frames(video_path, output_folder):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    cmd = f'ffmpeg -i "{video_path}" "{output_folder}/%d.png"'
+    os.system(cmd)
 
 
 def extract_audio_from_video(video_path, save_path):

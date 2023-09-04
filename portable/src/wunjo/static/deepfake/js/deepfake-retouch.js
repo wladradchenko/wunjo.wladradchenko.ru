@@ -480,7 +480,7 @@ async function processAsyncRetouch(data, elem) {
         });
 
         if (resultsRetouchMasks.length < 1) {
-            messageRetouch.innerHTML += "<p style='margin-top: 5pt;'>Write here msg.</p>";
+            messageRetouch.innerHTML += "<p style='margin-top: 5pt;'>Необходимо добавить минимум одну маску для запуска</p>";
             return
         } else {
             const buttonAnimationWindows = document.querySelector('#button-show-voice-window');

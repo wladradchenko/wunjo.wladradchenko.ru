@@ -2,6 +2,7 @@ import os
 import sys
 import torch
 import imageio
+import subprocess
 from time import strftime
 from argparse import Namespace
 
@@ -12,7 +13,7 @@ sys.path.insert(0, deepfake_root_path)
 """Video and image"""
 from src.utils.videoio import (
     save_video_with_audio, cut_start_video, get_frames, get_first_frame,
-    check_media_type, extract_audio_from_video, save_video_from_frames
+    check_media_type, extract_audio_from_video, save_video_from_frames, video_to_frames
 )
 from src.utils.imageio import save_image_cv2, read_image_cv2
 """Video and image"""
@@ -579,8 +580,6 @@ class Retouch:
 
         model_retouch = InpaintModel(model_path=model_retouch_path)
 
-        print(mask)
-
         source_type = check_media_type(source)
 
         if source_type == "static":
@@ -674,3 +673,78 @@ class Retouch:
             os.remove(os.path.join(TMP_FOLDER, f))
 
         return save_name
+
+
+class VideoEdit:
+    """Edit video"""
+    @staticmethod
+    def main_video_work(output, source, enhancer, enhancer_background, is_get_frames):
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        os.makedirs(save_dir, exist_ok=True)
+
+        import time
+        time.sleep(5)
+
+        enhancer_background = "realesrgan" if enhancer_background else None
+        audio_file_name = extract_audio_from_video(source, save_dir)
+
+        if enhancer:
+            print("Get audio and video frames")
+            frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            video_name_enhancer = 'video_enhanced.mp4'
+            enhanced_path = os.path.join(output, 'temp_' + video_name_enhancer)
+            print("Starting improve video")
+            enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background)
+            imageio.mimsave(enhanced_path, enhanced_video, fps=float(fps))
+            save_name = save_video_with_audio(enhanced_path, os.path.join(save_dir, audio_file_name), save_dir)
+
+            for f in os.listdir(save_dir):
+                if save_name == f:
+                    save_name = os.path.join(save_dir, f)
+                else:
+                    if os.path.isfile(os.path.join(save_dir, f)):
+                        os.remove(os.path.join(save_dir, f))
+                    elif os.path.isdir(os.path.join(save_dir, f)):
+                        shutil.rmtree(os.path.join(save_dir, f))
+
+            for f in os.listdir(TMP_FOLDER):
+                os.remove(os.path.join(TMP_FOLDER, f))
+
+            return save_name
+
+        if is_get_frames:
+            video_to_frames(source, save_dir)
+            for f in os.listdir(TMP_FOLDER):
+                os.remove(os.path.join(TMP_FOLDER, f))
+
+            if os.path.exists(save_dir):
+                if sys.platform == 'win32':
+                    # Open folder for Windows
+                    subprocess.Popen(r'explorer /select,"{}"'.format(save_dir))
+                elif sys.platform == 'darwin':
+                    # Open folder for MacOS
+                    subprocess.Popen(['open', save_dir])
+                elif sys.platform == 'linux':
+                    # Open folder for Linux
+                    subprocess.Popen(['xdg-open', save_dir])
+
+            print(f"You will find images in {save_dir}")
+            return os.path.join(save_dir, audio_file_name)
+
+        print("Error... Not get parameters for video edit!")
+        return "Error"
+
+    @staticmethod
+    def main_merge_frames(output, source_folder, audio_path, fps):
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        os.makedirs(save_dir, exist_ok=True)
+
+        # get saved file as merge frames to video
+        video_name = save_video_from_frames(frame_names="%d.png", save_path=source_folder, fps=fps)
+        # combine audio and video
+        save_name = save_video_with_audio(os.path.join(source_folder, video_name), audio_path, save_dir)
+
+        for f in os.listdir(TMP_FOLDER):
+            os.remove(os.path.join(TMP_FOLDER, f))
+
+        return os.path.join(save_dir, save_name)

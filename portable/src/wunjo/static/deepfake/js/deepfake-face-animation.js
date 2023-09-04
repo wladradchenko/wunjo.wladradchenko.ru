@@ -570,6 +570,11 @@ function dragDropImgOrVideo(event, previewId, canvasId, uploadFileElem, clearBut
 }
 
 function dragDropAudioDeepfakeFaceAnimation(event) {
+  if (event.target.files.length === 0) {
+    console.warn("No files selected");
+    return; // Exit the function if no files were selected
+  }
+
   var file = URL.createObjectURL(event.target.files[0]);
   // Get audio length
   var audioElement = new Audio(file);

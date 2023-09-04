@@ -587,7 +587,7 @@ select {
   transform: scale(1.1);
 }
 
-#previewDeepfakeImg, #previewFaceSwapTarget, #previewFaceSwapSource, #previewRetouch {
+#previewDeepfakeImg, #previewFaceSwapTarget, #previewFaceSwapSource, #previewRetouch, #previewEditorVideo {
   text-align: center;
   display: flex;
   align-items: center;

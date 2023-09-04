@@ -3,6 +3,7 @@ os.environ['OMP_NUM_THREADS'] = '1'  # TODO writen what increase speed for cuda,
 import sys
 import json
 import torch
+import shutil
 import requests
 import subprocess
 from time import gmtime, strftime
@@ -13,7 +14,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -22,12 +23,11 @@ from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOL
 from backend.translator import get_translate
 
 import logging
-os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -37,15 +37,11 @@ app.config['USER_LANGUAGE'] = "en"
 
 logging.getLogger('werkzeug').disabled = True
 
-# TODO interect code from swapper
-# def pre_check() -> bool:
-#     if sys.version_info < (3, 9):
-#         update_status('Python version is not supported - please upgrade to 3.9 or higher.')
-#         return False
-#     if not shutil.which('ffmpeg'):
-#         update_status('ffmpeg is not installed.')
-#         return False
-#     return True
+
+def is_ffmpeg_installed():
+    if not shutil.which('ffmpeg'):
+        print('Ffmpeg is not installed. You need to install it for comfortable use of the program.')
+        print("You can visit documentation https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki to find out how install")
 
 
 def get_version_app():
@@ -168,6 +164,8 @@ def update_translation():
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
+    # Check ffmpeg on first load
+    is_ffmpeg_installed()
     # Define a dictionary of languages
     settings = set_settings()
     lang_user = settings["user_language"]
@@ -275,6 +273,95 @@ def get_synthesize_deepfake_result():
     }
 
 
+@app.route("/synthesize_video_merge/", methods=["POST"])
+@cross_origin()
+def synthesize_video_merge():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        print("The process is already running... ")
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print("Please wait... Processing is started")
+
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
+
+    source_folder = request_list.get("source_folder")
+    audio_name = request_list.get("audio_name")
+    fps = request_list.get("fps", 30)
+
+    try:
+        result = VideoEdit.main_merge_frames(
+            output=DEEPFAKE_FOLDER, source_folder=source_folder,
+            audio_path=os.path.join(TMP_FOLDER, audio_name), fps=fps
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
+            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
+    url = url_for("media_file", filename=result_filename)
+    date = current_time("%H:%M:%S")  # maybe did in js parse of date
+
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": url, "response_video_date": date}]
+
+    print("Merge frames to video completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
+
+
+@app.route("/synthesize_video_editor/", methods=["POST"])
+@cross_origin()
+def synthesize_video_editor():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+        print("The process is already running... ")
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print("Please wait... Processing is started")
+
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
+
+    source = request_list.get("source")
+    enhancer = request_list.get("enhancer", False)
+    enhancer_background = request_list.get("enhancer_background", False)
+    is_get_frames = request_list.get("get_frames", False)
+
+    try:
+        result = VideoEdit.main_video_work(
+            output=DEEPFAKE_FOLDER,
+            source=os.path.join(TMP_FOLDER, source), enhancer=enhancer,
+            enhancer_background=enhancer_background, is_get_frames=is_get_frames
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
+            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
+    url = url_for("media_file", filename=result_filename)
+    date = current_time("%H:%M:%S")  # maybe did in js parse of date
+
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": url, "response_video_date": date}]
+
+    print("Edit video completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
+
+
+
 @app.route("/synthesize_retouch/", methods=["POST"])
 @cross_origin()
 def synthesize_retouch():
@@ -312,7 +399,7 @@ def synthesize_retouch():
 
     app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": retouch_url, "response_video_date": retouch_date}]
 
-    print("Face swap synthesis completed successfully!")
+    print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
 
     return {"status": 200}
@@ -595,6 +682,8 @@ def change_processor():
     current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         if not torch.cuda.is_available():
+            print("No GPU driver was found on your computer. Working on the GPU will speed up the generation of content several times.")
+            print("Visit the documentation https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki to learn how to install drivers for your computer.")
             return {"current_processor": 'none'}  # will be message how install cuda or hust hidden changer
         if current_processor == "cpu":
             os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
