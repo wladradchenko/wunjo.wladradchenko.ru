@@ -275,8 +275,13 @@ Update 1.6.0
 
 [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
 
+<!-- DONAT -->
+## Support the Project
+
+
+
 <!-- CONTACT -->
-## Контакт
+## Contact
 
 Owner: [Wladislav Radchenko](https://github.com/wladradchenko/)
 
