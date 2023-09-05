@@ -258,6 +258,7 @@ Update 1.6.0
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
 - [ ] Train voices for Chinese and add logical to work with chinese grammatical
+- [ ] Train Russian synthesis model voice clone 
 
 <!-- VIDEO -->
 ## Video
