@@ -425,6 +425,7 @@ async function submittedSTT(elem, activeTextarea) {
 function settingTextToSpeech(elem, languages) {
     var sectionTextTTS = elem.parentElement.parentElement.parentElement.parentElement
     var textareaTTS = sectionTextTTS.querySelector('.text-input');
+    var curLang = elem.getAttribute("value-translate");
 
     var introSettingTextToSpeech = introJs();
     introSettingTextToSpeech.setOptions({
@@ -520,6 +521,9 @@ function settingTextToSpeech(elem, languages) {
       const option = document.createElement("option");
       option.text = key;
       option.value = value;
+      if (curLang === value) {
+        option.selected = true;
+      }
       option.classList.add("notranslate");
       selectElementLanguageTTS.add(option);
     }
