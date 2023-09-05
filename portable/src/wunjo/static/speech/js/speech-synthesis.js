@@ -296,8 +296,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
       buttonTurnOnAnimationSynthesisWindows.addEventListener('click', pollSynthesizedDeepfakeResults);
     }
 
-    var intervalSynthesizedResultsId;
-
     // Define the URL of the /synthesize_process/ page
     const synthesizeProcessUrl = '/synthesize_process/';
 
@@ -309,22 +307,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
         .then(data => {
           // Check the value of status_code
           if (data.status_code === 200) {
-            if (!intervalSynthesizedResultsId) {
-                setTimeout(pollSynthesizedResults, 5000);
-                setTimeout(pollSynthesizedDeepfakeResults, 5000);
-                intervalSynthesizedResultsId = undefined;
-            }
             // If status_code is 200, hide the #status-message element
             document.getElementById("lds-ring").style.display = 'none';  // Indicate loading
-            setTimeout(checkStatus, 5000);  // 5 seconds
+            setTimeout(checkStatus, 2000);  // 5 seconds
             buttonRunSynthesis.disabled = false;
           } else {
-            setTimeout(pollSynthesizedResults, 5000);
-            setTimeout(pollSynthesizedDeepfakeResults, 5000);
-            intervalSynthesizedResultsId = data.status_code;
             // If status_code is not 200, wait for the next interval to check again
             document.getElementById("lds-ring").style.display = 'flex';
-            setTimeout(checkStatus, 5000);  // 5 seconds
+            setTimeout(checkStatus, 2000);  // 5 seconds
             buttonRunSynthesis.disabled = true;
           }
         })
@@ -337,4 +327,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     // Start checking the status
     checkStatus();
+    setInterval(pollSynthesizedResults, 2000);
+    setInterval(pollSynthesizedDeepfakeResults, 2000);
 });

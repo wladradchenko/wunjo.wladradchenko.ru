@@ -53,7 +53,7 @@ phoneme_map = {
 
 for symb in [accent, hyphen, separator] + shields:
     punctuation = punctuation.replace(symb, "")
-punctuation = list(punctuation) + [dash, space, '“', '”', '„', '«', '»']
+punctuation = list(punctuation) + [dash, space, '“', '”', '„', '«', '»', "。"]
 
 _shielding = shields + [separator]
 valid_symbols_map = {

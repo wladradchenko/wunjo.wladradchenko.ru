@@ -298,8 +298,7 @@ def synthesize_video_merge():
             audio_path=os.path.join(TMP_FOLDER, audio_name), fps=fps
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
-            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -343,8 +342,7 @@ def synthesize_video_editor():
             enhancer_background=enhancer_background, is_get_frames=is_get_frames
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
-            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -387,8 +385,7 @@ def synthesize_retouch():
             mask=mask, model_type=model_type
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [
-            {"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -560,7 +557,6 @@ def synthesize():
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print(get_print_translate("Please wait... Processing is started"))
-    app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 
     dir_time = current_time()
 

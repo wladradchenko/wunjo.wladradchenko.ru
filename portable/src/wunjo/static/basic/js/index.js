@@ -125,7 +125,7 @@ function changeAvatarSelect(event) {
                 if (!checkpoint || !waveglow) {
                     avatarInfoPop(avatar, checkbox.value);
                 }
-                console.log(checkpoint, waveglow); // Output: true true
+                // console.log(checkpoint, waveglow); // Output: true true
                 })
             .catch((err) => {
                 console.log(err);
