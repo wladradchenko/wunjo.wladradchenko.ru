@@ -223,7 +223,7 @@ class Processor:
 
 
     @staticmethod
-    def split_to_sentences(text: str, keep_delimiters: bool=False, language: str="russian") -> list:
+    def split_to_sentences(text: str, keep_delimiters: bool=False, language: str = "russian") -> list:
         """
         Splits specified text into sentences using nltk library.
 
@@ -235,7 +235,10 @@ class Processor:
 
         :return: list
         """
-        parts = sent_tokenize(text, language)
+        try:
+            parts = sent_tokenize(text, language)
+        except:
+            parts = sent_tokenize(text, "english")
 
         if keep_delimiters:
             for i in range(1, len(parts)):

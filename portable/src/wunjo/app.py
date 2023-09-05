@@ -27,7 +27,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -718,6 +718,8 @@ if not app.config['DEBUG']:
         logs = (captured_stdout + captured_stderr).splitlines()
         return jsonify(logs[-max_len_logs:])
 else:
+    os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
+
     @app.route('/console_log', methods=['GET'])
     def console_log():
         logs = ["Debug mode. Console is turned off"]

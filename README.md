@@ -35,7 +35,7 @@ Harness the power of neural networks with Wunjo AI for an array of applicationsâ
 
 - **Speech Synthesis:** Effortlessly convert text into human-like speech.
 - **Voice Cloning:** Clone voices from provided audio files or directly record your voice within the app for real-time cloning.
-- **Multilingual Support:** Currently supports English for voice cloning (from any language audio) and English, Russian synthesis, with plans to extend to Chinese soon and voice cloning synthesis model for Russian.
+- **Multilingual Support:** Currently supports English, Chinese for voice cloning (from any language audio) and English, Russian synthesis, with plans to extend voice cloning synthesis model for Russian.
 - **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
 - **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
 - **Deepfake Animation:**
@@ -250,6 +250,7 @@ Update 1.5.0
 - [ ] Add module deepfake emotions
 - [ ] Update guid in application 
 - [x] Add AI retouch frames in video by user tool
+- [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
 
 :TODO check downloads tts models on windows, maybe is bug because of symbols
 

@@ -31,3 +31,4 @@ torch-optimizer
 realesrgan
 onnxruntime
 insightface
+pypinyin

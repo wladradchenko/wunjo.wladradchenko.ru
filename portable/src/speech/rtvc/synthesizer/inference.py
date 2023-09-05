@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.join(root_path, "backend"))
 from speech.rtvc.synthesizer import audio
 from speech.rtvc.synthesizer.hparams import hparams
 from speech.rtvc.synthesizer.models.tacotron import Tacotron
-from speech.rtvc.synthesizer.utils.symbols import symbols
 from speech.rtvc.encoder.audio import preprocess_wav
 from speech.tps.tps import Handler, ssml
 from speech.tts.utils.async_utils import BackgroundGenerator
@@ -57,7 +56,7 @@ class Synthesizer:
         """
         return self._model is not None
 
-    def load(self):
+    def load(self, symbols):
         """
         Instantiates and loads the model given the weights file that was passed in the constructor.
         """
@@ -83,6 +82,9 @@ class Synthesizer:
             print("Loaded synthesizer \"%s\" trained to step %d" % (self.model_fpath, self._model.state_dict()["step"]))
 
     def _sequence_audio_gen(self, sequence_generator, embeddings):
+        # Mappings from symbol to numeric ID and vice versa:
+        _symbol_to_id = {s: i for i, s in enumerate(self.text_handler.voice_clone_symbols)}
+
         spectrograms = []
         for unit in sequence_generator:
             if isinstance(unit, ssml.Pause):
@@ -92,7 +94,7 @@ class Synthesizer:
                 phrases = self.split_into_phrases(unit_value)
                 for phrase in phrases:
                     print(phrase)
-                    phrase = [text_to_sequence(phrase.replace("~", ""), hparams.tts_cleaner_names)]
+                    phrase = [text_to_sequence(phrase.replace("~", ""), hparams.tts_cleaner_names, _symbol_to_id)]
                     batched_inputs = [phrase[i:i + hparams.synthesis_batch_size] for i in range(0, len(phrase), hparams.synthesis_batch_size)]
                     batched_embeds = [embeddings[i:i + hparams.synthesis_batch_size] for i in range(0, len(embeddings), hparams.synthesis_batch_size)]
                     for i, batch in enumerate(batched_inputs, 1):
@@ -150,10 +152,13 @@ class Synthesizer:
         print(self.text_handler.language)
         # Load the model on the first request.
         if not self.is_loaded():
-            self.load()
+            self.load(self.text_handler.voice_clone_symbols)
 
         # Add auto transcript a text
         text = text.lower()
+        # if self.text_handler.language == "chinese":
+        #     text = " ".join(lazy_pinyin(text, style=Style.TONE3, neutral_tone_with_five=True))
+
         cleaners = ("light_punctuation_cleaners",)
 
         if text.startswith("<speak>") and text.endswith("</speak>"):
@@ -244,7 +249,7 @@ class Synthesizer:
 
 
     @staticmethod
-    def split_into_phrases(text: str, max_words: int = 20, min_words: int = 10) -> list:
+    def split_into_phrases(text: str, max_words: int = 15, min_words: int = 10) -> list:
         """
         Split big phrases and phrase not more 20 words
         :param text: text

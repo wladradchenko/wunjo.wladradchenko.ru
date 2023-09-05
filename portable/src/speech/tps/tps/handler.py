@@ -32,6 +32,7 @@ class Handler(md.Processor):
         super().__init__(name=name)
         self.charset = charset
         self.symbols = smb.symbols_map[charset]
+        self.voice_clone_symbols = smb.voice_clone_symbols_map[charset]
         self.language = smb.language_map[charset]
 
         # Mappings from symbol to numeric ID and vice versa:
@@ -392,6 +393,7 @@ class Handler(md.Processor):
     def _validate_modules(self, use_cleaner = True):
         omograph_exists = False
         emphasizer_exists = False
+        polyphonic_exists = False
         number_exists = False
         lower_exists = False
         cleaner_exists = False
@@ -405,6 +407,8 @@ class Handler(md.Processor):
                 number_exists = True
             elif isinstance(module, md.Omograph):
                 omograph_exists = True
+            elif isinstance(module, md.ZhPolyphonic):
+                polyphonic_exists = True
             elif isinstance(module, md.Cleaner):
                 cleaner_exists = True
             elif isinstance(module, md.Emphasizer):
@@ -413,6 +417,8 @@ class Handler(md.Processor):
                 phonetizer_type = type(module)
 
                 assert i + 1 == len(self.modules), "Phonetizer module must be the last one"
+                if not polyphonic_exists:
+                    print("Polyphonic is not used")
                 if not omograph_exists:
                     print("Warning... There is no omographs in modules")
                 if not emphasizer_exists:
@@ -488,6 +494,8 @@ def _get_default_modules(charset, data_dir=None, verify_checksum=True, silent=Fa
         ])
     elif charset == _types.Charset.en:
         pass
+    elif charset == _types.Charset.zh:
+        modules.extend([md.ZhPolyphonic()])
     elif charset == _types.Charset.en_cmu:
         raise NotImplementedError
     else:

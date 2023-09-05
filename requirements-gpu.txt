@@ -32,3 +32,4 @@ realesrgan
 onnxruntime
 onnxruntime-gpu
 insightface
+pypinyin

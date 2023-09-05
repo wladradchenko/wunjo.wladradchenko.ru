@@ -61,7 +61,8 @@ requires = [
     "realesrgan",
     "onnxruntime",
     "onnxruntime-gpu",
-    "insightface"
+    "insightface",
+    "pypinyin"
 ]
 test_requires = [
 ]

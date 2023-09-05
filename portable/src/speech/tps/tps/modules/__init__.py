@@ -10,3 +10,5 @@ from tps.modules.omographs.rule_based.independent import Omograph
 from tps.modules.omographs.rule_based.russian import RuOmograph
 
 from tps.modules.phonetizer.rule_based.independent import Phonetizer
+
+from tps.modules.polyphonic.rule_based.chinese import ZhPolyphonic

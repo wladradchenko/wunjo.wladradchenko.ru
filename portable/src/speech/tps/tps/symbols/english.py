@@ -16,6 +16,13 @@ cmu_phonemes = {
   'UW0', 'UW1', 'UW2', 'V', 'W', 'Y', 'Z', 'ZH'
 }
 
+# Voice clone synthesis symbols
+_characters_en = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!\'\"(),-.:;? "
+_pad = "_"
+_eos = "~"
+
+EN_VOICE_CLONE_SYMBOLS = [_pad, _eos] + list(_characters_en) #+ _arpabet
+
 # Prepend "@" to ARPAbet symbols to ensure uniqueness (some are the same as uppercase letters):
 PHONEMES_EN_CMU = ['@' + s for s in cmu_phonemes]
 
