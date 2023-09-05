@@ -35,7 +35,7 @@ Harness the power of neural networks with Wunjo AI for an array of applicationsâ
 
 - **Speech Synthesis:** Effortlessly convert text into human-like speech.
 - **Voice Cloning:** Clone voices from provided audio files or directly record your voice within the app for real-time cloning.
-- **Multilingual Support:** Currently supports Russian and English for voice cloning and synthesis, with plans to extend to Chinese soon.
+- **Multilingual Support:** Currently supports English for voice cloning (from any language audio) and English, Russian synthesis, with plans to extend to Chinese soon and voice cloning synthesis model for Russian.
 - **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
 - **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
 - **Deepfake Animation:**
@@ -237,7 +237,7 @@ Update 1.4.0
 - [x] Integrate links to train video and wiki page
 
 Update 1.5.0
-- [x] Add voice translation with encoders english, russian
+- [x] Add voice translation with encoders, vocoder english, russian and synthesis english model
 - [x] Add synthesys audio from text with voice clone from another audio
 - [x] Create hub for voice cloning languages models (or download all default models)
 - [x] Add face swap module for deepfake on video/photo from one photo face
@@ -305,5 +305,6 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 * Face Utils - https://github.com/xinntao/facexlib
 * Face Enhancement - https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
+* Real-Time Voice Cloning - https://github.com/CorentinJ/Real-Time-Voice-Cloning
 
 <p align="right">(<a href="#top">to top</a>)</p>
