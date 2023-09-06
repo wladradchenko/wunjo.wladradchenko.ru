@@ -711,7 +711,8 @@ if not app.config['DEBUG']:
 
         replace_phrases = [
             "* Debug mode: off", "* Serving Flask app 'wunjo.app'", "WARNING:waitress.queue:Task queue depth is 1",
-            "WARNING:waitress.queue:Task queue depth is 2", "WARNING:waitress.queue:Task queue depth is 3"
+            "WARNING:waitress.queue:Task queue depth is 2", "WARNING:waitress.queue:Task queue depth is 3",
+            "WARNING:waitress.queue:Task queue depth is 4"
         ]
         for replace_phrase in replace_phrases:
             captured_stdout = captured_stdout.replace(replace_phrase, "")
