@@ -42,7 +42,7 @@ Harness the power of neural networks with Wunjo AI for an array of applicationsâ
   - Animate faces using just one photo combined with audio.
   - Achieve precise lip syncing with your audio using our deepfake lips feature.
   - Effortlessly swap faces in videos, GIFs, and photos using just a single photograph with our "Face Swap" feature.
-  - Change the emotions of a person in the video, with the help of a text description.
+  - Experimental feature. Change the emotions of a person in the video, with the help of a text description.
 - **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes.
 
 **Applications:**
@@ -247,8 +247,8 @@ Update 1.5.0
 - [x] Add check debug module with python console
 - [x] Change real time translation on native translate
 - [x] Improve message about GPU unavailable for user
-- [ ] Add module deepfake emotions
-- [ ] Update guid in application 
+- [x] Add module deepfake emotions as experimental research
+- [x] Update guid in application 
 - [x] Add AI retouch frames in video by user tool
 - [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
 
@@ -258,7 +258,6 @@ Update 1.6.0
 - [ ] Add create deepfake video by text prompts
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
-- [ ] Train voices for Chinese and add logical to work with chinese grammatical
 - [ ] Train Russian synthesis model voice clone 
 
 <!-- VIDEO -->

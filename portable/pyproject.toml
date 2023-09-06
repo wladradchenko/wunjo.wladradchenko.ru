@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.4.0"
+version = "1.5.1"
 url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
@@ -10,9 +10,17 @@ author_email = "i@wladradchenko.ru"
 
 [tool.briefcase.app.wunjo]
 formal_name = "Wunjo Wladradchenko AI"
-description = "Text to speech by neural networks"
-long_description = """Application for speech synthesis from text and speech recognition to text. One of the unique features of this application is the ability to create multi-dialogues with multiple voices, and the number of characters used is not limited, unlike similar web applications. You can also speak text in real time and the app will recognize it from the audio. This feature is great for dictating text instead of manually typing it.
-All in all, this neural network desktop application is a handy and powerful tool for anyone who needs speech synthesis and voice-to-text recognition. Best of all, the app is free, installs locally, and is easy to use! And you can use it in the voice acting of commercials, books, games, etc.
+description = "Neural networks to content creation"
+long_description = """
+From voiceovers to game character voicing, from animate face or lips to entertaining deepfakes by face swap, Wunjo AI empowers creativity, securely and freely on your device.
+Explore the capabilities of neural networks:
+- Animating faces, lips, emotions and craft deepfakes by face swap using one photo.
+- Enhance videos with AI retouch tool.
+- Convert text into lifelike speech.
+- Clone voices in real-time or from audio.
+- Multi-language support for voice cloning and synthesis.
+- Speech-to-text transcription.
+- Create dynamic dialogues with distinct voices.
 """
 icon = "src/wunjo/static/basic/icon/gray"
 sources = [
