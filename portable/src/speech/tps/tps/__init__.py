@@ -8,8 +8,8 @@ tokenizers_punkt_path = os.path.join(RTVC_VOICE_FOLDER, "nltk_data", "tokenizers
 punkt_url = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt.zip"
 
 try:
-    if not os.path.exists(os.path.dirname(tokenizers_punkt_path)):
-        os.makedirs(os.path.dirname(tokenizers_punkt_path))
+    if not os.path.exists(tokenizers_punkt_path):
+        os.makedirs(tokenizers_punkt_path)
     if not os.path.exists(os.path.join(tokenizers_punkt_path, "punkt")):
         download_model(os.path.join(tokenizers_punkt_path, "punkt.zip"), punkt_url)
         unzip(os.path.join(tokenizers_punkt_path, 'punkt.zip'), tokenizers_punkt_path)
