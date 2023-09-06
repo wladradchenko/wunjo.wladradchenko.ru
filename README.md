@@ -105,13 +105,6 @@ briefcase package
 
 Read more in the documentation [BeeWare](https://beeware.org/project/projects/tools/briefcase)
 
-<!-- EXAMPLE -->
-## Extensions
-
-The functionality of the program can be supplemented by custom extensions. Extension example and format at [link](https://github.com/wladradchenko/advanced.wunjo.wladradchenko.ru/README.md)
-
-Available list of extensions at [link](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/extensions.json).
-
 <!-- DOWNLOAD -->
 ## Install packets
 
@@ -182,6 +175,12 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- EXAMPLE -->
 ## Example
 
+### Speech synthesis and voice cloning
+
+- [Russian synthesized voice from text](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [English voice cloned from previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [Chinese voice cloned from a previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/chinese-voice-clone?si=43d437bbdf4d4d9a80c7a4a0031189c0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+
 ### Face animation from image src
 
 <div align="center">
@@ -192,9 +191,9 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
     <th>Fix face + Enhancer</th>
   </tr>
   <tr align="center">
-    <td><img src="example/samurai_original.gif" alt="original" width="228" height="360"></td>
-    <td><img src="example/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
-    <td><img  src="example/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
+    <td><img src="example/animation_face/samurai_original.gif" alt="original" width="228" height="360"></td>
+    <td><img src="example/animation_face/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
+    <td><img  src="example/animation_face/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
   </tr>
 </table>
 </div>
@@ -209,9 +208,85 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
     <th>Mouth animation + Enhancer</th>
   </tr>
   <tr align="center">
-    <td><img src="example/pirate_original.gif" alt="original" width="228" height="228"></td>
-    <td><img src="example/pirate_mouth.gif" alt="move_enhancer" width="228" height="228"></td>
-    <td><img  src="example/pirate_mouth_enhancer.gif" alt="static_enhancer" width="228" height="228"></td>
+    <td><img src="example/animate_mouth/pirate_original.gif" alt="original" width="228" height="228"></td>
+    <td><img src="example/animate_mouth/pirate_mouth.gif" alt="move_enhancer" width="228" height="228"></td>
+    <td><img  src="example/animate_mouth/pirate_mouth_enhancer.gif" alt="static_enhancer" width="228" height="228"></td>
+  </tr>
+</table>
+</div>
+
+### Face swap by one photo
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Original video</th>
+    <th>Original photo</th>
+    <th>Face swap + Background enhancer</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/face_swap/face_swap_original.gif" alt="original" width="360" height="203"></td>
+    <td><img src="example/face_swap/face_swap_original.png" alt="original" width="203" height="203"></td>
+    <td><img  src="example/face_swap/face_swap_smith.gif" alt="static_enhancer" width="360" height="203"></td>
+  </tr>
+</table>
+</div>
+
+### Remove object by Retouch AI
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Original video</th>
+    <th>Remove object</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/retouch/remove_object_original.gif" alt="original" width="480" height="270"></td>
+    <td><img src="example/retouch/remove_object_retouch.gif" alt="original" width="480" height="270"></td>
+  </tr>
+</table>
+</div>
+
+### Retouch AI to improve quality of deepfake
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Defective lines on the chins after animation lip</th>
+    <th>Retouch lines on the chins + Face swap</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/retouch/speech_wav2lip.gif" alt="original" width="480" height="270"></td>
+    <td><img src="example/retouch/speech_result.gif" alt="original" width="480" height="270"></td>
+  </tr>
+</table>
+</div>
+
+### Emotion deepfake [Experimental]
+
+This is an experimental feature that is under development, but you can take a look at some of the work right now in Wunjo AI.
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Original</th>
+    <th>Happy</th>
+    <th>Angry</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/fake_emotion/original.gif" alt="original" width="213" height="213"></td>
+    <td><img src="example/fake_emotion/happy.gif" alt="original" width="213" height="213"></td>
+    <td><img src="example/fake_emotion/angry.gif" alt="original" width="213" height="213"></td>
+  </tr>
+  <tr>
+    <th>Fear</th>
+    <th>Sad</th>
+    <th>Disgust</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/fake_emotion/fear.gif" alt="original" width="213" height="213"></td>
+    <td><img src="example/fake_emotion/sad.gif" alt="original" width="213" height="213"></td>
+    <td><img src="example/fake_emotion/disgust.gif" alt="original" width="213" height="213"></td>
   </tr>
 </table>
 </div>
@@ -232,7 +307,7 @@ To find the appropriate code for your language, please refer to the [Google Clou
 
 <!-- UPDATE -->
 
-Update 1.5.0
+Update 1.5.1
 - [x] Add voice translation with encoders, vocoder english, russian and synthesis english model
 - [x] Add synthesys audio from text with voice clone from another audio
 - [x] Create hub for voice cloning languages models (or download all default models)
