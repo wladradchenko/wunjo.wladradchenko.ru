@@ -81,14 +81,14 @@ requires = [
     "std-nslog~=1.0.0"
 ]
 sources = [
-    "linux/insightface",
+    "../venv/lib/python3.10/site-packages/insightface",
 ]
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
 ]
 sources = [
-    "linux/insightface",
+    "../venv/lib/python3.10/site-packages/insightface",
 ]
 
 [tool.briefcase.app.wunjo.linux.system.debian]
@@ -124,7 +124,7 @@ linuxdeploy_plugins = []
 [tool.briefcase.app.wunjo.windows]
 requires = []
 sources = [
-    "windows/insightface",
+    "../venv/Lib/site-packages/insightface",
 ]
 
 # Mobile deployments

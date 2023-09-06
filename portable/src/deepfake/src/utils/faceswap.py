@@ -7,7 +7,7 @@ import torch
 from tqdm import tqdm
 import onnxruntime
 
-from insightface.model_zoo import get_model
+import insightface
 
 from concurrent.futures import ThreadPoolExecutor
 import threading
@@ -48,7 +48,7 @@ class FaceSwapDeepfake:
         else:
             provider = ["CPUExecutionProvider"]
 
-        return get_model(face_swap_model_path, providers=provider)
+        return insightface.model_zoo.get_model(face_swap_model_path, providers=provider)
 
     @staticmethod
     def get_real_crop_box(frame, face_fields):

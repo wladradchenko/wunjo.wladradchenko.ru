@@ -11,7 +11,7 @@ import onnx
 import argparse
 from onnx import numpy_helper
 
-from insightface.data import get_image
+import insightface
 
 class ArcFaceORT:
     def __init__(self, model_path, cpu=False):
@@ -157,7 +157,7 @@ class ArcFaceORT:
             if dt.itemsize<4:
                 return 'invalid weight type - (%s:%s)' % (initn.name, dt.name)
         if test_img is None:
-            test_img = get_image('Tom_Hanks_54745')
+            test_img = insightface.data.get_image('Tom_Hanks_54745')
             test_img = cv2.resize(test_img, self.image_size)
         else:
             test_img = cv2.resize(test_img, self.image_size)
