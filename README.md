@@ -231,17 +231,6 @@ To find the appropriate code for your language, please refer to the [Google Clou
 <!-- TRANSLATION -->
 
 <!-- UPDATE -->
-Update 1.4.0
-- [x] Add a deepfake to work with the source video, which synchronizes the movement of the lips under the audio
-- [x] Add selection of video segment for deepfake depending on the length of the audio track
-- [x] Add ability to change directory for .wunjo cache folder
-- [x] Add application translation into different languages
-- [x] Train and add TTS models for English speech
-- [x] Add language of model identification on interface
-- [x] Add the possibility to speak on english by russian model and speak on russian by english model
-- [x] Add the possibility of using speech synthesis on TTS user models (ru, en)
-- [x] Add the new update information
-- [x] Integrate links to train video and wiki page
 
 Update 1.5.0
 - [x] Add voice translation with encoders, vocoder english, russian and synthesis english model
