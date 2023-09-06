@@ -1,8 +1,8 @@
 from typing import Union
 
-from tps.modules import Replacer
-from tps.utils import prob2bool
-from tps.symbols import accent
+from speech.tps.tps.modules import Replacer
+from speech.tps.tps.utils import prob2bool
+from speech.tps.tps.symbols import accent
 
 """
 If you need to extend the Omograph functionality with

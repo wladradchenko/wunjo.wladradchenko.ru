@@ -13,8 +13,8 @@ sys.path.insert(0, root_path)
 import wrappers as bw
 from utils.async_utils import BackgroundGenerator
 from utils.voice_control import shift_pitch, stretch_wave
-from tps import Handler, load_dict, save_dict, ssml
-from tps.types import Charset
+from speech.tps.tps import Handler, load_dict, save_dict, ssml
+from speech.tps.tps.types import Charset
 
 sys.path.pop(0)
 

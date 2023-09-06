@@ -3,8 +3,8 @@ Based on https://github.com/bfs18/tacotron2
 """
 import torch
 
-from modules.layers import LinearNorm
-from utils.data_utils import get_ctc_symbols_length
+from tacotron2.modules.layers import LinearNorm
+from tacotron2.utils.data_utils import get_ctc_symbols_length
 
 
 class MIEsitmator(torch.nn.Module):

@@ -4,9 +4,9 @@ from typing import Union, Pattern, Iterator
 
 from nltk import sent_tokenize, word_tokenize
 
-from tps.utils import split_to_tokens
-from tps.modules.ssml.elements import Pause
-from tps.symbols import separator, shields
+from speech.tps.tps.utils import split_to_tokens
+from speech.tps.tps.modules.ssml.elements import Pause
+from speech.tps.tps.symbols import separator, shields
 
 
 char_map = OrderedDict({

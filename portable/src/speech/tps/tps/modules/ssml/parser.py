@@ -1,8 +1,8 @@
 from xml.etree import ElementTree as ET
 
-from tps.modules.ssml.elements import Text, Pause
-from tps.types import SSMLTag
-from tps.utils.cleaners import collapse_whitespace
+from speech.tps.tps.modules.ssml.elements import Text, Pause
+from speech.tps.tps.types import SSMLTag
+from speech.tps.tps.utils.cleaners import collapse_whitespace
 
 
 def parse_ssml_text(text):

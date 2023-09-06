@@ -6,11 +6,11 @@ from typing import Union, Callable, Iterator, Tuple, List
 
 from loguru import logger
 
-import tps.symbols as smb
-import tps.utils.cleaners as tps_cleaners
-import tps.modules as md
-import tps.types as _types
-from tps.modules.ssml.elements import Pause
+import speech.tps.tps.symbols as smb
+import speech.tps.tps.utils.cleaners as tps_cleaners
+import speech.tps.tps.modules as md
+import speech.tps.tps.types as _types
+from speech.tps.tps.modules.ssml.elements import Pause
 
 
 _curly = re.compile("({}.+?{})".format(*smb.shields))

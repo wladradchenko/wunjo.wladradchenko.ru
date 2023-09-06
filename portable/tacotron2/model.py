@@ -40,18 +40,17 @@ from torch import nn
 from torch.nn import functional as F
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-tps_path = os.path.join(root_path, "src", "speech", "tps")
 
-sys.path.insert(0, tps_path)
+sys.path.insert(0, root_path)
 
-from tps import get_symbols_length, prob2bool
+from speech.tps.tps import get_symbols_length, prob2bool
 
 sys.path.pop(0)
 
-from modules.layers import ConvNorm, ConvBlock, LinearNorm, activation_func
-from modules.gst import GST
-from utils.distributed import apply_gradient_allreduce
-from utils import utils as utl
+from tacotron2.modules.layers import ConvNorm, ConvBlock, LinearNorm, activation_func
+from tacotron2.modules.gst import GST
+from tacotron2.utils.distributed import apply_gradient_allreduce
+from tacotron2.utils import utils as utl
 
 class LocationLayer(nn.Module):
     def __init__(self, attention_n_filters, attention_kernel_size, attention_dim, initscheme="xavier_uniform"):

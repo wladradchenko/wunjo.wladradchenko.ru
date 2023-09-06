@@ -1,8 +1,8 @@
 from typing import Union
 
-from tps.utils import load_dict, prob2bool
-from tps.symbols import punctuation, accent
-from tps.modules import Processor
+from speech.tps.tps.utils import load_dict, prob2bool
+from speech.tps.tps.symbols import punctuation, accent
+from speech.tps.tps.modules import Processor
 
 
 class Replacer(Processor):

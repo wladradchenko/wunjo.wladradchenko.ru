@@ -1,5 +1,5 @@
 from pypinyin import lazy_pinyin, Style
-from tps import modules as md
+from speech.tps.tps import modules as md
 
 
 class ZhPolyphonic(md.Processor):

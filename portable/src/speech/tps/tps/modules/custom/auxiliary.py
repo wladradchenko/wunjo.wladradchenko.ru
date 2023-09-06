@@ -3,9 +3,9 @@ import os
 import sys
 import inflect
 
-from tps import modules as md
-from tps.symbols import valid_symbols_map
-from tps.utils import cleaners
+from speech.tps.tps import modules as md
+from speech.tps.tps.symbols import valid_symbols_map
+from speech.tps.tps.utils import cleaners
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))

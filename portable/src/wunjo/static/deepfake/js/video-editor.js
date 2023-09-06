@@ -326,7 +326,7 @@ async function processAsyncVideoMerge(data, elem) {
 
         var audioMergeSrc = elem.querySelector("#audioDeepfakeSrc");
         var audioName = "";
-        if (audioDeepfakeSrc) {
+        if (audioMergeSrc) {
            var audioBlobUrl = audioMergeSrc.querySelector("source").src;
            audioName = "audio_" + Date.now();
            fetch(audioBlobUrl)
@@ -337,7 +337,7 @@ async function processAsyncVideoMerge(data, elem) {
                 });
         } else {
           var messageSetP = await translateWithGoogle("Вы не загрузили аудиофайл. Нажмите на кнопку загрузить аудиофайл.", 'auto', targetLang);
-          messageDeepfake.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+          messageVideoEditor.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
         }
 
         const videoFps = elem.querySelector("#video-fps");

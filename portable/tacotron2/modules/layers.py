@@ -32,9 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import torch
 from librosa.filters import mel as librosa_mel_fn
 
-from modules.stft import STFT
-from utils.distributions import init_weights, DistTypes
-from utils.audio_processing import dynamic_range_compression, dynamic_range_decompression
+from tacotron2.modules.stft import STFT
+from tacotron2.utils.distributions import init_weights, DistTypes
+from tacotron2.utils.audio_processing import dynamic_range_compression, dynamic_range_decompression
 
 
 act_types = torch.nn.ModuleDict([

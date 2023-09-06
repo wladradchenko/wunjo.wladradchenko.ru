@@ -4,7 +4,7 @@ import json
 import yaml
 import numpy as np
 
-from tps import symbols as smb
+from speech.tps.tps import symbols as smb
 
 
 def prob2bool(prob):

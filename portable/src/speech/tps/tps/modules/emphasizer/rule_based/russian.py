@@ -1,8 +1,8 @@
 from typing import Union
 
-from tps.modules.emphasizer.rule_based.independent import Emphasizer
-from tps.utils import prob2bool
-from tps.symbols import accent
+from speech.tps.tps.modules.emphasizer.rule_based.independent import Emphasizer
+from speech.tps.tps.utils import prob2bool
+from speech.tps.tps.symbols import accent
 
 
 class RuEmphasizer(Emphasizer):

@@ -28,7 +28,9 @@ sources = [
     "src/backend",
     "src/deepfake",
     "src/speech",
+    "src/train",
     "tacotron2",
+    "insightface",
     "aifc.py",
     "sunau.py"
 ]
@@ -67,7 +69,7 @@ requires = [
     "av",
     "torch-optimizer",
     "realesrgan",
-    "onnxruntime",
+#    "onnxruntime",
     "onnxruntime-gpu",
     "insightface",
     "pypinyin"

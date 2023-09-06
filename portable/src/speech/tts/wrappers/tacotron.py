@@ -2,9 +2,9 @@ import os
 import torch
 
 
-from hparams import create_hparams
-from model import load_model
-from modules.layers import TacotronSTFT
+from tacotron2.hparams import create_hparams
+from tacotron2.model import load_model
+from tacotron2.modules.layers import TacotronSTFT
 
 
 class HparamsNotFound(Exception):

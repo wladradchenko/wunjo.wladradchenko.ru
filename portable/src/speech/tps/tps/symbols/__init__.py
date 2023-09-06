@@ -1,9 +1,9 @@
 from string import punctuation
 
-from tps.symbols import english as en
-from tps.symbols import russian as ru
-from tps.symbols import chinese as zh
-from tps.types import Charset
+from speech.tps.tps.symbols import english as en
+from speech.tps.tps.symbols import russian as ru
+from speech.tps.tps.symbols import chinese as zh
+from speech.tps.tps.types import Charset
 
 
 dot = '.'

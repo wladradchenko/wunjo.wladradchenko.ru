@@ -4,8 +4,8 @@ Based on https://github.com/KinglittleQ/GST-Tacotron/blob/master/GST.py
 import torch
 import torch.nn as nn
 
-from modules.layers import LinearNorm, ConvBlock
-from utils.utils import OutputsGST
+from tacotron2.modules.layers import LinearNorm, ConvBlock
+from tacotron2.utils.utils import OutputsGST
 
 
 class ReferenceEncoder(torch.nn.Module):

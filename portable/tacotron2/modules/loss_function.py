@@ -36,7 +36,7 @@ from enum import Enum
 import torch
 from torch import nn
 
-from utils.utils import get_mask_from_lengths
+from tacotron2.utils.utils import get_mask_from_lengths
 
 
 class AttentionTypes(str, Enum):
