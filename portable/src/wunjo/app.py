@@ -709,13 +709,15 @@ if not app.config['DEBUG']:
         captured_stdout = console_stdout.getvalue()
         captured_stderr = console_stderr.getvalue()
 
-        replace_phrases = [
-            "* Debug mode: off", "* Serving Flask app 'wunjo.app'", "WARNING:waitress.queue:Task queue depth is 1",
-            "WARNING:waitress.queue:Task queue depth is 2", "WARNING:waitress.queue:Task queue depth is 3",
-            "WARNING:waitress.queue:Task queue depth is 4"
+        replace_phrases_stdout = ["* Debug mode: off", "* Serving Flask app 'wunjo.app'"]
+        replace_phrases_stderr = [
+            "WARNING:waitress.queue:Task queue depth is 1", "WARNING:waitress.queue:Task queue depth is 2",
+            "WARNING:waitress.queue:Task queue depth is 3", "WARNING:waitress.queue:Task queue depth is 4"
         ]
-        for replace_phrase in replace_phrases:
-            captured_stdout = captured_stdout.replace(replace_phrase, "")
+        for replace_stdout in replace_phrases_stdout:
+            captured_stdout = captured_stdout.replace(replace_stdout, "")
+        for replace_stderr in replace_phrases_stderr:
+            captured_stderr = captured_stderr.replace(replace_stderr, "")
 
         # Split the captured output into individual log lines
         logs = (captured_stdout + captured_stderr).splitlines()

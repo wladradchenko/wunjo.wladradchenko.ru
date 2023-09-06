@@ -3,12 +3,7 @@ import sys
 import numpy as np
 import torch  # import torch first to use cuda for onnx, also need to install onnxruntime-gpu for this
 
-if sys.platform == 'win32':
-    from insightfacer.windows.app.face_analysis import FaceAnalysis
-elif sys.platform == 'darwin':
-    from insightfacer.linux.app.face_analysis import FaceAnalysis
-elif sys.platform == 'linux':
-    from insightfacer.linux.app.face_analysis import FaceAnalysis
+from insightface.app.face_analysis import FaceAnalysis
 
 import onnxruntime
 

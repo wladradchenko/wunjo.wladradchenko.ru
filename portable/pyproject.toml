@@ -30,7 +30,6 @@ sources = [
     "src/speech",
     "src/train",
     "tacotron2",
-    "insightfacer",
     "aifc.py",
     "sunau.py"
 ]
@@ -81,9 +80,15 @@ test_requires = [
 requires = [
     "std-nslog~=1.0.0"
 ]
+sources = [
+    "linux/insightface",
+]
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
+]
+sources = [
+    "linux/insightface",
 ]
 
 [tool.briefcase.app.wunjo.linux.system.debian]
@@ -118,6 +123,9 @@ linuxdeploy_plugins = []
 
 [tool.briefcase.app.wunjo.windows]
 requires = []
+sources = [
+    "windows/insightface",
+]
 
 # Mobile deployments
 [tool.briefcase.app.wunjo.iOS]

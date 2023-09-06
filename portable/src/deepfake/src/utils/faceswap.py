@@ -7,12 +7,7 @@ import torch
 from tqdm import tqdm
 import onnxruntime
 
-if sys.platform == 'win32':
-    from insightfacer.windows.model_zoo import get_model
-elif sys.platform == 'darwin':
-    from insightfacer.linux.model_zoo import get_model
-elif sys.platform == 'linux':
-    from insightfacer.linux.model_zoo import get_model
+from insightface.model_zoo import get_model
 
 from concurrent.futures import ThreadPoolExecutor
 import threading
