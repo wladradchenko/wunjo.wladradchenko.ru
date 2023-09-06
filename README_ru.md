@@ -75,19 +75,20 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
-
 Необходимо перейти в директорию portable, чтобы использовать briefcase:
+
 ```
 cd portable
 ```
 
 Запустить:
+
 ```
 briefcase dev
 ```
 
-Дополнительно, вы можете создать build
+При первом запуске будет выполнен автоматический перевод на выбранный язык, это может занять некоторое время. Дополнительно, вы можете создать build
+
 ```
 briefcase build
 ```
@@ -114,9 +115,9 @@ briefcase package
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-[Ubuntu / Debian Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
+[Ubuntu / Debian Stable v1.4 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
 
-[Ubuntu / Debian Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
+[Ubuntu / Debian Beta v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.1.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -132,11 +133,13 @@ sudo dpkg -r wunjo
 
 // Удаление кеша
 rm -rf ~/.wunjo
+
+// Если переключение на графический процессор для вас недоступно, см. документацию по установке драйверов CUDA
 ```
 
-[MacOS Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
+[MacOS Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
 
-[MacOS Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
+[MacOS Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.5.1.zip)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -149,11 +152,13 @@ unzip wunjo_macos_{vesrion}.zip
 
 // Удаление кеша
 rm -rf ~/.wunjo
+
+// Сборка сделана на библиотеках с ЦПУ. Как настроить использование графического процессора и увеличить скорость обработки в несколько раз, смотрите в документации.
 ```
 
-[Windows Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+[Windows Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
 
-[Windows Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
+[Windows Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.1.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
@@ -171,6 +176,8 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 
 // Удаление кеша
 %USERPROFILE%/.wunjo
+
+// Сборка сделана на библиотеках с ЦПУ. Как настроить использование графического процессора и увеличить скорость обработки в несколько раз, смотрите в документации.
 ```
 
 <!-- EXAMPLE -->

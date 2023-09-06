@@ -75,19 +75,20 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
-
 Go to portable folder
+
 ```
 cd portable
 ```
 
 Run:
+
 ```
 briefcase dev
 ```
 
-Additionally, you can create a build:
+At the first start, automatic translation into the selected language will be performed, it may take some time. Additionally, you can create a build:
+
 ```
 briefcase build
 ```
@@ -114,9 +115,9 @@ Available list of extensions at [link](https://wladradchenko.ru/static/wunjo.wla
 <!-- DOWNLOAD -->
 ## Install packets
 
-[Ubuntu / Debian Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.3.1.deb)
+[Ubuntu / Debian Stable v1.4 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
 
-[Ubuntu / Debian Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
+[Ubuntu / Debian Beta v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.1.deb)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -132,11 +133,13 @@ sudo dpkg -r wunjo
 
 // Remove cache
 rm -rf ~/.wunjo
+
+// If switching to GPU is not available for you, see the documentation for how to install drivers CUDA
 ```
 
-[MacOS Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.3.1.zip)
+[MacOS Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
 
-[MacOS Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
+[MacOS Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.5.1.zip)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -149,11 +152,13 @@ unzip wunjo_macos_{vesrion}.zip
 
 // Remove cache
 rm -rf ~/.wunjo
+
+// How to adjust the use of the GPU and increase the processing speed by several times, see the documentation.
 ```
 
-[Windows Stable v1.3](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.3.2.msi)
+[Windows Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
 
-[Windows Beta v1.4](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
+[Windows Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.1.msi)
 
 ```
 // Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
@@ -170,6 +175,8 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 
 //Remove cache
 %USERPROFILE%/.wunjo
+
+// How to adjust the use of the GPU and increase the processing speed by several times, see the documentation.
 ```
 
 <!-- EXAMPLE -->
@@ -251,8 +258,6 @@ Update 1.5.0
 - [x] Update guid in application 
 - [x] Add AI retouch frames in video by user tool
 - [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
-
-:TODO check downloads tts models on windows, maybe is bug because of symbols
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
