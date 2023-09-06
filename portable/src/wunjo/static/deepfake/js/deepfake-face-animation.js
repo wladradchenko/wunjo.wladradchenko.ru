@@ -102,6 +102,13 @@ async function processAsyncDeepfake(data, elem) {
         var backgroundEnhancerDeepfake = elem.querySelector('#background-enhancer-deepfake');
         var videoStartValue = elem.querySelector('#video-start').value;
 
+        // Experimental parameters
+        const experimentalEmotionDeepfake = elem.querySelector("#emotion-fake");
+        var selectedEmotionDeepfake = experimentalEmotionDeepfake.options[experimentalEmotionDeepfake.selectedIndex].value;
+        if (selectedEmotionDeepfake === 'null') {
+            selectedEmotionDeepfake = null;
+        }
+
         if (mediaName && audioName && canvasRectanglesList.length > 0) {
             const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
             buttonAnimationWindows.click();
@@ -120,6 +127,7 @@ async function processAsyncDeepfake(data, elem) {
                 "background_enhancer": backgroundEnhancerDeepfake.checked,
                 "type_file": typeFile,
                 "video_start": videoStartValue,
+                "emotion_label": selectedEmotionDeepfake,
             };
 
             synthesisDeepfakeTable.innerHTML = "";
@@ -307,6 +315,24 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                             <div style="padding: 5pt;" id="background-enhancer-deepfake-message">
                               <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
                               <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
+                            </div>
+                            <hr>
+                            <div style="padding: 5pt;" id="use-experimental-functions-message">
+                                <input onclick="document.getElementById('deepfake-emotion').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="use-experimental-functions" name="experimental-functions">
+                                <label for="use-experimental-functions">Экспериментальная версия</label>
+                                <div id="deepfake-emotion" style="margin-top: 10pt; margin-bottom: 10pt;display: none;">
+                                    <label for="emotion-fake">Выберите эмоцию</label>
+                                    <select id="emotion-fake" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
+                                        <option value="null" selected>Not use</option>
+                                        <option value="0">Angry</option>
+                                        <option value="1">Disgust</option>
+                                        <option value="2">Fear</option>
+                                        <option value="3">Happy</option>
+                                        <option value="4">Neutral</option>
+                                        <option value="5">Sad</option>
+                                    </select>
+                                    <i style="font-size: 10pt;"><b>Примечание:</b> <a>Находится на стадии исследования и представлена исключительно для демонстрации.</a></i>
+                                </div>
                             </div>
                             <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">Подробнее о настройках</a>
                           </div>

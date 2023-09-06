@@ -320,7 +320,7 @@ class AnimationMouthTalk:
     @staticmethod
     def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0):
+                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, emotion_label: int = None):
         args = AnimationMouthTalk.load_video_default()
         args.checkpoint_dir = "checkpoints"
         args.result_dir = deepfake_dir
@@ -355,16 +355,25 @@ class AnimationMouthTalk:
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
-        wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
-        if not os.path.exists(wav2lip_checkpoint):
-            link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
-            download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
+        if emotion_label is None:
+            wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
+            if not os.path.exists(wav2lip_checkpoint):
+                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+                download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
+            else:
+                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+                check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
         else:
-            link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
-            check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
+            wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'emo2lip.pth')
+            if not os.path.exists(wav2lip_checkpoint):
+                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["emo2lip.pth"]
+                download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
+            else:
+                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["emo2lip.pth"]
+                check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         # If video_start is not 0 when cut video from start
-        if args.video_start != 0:  # TODO inspect type values. I think can str(0) != 0
+        if args.video_start != 0:
             args.face = cut_start_video(args.face, args.video_start)
 
         # get video frames
@@ -375,7 +384,7 @@ class AnimationMouthTalk:
         # create wav to lip
         full_frames = frames[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
-        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER)
+        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label)
         wav2lip.face_fields = args.face_fields
 
         print("Face detect starting")

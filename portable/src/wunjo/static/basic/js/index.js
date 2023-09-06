@@ -800,67 +800,235 @@ currentProcessor();
 if (document.cookie.indexOf('introCompleted=true') !== -1) {
    // Not show intro
 } else {
+    var introWelcome = introJs();
+    introWelcome.setOptions({
+        steps: [
+            {
+                element: '#a-link-open-tutorial',
+                position: 'right',
+                title: 'Welcome to Wunjo AI!',
+                intro: `
+                <div style="width: 300pt;padding: 5pt;">
+                    <p style="margin-bottom: 10pt;"><b>Explore the capabilities of neural networks:</b></p>
+                    <ul style="display: flex;flex-direction: column;margin-bottom: 10pt;">
+                       <text>🎥 Animating faces, lips, emotions and craft deepfakes by face swap using one photo.</text>
+                        <text>✨ Enhance videos with AI retouch tool.</text>
+                        <text>🗣️ Convert text into lifelike speech.</text>
+                        <text>🎙️ Clone voices in real-time or from audio.</text>
+                        <text>🌍 Multi-language support for voice cloning and synthesis.</text>
+                        <text>📝 Speech-to-text transcription.</text>
+                        <text>🎭 Create dynamic dialogues with distinct voices.</text>
+                    </ul>
+                    <p style="margin-bottom: 10pt;">From voiceovers to game character voicing, from animate face or lips to entertaining deepfakes by face swap, Wunjo AI empowers creativity, securely and freely on your device.</p>
+                    <p style="margin-bottom: 10pt;"><b>If you wanna start tour about</b> Wunjo AI, you can tap on this button with interrogative point.</p>
+                    <label style="margin-top: 15pt;"><b>Select Your Language:</b></label>
+                    <select id="languageWelcomeGuide" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
+                    </select>
+                </div>
+                `
+            }
+        ],
+          showButtons: false,
+          showStepNumbers: false,
+          nextLabel: 'Next',
+          prevLabel: 'Back',
+          doneLabel: 'Close'
+    });
+    introWelcome.start();
+    // Get the select element
+    const selectWelcomeHelp = document.getElementById("languageWelcomeGuide");
+    const languageGeneral = document.getElementById('language-dropdown');
+
+    // Populate the select element with options
+    for (const [key, value] of Object.entries(listExistingLang)) {
+      const option = document.createElement("option");
+      option.text = key;
+      option.value = value;
+      if (targetLang === value) {
+        option.selected = true;
+      }
+      option.setAttribute('name', key);
+      option.classList.add("notranslate");
+      selectWelcomeHelp.add(option);
+    }
+
+    // Add event listener for the change event
+    selectWelcomeHelp.addEventListener("change", function() {
+      const selectValueWelcomeHelp = this.value; // Get the value of the selected option
+      let selectedOption = this.options[this.selectedIndex];
+      let selectedLangName = selectedOption.getAttribute('name');
+
+      const option = Array.from(languageGeneral.options).find(opt => opt.value === selectValueWelcomeHelp);
+      if (option) {
+            languageGeneral.selectedIndex = option.index;
+      }
+
+      translateNewUserLang(selectValueWelcomeHelp);
+      updateLangSetting(selectValueWelcomeHelp, selectedLangName);
+    });
+}
+document.cookie = "introCompleted=true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+
+async function supportUser() {
+    // Main
+    const btnNext = await translateWithGoogle("Next", 'auto', targetLang);
+    const btnBack = await translateWithGoogle("Back", 'auto', targetLang);
+    const btnClose = await translateWithGoogle("Close", 'auto', targetLang);
+    // Page 1
+    const welcomeSupportOne = await translateWithGoogle("Welcome to the Wunjo AI guide.", 'auto', targetLang);
+    const welcomeSupportTwo = await translateWithGoogle("For detailed tutorials, check out on", 'auto', targetLang);
+    const welcomeSupportThree = await translateWithGoogle("For documentation, visit", 'auto', targetLang);
+    const welcomeSupportFour = await translateWithGoogle("If you encounter any issues or have suggestions, please report them on", 'auto', targetLang);
+    // Page 2
+    const translateApplicationBtn = await translateWithGoogle("Application language selection.", 'auto', targetLang);
+    // Page 3
+    const textInputSupport = await translateWithGoogle("Enter the text for speech synthesis here.", 'auto', targetLang);
+    // Page 4
+    const aButtonSettingTtsSupportOne = await translateWithGoogle("Speech Synthesis Settings.", 'auto', targetLang);
+    const aButtonSettingTtsSupportTwo = await translateWithGoogle("Clone your voice in real-time or from audio, recognize text from voice and audio, and automatically translate synthesized speech.", 'auto', targetLang);
+    // Page 5
+    const modalOverSelectSupportOne = await translateWithGoogle("Voice Sets for Different Languages.", 'auto', targetLang);
+    const modalOverSelectSupportTwo = await translateWithGoogle("Use auto-translation to employ chosen models in languages other than their default. ", 'auto', targetLang);
+    const modalOverSelectSupportThree = await translateWithGoogle("Note: Initial launch will prompt a download for voice synthesis models. This may take a while.", 'auto', targetLang);
+    // Page 6
+    const voiceCardContainerPlusSupport = await translateWithGoogle("Create a dialogue by adding a new field.", 'auto', targetLang);
+    // Page 7
+    const voiceCardContainerRemoveSupport = await translateWithGoogle("Remove unnecessary dialogue fields.", 'auto', targetLang);
+    // Page 8
+    const buttonToggleDivVoiceSupport = await translateWithGoogle("Activate this to voice the selected text field.", 'auto', targetLang);
+    // Page 9
+    const buttonEnableAllSupport = await translateWithGoogle("Activate all text fields for voicing or deselect them all at once.", 'auto', targetLang);
+    // Page 10
+    const buttonRunSynthesisSupport = await translateWithGoogle("Submit the text to the neural network for voicing. This might take a moment.", 'auto', targetLang);
+    // Page 11
+    const buttonShowVoiceWindowSupport = await translateWithGoogle("Switch between synthesized voice results and video.", 'auto', targetLang);
+    // Page 12
+    const buttonRunDeepfakeSynthesisSupportOne = await translateWithGoogle("Face & Lip Animation Creator.", 'auto', targetLang);
+    const buttonRunDeepfakeSynthesisSupportTwo = await translateWithGoogle("Upload an image, video, or GIF as input.", 'auto', targetLang);
+    const buttonRunDeepfakeSynthesisSupportThree = await translateWithGoogle("Note: The initial launch will download 5GB of data. This may take a while.", 'auto', targetLang);
+    // Page 13
+    const buttonRunFaceSwapSupportOne = await translateWithGoogle("Face Swap with One Photo.", 'auto', targetLang);
+    const buttonRunFaceSwapSupportTwo = await translateWithGoogle("For target and face source, upload an image, video, or GIF. ", 'auto', targetLang);
+    const buttonRunFaceSwapSupportThree = await translateWithGoogle("Note: The initial launch will download 1GB of data. Please be patient.", 'auto', targetLang);
+    // Page 14
+    const buttonRunRetouchOne = await translateWithGoogle("Face Retouch & Object Removal.", 'auto', targetLang);
+    const buttonRunRetouchTwo = await translateWithGoogle("Enhance deepfake results by smoothing out imperfections.", 'auto', targetLang);
+    // Page 15
+    const buttonRunEditorVideoOne = await translateWithGoogle("Video Editor.", 'auto', targetLang);
+    const buttonRunEditorVideoTwo = await translateWithGoogle("Improve face or background quality, split videos into frames, extract audio, and recompile frames back into videos.", 'auto', targetLang);
+    // Page 16
+    const aChangeProcessorSupportOne = await translateWithGoogle("Switch from CPU to GPU for faster processing.", 'auto', targetLang);
+    const aChangeProcessorSupportTwo = await translateWithGoogle("Check the documentation for drivers installation.", 'auto', targetLang);
+    const aChangeProcessorSupportThree = await translateWithGoogle("After switching to GPU, voice training on your dataset becomes available.", 'auto', targetLang);
+    // Page 17
+    const aLinkOpenfFolderSupport = await translateWithGoogle("Remove unnecessary files from this directory.", 'auto', targetLang);
+    // Page 17
+    const consoleResultSupport = await translateWithGoogle("In this panel, you can monitor the process of the program.", 'auto', targetLang);
+    // Page 18
+    const aLinkOpenAuthorSupportOne = await translateWithGoogle("Discover other projects by the author at", 'auto', targetLang);
+    const aLinkOpenAuthorSupportTwo = await translateWithGoogle("Enjoy your experience application!", 'auto', targetLang);
+
     var intro = introJs();
     intro.setOptions({
         steps: [
             {
+                element: '#a-link-open-tutorial',
+                position: "right",
+                intro: `
+                <div style="width: 200pt;">
+                    <text>${welcomeSupportOne}</text><br><br><text>${welcomeSupportTwo} </text><a class="notranslate" href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer">YouTube</a>.<br><br><text>${welcomeSupportThree} </text><a class="notranslate" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">GitHub Wiki</a>.<br><br><text>${welcomeSupportFour} </text><a class="notranslate" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">GitHub Issue</a>.
+                </div>
+                `
+            },
+            {
+                element: '#translate-application-btn',
+                intro: `${translateApplicationBtn}`,
+            },
+            {
                 element: '.text-input',
-                intro: 'Поле для ввода текста',
+                intro: `${textInputSupport}`,
             },
             {
                 element: '.a-button.setting-tts',
-                intro: 'Настройки синтеза речи. Вы можете клонировать свой голос или из аудио. Распознавать текст из голоса и аудио. Автоматически переводить синтезируемую речь на выбранный язык.',
+                intro: `<div style="width: 200pt;"><b>${aButtonSettingTtsSupportOne}</b> ${aButtonSettingTtsSupportTwo}</div>`,
             },
             {
                 element: '.model-over-select',
-                intro: 'Набор голосов для озвучивания',
+                position: "right",
+                intro: `<div style="width: 200pt;"><b>${modalOverSelectSupportOne}</b> ${modalOverSelectSupportTwo} <br><br><span style="color:red;">${modalOverSelectSupportThree}</span></div>`,
             },
             {
                 element: '.voice-card-container-plus',
-                intro: 'Вы можете создать диалог добавив новое поле',
+                intro: `${voiceCardContainerPlusSupport}`,
             },
             {
                 element: '.voice-card-container-remove',
-                intro: 'Удалите ненужные поля для диалогов',
+                intro: `${voiceCardContainerRemoveSupport}`,
             },
             {
                 element: '.button.toggle-div-voice',
-                intro: 'Если вы хотите озвучить выбранное поле текста необходимо активировать флаг',
+                intro: `${buttonToggleDivVoiceSupport}`,
             },
             {
                 element: '#button-enable-all',
-                intro: 'Вы также можете активировать все поля текста для озвучки или убрать флаг со всех полей',
+                intro: `${buttonEnableAllSupport}`,
             },
             {
                 element: '#button-run-synthesis',
-                intro: 'Отправить текст нейронной сети для озвучивания. Это займет некоторое время',
+                intro: `${buttonRunSynthesisSupport}`,
             },
             {
                 element: '#button-show-voice-window',
-                intro: 'Кнопка переключения между результатом синтеза речи и видео',
+                intro: `${buttonShowVoiceWindowSupport}`,
             },
             {
                 element: '#button-run-deepfake-synthesis',
-                intro: 'Окно создания анимации. Вы можете загрузить как входной файл изображение, видео или гиф анимацию. <br><br><text style="color:red;">Внимание! При первом запуске скачается 5 Гб данных - этой займет некоторое время.</text>',
+                intro: `<div style="width: 200pt;"><b>${buttonRunDeepfakeSynthesisSupportOne}</b> ${buttonRunDeepfakeSynthesisSupportTwo} <br><br><span style="color:red;">${buttonRunDeepfakeSynthesisSupportThree}</span></div>`,
+            },
+            {
+                element: '#button-run-face-swap',
+                position: "right",
+                intro: `<div style="width: 200pt;"><b>${buttonRunFaceSwapSupportOne}</b> ${buttonRunFaceSwapSupportTwo} <br><br><span style="color:red;">${buttonRunFaceSwapSupportThree}</span></div>`,
+            },
+            {
+                element: '#button-run-retouch',
+                position: "right",
+                intro: `<b>${buttonRunRetouchOne}</b> ${buttonRunRetouchTwo}`,
+            },
+            {
+                element: '#button-run-editor-video',
+                position: "right",
+                intro: `<b>${buttonRunEditorVideoOne}</b> ${buttonRunEditorVideoTwo}`,
+            },
+            {
+                element: '#a-change-processor',
+                position: "right",
+                intro: `<div style="width:250pt;">${aChangeProcessorSupportOne} <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> ${aChangeProcessorSupportTwo}</a><br><br>${aChangeProcessorSupportThree}</div>`,
             },
             {
                 element: '#a-link-open-folder',
-                intro: 'Ненужные файлы можно удалить из директории',
+                position: "right",
+                intro: `${aLinkOpenfFolderSupport}`,
+            },
+            {
+                element: '#console-result',
+                position: "left",
+                intro: `${consoleResultSupport}`,
             },
             {
                 element: '#a-link-open-author',
-                intro: 'Узнать о других проектах автора вы можете на сайте <a target="_blank" rel="noopener noreferrer" href="https://wladradchenko.ru">wladradchenko.ru</a>. Приятного пользования!',
+                position: "right",
+                intro: `${aLinkOpenAuthorSupportOne} <a target="_blank" rel="noopener noreferrer" href="https://wladradchenko.ru">wladradchenko.ru</a>. <b>${aLinkOpenAuthorSupportTwo}</b>`,
             }
         ],
           showButtons: true,
           showStepNumbers: false,
-          nextLabel: 'Продолжить',
-          prevLabel: 'Вернуться',
-          doneLabel: 'Закрыть'
+          nextLabel: `${btnNext}`,
+          prevLabel: `${btnBack}`,
+          doneLabel: `${btnClose}`
     });
     intro.start();
 }
-document.cookie = "introCompleted=true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 ///SUPPORT USER///
 
 ///TRANSLATE///

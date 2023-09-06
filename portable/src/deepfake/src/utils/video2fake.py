@@ -10,15 +10,16 @@ import os
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "deepfake"))
-from src.video2fake import Wav2Lip
+from src.video2fake import Wav2Lip, Emo2Lip
 from src.face3d.recognition import FaceRecognition
 sys.path.pop(0)
 
 
 class GenerateFakeVideo2Lip:
-    def __init__(self, model_path):
+    def __init__(self, model_path, emotion_label):
         self.face_recognition = FaceRecognition(model_path)
         self.face_fields = None
+        self.emotion, self.use_emotion = (self.to_emotion_categorical(emotion_label), True) if emotion_label else (None, False)
 
     def get_smoothened_boxes(self, boxes: np.ndarray, T: int = 5):
         """
@@ -224,8 +225,7 @@ class GenerateFakeVideo2Lip:
 
     def load_model(self, path, device):
         """Load model Wav2Lip"""
-        # load wav2lip
-        wav2lip = Wav2Lip()
+        wav2lip = Emo2Lip() if self.use_emotion else Wav2Lip()
         print("Load checkpoint from: {}".format(path))
         checkpoint = self._load(path, device)
         s = checkpoint["state_dict"]
@@ -283,7 +283,11 @@ class GenerateFakeVideo2Lip:
 
             # Predict lip sync
             with torch.no_grad():
-                pred = model(mel_batch, img_batch)
+                if self.use_emotion:
+                    emotion = self.emotion.unsqueeze(0).to(device).repeat(img_batch.shape[0], 1)
+                    pred = model(mel_batch, img_batch, emotion)
+                else:
+                    pred = model(mel_batch, img_batch)
 
             pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
@@ -311,3 +315,19 @@ class GenerateFakeVideo2Lip:
             out.release()
 
         return video_path
+
+    @staticmethod
+    def to_emotion_categorical(y, num_classes=6, dtype='float32'):
+        y = np.array(y, dtype='int')
+        input_shape = y.shape
+        if input_shape and input_shape[-1] == 1 and len(input_shape) > 1:
+            input_shape = tuple(input_shape[:-1])
+        y = y.ravel()
+        if not num_classes:
+            num_classes = np.max(y)
+        n = y.shape[0]
+        categorical = np.zeros((n, num_classes), dtype=dtype)
+        categorical[np.arange(n), y] = 1
+        output_shape = input_shape + (num_classes,)
+        categorical = np.reshape(categorical, output_shape)
+        return torch.tensor(categorical)

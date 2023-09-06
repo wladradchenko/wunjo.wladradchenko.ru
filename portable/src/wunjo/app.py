@@ -491,6 +491,7 @@ def synthesize_deepfake():
     background_enhancer = request_list.get("background_enhancer")
     type_file = request_list.get("type_file")
     video_start = request_list.get("video_start", 0)
+    emotion_label = request_list.get("emotion_label", None)
 
     try:
         if type_file == "img":
@@ -516,7 +517,8 @@ def synthesize_deepfake():
                 face_fields=face_fields,
                 enhancer=enhancer,
                 background_enhancer=background_enhancer,
-                video_start=float(video_start)
+                video_start=float(video_start),
+                emotion_label=emotion_label
             )
 
         torch.cuda.empty_cache()
