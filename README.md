@@ -220,13 +220,13 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <div align="center">
   <table>
   <tr>
-    <th>Original video</th>
     <th>Original photo</th>
+    <th>Original video</th>
     <th>Face swap + Background enhancer</th>
   </tr>
   <tr align="center">
-    <td><img src="example/face_swap/face_swap_original.gif" alt="original" width="360" height="203"></td>
     <td><img src="example/face_swap/face_swap_photo_original.gif" alt="original" width="203" height="203"></td>
+    <td><img src="example/face_swap/face_swap_original.gif" alt="original" width="360" height="203"></td>
     <td><img  src="example/face_swap/face_swap_smith.gif" alt="static_enhancer" width="360" height="203"></td>
   </tr>
 </table>
