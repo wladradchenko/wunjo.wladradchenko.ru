@@ -18,7 +18,6 @@ from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, 
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
-from train.utils import training_route
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
 
@@ -748,6 +747,8 @@ def common_training_route():
         # get params and send
         print("Sending parameters to route... ")
         param = request.get_json()
+
+        from train.utils import training_route
         training_route(param)
     except Exception as err:
         print(f"Error training... {err}")

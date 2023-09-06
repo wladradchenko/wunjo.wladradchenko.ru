@@ -5,9 +5,15 @@ import dlib
 import numpy as np
 import torch
 from tqdm import tqdm
-# TODO test onnxruntime-gpu on windows!!!
 import onnxruntime
-import insightface
+
+if sys.platform == 'win32':
+    from insightfacer.windows.model_zoo import get_model
+elif sys.platform == 'darwin':
+    from insightfacer.linux.model_zoo import get_model
+elif sys.platform == 'linux':
+    from insightfacer.linux.model_zoo import get_model
+
 from concurrent.futures import ThreadPoolExecutor
 import threading
 
@@ -47,7 +53,7 @@ class FaceSwapDeepfake:
         else:
             provider = ["CPUExecutionProvider"]
 
-        return insightface.model_zoo.get_model(face_swap_model_path, providers=provider)
+        return get_model(face_swap_model_path, providers=provider)
 
     @staticmethod
     def get_real_crop_box(frame, face_fields):

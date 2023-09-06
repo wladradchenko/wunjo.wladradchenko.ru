@@ -1,8 +1,15 @@
 import os
+import sys
 import numpy as np
 import torch  # import torch first to use cuda for onnx, also need to install onnxruntime-gpu for this
-# TODO test onnxruntime-gpu on windows!!!
-import insightface
+
+if sys.platform == 'win32':
+    from insightfacer.windows.app.face_analysis import FaceAnalysis
+elif sys.platform == 'darwin':
+    from insightfacer.linux.app.face_analysis import FaceAnalysis
+elif sys.platform == 'linux':
+    from insightfacer.linux.app.face_analysis import FaceAnalysis
+
 import onnxruntime
 
 
@@ -15,7 +22,7 @@ class FaceRecognition:
             provider = ["CUDAExecutionProvider"] if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else ["CPUExecutionProvider"]
         else:
             provider = ["CPUExecutionProvider"]
-        self.face_analyser = insightface.app.FaceAnalysis(name='buffalo_l', root=model_path, providers=provider)
+        self.face_analyser = FaceAnalysis(name='buffalo_l', root=model_path, providers=provider)
         self.face_analyser.prepare(ctx_id=0)
 
         self.window = []

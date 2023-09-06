@@ -30,5 +30,5 @@ av
 torch-optimizer
 realesrgan
 onnxruntime
-insightface
+insightface==0.7.3
 pypinyin

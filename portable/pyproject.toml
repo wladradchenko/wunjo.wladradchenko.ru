@@ -30,7 +30,7 @@ sources = [
     "src/speech",
     "src/train",
     "tacotron2",
-    "insightface",
+    "insightfacer",
     "aifc.py",
     "sunau.py"
 ]
@@ -71,7 +71,7 @@ requires = [
     "realesrgan",
 #    "onnxruntime",
     "onnxruntime-gpu",
-    "insightface",
+    "insightface==0.7.3",
     "pypinyin"
 ]
 test_requires = [

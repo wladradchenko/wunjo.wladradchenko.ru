@@ -10,7 +10,13 @@ import onnxruntime
 import onnx
 import argparse
 from onnx import numpy_helper
-from insightface.data import get_image
+
+if sys.platform == 'win32':
+    from insightfacer.windows.data import get_image
+elif sys.platform == 'darwin':
+    from insightfacer.linux.data import get_image
+elif sys.platform == 'linux':
+    from insightfacer.linux.data import get_image
 
 class ArcFaceORT:
     def __init__(self, model_path, cpu=False):

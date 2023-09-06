@@ -31,5 +31,5 @@ torch-optimizer
 realesrgan
 onnxruntime
 onnxruntime-gpu
-insightface
+insightface==0.7.3
 pypinyin
