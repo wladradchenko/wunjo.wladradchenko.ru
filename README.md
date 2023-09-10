@@ -332,9 +332,18 @@ Update 1.6.0
 <!-- VIDEO -->
 ## Video
 
-| What is new?                                                                                                        | How install on Windows?                                                                                             |
-|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [![Watch the video](https://img.youtube.com/vi/vdvf9NxrUC8/hqdefault.jpg)](https://youtu.be/vdvf9NxrUC8) | [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U) |
+<div align="center">
+  <table>
+  <tr>
+    <th>What is new?</th>
+    <th>How install on Windows?</th>
+  </tr>
+  <tr align="center">
+    <td><a href="https://youtu.be/vdvf9NxrUC8"><img src="example/thumbnail/what_is_new.gif" alt="video" width="400"></a></td>
+    <td><a href="https://youtu.be/2qIpJYhOL2U"><img src="example/thumbnail/how_install.gif" alt="video" width="400"></a></td>
+  </tr>
+</table>
+</div>
 
 <!-- DONAT -->
 ## Support the Project
@@ -348,8 +357,8 @@ You can support the author of the project in the development of his creative ide
     <th>Buy a slice of pizza in RUB</th>
   </tr>
   <tr align="center">
-    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/bc6eefa2-705f-4307-89fd-85d96ec29917" alt="pizza" width="250" height="250"></td>
-    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="coffee" width="250" height="250"></td>
+    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/bc6eefa2-705f-4307-89fd-85d96ec29917" alt="pizza" width="250"></td>
+    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="coffee" width="250"></td>
   </tr>
 </table>
 </div>
