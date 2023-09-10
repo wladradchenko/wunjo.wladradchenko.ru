@@ -339,13 +339,13 @@ Update 1.6.0
 <!-- DONAT -->
 ## Support the Project
 
-You can support the author of the project in the development of his creative ideas, or just treat him to [a slice of pizza](https://www.buymeacoffee.com/wladradchenko) in USD or [a cup of coffee](https://wladradchenko.ru/donat) in RUB. There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
+You can support the author of the project in the development of his creative ideas, or just treat him to [a cup of coffee](https://www.buymeacoffee.com/wladradchenko) in USD or [a slice of pizza](https://wladradchenko.ru/donat) in RUB. There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
 
 <div align="center">
   <table>
   <tr>
-    <th>Buy a slice of pizza in USD</th>
-    <th>Buy a cup of coffee in RUB</th>
+    <th>Buy a cup of coffee in USD</th>
+    <th>Buy a slice of pizza in RUB</th>
   </tr>
   <tr align="center">
     <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/bc6eefa2-705f-4307-89fd-85d96ec29917" alt="pizza" width="250" height="250"></td>
