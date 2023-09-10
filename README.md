@@ -339,8 +339,8 @@ Update 1.6.0
     <th>How install on Windows?</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/vdvf9NxrUC8"><img src="example/thumbnail/what_is_new.gif" alt="video" width="400"></a></td>
-    <td><a href="https://youtu.be/2qIpJYhOL2U"><img src="example/thumbnail/how_install.gif" alt="video" width="400"></a></td>
+    <td><a href="https://youtu.be/vdvf9NxrUC8"><img src="example/thumbnail/what_is_new.gif" alt="video" width="350"></a></td>
+    <td><a href="https://youtu.be/2qIpJYhOL2U"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
   </tr>
 </table>
 </div>
