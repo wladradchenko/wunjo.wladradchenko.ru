@@ -332,13 +332,9 @@ Update 1.6.0
 <!-- VIDEO -->
 ## Video
 
-### What is new
-
-[![Watch the video](https://img.youtube.com/vi/vdvf9NxrUC8/hqdefault.jpg)](https://youtu.be/vdvf9NxrUC8)
-
-### How install
-
-[![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
+| What is new?                                                                                                        | How install on Windows?                                                                                             |
+|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| [![Watch the video](https://img.youtube.com/vi/vdvf9NxrUC8/hqdefault.jpg)](https://youtu.be/vdvf9NxrUC8) | [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U) |
 
 <!-- DONAT -->
 ## Support the Project

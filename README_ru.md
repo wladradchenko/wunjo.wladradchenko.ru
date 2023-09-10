@@ -336,13 +336,9 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 <!-- VIDEO -->
 ## Видео
 
-### Что нового
-
-[![Watch the video](https://img.youtube.com/vi/vdvf9NxrUC8/hqdefault.jpg)](https://youtu.be/vdvf9NxrUC8)
-
-### Как установить
-
-[![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U)
+| Что нового?                                                                                              | Как установить на Windows?                                                                                           |
+|----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| [![Watch the video](https://img.youtube.com/vi/vdvf9NxrUC8/hqdefault.jpg)](https://youtu.be/vdvf9NxrUC8) | [![Install tutorial on Windows](https://img.youtube.com/vi/2qIpJYhOL2U/hqdefault.jpg)](https://youtu.be/2qIpJYhOL2U) |
 
 <!-- DONAT -->
 ## Поддержка
