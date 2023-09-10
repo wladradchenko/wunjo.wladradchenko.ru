@@ -345,7 +345,18 @@ Update 1.6.0
 
 You can support the author of the project in the development of his creative ideas, or just treat him to [a slice of pizza](https://www.buymeacoffee.com/wladradchenko) in USD or [a cup of coffee](https://wladradchenko.ru/donat) in RUB. There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
 
-<img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="donat" width="250" height="250">
+<div align="center">
+  <table>
+  <tr>
+    <th>Buy a slice of pizza in USD</th>
+    <th>Buy a cup of coffee in RUB</th>
+  </tr>
+  <tr align="center">
+    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/bc6eefa2-705f-4307-89fd-85d96ec29917" alt="pizza" width="250" height="250"></td>
+    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="coffee" width="250" height="250"></td>
+  </tr>
+</table>
+</div>
 
 <!-- CONTACT -->
 ## Contact
