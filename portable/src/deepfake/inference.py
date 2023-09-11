@@ -406,7 +406,11 @@ class AnimationMouthTalk:
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
             wav2lip_result_video = enhanced_path
 
-        wav2lip_result_video = encrypted(wav2lip_result_video, args.device, save_dir)  # encrypted
+        try:
+            file_name = encrypted(wav2lip_result_video, save_dir)  # encrypted
+            wav2lip_result_video = os.path.join(save_dir, file_name)
+        except Exception as err:
+            print(f"Error with encrypted {err}")
         mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
 
         for f in os.listdir(save_dir):
@@ -526,7 +530,11 @@ class FaceSwap:
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
 
-            saved_file = encrypted(saved_file, args.device, save_dir)  # encrypted
+            try:
+                file_name = encrypted(saved_file, save_dir)  # encrypted
+                saved_file = os.path.join(save_dir, file_name)
+            except Exception as err:
+                print(f"Error with encrypted {err}")
             # get audio from video target
             audio_file_name = extract_audio_from_video(args.target, save_dir)
             # combine audio and video
@@ -543,6 +551,11 @@ class FaceSwap:
                 file_name = "swap_result_enhanced.png"
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.imsave(saved_file, enhanced_image[0])
+
+            try:
+                file_name = encrypted(saved_file, save_dir)  # encrypted
+            except Exception as err:
+                print(f"Error with encrypted {err}")
 
         for f in os.listdir(save_dir):
             if file_name == f:

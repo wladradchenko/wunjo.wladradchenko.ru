@@ -26,7 +26,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
