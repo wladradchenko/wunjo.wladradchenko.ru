@@ -12,7 +12,7 @@ sys.path.insert(0, deepfake_root_path)
 
 """Video and image"""
 from src.utils.videoio import (
-    save_video_with_audio, cut_start_video, get_frames, get_first_frame,
+    save_video_with_audio, cut_start_video, get_frames, get_first_frame, encrypted,
     check_media_type, extract_audio_from_video, save_video_from_frames, video_to_frames
 )
 from src.utils.imageio import save_image_cv2, read_image_cv2
@@ -406,6 +406,7 @@ class AnimationMouthTalk:
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
             wav2lip_result_video = enhanced_path
 
+        wav2lip_result_video = encrypted(wav2lip_result_video, save_dir)  # encrypted
         mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
 
         for f in os.listdir(save_dir):
@@ -525,6 +526,7 @@ class FaceSwap:
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
 
+            saved_file = encrypted(saved_file, save_dir)  # encrypted
             # get audio from video target
             audio_file_name = extract_audio_from_video(args.target, save_dir)
             # combine audio and video

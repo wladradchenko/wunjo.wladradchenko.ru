@@ -4,6 +4,7 @@ import uuid
 import os
 
 import cv2
+from tqdm import tqdm
 import numpy as np
 
 
@@ -156,3 +157,102 @@ def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
     print(f"Number of frames available for inference: {len(full_frames)}")
 
     return full_frames, fps
+
+
+def encrypted(video_path: str, save_dir: str, fn: int = 0):
+    # Video objects for src
+    src = cv2.VideoCapture(video_path)
+    src_w = int(src.get(3))
+    src_h = int(src.get(4))
+    src_fps = src.get(cv2.CAP_PROP_FPS)
+    src_frame_cnt = src.get(cv2.CAP_PROP_FRAME_COUNT)
+    device = os.environ['WUNJO_TORCH_DEVICE']
+
+    # Load a dummy image to get the shape attributes
+    sec_frame_original = np.zeros((src_h, src_w, 3), dtype=np.uint8)
+
+    if not os.path.exists(os.path.join(save_dir, 'enc')):
+        os.mkdir(os.path.join(save_dir, 'enc'))
+
+    # Create a progress bar
+    pbar = tqdm(total=int(src_frame_cnt), unit='frames')
+
+    while True:
+        ret, src_frame = src.read()
+
+        if ret == False:
+            break
+
+        # Create a copy of the dummy frame
+        sec_frame = sec_frame_original.copy()
+
+        # Put the text "FAKE" onto the dummy frame
+        font_scale = max(src_w, src_h) // 400
+        font_thickness = int(font_scale // 0.5)
+
+        # Define text position
+        text_x = src_w // 4
+        text_y = src_h // 2
+
+        # Get the region where the text will be placed
+        text_size = cv2.getTextSize(device, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)[0]
+        region = src_frame[text_y - text_size[1]:text_y, text_x:text_x + text_size[0]]
+
+        # Compute the mean color of the region
+        mean_color = cv2.mean(region)[:3]
+
+        # Compute the contrasting color
+        contrast_color = tuple([255 - int(x) for x in mean_color])
+
+        # Adjusting the coordinates to correctly position the text
+        height, width = src_frame.shape[:2]
+
+        # Get the size of the text
+        (text_width, text_height), baseline = cv2.getTextSize(device, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
+
+        # Center positions
+        center_x = width // 2
+        center_y = height // 2
+
+        # Position the text at different locations keeping it fully inside the bounds of the image
+        cv2.putText(sec_frame, device, (0, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (0, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
+                    contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (center_x - text_width // 2, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
+                    contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (center_x - text_width // 2, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX,
+                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (width - text_width, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
+                    contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (0, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (width - text_width, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
+                    contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (center_x - text_width // 2, height - baseline), cv2.FONT_HERSHEY_SIMPLEX,
+                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(sec_frame, device, (width - text_width, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX,
+                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
+
+        # Encryption for LSB 3 bits
+        encrypted_img = (src_frame & 0b11111000) | (sec_frame >> 5 & 0b00000111)
+
+        fn = fn + 1
+        cv2.imwrite(os.path.join(save_dir, "enc", "{}.png".format(fn)), encrypted_img)
+
+        pbar.update(1)
+
+    pbar.close()
+    src.release()
+
+    # Delete encrypted video if already exists
+    file_name = str(uuid.uuid4())+'.mp4'
+    file_path = os.path.join(save_dir, file_name)
+
+    # Save the video using ffmpeg as a lossless video; frame rate is kept the same
+    cmd = f"ffmpeg -framerate {src_fps} -i {os.path.join(save_dir, 'enc', '%d.png')} -c:v copy {file_path}"
+    os.system(cmd)
+
+    # Delete the temporary image sequence folder
+    os.system(f"rm -r {os.path.join(save_dir, 'enc')}")
+    return file_path
