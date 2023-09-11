@@ -587,6 +587,9 @@ class Retouch:
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
         checkpoint_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
+        os.environ['TORCH_HOME'] = checkpoint_folder
+        if not os.path.exists(checkpoint_folder):
+            os.makedirs(checkpoint_folder)
 
         if model_type == "retouch_object":
             model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")

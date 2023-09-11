@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import zipfile
 import requests
@@ -32,7 +33,7 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
             response = requests.get(download_link, stream=True)
             total_size = int(response.headers.get('content-length', 0))
             response.raise_for_status()
-            progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True)
+            progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True, file=sys.stdout)
             with open(download_path, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     if chunk:
