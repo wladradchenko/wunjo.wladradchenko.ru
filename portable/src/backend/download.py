@@ -27,14 +27,9 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
 
 
 def download_model(download_path: str, download_link: str, retry_count: int = 2, retry_delay: int = 5) -> bool:
-    headers = {
-        'Accept': '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
-        'User-Agent': 'wunjo'
-    }
-
     for i in range(retry_count + 1):
         try:
-            response = requests.get(download_link, headers=headers, stream=True)
+            response = requests.get(download_link, stream=True)
             total_size = int(response.headers.get('content-length', 0))
             response.raise_for_status()
             progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True)

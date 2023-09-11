@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.5.1"
+version = "1.5.2"
 url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
@@ -22,7 +22,7 @@ Explore the capabilities of neural networks:
 - Speech-to-text transcription.
 - Create dynamic dialogues with distinct voices.
 """
-icon = "src/wunjo/static/basic/icon/gray"
+icon = "src/wunjo/static/basic/icon/gray/logo"
 sources = [
     "src/wunjo",
     "src/backend",
