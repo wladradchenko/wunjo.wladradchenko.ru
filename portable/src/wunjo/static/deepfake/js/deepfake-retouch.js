@@ -8,7 +8,7 @@ function deepfakeRetouch(button) {
                 title: 'Панель удаления объектов и ретуши',
                 position: 'right',
                 intro: `
-                <div style="min-width: 700px;display: flex;flex-direction: row;" id="retouch">
+                <div style="min-width: 700px;display: flex;flex-direction: row;max-height: 80vh; overflow-y: auto;" id="retouch">
                     <div class="uploadSourceRetouch">
                         <div style="flex-direction: row;display: flex;margin-bottom: 10pt;justify-content: space-between;">
                             <button class="introjs-button" style="display: none;margin-right: 5pt;" id="clearButtonRetouch">Очистить</button>
