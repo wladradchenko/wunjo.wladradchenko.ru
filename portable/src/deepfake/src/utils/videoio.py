@@ -6,6 +6,7 @@ import os
 import cv2
 from tqdm import tqdm
 import numpy as np
+from PIL import Image
 
 
 def load_video_to_cv2(input_path):
@@ -22,12 +23,16 @@ def load_video_to_cv2(input_path):
 
 
 def save_video_with_audio(video, audio, save_path):
-    file_name = str(uuid.uuid4())+'.mp4'
+    file_name = str(uuid.uuid4()) + '.mp4'
     save_file = os.path.join(save_path, file_name)
-    # if audio length than video, when will show video last frame
-    # cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart "%s"' % (video, audio, save_file)
-    # if audio length than video, when will audio cut
-    cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart -shortest "%s"' % (video, audio, save_file)
+
+    if os.path.exists(audio):
+        # If there is an audio file, include it in the ffmpeg command
+        cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart -shortest "%s"' % (video, audio, save_file)
+    else:
+        # If there is no audio file, omit the audio input and codec options
+        cmd = r'ffmpeg -y -i "%s" -c:v libx264 -crf 23 -preset medium -movflags +faststart "%s"' % (video, save_file)
+
     os.system(cmd)
     return file_name
 
@@ -50,6 +55,16 @@ def video_to_frames(video_path, output_folder):
 
 
 def extract_audio_from_video(video_path, save_path):
+    # Check if the file is a GIF
+    try:
+        with Image.open(video_path) as img:
+            if img.format == 'GIF':
+                print(f"Skipping audio extraction because the file is a GIF")
+                return None
+    except Exception as e:
+        print(f"Unable to determine image format: {e}")
+
+    # If not a GIF, proceed with audio extraction
     file_name = str(uuid.uuid4()) + '.wav'
     save_file = os.path.join(save_path, file_name)
     cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'

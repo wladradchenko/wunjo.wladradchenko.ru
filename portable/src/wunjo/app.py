@@ -289,12 +289,13 @@ def synthesize_video_merge():
 
     source_folder = request_list.get("source_folder")
     audio_name = request_list.get("audio_name")
+    audio_path = os.path.join(TMP_FOLDER, audio_name) if audio_name else None
     fps = request_list.get("fps", 30)
 
     try:
         result = VideoEdit.main_merge_frames(
             output=DEEPFAKE_FOLDER, source_folder=source_folder,
-            audio_path=os.path.join(TMP_FOLDER, audio_name), fps=fps
+            audio_path=audio_path, fps=fps
         )
     except Exception as err:
         app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]

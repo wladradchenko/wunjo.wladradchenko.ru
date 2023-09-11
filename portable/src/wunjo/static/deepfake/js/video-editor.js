@@ -336,37 +336,34 @@ async function processAsyncVideoMerge(data, elem) {
                     uploadFile(file);
                 });
         } else {
-          var messageSetP = await translateWithGoogle("Вы не загрузили аудиофайл. Нажмите на кнопку загрузить аудиофайл.", 'auto', targetLang);
-          messageVideoEditor.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+          audioName = null;
         }
 
         const videoFps = elem.querySelector("#video-fps");
 
 
-        if (audioName) {
-            const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
-            buttonAnimationWindows.click();
+        const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
+        buttonAnimationWindows.click();
 
-            var predictParametersFaceSwap = {
-                "source_folder": framesPath.value,
-                "audio_name": audioName,
-                "fps": videoFps.value,
-            };
+        var predictParametersFaceSwap = {
+            "source_folder": framesPath.value,
+            "audio_name": audioName,
+            "fps": videoFps.value,
+        };
 
-            synthesisDeepfakeTable.innerHTML = "";
+        synthesisDeepfakeTable.innerHTML = "";
 
-            fetch("/synthesize_video_merge/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(predictParametersFaceSwap)
-            })
+        fetch("/synthesize_video_merge/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(predictParametersFaceSwap)
+        })
 
-            const closeIntroButton = document.querySelector('.introjs-skipbutton');
-            closeIntroButton.click();
-        }
-      } else {
+        const closeIntroButton = document.querySelector('.introjs-skipbutton');
+        closeIntroButton.click();
+    } else {
         var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
 
         var messageEditorVideo = elem.querySelector("#message-editor-video");
