@@ -324,6 +324,7 @@ Update 1.5.1
 - [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
 
 Update 1.6.0
+- [ ] Add auto install ffmpeg
 - [ ] Add create deepfake video by text prompts
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
