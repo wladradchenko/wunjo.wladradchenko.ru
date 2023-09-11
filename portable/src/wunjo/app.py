@@ -1,5 +1,5 @@
 import os
-os.environ['OMP_NUM_THREADS'] = '1'  # TODO writen what increase speed for cuda, need to protest if is right than set if use cuda!
+# os.environ['OMP_NUM_THREADS'] = '1'  # This is set limit for NUM CPU
 import sys
 import json
 import torch
