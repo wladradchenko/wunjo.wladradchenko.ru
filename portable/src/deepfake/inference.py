@@ -535,10 +535,14 @@ class FaceSwap:
                 saved_file = os.path.join(save_dir, file_name)
             except Exception as err:
                 print(f"Error with encrypted {err}")
-            # get audio from video target
-            audio_file_name = extract_audio_from_video(args.target, save_dir)
-            # combine audio and video
-            file_name = save_video_with_audio(saved_file, os.path.join(save_dir, audio_file_name), save_dir)
+
+            try:
+                # get audio from video target
+                audio_file_name = extract_audio_from_video(args.target, save_dir)
+                # combine audio and video
+                file_name = save_video_with_audio(saved_file, os.path.join(save_dir, audio_file_name), save_dir)
+            except Exception as err:
+                print(f"Error with get audio from file {err}")
 
         else:  # static file
             # create face swap on image
@@ -628,8 +632,6 @@ class Retouch:
         elif source_type == "animated":
             # work with frame
             from tqdm import tqdm
-            # get audio from video target
-            audio_file_name = extract_audio_from_video(source, save_dir)
             frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
             first_frame_pil = convert_cv2_to_pil(frames[0])
             # Get size of frame_pil
@@ -682,8 +684,14 @@ class Retouch:
             progress_bar.close()
             # get saved file as merge frames to video
             video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
-            # combine audio and video
-            save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, audio_file_name), save_dir)
+            try:
+                # get audio from video target
+                audio_file_name = extract_audio_from_video(source, save_dir)
+                # combine audio and video
+                save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, audio_file_name), save_dir)
+            except Exception as err:
+                print(f"Error with get audio from file {err}")
+                save_name = video_name
         else:
             raise "Source is not detected as image or video"
 
