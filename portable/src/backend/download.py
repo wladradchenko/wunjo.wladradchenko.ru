@@ -27,9 +27,14 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
 
 
 def download_model(download_path: str, download_link: str, retry_count: int = 2, retry_delay: int = 5) -> bool:
+    headers = {
+        'Accept': 'application/xml; charset=utf-8',
+        'User-Agent': 'wunjo'
+    }
+
     for i in range(retry_count + 1):
         try:
-            response = requests.get(download_link, stream=True)
+            response = requests.get(download_link, headers=headers, stream=True)
             total_size = int(response.headers.get('content-length', 0))
             response.raise_for_status()
             progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True)
@@ -48,8 +53,9 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
         except requests.exceptions.RequestException:
             if i == retry_count:
                 os.remove(download_path)  # delete not finished file
-                raise "Error... Internet connection is failed!"
+                raise RuntimeError("Error... Internet connection is failed!")
             time.sleep(retry_delay)
+
 
 
 def check_download_size(download_path: str, download_link: str) -> bool:
