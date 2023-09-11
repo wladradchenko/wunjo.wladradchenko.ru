@@ -538,7 +538,7 @@ class FaceSwap:
 
             # get audio from video target
             audio_file_name = extract_audio_from_video(args.target, save_dir)
-            if os.path.exists(os.path.join(save_dir, audio_file_name)):
+            if not os.path.exists(os.path.join(save_dir, audio_file_name)):
                 # combine audio and video
                 file_name = save_video_with_audio(saved_file, os.path.join(save_dir, audio_file_name), save_dir)
 
@@ -684,7 +684,7 @@ class Retouch:
             video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
             # get audio from video target
             audio_file_name = extract_audio_from_video(source, save_dir)
-            if os.path.exists(os.path.join(save_dir, audio_file_name)):
+            if not os.path.exists(os.path.join(save_dir, audio_file_name)):
                 # combine audio and video
                 save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, audio_file_name), save_dir)
             else:
