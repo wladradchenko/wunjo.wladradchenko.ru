@@ -159,14 +159,13 @@ def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
     return full_frames, fps
 
 
-def encrypted(video_path: str, save_dir: str, fn: int = 0):
+def encrypted(video_path: str, save_dir: str, device: str, fn: int = 0):
     # Video objects for src
     src = cv2.VideoCapture(video_path)
     src_w = int(src.get(3))
     src_h = int(src.get(4))
     src_fps = src.get(cv2.CAP_PROP_FPS)
     src_frame_cnt = src.get(cv2.CAP_PROP_FRAME_COUNT)
-    device = os.environ['WUNJO_TORCH_DEVICE']
 
     # Load a dummy image to get the shape attributes
     sec_frame_original = np.zeros((src_h, src_w, 3), dtype=np.uint8)

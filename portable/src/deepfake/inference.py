@@ -406,7 +406,7 @@ class AnimationMouthTalk:
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
             wav2lip_result_video = enhanced_path
 
-        wav2lip_result_video = encrypted(wav2lip_result_video, save_dir)  # encrypted
+        wav2lip_result_video = encrypted(wav2lip_result_video, args.device, save_dir)  # encrypted
         mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
 
         for f in os.listdir(save_dir):
@@ -526,7 +526,7 @@ class FaceSwap:
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
 
-            saved_file = encrypted(saved_file, save_dir)  # encrypted
+            saved_file = encrypted(saved_file, args.device, save_dir)  # encrypted
             # get audio from video target
             audio_file_name = extract_audio_from_video(args.target, save_dir)
             # combine audio and video
