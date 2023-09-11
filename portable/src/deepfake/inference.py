@@ -536,13 +536,11 @@ class FaceSwap:
             except Exception as err:
                 print(f"Error with encrypted {err}")
 
-            try:
-                # get audio from video target
-                audio_file_name = extract_audio_from_video(args.target, save_dir)
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(args.target, save_dir)
+            if os.path.exists(os.path.join(save_dir, audio_file_name)):
                 # combine audio and video
                 file_name = save_video_with_audio(saved_file, os.path.join(save_dir, audio_file_name), save_dir)
-            except Exception as err:
-                print(f"Error with get audio from file {err}")
 
         else:  # static file
             # create face swap on image
@@ -684,13 +682,12 @@ class Retouch:
             progress_bar.close()
             # get saved file as merge frames to video
             video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
-            try:
-                # get audio from video target
-                audio_file_name = extract_audio_from_video(source, save_dir)
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(source, save_dir)
+            if os.path.exists(os.path.join(save_dir, audio_file_name)):
                 # combine audio and video
                 save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, audio_file_name), save_dir)
-            except Exception as err:
-                print(f"Error with get audio from file {err}")
+            else:
                 save_name = video_name
         else:
             raise "Source is not detected as image or video"
