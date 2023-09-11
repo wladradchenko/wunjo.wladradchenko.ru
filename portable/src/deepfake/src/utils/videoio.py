@@ -254,5 +254,5 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
     os.system(cmd)
 
     # Delete the temporary image sequence folder
-    os.system(f"rm -r {os.path.join(save_dir, 'enc')}")
+    shutil.rmtree(f"rm -r {os.path.join(save_dir, 'enc')}")
     return file_path
