@@ -36,9 +36,9 @@ def download_ffmpeg():
             check_download_size(os.path.join(SETTING_FOLDER, 'ffmpeg.zip'), ffmpeg_url)
             if not os.listdir(ffmpeg_path):
                 unzip(os.path.join(SETTING_FOLDER, 'ffmpeg.zip'), ffmpeg_path)
-        ffmpeg_bin_path = os.path.join(ffmpeg_path, "bin")
+        ffmpeg_bin_path = os.path.join(ffmpeg_path, "ffmpeg-master-latest-win64-gpl", "bin")
         os.environ["PATH"] += os.pathsep + ffmpeg_bin_path
-        print(os.pathsep)
+        print("Download ffmpeg is finished!")
     elif sys.platform == 'darwin':
         # Ffmpeg for MacOS
         print("Please install ffmpeg using the following command")
