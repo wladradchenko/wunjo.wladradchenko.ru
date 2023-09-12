@@ -308,9 +308,9 @@ Update 1.5.1
 - [x] Update guid in application 
 - [x] Add AI retouch frames in video by user tool
 - [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
+- [x] Add auto install ffmpeg on Windows
 
 Update 1.6.0
-- [ ] Add auto install ffmpeg on Windows
 - [ ] Add create deepfake video by text prompts
 - [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
