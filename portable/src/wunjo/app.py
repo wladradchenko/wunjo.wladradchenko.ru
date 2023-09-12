@@ -1,12 +1,8 @@
 import os
-# os.environ['OMP_NUM_THREADS'] = '1'  # This is set limit for NUM CPU
 import sys
 import json
 import torch
-import shutil
-import requests
 import subprocess
-from time import gmtime, strftime
 from base64 import b64encode
 from werkzeug.utils import secure_filename
 
@@ -20,6 +16,7 @@ from speech.tts_models import load_voice_models, voice_names, file_voice_config,
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
+from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed
 
 import logging
 
@@ -36,69 +33,7 @@ app.config['USER_LANGUAGE'] = "en"
 
 logging.getLogger('werkzeug').disabled = True
 
-
-def is_ffmpeg_installed():
-    if not shutil.which('ffmpeg'):
-        print('Ffmpeg is not installed. You need to install it for comfortable use of the program.')
-        print("You can visit documentation https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki to find out how install")
-
-
-def get_version_app():
-    version_json_url = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/version_control.json"
-    try:
-        response = requests.get(version_json_url)
-        return json.loads(response.text)
-    except requests.RequestException:
-        print("Error fetching the version information, when get information about updates of application")
-        return {}
-    except json.JSONDecodeError:
-        print("Error decoding the JSON response, when get information about updates of application")
-        return {}
-    except:
-        print("An unexpected error occurred, when get information about updates of application")
-        return {}
-
-
 version_app = get_version_app()
-
-
-def set_settings():
-    default_language = {
-            "English": "en",
-            "Русский": "ru",
-            "Portugal": "pt",
-            "中文": "zh",
-            "한국어": "ko"
-        }
-    standard_language = {
-            "code": "en",
-            "name": "English"
-        }
-
-    default_settings = {
-        "user_language": standard_language,
-        "default_language": default_language
-    }
-    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
-    # Check if the SETTING_FILE exists
-    if not os.path.exists(setting_file):
-        # If not, create it with default settings
-        with open(setting_file, 'w') as f:
-            json.dump(default_settings, f)
-        return default_settings
-    else:
-        # If it exists, read its content
-        with open(setting_file, 'r') as f:
-            try:
-                user_settings = json.load(f)
-                if user_settings.get("user_language") is None:
-                    user_settings["user_language"] = standard_language
-                if user_settings.get("default_language") is None:
-                    user_settings["default_language"] = default_language
-                return user_settings
-            except Exception as err:
-                print(f"Error ... {err}")
-                return default_settings
 
 
 def get_avatars_static():
@@ -106,12 +41,6 @@ def get_avatars_static():
     standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
     custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
     return {**standard_voices, **custom_voices}
-
-
-def current_time(format: str = None):
-    if format:
-        return strftime(format, gmtime())
-    return strftime("%Y%m%d%H%M%S", gmtime())
 
 
 def split_input_deepfake(input_param):
@@ -138,16 +67,6 @@ def get_print_translate(text):
     return get_translate(text=text, targetLang=app.config['USER_LANGUAGE'])
 
 
-def _create_localization():
-    localization_path = os.path.join(SETTING_FOLDER, "localization.json")
-    with open(localization_path, 'w', encoding='utf-8') as f:
-        json.dump({}, f, ensure_ascii=False)
-
-
-# create localization file
-_create_localization()
-
-
 @app.route("/update_translation", methods=["POST"])
 @cross_origin()
 def update_translation():
@@ -163,8 +82,6 @@ def update_translation():
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
-    # Check ffmpeg on first load
-    is_ffmpeg_installed()
     # Define a dictionary of languages
     settings = set_settings()
     lang_user = settings["user_language"]
@@ -279,6 +196,12 @@ def synthesize_video_merge():
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         print("The process is already running... ")
 
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
     # get parameters
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
@@ -321,6 +244,12 @@ def synthesize_video_editor():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         print("The process is already running... ")
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
 
     # get parameters
     request_list = request.get_json()
@@ -367,6 +296,12 @@ def synthesize_retouch():
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         print("The process is already running... ")
 
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
     # get parameters
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
@@ -408,6 +343,12 @@ def synthesize_face_swap():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         print("The process is already running... ")
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
 
     # get parameters
     request_list = request.get_json()
@@ -470,6 +411,12 @@ def synthesize_deepfake():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
         print("The process is already running... ")
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
 
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
@@ -588,6 +535,12 @@ def synthesize():
 
         # init only one time the models for voice clone if it is needs
         if (auto_translation or rtvc_audio_clone_voice) and app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
+            # Check ffmpeg
+            is_ffmpeg = is_ffmpeg_installed()
+            if not is_ffmpeg:
+                app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+                return {"status": 400}
+            # init models
             encoder, synthesizer, vocoder = load_rtvc(rtvc_models_lang)
             app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "vocoder": vocoder}
 

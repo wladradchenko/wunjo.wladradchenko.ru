@@ -7,29 +7,9 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from backend.translator import get_translate
-from backend.folders import RTVC_VOICE_FOLDER
-from backend.download import download_model, unzip, check_download_size
+from backend.general_utils import download_ntlk
 
 sys.path.pop(0)
-
-
-def download_ntlk():
-    tokenizers_punkt_path = os.path.join(RTVC_VOICE_FOLDER, "nltk_data", "tokenizers")
-
-    punkt_url = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt.zip"
-
-    try:
-        if not os.path.exists(tokenizers_punkt_path):
-            os.makedirs(tokenizers_punkt_path)
-        if not os.path.exists(os.path.join(tokenizers_punkt_path, "punkt")):
-            print(f"Punkt NTLK is not found. Download this {punkt_url}")
-            download_model(os.path.join(tokenizers_punkt_path, "punkt.zip"), punkt_url)
-            unzip(os.path.join(tokenizers_punkt_path, 'punkt.zip'), tokenizers_punkt_path)
-        else:
-            check_download_size(os.path.join(tokenizers_punkt_path, "punkt.zip"), punkt_url)
-    except Exception as err:
-        print(f"Error during download NLTK {err}")
-
 
 
 class TextToSpeech:
