@@ -72,7 +72,10 @@ source venv/bin/activate
 Install dependencies:
 
 ```
+// dependencies to use cpu
 pip install -r requirements.txt
+// dependencies to use gpu
+pip install -r requirements-gpu.txt
 ```
 
 Go to portable folder
@@ -108,9 +111,7 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 <!-- DOWNLOAD -->
 ## Install packets
 
-[Ubuntu / Debian Stable v1.4 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
-
-[Ubuntu / Debian Beta v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.1.deb)
+### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.2.deb)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -130,28 +131,11 @@ rm -rf ~/.wunjo
 // If switching to GPU is not available for you, see the documentation for how to install drivers CUDA
 ```
 
-[MacOS Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
+### MacOS v1.5 (CPU version)
 
-[MacOS Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.5.1.zip)
+Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
 
-```
-// Requirement to create animation is ffmpeg
-brew install ffmpeg 
-
-// Unzip app
-unzip wunjo_macos_{vesrion}.zip
-
-// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
-
-// Remove cache
-rm -rf ~/.wunjo
-
-// How to adjust the use of the GPU and increase the processing speed by several times, see the documentation.
-```
-
-[Windows Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
-
-[Windows Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.1.msi)
+### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.2.msi)
 
 ```
 // Requirement to create animation is ffmpeg, Install ffmpeg and add to Path env
@@ -171,6 +155,8 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
 
 // How to adjust the use of the GPU and increase the processing speed by several times, see the documentation.
 ```
+
+Read in Wunjo AI documentation how use GPU on Windows.
 
 <!-- EXAMPLE -->
 ## Example

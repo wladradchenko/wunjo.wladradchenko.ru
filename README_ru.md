@@ -72,7 +72,10 @@ source venv/bin/activate
 Установить зависимости:
 
 ```
+// dependencies to use cpu
 pip install -r requirements.txt
+// dependencies to use gpu
+pip install -r requirements-gpu.txt
 ```
 
 Необходимо перейти в директорию portable, чтобы использовать briefcase:
@@ -108,9 +111,7 @@ briefcase package
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-[Ubuntu / Debian Stable v1.4 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.4.0.deb)
-
-[Ubuntu / Debian Beta v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.1.deb)
+### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.2.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -130,28 +131,11 @@ rm -rf ~/.wunjo
 // Если переключение на графический процессор для вас недоступно, см. документацию по установке драйверов CUDA
 ```
 
-[MacOS Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.4.0.zip)
+### MacOS v1.5 (CPU version)
 
-[MacOS Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/macos/wunjo_macos_1.5.1.zip)
+В связи с тем, что у автора проекта нет лицензии Apple, на данный момент нет возможности создать официальный установщик.
 
-```
-// Для создания анимации понадобится установить ffmpeg
-brew install ffmpeg 
-
-// Разархивировать приложение
-unzip wunjo_macos_{vesrion}.zip
-
-// Внимание! При первом запуске синтеза видео, будут скачаны модели в .wunjo/talker/checkpoints и .wunjo/talker/gfpgan в размере 5Гб. Это может занять длительное время.
-
-// Удаление кеша
-rm -rf ~/.wunjo
-
-// Сборка сделана на библиотеках с ЦПУ. Как настроить использование графического процессора и увеличить скорость обработки в несколько раз, смотрите в документации.
-```
-
-[Windows Stable v1.4 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.4.0.msi)
-
-[Windows Beta v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.1.msi)
+### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.2.msi)
 
 ```
 // Для создания анимации понадобится установить ffmpeg, после добавить путь в переменная среды
