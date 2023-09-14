@@ -58,7 +58,6 @@ requires = [
     "scikit-image",
     "kornia",
     "face_alignment==1.3.5",
-    "dlib-bin",
     "yacs",
     "pydub",
     "gfpgan",
@@ -68,8 +67,6 @@ requires = [
     "av",
     "torch-optimizer",
     "realesrgan",
-#    "onnxruntime",
-    "onnxruntime-gpu",
     "insightface",
     "pypinyin"
 ]
@@ -78,7 +75,9 @@ test_requires = [
 
 [tool.briefcase.app.wunjo.macOS]
 requires = [
-    "std-nslog~=1.0.0"
+    "std-nslog~=1.0.0",
+    "dlib",
+    "onnxruntime"
 ]
 sources = [
     "../venv/lib/python3.10/site-packages/insightface",
@@ -86,6 +85,8 @@ sources = [
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
+    "dlib-bin",
+    "onnxruntime-gpu"
 ]
 sources = [
     "../venv/lib/python3.10/site-packages/insightface",
@@ -122,7 +123,10 @@ linuxdeploy_plugins = []
 [tool.briefcase.app.wunjo.linux.flatpak]
 
 [tool.briefcase.app.wunjo.windows]
-requires = []
+requires = [
+    "dlib-bin",
+    "onnxruntime-gpu"
+]
 sources = [
     "../venv/Lib/site-packages/insightface",
 ]

@@ -329,7 +329,7 @@ icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,
   </tr>
   <tr align="center">
     <td><a href="https://youtu.be/vdvf9NxrUC8"><img src="example/thumbnail/what_is_new.gif" alt="video" width="350"></a></td>
-    <td><a href="https://youtu.be/2qIpJYhOL2U"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
+    <td><a href="https://youtu.be/UzpEcPhSDrk"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
   </tr>
 </table>
 </div>
