@@ -34,7 +34,7 @@ class FaceRecognition:
         # Your distance calculation here
         return np.linalg.norm(embedding1 - embedding2)
 
-    def is_similar_face(self, embedding, face_pred_list) -> bool:
+    def is_similar_face(self, embedding, face_pred_list, similar_coeff: float = 0.95) -> bool:
         if not face_pred_list:
             return False
 
@@ -62,7 +62,7 @@ class FaceRecognition:
 
         self.running_average += change
 
-        dynamic_threshold = self.running_average * 0.95  # TODO Maybe did this control param from frontend
+        dynamic_threshold = self.running_average * similar_coeff  # Maybe did this control param from frontend
         # print(min(distances), dynamic_threshold)
 
         return min(distances) < dynamic_threshold

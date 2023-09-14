@@ -32,6 +32,12 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                             </div>
                             </div>
                         </fieldset>
+                        <div>
+                            <div style="padding: 5pt;margin-left: 7pt;">
+                              <label for="similar-coeff-face">Коэффициент похожести лица</label>
+                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="2" step="0.1" value="0.95" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                            </div>
+                        </div>
                     </div>
                     <div style="width: 450pt;columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
                     <div style="width: 200pt;">
@@ -268,6 +274,7 @@ async function processAsyncFaceSwap(data, elem) {
         var backgroundEnhancerFaceSwap = elem.querySelector('#background-enhancer-deepfake');
         var videoStartValueTarget = elem.querySelector('#videoStartTarget').value;
         var videoStartValueSource = elem.querySelector('#videoStartSource').value;
+        var similarCoeffFace = elem.querySelector('#similar-coeff-face').value;
 
         if (mediaNameTarget && mediaNameSource && canvasRectanglesListTarget.length > 0 && canvasRectanglesListSource.length > 0) {
             const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
@@ -286,6 +293,7 @@ async function processAsyncFaceSwap(data, elem) {
                 "similarface": similarface.checked,
                 "enhancer": enhancer,
                 "background_enhancer": backgroundEnhancerFaceSwap.checked,
+                "similar_coeff": similarCoeffFace,
             };
 
             synthesisDeepfakeTable.innerHTML = "";

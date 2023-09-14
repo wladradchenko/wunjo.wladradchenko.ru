@@ -320,7 +320,7 @@ class AnimationMouthTalk:
     @staticmethod
     def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, emotion_label: int = None):
+                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
         args.checkpoint_dir = "checkpoints"
         args.result_dir = deepfake_dir
@@ -384,7 +384,7 @@ class AnimationMouthTalk:
         # create wav to lip
         full_frames = frames[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
-        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label)
+        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label, similar_coeff=similar_coeff)
         wav2lip.face_fields = args.face_fields
 
         print("Face detect starting")
@@ -450,7 +450,7 @@ class FaceSwap:
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
                       type_file_target: str, type_file_source: str, target_video_start: float = 0, source_video_frame: float = 0,
                       enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                      background_enhancer: str = None, multiface: bool = False, similarface: bool = False):
+                      background_enhancer: str = None, multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
         args = FaceSwap.load_faceswap_default()
         # Folders
         args.checkpoint_dir = "checkpoints"
@@ -499,7 +499,7 @@ class FaceSwap:
             link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
             check_download_size(faceswap_checkpoint, link_faceswap_checkpoint)
 
-        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface)
+        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface, similar_coeff)
 
         # get source for face
         if args.type_file_source == "video":

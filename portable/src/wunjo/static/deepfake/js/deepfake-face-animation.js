@@ -90,7 +90,7 @@ async function processAsyncDeepfake(data, elem) {
             enhancer = false;  // TODO need to set false (not RestoreFormer)
         }
 
-        if (canvasRectanglesList.length === 0) {dragBox
+        if (canvasRectanglesList.length === 0) {
             messageDeepfake.innerHTML += "<p style='margin-top: 5pt;'>Вы не выделили лицо. Нажмите на кнопку выделить лицо и выделите лицо на изображении.</p>";
         }
 
@@ -108,6 +108,8 @@ async function processAsyncDeepfake(data, elem) {
         if (selectedEmotionDeepfake === 'null') {
             selectedEmotionDeepfake = null;
         }
+
+        var similarCoeffFace = elem.querySelector('#similar-coeff-face').value;
 
         if (mediaName && audioName && canvasRectanglesList.length > 0) {
             const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
@@ -128,6 +130,7 @@ async function processAsyncDeepfake(data, elem) {
                 "type_file": typeFile,
                 "video_start": videoStartValue,
                 "emotion_label": selectedEmotionDeepfake,
+                "similar_coeff": similarCoeffFace,
             };
 
             synthesisDeepfakeTable.innerHTML = "";
@@ -299,6 +302,10 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                             <div style="justify-content: space-between;padding: 5pt; display: flex;">
                               <label for="expression-scale-deepfake">Выраженность мимики</label>
                               <input type="number" title="Введите число" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
+                            </div>
+                            <div style="justify-content: space-between;padding: 5pt; display: flex;">
+                              <label for="similar-coeff-face">Похожесть лица</label>
+                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="2" step="0.1" value="0.95" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                             </div>
                             <div style="padding: 5pt;">
                               <label for="input-yaw-deepfake">Угол поворота по XY</label>

@@ -249,9 +249,9 @@ class Synthesizer:
 
 
     @staticmethod
-    def split_into_phrases(text: str, max_words: int = 15, min_words: int = 10) -> list:
+    def split_into_phrases(text: str, max_words: int = 10, min_words: int = 5) -> list:
         """
-        Split big phrases and phrase not more 20 words
+        Split big phrases and phrase not more 10 words
         :param text: text
         :param max_words: max words
         :param min_words: min words after those if will be some symbol, when create phrase

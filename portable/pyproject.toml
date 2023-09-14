@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.5.3"
+version = "1.5.4"
 url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
@@ -29,7 +29,7 @@ sources = [
     "src/deepfake",
     "src/speech",
     "src/train",
-    "tacotron2",
+    "src/tacotron2",
     "aifc.py",
     "sunau.py"
 ]

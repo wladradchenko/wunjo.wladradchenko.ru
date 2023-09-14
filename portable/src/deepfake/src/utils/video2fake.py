@@ -16,10 +16,11 @@ sys.path.pop(0)
 
 
 class GenerateFakeVideo2Lip:
-    def __init__(self, model_path, emotion_label):
+    def __init__(self, model_path, emotion_label, similar_coeff=0.95):
         self.face_recognition = FaceRecognition(model_path)
         self.face_fields = None
         self.emotion, self.use_emotion = (self.to_emotion_categorical(emotion_label), True) if emotion_label else (None, False)
+        self.similar_coeff = 0.95  # Similarity coefficient for face
 
     def get_smoothened_boxes(self, boxes: np.ndarray, T: int = 5):
         """
@@ -105,7 +106,7 @@ class GenerateFakeVideo2Lip:
                     x_center = int((x1 + x2) / 2)  # set new center
                     y_center = int((y1 + y2) / 2)  # set new center
                     normed_embedding = face.normed_embedding
-                    is_similar = self.face_recognition.is_similar_face(normed_embedding, face_embedding_list)
+                    is_similar = self.face_recognition.is_similar_face(normed_embedding, face_embedding_list, self.similar_coeff)
                     if x1 <= x_center <= x2 and y1 <= y_center <= y2:
                         local_face_param += [{
                             "is_center": True, "is_gender": face_gender == face.gender, "is_embed": is_similar,

@@ -23,7 +23,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -193,8 +193,9 @@ def get_synthesize_deepfake_result():
 @cross_origin()
 def synthesize_video_merge():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
@@ -242,8 +243,9 @@ def synthesize_video_merge():
 @cross_origin()
 def synthesize_video_editor():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
@@ -293,8 +295,9 @@ def synthesize_video_editor():
 @cross_origin()
 def synthesize_retouch():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
@@ -341,8 +344,9 @@ def synthesize_retouch():
 @cross_origin()
 def synthesize_face_swap():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
@@ -370,6 +374,7 @@ def synthesize_face_swap():
     background_enhancer = request_list.get("background_enhancer", False)
     multiface = request_list.get("multiface", False)
     similarface = request_list.get("similarface", False)
+    similar_coeff = float(request_list.get("similar_coeff", 0.95))
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
@@ -385,7 +390,8 @@ def synthesize_face_swap():
             enhancer=enhancer,
             background_enhancer=background_enhancer,
             multiface=multiface,
-            similarface=similarface
+            similarface=similarface,
+            similar_coeff=similar_coeff
         )
     except Exception as err:
         app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
@@ -409,8 +415,9 @@ def synthesize_face_swap():
 @cross_origin()
 def synthesize_deepfake():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
@@ -439,6 +446,7 @@ def synthesize_deepfake():
     type_file = request_list.get("type_file")
     video_start = request_list.get("video_start", 0)
     emotion_label = request_list.get("emotion_label", None)
+    similar_coeff = float(request_list.get("similar_coeff", 0.95))
 
     try:
         if type_file == "img":
@@ -465,7 +473,8 @@ def synthesize_deepfake():
                 enhancer=enhancer,
                 background_enhancer=background_enhancer,
                 video_start=float(video_start),
-                emotion_label=emotion_label
+                emotion_label=emotion_label,
+                similar_coeff=similar_coeff
             )
 
         torch.cuda.empty_cache()
@@ -500,8 +509,9 @@ def get_synthesize_result():
 @cross_origin()
 def synthesize():
     # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 300:
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
@@ -701,6 +711,7 @@ def common_training_route():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
+        return {"status": 400}
 
     try:
         # clear keep models
@@ -719,7 +730,7 @@ def common_training_route():
 
     print("Trained finished successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    return {"status_code": 200}
+    return {"status": 200}
 """TRAIN MODULE"""
 
 
@@ -734,5 +745,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run()

@@ -4,6 +4,7 @@ import uuid
 import os
 
 import cv2
+import random
 from tqdm import tqdm
 import numpy as np
 from PIL import Image
@@ -233,25 +234,30 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
             center_x = width // 2
             center_y = height // 2
 
-            # Position the text at different locations keeping it fully inside the bounds of the image
-            cv2.putText(sec_frame, name, (0, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
-                        font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (0, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                        contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (center_x - text_width // 2, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                        contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (center_x - text_width // 2, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX,
-                        font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (width - text_width, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                        contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (0, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
-                        font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (width - text_width, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                        contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (center_x - text_width // 2, height - baseline), cv2.FONT_HERSHEY_SIMPLEX,
-                        font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-            cv2.putText(sec_frame, name, (width - text_width, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX,
-                        font_scale, contrast_color, font_thickness, cv2.LINE_AA)
+            # Define potential positions with padding along the edges (adjust as necessary)
+            positions = [
+                (0, text_height),
+                (0, center_y + text_height // 2),
+                (center_x - text_width // 2, text_height),
+                (width - text_width, text_height),
+                (0, height - baseline),
+                (width - text_width, height - baseline),
+                (center_x - text_width // 2, height - baseline),
+                (width - text_width, center_y + text_height // 2),
+                (int(width * 0.25) - text_width // 2, text_height),
+                (int(width * 0.75) - text_width // 2, text_height),
+                (int(width * 0.25) - text_width // 2, height - baseline),
+                (int(width * 0.75) - text_width // 2, height - baseline),
+                None, None, None
+            ]
+
+            # In each call to the method, select one random positions from the list
+            selected_positions = random.sample(positions, 1)
+
+            # Put text at the selected positions
+            for pos in selected_positions:
+                if pos is not None:
+                    cv2.putText(sec_frame, name, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color, font_thickness, cv2.LINE_AA)
 
             # Encryption for LSB 3 bits
             encrypted_img = (src_frame & 0b11111000) | (sec_frame >> 6 & 0b00000111)
@@ -287,7 +293,7 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
         sec_frame = sec_frame_original.copy()
 
         # Put the text onto the dummy frame
-        font_scale = int(max(src_w, src_h) // 600)
+        font_scale = int(max(src_w, src_h) // 500)
         font_thickness = int(font_scale // 0.5)
 
         # Define text position
@@ -315,26 +321,28 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
         center_x = width // 2
         center_y = height // 2
 
-        # Position the text at different locations keeping it fully inside the bounds of the image
-        cv2.putText(sec_frame, name, (0, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
-                    font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (0, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                    contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (center_x - text_width // 2, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                    contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (center_x - text_width // 2, center_y + text_height // 2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (width - text_width, text_height), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                    contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (0, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color,
-                    font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (width - text_width, height - baseline), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                    contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (center_x - text_width // 2, height - baseline), cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-        cv2.putText(sec_frame, name, (width - text_width, center_y + text_height // 2), cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale, contrast_color, font_thickness, cv2.LINE_AA)
+        # Define potential positions with padding along the edges (adjust as necessary)
+        positions = [
+            (0, text_height),
+            (0, center_y + text_height // 2),
+            (center_x - text_width // 2, text_height),
+            (width - text_width, text_height),
+            (0, height - baseline),
+            (width - text_width, height - baseline),
+            (center_x - text_width // 2, height - baseline),
+            (width - text_width, center_y + text_height // 2),
+            (int(width * 0.25) - text_width // 2, text_height),
+            (int(width * 0.75) - text_width // 2, text_height),
+            (int(width * 0.25) - text_width // 2, height - baseline),
+            (int(width * 0.75) - text_width // 2, height - baseline),
+        ]
+
+        # In each call to the method, select one random positions from the list
+        selected_positions = random.sample(positions, 1)
+
+        # Put text at the selected positions
+        for pos in selected_positions:
+            cv2.putText(sec_frame, name, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color, font_thickness, cv2.LINE_AA)
 
         # Encryption for LSB 3 bits
         encrypted_img = (src_frame & 0b11111000) | (sec_frame >> 6 & 0b00000111)

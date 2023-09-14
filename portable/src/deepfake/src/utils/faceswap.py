@@ -22,7 +22,7 @@ class FaceSwapDeepfake:
     """
     Face swap by one photo
     """
-    def __init__(self, model_path, face_swap_model_path, similarface = False):
+    def __init__(self, model_path, face_swap_model_path, similarface = False, similar_coeff=0.95):
         """
         Initialization
         :param model_path: path to model deepfake where will be download face recognition
@@ -35,6 +35,7 @@ class FaceSwapDeepfake:
         self.similarface = similarface
         self.lock = threading.Lock()  # Create a lock
         self.progress = 0  # Initialize a progress counter
+        self.similar_coeff = similar_coeff  #
 
     def load(self, face_swap_model_path):
         """
@@ -157,7 +158,7 @@ class FaceSwapDeepfake:
                     x_center = int((x1 + x2) / 2)  # set new center
                     y_center = int((y1 + y2) / 2)  # set new center
                     normed_embedding = face.normed_embedding
-                    is_similar = self.face_recognition.is_similar_face(normed_embedding, face_embedding_list)
+                    is_similar = self.face_recognition.is_similar_face(normed_embedding, face_embedding_list, self.similar_coeff)
                     if x1 <= x_center <= x2 and y1 <= y_center <= y2:
                         local_face_param += [{
                             "is_center": True, "is_gender": face_gender == face.gender, "is_embed": is_similar,
