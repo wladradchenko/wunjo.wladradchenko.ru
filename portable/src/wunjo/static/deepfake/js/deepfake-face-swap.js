@@ -23,7 +23,7 @@ function deepfakeFaceSwap(button, audio_url = undefined, audio_name = undefined)
                             </div>
                             <div>
                             <div style="padding: 5pt;">
-                              <input type="checkbox" id="enhancer-deepfake" name="enhancer" checked>
+                              <input type="checkbox" id="enhancer-deepfake" name="enhancer">
                               <label for="enhancer-deepfake">Улучшение лица</label>
                             </div>
                             <div style="padding: 5pt;" id="background-enhancer-deepfake-message">

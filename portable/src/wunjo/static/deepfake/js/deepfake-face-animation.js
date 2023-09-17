@@ -293,7 +293,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                           <label for="still-deepfake">Отключить движение головой</label>
                         </div>
                         <div style="padding: 5pt;">
-                          <input type="checkbox" id="enhancer-deepfake" name="enhancer" checked>
+                          <input type="checkbox" id="enhancer-deepfake" name="enhancer">
                           <label for="enhancer-deepfake">Улучшение лица</label>
                         </div>
                         <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);">

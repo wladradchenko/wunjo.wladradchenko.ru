@@ -111,7 +111,7 @@ Read more in the documentation [BeeWare](https://beeware.org/project/projects/to
 <!-- DOWNLOAD -->
 ## Install packets
 
-### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.3.deb)
+### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.4.deb)
 
 ```
 // Requirement to create animation is ffmpeg
@@ -135,7 +135,7 @@ rm -rf ~/.wunjo
 
 Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
 
-### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.3.msi)
+### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.4.msi)
 
 ```
 // Requirement to create animation is ffmpeg. In application ffmpeg will install automatically, but uou can install ffmpeg manually and add to Path env

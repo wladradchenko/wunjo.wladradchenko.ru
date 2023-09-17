@@ -111,7 +111,7 @@ briefcase package
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.3.deb)
+### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.4.deb)
 
 ```
 // Для создания анимации понадобится установить ffmpeg
@@ -135,7 +135,7 @@ rm -rf ~/.wunjo
 
 В связи с тем, что у автора проекта нет лицензии Apple, на данный момент нет возможности создать официальный установщик.
 
-### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.3.msi)
+### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.4.msi)
 
 ```
 // Требование для создания анимации — ffmpeg. В приложении ffmpeg будет установлен автоматически, но вы можете установить ffmpeg вручную и добавить в среду Path.

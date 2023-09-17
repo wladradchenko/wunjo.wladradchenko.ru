@@ -48,6 +48,12 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
                 continue
             else:
                 print(f'Download finished in {download_path}')
+                if sys.platform == 'win32':
+                    try:
+                        cmd = f'icacls "{download_path}" /grant:r "Users:(R,W)"'
+                        os.system(cmd)
+                    except Exception as e:
+                        print(e)
                 return True
         except requests.exceptions.RequestException:
             if i == retry_count:
