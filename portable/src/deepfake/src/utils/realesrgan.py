@@ -1,3 +1,5 @@
+import os
+import sys
 import cv2
 import math
 import numpy as np
@@ -57,8 +59,13 @@ class RealESRGANer():
         else:
             # if the model_path starts with https, it will first download models to the folder: weights
             if model_path.startswith('https://'):
-                model_path = load_file_from_url(
-                    url=model_path, model_dir=root_dir, progress=True, file_name=None)
+                model_path = load_file_from_url(url=model_path, model_dir=root_dir, progress=True, file_name=None)
+                if sys.platform == 'win32':
+                    try:
+                        cmd = f'icacls "{model_path}" /grant:r "Users:(R,W)"'
+                        os.system(cmd)
+                    except Exception as e:
+                        print(e)
             loadnet = torch.load(model_path, map_location=torch.device('cpu'))
 
         # prefer to use params_ema
