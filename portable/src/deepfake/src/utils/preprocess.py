@@ -9,7 +9,6 @@ from src.face3d.util.load_mats import load_lm3d
 from src.face3d.models import networks
 
 try:
-    import webui
     from src.face3d.extract_kp_videos_safe import KeypointExtractor
     assert torch.cuda.is_available() == True
 except:
@@ -58,19 +57,19 @@ class CropAndExtract():
         self.device = device
         self.face_fields = face_fields
     
-    def generate(self, input_path, save_dir, crop_or_resize='crop', source_image_flag=False):
+    def generate(self, input_path, save_dir, crop_or_resize='crop', source_image_flag=False, pic_path_type="static"):
 
         pic_size = 256
         pic_name = os.path.splitext(os.path.split(input_path)[-1])[0]  
 
-        landmarks_path =  os.path.join(save_dir, pic_name+'_landmarks.txt') 
-        coeff_path =  os.path.join(save_dir, pic_name+'.mat')  
-        png_path =  os.path.join(save_dir, pic_name+'.png')  
+        landmarks_path = os.path.join(save_dir, pic_name+'_landmarks.txt')
+        coeff_path = os.path.join(save_dir, pic_name+'.mat')
+        png_path = os.path.join(save_dir, pic_name+'.png')
 
         #load input
         if not os.path.isfile(input_path):
             raise ValueError('input_path must be a valid path to video/image file')
-        elif input_path.split('.')[-1] in ['jpg', 'png', 'jpeg']:
+        elif pic_path_type == "static":
             # loader for first frame
             full_frames = [cv2.imread(input_path)]
             fps = 25

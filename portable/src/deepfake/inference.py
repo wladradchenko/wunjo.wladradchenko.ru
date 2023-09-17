@@ -239,7 +239,8 @@ class AnimationFaceTalk:
         os.makedirs(first_frame_dir, exist_ok=True)
 
         print('Extraction 3DMM for source image')
-        first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(pic_path, first_frame_dir, args.preprocess, source_image_flag=True)
+        pic_path_type = check_media_type(pic_path)
+        first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(pic_path, first_frame_dir, args.preprocess, source_image_flag=True, pic_path_type=pic_path_type)
         if first_coeff_path is None:
             print("Can't get the coefficients by 3DMM of the input")
             return
