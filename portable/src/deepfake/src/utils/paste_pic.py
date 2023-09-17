@@ -5,11 +5,11 @@ import uuid
 
 from src.utils.videoio import save_video_with_audio
 
-def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4'):
+def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4', pic_path_type = "static"):
 
     if not os.path.isfile(pic_path):
         raise ValueError('pic_path must be a valid path to video/image file')
-    elif pic_path.split('.')[-1] in ['jpg', 'png', 'jpeg']:
+    elif pic_path_type == "static":
         # loader for first frame
         full_img = cv2.imread(pic_path)
     else:

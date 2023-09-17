@@ -120,7 +120,7 @@ class AnimateFromCoeff():
 
         return checkpoint['epoch']
 
-    def generate(self, x, video_save_dir, pic_path, crop_info, enhancer=None, background_enhancer=None, preprocess='crop'):
+    def generate(self, x, video_save_dir, pic_path, crop_info, enhancer=None, background_enhancer=None, preprocess='crop', pic_path_type="static"):
 
         source_image = x['source_image'].type(torch.FloatTensor)
         source_semantics = x['source_semantics'].type(torch.FloatTensor)
@@ -188,7 +188,7 @@ class AnimateFromCoeff():
         if preprocess.lower() == 'full':
             # only add watermark to the full image.
             video_name_full = x['video_name'] + '_full.mp4'
-            new_video_name = paste_pic(temp_video_file, pic_path, crop_info, new_audio_file, video_save_dir)
+            new_video_name = paste_pic(temp_video_file, pic_path, crop_info, new_audio_file, video_save_dir, pic_path_type)
             print(f'The generated video is named {video_save_dir}/{video_name_full}')
 
         #### paste back then enhancers

@@ -276,8 +276,8 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                         <fieldset style="padding: 5pt;">
                             <legend>Выбор препроцессинга</legend>
                             <div>
-                              <input type="radio" id="cover-deepfake" name="preprocessing_deepfake" value="cover">
-                              <label for="cover-deepfake">Обрезать</label>
+                              <input type="radio" id="cover-deepfake" name="preprocessing_deepfake" value="crop">
+                              <label for="cover-deepfake">Crop</label>
                             </div>
                             <div>
                               <input type="radio" id="resize-deepfake" name="preprocessing_deepfake" value="resize">
