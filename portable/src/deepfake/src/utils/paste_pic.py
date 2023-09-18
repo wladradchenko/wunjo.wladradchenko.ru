@@ -5,7 +5,7 @@ import uuid
 
 from src.utils.videoio import save_video_with_audio
 
-def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4', pic_path_type = "static"):
+def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4', preprocess = "crop", pic_path_type = "static"):
 
     if not os.path.isfile(pic_path):
         raise ValueError('pic_path must be a valid path to video/image file')
@@ -22,8 +22,6 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, v
                 break 
             break 
         full_img = frame
-    frame_h = full_img.shape[0]
-    frame_w = full_img.shape[1]
 
     video_stream = cv2.VideoCapture(video_path)
     fps = video_stream.get(cv2.CAP_PROP_FPS)
@@ -51,6 +49,13 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, v
     else:
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
+    if preprocess == "resize":
+        frame_w = ox2 - ox1
+        frame_h = oy2 - oy1
+    else:
+        frame_h = full_img.shape[0]
+        frame_w = full_img.shape[1]
+
     out_tmp = cv2.VideoWriter(tmp_path, fourcc, fps, (frame_w, frame_h))
     for crop_frame in tqdm(crop_frames, 'seamlessClone:'):
         p = cv2.resize(crop_frame.astype(np.uint8), (crx-clx, cry - cly)) 
@@ -58,6 +63,9 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, v
         mask = 255*np.ones(p.shape, p.dtype)
         location = ((ox1+ox2) // 2, (oy1+oy2) // 2)
         gen_img = cv2.seamlessClone(p, full_img, mask, location, cv2.NORMAL_CLONE)
+        if preprocess == "resize":
+            gen_img = gen_img[oy1:oy2, ox1:ox2]
+
         out_tmp.write(gen_img)
 
     out_tmp.release()

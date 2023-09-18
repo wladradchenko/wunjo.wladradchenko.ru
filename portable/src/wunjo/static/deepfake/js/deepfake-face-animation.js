@@ -275,7 +275,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                     <div style="width: 200pt;">
                         <fieldset style="padding: 5pt;">
                             <legend>Выбор препроцессинга</legend>
-                            <div>
+                            <div style="display: none;">
                               <input type="radio" id="cover-deepfake" name="preprocessing_deepfake" value="crop">
                               <label for="cover-deepfake">Crop</label>
                             </div>
@@ -288,7 +288,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                               <label for="full-deepfake">Без изменений</label>
                             </div>
                         </fieldset>
-                        <div style="padding: 5pt;">
+                        <div style="padding: 5pt;margin-top:5pt;">
                           <input type="checkbox" id="still-deepfake" name="still">
                           <label for="still-deepfake">Отключить движение головой</label>
                         </div>
