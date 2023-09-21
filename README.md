@@ -293,7 +293,7 @@ To find the appropriate code for your language, please refer to the [Google Clou
 
 <!-- UPDATE -->
 
-Update 1.5.1
+Update 1.5.5
 - [x] Add voice translation with encoders, vocoder english, russian and synthesis english model
 - [x] Add synthesys audio from text with voice clone from another audio
 - [x] Create hub for voice cloning languages models (or download all default models)
@@ -309,12 +309,13 @@ Update 1.5.1
 - [x] Add AI retouch frames in video by user tool
 - [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
 - [x] Add auto install ffmpeg on Windows
+- [x] Trained Russian synthesis model voice clone 
+- [x] Indicate user how much space on drive for tmp and result folders
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
-- [ ] Indicate user how much space on drive for tmp and result folders
 - [ ] Imitate emotions in voice
-- [ ] Train Russian synthesis model voice clone 
+- [ ] Fix bug where face animation doesn't work with gif on Windows
 
 <!-- VIDEO -->
 ## Video

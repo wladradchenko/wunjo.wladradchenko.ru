@@ -1,12 +1,11 @@
-
-var voiceCards = document.querySelector('#voice-cards');
-const voiceCardContainer = document.querySelector('.voice-card-container');
+var voiceCards = document.querySelector("#voice-cards");
+const voiceCardContainer = document.querySelector(".voice-card-container");
 const voiceCardTemplate = document.getElementById("voice-card-template");
 
 /// CREATE FIRST AVATAR CARD ///
 function firstVoiceCard() {
-    var newVoiceCardContainer = voiceCardTemplate.content.cloneNode(true);
-    voiceCards.appendChild(newVoiceCardContainer);
+  var newVoiceCardContainer = voiceCardTemplate.content.cloneNode(true);
+  voiceCards.appendChild(newVoiceCardContainer);
 }
 
 firstVoiceCard();
@@ -14,10 +13,13 @@ firstVoiceCard();
 
 /// APPEND NEW AVATAR CARD FROM TEMPLATE ///
 function addVoiceCard(event) {
-  if (event.target.classList.contains('voice-card-container-plus')) {
-    var voiceCardContainers = document.querySelectorAll('.voice-card-container');
-    var voiceCardContainer = event.target.closest('.voice-card-container');
-    var currentVoiceMultiSelect = voiceCardContainer.querySelector('.model-checkboxes');
+  if (event.target.classList.contains("voice-card-container-plus")) {
+    var voiceCardContainers = document.querySelectorAll(
+      ".voice-card-container"
+    );
+    var voiceCardContainer = event.target.closest(".voice-card-container");
+    var currentVoiceMultiSelect =
+      voiceCardContainer.querySelector(".model-checkboxes");
     currentVoiceMultiSelect.style.display = "none";
 
     // Copy element to append
@@ -25,153 +27,162 @@ function addVoiceCard(event) {
     var newVoiceCardContainer = voiceCardTemplate.content.cloneNode(true);
 
     // Determine the index of the new container in the list of containers
-    var newIndex = Array.from(voiceCardContainers).indexOf(voiceCardContainer) + 1;
+    var newIndex =
+      Array.from(voiceCardContainers).indexOf(voiceCardContainer) + 1;
 
     // Set the order of the avatar and textarea based on the index
     var swapped = newIndex % 2 !== 0;
-    var voiceCardAvatar = newVoiceCardContainer.querySelector('.voice-card-avatar');
-    var voiceCardTextarea = newVoiceCardContainer.querySelector('.voice-card-textarea');
+    var voiceCardAvatar =
+      newVoiceCardContainer.querySelector(".voice-card-avatar");
+    var voiceCardTextarea = newVoiceCardContainer.querySelector(
+      ".voice-card-textarea"
+    );
     voiceCardAvatar.style.order = swapped ? 2 : 1;
     voiceCardTextarea.style.order = swapped ? 1 : 2;
 
     // Set the bubble position based on the index
-    var bubble = newVoiceCardContainer.querySelector('.bubble');
-    bubble.classList.toggle('bubble-bottom-right', !swapped);
-    bubble.classList.toggle('bubble-bottom-left', swapped);
+    var bubble = newVoiceCardContainer.querySelector(".bubble");
+    bubble.classList.toggle("bubble-bottom-right", !swapped);
+    bubble.classList.toggle("bubble-bottom-left", swapped);
     if (swapped) {
-      bubble.style.left = 'auto';
-      bubble.style.right = '-70%';
+      bubble.style.left = "auto";
+      bubble.style.right = "-70%";
     } else {
-      bubble.style.right = 'auto';
-      bubble.style.left = '-20%';
+      bubble.style.right = "auto";
+      bubble.style.left = "-20%";
     }
 
     // Insert the new container at the correct index
-    voiceCards.insertBefore(newVoiceCardContainer, voiceCardContainers[newIndex]);
-  };
-};
+    voiceCards.insertBefore(
+      newVoiceCardContainer,
+      voiceCardContainers[newIndex]
+    );
+  }
+}
 /// APPEND NEW AVATAR CARD FROM TEMPLATE ///
 
 /// REMOVE AVATAR CARD ///
 function removeVoiceCard(event) {
-  if (event.target.classList.contains('voice-card-container-remove')) {
-    var voiceCardContainers = document.querySelectorAll('.voice-card-container');
+  if (event.target.classList.contains("voice-card-container-remove")) {
+    var voiceCardContainers = document.querySelectorAll(
+      ".voice-card-container"
+    );
     if (voiceCardContainers.length > 1) {
-        var voiceCardContainer = event.target.closest('.voice-card-container');
-        voiceCards.removeChild(voiceCardContainer);
+      var voiceCardContainer = event.target.closest(".voice-card-container");
+      voiceCards.removeChild(voiceCardContainer);
     }
 
     // Remove recognition voice
     recognition.stop();
-  };
-};
+  }
+}
 /// REMOVE AVATAR CARD ///
 
 /// CHANGE VOLUME TOGGLE ///
 function changeVolume(event) {
-    if (event.target.classList.contains('toggle-div-voice')) {
-      var toggle = event.target.closest('.button');
-      toggle.classList.toggle('active');
-      var toggleIconVoiceOn = toggle.querySelector('.toggle-button-voice-on');
-      var toggleIconVoiceOff = toggle.querySelector('.toggle-button-voice-off');
-      var isOn = toggle.classList.contains('active');
-      if (isOn) {
-        toggleIconVoiceOn.style.display = 'inline';
-        toggleIconVoiceOff.style.display = 'none';
-        // add code to turn on text-to-voice
-      } else {
-        toggleIconVoiceOn.style.display = 'none';
-        toggleIconVoiceOff.style.display = 'inline';
-        // add code to turn off text-to-voice
-      }
+  if (event.target.classList.contains("toggle-div-voice")) {
+    var toggle = event.target.closest(".button");
+    toggle.classList.toggle("active");
+    var toggleIconVoiceOn = toggle.querySelector(".toggle-button-voice-on");
+    var toggleIconVoiceOff = toggle.querySelector(".toggle-button-voice-off");
+    var isOn = toggle.classList.contains("active");
+    if (isOn) {
+      toggleIconVoiceOn.style.display = "inline";
+      toggleIconVoiceOff.style.display = "none";
+      // add code to turn on text-to-voice
+    } else {
+      toggleIconVoiceOn.style.display = "none";
+      toggleIconVoiceOff.style.display = "inline";
+      // add code to turn off text-to-voice
+    }
 
-      // check disable and enable all buttons
-      checkToggleVoiceAll();
-    };
-};
+    // check disable and enable all buttons
+    checkToggleVoiceAll();
+  }
+}
 /// CHANGE VOLUME TOGGLE ///
 
 /// CREATE DYNAMIC CHANGE AVATAR ///
 function changeAvatarSelect(event) {
-    if (event.target.classList.contains("model-checkbox-value")) {
-        var checkbox = event.target.closest('.model-checkbox-value');
-        var voiceCardContainer =  event.target.closest('.voice-card-container');
-        var avatar = voiceCardContainer.querySelector('.img-avatar');
-        // clear set interval to change avatars
-        stopChangeAvatarSrc(avatar);
+  if (event.target.classList.contains("model-checkbox-value")) {
+    var checkbox = event.target.closest(".model-checkbox-value");
+    var voiceCardContainer = event.target.closest(".voice-card-container");
+    var avatar = voiceCardContainer.querySelector(".img-avatar");
+    // clear set interval to change avatars
+    stopChangeAvatarSrc(avatar);
 
-        let arr;
+    let arr;
 
-        if (checkbox.checked) {
-          console.log('Checkbox is checked!');
-          arr = JSON.parse(avatar.name);
-          arr.push(checkbox.name);
-          avatar.name = JSON.stringify(arr);
-          avatar.src = checkbox.name;  // important keep to update in moment img
+    if (checkbox.checked) {
+      console.log("Checkbox is checked!");
+      arr = JSON.parse(avatar.name);
+      arr.push(checkbox.name);
+      avatar.name = JSON.stringify(arr);
+      avatar.src = checkbox.name; // important keep to update in moment img
 
-          fetch("/voice_status/")
-            .then((response) => {
-                if (!response.ok) throw response;
-                return response.json();
-            })
-            .then((response) => {
-                voice_dict = response;
-                // Get the value from the dictionary using the key
-                const value = voice_dict[checkbox.value];
-                // Extract the values of checkpoint and waveglow
-                const checkpoint = value.checkpoint;
-                const waveglow = value.waveglow;
-                // Show or not show message
-                if (!checkpoint || !waveglow) {
-                    avatarInfoPop(avatar, checkbox.value);
-                }
-                // console.log(checkpoint, waveglow); // Output: true true
-                })
-            .catch((err) => {
-                console.log(err);
-            });
-        } else {
-          console.log('Checkbox is not checked!');
-          // remove value from list
-          arr = JSON.parse(avatar.name);
-          arr = arr.filter((val) => val !== checkbox.name);
-          avatar.name = JSON.stringify(arr);
-        };
+      fetch("/voice_status/")
+        .then((response) => {
+          if (!response.ok) throw response;
+          return response.json();
+        })
+        .then((response) => {
+          voice_dict = response;
+          // Get the value from the dictionary using the key
+          const value = voice_dict[checkbox.value];
+          // Extract the values of checkpoint and waveglow
+          const checkpoint = value.checkpoint;
+          const waveglow = value.waveglow;
+          // Show or not show message
+          if (!checkpoint || !waveglow) {
+            avatarInfoPop(avatar, checkbox.value);
+          }
+          // console.log(checkpoint, waveglow); // Output: true true
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log("Checkbox is not checked!");
+      // remove value from list
+      arr = JSON.parse(avatar.name);
+      arr = arr.filter((val) => val !== checkbox.name);
+      avatar.name = JSON.stringify(arr);
+    }
 
-        function changeAvatarSrc(avatar) {
-          arr = JSON.parse(avatar.name);
-          let currentIndex = 0;
+    function changeAvatarSrc(avatar) {
+      arr = JSON.parse(avatar.name);
+      let currentIndex = 0;
 
-          const timerId = setInterval(() => {
-            avatar.src = arr[currentIndex];
+      const timerId = setInterval(() => {
+        avatar.src = arr[currentIndex];
 
-            currentIndex++;
-            if (currentIndex === arr.length) {
-              currentIndex = 0;
-            }
-          }, 2000);
-
-          avatar.dataset.timerId = timerId;
+        currentIndex++;
+        if (currentIndex === arr.length) {
+          currentIndex = 0;
         }
+      }, 2000);
 
-        if (arr.length == 0) {
-            avatar.src = "media/avatar/Unknown.png";
-        } else {
-            // add set interval to change avatars
-            changeAvatarSrc(avatar)
-        }
-    };
-};
+      avatar.dataset.timerId = timerId;
+    }
+
+    if (arr.length == 0) {
+      avatar.src = "media/avatar/Unknown.png";
+    } else {
+      // add set interval to change avatars
+      changeAvatarSrc(avatar);
+    }
+  }
+}
 
 function avatarInfoPop(avatar, name) {
-    var introAvatarStatus = introJs();
-    introAvatarStatus.setOptions({
-        steps: [
-            {
-                element: avatar,
-                title: 'Сообщение',
-                position: 'right',
-                intro: `<div style="width: 200pt">
+  var introAvatarStatus = introJs();
+  introAvatarStatus.setOptions({
+    steps: [
+      {
+        element: avatar,
+        title: "Сообщение",
+        position: "right",
+        intro: `<div style="width: 200pt">
                             <p style="font-weight: 600;">Выбранный голос еще не загружен на устройство</p>
                             <p style="margin-top: 5pt;">Для синтеза необходима модель checkpoint и waveglow</p>
                             <p style="margin-top: 5pt;">При запуске синтеза речи, необходимые модели будут скачаны автоматически</p>
@@ -179,35 +190,35 @@ function avatarInfoPop(avatar, name) {
                             <p><b>Как установить модели ручным способом</b><text style="text-transform: lowercase;"> для синтеза речи, вы найдете в </text><a style="text-transform: lowercase;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">документации проекта</a></p>
                         </div>
                 `,
-            }
-        ],
-          showButtons: false,
-          showStepNumbers: false,
-          showBullets: false,
-          nextLabel: 'Продолжить',
-          prevLabel: 'Вернуться',
-          doneLabel: 'Закрыть'
-    });
-    introAvatarStatus.start();
-    translateReload(targetLang);  // Idea how translate open elements!
+      },
+    ],
+    showButtons: false,
+    showStepNumbers: false,
+    showBullets: false,
+    nextLabel: "Продолжить",
+    prevLabel: "Вернуться",
+    doneLabel: "Закрыть",
+  });
+  introAvatarStatus.start();
+  translateReload(targetLang); // Idea how translate open elements!
 }
 /// CREATE DYNAMIC CHANGE AVATAR ///
 
 /// LISTEN CLICK ON ELEMENTS ///
 function handleButtonClick(event) {
-  if (event.target.classList.contains('voice-card-container-plus')) {
+  if (event.target.classList.contains("voice-card-container-plus")) {
     addVoiceCard(event);
-  } else if (event.target.classList.contains('voice-card-container-remove')) {
+  } else if (event.target.classList.contains("voice-card-container-remove")) {
     removeVoiceCard(event);
-  } else if (event.target.classList.contains('toggle-div-voice')) {
+  } else if (event.target.classList.contains("toggle-div-voice")) {
     changeVolume(event);
-  } else if (event.target.classList.contains('model-checkbox-value')) {
+  } else if (event.target.classList.contains("model-checkbox-value")) {
     changeAvatarSelect(event);
   }
   // console.log(event.target.classList);
 }
 
-voiceCards.addEventListener('click', handleButtonClick);
+voiceCards.addEventListener("click", handleButtonClick);
 /// LISTEN CLICK ON ELEMENTS ///
 
 /// CLEAR AVATAR SET INTERVAL BEFORE UPDATE NEW AVATAR ///
@@ -226,7 +237,7 @@ function multiVoiceSelect(element) {
 
   var checkboxes = element.querySelector(".model-checkboxes");
   checkboxes.style.display = "block";
-  document.addEventListener("click", function(e) {
+  document.addEventListener("click", function (e) {
     if (!e.target.closest(".model-multiselect")) {
       checkboxes.style.display = "none";
     }
@@ -238,120 +249,120 @@ function multiVoiceSelect(element) {
 const recognition = new window.webkitSpeechRecognition();
 
 // Set properties
- recognition.continuous = true;
- recognition.interimResults = true;
+recognition.continuous = true;
+recognition.interimResults = true;
 
 // Set the recognition parameters
-recognition.lang = toDialectCode(targetLang);  // init by lang
+recognition.lang = toDialectCode(targetLang); // init by lang
 
 // SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
 function toDialectCode(langCode = "en") {
-    const langToDialect = {
-        'af': 'af-ZA',
-        'sq': 'sq-AL',
-        'am': 'am-ET',
-        'ar': 'ar-SA',
-        'hy': 'hy-AM',
-        'az': 'az-AZ',
-        'eu': 'eu-ES',
-        'be': 'be-BY',
-        'bn': 'bn-BD',
-        'bs': 'bs-BA',
-        'bg': 'bg-BG',
-        'ca': 'ca-ES',
-        'ceb': 'ceb-PH',
-        'ny': 'ny-MW',
-        'zh': 'zh-CN',
-        'co': 'co-FR',
-        'hr': 'hr-HR',
-        'cs': 'cs-CZ',
-        'da': 'da-DK',
-        'nl': 'nl-NL',
-        'en': 'en-US',
-        'eo': 'eo-EO',
-        'et': 'et-EE',
-        'tl': 'tl-PH',
-        'fi': 'fi-FI',
-        'fr': 'fr-FR',
-        'fy': 'fy-NL',
-        'gl': 'gl-ES',
-        'ka': 'ka-GE',
-        'de': 'de-DE',
-        'el': 'el-GR',
-        'gu': 'gu-IN',
-        'ht': 'ht-HT',
-        'ha': 'ha-NG',
-        'haw': 'haw-US',
-        'iw': 'iw-IL',
-        'hi': 'hi-IN',
-        'hmn': 'hmn-CN',
-        'hu': 'hu-HU',
-        'is': 'is-IS',
-        'ig': 'ig-NG',
-        'id': 'id-ID',
-        'ga': 'ga-IE',
-        'it': 'it-IT',
-        'ja': 'ja-JP',
-        'jw': 'jw-ID',
-        'kn': 'kn-IN',
-        'kk': 'kk-KZ',
-        'km': 'km-KH',
-        'ko': 'ko-KR',
-        'ku': 'ku-IQ',
-        'ky': 'ky-KG',
-        'lo': 'lo-LA',
-        'lv': 'lv-LV',
-        'lt': 'lt-LT',
-        'lb': 'lb-LU',
-        'mk': 'mk-MK',
-        'mg': 'mg-MG',
-        'ms': 'ms-MY',
-        'ml': 'ml-IN',
-        'mt': 'mt-MT',
-        'mi': 'mi-NZ',
-        'mr': 'mr-IN',
-        'mn': 'mn-MN',
-        'my': 'my-MM',
-        'ne': 'ne-NP',
-        'no': 'no-NO',
-        'or': 'or-IN',
-        'ps': 'ps-AF',
-        'fa': 'fa-IR',
-        'pl': 'pl-PL',
-        'pt': 'pt-PT',
-        'pa': 'pa-PK',
-        'ro': 'ro-RO',
-        'ru': 'ru-RU',
-        'sm': 'sm-WS',
-        'gd': 'gd-GB',
-        'sr': 'sr-RS',
-        'st': 'st-ZA',
-        'sn': 'sn-ZW',
-        'sd': 'sd-PK',
-        'si': 'si-LK',
-        'sk': 'sk-SK',
-        'sl': 'sl-SI',
-        'so': 'so-SO',
-        'es': 'es-ES',
-        'su': 'su-ID',
-        'sw': 'sw-TZ',
-        'sv': 'sv-SE',
-        'tg': 'tg-TJ',
-        'ta': 'ta-IN',
-        'te': 'te-IN',
-        'th': 'th-TH',
-        'tr': 'tr-TR',
-        'uk': 'uk-UA',
-        'ur': 'ur-PK',
-        'uz': 'uz-UZ',
-        'vi': 'vi-VN',
-        'cy': 'cy-GB',
-        'xh': 'xh-ZA',
-        'yi': 'yi-YI',
-        'zu': 'zu-ZA'
-    };
+  const langToDialect = {
+    af: "af-ZA",
+    sq: "sq-AL",
+    am: "am-ET",
+    ar: "ar-SA",
+    hy: "hy-AM",
+    az: "az-AZ",
+    eu: "eu-ES",
+    be: "be-BY",
+    bn: "bn-BD",
+    bs: "bs-BA",
+    bg: "bg-BG",
+    ca: "ca-ES",
+    ceb: "ceb-PH",
+    ny: "ny-MW",
+    zh: "zh-CN",
+    co: "co-FR",
+    hr: "hr-HR",
+    cs: "cs-CZ",
+    da: "da-DK",
+    nl: "nl-NL",
+    en: "en-US",
+    eo: "eo-EO",
+    et: "et-EE",
+    tl: "tl-PH",
+    fi: "fi-FI",
+    fr: "fr-FR",
+    fy: "fy-NL",
+    gl: "gl-ES",
+    ka: "ka-GE",
+    de: "de-DE",
+    el: "el-GR",
+    gu: "gu-IN",
+    ht: "ht-HT",
+    ha: "ha-NG",
+    haw: "haw-US",
+    iw: "iw-IL",
+    hi: "hi-IN",
+    hmn: "hmn-CN",
+    hu: "hu-HU",
+    is: "is-IS",
+    ig: "ig-NG",
+    id: "id-ID",
+    ga: "ga-IE",
+    it: "it-IT",
+    ja: "ja-JP",
+    jw: "jw-ID",
+    kn: "kn-IN",
+    kk: "kk-KZ",
+    km: "km-KH",
+    ko: "ko-KR",
+    ku: "ku-IQ",
+    ky: "ky-KG",
+    lo: "lo-LA",
+    lv: "lv-LV",
+    lt: "lt-LT",
+    lb: "lb-LU",
+    mk: "mk-MK",
+    mg: "mg-MG",
+    ms: "ms-MY",
+    ml: "ml-IN",
+    mt: "mt-MT",
+    mi: "mi-NZ",
+    mr: "mr-IN",
+    mn: "mn-MN",
+    my: "my-MM",
+    ne: "ne-NP",
+    no: "no-NO",
+    or: "or-IN",
+    ps: "ps-AF",
+    fa: "fa-IR",
+    pl: "pl-PL",
+    pt: "pt-PT",
+    pa: "pa-PK",
+    ro: "ro-RO",
+    ru: "ru-RU",
+    sm: "sm-WS",
+    gd: "gd-GB",
+    sr: "sr-RS",
+    st: "st-ZA",
+    sn: "sn-ZW",
+    sd: "sd-PK",
+    si: "si-LK",
+    sk: "sk-SK",
+    sl: "sl-SI",
+    so: "so-SO",
+    es: "es-ES",
+    su: "su-ID",
+    sw: "sw-TZ",
+    sv: "sv-SE",
+    tg: "tg-TJ",
+    ta: "ta-IN",
+    te: "te-IN",
+    th: "th-TH",
+    tr: "tr-TR",
+    uk: "uk-UA",
+    ur: "ur-PK",
+    uz: "uz-UZ",
+    vi: "vi-VN",
+    cy: "cy-GB",
+    xh: "xh-ZA",
+    yi: "yi-YI",
+    zu: "zu-ZA",
+  };
 
-    return langToDialect[langCode] || langCode;
+  return langToDialect[langCode] || langCode;
 }
 
 function audioDragAndDropSTT(event, elem) {
@@ -378,7 +389,7 @@ function audioDragAndDropSTT(event, elem) {
 }
 
 async function submittedSTT(elem, activeTextarea) {
-  const audioElement = elem.querySelector('#audioSTTSrc');
+  const audioElement = elem.querySelector("#audioSTTSrc");
   const audioSrc = audioElement.src;
 
   if (!audioSrc) {
@@ -386,7 +397,12 @@ async function submittedSTT(elem, activeTextarea) {
     return;
   }
 
-  elem.querySelector("#recognitionSTTAudio").innerText = await translateWithGoogle("Распознавание... Не выключайте", 'auto', targetLang);
+  elem.querySelector("#recognitionSTTAudio").innerText =
+    await translateWithGoogle(
+      "Распознавание... Не выключайте",
+      "auto",
+      targetLang
+    );
 
   const stream = audioElement.captureStream();
   // const recognition = new window.webkitSpeechRecognition();
@@ -401,7 +417,7 @@ async function submittedSTT(elem, activeTextarea) {
   };
 
   recognition.onend = () => {
-    console.log('Recognition ended');
+    console.log("Recognition ended");
   };
 
   recognition.interimResults = false;
@@ -413,28 +429,28 @@ async function submittedSTT(elem, activeTextarea) {
   audioElement.play();
 
   // Stop recognition when the audio ends
-  audioElement.addEventListener('ended', () => {
+  audioElement.addEventListener("ended", () => {
     recognition.stop();
     audioTrack.stop();
-    const closeIntroButton = document.querySelector('.introjs-skipbutton');
+    const closeIntroButton = document.querySelector(".introjs-skipbutton");
     closeIntroButton.click();
   });
 }
 
-
 function settingTextToSpeech(elem, languages) {
-    var sectionTextTTS = elem.parentElement.parentElement.parentElement.parentElement
-    var textareaTTS = sectionTextTTS.querySelector('.text-input');
-    var curLang = elem.getAttribute("value-translate");
+  var sectionTextTTS =
+    elem.parentElement.parentElement.parentElement.parentElement;
+  var textareaTTS = sectionTextTTS.querySelector(".text-input");
+  var curLang = elem.getAttribute("value-translate");
 
-    var introSettingTextToSpeech = introJs();
-    introSettingTextToSpeech.setOptions({
-        steps: [
-            {
-                element: elem,
-                title: 'Настройки',
-                position: 'right',
-                intro: `<div style="min-height: 180pt;">
+  var introSettingTextToSpeech = introJs();
+  introSettingTextToSpeech.setOptions({
+    steps: [
+      {
+        element: elem,
+        title: "Настройки",
+        position: "right",
+        intro: `<div style="min-height: 180pt;">
                     <div style="display: flex;flex-direction: row;">
                         <div style="width: 250pt;margin: 10pt;">
                             <div id="setting-tts-lang-select-field" style="display:block;margin-top:5pt;">
@@ -465,7 +481,6 @@ function settingTextToSpeech(elem, languages) {
                                 <b>Примечание:</b> Как добавить любой язык в приложение?
                                 <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
                             </i>
-                            <i id="message-language-cloning-voice" style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;display: none;">Клонирование голоса возможно с любого языка, однако синтез голоса на данный момент поддерживается на английском и русском.</i>
                             <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
                                 Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
                                 Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
@@ -478,7 +493,7 @@ function settingTextToSpeech(elem, languages) {
                                   <input onclick="" type="checkbox" id="setting-rtvc-check-info" name="setting-rtvc-check">
                                   <label for="setting-rtvc-check">Клонировать голос</label>
                                 </div>
-                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Примечание:</b> При клонировании голоса, аудио будет синтезировано на основе текста и прикрепленного / записанного аудио. В этом случая можно не выбирать голос для озвучки.</i>
+                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Примечание:</b> При клонировании голоса, аудио будет синтезировано на основе текста и прикрепленного или записанного аудио. В этом случая можно не выбирать голос для озвучки. Поддерживается английский, русский и китайский.</i>
                                 <hr style="margin-top: 15pt;">
                             </div>
                             <div style="margin-bottom:5pt;margin-top: 15pt">
@@ -489,122 +504,144 @@ function settingTextToSpeech(elem, languages) {
                         </div>
                     </div>
                 </div>`,
-               }
-        ],
-        showButtons: false,
-        showStepNumbers: false,
-        showBullets: false,
-        nextLabel: 'Продолжить',
-        prevLabel: 'Вернуться',
-        doneLabel: 'Закрыть'
-    });
-    introSettingTextToSpeech.start();
+      },
+    ],
+    showButtons: false,
+    showStepNumbers: false,
+    showBullets: false,
+    nextLabel: "Продолжить",
+    prevLabel: "Вернуться",
+    doneLabel: "Закрыть",
+  });
+  introSettingTextToSpeech.start();
 
-    // Set audio upload onChange
-    const uploadSTTAudio = document.getElementById("uploadSTTAudio");
-    uploadSTTAudio.addEventListener('change', function() {
-      audioDragAndDropSTT(event, elem)
-    });
-
-    // Set recognition button
-    const recognitionSTTAudio = document.getElementById("recognitionSTTAudio");
-
-    recognitionSTTAudio.addEventListener('click', function() {
-      submittedSTT(this.parentElement.parentElement, textareaTTS);
-    });
-
-    // Get the select element
-    const selectElementLanguageTTS = document.getElementById("setting-tts-user-lang-select");
-
-    // Populate the select element with options
-    for (const [key, value] of Object.entries(languages)) {
-      const option = document.createElement("option");
-      option.text = key;
-      option.value = value;
-      if (curLang === value) {
-        option.selected = true;
-      }
-      option.classList.add("notranslate");
-      selectElementLanguageTTS.add(option);
+  // Get checkbox voice clone
+  const checkboxCloneAudioVoice = document.getElementById(
+    "setting-rtvc-check-info"
+  );
+  const attrValueCloneAudioVoice = elem.getAttribute("voice-audio-clone");
+  checkboxCloneAudioVoice.checked = attrValueCloneAudioVoice === "true";
+  checkboxCloneAudioVoice.addEventListener("change", function () {
+    if (this.checked) {
+      elem.setAttribute("voice-audio-clone", true);
+    } else {
+      elem.setAttribute("voice-audio-clone", false);
     }
+  });
 
-    // Add event listener for the change event
-    selectElementLanguageTTS.addEventListener("change", function() {
-      const selectedValueLanguageTTS = this.value; // Get the value of the selected option
-      const selectedTextLanguageTTS = this.options[this.selectedIndex].text; // Get the text of the selected option
-      // this value will use for automatic translate to send in backend
-      elem.setAttribute("value-translate", selectedValueLanguageTTS)
+  // Set audio upload onChange
+  const uploadSTTAudio = document.getElementById("uploadSTTAudio");
+  uploadSTTAudio.addEventListener("change", function () {
+    audioDragAndDropSTT(event, elem);
+  });
 
-      // Do something with the selected value or text
-      recognition.lang = toDialectCode(selectedValueLanguageTTS);
-    });
+  // Set recognition button
+  const recognitionSTTAudio = document.getElementById("recognitionSTTAudio");
 
-    // Get checkbox
-    const checkboxAutomationTranslate = document.getElementById("setting-tts-translation-check-info");
-    const attrValueAutomationTranslate = elem.getAttribute("automatic-translate");
-    checkboxAutomationTranslate.checked = (attrValueAutomationTranslate === "true");
-    checkboxAutomationTranslate.addEventListener("change", function() {
-        if (this.checked) {
-            elem.setAttribute("automatic-translate", true);
-        } else {
-            elem.setAttribute("automatic-translate", false);
-        }
-    });
+  recognitionSTTAudio.addEventListener("click", function () {
+    submittedSTT(this.parentElement.parentElement, textareaTTS);
+  });
 
-    // Get checkbox
-    const checkboxCloneAudioVoice = document.getElementById("setting-rtvc-check-info");
-    const attrValueCloneAudioVoice = elem.getAttribute("voice-audio-clone");
-    checkboxCloneAudioVoice.checked = (attrValueCloneAudioVoice === "true");
-    checkboxCloneAudioVoice.addEventListener("change", function() {
-        if (this.checked) {
-            elem.setAttribute("voice-audio-clone", true);
-            document.getElementById("message-language-cloning-voice").style.display = "flow";
-        } else {
-            elem.setAttribute("voice-audio-clone", false);
-            document.getElementById("message-language-cloning-voice").style.display = "none";
-        }
-    });
+  // Get the select element
+  const selectElementLanguageTTS = document.getElementById(
+    "setting-tts-user-lang-select"
+  );
 
-    // record voice button
-    let mediaRecorder;
-    let audioChunks = [];
-    let isRecording = false;
-    let audioStream; // To keep track of the audio stream
+  // Populate the select element with options
+  for (const [key, value] of Object.entries(languages)) {
+    const option = document.createElement("option");
+    option.text = key;
+    option.value = value;
+    if (curLang === value) {
+      option.selected = true;
+    }
+    option.classList.add("notranslate");
+    selectElementLanguageTTS.add(option);
+  }
 
-    const audio = document.getElementById("audioSTTSrc");
-    // Show the play button if hidden
-    const playBtn = document.getElementById("audioSTTPlay");
+  // Add event listener for the change event
+  selectElementLanguageTTS.addEventListener("change", function () {
+    const selectedValueLanguageTTS = this.value; // Get the value of the selected option
+    const selectedTextLanguageTTS = this.options[this.selectedIndex].text; // Get the text of the selected option
+    // this value will use for automatic translate to send in backend
+    elem.setAttribute("value-translate", selectedValueLanguageTTS);
 
-    // Existing play/pause logic
-    playBtn.addEventListener("click", function() {
-      if (audio.paused) {
-        audio.play();
-        playBtn.children[0].style.display = "none";
-        playBtn.children[1].style.display = "inline";
-      } else {
-        audio.pause();
-        playBtn.children[0].style.display = "inline";
-        playBtn.children[1].style.display = "none";
-      }
-    });
+    // Do something with the selected value or text
+    recognition.lang = toDialectCode(selectedValueLanguageTTS);
 
-      // Existing audio ended logic
-      audio.addEventListener("ended", function() {
-        playBtn.children[0].style.display = "inline";
-        playBtn.children[1].style.display = "none";
-      });
+    // Support languages for voice cloning
+    if (["en", "ru", "zh"].includes(selectedValueLanguageTTS)) {
+      // If the selected value is one of "en", "ru", or "zh", enable the checkbox
+      checkboxCloneAudioVoice.disabled = false;
+    } else {
+      // If the selected value is not one of "en", "ru", or "zh", uncheck and disable the checkbox
+      checkboxCloneAudioVoice.checked = false;
+      checkboxCloneAudioVoice.disabled = true;
+    }
+  });
 
-    document.getElementById("recordSTTAudio").addEventListener("click", async function() {
+  // Get checkbox auto translate
+  const checkboxAutomationTranslate = document.getElementById(
+    "setting-tts-translation-check-info"
+  );
+  const attrValueAutomationTranslate = elem.getAttribute("automatic-translate");
+  checkboxAutomationTranslate.checked = attrValueAutomationTranslate === "true";
+  checkboxAutomationTranslate.addEventListener("change", function () {
+    if (this.checked) {
+      elem.setAttribute("automatic-translate", true);
+    } else {
+      elem.setAttribute("automatic-translate", false);
+    }
+  });
+
+  // record voice button
+  let mediaRecorder;
+  let audioChunks = [];
+  let isRecording = false;
+  let audioStream; // To keep track of the audio stream
+
+  const audio = document.getElementById("audioSTTSrc");
+  // Show the play button if hidden
+  const playBtn = document.getElementById("audioSTTPlay");
+
+  // Existing play/pause logic
+  playBtn.addEventListener("click", function () {
+    if (audio.paused) {
+      audio.play();
+      playBtn.children[0].style.display = "none";
+      playBtn.children[1].style.display = "inline";
+    } else {
+      audio.pause();
+      playBtn.children[0].style.display = "inline";
+      playBtn.children[1].style.display = "none";
+    }
+  });
+
+  // Existing audio ended logic
+  audio.addEventListener("ended", function () {
+    playBtn.children[0].style.display = "inline";
+    playBtn.children[1].style.display = "none";
+  });
+
+  document
+    .getElementById("recordSTTAudio")
+    .addEventListener("click", async function () {
       if (!isRecording) {
         isRecording = true;
-        this.textContent = await translateWithGoogle("Стоп", 'auto', targetLang);;
+        this.textContent = await translateWithGoogle(
+          "Стоп",
+          "auto",
+          targetLang
+        );
 
         // Initialize MediaRecorder
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         audioStream = stream; // Store the stream for later use
         mediaRecorder = new MediaRecorder(stream);
 
-        mediaRecorder.ondataavailable = event => {
+        mediaRecorder.ondataavailable = (event) => {
           audioChunks.push(event.data);
         };
 
@@ -630,7 +667,11 @@ function settingTextToSpeech(elem, languages) {
         mediaRecorder.start();
       } else {
         isRecording = false;
-        this.textContent = await translateWithGoogle("Записать голос", 'auto', targetLang);
+        this.textContent = await translateWithGoogle(
+          "Записать голос",
+          "auto",
+          targetLang
+        );
 
         // Stop the MediaRecorder and close the stream
         mediaRecorder.stop();
@@ -641,24 +682,23 @@ function settingTextToSpeech(elem, languages) {
         playBtn.children[1].style.display = "none";
 
         // Close the audio stream to completely stop recording
-        audioStream.getTracks().forEach(track => track.stop());
+        audioStream.getTracks().forEach((track) => track.stop());
       }
     });
 
-    // If blob already is, when show play button?
-    const voiceCloneBlobUrl = elem.getAttribute("blob-audio-src");
-    if (voiceCloneBlobUrl !== "") {
-        // Show the play button
-        document.getElementById("audioSTTPlay").style.display = "inline";
+  // If blob already is, when show play button?
+  const voiceCloneBlobUrl = elem.getAttribute("blob-audio-src");
+  if (voiceCloneBlobUrl !== "") {
+    // Show the play button
+    document.getElementById("audioSTTPlay").style.display = "inline";
 
-        // Show the recognition button and message
-        document.getElementById("cloneVoiceMessage").style.display = "inline";
-        recognitionSTTAudio.style.display = "inline";
+    // Show the recognition button and message
+    document.getElementById("cloneVoiceMessage").style.display = "inline";
+    recognitionSTTAudio.style.display = "inline";
 
-        // Set prev blob
-        document.getElementById("audioSTTSrc").src = voiceCloneBlobUrl;
-    }
-
+    // Set prev blob
+    document.getElementById("audioSTTSrc").src = voiceCloneBlobUrl;
+  }
 }
 // SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
 
@@ -667,147 +707,162 @@ const buttonDisableAllButton = document.getElementById("button-disable-all");
 
 /// ENABLE ALL TOGGLE ///
 buttonEnableAllButton.addEventListener("click", function () {
-var toggleVoiceAll = document.querySelectorAll('.button.toggle-div-voice');
-toggleVoiceAll.forEach(function(toggleVoice) {
-  if (!toggleVoice.classList.contains('active')) {
-    toggleVoice.classList.add('active');
-    const toggleButtonOn = toggleVoice.querySelector('.toggle-button-voice-on');
-    if (toggleButtonOn) {
-      toggleButtonOn.style.display = 'inline';
+  var toggleVoiceAll = document.querySelectorAll(".button.toggle-div-voice");
+  toggleVoiceAll.forEach(function (toggleVoice) {
+    if (!toggleVoice.classList.contains("active")) {
+      toggleVoice.classList.add("active");
+      const toggleButtonOn = toggleVoice.querySelector(
+        ".toggle-button-voice-on"
+      );
+      if (toggleButtonOn) {
+        toggleButtonOn.style.display = "inline";
+      }
+      const toggleButtonOff = toggleVoice.querySelector(
+        ".toggle-button-voice-off"
+      );
+      if (toggleButtonOff) {
+        toggleButtonOff.style.display = "none";
+      }
     }
-    const toggleButtonOff = toggleVoice.querySelector('.toggle-button-voice-off')
-    if (toggleButtonOff) {
-      toggleButtonOff.style.display = 'none';
-    }
-  }
-});
+  });
 
-buttonEnableAllButton.style.display = 'none';
-buttonDisableAllButton.style.display = 'inline';
+  buttonEnableAllButton.style.display = "none";
+  buttonDisableAllButton.style.display = "inline";
 });
 /// ENABLE ALL TOGGLE ///
 
 /// DISABLE ALL TOGGLE ///
 buttonDisableAllButton.addEventListener("click", function () {
-var toggleVoiceAll = document.querySelectorAll('.button.toggle-div-voice');
-toggleVoiceAll.forEach(function(toggleVoice) {
-  if (toggleVoice.classList.contains('active')) {
-    toggleVoice.classList.remove('active');
-    const toggleButtonOn = toggleVoice.querySelector('.toggle-button-voice-on');
-    if (toggleButtonOn) {
-      toggleButtonOn.style.display = 'none';
+  var toggleVoiceAll = document.querySelectorAll(".button.toggle-div-voice");
+  toggleVoiceAll.forEach(function (toggleVoice) {
+    if (toggleVoice.classList.contains("active")) {
+      toggleVoice.classList.remove("active");
+      const toggleButtonOn = toggleVoice.querySelector(
+        ".toggle-button-voice-on"
+      );
+      if (toggleButtonOn) {
+        toggleButtonOn.style.display = "none";
+      }
+      const toggleButtonOff = toggleVoice.querySelector(
+        ".toggle-button-voice-off"
+      );
+      if (toggleButtonOff) {
+        toggleButtonOff.style.display = "inline";
+      }
     }
-    const toggleButtonOff = toggleVoice.querySelector('.toggle-button-voice-off')
-    if (toggleButtonOff) {
-      toggleButtonOff.style.display = 'inline';
-    }
-  }
-});
+  });
 
-buttonEnableAllButton.style.display = 'inline';
-buttonDisableAllButton.style.display = 'none';
+  buttonEnableAllButton.style.display = "inline";
+  buttonDisableAllButton.style.display = "none";
 });
 /// DISABLE ALL TOGGLE ///
 
 /// LOGICAL IF USER CHECKED ALL TOGGLE ///
 function checkToggleVoiceAll() {
-  var toggleVoiceAll = document.querySelectorAll('.button.toggle-div-voice');
-  if (Array.from(toggleVoiceAll).every(toggleVoiceElem => toggleVoiceElem.classList.contains('active'))) {
-    buttonEnableAllButton.style.display = 'none';
-    buttonDisableAllButton.style.display = 'inline';
-  } else if (Array.from(toggleVoiceAll).every(toggleVoiceElem => !toggleVoiceElem.classList.contains('active'))) {
-    buttonEnableAllButton.style.display = 'inline';
-    buttonDisableAllButton.style.display = 'none';
+  var toggleVoiceAll = document.querySelectorAll(".button.toggle-div-voice");
+  if (
+    Array.from(toggleVoiceAll).every((toggleVoiceElem) =>
+      toggleVoiceElem.classList.contains("active")
+    )
+  ) {
+    buttonEnableAllButton.style.display = "none";
+    buttonDisableAllButton.style.display = "inline";
+  } else if (
+    Array.from(toggleVoiceAll).every(
+      (toggleVoiceElem) => !toggleVoiceElem.classList.contains("active")
+    )
+  ) {
+    buttonEnableAllButton.style.display = "inline";
+    buttonDisableAllButton.style.display = "none";
   } else {
-    buttonEnableAllButton.style.display = 'inline';
-    buttonDisableAllButton.style.display = 'none';
+    buttonEnableAllButton.style.display = "inline";
+    buttonDisableAllButton.style.display = "none";
   }
-};
+}
 /// LOGICAL IF USER CHECKED ALL TOGGLE ///
 
 /// OPEN FOLDER ///
-const link = document.getElementById('a-link-open-folder');
-link.addEventListener('click', (event) => {
+const link = document.getElementById("a-link-open-folder");
+link.addEventListener("click", (event) => {
   event.preventDefault(); // prevent the link from following its href attribute
-  fetch('/open_folder', { method: 'POST' })
-    .then(response => {
+  fetch("/open_folder", { method: "POST" })
+    .then((response) => {
       if (response.ok) {
         // handle the successful response from the server
       } else {
-        throw new Error('Network response was not ok.');
+        throw new Error("Network response was not ok.");
       }
     })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
     });
 });
 /// OPEN FOLDER ///
 
 /// CURRENT PROCESSOR ///
-const processor = document.getElementById('a-change-processor');
-processor.addEventListener('click', (event) => {
+const processor = document.getElementById("a-change-processor");
+processor.addEventListener("click", (event) => {
   event.preventDefault(); // prevent the link from following its href attribute
-  fetch('/change_processor', { method: 'POST' })
-    .then(response => response.json())
-    .then(data => {
+  fetch("/change_processor", { method: "POST" })
+    .then((response) => response.json())
+    .then((data) => {
       currentProcessor();
     })
-    .catch(error => {
-        console.log(error);
+    .catch((error) => {
+      console.log(error);
     });
 });
 
 function availableFeaturesByCUDA(elem = undefined) {
   // inspect what can be use torch cuda is available
-  fetch('/current_processor', { method: 'GET' })
-    .then(response => response.json())
-    .then(data => {
+  fetch("/current_processor", { method: "GET" })
+    .then((response) => response.json())
+    .then((data) => {
       var deviceStatus = data.current_processor;
       var deviceUpgrade = data.upgrade_gpu;
-      if (elem && deviceStatus == 'cuda') {
-        elem.style.display = 'block';
+      if (elem && deviceStatus == "cuda") {
+        elem.style.display = "block";
       } else if (elem) {
-        elem.style.display = 'none';
-      };
+        elem.style.display = "none";
+      }
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
     });
-};
+}
 
 function currentProcessor() {
-    fetch('/current_processor', { method: 'GET' })
-        .then(response => response.json())
-        .then(data => {
-          var deviceStatus = data.current_processor;
-          var deviceUpgrade = data.upgrade_gpu;
-          if (deviceStatus == 'cuda') {
-            processor.style.color = 'green';
-          } else {
-            processor.style.color = 'red';
-          };
-        })
-        .catch(error => {
-          console.log(error);
+  fetch("/current_processor", { method: "GET" })
+    .then((response) => response.json())
+    .then((data) => {
+      var deviceStatus = data.current_processor;
+      var deviceUpgrade = data.upgrade_gpu;
+      if (deviceStatus == "cuda") {
+        processor.style.color = "green";
+      } else {
+        processor.style.color = "red";
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
 
 currentProcessor();
 /// CURRENT PROCESSOR ///
 
-
 ///SUPPORT USER///
-if (document.cookie.indexOf('introCompleted=true') !== -1) {
-   // Not show intro
+if (document.cookie.indexOf("introCompleted=true") !== -1) {
+  // Not show intro
 } else {
-    var introWelcome = introJs();
-    introWelcome.setOptions({
-        steps: [
-            {
-                element: '#a-link-open-tutorial',
-                position: 'right',
-                title: 'Welcome to Wunjo AI!',
-                intro: `
+  var introWelcome = introJs();
+  introWelcome.setOptions({
+    steps: [
+      {
+        element: "#a-link-open-tutorial",
+        position: "right",
+        title: "Welcome to Wunjo AI!",
+        intro: `
                 <div style="width: 300pt;padding: 5pt;">
                     <p style="margin-bottom: 10pt;"><b>Explore the capabilities of neural networks:</b></p>
                     <ul style="display: flex;flex-direction: column;margin-bottom: 10pt;">
@@ -825,215 +880,353 @@ if (document.cookie.indexOf('introCompleted=true') !== -1) {
                     <select id="languageWelcomeGuide" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                     </select>
                 </div>
-                `
-            }
-        ],
-          showButtons: false,
-          showStepNumbers: false,
-          nextLabel: 'Next',
-          prevLabel: 'Back',
-          doneLabel: 'Close'
-    });
-    introWelcome.start();
-    // Get the select element
-    const selectWelcomeHelp = document.getElementById("languageWelcomeGuide");
-    const languageGeneral = document.getElementById('language-dropdown');
+                `,
+      },
+    ],
+    showButtons: false,
+    showStepNumbers: false,
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
+  });
+  introWelcome.start();
+  // Get the select element
+  const selectWelcomeHelp = document.getElementById("languageWelcomeGuide");
+  const languageGeneral = document.getElementById("language-dropdown");
 
-    // Populate the select element with options
-    for (const [key, value] of Object.entries(listExistingLang)) {
-      const option = document.createElement("option");
-      option.text = key;
-      option.value = value;
-      if (targetLang === value) {
-        option.selected = true;
-      }
-      option.setAttribute('name', key);
-      option.classList.add("notranslate");
-      selectWelcomeHelp.add(option);
+  // Populate the select element with options
+  for (const [key, value] of Object.entries(listExistingLang)) {
+    const option = document.createElement("option");
+    option.text = key;
+    option.value = value;
+    if (targetLang === value) {
+      option.selected = true;
+    }
+    option.setAttribute("name", key);
+    option.classList.add("notranslate");
+    selectWelcomeHelp.add(option);
+  }
+
+  // Add event listener for the change event
+  selectWelcomeHelp.addEventListener("change", function () {
+    const selectValueWelcomeHelp = this.value; // Get the value of the selected option
+    let selectedOption = this.options[this.selectedIndex];
+    let selectedLangName = selectedOption.getAttribute("name");
+
+    const option = Array.from(languageGeneral.options).find(
+      (opt) => opt.value === selectValueWelcomeHelp
+    );
+    if (option) {
+      languageGeneral.selectedIndex = option.index;
     }
 
-    // Add event listener for the change event
-    selectWelcomeHelp.addEventListener("change", function() {
-      const selectValueWelcomeHelp = this.value; // Get the value of the selected option
-      let selectedOption = this.options[this.selectedIndex];
-      let selectedLangName = selectedOption.getAttribute('name');
-
-      const option = Array.from(languageGeneral.options).find(opt => opt.value === selectValueWelcomeHelp);
-      if (option) {
-            languageGeneral.selectedIndex = option.index;
-      }
-
-      translateNewUserLang(selectValueWelcomeHelp);
-      updateLangSetting(selectValueWelcomeHelp, selectedLangName);
-    });
+    translateNewUserLang(selectValueWelcomeHelp);
+    updateLangSetting(selectValueWelcomeHelp, selectedLangName);
+  });
 }
 document.cookie = "introCompleted=true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 
 async function supportUser() {
-    // Main
-    const btnNext = await translateWithGoogle("Next", 'auto', targetLang);
-    const btnBack = await translateWithGoogle("Back", 'auto', targetLang);
-    const btnClose = await translateWithGoogle("Close", 'auto', targetLang);
-    // Page 1
-    const welcomeSupportOne = await translateWithGoogle("Welcome to the Wunjo AI guide.", 'auto', targetLang);
-    const welcomeSupportTwo = await translateWithGoogle("For detailed tutorials, check out on", 'auto', targetLang);
-    const welcomeSupportThree = await translateWithGoogle("For documentation, visit", 'auto', targetLang);
-    const welcomeSupportFour = await translateWithGoogle("If you encounter any issues or have suggestions, please report them on", 'auto', targetLang);
-    // Page 2
-    const translateApplicationBtn = await translateWithGoogle("Application language selection.", 'auto', targetLang);
-    // Page 3
-    const textInputSupport = await translateWithGoogle("Enter the text for speech synthesis here.", 'auto', targetLang);
-    // Page 4
-    const aButtonSettingTtsSupportOne = await translateWithGoogle("Speech Synthesis Settings.", 'auto', targetLang);
-    const aButtonSettingTtsSupportTwo = await translateWithGoogle("Clone your voice in real-time or from audio, recognize text from voice and audio, and automatically translate synthesized speech.", 'auto', targetLang);
-    // Page 5
-    const modalOverSelectSupportOne = await translateWithGoogle("Voice Sets for Different Languages.", 'auto', targetLang);
-    const modalOverSelectSupportTwo = await translateWithGoogle("Use auto-translation to employ chosen models in languages other than their default. ", 'auto', targetLang);
-    const modalOverSelectSupportThree = await translateWithGoogle("Note: Initial launch will prompt a download for voice synthesis models. This may take a while.", 'auto', targetLang);
-    // Page 6
-    const voiceCardContainerPlusSupport = await translateWithGoogle("Create a dialogue by adding a new field.", 'auto', targetLang);
-    // Page 7
-    const voiceCardContainerRemoveSupport = await translateWithGoogle("Remove unnecessary dialogue fields.", 'auto', targetLang);
-    // Page 8
-    const buttonToggleDivVoiceSupport = await translateWithGoogle("Activate this to voice the selected text field.", 'auto', targetLang);
-    // Page 9
-    const buttonEnableAllSupport = await translateWithGoogle("Activate all text fields for voicing or deselect them all at once.", 'auto', targetLang);
-    // Page 10
-    const buttonRunSynthesisSupport = await translateWithGoogle("Submit the text to the neural network for voicing. This might take a moment.", 'auto', targetLang);
-    // Page 11
-    const buttonShowVoiceWindowSupport = await translateWithGoogle("Switch between synthesized voice results and video.", 'auto', targetLang);
-    // Page 12
-    const buttonRunDeepfakeSynthesisSupportOne = await translateWithGoogle("Face & Lip Animation Creator.", 'auto', targetLang);
-    const buttonRunDeepfakeSynthesisSupportTwo = await translateWithGoogle("Upload an image, video, or GIF as input.", 'auto', targetLang);
-    const buttonRunDeepfakeSynthesisSupportThree = await translateWithGoogle("Note: The initial launch will download 5GB of data. This may take a while.", 'auto', targetLang);
-    // Page 13
-    const buttonRunFaceSwapSupportOne = await translateWithGoogle("Face Swap with One Photo.", 'auto', targetLang);
-    const buttonRunFaceSwapSupportTwo = await translateWithGoogle("For target and face source, upload an image, video, or GIF. ", 'auto', targetLang);
-    const buttonRunFaceSwapSupportThree = await translateWithGoogle("Note: The initial launch will download 1GB of data. Please be patient.", 'auto', targetLang);
-    // Page 14
-    const buttonRunRetouchOne = await translateWithGoogle("Face Retouch & Object Removal.", 'auto', targetLang);
-    const buttonRunRetouchTwo = await translateWithGoogle("Enhance deepfake results by smoothing out imperfections.", 'auto', targetLang);
-    // Page 15
-    const buttonRunEditorVideoOne = await translateWithGoogle("Video Editor.", 'auto', targetLang);
-    const buttonRunEditorVideoTwo = await translateWithGoogle("Improve face or background quality, split videos into frames, extract audio, and recompile frames back into videos.", 'auto', targetLang);
-    // Page 16
-    const aChangeProcessorSupportOne = await translateWithGoogle("Switch from CPU to GPU for faster processing.", 'auto', targetLang);
-    const aChangeProcessorSupportTwo = await translateWithGoogle("Check the documentation for drivers installation.", 'auto', targetLang);
-    const aChangeProcessorSupportThree = await translateWithGoogle("After switching to GPU, voice training on your dataset becomes available.", 'auto', targetLang);
-    // Page 17
-    const aLinkOpenfFolderSupport = await translateWithGoogle("Remove unnecessary files from this directory.", 'auto', targetLang);
-    // Page 17
-    const consoleResultSupport = await translateWithGoogle("In this panel, you can monitor the process of the program.", 'auto', targetLang);
-    // Page 18
-    const aLinkOpenAuthorSupportOne = await translateWithGoogle("Discover other projects by the author at", 'auto', targetLang);
-    const aLinkOpenAuthorSupportTwo = await translateWithGoogle("Enjoy your experience application!", 'auto', targetLang);
+  // Main
+  const btnNext = await translateWithGoogle("Next", "auto", targetLang);
+  const btnBack = await translateWithGoogle("Back", "auto", targetLang);
+  const btnClose = await translateWithGoogle("Close", "auto", targetLang);
+  // Page 1
+  const welcomeSupportOne = await translateWithGoogle(
+    "Welcome to the Wunjo AI guide.",
+    "auto",
+    targetLang
+  );
+  const welcomeSupportTwo = await translateWithGoogle(
+    "For detailed tutorials, check out on",
+    "auto",
+    targetLang
+  );
+  const welcomeSupportThree = await translateWithGoogle(
+    "For documentation, visit",
+    "auto",
+    targetLang
+  );
+  const welcomeSupportFour = await translateWithGoogle(
+    "If you encounter any issues or have suggestions, please report them on",
+    "auto",
+    targetLang
+  );
+  // Page 2
+  const translateApplicationBtn = await translateWithGoogle(
+    "Application language selection.",
+    "auto",
+    targetLang
+  );
+  // Page 3
+  const textInputSupport = await translateWithGoogle(
+    "Enter the text for speech synthesis here.",
+    "auto",
+    targetLang
+  );
+  // Page 4
+  const aButtonSettingTtsSupportOne = await translateWithGoogle(
+    "Speech Synthesis Settings.",
+    "auto",
+    targetLang
+  );
+  const aButtonSettingTtsSupportTwo = await translateWithGoogle(
+    "Clone your voice in real-time or from audio, recognize text from voice and audio, and automatically translate synthesized speech.",
+    "auto",
+    targetLang
+  );
+  // Page 5
+  const modalOverSelectSupportOne = await translateWithGoogle(
+    "Voice Sets for Different Languages.",
+    "auto",
+    targetLang
+  );
+  const modalOverSelectSupportTwo = await translateWithGoogle(
+    "Use auto-translation to employ chosen models in languages other than their default. ",
+    "auto",
+    targetLang
+  );
+  const modalOverSelectSupportThree = await translateWithGoogle(
+    "Note: Initial launch will prompt a download for voice synthesis models. This may take a while.",
+    "auto",
+    targetLang
+  );
+  // Page 6
+  const voiceCardContainerPlusSupport = await translateWithGoogle(
+    "Create a dialogue by adding a new field.",
+    "auto",
+    targetLang
+  );
+  // Page 7
+  const voiceCardContainerRemoveSupport = await translateWithGoogle(
+    "Remove unnecessary dialogue fields.",
+    "auto",
+    targetLang
+  );
+  // Page 8
+  const buttonToggleDivVoiceSupport = await translateWithGoogle(
+    "Activate this to voice the selected text field.",
+    "auto",
+    targetLang
+  );
+  // Page 9
+  const buttonEnableAllSupport = await translateWithGoogle(
+    "Activate all text fields for voicing or deselect them all at once.",
+    "auto",
+    targetLang
+  );
+  // Page 10
+  const buttonRunSynthesisSupport = await translateWithGoogle(
+    "Submit the text to the neural network for voicing. This might take a moment.",
+    "auto",
+    targetLang
+  );
+  // Page 11
+  const buttonShowVoiceWindowSupport = await translateWithGoogle(
+    "Switch between synthesized voice results and video.",
+    "auto",
+    targetLang
+  );
+  // Page 12
+  const buttonRunDeepfakeSynthesisSupportOne = await translateWithGoogle(
+    "Face & Lip Animation Creator.",
+    "auto",
+    targetLang
+  );
+  const buttonRunDeepfakeSynthesisSupportTwo = await translateWithGoogle(
+    "Upload an image, video, or GIF as input.",
+    "auto",
+    targetLang
+  );
+  const buttonRunDeepfakeSynthesisSupportThree = await translateWithGoogle(
+    "Note: The initial launch will download 5GB of data. This may take a while.",
+    "auto",
+    targetLang
+  );
+  // Page 13
+  const buttonRunFaceSwapSupportOne = await translateWithGoogle(
+    "Face Swap with One Photo.",
+    "auto",
+    targetLang
+  );
+  const buttonRunFaceSwapSupportTwo = await translateWithGoogle(
+    "For target and face source, upload an image, video, or GIF. ",
+    "auto",
+    targetLang
+  );
+  const buttonRunFaceSwapSupportThree = await translateWithGoogle(
+    "Note: The initial launch will download 1GB of data. Please be patient.",
+    "auto",
+    targetLang
+  );
+  // Page 14
+  const buttonRunRetouchOne = await translateWithGoogle(
+    "Face Retouch & Object Removal.",
+    "auto",
+    targetLang
+  );
+  const buttonRunRetouchTwo = await translateWithGoogle(
+    "Enhance deepfake results by smoothing out imperfections.",
+    "auto",
+    targetLang
+  );
+  // Page 15
+  const buttonRunEditorVideoOne = await translateWithGoogle(
+    "Video Editor.",
+    "auto",
+    targetLang
+  );
+  const buttonRunEditorVideoTwo = await translateWithGoogle(
+    "Improve face or background quality, split videos into frames, extract audio, and recompile frames back into videos.",
+    "auto",
+    targetLang
+  );
+  // Page 16
+  const aChangeProcessorSupportOne = await translateWithGoogle(
+    "Switch from CPU to GPU for faster processing.",
+    "auto",
+    targetLang
+  );
+  const aChangeProcessorSupportTwo = await translateWithGoogle(
+    "Check the documentation for drivers installation.",
+    "auto",
+    targetLang
+  );
+  const aChangeProcessorSupportThree = await translateWithGoogle(
+    "After switching to GPU, voice training on your dataset becomes available.",
+    "auto",
+    targetLang
+  );
+  // Page 17
+  const aLinkOpenfFolderSupport = await translateWithGoogle(
+    "Remove unnecessary files from this directory.",
+    "auto",
+    targetLang
+  );
+  // Page 17
+  const consoleResultSupport = await translateWithGoogle(
+    "In this panel, you can monitor the process of the program.",
+    "auto",
+    targetLang
+  );
+  // Page 18
+  const aLinkOpenAuthorSupportOne = await translateWithGoogle(
+    "Discover other projects by the author at",
+    "auto",
+    targetLang
+  );
+  const aLinkOpenAuthorSupportTwo = await translateWithGoogle(
+    "Enjoy your experience application!",
+    "auto",
+    targetLang
+  );
 
-    var intro = introJs();
-    intro.setOptions({
-        steps: [
-            {
-                element: '#a-link-open-tutorial',
-                position: "right",
-                intro: `
+  var intro = introJs();
+  intro.setOptions({
+    steps: [
+      {
+        element: "#a-link-open-tutorial",
+        position: "right",
+        intro: `
                 <div style="width: 200pt;">
                     <text>${welcomeSupportOne}</text><br><br><text>${welcomeSupportTwo} </text><a class="notranslate" href="https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer">YouTube</a>.<br><br><text>${welcomeSupportThree} </text><a class="notranslate" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">GitHub Wiki</a>.<br><br><text>${welcomeSupportFour} </text><a class="notranslate" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">GitHub Issue</a>.
                 </div>
-                `
-            },
-            {
-                element: '#translate-application-btn',
-                intro: `${translateApplicationBtn}`,
-            },
-            {
-                element: '.text-input',
-                intro: `${textInputSupport}`,
-            },
-            {
-                element: '.a-button.setting-tts',
-                intro: `<div style="width: 200pt;"><b>${aButtonSettingTtsSupportOne}</b> ${aButtonSettingTtsSupportTwo}</div>`,
-            },
-            {
-                element: '.model-over-select',
-                position: "right",
-                intro: `<div style="width: 200pt;"><b>${modalOverSelectSupportOne}</b> ${modalOverSelectSupportTwo} <br><br><span style="color:red;">${modalOverSelectSupportThree}</span></div>`,
-            },
-            {
-                element: '.voice-card-container-plus',
-                intro: `${voiceCardContainerPlusSupport}`,
-            },
-            {
-                element: '.voice-card-container-remove',
-                intro: `${voiceCardContainerRemoveSupport}`,
-            },
-            {
-                element: '.button.toggle-div-voice',
-                intro: `${buttonToggleDivVoiceSupport}`,
-            },
-            {
-                element: '#button-enable-all',
-                intro: `${buttonEnableAllSupport}`,
-            },
-            {
-                element: '#button-run-synthesis',
-                intro: `${buttonRunSynthesisSupport}`,
-            },
-            {
-                element: '#button-show-voice-window',
-                intro: `${buttonShowVoiceWindowSupport}`,
-            },
-            {
-                element: '#button-run-deepfake-synthesis',
-                intro: `<div style="width: 200pt;"><b>${buttonRunDeepfakeSynthesisSupportOne}</b> ${buttonRunDeepfakeSynthesisSupportTwo} <br><br><span style="color:red;">${buttonRunDeepfakeSynthesisSupportThree}</span></div>`,
-            },
-            {
-                element: '#button-run-face-swap',
-                position: "right",
-                intro: `<div style="width: 200pt;"><b>${buttonRunFaceSwapSupportOne}</b> ${buttonRunFaceSwapSupportTwo} <br><br><span style="color:red;">${buttonRunFaceSwapSupportThree}</span></div>`,
-            },
-            {
-                element: '#button-run-retouch',
-                position: "right",
-                intro: `<b>${buttonRunRetouchOne}</b> ${buttonRunRetouchTwo}`,
-            },
-            {
-                element: '#button-run-editor-video',
-                position: "right",
-                intro: `<b>${buttonRunEditorVideoOne}</b> ${buttonRunEditorVideoTwo}`,
-            },
-            {
-                element: '#a-change-processor',
-                position: "right",
-                intro: `<div style="width:250pt;">${aChangeProcessorSupportOne} <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> ${aChangeProcessorSupportTwo}</a><br><br>${aChangeProcessorSupportThree}</div>`,
-            },
-            {
-                element: '#a-link-open-folder',
-                position: "right",
-                intro: `${aLinkOpenfFolderSupport}`,
-            },
-            {
-                element: '#console-result',
-                position: "left",
-                intro: `${consoleResultSupport}`,
-            },
-            {
-                element: '#a-link-open-author',
-                position: "right",
-                intro: `${aLinkOpenAuthorSupportOne} <a target="_blank" rel="noopener noreferrer" href="https://wladradchenko.ru">wladradchenko.ru</a>. <b>${aLinkOpenAuthorSupportTwo}</b>`,
-            }
-        ],
-          showButtons: true,
-          showStepNumbers: false,
-          nextLabel: `${btnNext}`,
-          prevLabel: `${btnBack}`,
-          doneLabel: `${btnClose}`
-    });
-    intro.start();
+                `,
+      },
+      {
+        element: "#translate-application-btn",
+        intro: `${translateApplicationBtn}`,
+      },
+      {
+        element: ".text-input",
+        intro: `${textInputSupport}`,
+      },
+      {
+        element: ".a-button.setting-tts",
+        intro: `<div style="width: 200pt;"><b>${aButtonSettingTtsSupportOne}</b> ${aButtonSettingTtsSupportTwo}</div>`,
+      },
+      {
+        element: ".model-over-select",
+        position: "right",
+        intro: `<div style="width: 200pt;"><b>${modalOverSelectSupportOne}</b> ${modalOverSelectSupportTwo} <br><br><span style="color:red;">${modalOverSelectSupportThree}</span></div>`,
+      },
+      {
+        element: ".voice-card-container-plus",
+        intro: `${voiceCardContainerPlusSupport}`,
+      },
+      {
+        element: ".voice-card-container-remove",
+        intro: `${voiceCardContainerRemoveSupport}`,
+      },
+      {
+        element: ".button.toggle-div-voice",
+        intro: `${buttonToggleDivVoiceSupport}`,
+      },
+      {
+        element: "#button-enable-all",
+        intro: `${buttonEnableAllSupport}`,
+      },
+      {
+        element: "#button-run-synthesis",
+        intro: `${buttonRunSynthesisSupport}`,
+      },
+      {
+        element: "#button-show-voice-window",
+        intro: `${buttonShowVoiceWindowSupport}`,
+      },
+      {
+        element: "#button-run-deepfake-synthesis",
+        intro: `<div style="width: 200pt;"><b>${buttonRunDeepfakeSynthesisSupportOne}</b> ${buttonRunDeepfakeSynthesisSupportTwo} <br><br><span style="color:red;">${buttonRunDeepfakeSynthesisSupportThree}</span></div>`,
+      },
+      {
+        element: "#button-run-face-swap",
+        position: "right",
+        intro: `<div style="width: 200pt;"><b>${buttonRunFaceSwapSupportOne}</b> ${buttonRunFaceSwapSupportTwo} <br><br><span style="color:red;">${buttonRunFaceSwapSupportThree}</span></div>`,
+      },
+      {
+        element: "#button-run-retouch",
+        position: "right",
+        intro: `<b>${buttonRunRetouchOne}</b> ${buttonRunRetouchTwo}`,
+      },
+      {
+        element: "#button-run-editor-video",
+        position: "right",
+        intro: `<b>${buttonRunEditorVideoOne}</b> ${buttonRunEditorVideoTwo}`,
+      },
+      {
+        element: "#a-change-processor",
+        position: "right",
+        intro: `<div style="width:250pt;">${aChangeProcessorSupportOne} <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> ${aChangeProcessorSupportTwo}</a><br><br>${aChangeProcessorSupportThree}</div>`,
+      },
+      {
+        element: "#a-link-open-folder",
+        position: "right",
+        intro: `${aLinkOpenfFolderSupport}`,
+      },
+      {
+        element: "#console-result",
+        position: "left",
+        intro: `${consoleResultSupport}`,
+      },
+      {
+        element: "#a-link-open-author",
+        position: "right",
+        intro: `${aLinkOpenAuthorSupportOne} <a target="_blank" rel="noopener noreferrer" href="https://wladradchenko.ru">wladradchenko.ru</a>. <b>${aLinkOpenAuthorSupportTwo}</b>`,
+      },
+    ],
+    showButtons: true,
+    showStepNumbers: false,
+    nextLabel: `${btnNext}`,
+    prevLabel: `${btnBack}`,
+    doneLabel: `${btnClose}`,
+  });
+  intro.start();
 }
 ///SUPPORT USER///
 
 ///TRANSLATE///
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 let translationsCache = {}; // an object to store translations
@@ -1041,14 +1234,18 @@ let translationsCache = {}; // an object to store translations
 // Assume fetchJSON() fetches and returns a JSON from a local file
 async function loadTranslations() {
   try {
-    const response = await fetch('/media/setting/localization.json');
+    const response = await fetch("/media/setting/localization.json");
     if (!response.ok) {
       // file not create, create file after first init
-      console.log("HTTP error " + response.status + ". File not created yet!. Now file is created");
+      console.log(
+        "HTTP error " +
+          response.status +
+          ". File not created yet!. Now file is created"
+      );
     }
     translationsCache = await response.json();
   } catch (err) {
-    console.log('Failed to load translations', err);
+    console.log("Failed to load translations", err);
   }
 }
 
@@ -1059,152 +1256,179 @@ async function translateWithGoogle(text, sourceLang, targetLang) {
   if (translationsCache[text] && translationsCache[text][targetLang]) {
     return translationsCache[text][targetLang];
   } else {
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(
+      text
+    )}`;
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data[0] && data[0][0] && data[0][0][0]) {
-          const translatedText = capitalizeFirstLetter(data[0][0][0]);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        const translatedText = capitalizeFirstLetter(data[0][0][0]);
 
-          // Initialize if not already an object
-          if (!translationsCache[text]) {
-            translationsCache[text] = {};
-          }
-
-          // Update cache
-          translationsCache[text][targetLang] = translatedText;
-
-          // Send updated translations to the server
-          await fetch('/update_translation', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(translationsCache)
-          });
-
-          return translatedText;
+        // Initialize if not already an object
+        if (!translationsCache[text]) {
+          translationsCache[text] = {};
         }
-        throw new Error("Failed to parse Google Translate response.");
-      } catch (err) {
-        console.error(err);
-        return text; // default to returning original text
+
+        // Update cache
+        translationsCache[text][targetLang] = translatedText;
+
+        // Send updated translations to the server
+        await fetch("/update_translation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(translationsCache),
+        });
+
+        return translatedText;
       }
+      throw new Error("Failed to parse Google Translate response.");
+    } catch (err) {
+      console.error(err);
+      return text; // default to returning original text
+    }
   }
 }
 
 async function translateTitleAttributes(targetLang) {
-    let elementsWithTitle = document.querySelectorAll('[title]');
-    for (const elem of elementsWithTitle) {
-        if (elem.getAttribute('lang-title') !== targetLang) {
-            let originalTitle = elem.title.trim();
-            if (originalTitle) {
-                let translatedTitle = await translateWithGoogle(originalTitle, 'auto', targetLang);
-                elem.title = translatedTitle;
-            }
-            elem.setAttribute('lang-title', targetLang);
-        }
+  let elementsWithTitle = document.querySelectorAll("[title]");
+  for (const elem of elementsWithTitle) {
+    if (elem.getAttribute("lang-title") !== targetLang) {
+      let originalTitle = elem.title.trim();
+      if (originalTitle) {
+        let translatedTitle = await translateWithGoogle(
+          originalTitle,
+          "auto",
+          targetLang
+        );
+        elem.title = translatedTitle;
+      }
+      elem.setAttribute("lang-title", targetLang);
     }
+  }
 }
 
-async function translateReload(newTargetLang = 'ru') {
-    targetLang = newTargetLang;
+async function translateReload(newTargetLang = "ru") {
+  targetLang = newTargetLang;
 
-    async function translateTextNode(node, sourceLang, targetLang) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            const trimmedText = node.nodeValue.trim();
-            if (trimmedText) {
-                const translatedText = await translateWithGoogle(trimmedText, sourceLang, targetLang);
-                node.nodeValue = node.nodeValue.replace(trimmedText, translatedText);
-            }
-        } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('notranslate') && node.getAttribute('lang') !== targetLang) {
-            for (let child of node.childNodes) {
-                await translateTextNode(child, sourceLang, targetLang);
-            }
-            node.setAttribute('lang', targetLang);
+  async function translateTextNode(node, sourceLang, targetLang) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const trimmedText = node.nodeValue.trim();
+      if (trimmedText) {
+        const translatedText = await translateWithGoogle(
+          trimmedText,
+          sourceLang,
+          targetLang
+        );
+        node.nodeValue = node.nodeValue.replace(trimmedText, translatedText);
+      }
+    } else if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      !node.classList.contains("notranslate") &&
+      node.getAttribute("lang") !== targetLang
+    ) {
+      for (let child of node.childNodes) {
+        await translateTextNode(child, sourceLang, targetLang);
+      }
+      node.setAttribute("lang", targetLang);
+    }
+  }
+
+  async function translatePage() {
+    let allTextAreaElements = document.querySelectorAll("textarea");
+
+    allTextAreaElements.forEach(async (elem) => {
+      if (
+        !elem.classList.contains("notranslate") &&
+        elem.getAttribute("lang") !== targetLang
+      ) {
+        let originalTextArea = elem.placeholder.trim();
+        if (originalTextArea) {
+          let translatedTextArea = await translateWithGoogle(
+            originalTextArea,
+            "auto",
+            targetLang
+          );
+          elem.placeholder = translatedTextArea;
+          elem.setAttribute("lang", targetLang);
         }
+      }
+    });
+
+    let allTextElements = document.querySelectorAll(
+      "div, p, h1, h2, h3, h4, h5, h6, a, span, li, td, th, option, legend, label, text, button"
+    );
+
+    for (const elem of allTextElements) {
+      await translateTextNode(elem, "auto", targetLang);
     }
 
-    async function translatePage() {
-        let allTextAreaElements = document.querySelectorAll('textarea');
+    await translateTitleAttributes(targetLang);
+  }
 
-        allTextAreaElements.forEach(async (elem) => {
-            if (!elem.classList.contains('notranslate') && elem.getAttribute('lang') !== targetLang) {
-                let originalTextArea = elem.placeholder.trim();
-                if (originalTextArea) {
-                    let translatedTextArea = await translateWithGoogle(originalTextArea, 'auto', targetLang);
-                    elem.placeholder = translatedTextArea;
-                    elem.setAttribute('lang', targetLang);
-                }
-            }
-        });
-
-        let allTextElements = document.querySelectorAll('div, p, h1, h2, h3, h4, h5, h6, a, span, li, td, th, option, legend, label, text, button');
-
-        for (const elem of allTextElements) {
-            await translateTextNode(elem, 'auto', targetLang);
-        }
-
-        await translateTitleAttributes(targetLang)
-    }
-
-    // Initially translate the page
-    translatePage();
+  // Initially translate the page
+  translatePage();
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    translateReload(targetLang);
+document.addEventListener("DOMContentLoaded", function () {
+  translateReload(targetLang);
 });
 
-document.body.addEventListener('click', event => {
-    if (event.target.tagName === 'BUTTON' || event.target.tagName === 'I') {
-        translateReload(targetLang);
-    }
+document.body.addEventListener("click", (event) => {
+  if (event.target.tagName === "BUTTON" || event.target.tagName === "I") {
+    translateReload(targetLang);
+  }
 });
 
 async function translateNewUserLang(lang) {
-    await translateReload(lang);
+  await translateReload(lang);
 }
 
-document.getElementById('translate-application-btn').addEventListener('click', function() {
-    const dropdown = document.getElementById('language-dropdown');
-    dropdown.style.display = 'block';
-});
+document
+  .getElementById("translate-application-btn")
+  .addEventListener("click", function () {
+    const dropdown = document.getElementById("language-dropdown");
+    dropdown.style.display = "block";
+  });
 
-document.getElementById('language-dropdown').addEventListener('change', function() {
+document
+  .getElementById("language-dropdown")
+  .addEventListener("change", function () {
     let selectedLangCode = this.value;
     let selectedOption = this.options[this.selectedIndex];
-    let selectedLangName = selectedOption.getAttribute('name');
+    let selectedLangName = selectedOption.getAttribute("name");
 
     translateNewUserLang(selectedLangCode);
     updateLangSetting(selectedLangCode, selectedLangName);
-});
+  });
 
 function updateLangSetting(lang_code, lang_name) {
-    const settingsURL = "/record_settings";
-    const data = {
-        "code": lang_code,
-        "name": lang_name
-    };
+  const settingsURL = "/record_settings";
+  const data = {
+    code: lang_code,
+    name: lang_name,
+  };
 
-    fetch(settingsURL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+  fetch(settingsURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.response_code === 0) {
+        console.log(data.response);
+      } else {
+        console.error("Failed to update language setting");
+      }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.response_code === 0) {
-            console.log(data.response);
-        } else {
-            console.error("Failed to update language setting");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
+    .catch((error) => {
+      console.error("Error:", error);
     });
 }
 ///TRANSLATE///
@@ -1212,77 +1436,89 @@ function updateLangSetting(lang_code, lang_name) {
 ///UPDATE VERSION///
 // Convert version string to array for easy comparison
 function versionUpdateToArray(version) {
-    return version.split(".").map(Number);
+  return version.split(".").map(Number);
 }
 
-function updateVersion(serverVersionData){
-    // Get the version passed from Jinja
-    let serverVersionDataJSON = JSON.parse(serverVersionData);
-    if (Object.keys(serverVersionDataJSON).length !== 0 && serverVersionDataJSON.hasOwnProperty('version')) {
-        let serverVersion = serverVersionDataJSON.version;
+function updateVersion(serverVersionData) {
+  // Get the version passed from Jinja
+  let serverVersionDataJSON = JSON.parse(serverVersionData);
+  if (
+    Object.keys(serverVersionDataJSON).length !== 0 &&
+    serverVersionDataJSON.hasOwnProperty("version")
+  ) {
+    let serverVersion = serverVersionDataJSON.version;
 
-        // Get the current version displayed in the HTML
-        let currentVersion = document.getElementById('version').getAttribute('vers');
+    // Get the current version displayed in the HTML
+    let currentVersion = document
+      .getElementById("version")
+      .getAttribute("vers");
 
-        // Check if the version from the server is newer
-        if (serverVersion !== currentVersion) {
-            // Get history witch upper current version
-            let allVersionHistory = serverVersionDataJSON.history
+    // Check if the version from the server is newer
+    if (serverVersion !== currentVersion) {
+      // Get history witch upper current version
+      let allVersionHistory = serverVersionDataJSON.history;
 
-            let currentVersionArray = versionUpdateToArray(currentVersion);
+      let currentVersionArray = versionUpdateToArray(currentVersion);
 
-            // Filter versions that are less than or equal to the current version
-            let filteredVersions = Object.keys(allVersionHistory)
-                .filter(version => {
-                    let versionArray = versionUpdateToArray(version);
-                    for (let i = 0; i < 3; i++) {
-                        if (versionArray[i] < currentVersionArray[i]) return false;
-                        if (versionArray[i] > currentVersionArray[i]) return true;
-                    }
-                    return false; // if all parts are equal
-                })
-                .sort((a, b) => versionUpdateToArray(b).join('.') - versionUpdateToArray(a).join('.')); // Sort versions in descending order
+      // Filter versions that are less than or equal to the current version
+      let filteredVersions = Object.keys(allVersionHistory)
+        .filter((version) => {
+          let versionArray = versionUpdateToArray(version);
+          for (let i = 0; i < 3; i++) {
+            if (versionArray[i] < currentVersionArray[i]) return false;
+            if (versionArray[i] > currentVersionArray[i]) return true;
+          }
+          return false; // if all parts are equal
+        })
+        .sort(
+          (a, b) =>
+            versionUpdateToArray(b).join(".") -
+            versionUpdateToArray(a).join(".")
+        ); // Sort versions in descending order
 
-            // Generate HTML
-            let htmlUpdateInfo = "";
+      // Generate HTML
+      let htmlUpdateInfo = "";
 
-            filteredVersions.forEach(version => {
-                htmlUpdateInfo += `<h3>${version}</h3><ul>`;
-                let items = allVersionHistory[version].split("\n");
-                items.forEach(item => {
-                    htmlUpdateInfo += `<li>${item}</li>`;
-                });
-                htmlUpdateInfo += `<br></ul>`;
-            });
+      filteredVersions.forEach((version) => {
+        htmlUpdateInfo += `<h3>${version}</h3><ul>`;
+        let items = allVersionHistory[version].split("\n");
+        items.forEach((item) => {
+          htmlUpdateInfo += `<li>${item}</li>`;
+        });
+        htmlUpdateInfo += `<br></ul>`;
+      });
 
-            // Update the content of the paragraph
-            document.getElementById('version').innerHTML = 'Доступно обновление ' + serverVersion + `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">Что нового?</button>`;
-        }
+      // Update the content of the paragraph
+      document.getElementById("version").innerHTML =
+        "Доступно обновление " +
+        serverVersion +
+        `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">Что нового?</button>`;
     }
-};
+  }
+}
 
 function openUpdateHistory(elem, info) {
-    var introUpdateVersion = introJs();
-    introUpdateVersion.setOptions({
-        steps: [
-            {
-                element: elem,
-                title: 'Что нового',
-                position: 'left',
-                intro: `
+  var introUpdateVersion = introJs();
+  introUpdateVersion.setOptions({
+    steps: [
+      {
+        element: elem,
+        title: "Что нового",
+        position: "left",
+        intro: `
                 <div style="max-width: 400pt;max-height: 70vh;padding-left: 20pt;padding-right: 20pt;">${info}</div>
                 <a class="introjs-button" href="https://wladradchenko.ru/wunjo" target="_blank" rel="noopener noreferrer" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;">Загрузить обновление</a>
-                `
-               }
-        ],
-        showButtons: false,
-        showStepNumbers: false,
-        showBullets: false,
-        nextLabel: 'Продолжить',
-        prevLabel: 'Вернуться',
-        doneLabel: 'Закрыть'
-    });
-    introUpdateVersion.start();
+                `,
+      },
+    ],
+    showButtons: false,
+    showStepNumbers: false,
+    showBullets: false,
+    nextLabel: "Продолжить",
+    prevLabel: "Вернуться",
+    doneLabel: "Закрыть",
+  });
+  introUpdateVersion.start();
 }
 
 updateVersion(serverVersionData);
@@ -1290,11 +1526,41 @@ updateVersion(serverVersionData);
 
 ///GENERATE RANDOM NAME///
 function getRandomString(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let randomName = '';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomName = "";
   for (let i = 0; i < length; i++) {
-    randomName += characters.charAt(Math.floor(Math.random() * characters.length));
+    randomName += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
   return randomName;
 }
 ///GENERATE RANDOM NAME///
+
+///GET DISK SPACE USED///
+function getDriveSpace() {
+  fetch("/disk_space_used/")
+    .then((response) => response.json())
+    .then((data) => {
+      // Assuming the sizes are in bytes, convert them to MB and round to 1 decimal place
+      const audioSizeMB = data.audio.toFixed(1);
+      const videoSizeMB = data.video.toFixed(1);
+
+      // Set the content for the HTML elements
+      document.getElementById(
+        "drive-space-wavs-used"
+      ).textContent = `.wunjo/waves ${audioSizeMB} Mb,`;
+      document.getElementById(
+        "drive-space-video-used"
+      ).textContent = `.wunjo/video ${videoSizeMB} Mb`;
+    })
+    .catch((error) => {
+      console.error("Error fetching disk space used:", error);
+    });
+}
+// Init message about disk space used
+getDriveSpace();
+// TUpdate information about disk space used each 10 seconds
+setInterval(getDriveSpace, 10000);
+///GET DISK SPACE USED///

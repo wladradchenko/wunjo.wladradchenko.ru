@@ -16,7 +16,7 @@ from speech.tts_models import load_voice_models, voice_names, file_voice_config,
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
-from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed
+from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size
 
 import logging
 
@@ -30,6 +30,7 @@ app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
+app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
 logging.getLogger('werkzeug').disabled = True
 
@@ -235,6 +236,8 @@ def synthesize_video_merge():
 
     print("Merge frames to video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -286,6 +289,8 @@ def synthesize_video_editor():
 
     print("Edit video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -336,6 +341,8 @@ def synthesize_retouch():
 
     print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -407,6 +414,8 @@ def synthesize_face_swap():
 
     print("Face swap synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -493,6 +502,8 @@ def synthesize_deepfake():
 
     print("Deepfake synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -551,8 +562,8 @@ def synthesize():
                 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
                 return {"status": 400}
             # init models
-            encoder, synthesizer, vocoder = load_rtvc(rtvc_models_lang)
-            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "vocoder": vocoder}
+            encoder, synthesizer, signature, vocoder = load_rtvc(rtvc_models_lang)
+            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "signature": signature, "vocoder": vocoder}
 
         if model_type:
             app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
@@ -563,7 +574,7 @@ def synthesize():
             tacotron2_lang = app.config['TTS_LOADED_MODELS'][model].engine.charset
             if auto_translation:
                 print("User use auto translation. Translate text before TTS.")
-                tts_text = get_print_translate(get_translate(text=text, targetLang=tacotron2_lang))
+                tts_text = get_translate(text=text, targetLang=tacotron2_lang)
             else:
                 tts_text = text
 
@@ -579,12 +590,13 @@ def synthesize():
                         # get models
                         encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
                         synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
+                        signature = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["signature"]
                         vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
 
                         # text translated inside get_synthesized_audio
                         response_code, result = VoiceCloneTranslate.get_synthesized_audio(
-                            audio_file=filename, encoder=encoder, synthesizer=synthesizer, vocoder=vocoder,
-                            text=text, src_lang=lang_translation, need_translate=auto_translation,
+                            audio_file=filename, encoder=encoder, synthesizer=synthesizer, signature=signature,
+                            vocoder=vocoder, text=text, src_lang=lang_translation, need_translate=auto_translation,
                             save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model
                         )
                         # get new filename
@@ -604,11 +616,12 @@ def synthesize():
         if use_voice_clone_on_audio:
             encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
             synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
+            signature = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["signature"]
             vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
             rtvc_audio_clone_path = os.path.join(TMP_FOLDER, rtvc_audio_clone_voice)
 
             response_code, result = VoiceCloneTranslate.get_synthesized_audio(
-                audio_file=rtvc_audio_clone_path, encoder=encoder, synthesizer=synthesizer, vocoder=vocoder,
+                audio_file=rtvc_audio_clone_path, encoder=encoder, synthesizer=synthesizer, signature=signature, vocoder=vocoder,
                 text=text, src_lang=lang_translation, need_translate=auto_translation, save_folder= os.path.join(WAVES_FOLDER, dir_time)
             )
             if response_code == 0:
@@ -626,6 +639,8 @@ def synthesize():
     app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
     print("Text to speech synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
 
     return {"status": 200}
 
@@ -635,6 +650,13 @@ def synthesize():
 def get_synthesize_status():
     status = app.config['SYNTHESIZE_STATUS']
     return status
+
+
+@app.route("/disk_space_used/", methods=["GET"])
+@cross_origin()
+def get_disk_space_used_status():
+    status = app.config['FOLDER_SIZE_RESULT']
+    return jsonify(status)
 
 
 @app.route('/change_processor', methods=["POST"])

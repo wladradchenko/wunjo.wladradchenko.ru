@@ -138,6 +138,7 @@ def make_animation(source_image, source_semantics, target_semantics,
         predictions_ts = torch.stack(predictions, dim=1)
     return predictions_ts
 
+
 class AnimateModel(torch.nn.Module):
     """
     Merge all generator related updates into single model for better multi-gpu usage

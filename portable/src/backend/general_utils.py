@@ -127,6 +127,16 @@ def set_settings():
                 return default_settings
 
 
+def get_folder_size(folder_path):
+    size_in_bytes = 0
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            if os.path.isfile(file_path):
+                size_in_bytes += os.path.getsize(file_path)
+    return size_in_bytes / (1024 * 1024)
+
+
 def current_time(time_format: str = None):
     if time_format:
         return strftime(time_format, gmtime())

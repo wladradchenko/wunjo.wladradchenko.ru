@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(root_path, "backend"))
 from speech.rtvc.encoder.inference import VoiceCloneEncoder
 from speech.rtvc.encoder.audio import preprocess_wav   # We want to expose this function from here
 from speech.rtvc.synthesizer.inference import Synthesizer
+from speech.rtvc.synthesizer.utils.signature import DigitalSignature
 from speech.rtvc.vocoder.inference import VoiceCloneVocoder
 from backend.folders import MEDIA_FOLDER, RTVC_VOICE_FOLDER
 from backend.download import download_model, check_download_size
@@ -80,9 +81,9 @@ def load_rtvc_encoder(lang: str, device: str):
 def load_rtvc_synthesizer(lang: str, device: str):
     """
     Load Real Time Voice Clone synthesizer
-    :param lang: encode lang
+    :param lang: synthesizer lang
     :param device: cuda or cpu
-    :return: encoder
+    :return: synthesizer
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
@@ -95,12 +96,30 @@ def load_rtvc_synthesizer(lang: str, device: str):
     return Synthesizer(model_fpath=model_path, device=device, charset=lang)
 
 
+def load_rtvc_digital_signature(lang: str, device: str):
+    """
+    Load Real Time Voice Clone digital signature
+    :param lang: lang
+    :param device: cuda or cpu
+    :return: encoder
+    """
+    language_dict = rtvc_models_config.get(lang)
+    if language_dict is None:
+        language_dict = rtvc_models_config.get("en")
+    signature_url = language_dict.get("signature")
+    signature_path = os.path.join(RTVC_VOICE_FOLDER, lang, "signature.pt")
+    model_path = inspect_rtvc_model(signature_path, signature_url)
+    if not os.path.exists(model_path):
+        raise f"Model {signature_path} not found. Check you internet connection to download"
+    return DigitalSignature(model_path=model_path, device=device)
+
+
 def load_rtvc_vocoder(lang: str, device: str):
     """
     Load Real Time Voice Clone vocoder
-    :param lang: encode lang
+    :param lang: vocoder lang
     :param device: cuda or cpu
-    :return: encoder
+    :return: vocoder
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
@@ -133,10 +152,12 @@ def load_rtvc(lang: str):
     encoder = load_rtvc_encoder(lang, device)
     print("Load RTVC synthesizer")
     synthesizer = load_rtvc_synthesizer(lang, device)
+    print("Load RTVC signature")
+    signature = load_rtvc_digital_signature(lang, device)
     print("Load RTVC vocoder")
     vocoder = load_rtvc_vocoder(lang, device)
 
-    return encoder, synthesizer, vocoder
+    return encoder, synthesizer, signature, vocoder
 
 
 def get_text_from_audio():

@@ -1,6 +1,7 @@
 import os
 import sys
-import time
+import uuid
+from time import time
 import subprocess
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,13 +37,13 @@ class TextToSpeech:
 
         results = []
         for model_name, model in current_models.items():
-            start = time.time()
+            start = time()
             audio = model.synthesize(text, **options)
             filename = model.save(audio, dir_time)
             with open(filename, "rb") as f:
                 audio_bytes = f.read()
 
-            end = time.time()
+            end = time()
 
             sample_rate = model.sample_rate
             duration = len(audio) / sample_rate
@@ -67,7 +68,7 @@ class VoiceCloneTranslate:
     """
 
     @staticmethod
-    def get_synthesized_audio(audio_file, encoder, synthesizer, vocoder, save_folder,
+    def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder,
                               text, src_lang, need_translate, tts_model_name="Voice Clone", **options):
         try:
             download_ntlk()  # inspect what ntlk downloaded
@@ -81,6 +82,7 @@ class VoiceCloneTranslate:
                 text,
                 encoder,
                 synthesizer,
+                signature,
                 vocoder,
                 save_folder,
                 tts_model_name,
@@ -92,24 +94,32 @@ class VoiceCloneTranslate:
             return 1, str(err)
 
     @staticmethod
-    def get_models_results(audio_file, text, encoder, synthesizer, vocoder, save_folder, tts_model_name, **options):
-        from speech.rtvc_models import clone_voice_rtvc  # TODO check how it will work after build
+    def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, **options):
+        from speech.rtvc_models import clone_voice_rtvc
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
 
-        start = time.time()
+        start = time()
 
         clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder)
 
-        waves_format = ".wav"
-        output_name = "rtvc_output" + VoiceCloneTranslate.uniqid() + time.strftime("%Y-%m-%d_%H-%M") + waves_format
+        output_name = str(uuid.uuid4()) + ".wav"
         output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
 
-        end = time.time()
+        end = time()
 
         with open(output_file, "rb") as f:
             audio_bytes = f.read()
+
+        try:
+            os.remove(audio_file)  # remove audio file
+            output_file_signature = signature.set_encrypted(output_file, save_folder)
+            if output_file_signature is not None:
+                os.remove(output_file)
+                output_file = output_file_signature
+        except Exception as err:
+            print(f"Error...during set signature {err}")
 
         result = {
             "voice": tts_model_name,
@@ -176,8 +186,3 @@ class VoiceCloneTranslate:
         print(f"Merged all .wav files into {output_file_name}")
 
         return output_file_path
-
-    @staticmethod
-    def uniqid():
-        from time import time
-        return hex(int(time() * 1e7))[2:]

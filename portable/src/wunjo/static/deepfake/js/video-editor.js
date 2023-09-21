@@ -1,5 +1,5 @@
 function editorVideo(button, audio_url = undefined, audio_name = undefined) {
-    var audioInputField = `
+  var audioInputField = `
                           <div class="uploadOuterDeepfakeAudio" style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
                             <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
                             <input style="width: 0;" accept="audio/*" type="file" onChange="dragDropAudio(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
@@ -7,20 +7,21 @@ function editorVideo(button, audio_url = undefined, audio_name = undefined) {
                           </div>
                          `;
 
-    if (audio_url) {
-      var request = new XMLHttpRequest();
-      request.open('GET', audio_url, true);
-      request.responseType = 'blob';
-      request.onload = function() {
-        var audioInputLabel = document.getElementById('uploadAudioDeepfakeLabel');
-        audioInputLabel.textContent = audio_name.length > 20 ? audio_name.slice(0, 20) + "..." : audio_name;
+  if (audio_url) {
+    var request = new XMLHttpRequest();
+    request.open("GET", audio_url, true);
+    request.responseType = "blob";
+    request.onload = function () {
+      var audioInputLabel = document.getElementById("uploadAudioDeepfakeLabel");
+      audioInputLabel.textContent =
+        audio_name.length > 20 ? audio_name.slice(0, 20) + "..." : audio_name;
 
-        var audioInputButton = document.getElementById('uploadAudioDeepfake');
-        audioInputButton.disabled = true;
+      var audioInputButton = document.getElementById("uploadAudioDeepfake");
+      audioInputButton.disabled = true;
 
-        var audioBlobMedia = URL.createObjectURL(request.response);
-        var audioPreview = document.getElementById('previewAudio');
-        audioPreview.innerHTML = `
+      var audioBlobMedia = URL.createObjectURL(request.response);
+      var audioPreview = document.getElementById("previewAudio");
+      audioPreview.innerHTML = `
           <button id="audioDeepfakePlay" class="introjs-button" style="display:inline;margin-left: 5pt;">
             <i class="fa fa-play"></i>
             <i style="display: none;" class="fa fa-pause"></i>
@@ -30,44 +31,44 @@ function editorVideo(button, audio_url = undefined, audio_name = undefined) {
             Your browser does not support audio.
           </audio>
         `;
-        var playBtn = document.getElementById("audioDeepfakePlay");
-        var audio = document.getElementById("audioDeepfakeSrc");
+      var playBtn = document.getElementById("audioDeepfakePlay");
+      var audio = document.getElementById("audioDeepfakeSrc");
+      // Set audio length on the text element
+      // Wait for metadata to be loaded
+      audio.onloadedmetadata = function () {
         // Set audio length on the text element
-        // Wait for metadata to be loaded
-        audio.onloadedmetadata = function() {
-            // Set audio length on the text element
-            var audioLength = document.getElementById("audio-length");
-            audioLength.innerText = audio.duration.toFixed(1);  // rounded to 2 decimal places
-        };
+        var audioLength = document.getElementById("audio-length");
+        audioLength.innerText = audio.duration.toFixed(1); // rounded to 2 decimal places
+      };
 
-        playBtn.addEventListener("click", function() {
-          if (audio.paused) {
-            audio.play();
-            playBtn.children[0].style.display = "none";
-            playBtn.children[1].style.display = "inline";
-          } else {
-            audio.pause();
-            playBtn.children[0].style.display = "inline";
-            playBtn.children[1].style.display = "none";
-          }
-        });
-
-        audio.addEventListener("ended", function() {
+      playBtn.addEventListener("click", function () {
+        if (audio.paused) {
+          audio.play();
+          playBtn.children[0].style.display = "none";
+          playBtn.children[1].style.display = "inline";
+        } else {
+          audio.pause();
           playBtn.children[0].style.display = "inline";
           playBtn.children[1].style.display = "none";
-        });
-      };
-      request.send();
-    }
+        }
+      });
 
-    var introEditorVideo = introJs();
-    introEditorVideo.setOptions({
-        steps: [
-            {
-                element: button,
-                title: 'Панель обработки видео',
-                position: 'right',
-                intro: `
+      audio.addEventListener("ended", function () {
+        playBtn.children[0].style.display = "inline";
+        playBtn.children[1].style.display = "none";
+      });
+    };
+    request.send();
+  }
+
+  var introEditorVideo = introJs();
+  introEditorVideo.setOptions({
+    steps: [
+      {
+        element: button,
+        title: "Панель обработки видео",
+        position: "right",
+        intro: `
                 <div style="width: 400pt;width: 400pt;display: flex;justify-content: space-around;flex-direction: inherit;">
                 <div style="width: 200pt;">
                     <div class="uploadTargetFile">
@@ -107,12 +108,12 @@ function editorVideo(button, audio_url = undefined, audio_name = undefined) {
                     availableFeaturesByCUDA(document.getElementById("enhancer-background"));
                 </script>
                 `,
-            },
-            {
-                element: button,
-                title: 'Панель обработки видео',
-                position: 'right',
-                intro: `
+      },
+      {
+        element: button,
+        title: "Панель обработки видео",
+        position: "right",
+        intro: `
                 <div style="width: 280pt;display: flex;flex-direction: column;align-items: center;">
                     <div style="padding: 5pt;display: flex;flex-direction: column;">
                        <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
@@ -142,18 +143,17 @@ function editorVideo(button, audio_url = undefined, audio_name = undefined) {
                     </div>
                 </div>
                 `,
-            }
-        ],
-          showButtons: true,
-          showStepNumbers: false,
-          showBullets: true,
-          nextLabel: 'Продолжить',
-          prevLabel: 'Вернуться',
-          doneLabel: 'Закрыть'
-    });
-    introEditorVideo.start();
+      },
+    ],
+    showButtons: true,
+    showStepNumbers: false,
+    showBullets: true,
+    nextLabel: "Продолжить",
+    prevLabel: "Вернуться",
+    doneLabel: "Закрыть",
+  });
+  introEditorVideo.start();
 }
-
 
 function dragDropAudio(event) {
   if (event.target.files.length === 0) {
@@ -178,196 +178,227 @@ function dragDropAudio(event) {
   var playBtn = document.getElementById("audioDeepfakePlay");
   var audio = document.getElementById("audioDeepfakeSrc");
 
-  playBtn.addEventListener("click", function() {
-      if (audio.paused) {
-        audio.play();
-        playBtn.children[0].style.display = "none";
-        playBtn.children[1].style.display = "inline";
-      } else {
-        audio.pause();
-        playBtn.children[0].style.display = "inline";
-        playBtn.children[1].style.display = "none";
-      }
-  });
-
-  audio.addEventListener("ended", function() {
+  playBtn.addEventListener("click", function () {
+    if (audio.paused) {
+      audio.play();
+      playBtn.children[0].style.display = "none";
+      playBtn.children[1].style.display = "inline";
+    } else {
+      audio.pause();
       playBtn.children[0].style.display = "inline";
       playBtn.children[1].style.display = "none";
+    }
+  });
+
+  audio.addEventListener("ended", function () {
+    playBtn.children[0].style.display = "inline";
+    playBtn.children[1].style.display = "none";
   });
 }
 
-
 function sendDataToVideoEditor(elem) {
-    // If process is free
-    fetch('/synthesize_process/')
-        .then(response => response.json())
-        .then(data => {
-            // Call the async function
-            processAsyncVideoEditor(data, elem).then(() => {
-                console.log("Start to fetch msg for deepfake");
-            }).catch((error) => {
-                console.log("Error to fetch msg for deepfake");
-                console.log(error);
-            });
+  // If process is free
+  fetch("/synthesize_process/")
+    .then((response) => response.json())
+    .then((data) => {
+      // Call the async function
+      processAsyncVideoEditor(data, elem)
+        .then(() => {
+          console.log("Start to fetch msg for deepfake");
+        })
+        .catch((error) => {
+          console.log("Error to fetch msg for deepfake");
+          console.log(error);
         });
+    });
 }
-
 
 async function processAsyncVideoEditor(data, elem) {
-    if (data.status_code === 200) {
-        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+  if (data.status_code === 200) {
+    var synthesisDeepfakeTable = document.getElementById(
+      "table_body_deepfake_result"
+    );
 
-        var messageVideoEditor = elem.querySelector("#message-editor-video");
-        messageVideoEditor.innerHTML = "";
+    var messageVideoEditor = elem.querySelector("#message-editor-video");
+    messageVideoEditor.innerHTML = "";
 
-        // Get target content
-        var previewVideoEditor = elem.querySelector("#previewEditorVideo");
+    // Get target content
+    var previewVideoEditor = elem.querySelector("#previewEditorVideo");
 
-        var imgVideoEditor = previewVideoEditor.querySelector('img');
-        var videoVideoEditor = previewVideoEditor.querySelector('video');
-        var mediaNameTarget = "";
-        var mediaBlobUrlTarget = "";
-        var typeFileTarget = "";
+    var imgVideoEditor = previewVideoEditor.querySelector("img");
+    var videoVideoEditor = previewVideoEditor.querySelector("video");
+    var mediaNameTarget = "";
+    var mediaBlobUrlTarget = "";
+    var typeFileTarget = "";
 
-        if (imgVideoEditor) {
-           var messageSetP = await translateWithGoogle("Загрузите видео.", 'auto', targetLang);
-            messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-            return
-        } else if (videoVideoEditor) {
-          typeFileTarget = "video";
-          mediaBlobUrlTarget = videoVideoEditor.src
-          mediaNameTarget = "video_target_" + Date.now() + "_" + getRandomString(5);
-        } else {
-          var messageSetP = await translateWithGoogle("Вы не загрузили видео. Нажмите на окно загрузки.", 'auto', targetLang);
-          messageFaceSwap.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-        }
-        if (mediaBlobUrlTarget) {
-            fetch(mediaBlobUrlTarget)
-                .then(res => res.blob())
-                .then(blob => {
-                    var file = new File([blob], mediaNameTarget);
-                    uploadFile(file);
-                });
-        }
+    if (imgVideoEditor) {
+      var messageSetP = await translateWithGoogle(
+        "Загрузите видео.",
+        "auto",
+        targetLang
+      );
+      messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+      return;
+    } else if (videoVideoEditor) {
+      typeFileTarget = "video";
+      mediaBlobUrlTarget = videoVideoEditor.src;
+      mediaNameTarget = "video_target_" + Date.now() + "_" + getRandomString(5);
+    } else {
+      var messageSetP = await translateWithGoogle(
+        "Вы не загрузили видео. Нажмите на окно загрузки.",
+        "auto",
+        targetLang
+      );
+      messageFaceSwap.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+    }
+    if (mediaBlobUrlTarget) {
+      fetch(mediaBlobUrlTarget)
+        .then((res) => res.blob())
+        .then((blob) => {
+          var file = new File([blob], mediaNameTarget);
+          uploadFile(file);
+        });
+    }
 
-        // Get preprocessing
-        var enhancerFace = elem.querySelector("#enhancer-face");
-        var enhancerBackground = elem.querySelector("#enhancer-background");
-        var frames = elem.querySelector("#get-frames");
-        if (enhancerFace.checked || enhancerBackground.checked) {
-            enhancerFace = "gfpgan";
-        } else {
-            enhancerFace = false;
-        }
+    // Get preprocessing
+    var enhancerFace = elem.querySelector("#enhancer-face");
+    var enhancerBackground = elem.querySelector("#enhancer-background");
+    var frames = elem.querySelector("#get-frames");
+    if (enhancerFace.checked || enhancerBackground.checked) {
+      enhancerFace = "gfpgan";
+    } else {
+      enhancerFace = false;
+    }
 
-        if (mediaNameTarget) {
-            const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
-            buttonAnimationWindows.click();
+    if (mediaNameTarget) {
+      const buttonAnimationWindows = document.querySelector(
+        "#button-show-voice-window"
+      );
+      buttonAnimationWindows.click();
 
-            var predictParametersFaceSwap = {
-                "source": mediaNameTarget,
-                "enhancer": enhancerFace,
-                "enhancer_background": enhancerBackground.checked,
-                "get_frames": frames.checked,
-            };
+      var predictParametersFaceSwap = {
+        source: mediaNameTarget,
+        enhancer: enhancerFace,
+        enhancer_background: enhancerBackground.checked,
+        get_frames: frames.checked,
+      };
 
-            synthesisDeepfakeTable.innerHTML = "";
+      synthesisDeepfakeTable.innerHTML = "";
 
-            fetch("/synthesize_video_editor/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(predictParametersFaceSwap)
-            })
+      fetch("/synthesize_video_editor/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(predictParametersFaceSwap),
+      });
 
-            const closeIntroButton = document.querySelector('.introjs-skipbutton');
-            closeIntroButton.click();
-        }
-      } else {
-        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+      const closeIntroButton = document.querySelector(".introjs-skipbutton");
+      closeIntroButton.click();
+    }
+  } else {
+    var synthesisDeepfakeTable = document.getElementById(
+      "table_body_deepfake_result"
+    );
 
-        var messageEditorVideo = elem.querySelector("#message-editor-video");
-        var messageSetP = await translateWithGoogle("Процесс занят. Дождитесь его окончания.", 'auto', targetLang);
-        messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-      }
+    var messageEditorVideo = elem.querySelector("#message-editor-video");
+    var messageSetP = await translateWithGoogle(
+      "Процесс занят. Дождитесь его окончания.",
+      "auto",
+      targetLang
+    );
+    messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+  }
 }
-
 
 function sendDataToVideoMerge(elem) {
-    // If process is free
-    fetch('/synthesize_process/')
-        .then(response => response.json())
-        .then(data => {
-            // Call the async function
-            processAsyncVideoMerge(data, elem).then(() => {
-                console.log("Start to fetch msg for deepfake");
-            }).catch((error) => {
-                console.log("Error to fetch msg for deepfake");
-                console.log(error);
-            });
+  // If process is free
+  fetch("/synthesize_process/")
+    .then((response) => response.json())
+    .then((data) => {
+      // Call the async function
+      processAsyncVideoMerge(data, elem)
+        .then(() => {
+          console.log("Start to fetch msg for deepfake");
+        })
+        .catch((error) => {
+          console.log("Error to fetch msg for deepfake");
+          console.log(error);
         });
+    });
 }
 
-
 async function processAsyncVideoMerge(data, elem) {
-    if (data.status_code === 200) {
-        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+  if (data.status_code === 200) {
+    var synthesisDeepfakeTable = document.getElementById(
+      "table_body_deepfake_result"
+    );
 
-        var messageVideoEditor = elem.querySelector("#message-editor-video");
-        messageVideoEditor.innerHTML = "";
+    var messageVideoEditor = elem.querySelector("#message-editor-video");
+    messageVideoEditor.innerHTML = "";
 
-        const framesPath = elem.querySelector("#frames-path");
+    const framesPath = elem.querySelector("#frames-path");
 
-        if (!framesPath) {
-            var messageSetP = await translateWithGoogle("Вы не указали абсолютный путь до изображений.", 'auto', targetLang);
-            messageVideoEditor.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-        }
+    if (!framesPath) {
+      var messageSetP = await translateWithGoogle(
+        "Вы не указали абсолютный путь до изображений.",
+        "auto",
+        targetLang
+      );
+      messageVideoEditor.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+    }
 
-        var audioMergeSrc = elem.querySelector("#audioDeepfakeSrc");
-        var audioName = "";
-        if (audioMergeSrc) {
-           var audioBlobUrl = audioMergeSrc.querySelector("source").src;
-           audioName = "audio_" + Date.now();
-           fetch(audioBlobUrl)
-                .then(res => res.blob())
-                .then(blob => {
-                    var file = new File([blob], audioName);
-                    uploadFile(file);
-                });
-        } else {
-          audioName = null;
-        }
-
-        const videoFps = elem.querySelector("#video-fps");
-
-
-        const buttonAnimationWindows = document.querySelector('#button-show-voice-window');
-        buttonAnimationWindows.click();
-
-        var predictParametersFaceSwap = {
-            "source_folder": framesPath.value,
-            "audio_name": audioName,
-            "fps": videoFps.value,
-        };
-
-        synthesisDeepfakeTable.innerHTML = "";
-
-        fetch("/synthesize_video_merge/", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(predictParametersFaceSwap)
-        })
-
-        const closeIntroButton = document.querySelector('.introjs-skipbutton');
-        closeIntroButton.click();
+    var audioMergeSrc = elem.querySelector("#audioDeepfakeSrc");
+    var audioName = "";
+    if (audioMergeSrc) {
+      var audioBlobUrl = audioMergeSrc.querySelector("source").src;
+      audioName = "audio_" + Date.now();
+      fetch(audioBlobUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          var file = new File([blob], audioName);
+          uploadFile(file);
+        });
     } else {
-        var synthesisDeepfakeTable = document.getElementById("table_body_deepfake_result");
+      audioName = null;
+    }
 
-        var messageEditorVideo = elem.querySelector("#message-editor-video");
-        var messageSetP = await translateWithGoogle("Процесс занят. Дождитесь его окончания.", 'auto', targetLang);
-        messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-      }
+    const videoFps = elem.querySelector("#video-fps");
+
+    const buttonAnimationWindows = document.querySelector(
+      "#button-show-voice-window"
+    );
+    buttonAnimationWindows.click();
+
+    var predictParametersFaceSwap = {
+      source_folder: framesPath.value,
+      audio_name: audioName,
+      fps: videoFps.value,
+    };
+
+    synthesisDeepfakeTable.innerHTML = "";
+
+    fetch("/synthesize_video_merge/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(predictParametersFaceSwap),
+    });
+
+    const closeIntroButton = document.querySelector(".introjs-skipbutton");
+    closeIntroButton.click();
+  } else {
+    var synthesisDeepfakeTable = document.getElementById(
+      "table_body_deepfake_result"
+    );
+
+    var messageEditorVideo = elem.querySelector("#message-editor-video");
+    var messageSetP = await translateWithGoogle(
+      "Процесс занят. Дождитесь его окончания.",
+      "auto",
+      targetLang
+    );
+    messageEditorVideo.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
+  }
 }
