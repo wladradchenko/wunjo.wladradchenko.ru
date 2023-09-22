@@ -529,6 +529,20 @@ function settingTextToSpeech(elem, languages) {
     }
   });
 
+  // Get checkbox auto translate
+  const checkboxAutomationTranslate = document.getElementById(
+    "setting-tts-translation-check-info"
+  );
+  const attrValueAutomationTranslate = elem.getAttribute("automatic-translate");
+  checkboxAutomationTranslate.checked = attrValueAutomationTranslate === "true";
+  checkboxAutomationTranslate.addEventListener("change", function () {
+    if (this.checked) {
+      elem.setAttribute("automatic-translate", true);
+    } else {
+      elem.setAttribute("automatic-translate", false);
+    }
+  });
+
   // Set audio upload onChange
   const uploadSTTAudio = document.getElementById("uploadSTTAudio");
   uploadSTTAudio.addEventListener("change", function () {
@@ -573,24 +587,13 @@ function settingTextToSpeech(elem, languages) {
     if (["en", "ru", "zh"].includes(selectedValueLanguageTTS)) {
       // If the selected value is one of "en", "ru", or "zh", enable the checkbox
       checkboxCloneAudioVoice.disabled = false;
+      checkboxAutomationTranslate.disabled = false;
     } else {
       // If the selected value is not one of "en", "ru", or "zh", uncheck and disable the checkbox
       checkboxCloneAudioVoice.checked = false;
       checkboxCloneAudioVoice.disabled = true;
-    }
-  });
-
-  // Get checkbox auto translate
-  const checkboxAutomationTranslate = document.getElementById(
-    "setting-tts-translation-check-info"
-  );
-  const attrValueAutomationTranslate = elem.getAttribute("automatic-translate");
-  checkboxAutomationTranslate.checked = attrValueAutomationTranslate === "true";
-  checkboxAutomationTranslate.addEventListener("change", function () {
-    if (this.checked) {
-      elem.setAttribute("automatic-translate", true);
-    } else {
-      elem.setAttribute("automatic-translate", false);
+      checkboxAutomationTranslate.checked = false;
+      checkboxAutomationTranslate.disabled = true;
     }
   });
 
