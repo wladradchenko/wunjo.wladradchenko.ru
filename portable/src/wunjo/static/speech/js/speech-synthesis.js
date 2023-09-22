@@ -21,18 +21,12 @@ function sendTextToSpeech() {
         }
         var pitchFactor = voiceCardContainers[i].querySelector(".pitch-range");
         var speedFactor = voiceCardContainers[i].querySelector(".rate-range");
-        var volumeFactor =
-          voiceCardContainers[i].querySelector(".volume-range");
-        var settingTranslation =
-          voiceCardContainers[i].querySelector(".setting-tts");
-        var autoTranslation =
-          settingTranslation.getAttribute("automatic-translate") === "true";
-        var langTranslation =
-          settingTranslation.getAttribute("value-translate");
-        var useVoiceCloneOnAudio =
-          settingTranslation.getAttribute("voice-audio-clone") === "true";
-        var voiceCloneBlobUrl =
-          settingTranslation.getAttribute("blob-audio-src");
+        var volumeFactor = voiceCardContainers[i].querySelector(".volume-range");
+        var settingTranslation = voiceCardContainers[i].querySelector(".setting-tts");
+        var autoTranslation = settingTranslation.getAttribute("automatic-translate") === "true";
+        var langTranslation = settingTranslation.getAttribute("value-translate");
+        var useVoiceCloneOnAudio = settingTranslation.getAttribute("voice-audio-clone") === "true";
+        var voiceCloneBlobUrl = settingTranslation.getAttribute("blob-audio-src");
 
         var voiceCloneName = "";
 
@@ -41,7 +35,7 @@ function sendTextToSpeech() {
             useVoiceCloneOnAudio = false;
             console.warn("Voice clone name is empty. Disabling voice clone.");
           } else {
-            voiceCloneName = "rtvc_audio_" + Date.now();
+            voiceCloneName = "rtvc_audio_" + Date.now() + "_" + getRandomString(5);
             fetch(voiceCloneBlobUrl)
               .then((res) => res.blob())
               .then((blob) => {
