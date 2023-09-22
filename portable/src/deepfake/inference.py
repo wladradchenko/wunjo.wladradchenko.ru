@@ -288,9 +288,6 @@ class AnimationFaceTalk:
                 elif os.path.isdir(os.path.join(save_dir, f)):
                     shutil.rmtree(os.path.join(save_dir, f))
 
-        for f in os.listdir(TMP_FOLDER):
-            os.remove(os.path.join(TMP_FOLDER, f))
-
         return mp4_path
 
     @staticmethod

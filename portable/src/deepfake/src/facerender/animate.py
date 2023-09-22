@@ -182,9 +182,6 @@ class AnimateFromCoeff():
         word = word1[start_time:end_time]
         word.export(new_audio_file, format="wav")
 
-        new_video_name = save_video_with_audio(temp_video_file, new_audio_file, video_save_dir)
-        print(f'The generated video is named {new_video_name} in {video_save_dir}')
-
         video_name_full = x['video_name'] + '_full.mp4'
         new_video_name = paste_pic(video_path=temp_video_file, pic_path=pic_path, crop_info=crop_info, new_audio_path=new_audio_file, video_save_dir=video_save_dir, preprocess=preprocess, pic_path_type=pic_path_type)
         print(f'The generated video is named {video_save_dir}/{video_name_full}')
@@ -200,10 +197,6 @@ class AnimateFromCoeff():
             
             new_video_name = save_video_with_audio(enhanced_video, new_audio_file, video_save_dir)
             print(f'The generated video is named {video_save_dir}/{video_name_enhancer}')
-            os.remove(enhanced_video)
-
-        os.remove(temp_video_file)
-        os.remove(new_audio_file)
 
         return new_video_name
 
