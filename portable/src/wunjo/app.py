@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import time
 
 import torch
 import subprocess
@@ -682,6 +681,7 @@ def change_processor():
 
 
 if not app.config['DEBUG']:
+    from time import time
     from io import StringIO
 
 
@@ -691,7 +691,7 @@ if not app.config['DEBUG']:
             self.logs = []
 
         def write(self, msg):
-            timestamped_msg = (time.time(), msg)
+            timestamped_msg = (time(), msg)
             self.logs.append(timestamped_msg)
             super().write(msg)
 

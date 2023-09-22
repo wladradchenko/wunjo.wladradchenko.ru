@@ -70,28 +70,28 @@ class VoiceCloneTranslate:
     @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder,
                               text, src_lang, need_translate, tts_model_name="Voice Clone", **options):
-        # try:
-        download_ntlk()  # inspect what ntlk downloaded
+        try:
+            download_ntlk()  # inspect what ntlk downloaded
 
-        if need_translate:
-            print("Translation text before voice clone")
-            text = get_translate(text, src_lang)
+            if need_translate:
+                print("Translation text before voice clone")
+                text = get_translate(text, src_lang)
 
-        results = VoiceCloneTranslate.get_models_results(
-            audio_file,
-            text,
-            encoder,
-            synthesizer,
-            signature,
-            vocoder,
-            save_folder,
-            tts_model_name,
-            **options
-        )
-        return 0, results
-        # except Exception as err:
-        #     print(f"Error ... {err}")
-        #     return 1, str(err)
+            results = VoiceCloneTranslate.get_models_results(
+                audio_file,
+                text,
+                encoder,
+                synthesizer,
+                signature,
+                vocoder,
+                save_folder,
+                tts_model_name,
+                **options
+            )
+            return 0, results
+        except Exception as err:
+            print(f"Error ... {err}")
+            return 1, str(err)
 
     @staticmethod
     def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, **options):
