@@ -78,7 +78,7 @@ class AnimationFaceTalk:
     def main_img_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, still: bool = True, face_fields: list = None,
                           enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
                           preprocess: str = Input(description="how to preprocess the images", choices=["crop", "resize", "full"], default="full",),
-                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, background_enhancer=None):
+                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, background_enhancer=None, pose_style=0):
 
         if file_deepfake_config == {}:
             raise "[Error] Config file deepfake.json is not exist"
@@ -115,14 +115,11 @@ class AnimationFaceTalk:
         audio_path = args.driven_audio
         save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
-        pose_style = args.pose_style
         device = args.device
         batch_size = args.batch_size
         input_yaw_list = args.input_yaw
         input_pitch_list = args.input_pitch
         input_roll_list = args.input_roll
-        ref_eyeblink = args.ref_eyeblink
-        ref_pose = args.ref_pose
 
         current_root_path = deepfake_root_path  # os.path.split(current_code_path)[0]
         model_user_path = DEEPFAKE_MODEL_FOLDER
@@ -245,39 +242,16 @@ class AnimationFaceTalk:
             print("Can't get the coefficients by 3DMM of the input")
             return
 
-        if ref_eyeblink is not None:
-            ref_eyeblink_videoname = os.path.splitext(os.path.split(ref_eyeblink)[-1])[0]
-            ref_eyeblink_frame_dir = os.path.join(save_dir, ref_eyeblink_videoname)
-            os.makedirs(ref_eyeblink_frame_dir, exist_ok=True)
-            print('Extraction 3DMM for the reference video providing eye blinking')
-            ref_eyeblink_coeff_path, _, _ = preprocess_model.generate(ref_eyeblink, ref_eyeblink_frame_dir)
-        else:
-            ref_eyeblink_coeff_path = None
-
-        if ref_pose is not None:
-            if ref_pose == ref_eyeblink:
-                ref_pose_coeff_path = ref_eyeblink_coeff_path
-            else:
-                ref_pose_videoname = os.path.splitext(os.path.split(ref_pose)[-1])[0]
-                ref_pose_frame_dir = os.path.join(save_dir, ref_pose_videoname)
-                os.makedirs(ref_pose_frame_dir, exist_ok=True)
-                print('Extraction 3DMM for the reference video providing pose')
-                ref_pose_coeff_path, _, _ = preprocess_model.generate(ref_pose, ref_pose_frame_dir)
-        else:
-            ref_pose_coeff_path = None
+        ref_eyeblink_coeff_path = None
+        ref_pose_coeff_path = None
 
         # audio2ceoff
         batch = get_data(first_coeff_path, audio_path, device, ref_eyeblink_coeff_path, still=args.still)
         coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
 
-        # 3dface render
-        if args.face3dvis:
-            from src.face3d.visualize import gen_composed_video
-            gen_composed_video(args, device, first_coeff_path, coeff_path, audio_path, os.path.join(save_dir, '3dface.mp4'))
-
         # coeff2video
         data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, audio_path, batch_size, input_yaw_list, input_pitch_list, input_roll_list, expression_scale=args.expression_scale, still_mode=args.still, preprocess=args.preprocess)
-        mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess, pic_path_type=pic_path_type)
+        mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess, pic_path_type=pic_path_type, device=device)
 
         for f in os.listdir(save_dir):
             if mp4_path == f:
@@ -293,15 +267,13 @@ class AnimationFaceTalk:
     @staticmethod
     def load_img_default():
         return Namespace(
-            pose_style=0,
             batch_size=2,
             ref_eyeblink=None,
             ref_pose=None,
-            face3dvis=False,
             net_recon="resnet50",
             init_path=None,
             use_last_fc=False,
-            bfm_folder=os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints", "BFM_Fitting"),  # TODO test this
+            bfm_folder=os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints", "BFM_Fitting"),
             bfm_model="BFM_model_front.mat",
             focal=1015.0,
             center=112.0,
@@ -400,7 +372,7 @@ class AnimationMouthTalk:
         if enhancer:
             video_name_enhancer = 'wav2lip_video_enhanced.mp4'
             enhanced_path = os.path.join(save_dir, 'temp_' + video_name_enhancer)
-            enhanced_images = face_enhancer(wav2lip_processed_video, method=enhancer, bg_upsampler=background_enhancer)
+            enhanced_images = face_enhancer(wav2lip_processed_video, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
             imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
             wav2lip_result_video = enhanced_path
 
@@ -523,7 +495,7 @@ class FaceSwap:
 
             # after face or background enchanter
             if enhancer:
-                enhanced_images = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer)
+                enhanced_images = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
                 file_name = "swap_result_enhanced.mp4"
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
@@ -546,7 +518,7 @@ class FaceSwap:
             file_name = "swap_result.png"
             saved_file = save_image_cv2(os.path.join(save_dir, file_name), target_image)
             if enhancer:
-                enhanced_image = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer)
+                enhanced_image = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
                 file_name = "swap_result_enhanced.png"
                 saved_file = os.path.join(save_dir, file_name)
                 imageio.imsave(saved_file, enhanced_image[0])
@@ -716,12 +688,20 @@ class VideoEdit:
         audio_file_name = extract_audio_from_video(source, save_dir)
 
         if enhancer:
+            cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+            if torch.cuda.is_available() and not cpu:
+                print("Processing will run on GPU")
+                device = "cuda"
+            else:
+                print("Processing will run on CPU")
+                device = "cpu"
+
             print("Get audio and video frames")
             frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
             video_name_enhancer = 'video_enhanced.mp4'
             enhanced_path = os.path.join(output, 'temp_' + video_name_enhancer)
             print("Starting improve video")
-            enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background)
+            enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
             imageio.mimsave(enhanced_path, enhanced_video, fps=float(fps))
             save_name = save_video_with_audio(enhanced_path, os.path.join(save_dir, audio_file_name), save_dir)
 

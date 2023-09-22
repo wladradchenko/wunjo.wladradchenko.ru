@@ -2,11 +2,6 @@
 """
 
 import os
-import numpy as np
-import torch.nn.functional as F
-from torch.nn import init
-import functools
-from torch.optim import lr_scheduler
 import torch
 from torch import Tensor
 import torch.nn as nn
@@ -15,7 +10,6 @@ try:
 except ImportError:
     from torch.utils.model_zoo import load_url as load_state_dict_from_url
 from typing import Type, Any, Callable, Union, List, Optional
-from .arcface_torch.backbones import get_model
 from kornia.geometry import warp_affine
 
 def resize_n_crop(image, M, dsize=112):
@@ -31,40 +25,10 @@ def filter_state_dict(state_dict, remove_name='fc'):
         new_state_dict[key] = state_dict[key]
     return new_state_dict
 
-def get_scheduler(optimizer, opt):
-    """Return a learning rate scheduler
-
-    Parameters:
-        optimizer          -- the optimizer of the network
-        opt (option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions．　
-                              opt.lr_policy is the name of learning rate policy: linear | step | plateau | cosine
-
-    For other schedulers (step, plateau, and cosine), we use the default PyTorch schedulers.
-    See https://pytorch.org/docs/stable/optim.html for more details.
-    """
-    if opt.lr_policy == 'linear':
-        def lambda_rule(epoch):
-            lr_l = 1.0 - max(0, epoch + opt.epoch_count - opt.n_epochs) / float(opt.n_epochs + 1)
-            return lr_l
-        scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule)
-    elif opt.lr_policy == 'step':
-        scheduler = lr_scheduler.StepLR(optimizer, step_size=opt.lr_decay_epochs, gamma=0.2)
-    elif opt.lr_policy == 'plateau':
-        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
-    elif opt.lr_policy == 'cosine':
-        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=opt.n_epochs, eta_min=0)
-    else:
-        return NotImplementedError('learning rate policy [%s] is not implemented', opt.lr_policy)
-    return scheduler
-
 
 def define_net_recon(net_recon, use_last_fc=False, init_path=None):
     return ReconNetWrapper(net_recon, use_last_fc=use_last_fc, init_path=init_path)
 
-def define_net_recog(net_recog, pretrained_path=None):
-    net = RecogNetWrapper(net_recog=net_recog, pretrained_path=pretrained_path)
-    net.eval()
-    return net
 
 class ReconNetWrapper(nn.Module):
     fc_dim=257
@@ -102,33 +66,6 @@ class ReconNetWrapper(nn.Module):
                 output.append(layer(x))
             x = torch.flatten(torch.cat(output, dim=1), 1)
         return x
-
-
-class RecogNetWrapper(nn.Module):
-    def __init__(self, net_recog, pretrained_path=None, input_size=112):
-        super(RecogNetWrapper, self).__init__()
-        net = get_model(name=net_recog, fp16=False)
-        if pretrained_path:
-            state_dict = torch.load(pretrained_path, map_location='cpu')
-            net.load_state_dict(state_dict)
-            print("loading pretrained net_recog %s from %s" %(net_recog, pretrained_path))
-        for param in net.parameters():
-            param.requires_grad = False
-        self.net = net
-        self.preprocess = lambda x: 2 * x - 1
-        self.input_size=input_size
-        
-    def forward(self, image, M):
-        image = self.preprocess(resize_n_crop(image, M, self.input_size))
-        id_feature = F.normalize(self.net(image), dim=-1, p=2)
-        return id_feature
-
-
-# adapted from https://github.com/pytorch/vision/edit/master/torchvision/models/resnet.py
-__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
-           'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
-           'wide_resnet50_2', 'wide_resnet101_2']
-
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-f37072fd.pth',
@@ -384,9 +321,8 @@ def _resnet(
     **kwargs: Any
 ) -> ResNet:
     model = ResNet(block, layers, **kwargs)
-    if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=progress)
+    if pretrained:  # pretrained resnet for facerender not use now by hub load, but better keep this code
+        state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
         model.load_state_dict(state_dict)
     return model
 

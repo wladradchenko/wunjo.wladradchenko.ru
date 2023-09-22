@@ -1,5 +1,5 @@
 import numpy as np
-import cv2, os, sys, torch
+import cv2, os, torch
 from tqdm import tqdm
 from PIL import Image 
 
@@ -8,13 +8,13 @@ from src.face3d.util.preprocess import align_img
 from src.face3d.util.load_mats import load_lm3d
 from src.face3d.models import networks
 
-try:
-    from src.face3d.extract_kp_videos_safe import KeypointExtractor
-    assert torch.cuda.is_available() == True
-except:
+use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+if use_cpu:
     from src.face3d.extract_kp_videos import KeypointExtractor
+else:
+    from src.face3d.extract_kp_videos_safe import KeypointExtractor
 
-from scipy.io import loadmat, savemat
+from scipy.io import savemat
 from src.utils.croper import Croper
 
 import warnings 
@@ -109,7 +109,7 @@ class CropAndExtract():
         if not os.path.isfile(landmarks_path): 
             lm = self.kp_extractor.extract_keypoint(frames_pil, landmarks_path)
         else:
-            print(' Using saved landmarks.')
+            print('Using saved landmarks.')
             lm = np.loadtxt(landmarks_path).astype(np.float32)
             lm = lm.reshape([len(x_full_frames), -1, 2])
 

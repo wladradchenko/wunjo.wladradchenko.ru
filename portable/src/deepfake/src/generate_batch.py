@@ -90,7 +90,6 @@ def get_data(first_coeff_path, audio_path, device, ref_eyeblink_coeff_path, stil
             refeyeblink_coeff_list = [refeyeblink_coeff for i in range(div)]
             refeyeblink_coeff_list.append(refeyeblink_coeff[:re, :64])
             refeyeblink_coeff = np.concatenate(refeyeblink_coeff_list, axis=0)
-            print(refeyeblink_coeff.shape[0])
 
         ref_coeff[:, :64] = refeyeblink_coeff[:num_frames, :64] 
     

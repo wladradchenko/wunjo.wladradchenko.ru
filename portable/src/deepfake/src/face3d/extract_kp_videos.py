@@ -1,15 +1,11 @@
 import os
 import cv2
 import time
-import glob
-import argparse
 import face_alignment
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from itertools import cycle
 
-from torch.multiprocessing import Pool, Process, set_start_method
 
 class KeypointExtractor():
     def __init__(self, device):
@@ -81,29 +77,3 @@ def run(data):
         images, 
         name=os.path.join(opt.output_dir, name[-2], name[-1])
     )
-
-if __name__ == '__main__':
-    set_start_method('spawn')
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--input_dir', type=str, help='the folder of the input files')
-    parser.add_argument('--output_dir', type=str, help='the folder of the output files')
-    parser.add_argument('--device_ids', type=str, default='0,1')
-    parser.add_argument('--workers', type=int, default=4)
-
-    opt = parser.parse_args()
-    filenames = list()
-    VIDEO_EXTENSIONS_LOWERCASE = {'mp4'}
-    VIDEO_EXTENSIONS = VIDEO_EXTENSIONS_LOWERCASE.union({f.upper() for f in VIDEO_EXTENSIONS_LOWERCASE})
-    extensions = VIDEO_EXTENSIONS
-    
-    for ext in extensions:
-        os.listdir(f'{opt.input_dir}')
-        print(f'{opt.input_dir}/*.{ext}')
-        filenames = sorted(glob.glob(f'{opt.input_dir}/*.{ext}'))
-    print('Total number of videos:', len(filenames))
-    pool = Pool(opt.workers)
-    args_list = cycle([opt])
-    device_ids = opt.device_ids.split(",")
-    device_ids = cycle(device_ids)
-    for data in tqdm(pool.imap_unordered(run, zip(filenames, args_list, device_ids))):
-        None

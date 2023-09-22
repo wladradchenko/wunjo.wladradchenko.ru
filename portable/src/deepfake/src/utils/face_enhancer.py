@@ -2,19 +2,17 @@ import os
 import json
 import torch 
 
-# from gfpgan import GFPGANer
 from src.utils.gfpganer import GFPGANer
 
 from tqdm import tqdm
 
 from src.utils.videoio import load_video_to_cv2
 from backend.folders import DEEPFAKE_MODEL_FOLDER
-from backend.download import download_model, check_download_size
 
 import cv2
 
 
-def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
+def enhancer(images, method='gfpgan', bg_upsampler='realesrgan', device='cpu'):
     print('face enhancer....')
     if os.path.isfile(images): # handle video to images
         images = load_video_to_cv2(images)
@@ -50,14 +48,13 @@ def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
 
     # ------------------------ set up background upsampler ------------------------
     if bg_upsampler == 'realesrgan':
-        if not torch.cuda.is_available():  # CPU
+        if device == "cpu":  # CPU
             import warnings
             warnings.warn('The unoptimized RealESRGAN is slow on CPU. We do not use it. '
                           'If you really want to use it, please modify the corresponding codes.')
             bg_upsampler = None
         else:
             from basicsr.archs.rrdbnet_arch import RRDBNet
-            # from realesrgan import RealESRGANer
             from src.utils.realesrgan import RealESRGANer
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
             os.path.join(DEEPFAKE_MODEL_FOLDER, 'gfpgan', 'weights')
@@ -76,7 +73,8 @@ def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
                 tile=400,
                 tile_pad=10,
                 pre_pad=0,
-                half=True)  # need to set False in CPU mode
+                half=True,
+            )  # need to set False in CPU mode
     else:
         bg_upsampler = None
 
@@ -93,7 +91,9 @@ def enhancer(images, method='gfpgan', bg_upsampler='realesrgan'):
         upscale=2,
         arch=arch,
         channel_multiplier=channel_multiplier,
-        bg_upsampler=bg_upsampler)
+        bg_upsampler=bg_upsampler,
+        device=device
+    )
 
     # ------------------------ restore ------------------------
     restored_img = [] 

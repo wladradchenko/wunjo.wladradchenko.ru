@@ -277,7 +277,7 @@ function deepfakeGeneralPop(
         title: "Панель анимации",
         position: "left",
         intro: `
-                    <div style="width: 450pt;columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
+                    <div id="face-animation-main-windows" style="width: 250pt;columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
                     <div style="width: 200pt;">
                         <div class="uploadOuterDeepfake">
                             <div style="flex-direction: row;display: flex;margin-bottom: 10pt;justify-content: space-between;">
@@ -302,8 +302,8 @@ function deepfakeGeneralPop(
 
                         ${audioInputField}
                     </div>
-                    <div style="width: 200pt;">
-                        <fieldset style="padding: 5pt;">
+                    <div id="face-animation-parameters-windows" style="width: 200pt;display: none;">
+                        <fieldset id="fieldset-preprocessing" style="padding: 5pt;">
                             <legend>Выбор препроцессинга</legend>
                             <div style="display: none;">
                               <input type="radio" id="cover-deepfake" name="preprocessing_deepfake" value="crop">
@@ -318,7 +318,7 @@ function deepfakeGeneralPop(
                               <label for="full-deepfake">Без изменений</label>
                             </div>
                         </fieldset>
-                        <div style="padding: 5pt;margin-top:5pt;">
+                        <div id="still-deepfake-div" style="padding: 5pt;margin-top:5pt;">
                           <input type="checkbox" id="still-deepfake" name="still">
                           <label for="still-deepfake">Отключить движение головой</label>
                         </div>
@@ -326,26 +326,26 @@ function deepfakeGeneralPop(
                           <input type="checkbox" id="enhancer-deepfake" name="enhancer">
                           <label for="enhancer-deepfake">Улучшение лица</label>
                         </div>
+                        <div id="similar-coeff-face-div" style="justify-content: space-between;padding: 5pt; display: flex;">
+                          <label for="similar-coeff-face">Похожесть лица</label>
+                          <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                        </div>
                         <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);">
                           <legend><button style="background: none;border: none;font-size: 12pt;cursor: pointer;text-decoration" onclick="document.getElementById('advanced-settings').style.display = (document.getElementById('advanced-settings').style.display === 'none') ? 'block' : 'none';this.parentElement.parentElement.style.borderColor = (this.parentElement.parentElement.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255 255 255 / 0%)' : 'rgb(192, 192, 192)';">Продвинутые настройки</button></legend>
                           <div id="advanced-settings" style="display:none;">
-                            <div style="justify-content: space-between;padding: 5pt; display: flex;">
+                            <div id="expression-scale-deepfake-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                               <label for="expression-scale-deepfake">Выраженность мимики</label>
                               <input type="number" title="Введите число" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
                             </div>
-                            <div style="justify-content: space-between;padding: 5pt; display: flex;">
-                              <label for="similar-coeff-face">Похожесть лица</label>
-                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="2" step="0.1" value="0.95" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
-                            </div>
-                            <div style="padding: 5pt;">
+                            <div id="input-yaw-deepfake-div" style="padding: 5pt;">
                               <label for="input-yaw-deepfake">Угол поворота по XY</label>
                               <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
-                            <div style="padding: 5pt;">
+                            <div id="input-pitch-deepfake-div" style="padding: 5pt;">
                               <label for="input-pitch-deepfake">Угол поворота по YZ</label>
                               <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
-                            <div style="padding: 5pt;">
+                            <div id="input-roll-deepfake-div" style="padding: 5pt;">
                               <label for="input-roll-deepfake">Угол поворота по ZX</label>
                               <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
@@ -353,7 +353,6 @@ function deepfakeGeneralPop(
                               <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
                               <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
                             </div>
-                            <hr>
                             <div style="padding: 5pt;" id="use-experimental-functions-message">
                                 <input onclick="document.getElementById('deepfake-emotion').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="use-experimental-functions" name="experimental-functions">
                                 <label for="use-experimental-functions">Экспериментальная версия</label>
@@ -406,10 +405,32 @@ function deepfakeGeneralPop(
 /// GENERAL DRAG AND DROP ///
 function handleMetadataAnimationFace(event) {
   const file = event.target.files[0];
+  document.getElementById("face-animation-main-windows").style.width = "450pt";
+  document.getElementById("face-animation-parameters-windows").style.display = "inline";
 
   if (file.type.includes("image")) {
+    document.getElementById("fieldset-preprocessing").style.display = "block";
+    document.getElementById("still-deepfake-div").style.display = "block";
+    document.getElementById("expression-scale-deepfake-div").style.display = "block";
+    document.getElementById("input-yaw-deepfake-div").style.display = "block";
+    document.getElementById("input-pitch-deepfake-div").style.display = "block";
+    document.getElementById("input-roll-deepfake-div").style.display = "block";
+
+    document.getElementById("similar-coeff-face-div").style.display = "none";
+    document.getElementById("use-experimental-functions-message").style.display = "none";
+
     handleImageMetadataAnimationFace("fieldset-control-duration");
   } else if (file.type.includes("video")) {
+    document.getElementById("fieldset-preprocessing").style.display = "none";
+    document.getElementById("still-deepfake-div").style.display = "none";
+    document.getElementById("expression-scale-deepfake-div").style.display = "none";
+    document.getElementById("input-yaw-deepfake-div").style.display = "none";
+    document.getElementById("input-pitch-deepfake-div").style.display = "none";
+    document.getElementById("input-roll-deepfake-div").style.display = "none";
+
+    document.getElementById("similar-coeff-face-div").style.display = "block";
+    document.getElementById("use-experimental-functions-message").style.display = "block";
+
     // You can use a Promise or setTimeout to wait until the metadata is loaded
     const video = document.createElement("video");
     video.setAttribute("src", URL.createObjectURL(file));

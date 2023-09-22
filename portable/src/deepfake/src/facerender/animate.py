@@ -10,8 +10,6 @@ warnings.filterwarnings('ignore')
 
 import imageio
 import torch
-import torchvision
-
 
 from src.facerender.modules.keypoint_detector import HEEstimator, KPDetector
 from src.facerender.modules.mapping import MappingNet
@@ -120,7 +118,7 @@ class AnimateFromCoeff():
 
         return checkpoint['epoch']
 
-    def generate(self, x, video_save_dir, pic_path, crop_info, enhancer=None, background_enhancer=None, preprocess='crop', pic_path_type="static"):
+    def generate(self, x, video_save_dir, pic_path, crop_info, enhancer=None, background_enhancer=None, preprocess='crop', pic_path_type="static", device="cpu"):
 
         source_image = x['source_image'].type(torch.FloatTensor)
         source_semantics = x['source_semantics'].type(torch.FloatTensor)
@@ -130,25 +128,24 @@ class AnimateFromCoeff():
         target_semantics = target_semantics.to(self.device)
         if 'yaw_c_seq' in x:
             yaw_c_seq = x['yaw_c_seq'].type(torch.FloatTensor)
-            yaw_c_seq = x['yaw_c_seq'].to(self.device)
+            yaw_c_seq = yaw_c_seq.to(self.device)
         else:
             yaw_c_seq = None
         if 'pitch_c_seq' in x:
             pitch_c_seq = x['pitch_c_seq'].type(torch.FloatTensor)
-            pitch_c_seq = x['pitch_c_seq'].to(self.device)
+            pitch_c_seq = pitch_c_seq.to(self.device)
         else:
             pitch_c_seq = None
         if 'roll_c_seq' in x:
             roll_c_seq = x['roll_c_seq'].type(torch.FloatTensor) 
-            roll_c_seq = x['roll_c_seq'].to(self.device)
+            roll_c_seq = roll_c_seq.to(self.device)
         else:
             roll_c_seq = None
 
         frame_num = x['frame_num']
 
-        predictions_video = make_animation(source_image, source_semantics, target_semantics,
-                                        self.generator, self.kp_extractor, self.he_estimator, self.mapping, 
-                                        yaw_c_seq, pitch_c_seq, roll_c_seq, use_exp=True)
+        predictions_video = make_animation(source_image, source_semantics, target_semantics, self.generator,
+                                           self.kp_extractor, self.mapping, yaw_c_seq, pitch_c_seq, roll_c_seq)
 
         predictions_video = predictions_video.reshape((-1,)+predictions_video.shape[2:])
         predictions_video = predictions_video[:frame_num]
@@ -191,7 +188,7 @@ class AnimateFromCoeff():
             video_name_enhancer = x['video_name'] + '_enhanced.mp4'
             enhanced_video = os.path.join(video_save_dir, 'temp_'+video_name_enhancer)
             current_video = os.path.join(video_save_dir, new_video_name)
-            enhanced_images = face_enhancer(current_video, method=enhancer, bg_upsampler=background_enhancer)
+            enhanced_images = face_enhancer(current_video, method=enhancer, bg_upsampler=background_enhancer, device=device)
 
             imageio.mimsave(enhanced_video, enhanced_images, fps=float(25))
             

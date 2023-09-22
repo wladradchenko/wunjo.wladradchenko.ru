@@ -45,7 +45,7 @@ class Audio2Coeff():
         # load audio2exp_model
         netG = SimpleWrapperV2()
         netG = netG.to(device)
-        for param in netG.parameters():
+        for _ in netG.parameters():
             netG.requires_grad = False
         netG.eval()
         try:
@@ -63,16 +63,12 @@ class Audio2Coeff():
     def generate(self, batch, coeff_save_dir, pose_style, ref_pose_coeff_path=None):
 
         with torch.no_grad():
-            #test
             results_dict_exp= self.audio2exp_model.test(batch)
-            exp_pred = results_dict_exp['exp_coeff_pred']                         #bs T 64
+            exp_pred = results_dict_exp['exp_coeff_pred']
 
-            #for class_id in  range(1):
-            #class_id = 0#(i+10)%45
-            #class_id = random.randint(0,46)                                   #46 styles can be selected 
             batch['class'] = torch.LongTensor([pose_style]).to(self.device)
             results_dict_pose = self.audio2pose_model.test(batch) 
-            pose_pred = results_dict_pose['pose_pred']                        #bs T 6
+            pose_pred = results_dict_pose['pose_pred']
 
             pose_len = pose_pred.shape[1]
             if pose_len<13: 
@@ -81,7 +77,7 @@ class Audio2Coeff():
             else:
                 pose_pred = torch.Tensor(savgol_filter(np.array(pose_pred.cpu()), 13, 2, axis=1)).to(self.device) 
             
-            coeffs_pred = torch.cat((exp_pred, pose_pred), dim=-1)            #bs T 70
+            coeffs_pred = torch.cat((exp_pred, pose_pred), dim=-1)
 
             coeffs_pred_numpy = coeffs_pred[0].clone().detach().cpu().numpy() 
 
@@ -89,8 +85,7 @@ class Audio2Coeff():
             if ref_pose_coeff_path is not None: 
                  coeffs_pred_numpy = self.using_refpose(coeffs_pred_numpy, ref_pose_coeff_path)
         
-            savemat(os.path.join(coeff_save_dir, '%s##%s.mat'%(batch['pic_name'], batch['audio_name'])),  
-                    {'coeff_3dmm': coeffs_pred_numpy})
+            savemat(os.path.join(coeff_save_dir, '%s##%s.mat'%(batch['pic_name'], batch['audio_name'])), {'coeff_3dmm': coeffs_pred_numpy})
 
             return os.path.join(coeff_save_dir, '%s##%s.mat'%(batch['pic_name'], batch['audio_name']))
     

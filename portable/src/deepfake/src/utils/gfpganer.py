@@ -1,5 +1,4 @@
 import cv2
-import os
 import torch
 from basicsr.utils import img2tensor, tensor2img
 from basicsr.utils.download_util import load_file_from_url
@@ -31,7 +30,7 @@ class GFPGANer():
         self.bg_upsampler = bg_upsampler
 
         # initialize model
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if device is None else device
+        self.device = device
         # initialize the GFP-GAN
         if arch == 'clean':
             self.gfpgan = GFPGANv1Clean(
@@ -105,8 +104,6 @@ class GFPGANer():
             self.face_helper.read_image(img)
             # get face landmarks for each face
             self.face_helper.get_face_landmarks_5(only_center_face=only_center_face, eye_dist_threshold=5)
-            # eye_dist_threshold=5: skip faces whose eye distance is smaller than 5 pixels
-            # TODO: even with eye_dist_threshold, it will still introduce wrong detections and restorations.
             # align and warp each face
             self.face_helper.align_warp_face()
 

@@ -1,16 +1,12 @@
 import os
 import cv2
 import time
-import glob
-import argparse
 import numpy as np
 from PIL import Image
 import torch
 from tqdm import tqdm
-from itertools import cycle
 from facexlib.alignment import init_alignment_model, landmark_98_to_68
 from facexlib.detection import init_detection_model
-from torch.multiprocessing import Pool, Process, set_start_method
 
 from backend.folders import DEEPFAKE_MODEL_FOLDER
 
@@ -34,7 +30,7 @@ class KeypointExtractor():
 
             for image in i_range:
                 current_kp = self.extract_keypoint(image)
-                # current_kp = self.detector.get_landmarks(np.array(image))
+
                 if np.mean(current_kp) == -1 and keypoints:
                     keypoints.append(keypoints[-1])
                 else:
@@ -53,10 +49,6 @@ class KeypointExtractor():
                         
                         bboxes = bboxes[0]
 
-                        # bboxes[0] -= 100
-                        # bboxes[1] -= 100
-                        # bboxes[2] += 100
-                        # bboxes[3] += 100
                         img = img[int(bboxes[1]):int(bboxes[3]), int(bboxes[0]):int(bboxes[2]), :]
 
                         keypoints = landmark_98_to_68(self.detector.get_landmarks(img)) # [0]
@@ -107,29 +99,3 @@ def run(data):
         images, 
         name=os.path.join(opt.output_dir, name[-2], name[-1])
     )
-
-if __name__ == '__main__':
-    set_start_method('spawn')
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--input_dir', type=str, help='the folder of the input files')
-    parser.add_argument('--output_dir', type=str, help='the folder of the output files')
-    parser.add_argument('--device_ids', type=str, default='0,1')
-    parser.add_argument('--workers', type=int, default=4)
-
-    opt = parser.parse_args()
-    filenames = list()
-    VIDEO_EXTENSIONS_LOWERCASE = {'mp4'}
-    VIDEO_EXTENSIONS = VIDEO_EXTENSIONS_LOWERCASE.union({f.upper() for f in VIDEO_EXTENSIONS_LOWERCASE})
-    extensions = VIDEO_EXTENSIONS
-    
-    for ext in extensions:
-        os.listdir(f'{opt.input_dir}')
-        print(f'{opt.input_dir}/*.{ext}')
-        filenames = sorted(glob.glob(f'{opt.input_dir}/*.{ext}'))
-    print('Total number of videos:', len(filenames))
-    pool = Pool(opt.workers)
-    args_list = cycle([opt])
-    device_ids = opt.device_ids.split(",")
-    device_ids = cycle(device_ids)
-    for data in tqdm(pool.imap_unordered(run, zip(filenames, args_list, device_ids))):
-        None

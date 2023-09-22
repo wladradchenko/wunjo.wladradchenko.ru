@@ -39,7 +39,7 @@ function deepfakeFaceSwap(
                         <div>
                             <div style="padding: 5pt;margin-left: 7pt;">
                               <label for="similar-coeff-face">Коэффициент похожести лица</label>
-                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="2" step="0.1" value="0.95" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                             </div>
                         </div>
                     </div>

@@ -122,8 +122,6 @@ def gen_camera_pose(camera_degree_list, frame_num, batch_size):
     elif len(new_degree_list) < frame_num:
         for _ in range(frame_num-len(new_degree_list)):
             new_degree_list.append(new_degree_list[-1])
-    print(len(new_degree_list))
-    print(frame_num)
 
     remainder = frame_num%batch_size
     if remainder!=0:

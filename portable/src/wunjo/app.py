@@ -3,6 +3,7 @@ import sys
 import json
 
 import torch
+import random
 import subprocess
 from base64 import b64encode
 from werkzeug.utils import secure_filename
@@ -472,7 +473,8 @@ def synthesize_deepfake():
                 input_yaw=input_yaw,
                 input_pitch=input_pitch,
                 input_roll=input_roll,
-                background_enhancer=background_enhancer
+                background_enhancer=background_enhancer,
+                pose_style=random.randint(0, 45)
                 )
         elif type_file == "video":
             deepfake_result = AnimationMouthTalk.main_video_deepfake(
