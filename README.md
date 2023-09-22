@@ -314,8 +314,9 @@ Update 1.5.5
 
 Update 1.6.0
 - [ ] Add create deepfake video by text prompts
-- [ ] Imitate emotions in voice
-- [ ] Fix bug where face animation doesn't work with gif on Windows
+- [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
+- [ ] Music generation
+- [ ] People position control on image
 
 <!-- VIDEO -->
 ## Video
