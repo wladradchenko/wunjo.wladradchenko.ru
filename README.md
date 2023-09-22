@@ -324,11 +324,11 @@ Update 1.6.0
 <div align="center">
   <table>
   <tr>
-    <th>What is new?</th>
+    <th>Review</th>
     <th>How install on Windows?</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/vdvf9NxrUC8"><img src="example/thumbnail/update.gif" alt="video" width="350"></a></td>
+    <td><a href="https://youtu.be/4EfozPBMwXI"><img src="example/thumbnail/update.gif" alt="video" width="350"></a></td>
     <td><a href="https://youtu.be/UzpEcPhSDrk"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
   </tr>
 </table>
