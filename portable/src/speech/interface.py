@@ -140,7 +140,7 @@ class VoiceCloneTranslate:
         :param output_file_name: output audio merged file name
         :return: output audio merged file path
         """
-        from speech.rtvc.encoder.audio import trim_silence_librosa  # TODO check how it will work after build
+        from speech.rtvc.encoder.audio import trim_silence_librosa
 
         # List all files in the directory
         files = os.listdir(audio_folder)

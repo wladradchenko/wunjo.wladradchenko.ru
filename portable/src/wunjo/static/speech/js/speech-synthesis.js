@@ -1,4 +1,4 @@
-function sendTextToSpeech() {
+async function sendTextToSpeech() {
   var voiceCardContainers = document.querySelectorAll(".voice-card-container");
   var synthesisTable = document.getElementById("table_body_speech_result");
   var allCardSend = [];
@@ -36,18 +36,15 @@ function sendTextToSpeech() {
             console.warn("Voice clone name is empty. Disabling voice clone.");
           } else {
             voiceCloneName = "rtvc_audio_" + Date.now() + "_" + getRandomString(5);
-            fetch(voiceCloneBlobUrl)
-              .then((res) => res.blob())
-              .then((blob) => {
-                var file = new File([blob], voiceCloneName);
-                uploadFile(file);
-              })
-              .catch((error) => {
-                console.error(
-                  "An error occurred while fetching the voice clone blob:",
-                  error
-                );
-              });
+            console.log(voiceCloneName)
+            try {
+              const res = await fetch(voiceCloneBlobUrl);
+              const blob = await res.blob();
+              var file = new File([blob], voiceCloneName);
+              uploadFile(file);
+            } catch (error) {
+              console.error("An error occurred while fetching the voice clone blob:", error);
+            }
           }
         }
 
@@ -70,14 +67,13 @@ function sendTextToSpeech() {
     }
   }
   // Call the async function
-  processAsyncSynthesis(allCardSend, synthesisTable)
-    .then(() => {
-      console.log("Start to fetch msg for voice");
-    })
-    .catch((error) => {
-      console.log("Error to fetch msg for voice");
-      console.log(error);
-    });
+  try {
+    await processAsyncSynthesis(allCardSend, synthesisTable);
+    console.log("Start to fetch msg for voice");
+  } catch (error) {
+    console.log("Error to fetch msg for voice");
+    console.log(error);
+  }
 }
 
 async function processAsyncSynthesis(allCardSend, synthesisTable) {

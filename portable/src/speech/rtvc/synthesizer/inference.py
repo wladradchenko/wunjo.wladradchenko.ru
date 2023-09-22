@@ -156,8 +156,6 @@ class Synthesizer:
 
         # Add auto transcript a text
         text = text.lower()
-        # if self.text_handler.language == "chinese":
-        #     text = " ".join(lazy_pinyin(text, style=Style.TONE3, neutral_tone_with_five=True))
 
         cleaners = ("light_punctuation_cleaners",)
 
