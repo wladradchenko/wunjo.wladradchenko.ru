@@ -1,6 +1,8 @@
 import os
 import sys
 import json
+import time
+
 import torch
 import subprocess
 from base64 import b64encode
@@ -682,32 +684,45 @@ def change_processor():
 if not app.config['DEBUG']:
     from io import StringIO
 
-    console_stdout = StringIO()
-    console_stderr = StringIO()
+
+    class TimestampedIO(StringIO):
+        def __init__(self):
+            super().__init__()
+            self.logs = []
+
+        def write(self, msg):
+            timestamped_msg = (time.time(), msg)
+            self.logs.append(timestamped_msg)
+            super().write(msg)
+
+
+    console_stdout = TimestampedIO()
+    console_stderr = TimestampedIO()
     sys.stdout = console_stdout  # prints
-    sys.stderr = console_stderr  # https and model process
+    sys.stderr = console_stderr  # errors and warnings
 
 
     @app.route('/console_log', methods=['GET'])
     def console_log():
-        max_len_logs = 20
-        # Retrieve the captured console output from the StringIO object
-        captured_stdout = console_stdout.getvalue()
-        captured_stderr = console_stderr.getvalue()
+        max_len_logs = 30
 
-        replace_phrases_stdout = ["* Debug mode: off", "* Serving Flask app 'wunjo.app'"]
-        replace_phrases_stderr = [
+        replace_phrases = [
+            "* Debug mode: off", "* Serving Flask app 'wunjo.app'",
             "WARNING:waitress.queue:Task queue depth is 1", "WARNING:waitress.queue:Task queue depth is 2",
             "WARNING:waitress.queue:Task queue depth is 3", "WARNING:waitress.queue:Task queue depth is 4"
         ]
-        for replace_stdout in replace_phrases_stdout:
-            captured_stdout = captured_stdout.replace(replace_stdout, "")
-        for replace_stderr in replace_phrases_stderr:
-            captured_stderr = captured_stderr.replace(replace_stderr, "")
 
-        # Split the captured output into individual log lines
-        logs = (captured_stdout + captured_stderr).splitlines()
-        return jsonify(logs[-max_len_logs:])
+        combined_logs = console_stdout.logs + console_stderr.logs
+        combined_logs.sort(key=lambda x: x[0])  # Sort by timestamp
+
+        # Filter out unwanted phrases and extract log messages
+        filtered_logs = [
+            log[1] for log in combined_logs
+            if not any(phrase in log[1] for phrase in replace_phrases)
+        ]
+
+        # Send the last max_len_logs lines to the frontend
+        return jsonify(filtered_logs[-max_len_logs:])
 else:
     os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
 

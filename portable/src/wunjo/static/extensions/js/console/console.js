@@ -11,9 +11,14 @@ function updateConsoleLog() {
       // Reverse the array elements
       const reversedData = data.reverse();
       // Remove empty lines
-      const nonEmptyData = reversedData.filter((line) => line.trim() !== "");
+      // const nonEmptyData = reversedData.map(line => line).filter(line => line.trim() !== "");
+      // Remove empty lines and enter (without remove \n)
+      const nonEmptyData = reversedData.map(line => line.replace("\r", "").trimEnd()).filter(line => line.trim() !== "");
+
+      console.log(nonEmptyData)
       // Join the reversed array elements into a single string separated by newlines
       const logText = nonEmptyData.join("\n");
+      console.log(logText)
       // Update the element with id="console-log" with the logs
       document.getElementById("console-log").innerText = logText;
     })
