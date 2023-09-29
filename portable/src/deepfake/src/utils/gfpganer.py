@@ -1,3 +1,5 @@
+import os
+import sys
 import cv2
 import torch
 from basicsr.utils import img2tensor, tensor2img
@@ -84,6 +86,13 @@ class GFPGANer():
 
         if model_path.startswith('https://'):
             model_path = load_file_from_url(url=model_path, model_dir=root_dir, progress=True, file_name=None)
+            # Set permission if windows on gfpgan files
+            if sys.platform == 'win32':
+                try:
+                    cmd = f'icacls "{model_path}" /grant:r "Users:(R,W)" /T'
+                    os.system(cmd)
+                except Exception as e:
+                    print(e)
         loadnet = torch.load(model_path)
         if 'params_ema' in loadnet:
             keyname = 'params_ema'
