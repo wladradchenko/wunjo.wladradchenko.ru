@@ -25,7 +25,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -444,7 +444,7 @@ def synthesize_deepfake():
         os.makedirs(DEEPFAKE_FOLDER)
 
     face_fields = request_list.get("face_fields")
-    source_image = os.path.join(TMP_FOLDER, request_list.get("source_image"))
+    source_image = os.path.join(TMP_FOLDER, request_list.get("source_media"))
     driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
     preprocess = request_list.get("preprocess")
     still = request_list.get("still")
@@ -455,7 +455,8 @@ def synthesize_deepfake():
     input_roll = split_input_deepfake(request_list.get("input_roll"))
     background_enhancer = request_list.get("background_enhancer")
     type_file = request_list.get("type_file")
-    video_start = request_list.get("video_start", 0)
+    media_start = request_list.get("media_start", 0)
+    media_end = request_list.get("media_end", 0)
     emotion_label = request_list.get("emotion_label", None)
     similar_coeff = float(request_list.get("similar_coeff", 0.95))
 
@@ -484,7 +485,8 @@ def synthesize_deepfake():
                 face_fields=face_fields,
                 enhancer=enhancer,
                 background_enhancer=background_enhancer,
-                video_start=float(video_start),
+                video_start=float(media_start),
+                video_end=float(media_end),
                 emotion_label=emotion_label,
                 similar_coeff=similar_coeff
             )
@@ -784,5 +786,5 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    # FlaskUI(app=app, server="flask").run()
+    app.run()

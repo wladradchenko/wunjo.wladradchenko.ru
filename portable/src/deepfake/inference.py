@@ -35,6 +35,9 @@ from src.utils.faceswap import FaceSwapDeepfake
 """Retouch"""
 from src.retouch import InpaintModel, process_retouch, read_retouch_mask, convert_cv2_to_pil
 """Retouch"""
+"""Segmentation"""
+from src.segment.model import YolaSegment
+"""Segmentation"""
 
 sys.path.pop(0)
 
@@ -290,11 +293,12 @@ class AnimationMouthTalk:
     @staticmethod
     def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
                             enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
+                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
         args.checkpoint_dir = "checkpoints"
         args.result_dir = deepfake_dir
         args.video_start = float(video_start)
+        args.video_end = float(video_end)
         args.face = face
         args.audio = audio
         args.static = static  # ok, we will check what it is video, not img
@@ -343,8 +347,7 @@ class AnimationMouthTalk:
                 check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         # If video_start is not 0 when cut video from start
-        if args.video_start != 0:
-            args.face = cut_start_video(args.face, args.video_start)
+        args.face = cut_start_video(args.face, args.video_start, args.video_end)
 
         # get video frames
         frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
@@ -474,7 +477,8 @@ class FaceSwap:
         # get source for face
         if args.type_file_source == "video":
             if float(args.source_video_frame) != 0:
-                args.source = cut_start_video(args.source, args.source_video_frame)
+                # TODO I add end of video
+                args.source = cut_start_video(args.source, args.source_video_frame, 0)
         # get frame
         source_frame = get_first_frame(args.source)
         source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, args.source_face_fields)
@@ -484,7 +488,8 @@ class FaceSwap:
         if args.type_file_target == "animated":
             # If video_start for target is not 0 when cut video from start
             if float(args.target_video_start) != 0:
-                args.target = cut_start_video(args.target, args.target_video_start)
+                # TODO I add end of video
+                args.target = cut_start_video(args.target, args.target_video_start, 0)
 
             # get video frame for source if type is video
             target_frames, fps = get_frames(video=args.target, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
@@ -756,3 +761,57 @@ class VideoEdit:
             os.remove(os.path.join(TMP_FOLDER, f))
 
         return os.path.join(save_dir, video_name)
+
+
+def get_white_mask(input_path, output_folder, model_path, labels, device='cpu', is_fast=True,
+                    start_seconds=0, end_seconds=None, extract_nth_frame=1, reduce_size=1):
+    """
+    Get mask for labels in video or image
+    :param input_path: input video or image
+    :param output_folder: save folder
+    :param model_path: model path
+    :param labels: labels to extract as uniq frame or None to extract all in one frame
+    :param device: use cpu or cuda
+    :param is_fast: use fast model or accurancy
+    :param start_seconds: start seconds of video to cut
+    :param end_seconds: end seconds of video to cut
+    :param extract_nth_frame: extract number frame for one frame
+    :param reduce_size: reduce size of original video
+    :return:
+    """
+    # TODO remove this and change on segment anything
+    output_mask_folder = os.path.join(output_folder, "mask")
+    os.makedirs(output_mask_folder, exist_ok=True)
+
+    if check_media_type(input_path) == "animated":
+        output_frame_folder = os.path.join(output_folder, "frames")
+        os.makedirs(output_frame_folder, exist_ok=True)
+        video_to_frames(
+            input_path, output_frame_folder, start_seconds=start_seconds, end_seconds=end_seconds,
+            extract_nth_frame=extract_nth_frame, reduce_size=reduce_size
+        )
+        input_path = output_frame_folder
+
+    if not is_fast and device != 'cpu':
+        # Large and slowly model for gpu and short videos
+        segm_model_path = os.path.join(model_path, 'yolo_seg_x.onnx')
+        if not os.path.exists(segm_model_path):
+            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_x.onnx"]
+            download_model(segm_model_path, link_segm_model)
+        else:
+            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_x.onnx"]
+            check_download_size(segm_model_path, link_segm_model)
+    else:
+        # Optimization model for cpu and fast
+        segm_model_path = os.path.join(model_path, 'yolo_seg_n.onnx')
+        if not os.path.exists(segm_model_path):
+            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_n.onnx"]
+            download_model(segm_model_path, link_segm_model)
+        else:
+            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_n.onnx"]
+            check_download_size(segm_model_path, link_segm_model)
+
+    yolo_seg = YolaSegment(segm_model_path, conf_thres=0.3, iou_thres=0.5, device=device)
+    yolo_seg.segment_convert_img_mask(input_path=input_path, output_path=output_mask_folder, labels=labels, color_rgb=(255, 255, 255))
+
+    return

@@ -24,7 +24,7 @@ class Croper:
             # user crop face in frontend
             # real size
             originalHeight, originalWidth, _ = img_np.shape
-            squareFace = face_fields[0]
+            squareFace = face_fields
             canvasWidth = squareFace["canvasWidth"]
             canvasHeight = squareFace["canvasHeight"]
             # Calculate the scale factor
@@ -34,9 +34,10 @@ class Croper:
             # Calculate the new position and size of the square face on the original image
             # Convert canvas square face coordinates to original image coordinates
             newX1 = squareFace['x'] * scaleFactorX
-            newX2 = (squareFace['x'] + squareFace['width']) * scaleFactorX
+            newX2 = (squareFace['x'] + 1) * scaleFactorX
             newY1 = squareFace['y'] * scaleFactorY
-            newY2 = (squareFace['y'] + squareFace['height']) * scaleFactorY
+            newY2 = (squareFace['y'] + 1) * scaleFactorY
+            print(newX1, newX2, newY1, newY2)
 
             d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
             # print(int(newX1), int(newY1), int(newX2), int(newY2))

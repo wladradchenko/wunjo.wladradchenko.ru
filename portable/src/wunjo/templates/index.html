@@ -10,6 +10,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-retouch.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/video-editor.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/train/train.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='video/css/timeline.css') }}">
 {% endblock %}
 
 {% block menubar %}
@@ -149,7 +151,7 @@
     </div>
 
     <div style="position: absolute;left: 0;bottom: 0;padding: 5pt;font-size: 8pt;color: gray;display: flex;flex-direction: row;">
-        <p id="version" vers="1.5.5">Версия 1.5.5.</p>
+        <p id="version" vers="1.6.0">Версия 1.6.0.</p>
         <span style="font-weight: bold;margin-left:5pt;">Использованное дисковое пространство:</span>
         <span style="margin-left:5pt;" id="drive-space-wavs-used" class="notranslate"></span>
         <span style="margin-left:5pt;" id="drive-space-video-used" class="notranslate"></span>
@@ -157,6 +159,7 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/index.js') }}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/console/console.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='video/js/control.js') }}"></script>
 
     <script>
         let targetLang = "{{ user_lang }}";  // Initial value

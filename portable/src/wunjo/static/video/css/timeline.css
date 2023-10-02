@@ -1,0 +1,130 @@
+/* TIMELINE */
+.timeline {
+    display: flex;
+    position: relative;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.timeline img {
+    height: 60px;
+}
+
+.timeline::before {
+    left: 0;
+    right: 50%; /* This value can be adjusted dynamically with JS to match the range's start */
+}
+
+.timeline::after {
+    right: 0;
+    left: 50%; /* This value can be adjusted dynamically with JS to match the range's end */
+}
+
+.timeline .selected-range {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: #0099FF; /* blue color */
+    z-index: 1;
+    pointer-events: none;
+}
+
+.timeline .handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px; /* Adjust as desired */
+    background-color: #FFF;
+    cursor: ew-resize; /* cursor indication for resizing */
+    z-index: 3;
+}
+
+.timeline .handle.start {
+    left: 0; /* Initial position, should be adjusted with JS */
+}
+
+.timeline .handle.end {
+    right: 0; /* Initial position, should be adjusted with JS */
+}
+
+.timeline .time-marker {
+    /*  position: absolute; */
+    top: 0;
+    font-size: 10px;
+    white-space: nowrap;
+    z-index: 4;
+}
+
+.timeline .timeline-play-slider {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 2px;
+    background: #ff4f8b;
+    z-index: 5;
+}
+
+.timeline .timeline-div {
+    display: flex;
+}
+
+.timeline .time-marker-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.timeline .timeline-div-slider {
+    background: #42abff3d;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.timeline-div-slider .timeline-div-slider-toggle-left {
+    background: #42abff;
+    width: 5px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    margin-left: -4px;
+}
+
+.timeline-div-slider .timeline-div-slider-toggle-right {
+    background: #42abff;
+    width: 5px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    margin-right: -4px;
+}
+
+.timeline-control-panel {
+    margin: 3px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.timeline-control-panel .timeline-buttons {
+    width: 22pt;
+    height: 22pt;
+    display: inline;
+    border: none;
+    border-radius: 50%;
+    transition: box-shadow 0.3s ease;
+    margin: 2px;
+}
+
+.timeline-control-panel .timeline-buttons:hover {
+    border-color: rgb(230, 231, 238);
+    box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;
+}
+
+.timeline::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+/* TIMELINE */

@@ -48,10 +48,18 @@ def save_video_from_frames(frame_names, save_path, fps):
     return file_name
 
 
-def video_to_frames(video_path, output_folder):
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    cmd = f'ffmpeg -i "{video_path}" "{output_folder}/%d.png"'
+def video_to_frames(video_path, output_folder, start_seconds=0, end_seconds=None, extract_nth_frame=1, reduce_size=1):
+    start_hms = seconds_to_hms(start_seconds)
+
+    if end_seconds is not None:
+        select_cmd = f"select=between(t\\,{start_seconds}\\,{end_seconds})*not(mod(n\\,{extract_nth_frame}))"
+    else:
+        select_cmd = f"select=not(mod(n\\,{extract_nth_frame}))"
+
+    # Add the scale filter to reduce frame size by a factor
+    vf_cmd = f"{select_cmd},scale=iw/{int(reduce_size)}:ih/{int(reduce_size)}" if reduce_size > 1 else select_cmd
+
+    cmd = f'ffmpeg -ss {start_hms} -i "{video_path}" -vf "{vf_cmd}" -vsync vfr "{output_folder}/%d.png"'
     os.system(cmd)
 
 
@@ -79,11 +87,15 @@ def seconds_to_hms(seconds):
     return "{:02}:{:02}:{:02}.{:03}".format(int(hours), int(minutes), int(seconds), int((seconds % 1) * 1000))
 
 
-def cut_start_video(video, video_start):
-    hms_format = seconds_to_hms(video_start)
-    print("Video will start from %s ".format(hms_format))
+def cut_start_video(video, video_start, video_end):
+    if video_start == video_end:
+        raise ValueError("Start and end times are the same")
+
+    hms_start_format = seconds_to_hms(video_start)
+    hms_end_format = seconds_to_hms(video_end)
+    print(f"Video will start from {hms_start_format} and end at {hms_end_format}")
     new_video = f"{video}_cut.mp4"
-    cmd = f"ffmpeg -ss {hms_format} -i {video} -c copy {new_video}"
+    cmd = f"ffmpeg -ss {hms_start_format} -to {hms_end_format} -i {video} -c copy {new_video}"
     os.system(cmd)
     return new_video
 
