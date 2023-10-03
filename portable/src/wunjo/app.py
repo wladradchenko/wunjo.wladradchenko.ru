@@ -12,7 +12,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -29,6 +29,8 @@ app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
+app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
+app.config['SEGMENT_ANYTHING_MODEL'] = {}  # load segment anything model to dynamically change
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
@@ -191,6 +193,45 @@ def get_synthesize_deepfake_result():
         "response": general_results
     }
 
+@app.route("/create_segment_anything/", methods=["POST"])
+@cross_origin()
+def create_segment_anything():
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
+        print("The process is already running... ")
+        return {"status": 400}
+
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+
+    if not app.config['SEGMENT_ANYTHING_MODEL']:
+        app.config['SEGMENT_ANYTHING_MODEL'] = GetSegment.load_model()
+
+    # get parameters
+    request_list = request.get_json()
+    source = request_list.get("source")
+    point_list = request_list.get("point_list")
+    current_time = request_list.get("current_time", 0)
+    obj_id = request_list.get("obj_id", 1)
+
+    # call get segment anything
+    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
+    predictor = segment_models.get("predictor")
+    session = segment_models.get("session")
+    result_filename = GetSegment.get_segment_mask_file(
+        predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
+    )
+    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {**app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'], **{str(current_time): {str(obj_id): url_for("media_file", filename="/tmp/" + result_filename)}}}
+
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
+
+@app.route("/get_segment_anything/", methods=["GET"])
+@cross_origin()
+def get_segment_anything():
+    segment_preview = app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT']
+    return {
+        "response_code": 0, "response": segment_preview
+    }
 
 @app.route("/synthesize_video_merge/", methods=["POST"])
 @cross_origin()

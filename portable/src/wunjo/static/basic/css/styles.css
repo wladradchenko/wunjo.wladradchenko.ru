@@ -590,10 +590,6 @@ select {
   left: 0;
 }
 
-.draging {
-  transform: scale(1.01);
-}
-
 #previewDeepfakeImg,
 #previewFaceSwapTarget,
 #previewFaceSwapSource,

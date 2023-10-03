@@ -15,7 +15,7 @@ from src.utils.videoio import (
     save_video_with_audio, cut_start_video, get_frames, get_first_frame, encrypted,
     check_media_type, extract_audio_from_video, save_video_from_frames, video_to_frames
 )
-from src.utils.imageio import save_image_cv2, read_image_cv2
+from src.utils.imageio import save_image_cv2, read_image_cv2, save_colored_mask_cv2
 """Video and image"""
 """Animation Face"""
 from src.utils.preprocess import CropAndExtract
@@ -36,7 +36,7 @@ from src.utils.faceswap import FaceSwapDeepfake
 from src.retouch import InpaintModel, process_retouch, read_retouch_mask, convert_cv2_to_pil
 """Retouch"""
 """Segmentation"""
-from src.segment.model import YolaSegment
+from src.utils.segment import SegmentAnything
 """Segmentation"""
 
 sys.path.pop(0)
@@ -778,55 +778,75 @@ class VideoEdit:
         return os.path.join(save_dir, video_name)
 
 
-def get_white_mask(input_path, output_folder, model_path, labels, device='cpu', is_fast=True,
-                    start_seconds=0, end_seconds=None, extract_nth_frame=1, reduce_size=1):
-    """
-    Get mask for labels in video or image
-    :param input_path: input video or image
-    :param output_folder: save folder
-    :param model_path: model path
-    :param labels: labels to extract as uniq frame or None to extract all in one frame
-    :param device: use cpu or cuda
-    :param is_fast: use fast model or accurancy
-    :param start_seconds: start seconds of video to cut
-    :param end_seconds: end seconds of video to cut
-    :param extract_nth_frame: extract number frame for one frame
-    :param reduce_size: reduce size of original video
-    :return:
-    """
-    # TODO remove this and change on segment anything
-    output_mask_folder = os.path.join(output_folder, "mask")
-    os.makedirs(output_mask_folder, exist_ok=True)
+class GetSegment:
+    @staticmethod
+    def load_model():
+        use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
-    if check_media_type(input_path) == "animated":
-        output_frame_folder = os.path.join(output_folder, "frames")
-        os.makedirs(output_frame_folder, exist_ok=True)
-        video_to_frames(
-            input_path, output_frame_folder, start_seconds=start_seconds, end_seconds=end_seconds,
-            extract_nth_frame=extract_nth_frame, reduce_size=reduce_size
-        )
-        input_path = output_frame_folder
-
-    if not is_fast and device != 'cpu':
-        # Large and slowly model for gpu and short videos
-        segm_model_path = os.path.join(model_path, 'yolo_seg_x.onnx')
-        if not os.path.exists(segm_model_path):
-            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_x.onnx"]
-            download_model(segm_model_path, link_segm_model)
+        if torch.cuda.is_available() and not use_cpu:
+            print("Processing will run on GPU")
+            device = "cuda"
         else:
-            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_x.onnx"]
-            check_download_size(segm_model_path, link_segm_model)
-    else:
-        # Optimization model for cpu and fast
-        segm_model_path = os.path.join(model_path, 'yolo_seg_n.onnx')
-        if not os.path.exists(segm_model_path):
-            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_n.onnx"]
-            download_model(segm_model_path, link_segm_model)
+            print("Processing will run on CPU")
+            device = "cpu"
+
+        checkpoint_dir = "checkpoints"
+        os.environ['TORCH_HOME'] = os.path.join(DEEPFAKE_MODEL_FOLDER, checkpoint_dir)
+        checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, checkpoint_dir)
+
+        if device == "cuda":
+            model_type = "vit_h"
+
+            sam_vit_checkpoint = os.path.join(checkpoint_dir_full, 'sam_vit_h.pth')
+            if not os.path.exists(sam_vit_checkpoint):
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
+            else:
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
+
+            onnx_vit_checkpoint = os.path.join(checkpoint_dir_full, 'vit_h_quantized.onnx')
+            if not os.path.exists(onnx_vit_checkpoint):
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+            else:
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
         else:
-            link_segm_model = file_deepfake_config["checkpoints"]["yolo_seg_n.onnx"]
-            check_download_size(segm_model_path, link_segm_model)
+            model_type = "vit_b"
 
-    yolo_seg = YolaSegment(segm_model_path, conf_thres=0.3, iou_thres=0.5, device=device)
-    yolo_seg.segment_convert_img_mask(input_path=input_path, output_path=output_mask_folder, labels=labels, color_rgb=(255, 255, 255))
+            sam_vit_checkpoint = os.path.join(checkpoint_dir_full, 'sam_vit_b.pth')
+            if not os.path.exists(sam_vit_checkpoint):
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
+            else:
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
-    return
+            onnx_vit_checkpoint = os.path.join(checkpoint_dir_full, 'vit_b_quantized.onnx')
+            if not os.path.exists(onnx_vit_checkpoint):
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+            else:
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+
+        segmentation = SegmentAnything()
+        predictor = segmentation.init_vit(sam_vit_checkpoint, model_type, device)
+        session = segmentation.init_onnx(onnx_vit_checkpoint, device)
+
+        return {"predictor": predictor, "session": session}
+
+    @staticmethod
+    def get_segment_mask_file(predictor, session, source: str, point_list: list):
+        # set time sleep else file will not still loaded
+        import time
+        time.sleep(5)
+        # read frame
+        frame = read_image_cv2(source)
+        # segmentation
+        segmentation = SegmentAnything()
+        mask = segmentation.draw_mask(predictor=predictor, session=session, frame=frame, point_list=point_list)
+        # save mask in tmp?
+        mask_file_name = save_colored_mask_cv2(TMP_FOLDER, mask)
+        return mask_file_name

@@ -553,9 +553,37 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
     // CLEAR CANVAS //
     drawCanvasClear.addEventListener('click', function() {
         const ctx = canvasElement.getContext('2d');
-        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
         if (canvasElement.hasAttribute("data-point-position")) {
+            // For one point
             canvasElement.removeAttribute("data-point-position");
+        }
+
+        if (canvasElement.hasAttribute("data-points-list")) {
+            // If using list of points
+            let pointsList = JSON.parse(canvasElement.getAttribute("data-points-list"));
+
+            if (pointsList.length > 0) {
+                pointsList.pop();  // Remove the last point from the list
+                canvasElement.setAttribute("data-points-list", JSON.stringify(pointsList));
+            }
+
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // Redraw all remaining points on the canvas
+            pointsList.forEach(point => {
+                // Here, re-use your logic to draw a point on the canvas.
+                // Example:
+                ctx.fillStyle = point.color;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            });
+        } else {
+            // If there's no "data-points-list" attribute, just clear the canvas.
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         }
     });
     // CLEAR CANVAS //
@@ -733,9 +761,37 @@ async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '4
 
     drawCanvasClear.addEventListener('click', function() {
         const ctx = canvasElement.getContext('2d');
-        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
         if (canvasElement.hasAttribute("data-point-position")) {
+            // For one point
             canvasElement.removeAttribute("data-point-position");
+        }
+
+        if (canvasElement.hasAttribute("data-points-list")) {
+            // If using list of points
+            let pointsList = JSON.parse(canvasElement.getAttribute("data-points-list"));
+
+            if (pointsList.length > 0) {
+                pointsList.pop();  // Remove the last point from the list
+                canvasElement.setAttribute("data-points-list", JSON.stringify(pointsList));
+            }
+
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // Redraw all remaining points on the canvas
+            pointsList.forEach(point => {
+                // Here, re-use your logic to draw a point on the canvas.
+                // Example:
+                ctx.fillStyle = point.color;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            });
+        } else {
+            // If there's no "data-points-list" attribute, just clear the canvas.
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         }
     });
     // CLEAR CANVAS //
@@ -814,7 +870,61 @@ function setPointOnCanvas(event) {
     canvas.dataset.pointPosition = JSON.stringify({ x: x, y: y, canvasWidth:canvas.width, canvasHeight:canvas.height });
 }
 
+function setMultiplePointsOnCanvas(event) {
+    const canvas = event.target;
+    const ctx = canvas.getContext('2d');
+
+    // Get the coordinates where the user clicked
+    const x = event.offsetX;
+    const y = event.offsetY;
+
+    // Determine the color based on the mouse button clicked
+    let fillColor;
+    if (event.button === 0) {
+        fillColor = 'lightblue';  // Left click: light blue
+    } else if (event.button === 2) {
+        fillColor = 'red';        // Right click: red
+    } else {
+        return;  // Do nothing for other buttons
+    }
+
+    // Retrieve the points list from the canvas's dataset (or initialize it if it doesn't exist)
+    let pointsList = canvas.dataset.pointsList ? JSON.parse(canvas.dataset.pointsList) : [];
+
+    // Add the point to the points list
+    pointsList.push({ x: x, y: y, canvasWidth:canvas.width, canvasHeight:canvas.height, color: fillColor });
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Redraw all points from the points list
+    for (let point of pointsList) {
+        ctx.fillStyle = point.color;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = 'black';
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke(); // Add the border
+    }
+
+    // Store the updated points list in the canvas's dataset
+    canvas.dataset.pointsList = JSON.stringify(pointsList);
+}
+
 // Get data from canvas to send in backend
+function retrieveSelectedPointsList(canvasElement) {
+    if (!canvasElement.dataset.pointsList) {
+        return null
+    }
+    return canvasElement ? JSON.parse(canvasElement.dataset.pointsList) : null;
+}
+
 function retrieveSelectedFaceData(mediaPreview) {
     const canvasElement = mediaPreview.querySelector(".canvasMedia");
     if (!canvasElement.dataset.pointPosition) {
@@ -864,3 +974,14 @@ function uploadFile(file) {
     });
 }
 // UPLOAD FILE TO TMP //
+
+async function displayMessage(element, message, partition = undefined) {
+    const translatedMessage = await translateWithGoogle(message, "auto", targetLang);
+    if (partition) {
+        element.innerHTML = `${translatedMessage} ${partition}`;
+    } else {
+        element.innerText = translatedMessage;
+    }
+    element.style.display = "flex";
+    element.style.background = getRandomColor();
+}

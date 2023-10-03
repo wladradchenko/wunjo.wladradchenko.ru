@@ -143,11 +143,11 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
         position: "left",
         intro: `
                     <div id="main-windows-face-and-mouth-animation" style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh; columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
-                    <div id="previewDiv" style="display: flex;flex-direction: column;overflow: auto;justify-content: center;width: 50vw;">
-                        <div>
-                            <span id="spanLoadMediaElement" class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 50vh;justify-content: center;">
+                    <div id="previewDiv" style="display: flex;flex-direction: column;overflow: auto;justify-content: center;width: 100%;">
+                        <div id="divGeneralPreviewMediaAndAudio" style="height: 100%;">
+                            <span id="spanLoadMediaElement" class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 100%;justify-content: center;">
                                   Загрузить изображение или видео
-                                <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media'))" />
+                                <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media')); document.getElementById('divGeneralPreviewMediaAndAudio').style.height = '';" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                             <div id="preview-media" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
@@ -424,28 +424,27 @@ async function dragDropAudioDeepfakeFaceAnimation(event) {
 // UPDATE PREVIEW //
 
 function drag(elem) {
-  elem.parentNode.className = "draging dragBox dragBoxMain";
-  // Add dragleave and dragend event listeners
-  elem.addEventListener("dragleave", handleDragLeaveOrEnd);
-  elem.addEventListener("dragend", handleDragLeaveOrEnd);
-  // Check if the element has the specific border style applied
-  var dragBoxes = document.querySelectorAll(".dragBoxMain");
-  dragBoxes.forEach(function (box) {
-    box.style.border = "none";
-  });
+    // Change the color of the text to black when dragging over
+    elem.style.fontSize = "18px";
+
+    // Add dragleave and dragend event listeners
+    elem.addEventListener("dragleave", handleDragLeaveOrEnd);
+    elem.addEventListener("dragend", handleDragLeaveOrEnd);
 }
 
 function drop(elem) {
-  elem.parentNode.className = "dragBox dragBoxMain";
+    // Reset text color after drop
+    elem.style.fontSize = "";
 }
 
 // Function to handle when drag leaves target or drag ends without dropping
 function handleDragLeaveOrEnd(event) {
-  // Remove 'dragging' styles
-  event.currentTarget.parentNode.className = "dragBox dragBoxMain";
+    // Reset text color
+    event.currentTarget.style.fontSize = "";
 
-  // Remove these listeners if they're no longer necessary
-  event.currentTarget.removeEventListener("dragleave", handleDragLeaveOrEnd);
-  event.currentTarget.removeEventListener("dragend", handleDragLeaveOrEnd);
+    // Remove these listeners as they're no longer necessary
+    event.currentTarget.removeEventListener("dragleave", handleDragLeaveOrEnd);
+    event.currentTarget.removeEventListener("dragend", handleDragLeaveOrEnd);
 }
+
 // ANIMATE WINDOWS //

@@ -1,5 +1,5 @@
 // RETOUCH //
-function deepfakeRetouch(button) {
+function initiateRetouchAiPop(button) {
   var introRetouch = introJs();
   introRetouch.setOptions({
     steps: [
@@ -7,55 +7,53 @@ function deepfakeRetouch(button) {
         title: "Панель удаления объектов и ретуши",
         position: "right",
         intro: `
-                <div style="width: 80vw;display: flex;flex-direction: row;height: 80vh; overflow-y: auto;" id="retouch">
-                    <div class="uploadSourceRetouch">
-                        <div style="flex-direction: row;display: flex;margin-bottom: 10pt;justify-content: space-between;">
-                            <button class="introjs-button" style="display: none;margin-right: 5pt;" id="clearButtonRetouch">Очистить</button>
-                            <button style="width: 100%;display: none;margin-right: 5pt;" class="introjs-button" id="drawButtonRetouch" data-controlval="get-face">Выделить</button>
-                            <button style="width: 100%;display: none;" class="introjs-button" id="saveMaskRetouch" onclick="handleClickForSaveMaskRetouch('savedRetouchMask', 'canvasRetouch', 'previewRetouch')">Добавить</button>
-                        </div>
-                        <fieldset id="fieldsetLineWidthSlider" style="width: 100%; padding: 10pt;margin-bottom: 10pt;display: none;">
-                            <legend>Толщина линии</legend>
-                            <input style="width: 100%;" id="lineWidthSlider" class="range speech-train-split" type="range" min="1" max="100" step="1" value="5">
-                            <div style="display: flex;justify-content: space-between;font-size: 10pt;color: #686868;">
-                                <div>1</div>
-                                <div>100</div>
-                            </div>
-                        </fieldset>
-                        <span id="previewRetouch" class="dragBox" style="height: 450pt;width: 450pt;justify-content: center;">
-                          Загрузить целевое изображение или видео
-                        <input accept="image/*,video/*" type="file" onChange="dragDropRetouch(event, 'previewRetouch', 'canvasRetouch', this, 'clearButtonRetouch', 'drawButtonRetouch', 'lineWidthSlider', 'saveMaskRetouch');handleMetadataMedia(event, 'fieldsetSource', 'videoLength', 'videoFrame');document.getElementById('savedRetouchMask').innerHTML = '';"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSource"  />
-                        </span>
-                        <fieldset id="fieldsetSource" style="display: none; padding: 5pt;margin-top: 10pt; ">
-                            <legend></legend>
-                            <div style="justify-content: space-between; margin-top: 5pt; margin-bottom: 5pt; display: flex;">
-                              <label for="videoFrame">Выбрать кадр </label>
-                              <input type="number" title="Введите число" id="videoFrame" name="expression-scale" min="0" max="0" step="0.1" value="0" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
-                            </div>
-                            <div style="justify-content: space-between; margin-top: 5pt; margin-bottom: 5pt; display: flex;"><text>Длительность видео (сек) </text><text id="videoLength">0</text></div>
-                        </fieldset>
-                    </div>
-                    <div style="margin-left: 20pt;display: flex;flex-direction: column;justify-content: space-between;width: 300pt;">
-                        <fieldset id="savedRetouchMaskFieldset" style="display:none; padding: 5pt;margin-top: 35pt;">
-                            <legend>Маски</legend>
-                            <div id="savedRetouchMask" style="display: flex;flex-direction: column;overflow-x: auto;max-height: 400pt;"></div>
-                        </fieldset>
-                        <fieldset style="padding: 5pt;">
-                            <legend>Выбор препроцессинга</legend>
-                            <div>
-                              <input type="radio" id="retouch-object" name="preprocessing_deepfake" value="resize">
-                              <label for="retouch-object">Исправить окружение</label>
-                            </div>
-                            <div>
-                              <input type="radio" id="retouch-face" name="preprocessing_deepfake" value="full" checked>
-                              <label for="retouch-face">Исправить лицо</label>
-                            </div>
-                        </fieldset>
-                        <p id="message-retouch" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
-                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="sendDataToRetouch(this.parentElement.parentElement);">Начать обрабатывать</button>
+        <div style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh;display: flex;flex-direction: column;">
+            <div id="div-general-upper"  style="display: flex;flex-direction: row;justify-content: space-around;height: 100%;">
+                <div id="div-general-preview-media" style="width: 100%;">
+                    <span class="dragBox" style="margin-bottom: 15px;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 100%;">
+                          Загрузите изображение или видео
+                        <input accept="image/*,video/*" type="file" onChange="handleRetouchAi(event, document.getElementById('preview-media'), this.parentElement);" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
+                    </span>
+                    <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
+                    <div id="preview-media" style="position: relative;max-width: 60vw; max-height:70vh;display: flex;flex-direction: column;align-items: center;">
                     </div>
                 </div>
-                `,
+                <div id="div-control-panel" style="display: none;">
+                    <fieldset style="padding: 5px;">
+                        <legend>Режим</legend>
+                        <div style="display: flex;flex-direction: column;justify-content: center;">
+                            <div>
+                                <input type="radio" id="retouch-automatic" name="retouch-mode" value="automatic" checked>
+                                <label for="retouch-automatic">Автоматический режим</label>
+                                <input style="margin-left: 25px;" type="radio" id="retouch-manually" name="retouch-mode" value="manually">
+                                <label for="retouch-manually">Ручной режим</label>
+                            </div>
+                            <div style="justify-content: center;display: flex;">
+                                <img id="preview-mask" style="display: none;max-width: 30vw;max-height:25vh;overflow: auto;margin-top: 25px;object-fit: contain;">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset style="padding: 5px;display: flex; flex-direction: column;">
+                        <legend>Маски</legend>
+                        <button class="introjs-button" onclick="maskToList();">Добавить новый объект</button>
+                        <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
+                    </fieldset>
+                    <fieldset style="padding: 5pt;">
+                        <legend>Выбор препроцессинга</legend>
+                        <div>
+                          <input type="radio" id="retouch-object" name="preprocessing_deepfake" value="resize">
+                          <label for="retouch-object">Исправить окружение</label>
+                        </div>
+                        <div>
+                          <input type="radio" id="retouch-face" name="preprocessing_deepfake" value="full" checked>
+                          <label for="retouch-face">Исправить лицо</label>
+                        </div>
+                    </fieldset>
+                    <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
+                </div>
+            </div>
+        </div>
+        `,
       },
     ],
     showButtons: false,
@@ -66,481 +64,283 @@ function deepfakeRetouch(button) {
     doneLabel: "Закрыть",
   });
   introRetouch.start();
-
-  document.getElementById("videoFrame").addEventListener("change", function () {
-    var videoElement = document.querySelector("#previewRetouch video"); // get the video element inside the preview
-    if (videoElement) {
-      var startTime = parseFloat(this.value); // get the value of the input and convert it to a float
-      videoElement.currentTime = startTime; // set the video's current playback time to the start time
-    }
-  });
 }
 
-function dragDropRetouch(
-  event,
-  previewId,
-  canvasId,
-  uploadFileElem,
-  clearButtonId,
-  drawButtonId,
-  lineWidthSliderId,
-  saveMaskRetouchId
-) {
-  var file = event.target.files[0];
-  var uploadFileId = uploadFileElem.id;
-  // Getting the video length
+async function handleRetouchAi(event, previewElement, parentElement) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
 
-  var reader = new FileReader();
-  reader.onload = async function (e) {
-    let dimensions;
-    var preview = document.getElementById(previewId);
-    var widthPreview = parseFloat(preview.style.width);
-    var heightPreview = parseFloat(preview.style.height);
-    if (widthPreview > heightPreview) {
-      var maxPreviewSide = widthPreview;
-    } else {
-      var maxPreviewSide = heightPreview;
-    }
-    var uploadFileElemOuterHTML = uploadFileElem.outerHTML;
+    if (file) {
+        document.getElementById('div-general-preview-media').style.width = '';
+        document.getElementById('div-general-upper').style.height = '';
+        document.getElementById('div-control-panel').style.display = '';
+        const previewMask = document.getElementById('preview-mask');
 
-    var savedRetouchMask = document.getElementById("savedRetouchMask"); // TODO
+        const fileUrl = window.URL.createObjectURL(file);
+        const fileType = file.type.split('/')[0];
+        parentElement.style.height = "30px";
+        previewElement.innerHTML = "";
+        const messageElement = document.getElementById("message-about-status");
 
-    if (file.type.includes("image")) {
-      dimensions = await loadImage(e);
-      var aspectRatio = dimensions.width / dimensions.height;
-      if (dimensions.width >= dimensions.height) {
-        preview.style.width = maxPreviewSide + "pt";
-        preview.style.height = maxPreviewSide / aspectRatio + "pt";
-        dimensions.element.setAttribute("width", "100%");
-        dimensions.element.setAttribute("height", "auto");
-        savedRetouchMask.style.height =
-          (maxPreviewSide * 0.9) / aspectRatio + "pt";
-      } else {
-        preview.style.width = maxPreviewSide * aspectRatio + "pt";
-        preview.style.height = maxPreviewSide + "pt";
-        dimensions.element.setAttribute("width", "auto");
-        dimensions.element.setAttribute("height", "100%");
-        savedRetouchMask.style.height = maxPreviewSide * 0.85 + "pt";
-      }
-      dimensions.element.style.objectFit = "cover";
-      preview.innerHTML = `<canvas style="position: absolute;" id=${canvasId}></canvas>`;
-      preview.appendChild(dimensions.element);
-    } else if (file.type.includes("video")) {
-      dimensions = await loadVideo(e);
-      var aspectRatio = dimensions.width / dimensions.height;
-      if (dimensions.width >= dimensions.height) {
-        preview.style.width = maxPreviewSide + "pt";
-        preview.style.height = maxPreviewSide / aspectRatio + "pt";
-        dimensions.element.setAttribute("width", "100%");
-        dimensions.element.setAttribute("height", "auto");
-        savedRetouchMask.style.height =
-          (maxPreviewSide * 1.0) / aspectRatio + "pt";
-      } else {
-        preview.style.width = maxPreviewSide * aspectRatio + "pt";
-        preview.style.height = maxPreviewSide + "pt";
-        dimensions.element.setAttribute("width", "auto");
-        dimensions.element.setAttribute("height", "100%");
-        savedRetouchMask.style.height = maxPreviewSide * 0.9 + "pt";
-      }
-      dimensions.element.setAttribute("preload", "metadata");
-      dimensions.element.style.objectFit = "cover";
-      preview.innerHTML = `<canvas style="position: absolute;"  id='${canvasId}'></canvas>`;
-      preview.appendChild(dimensions.element);
-    }
-    preview.innerHTML += uploadFileElemOuterHTML; // set prev parameters of upload input
+        let canvas;
+        if (fileType === 'image') {
+            displayMessage(messageElement, "Choose a point to get field by tool", '<i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>');
+            // TODO Сообщение взависимости от режима, ручной или автоматический
+            canvas = await setupImageCanvas(previewElement, fileUrl, "60vh", "45vw");
 
-    // DRAW RECTANGLES //
-    var canvasField = document.getElementById(canvasId);
-    var clearButton = document.getElementById(clearButtonId);
-    var drawButton = document.getElementById(drawButtonId);
-    drawButton.style.display = "inline";
-    var saveMaskRetouch = document.getElementById(saveMaskRetouchId);
-    saveMaskRetouch.style.display = "inline";
-    var previewDeepfakeImg = document.getElementById(previewId);
-    var uploadFileDeepfake = document.getElementById(uploadFileId);
+            const imagePreview = previewElement.getElementsByClassName("imageMedia")[0];
+            previewMask.src = imagePreview.src;
+        } else if (fileType === 'video') {
+            displayMessage(messageElement, "Video is loading...");
+            canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
 
-    const lineWidthSlider = document.getElementById(lineWidthSliderId);
-    document.getElementById("fieldsetLineWidthSlider").style.display = "inline";
-    document.getElementById("savedRetouchMaskFieldset").style.display =
-      "inline";
-    lineWidthSlider.value = 2;
+            // TODO Сообщение взависимости от режима, ручной или автоматический
+            displayMessage(messageElement, "Choose a point to get field by tool", '<i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>');
 
-    // Set canvas width and height to match image or video size
-    canvasField.width = previewDeepfakeImg.clientWidth;
-    canvasField.height = previewDeepfakeImg.clientHeight;
-    var canvasWidth = canvasField.width;
-    var canvasHeight = canvasField.height;
+            const videoPreview = previewElement.getElementsByClassName("videoMedia")[0];
 
-    const ctx = canvasField.getContext("2d");
-    let rects = [];
+            previewMask.src = captureFrame(videoPreview);
+        }
 
-    canvasField.dataset.rectangles = JSON.stringify(rects);
-
-    let handleMouseDown;
-    let handleMouseMove;
-    let handleMouseUp;
-
-    let isFreeDrawing = false; // Flag to check free drawing mode
-
-    let lastX, lastY; // Last mouse positions for free drawing
-
-    function turnOnFreeDrawMode() {
-      canvasField.addEventListener("mousedown", handleMouseDownFreeDraw);
-      canvasField.addEventListener("mousemove", handleMouseMoveFreeDraw);
-      canvasField.addEventListener("mouseup", handleMouseUpFreeDraw);
-    }
-
-    function turnOffFreeDrawMode() {
-      canvasField.removeEventListener("mousedown", handleMouseDownFreeDraw);
-      canvasField.removeEventListener("mousemove", handleMouseMoveFreeDraw);
-      canvasField.removeEventListener("mouseup", handleMouseUpFreeDraw);
-    }
-
-    handleMouseDown = function (event) {
-      // Start drawing a new rectangle
-      isDrawing = true;
-      startX = event.clientX - offsetX;
-      startY = event.clientY - offsetY;
-      currentX = startX;
-      currentY = startY;
-    };
-
-    ctx.lineWidth = 2;
-    lineWidthSlider.addEventListener("input", function () {
-      ctx.lineWidth = this.value;
-    });
-
-    handleMouseMove = function (event) {
-      if (isDrawing) {
-        // Update the current rectangle
-        currentX = event.clientX - offsetX;
-        currentY = event.clientY - offsetY;
-        render();
-        ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
-        ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);
-      } else {
-        // record rects on value of button
-        canvasField.dataset.rectangles = JSON.stringify(rects);
-      }
-    };
-
-    handleMouseUp = function (event) {
-      if (isDrawing) {
-        // Add the new rectangle
-        const x = Math.min(startX, currentX);
-        const y = Math.min(startY, currentY);
-        const width = Math.abs(currentX - startX);
-        const height = Math.abs(currentY - startY);
-        rects = [{ x, y, width, height, canvasWidth, canvasHeight }]; // keep only one rectangles
-        // rects.push({x, y, width, height});  // for multi rectangles
-        // Render the current rectangles
-        render();
-        isDrawing = false;
-      }
-    };
-
-    function handleMouseDownFreeDraw(event) {
-      isFreeDrawing = true;
-      const rect = canvasField.getBoundingClientRect();
-      lastX = event.clientX - rect.left;
-      lastY = event.clientY - rect.top;
-    }
-
-    function handleMouseMoveFreeDraw(event) {
-      if (!isFreeDrawing) return;
-
-      const rect = canvasField.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-
-      ctx.strokeStyle = "blue";
-      ctx.lineJoin = "round";
-
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(x, y);
-      ctx.closePath();
-      ctx.stroke();
-
-      lastX = x;
-      lastY = y;
-    }
-
-    function handleMouseUpFreeDraw(event) {
-      isFreeDrawing = false;
-    }
-
-    // Event to toggle between rectangle drawing and free drawing
-    drawButton.onclick = async function () {
-      if (drawButton.getAttribute("data-controlval") === "get-face") {
-        drawButton.setAttribute("data-controlval", "put-content");
-        drawButton.textContent = await translateWithGoogle(
-          "Выбор файла",
-          "auto",
-          targetLang
-        );
-        turnOnFreeDrawMode();
-        uploadFileDeepfake.disabled = true;
-        canvasField.style.zIndex = 20;
-        clearButton.style.display = "inline";
-      } else {
-        drawButton.setAttribute("data-controlval", "get-face");
-        drawButton.textContent = await translateWithGoogle(
-          "Выделить",
-          "auto",
-          targetLang
-        );
-        turnOffFreeDrawMode();
-        uploadFileDeepfake.disabled = false;
-        canvasField.style.zIndex = 0;
-        clearButton.style.display = "none";
-      }
-    };
-
-    // Clear Button Logic
-    clearButton.addEventListener("click", () => {
-      rects = [];
-      ctx.clearRect(0, 0, canvasField.width, canvasField.height);
-    });
-    // DRAW RECTANGLES //
-  };
-  reader.readAsDataURL(file);
-}
-
-function handleClickForSaveMaskRetouch(
-  savedRetouchMaskId,
-  canvasId,
-  previewId
-) {
-  const preview = document.getElementById(previewId);
-  const savedRetouchMask = document.getElementById(savedRetouchMaskId);
-  const canvasField = document.getElementById(canvasId);
-  const devImgElement = document.createElement("div");
-  devImgElement.className = "retouch-masks";
-  devImgElement.style.display = "flex";
-  devImgElement.style.flexDirection = "row";
-  devImgElement.style.alignItems = "center";
-  devImgElement.style.justifyContent = "space-around";
-  devImgElement.style.margin = "5pt";
-  devImgElement.style.padding = "5pt";
-  devImgElement.style.boxShadow = "rgba(0, 0, 0, 0.24) 0px 3px 8px";
-  // Get the base64 image data from the canvas
-  const base64Image = canvasField.toDataURL("image/png");
-
-  // Check if the canvas is blank
-  const ctx = canvasField.getContext("2d");
-  ctx.clearRect(0, 0, canvasField.width, canvasField.height);
-  const blankCanvasData = canvasField.toDataURL("image/png");
-
-  if (base64Image === blankCanvasData) {
-    console.log("Canvas is blank, not appending.");
-    return; // Exit the function if the canvas is blank
-  }
-
-  // Create an image element
-  const imgElement = document.createElement("img");
-
-  // Set the source of the image element to the base64 image data
-  imgElement.src = base64Image;
-
-  // Optionally, set some styles or attributes
-  imgElement.style.width = parseFloat(preview.style.width) / 4 + "px"; // Example width
-  imgElement.style.height = parseFloat(preview.style.height) / 4 + "px"; // Example height
-
-  // Get start frame and last
-  const startFrame = document.getElementById("videoFrame").value;
-  const endFrame = document.getElementById("videoLength").innerText;
-
-  // if image than only one mask else a lot
-  // Get target content
-  var imgRetouchSource = preview.querySelector("img");
-  var videoRetouchSource = preview.querySelector("video");
-
-  if (imgRetouchSource) {
-    savedRetouchMask.innerHTML = "";
-    imgElement.style.backgroundImage = "url(" + imgRetouchSource.src + ")";
-  } else {
-    const frameDataURL = getVideoFrameAsDataURL(videoRetouchSource);
-    imgElement.style.backgroundImage = "url(" + frameDataURL + ")";
-  }
-
-  imgElement.style.backgroundSize = "contain";
-  imgElement.className = "canvas-mask-set";
-
-  // Append the image element to the savedRetouchMask div
-  devImgElement.appendChild(imgElement);
-
-  if ("0" !== endFrame) {
-    devImgElement.innerHTML += `
-            <div style="margin-left: 5pt;margin-right: 5pt;">
-                <label>Начало</label>
-                <input class="start-frame-mask" type="number" title="Введите число" min="0" max="${endFrame}" step="0.1" value="${startFrame}">
-            </div>
-            <div style="margin-left: 5pt;margin-right: 5pt;">
-                <label>Окончание</label>
-                <input class="end-frame-mask" type="number" title="Введите число" min="0" max="${endFrame}" step="0.1" value="${endFrame}">
-            </div>
-            <button class="introjs-button" onclick="this.parentElement.remove();"><i class="fa-solid fa-trash"></i></button>
-        `;
-  } else {
-    devImgElement.innerHTML += `
-            <button class="introjs-button" onclick="this.parentElement.remove();"><i class="fa-solid fa-trash"></i></button>
-        `;
-  }
-
-  savedRetouchMask.appendChild(devImgElement);
-}
-
-function getVideoFrameAsDataURL(video) {
-  const canvas = document.createElement("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  return canvas.toDataURL();
-}
-
-function sendDataToRetouch(elem) {
-  // If process is free
-  fetch("/synthesize_process/")
-    .then((response) => response.json())
-    .then((data) => {
-      // Call the async function
-      processAsyncRetouch(data, elem)
-        .then(() => {
-          console.log("Start to fetch msg for deepfake");
-        })
-        .catch((error) => {
-          console.log("Error to fetch msg for deepfake");
-          console.log(error);
+        previewMask.style.display = "";
+        canvas.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
         });
-    });
+        canvas.addEventListener('mousedown', setMultiplePointsForRetouchPreviewMask);
+    }
 }
 
-async function processAsyncRetouch(data, elem) {
-  if (data.status_code === 200) {
-    var synthesisDeepfakeTable = document.getElementById(
-      "table_body_deepfake_result"
-    );
+function captureFrame(videoElem) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = videoElem.videoWidth;
+    canvas.height = videoElem.videoHeight;
+    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+    const imageUrl = canvas.toDataURL('image/jpeg');
+    return imageUrl;
+}
 
-    var messageRetouch = elem.querySelector("#message-retouch");
-    messageRetouch.innerHTML = "";
+function setMultiplePointsForRetouchPreviewMask(event) {
+    if (document.getElementById("retouch-automatic").checked) {
+        triggerSendSegmentationDataMaskPreview(event, this)
+    }
+}
 
-    // Get target content
-    var previewRetouch = elem.querySelector("#previewRetouch");
+function retrieveMediaDetailsFramePreviewMask(mediaPreview) {
+    const imageElements = mediaPreview.querySelectorAll(".imageMedia");
+    const videoElements = mediaPreview.querySelectorAll(".videoMedia");
+    const previewMask = document.getElementById("preview-mask")
+    let mediaType = "";
+    let mediaName = "";
+    let mediaBlobUrl = "";
+    let mediaCurrentTime = 0;
 
-    // Get preprocessing
-    var preprocessingRetouchObject = elem.querySelector("#retouch-object");
-    var modelType = "retouch_face";
-    if (preprocessingRetouchObject.checked) {
-      modelType = "retouch_object";
+    if (imageElements.length > 0) {
+        mediaType = "img";
+        mediaBlobUrl = imageElements[0].src;
+        mediaName = `image_${Date.now()}_${getRandomString(5)}`;
+        mediaCurrentTime = 0;
+    } else if (videoElements.length > 0) {
+        mediaType = "video";
+        // Ensure the video is paused at the frame you want to capture
+        videoElements[0].pause();
+        previewMask.src = captureFrame(videoElements[0])
+        mediaBlobUrl = captureFrame(videoElements[0]);
+        mediaName = `video_frame_${Date.now()}_${getRandomString(5)}`;
+        mediaCurrentTime = videoElements[0].currentTime;
     }
 
-    // Save in tmp content for source
-    var imgRetouchMain = previewRetouch.querySelector("img");
-    var videoRetouchMain = previewRetouch.querySelector("video");
-    var mediaNameMain = "";
-    var mediaBlobUrlMain = "";
-
-    if (imgRetouchMain) {
-      mediaBlobUrlMain = imgRetouchMain.src;
-      mediaNameMain = "image_target_" + Date.now() + "_" + getRandomString(5);
-    } else if (videoRetouchMain) {
-      mediaBlobUrlMain = videoRetouchMain.src;
-      mediaNameMain = "video_target_" + Date.now() + "_" + getRandomString(5);
-    } else {
-      var messageSetP = await translateWithGoogle(
-        "Вы не загрузили целевое изображение. Нажмите на окно загрузки изображения.",
-        "auto",
-        targetLang
-      );
-      messageRetouch.innerHTML = `<p style='margin-top: 5pt;'>${messageSetP}</p>`;
-    }
-    if (mediaBlobUrlMain) {
-      fetch(mediaBlobUrlMain)
+    if (mediaBlobUrl) {
+        fetch(mediaBlobUrl)
         .then((res) => res.blob())
         .then((blob) => {
-          var file = new File([blob], mediaNameMain);
+          var file = new File([blob], mediaName);
           uploadFile(file);
         });
     }
 
-    // Get all mask, save them and get those parameters
-    var savedRetouchMask = elem.querySelector("#savedRetouchMask");
-    var retouchMasks = savedRetouchMask.querySelectorAll(".retouch-masks");
+    previewMask.setAttribute("current", mediaCurrentTime);
 
-    // Create an array to store the results
-    var resultsRetouchMasks = [];
+    return { mediaType, mediaName, mediaBlobUrl, mediaCurrentTime };
+}
 
-    // Iterate over each retouch mask
-    retouchMasks.forEach(function (mask) {
-      // Find the image element with class 'canvas-mask-set' inside the current mask
-      var imgElementMask = mask.querySelector(".canvas-mask-set");
-      var imgSrcMask = imgElementMask ? imgElementMask.src : null; // Check if the imgElement exists, if not set the src as null
+function triggerSendSegmentationDataMaskPreview(event, canvas) {
+    fetch("/synthesize_process/")
+        .then(response => response.json())
+        .then(data => {
+            if (data.status_code === 200) {
+                setMultiplePointsOnCanvas(event);
+                const objId = 1; // TODO will be get from img preview mask
 
-      // Generate name
-      var mediaNameMask =
-        "mask_" + Date.now() + "_" + getRandomString(5) + ".png";
+                const pointsList = retrieveSelectedPointsList(canvas);
+                const {
+                    mediaType,
+                    mediaName,
+                    mediaBlobUrl,
+                    mediaCurrentTime
+                } = retrieveMediaDetailsFramePreviewMask(document.getElementById("preview-media"));
 
-      if (imgSrcMask) {
-        fetch(imgSrcMask)
-          .then((res) => res.blob())
-          .then((blob) => {
-            var file = new File([blob], mediaNameMask);
-            uploadFile(file);
-          });
-      }
+                sendSegmentationDataMaskPreview(mediaName, pointsList, mediaCurrentTime, objId);
+            } else {
+                displayMessage(document.getElementById("message-about-status"), "GPU process is busy...");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching the synthesis process status:", error);
+        });
+}
 
-      // Find the input element with class 'start-frame-mask' inside the current mask
-      var startFrameInputMask = mask.querySelector(".start-frame-mask");
-      var startFrameValueMask = startFrameInputMask
-        ? startFrameInputMask.value
-        : null; // Check if the startFrameInput exists, if not set the value as null
 
-      // Find the input element with class 'end-frame-mask' inside the current mask
-      var endFrameInputMask = mask.querySelector(".end-frame-mask");
-      var endFrameValueMask = endFrameInputMask
-        ? endFrameInputMask.value
-        : null; // Check if the endFrameInput exists, if not set the value as null
+function sendSegmentationDataMaskPreview(mediaName, pointsList, mediaCurrentTime, objId) {
+    const endpointUrl = "/create_segment_anything/";
+    const payload = {
+        source: mediaName,
+        point_list: pointsList,
+        current_time: mediaCurrentTime,
+        obj_id: objId
+    };
+    // message for user
+    displayMessage(document.getElementById("message-about-status"), "Waiting for model is loading for AI segmentation...");
 
-      // Store the results in an object and push it to the results array
-      resultsRetouchMasks.push({
-        mediaNameMask: mediaNameMask,
-        startFrameMask: startFrameValueMask,
-        endFrameMask: endFrameValueMask,
-      });
-    });
-
-    if (resultsRetouchMasks.length < 1) {
-      messageRetouch.innerHTML +=
-        "<p style='margin-top: 5pt;'>Необходимо добавить минимум одну маску для запуска</p>";
-      return;
-    } else {
-      const buttonAnimationWindows = document.querySelector(
-        "#button-show-voice-window"
-      );
-      buttonAnimationWindows.click();
-
-      var predictParametersRetouch = {
-        source: mediaNameMain,
-        mask: resultsRetouchMasks,
-        model_type: modelType,
-      };
-
-      synthesisDeepfakeTable.innerHTML = "";
-
-      fetch("/synthesize_retouch/", {
-        method: "POST",
+    fetch(endpointUrl, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(predictParametersRetouch),
-      });
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 200) {
+            // If the POST request was successful and the status is 200, fetch the segmentation data
+            fetchSegmentAnythingAndSetCanvas();
+        }
+        console.log("Data successfully sent and received:", data);
+    })
+    .catch(error => {
+        console.error("There was a problem with the fetch operation:", error);
+    });
+}
 
-      const closeIntroButton = document.querySelector(".introjs-skipbutton");
-      closeIntroButton.click();
+
+
+function fetchSegmentAnythingAndSetCanvas() {
+    fetch("/get_segment_anything/")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const segmentPreview = data.response;
+
+            // Assuming there's only one current_time entry and one obj_id.
+            // If there can be multiple, you'll need to loop through them.
+            const currentTime = Object.keys(segmentPreview)[0];
+            const objId = Object.keys(segmentPreview[currentTime])[0];
+            const imageUrl = segmentPreview[currentTime][objId];
+            const previewMask = document.querySelector('#preview-mask')
+
+            // Create a canvas and set its source to the fetched image URL
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                // copy style from original
+                for (let prop in previewMask.style) {
+                    if (previewMask.style.hasOwnProperty(prop)) {
+                        canvas.style[prop] = previewMask.style[prop];
+                    }
+                }
+                canvas.style.position = "absolute";
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = imageUrl;
+
+            // Append the canvas to previewMask
+            const parentDiv = previewMask.parentNode;
+            // Remove all prev canvas elements
+            const allCanvases = parentDiv.querySelectorAll("canvas");
+            allCanvases.forEach(canvas => canvas.remove());
+
+            parentDiv.insertBefore(canvas, previewMask);
+            displayMessage(document.getElementById("message-about-status"), "Mask is set");
+        })
+        .catch(error => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+}
+
+async function maskToList() {
+    const previewMask = document.querySelector('#preview-mask');
+    const parentDiv = previewMask.parentNode;
+    const originalCanvas = parentDiv.querySelector("canvas");
+    if (!originalCanvas) {
+        displayMessage(document.getElementById("message-about-status"), "Before adding a mask, you need to create a point.");
+        return null;
     }
-  }
+
+    // Clone the original canvas content into a new canvas
+    const clonedCanvas = document.createElement('canvas');
+    clonedCanvas.width = originalCanvas.width;
+    clonedCanvas.height = originalCanvas.height;
+    const context = clonedCanvas.getContext('2d');
+    const dataUrl = originalCanvas.toDataURL();
+    const img = new Image();
+    img.src = dataUrl;
+    img.onload = function() {
+        context.drawImage(img, 0, 0);
+    };
+
+    // Copy the styles from previewMask to the new canvas
+    for (let prop in previewMask.style) {
+        if (previewMask.style.hasOwnProperty(prop)) {
+            clonedCanvas.style[prop] = previewMask.style[prop];
+        }
+    }
+
+    // Modify the size and position of the new canvas
+    clonedCanvas.style.maxWidth = "10vw";
+    clonedCanvas.style.maxHeight = "10vh";
+    clonedCanvas.style.position = "absolute";
+
+    // Create a new div, append the new canvas and previewMask to it
+    const newDiv = document.createElement('div');
+    newDiv.style.position = "relative";
+    newDiv.appendChild(clonedCanvas);
+    // Adjust the size of the appended previewMask
+    const clonedPreviewMask = previewMask.cloneNode(true);
+    clonedPreviewMask.style.maxWidth = "10vw";
+    clonedPreviewMask.style.maxHeight = "10vh";
+
+    newDiv.appendChild(clonedPreviewMask);
+
+    // Append the new div to maskTimelines
+    const maskTimelines = document.getElementById("mask-timelines");
+    maskTimelines.appendChild(newDiv);
+
+    // Remove the original canvas
+    originalCanvas.remove();
+
+    // Clear general canvas
+    const canvasGeneralElement = document.querySelectorAll(".canvasMedia")[0];
+    const ctx = canvasGeneralElement.getContext('2d');
+    if (canvasGeneralElement.hasAttribute("data-point-position")) {
+        // For one point
+        canvasGeneralElement.removeAttribute("data-point-position");
+    }
+    if (canvasGeneralElement.hasAttribute("data-points-list")) {
+        // For one point
+        canvasGeneralElement.removeAttribute("data-points-list");
+    }
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvasGeneralElement.width, canvasGeneralElement.height);
 }

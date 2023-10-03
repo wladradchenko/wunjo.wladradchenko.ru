@@ -43,7 +43,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                             <div style="width: 35vw;">
                                 <span class="dragBox" style="margin-bottom: 15px;width: 100%;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
                                       Загрузить целевое изображение или видео
-                                    <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-target'), this.parentElement, document.getElementById('message-about-status-target'))"  />
+                                    <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-target'), this.parentElement, document.getElementById('message-about-status-target'))" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                                 </span>
                                 <p id="message-about-status-target" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                                 <div id="preview-media-target" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
@@ -52,7 +52,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                             <div style="width: 35vw;">
                                 <span class="dragBox" style="margin-bottom: 15px;width: 100%;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
                                       Загрузить исходное изображение или видео
-                                    <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-source'), this.parentElement, document.getElementById('message-about-status-source'))" />
+                                    <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-source'), this.parentElement, document.getElementById('message-about-status-source'))" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                                 </span>
                                 <p id="message-about-status-source" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                                 <div id="preview-media-source" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
