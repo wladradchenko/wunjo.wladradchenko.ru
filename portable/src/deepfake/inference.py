@@ -253,6 +253,7 @@ class AnimationFaceTalk:
         coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
 
         # coeff2video
+        args.enhancer = "gfpgan" if background_enhancer else enhancer
         data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, audio_path, batch_size, input_yaw_list, input_pitch_list, input_roll_list, expression_scale=args.expression_scale, still_mode=args.still, preprocess=args.preprocess)
         mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess, pic_path_type=pic_path_type, device=device)
 
@@ -371,7 +372,9 @@ class AnimationMouthTalk:
         if wav2lip_processed_video is None:
             return
         wav2lip_result_video = wav2lip_processed_video
+
         # after face or background enchanter
+        enhancer = "gfpgan" if background_enhancer else enhancer
         if enhancer:
             video_name_enhancer = 'wav2lip_video_enhanced.mp4'
             enhanced_path = os.path.join(save_dir, 'temp_' + video_name_enhancer)
@@ -455,6 +458,7 @@ class FaceSwap:
             args.device = "cpu"
 
         args.background_enhancer = "realesrgan" if background_enhancer else None
+        enhancer = "gfpgan" if background_enhancer else enhancer
 
         save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -680,14 +684,18 @@ class Retouch:
 class VideoEdit:
     """Edit video"""
     @staticmethod
-    def main_video_work(output, source, enhancer, enhancer_background, is_get_frames):
+    def main_video_work(output, source, enhancer, enhancer_background, is_get_frames, media_start=0, media_end=0):
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
+
+        media_start = float(media_start)
+        media_end = float(media_end)
 
         import time
         time.sleep(5)
 
         enhancer_background = "realesrgan" if enhancer_background else None
+        enhancer = "gfpgan" if enhancer_background else enhancer
         audio_file_name = extract_audio_from_video(source, save_dir)
 
         if enhancer:
@@ -700,13 +708,21 @@ class VideoEdit:
                 device = "cpu"
 
             print("Get audio and video frames")
-            frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
-            video_name_enhancer = 'video_enhanced.mp4'
-            enhanced_path = os.path.join(output, 'temp_' + video_name_enhancer)
-            print("Starting improve video")
-            enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
-            imageio.mimsave(enhanced_path, enhanced_video, fps=float(fps))
-            save_name = save_video_with_audio(enhanced_path, os.path.join(save_dir, audio_file_name), save_dir)
+            _, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            if check_media_type(source) == "animated":
+                source = cut_start_video(source, media_start, media_end)
+                name_enhancer = 'video_enhanced.mp4'
+                enhanced_path = os.path.join(output, 'temp_' + name_enhancer)
+                print("Starting improve video")
+                enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
+                imageio.mimsave(enhanced_path, enhanced_video, fps=float(fps))
+                save_name = save_video_with_audio(enhanced_path, os.path.join(save_dir, audio_file_name), save_dir)
+            else:
+                save_name = 'image_enhanced.png'
+                print("Starting improve image")
+                enhanced_image = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
+                saved_file = os.path.join(save_dir, save_name)
+                imageio.imsave(saved_file, enhanced_image[0])
 
             for f in os.listdir(save_dir):
                 if save_name == f:
@@ -723,6 +739,7 @@ class VideoEdit:
             return save_name
 
         if is_get_frames:
+            source = cut_start_video(source, media_start, media_end)
             video_to_frames(source, save_dir)
             for f in os.listdir(TMP_FOLDER):
                 os.remove(os.path.join(TMP_FOLDER, f))

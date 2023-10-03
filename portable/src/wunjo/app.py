@@ -270,12 +270,15 @@ def synthesize_video_editor():
     enhancer = request_list.get("enhancer", False)
     enhancer_background = request_list.get("enhancer_background", False)
     is_get_frames = request_list.get("get_frames", False)
+    media_start = request_list.get("media_start", 0)
+    media_end = request_list.get("media_end", 0)
 
     try:
         result = VideoEdit.main_video_work(
             output=DEEPFAKE_FOLDER,
             source=os.path.join(TMP_FOLDER, source), enhancer=enhancer,
-            enhancer_background=enhancer_background, is_get_frames=is_get_frames
+            enhancer_background=enhancer_background, is_get_frames=is_get_frames,
+            media_start=media_start, media_end=media_end
         )
     except Exception as err:
         app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]

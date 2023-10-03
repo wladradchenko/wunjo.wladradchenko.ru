@@ -1,9 +1,5 @@
 // FACE SWAP //
-function deepfakeFaceSwap(
-  button,
-  audio_url = undefined,
-  audio_name = undefined
-) {
+function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefined) {
   var introFaceSwap = introJs();
   introFaceSwap.setOptions({
     steps: [

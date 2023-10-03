@@ -134,9 +134,9 @@ async function initiateFaceAndMouthProcess(data, elem) {
 }
 
 // ANIMATE WINDOWS //
-function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefined) {
-  var introDeepfake = introJs();
-  introDeepfake.setOptions({
+function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = undefined) {
+  var introFaceAndMouth = introJs();
+  introFaceAndMouth.setOptions({
     steps: [
       {
         title: "Панель анимации лица и губ",
@@ -245,7 +245,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
     prevLabel: "Вернуться",
     doneLabel: "Закрыть",
   });
-  introDeepfake.start();
+  introFaceAndMouth.start();
   availableFeaturesByCUDA(document.getElementById("background-enhancer-deepfake-message"));
   // IF USER ADD AUDIO FROM SYNTHESIS PANEL //
   if (audio_url) {

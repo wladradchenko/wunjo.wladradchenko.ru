@@ -19,9 +19,9 @@
     <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="Информация об авторе">W</i></a>
     <a class="notranslate" id="a-link-open-tutorial" onclick="supportUser();" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i class="fa-solid fa-circle-question" title="Учебное пособие"></i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть директорию медиа файлов"><i class="fa fa-folder"></i></a>
-    <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно создания дипфейка смены лица" onclick="deepfakeFaceSwap(this);"><i class="fa-solid fa-masks-theater"></i></a>
+    <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно создания дипфейка смены лица" onclick="initiateFaceSwapPop(this);"><i class="fa-solid fa-masks-theater"></i></a>
     <a id="button-run-retouch" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно удаления объектов и ретуши" onclick="deepfakeRetouch(this);"><i class="fa-solid fa-eraser"></i></a>
-    <a id="button-run-editor-video" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно работы с видео" onclick="editorVideo(this);"><i class="fa-solid fa-screwdriver-wrench"></i></a>
+    <a id="button-run-editor-video" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно работы с видео" onclick="initializeVideoEditor(this);"><i class="fa-solid fa-screwdriver-wrench"></i></a>
     <!--EXTENSIONS-->
     <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i class="fa-solid fa-microchip"></i></a>
     <!--EXTENSIONS-->
@@ -112,7 +112,7 @@
             </button>
             <button title="Показать результаты синтеза анимации" id="button-show-voice-window" style="display: block;width:120pt;" onclick="document.querySelector('#table_speech_result').style.display = 'none';document.querySelector('#button-show-voice-window').style.display = 'none';document.querySelector('#table_deepfake_result').style.display = 'inline-table';document.querySelector('#button-show-animation-window').style.display = 'inline';"><i class="fa-solid fa-clapperboard"></i><p>Видео</p></button>
             <button title="Показать результаты синтеза голоса" id="button-show-animation-window" style="display: none;width:120pt;" onclick="document.querySelector('#table_speech_result').style.display = 'inline-table';document.querySelector('#button-show-voice-window').style.display = 'inline';document.querySelector('#table_deepfake_result').style.display = 'none';document.querySelector('#button-show-animation-window').style.display = 'none';"><i class="fa-solid fa-music"></i><p>Аудио</p></button>
-            <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="deepfakeGeneralPop(event.target);">Анимация лица и губ</button>
+            <button title="Синтезировать анимацию" id="button-run-deepfake-synthesis" onclick="initiateFaceAndMouthPop(event.target);">Анимация лица и губ</button>
         </div>
         <div id="synthesized_result" style="display: flex;flex-direction: column;justify-content: space-between;width: 100%;max-height: 55%;">
             <div id="synthesized_result_table" style="overflow-x: auto;">
