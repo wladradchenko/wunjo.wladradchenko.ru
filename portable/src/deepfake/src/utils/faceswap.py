@@ -52,15 +52,13 @@ class FaceSwapDeepfake:
         return insightface.model_zoo.get_model(face_swap_model_path, providers=provider)
 
     @staticmethod
-    def get_real_crop_box(frame, face_fields):
+    def get_real_crop_box(frame, squareFace):
         """
         Get real crop box
         :param frame:
         :return:
         """
-        if face_fields is not None:
-            # user crop face in frontend
-            squareFace = face_fields[0]
+        if squareFace is not None:
             # real size
             originalHeight, originalWidth, _ = frame.shape
 
@@ -73,9 +71,9 @@ class FaceSwapDeepfake:
             # Calculate the new position and size of the square face on the original image
             # Convert canvas square face coordinates to original image coordinates
             newX1 = squareFace['x'] * scaleFactorX
-            newX2 = (squareFace['x'] + squareFace['width']) * scaleFactorX
+            newX2 = (squareFace['x'] + 1) * scaleFactorX  # 1 is width
             newY1 = squareFace['y'] * scaleFactorY
-            newY2 = (squareFace['y'] + squareFace['height']) * scaleFactorY
+            newY2 = (squareFace['y'] + 1) * scaleFactorY  # 1 is height
 
             d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
             # get the center point of d_new

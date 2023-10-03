@@ -421,7 +421,7 @@ class FaceSwap:
     """
     @staticmethod
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
-                      type_file_target: str, type_file_source: str, target_video_start: float = 0, source_video_frame: float = 0,
+                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0, source_video_frame: float = 0, source_video_end: float = 0,
                       enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
                       background_enhancer: str = None, multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
         args = FaceSwap.load_faceswap_default()
@@ -433,11 +433,13 @@ class FaceSwap:
         args.target_face_fields = target_face_fields
         args.type_file_target = type_file_target
         args.target_video_start = float(target_video_start)
+        args.target_video_end = float(target_video_end)
         # Source
         args.source = source
         args.source_face_fields = source_face_fields
         args.type_file_source = type_file_source
         args.source_video_frame = float(source_video_frame)
+        args.source_video_end = float(source_video_end)
         # Additionally processing
         args.multiface = multiface
         args.enhancer = enhancer
@@ -476,9 +478,7 @@ class FaceSwap:
 
         # get source for face
         if args.type_file_source == "video":
-            if float(args.source_video_frame) != 0:
-                # TODO I add end of video
-                args.source = cut_start_video(args.source, args.source_video_frame, 0)
+            args.source = cut_start_video(args.source, args.source_video_frame, args.source_video_end)
         # get frame
         source_frame = get_first_frame(args.source)
         source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, args.source_face_fields)
@@ -487,9 +487,7 @@ class FaceSwap:
         args.type_file_target = check_media_type(args.target)
         if args.type_file_target == "animated":
             # If video_start for target is not 0 when cut video from start
-            if float(args.target_video_start) != 0:
-                # TODO I add end of video
-                args.target = cut_start_video(args.target, args.target_video_start, 0)
+            args.target = cut_start_video(args.target, args.target_video_start, args.target_video_end)
 
             # get video frame for source if type is video
             target_frames, fps = get_frames(video=args.target, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)

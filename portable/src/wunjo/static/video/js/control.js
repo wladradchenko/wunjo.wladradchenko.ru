@@ -1,5 +1,5 @@
 // WORK WITH VIDEO //
-async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='45vh') {
+async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='45vh', videoDisplayWidth = '45vw') {
     // CREATE HTML //
     // Create the required elements
     const videoContainer = document.createElement('div');
@@ -12,7 +12,8 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
     videoElement.setAttribute("loop", "");
     videoElement.setAttribute("muted", "");
     videoElement.style.opacity = "1.0";
-    videoElement.style = "position: relative; width: auto;max-width: 45vw;";
+    videoElement.style = "position: relative; width: auto;";
+    videoElement.style.maxWidth = videoDisplayWidth;
     videoElement.style.maxHeight = videoDisplayHeight;
     videoElement.style.zIndex = "1";
 
@@ -243,7 +244,6 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
         this.height = video_size["offsetHeight"]  // float to int
         canvasElement.width = video_size["offsetWidth"]
         canvasElement.height = video_size["offsetHeight"]
-        console.log(video_size)
     });
 
     videoElement.addEventListener("loadeddata", function() {
@@ -290,7 +290,6 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
 
                 // set 60 from .timeline img
                 const numRepeat = videoElement.offsetWidth / ((60 / canvas.height * canvas.width) * 10)
-                console.log(numRepeat)
 
                 video.pause();
 
@@ -381,7 +380,6 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
     });
     // TIMELINES IMAGES //
     // Set correct size as in width for timeline images full
-    console.log(video_size["w"], videoElement.offsetWidth)
     timeMarkerDiv.style.width = video_size["offsetWidth"] + "px" // timelineDiv.scrollWidth + "px";
     timelineDivSlider.style.width = video_size["offsetWidth"] + "px"  // timelineDiv.scrollWidth + "px";
     // Create elements to control cut
@@ -570,7 +568,7 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
 // WORK WITH VIDEO //
 
 // WORK WITH IMAGES //
-async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '45vh') {
+async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '45vh', imageDisplayWidth = '45vw') {
     // CREATE HTML //
     // Create the required elements
     const imageContainer = document.createElement('div');
@@ -580,13 +578,13 @@ async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '4
     const imageElement = document.createElement('img');
     imageElement.className = "imageMedia";
     imageElement.src = imageUrl;
-    imageElement.style = "position: relative;width: auto;max-width: 45vw;height:auto;mix-blend-mode: multiply;";
+    imageElement.style = "position: relative;width: auto;height:auto;mix-blend-mode: multiply;";
+    imageElement.style.maxWidth = imageDisplayWidth;
     imageElement.style.maxHeight = imageDisplayHeight;
     imageElement.style.zIndex = "1";
 
     imageElement.addEventListener("load", function(e) {
         imageSize = {'w': this.width, 'h': this.height, 'offsetWidth': this.offsetWidth, "offsetHeight": this.offsetHeight};
-        console.log(imageSize)
         // Calculate the aspect ratio of the original video
         let aspectRatio = imageSize.w / imageSize.h;
         // Determine which offset dimension is the limiting factor
@@ -597,7 +595,6 @@ async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '4
             // offsetHeight is the limiting factor, adjust offsetWidth
             imageSize.offsetWidth = imageSize.offsetHeight * aspectRatio;
         }
-        console.log(imageSize)
 
         const imgWidth = this.width;
         const imgHeight = this.height;
@@ -757,6 +754,8 @@ function retrieveMediaDetails(mediaPreview) {
     let mediaType = "";
     let mediaName = "";
     let mediaBlobUrl = "";
+    let mediaStart = 0;
+    let mediaEnd = 0;
 
     if (imageElements.length > 0) {
         mediaType = "img";

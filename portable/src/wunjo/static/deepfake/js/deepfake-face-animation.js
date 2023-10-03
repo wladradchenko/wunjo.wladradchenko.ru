@@ -1,29 +1,41 @@
 // SEND DATA IN BACKEND //
-function triggerDeepfakeSynthesis(elem) {
+function triggerFaceAndMouthSynthesis(elem) {
     fetch("/synthesize_process/")
         .then(response => response.json())
-        .then(data => initiateDeepfakeProcess(data, elem))
+        .then(data => initiateFaceAndMouthProcess(data, elem))
         .catch(error => {
             console.error("Error fetching the synthesis process status:", error);
         });
 }
 
-async function initiateDeepfakeProcess(data, elem) {
+async function initiateFaceAndMouthProcess(data, elem) {
     if (data.status_code !== 200) {
         displayStatusMessage(elem, "The process is busy. Wait for it to finish");
         return null;
     }
+    // TODO forget add checked synthesed table from autio to video
 
     const synthesisResultTable = document.getElementById("table_body_deepfake_result");
     const mediaPreview = elem.querySelector("#preview-media");
     const selectedFaceData = retrieveSelectedFaceData(mediaPreview);
-    const { mediaType, mediaName, mediaBlobUrl, mediaStart, mediaEnd } = retrieveMediaDetails(mediaPreview);
+
+    const {
+        mediaType: mediaType,
+        mediaName: mediaName,
+        mediaBlobUrl: mediaBlobUrl,
+        mediaStart: mediaStart,
+        mediaEnd: mediaEnd
+    } = retrieveMediaDetails(mediaPreview);
+
     const audioDetails = retrieveAudioDetailsFaceAndMouthAnimation(elem);
 
     const synthesisSettings = gatherSynthesisSettings(elem, mediaType, mediaName, mediaStart, mediaEnd, audioDetails.audioName, selectedFaceData);
 
     if (synthesisSettings) {
         triggerSynthesisAPI(synthesisSettings);
+        // This open display result for deepfake videos
+        const tutorialButton = document.querySelector("#button-show-voice-window");
+        tutorialButton.click();
         closeTutorial();
     }
 
@@ -131,18 +143,18 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
         position: "left",
         intro: `
                     <div id="main-windows-face-and-mouth-animation" style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh; columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
-                    <div style="display: flex;flex-direction: column;overflow: auto;justify-content: center;">
-                        <div class="uploadOuterDeepfake">
-                            <span class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 30px;justify-content: center;">
+                    <div id="previewDiv" style="display: flex;flex-direction: column;overflow: auto;justify-content: center;width: 50vw;">
+                        <div>
+                            <span id="spanLoadMediaElement" class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 50vh;justify-content: center;">
                                   Загрузить изображение или видео
-                                <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media'))" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
+                                <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media'))" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                             <div id="preview-media" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
                             </div>
                         </div>
 
-                        <div class="uploadOuterDeepfakeAudio" style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
+                        <div style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
                             <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
                             <input style="width: 0;" accept="audio/*" type="file" onChange="dragDropAudioDeepfakeFaceAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
                             <div id="previewDeepfakeAudio"></div>
@@ -220,7 +232,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
                           </div>
                         </fieldset>
 
-                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerDeepfakeSynthesis(this.parentElement.parentElement);">Синтезировать видео</button>
+                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement);">Синтезировать видео</button>
                     </div>
                     </div>
                     `,
@@ -291,7 +303,7 @@ function deepfakeGeneralPop(button, audio_url = undefined, audio_name = undefine
 }
 
 // UPDATE PREVIEW //
-async function handleFaceAndMouthAnimation(event, parentElement) {
+async function handleFaceAndMouthAnimation(event, previewElement) {
     const messageAboutStatus = document.getElementById("message-about-status");
     let messageAboutStatusText = "";
     const fileInput = event.target;
@@ -300,7 +312,9 @@ async function handleFaceAndMouthAnimation(event, parentElement) {
     if (file) {
         const fileUrl = window.URL.createObjectURL(file);
         const fileType = file.type.split('/')[0];
-        parentElement.innerHTML = "";
+        previewElement.innerHTML = "";
+        document.getElementById("previewDiv").style.width = "";
+        document.getElementById("spanLoadMediaElement").style.height = "30px";
 
         let canvas;
         if (fileType === 'image') {
@@ -308,7 +322,7 @@ async function handleFaceAndMouthAnimation(event, parentElement) {
             messageAboutStatus.style.background = getRandomColor();
             messageAboutStatusText = await translateWithGoogle("Choose a face to animate by tool","auto",targetLang);
             messageAboutStatus.innerHTML = `${messageAboutStatusText} <i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>`;
-            canvas = await setupImageCanvas(parentElement, fileUrl, "55vh");
+            canvas = await setupImageCanvas(previewElement, fileUrl, "55vh", "45vw");
 
             document.getElementById("fieldset-preprocessing").style.display = "block";
             document.getElementById("still-deepfake-div").style.display = "block";
@@ -336,7 +350,7 @@ async function handleFaceAndMouthAnimation(event, parentElement) {
             messageAboutStatus.style.background = getRandomColor();
             messageAboutStatusText = await translateWithGoogle("Video is loading...","auto",targetLang);
             messageAboutStatus.innerHTML = `${messageAboutStatusText}`;
-            canvas = await setupVideoTimeline(parentElement, fileUrl, "55vh");
+            canvas = await setupVideoTimeline(previewElement, fileUrl, "55vh", "45vw");
 
             document.getElementById("face-animation-parameters-windows").style.display = "flex";
             messageAboutStatus.style.background = getRandomColor();
