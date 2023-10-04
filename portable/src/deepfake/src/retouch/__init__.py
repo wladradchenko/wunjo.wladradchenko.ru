@@ -55,12 +55,14 @@ def process_retouch(img, mask, model):
     return Image.fromarray(merge).resize((w_raw, h_raw))
 
 
-def read_retouch_mask(mask_path):
-    with Image.open(mask_path) as mask_file:
-        mask = np.array(mask_file.convert("L"))
-    return Image.fromarray(mask, 'L')
-
-
 def convert_cv2_to_pil(frame):
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     return Image.fromarray(frame_rgb)
+
+
+def pil_to_cv2(pil_image):
+    # Convert the PIL image to a numpy array
+    cv2_image = np.array(pil_image)
+    # Convert RGB to BGR
+    cv2_image = cv2_image[:, :, ::-1].copy()
+    return cv2_image

@@ -219,11 +219,19 @@ def create_segment_anything():
     result_filename = GetSegment.get_segment_mask_file(
         predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
     )
-    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {**app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'], **{str(current_time): {str(obj_id): url_for("media_file", filename="/tmp/" + result_filename)}}}
+
+    # Set new data to send in frontend
+    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}
+    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'][str(current_time)] = {}
+    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'][str(current_time)][str(obj_id)] = {
+        "mask": url_for("media_file", filename="/tmp/" + result_filename),
+        "point_list": point_list
+    }
 
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
 
     return {"status": 200}
+
 
 @app.route("/get_segment_anything/", methods=["GET"])
 @cross_origin()
@@ -365,19 +373,30 @@ def synthesize_retouch():
         os.makedirs(DEEPFAKE_FOLDER)
 
     source = request_list.get("source")
-    mask = request_list.get("mask", [])
+    source_start = float(request_list.get("source_start", 0))
+    source_end = float(request_list.get("source_end", 0))
+    source_type = request_list.get("source_type", "img")
+    masks = request_list.get("masks", {})
     model_type = request_list.get("model_type", "retouch_face")
 
-    try:
-        retouch_result = Retouch.main_retouch(
-            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
-            mask=mask, model_type=model_type
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
+    predictor = segment_models.get("predictor")
+    session = segment_models.get("session")
+    app.config['SEGMENT_ANYTHING_MODEL'] = {}
+
+    # try:
+    retouch_result = Retouch.main_retouch(
+        output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
+        masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
+        predictor=predictor, session=session
+    )
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    return {"status": 200}
+    # except Exception as err:
+    #     app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+    #     print(f"Error ... {err}")
+    #     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    #     return {"status": 400}
 
     retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)

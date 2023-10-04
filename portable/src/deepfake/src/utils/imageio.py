@@ -18,8 +18,8 @@ def generate_random_color():
     return (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
 
 
-def save_colored_mask_cv2(save_path, mask):
-    save_name = str(uuid.uuid4()) + '.png'
+def save_colored_mask_cv2(save_path, mask, save_name=None):
+    save_name = str(uuid.uuid4()) + '.png' if save_name is None else save_name
     # Reduce the dimensions if necessary
     if mask.ndim == 4:
         mask = mask[0, 0]

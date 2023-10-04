@@ -940,11 +940,30 @@ function getRandomColor() {
     return colors[randomIndex];
 }
 
+//function formatTime(seconds) {
+//    const hrs = Math.floor(seconds / 3600);
+//    const mins = Math.floor((seconds % 3600) / 60);
+//    const secs = Math.floor(seconds % 60);
+//    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+//}
+
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const millis = Math.floor((seconds * 1000) % 1000);  // Extracting milliseconds
+    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+}
+
+//function convertTimeToSeconds(timeStr) {
+//    const [hrs, mins, secs] = timeStr.split(":").map(Number);
+//    return (hrs * 3600) + (mins * 60) + secs;
+//}
+
+function convertTimeToSeconds(timeStr) {
+    const [hrsMinsSecs, millis = '0'] = timeStr.split(".");
+    const [hrs, mins, secs] = hrsMinsSecs.split(":").map(Number);
+    return (hrs * 3600) + (mins * 60) + secs + (Number(millis) / 1000);
 }
 
 // CLOSE INTROJS //

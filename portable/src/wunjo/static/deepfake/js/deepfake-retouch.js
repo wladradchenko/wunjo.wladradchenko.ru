@@ -1,3 +1,5 @@
+let retouchObjIdMask = 1;
+
 // RETOUCH //
 function initiateRetouchAiPop(button) {
   var introRetouch = introJs();
@@ -19,21 +21,9 @@ function initiateRetouchAiPop(button) {
                     </div>
                 </div>
                 <div id="div-control-panel" style="display: none;">
-                    <fieldset style="padding: 5px;">
-                        <legend>Режим</legend>
-                        <div style="display: flex;flex-direction: column;justify-content: center;">
-                            <div>
-                                <input type="radio" id="retouch-automatic" name="retouch-mode" value="automatic" checked>
-                                <label for="retouch-automatic">Автоматический режим</label>
-                                <input style="margin-left: 25px;" type="radio" id="retouch-manually" name="retouch-mode" value="manually">
-                                <label for="retouch-manually">Ручной режим</label>
-                            </div>
-                            <div style="justify-content: center;display: flex;">
-                                <img id="preview-mask" style="display: none;max-width: 30vw;max-height:25vh;overflow: auto;margin-top: 25px;object-fit: contain;">
-                            </div>
-                        </div>
-                    </fieldset>
-                    <fieldset style="padding: 5px;display: flex; flex-direction: column;">
+                    <div id="div-preview-mask" style="justify-content: center;display: flex;">
+                    </div>
+                    <fieldset style="padding: 5px;display: flex; flex-direction: column;margin-top: 30px;">
                         <legend>Маски</legend>
                         <button class="introjs-button" onclick="maskToList();">Добавить новый объект</button>
                         <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
@@ -41,15 +31,15 @@ function initiateRetouchAiPop(button) {
                     <fieldset style="padding: 5pt;">
                         <legend>Выбор препроцессинга</legend>
                         <div>
-                          <input type="radio" id="retouch-object" name="preprocessing_deepfake" value="resize">
+                          <input type="radio" id="retouch-object" name="preprocessing_retouch" value="resize">
                           <label for="retouch-object">Исправить окружение</label>
                         </div>
                         <div>
-                          <input type="radio" id="retouch-face" name="preprocessing_deepfake" value="full" checked>
+                          <input type="radio" id="retouch-face" name="preprocessing_retouch" value="full" checked>
                           <label for="retouch-face">Исправить лицо</label>
                         </div>
                     </fieldset>
-                    <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
+                    <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
                 </div>
             </div>
         </div>
@@ -74,6 +64,8 @@ async function handleRetouchAi(event, previewElement, parentElement) {
         document.getElementById('div-general-preview-media').style.width = '';
         document.getElementById('div-general-upper').style.height = '';
         document.getElementById('div-control-panel').style.display = '';
+        document.getElementById('mask-timelines').innerHTML = "";
+        document.getElementById('div-preview-mask').innerHTML = `<img id="preview-mask" style="display: none;max-width: 30vw;max-height:25vh;overflow: auto;margin-top: 25px;object-fit: contain;box-shadow: rgba(240, 46, 170, 0.4) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px;">`;
         const previewMask = document.getElementById('preview-mask');
 
         const fileUrl = window.URL.createObjectURL(file);
@@ -85,7 +77,6 @@ async function handleRetouchAi(event, previewElement, parentElement) {
         let canvas;
         if (fileType === 'image') {
             displayMessage(messageElement, "Choose a point to get field by tool", '<i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>');
-            // TODO Сообщение взависимости от режима, ручной или автоматический
             canvas = await setupImageCanvas(previewElement, fileUrl, "60vh", "45vw");
 
             const imagePreview = previewElement.getElementsByClassName("imageMedia")[0];
@@ -94,7 +85,6 @@ async function handleRetouchAi(event, previewElement, parentElement) {
             displayMessage(messageElement, "Video is loading...");
             canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
 
-            // TODO Сообщение взависимости от режима, ручной или автоматический
             displayMessage(messageElement, "Choose a point to get field by tool", '<i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>');
 
             const videoPreview = previewElement.getElementsByClassName("videoMedia")[0];
@@ -121,9 +111,7 @@ function captureFrame(videoElem) {
 }
 
 function setMultiplePointsForRetouchPreviewMask(event) {
-    if (document.getElementById("retouch-automatic").checked) {
-        triggerSendSegmentationDataMaskPreview(event, this)
-    }
+    triggerSendSegmentationDataMaskPreview(event, this)
 }
 
 function retrieveMediaDetailsFramePreviewMask(mediaPreview) {
@@ -170,7 +158,7 @@ function triggerSendSegmentationDataMaskPreview(event, canvas) {
         .then(data => {
             if (data.status_code === 200) {
                 setMultiplePointsOnCanvas(event);
-                const objId = 1; // TODO will be get from img preview mask
+                const objId = retouchObjIdMask;
 
                 const pointsList = retrieveSelectedPointsList(canvas);
                 const {
@@ -180,7 +168,7 @@ function triggerSendSegmentationDataMaskPreview(event, canvas) {
                     mediaCurrentTime
                 } = retrieveMediaDetailsFramePreviewMask(document.getElementById("preview-media"));
 
-                sendSegmentationDataMaskPreview(mediaName, pointsList, mediaCurrentTime, objId);
+                sendSegmentationDataMaskPreview(mediaName, mediaBlobUrl, pointsList, mediaCurrentTime, objId);
             } else {
                 displayMessage(document.getElementById("message-about-status"), "GPU process is busy...");
             }
@@ -191,7 +179,7 @@ function triggerSendSegmentationDataMaskPreview(event, canvas) {
 }
 
 
-function sendSegmentationDataMaskPreview(mediaName, pointsList, mediaCurrentTime, objId) {
+function sendSegmentationDataMaskPreview(mediaName, mediaBlobUrl, pointsList, mediaCurrentTime, objId) {
     const endpointUrl = "/create_segment_anything/";
     const payload = {
         source: mediaName,
@@ -216,9 +204,25 @@ function sendSegmentationDataMaskPreview(mediaName, pointsList, mediaCurrentTime
         return response.json();
     })
     .then(data => {
+        // mediaBlobUrl
         if (data.status === 200) {
-            // If the POST request was successful and the status is 200, fetch the segmentation data
-            fetchSegmentAnythingAndSetCanvas();
+            const currentMediaPreview = document.getElementById("preview-media")
+            const currentImageElements = currentMediaPreview.querySelectorAll(".imageMedia");
+            const currentVideoElements = currentMediaPreview.querySelectorAll(".videoMedia");
+            let currentMediaBlobUrl = "";
+            if (currentImageElements.length > 0) {
+                currentMediaBlobUrl = currentImageElements[0].src;
+            } else if (currentVideoElements.length > 0) {
+                currentVideoElements[0].pause();
+                currentMediaBlobUrl = captureFrame(currentVideoElements[0]);
+            }
+            if (currentMediaBlobUrl == mediaBlobUrl) {
+                // If the POST request was successful and the status is 200, fetch the segmentation data
+                fetchSegmentAnythingAndSetCanvas();
+            } else {
+                // message for user
+                displayMessage(document.getElementById("message-about-status"), "Media was changed and previous mask will not update...");
+            };
         }
         console.log("Data successfully sent and received:", data);
     })
@@ -244,8 +248,9 @@ function fetchSegmentAnythingAndSetCanvas() {
             // If there can be multiple, you'll need to loop through them.
             const currentTime = Object.keys(segmentPreview)[0];
             const objId = Object.keys(segmentPreview[currentTime])[0];
-            const imageUrl = segmentPreview[currentTime][objId];
-            const previewMask = document.querySelector('#preview-mask')
+            const imageUrl = segmentPreview[currentTime][objId]["mask"];
+            const pointList = segmentPreview[currentTime][objId]["point_list"];
+            const previewMask = document.querySelector('#preview-mask');
 
             // Create a canvas and set its source to the fetched image URL
             const canvas = document.createElement("canvas");
@@ -254,14 +259,21 @@ function fetchSegmentAnythingAndSetCanvas() {
             img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
+
                 // copy style from original
                 for (let prop in previewMask.style) {
                     if (previewMask.style.hasOwnProperty(prop)) {
                         canvas.style[prop] = previewMask.style[prop];
                     }
                 }
+
                 canvas.style.position = "absolute";
                 ctx.drawImage(img, 0, 0);
+
+                // Add attributes to the canvas
+                canvas.setAttribute("data-objId", objId);
+                canvas.setAttribute("data-currentTime", currentTime);
+                canvas.setAttribute("data-pointList", JSON.stringify(pointList)); // Convert pointList to string to store as an attribute
             };
             img.src = imageUrl;
 
@@ -280,6 +292,13 @@ function fetchSegmentAnythingAndSetCanvas() {
 }
 
 async function maskToList() {
+    const previewMedia = document.getElementById("preview-media")
+    const videoElements = previewMedia.querySelectorAll(".videoMedia");
+    let endTime = 0;
+    if (videoElements.length > 0) {
+        endTime = videoElements[0].getAttribute("end");
+    }
+
     const previewMask = document.querySelector('#preview-mask');
     const parentDiv = previewMask.parentNode;
     const originalCanvas = parentDiv.querySelector("canvas");
@@ -306,6 +325,15 @@ async function maskToList() {
             clonedCanvas.style[prop] = previewMask.style[prop];
         }
     }
+    clonedCanvas.style.boxShadow = "";
+
+    const objId = originalCanvas.getAttribute("data-objId");
+    const currentTime = originalCanvas.getAttribute("data-currentTime");
+    const pointList = originalCanvas.getAttribute("data-pointList");
+
+    clonedCanvas.setAttribute("data-objId", objId);
+    clonedCanvas.setAttribute("data-currentTime", currentTime);
+    clonedCanvas.setAttribute("data-pointList", pointList);  // Directly set the string value
 
     // Modify the size and position of the new canvas
     clonedCanvas.style.maxWidth = "10vw";
@@ -314,18 +342,110 @@ async function maskToList() {
 
     // Create a new div, append the new canvas and previewMask to it
     const newDiv = document.createElement('div');
-    newDiv.style.position = "relative";
-    newDiv.appendChild(clonedCanvas);
+    newDiv.style = "display: flex;flex-direction: row;justify-content: space-around;align-items: center;";
+    const newDivChild = document.createElement('div');
+    newDivChild.style.position = "relative";
+    newDivChild.appendChild(clonedCanvas);
     // Adjust the size of the appended previewMask
     const clonedPreviewMask = previewMask.cloneNode(true);
     clonedPreviewMask.style.maxWidth = "10vw";
     clonedPreviewMask.style.maxHeight = "10vh";
+    clonedPreviewMask.style.boxShadow = "";
 
-    newDiv.appendChild(clonedPreviewMask);
+    newDivChild.appendChild(clonedPreviewMask);
 
     // Append the new div to maskTimelines
     const maskTimelines = document.getElementById("mask-timelines");
+    newDiv.appendChild(newDivChild);
+
+    const ulElem = document.createElement('ul');
+    ulElem.style.fontSize = "small";
+    ulElem.style.listStyleType = "none";
+
+    const liObjId = document.createElement('li');
+    liObjId.innerText = "Id " + objId;
+    retouchObjIdMask += 1;  // update global count for objId
+    liObjId.style.margin = "5px";
+
+    const timePattern = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.\\d{1,3}$";
+
+    const liCurrentTime = document.createElement('li');
+    liCurrentTime.innerText = "Start: ";
+    const currentTimeInput = document.createElement('input');
+    currentTimeInput.value = formatTime(currentTime);
+    currentTimeInput.setAttribute('pattern', timePattern);
+    currentTimeInput.setAttribute('placeholder', '00:00:00.000');
+    currentTimeInput.addEventListener('input', enforceTimeFormat);
+    currentTimeInput.className = "mask-timeline-start-time";
+    currentTimeInput.style.width = "90px";
+    liCurrentTime.style.margin = "5px";
+    liCurrentTime.appendChild(currentTimeInput);
+
+    const liEndTime = document.createElement('li');
+    liEndTime.innerText = "End: ";
+    const endTimeInput = document.createElement('input');
+    endTimeInput.value = formatTime(endTime);
+    endTimeInput.setAttribute('pattern', timePattern);
+    endTimeInput.setAttribute('placeholder', '00:00:00.000');
+    endTimeInput.addEventListener('input', enforceTimeFormat);
+    endTimeInput.className = "mask-timeline-end-time";
+    endTimeInput.style.width = "90px";
+    liEndTime.style.margin = "5px";
+    liEndTime.appendChild(endTimeInput);
+
+    ulElem.appendChild(liObjId);
+    ulElem.appendChild(liCurrentTime);
+    ulElem.appendChild(liEndTime);
+    newDiv.appendChild(ulElem);
+
+    function enforceTimeFormat(event) {
+        const value = event.target.value;
+        const validFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{1,3})?$/;
+        const interimFormat = /^([0-2]?[0-9]?:?[0-5]?[0-9]??:?[0-5]?[0-9]?(\.\d{0,3})?)?$/;
+
+        // Ensure that only valid characters are entered
+        if (!value.match(interimFormat)) {
+            event.target.value = value.substring(0, value.length - 1);
+        }
+
+        // Check validity of the time format
+        if (value.match(validFormat)) {
+            // Convert time strings to Date objects for easy comparison
+            const convertToTime = time => new Date(`1970-01-01T${time}Z`);
+            const currentStartTime = convertToTime(currentTimeInput.value);
+            const currentEndTime = convertToTime(endTimeInput.value);
+            const maxEndTime = convertToTime(formatTime(endTime));
+
+            if (event.target === currentTimeInput && (currentStartTime >= currentEndTime || currentStartTime > maxEndTime)) {
+                event.target.style.borderColor = 'red';  // Invalid input
+                // message for user
+                displayMessage(document.getElementById("message-about-status"), "Invalid input, start time cannot be more than end time");
+            } else if (event.target === endTimeInput && (currentEndTime <= currentStartTime || currentEndTime > maxEndTime)) {
+                event.target.style.borderColor = 'red';  // Invalid input
+                displayMessage(document.getElementById("message-about-status"), "Invalid input, end time cannot be less than start time and more than media duration");
+            } else {
+                event.target.style.borderColor = '';  // Valid input
+                displayMessage(document.getElementById("message-about-status"), "Correct format");
+            }
+        } else {
+            event.target.style.borderColor = 'red';  // Change border color to indicate invalid input
+            displayMessage(document.getElementById("message-about-status"), "Invalid input, the correct format is 00:00:00.000");
+        }
+    }
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = "introjs-button";
+    removeBtn.innerHTML = `<i class="fa-solid fa-eraser"></i>`;
+    newDiv.appendChild(removeBtn);
+    newDiv.className = "mask-timeline";
     maskTimelines.appendChild(newDiv);
+
+    removeBtn.addEventListener('click', function() {
+        // Get the grandparent of the button
+        const grandparent = this.parentNode;
+        // Remove the grandparent from the DOM
+        grandparent.remove();
+    });
 
     // Remove the original canvas
     originalCanvas.remove();
@@ -343,4 +463,78 @@ async function maskToList() {
     }
     // Clear the canvas
     ctx.clearRect(0, 0, canvasGeneralElement.width, canvasGeneralElement.height);
+}
+
+function triggerRetouchAi(elem) {
+    fetch("/synthesize_process/")
+        .then(response => response.json())
+        .then(data => processRetouchAi(data, elem))
+        .catch(error => {
+            console.error("Error fetching the synthesis process status:", error);
+        });
+}
+
+async function processRetouchAi(data, element) {
+    const messageAboutStatus = element.querySelector("#message-about-status")
+    if (data.status_code !== 200) {
+        displayMessage(messageAboutStatus, "Invalid input, end time can not be less than start time and more than media duration");
+        return;
+    }
+
+    const synthesisTable = document.getElementById("table_body_deepfake_result");
+    const maskTimelinesList = element.querySelectorAll(".mask-timeline");
+    const dataDict = {};
+
+    maskTimelinesList.forEach(timeline => {
+        // Extracting data from canvas
+        const canvas = timeline.querySelector("canvas");
+        const objid = canvas.getAttribute("data-objid");
+        const pointList = JSON.parse(canvas.getAttribute("data-pointlist"));
+
+        // Extracting start and end times from inputs
+        const startTimeStr = timeline.querySelector(".mask-timeline-start-time").value;
+        const endTimeStr = timeline.querySelector(".mask-timeline-end-time").value;
+
+        // Convert time from format "00:00:00" to float (seconds)
+        const startTime = convertTimeToSeconds(startTimeStr);
+        const endTime = convertTimeToSeconds(endTimeStr);
+
+        // Populate the dataDict
+        dataDict[objid] = {
+            "start_time": startTime,
+            "end_time": endTime,
+            "point_list": pointList
+        };
+    });
+
+    const preprocessingRetouch = element.querySelector("#retouch-object").checked
+    let retouchModel = "retouch_face"
+    if (preprocessingRetouch) {
+        retouchModel = "retouch_object"
+    }
+
+    const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media"));
+
+    const retouchAiParameters = {
+        source: targetDetails.mediaName,
+        source_start: targetDetails.mediaStart,
+        source_end: targetDetails.mediaEnd,
+        source_type: targetDetails.mediaType,
+        model_type: retouchModel,
+        masks: dataDict
+    };
+
+    console.log(retouchAiParameters);
+
+    synthesisTable.innerHTML = "";
+    fetch("/synthesize_retouch/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(retouchAiParameters)
+    });
+
+    // This open display result for deepfake videos
+    const tutorialButton = document.querySelector("#button-show-voice-window");
+    tutorialButton.click();
+    closeTutorial();
 }

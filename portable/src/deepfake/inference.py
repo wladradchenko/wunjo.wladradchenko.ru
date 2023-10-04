@@ -33,7 +33,7 @@ from src.utils.video2fake import GenerateFakeVideo2Lip
 from src.utils.faceswap import FaceSwapDeepfake
 """Face Swap"""
 """Retouch"""
-from src.retouch import InpaintModel, process_retouch, read_retouch_mask, convert_cv2_to_pil
+from src.retouch import InpaintModel, process_retouch, pil_to_cv2, convert_cv2_to_pil
 """Retouch"""
 """Segmentation"""
 from src.utils.segment import SegmentAnything
@@ -561,110 +561,168 @@ class FaceSwap:
 class Retouch:
     """Retouch image or video"""
     @staticmethod
-    def main_retouch(output, source, mask, model_type):
+    def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_face", predictor=None,
+                     session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img"):
+        # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
+        # get device
+        use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+        if torch.cuda.is_available() and not use_cpu:
+            print("Processing will run on GPU")
+            device = "cuda"
+        else:
+            print("Processing will run on CPU")
+            device = "cpu"
+        # get models path
         checkpoint_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
         os.environ['TORCH_HOME'] = checkpoint_folder
         if not os.path.exists(checkpoint_folder):
             os.makedirs(checkpoint_folder)
 
-        if model_type == "retouch_object":
+        if retouch_model_type == "retouch_object":
             model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")
-        elif model_type == "retouch_face":
+        elif retouch_model_type == "retouch_face":
             model_retouch_path = os.path.join(checkpoint_folder, "retouch_face.pth")
         else:
             raise "Not correct retouch model type!"
 
         if not os.path.exists(model_retouch_path):
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{model_type}.pth"]
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_type}.pth"]
             download_model(model_retouch_path, link_model_retouch)
         else:
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{model_type}.pth"]
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_type}.pth"]
             check_download_size(model_retouch_path, link_model_retouch)
 
+        if device == "cuda":
+            vit_model_type = "vit_h"
+
+            sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
+            if not os.path.exists(sam_vit_checkpoint):
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
+            else:
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
+
+            onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
+            if not os.path.exists(onnx_vit_checkpoint):
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+            else:
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+        else:
+            vit_model_type = "vit_b"
+
+            sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
+            if not os.path.exists(sam_vit_checkpoint):
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
+            else:
+                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
+
+            onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
+            if not os.path.exists(onnx_vit_checkpoint):
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+            else:
+                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+
+        # segment
+        segmentation = SegmentAnything()
+        if session is None:
+            session = segmentation.init_onnx(onnx_vit_checkpoint, device)
+        if predictor is None:
+            predictor = segmentation.init_vit(sam_vit_checkpoint, vit_model_type, device)
+
+        # retouch
         model_retouch = InpaintModel(model_path=model_retouch_path)
 
-        source_type = check_media_type(source)
+        # cut video
+        if source_type == "video":
+            source = cut_start_video(source, source_start, source_end)
 
-        if source_type == "static":
-            #read mask
-            mask_name = mask[0].get("mediaNameMask")
-            maks_path = os.path.join(TMP_FOLDER, mask_name)
-            mask = read_retouch_mask(maks_path)
-            # read frame
-            frame = read_image_cv2(source)
-            frame_pil = convert_cv2_to_pil(frame)
-            # Get size of frame_pil
-            frame_size = frame_pil.size
-            # Resize mask to frame_size
-            mask_resized = mask.resize(frame_size)
-            # Use retouch
-            save_frame = process_retouch(img=frame_pil, mask=mask_resized, model=model_retouch)
-            save_name = "retouch_image.png"
-            save_frame.save(os.path.join(save_dir, save_name))
-        elif source_type == "animated":
-            # work with frame
-            from tqdm import tqdm
+        remove_keys = []
+        for key in masks.keys():
+            if masks[key].get("start_time") < source_start:
+                remove_keys += [key]
+                continue
+            if masks[key].get("start_time") > source_end:
+                remove_keys += [key]
+                continue
+            if masks[key].get("end_time") > source_end:
+                masks[key]["end_time"] = source_end
+        else:
+            for remove_key in remove_keys:
+                masks.pop(remove_key)
+
+        source_media_type = check_media_type(source)
+        if source_media_type == "static":
+            fps = 0
+            frames = [read_image_cv2(source)]
+        elif source_media_type == "animated":
             frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
-            first_frame_pil = convert_cv2_to_pil(frames[0])
-            # Get size of frame_pil
-            frame_size = first_frame_pil.size
+        else:
+            raise "Source is not detected as image or video"
 
-            # Create a list to hold all masks with their details
-            mask_details = []
+        # get segmentation frames as maks
+        from tqdm import tqdm
+        print(masks)
 
-            for m in mask:
-                mask_name = m.get("mediaNameMask")
-                mask_set_start = m.get("startFrameMask")
-                mask_set_start_frame = float(mask_set_start) * fps if mask_set_start else 0
-                mask_set_end = m.get("endFrameMask")
-                mask_set_end_frame = float(mask_set_end) * fps if mask_set_end else 0
-                maks_path = os.path.join(TMP_FOLDER, mask_name)
-                mask_img = read_retouch_mask(maks_path)
-                # Resize mask to frame_size
-                mask_resized = mask_img.resize(frame_size)
-
-                # Store mask details in a dictionary and append to our list
-                mask_detail = {
-                    "start_frame": mask_set_start_frame,
-                    "end_frame": mask_set_end_frame,
-                    "mask": mask_resized
-                }
-                mask_details.append(mask_detail)
-
-            progress_bar = tqdm(total=len(frames), unit='it', unit_scale=True)
-            for i, frame in enumerate(frames):
-                frame_pil = convert_cv2_to_pil(frame)
-
-                # Check if current frame is within any mask's start and end frames
-                mask_to_apply = None
-                for detail in mask_details:
-                    if detail["start_frame"] <= i <= detail["end_frame"]:
-                        mask_to_apply = detail["mask"]
+        for key in masks.keys():
+            print(f"Processing ID: {key}")
+            segmentation.load_models(predictor=predictor, session=session)
+            start_time = masks[key]["start_time"] - source_start
+            end_time = masks[key]["end_time"]
+            start_frame = int(start_time * fps)
+            end_frame = int(end_time * fps)
+            filter_frames = frames[start_frame:end_frame]
+            # set progress bar
+            progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
+            print("len_filter_frames ", len(filter_frames), len(frames))
+            segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frames[0])
+            # update first frame
+            segment_mask_pil = segmentation.convert_colored_mask_cv2(segment_mask)
+            frame_pil = convert_cv2_to_pil(filter_frames[0])
+            # retouch_frame
+            retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
+            print(retouch_frame)
+            # update frame
+            frames[start_frame] = pil_to_cv2(retouch_frame)
+            # update progress bar
+            progress_bar.update(1)
+            if len(filter_frames) > 1:
+                for i, frame in enumerate(filter_frames[1:]):
+                    segment_mask = segmentation.draw_mask_frames(frame=frame)
+                    if segment_mask is None:
+                        print(key, "Encountered None mask. Breaking the loop.")
                         break
-
-                if mask_to_apply:
-                    # If a mask is applicable, process and save
-                    save_frame = process_retouch(img=frame_pil, mask=mask_to_apply, model=model_retouch)
-                else:
-                    # Otherwise, just use the original frame
-                    save_frame = frame_pil
-
-                save_name = "retouch_image_%s.png" % i
-                save_frame.save(os.path.join(save_dir, save_name))
-                progress_bar.update(1)
-
+                    segment_mask_pil = segmentation.convert_colored_mask_cv2(segment_mask)
+                    frame_pil = convert_cv2_to_pil(frame)
+                    # retouch_frame
+                    retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
+                    # update frame
+                    frames[start_frame + i + 1] = pil_to_cv2(retouch_frame)
+                    progress_bar.update(1)
+            # close progress bar for key
             progress_bar.close()
+
+        for i, frame in enumerate(frames):
+            save_name = "retouch_image_%s.png" % i
+            save_image_cv2(os.path.join(save_dir, save_name), frame)
+
+        if source_media_type == "animated":
             # get saved file as merge frames to video
             video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
             # get audio from video target
             audio_file_name = extract_audio_from_video(source, save_dir)
             # combine audio and video
-            save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, str(audio_file_name)), save_dir)
+            save_name = save_video_with_audio(os.path.join(save_dir, video_name),  os.path.join(save_dir, str(audio_file_name)), save_dir)
 
-        else:
-            raise "Source is not detected as image or video"
+        return save_name
 
         for f in os.listdir(save_dir):
             if save_name == f:

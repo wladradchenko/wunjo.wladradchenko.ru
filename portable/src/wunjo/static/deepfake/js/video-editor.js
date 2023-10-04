@@ -62,7 +62,7 @@ function initializeVideoEditor(button, audioURL = undefined, audioName = undefin
     introEditorVideo.setOptions({
         steps: [
           {
-            title: "Панель обработки видео",
+            title: "Панель обработки видео и изображений",
             position: "right",
             intro: `
                     <div style="width: 60vw; max-width: 70vw; height: 70vh; max-height: 80vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
