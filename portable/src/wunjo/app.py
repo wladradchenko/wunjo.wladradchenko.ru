@@ -384,19 +384,17 @@ def synthesize_retouch():
     session = segment_models.get("session")
     app.config['SEGMENT_ANYTHING_MODEL'] = {}
 
-    # try:
-    retouch_result = Retouch.main_retouch(
-        output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
-        masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
-        predictor=predictor, session=session
-    )
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    return {"status": 200}
-    # except Exception as err:
-    #     app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
-    #     print(f"Error ... {err}")
-    #     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    #     return {"status": 400}
+    try:
+        retouch_result = Retouch.main_retouch(
+            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
+            masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
+            predictor=predictor, session=session
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
 
     retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)

@@ -670,7 +670,6 @@ class Retouch:
 
         # get segmentation frames as maks
         from tqdm import tqdm
-        print(masks)
 
         for key in masks.keys():
             print(f"Processing ID: {key}")
@@ -682,14 +681,12 @@ class Retouch:
             filter_frames = frames[start_frame:end_frame]
             # set progress bar
             progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
-            print("len_filter_frames ", len(filter_frames), len(frames))
             segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frames[0])
             # update first frame
-            segment_mask_pil = segmentation.convert_colored_mask_cv2(segment_mask)
+            segment_mask_pil = segmentation.convert_colored_mask_thickness_cv2(segment_mask)
             frame_pil = convert_cv2_to_pil(filter_frames[0])
             # retouch_frame
             retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
-            print(retouch_frame)
             # update frame
             frames[start_frame] = pil_to_cv2(retouch_frame)
             # update progress bar
@@ -700,7 +697,7 @@ class Retouch:
                     if segment_mask is None:
                         print(key, "Encountered None mask. Breaking the loop.")
                         break
-                    segment_mask_pil = segmentation.convert_colored_mask_cv2(segment_mask)
+                    segment_mask_pil = segmentation.convert_colored_mask_thickness_cv2(segment_mask)
                     frame_pil = convert_cv2_to_pil(frame)
                     # retouch_frame
                     retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
@@ -721,8 +718,6 @@ class Retouch:
             audio_file_name = extract_audio_from_video(source, save_dir)
             # combine audio and video
             save_name = save_video_with_audio(os.path.join(save_dir, video_name),  os.path.join(save_dir, str(audio_file_name)), save_dir)
-
-        return save_name
 
         for f in os.listdir(save_dir):
             if save_name == f:

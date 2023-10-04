@@ -231,32 +231,6 @@ class SegmentAnything:
         self.draw_obj = {"point_list": point_list, "cX": cX, "cY": cY, "area": area, "box": box}
         return mask
 
-    # @staticmethod
-    # def convert_colored_mask_cv2(mask):
-    #     # Reduce the dimensions if necessary
-    #     if mask.ndim == 4:
-    #         mask = mask[0, 0]
-    #     # Convert boolean values to 0 or 255
-    #     mask_to_save = (mask * 255).astype(np.uint8)
-    #     # Convert grayscale to BGR
-    #     colored_mask = cv2.cvtColor(mask_to_save, cv2.COLOR_GRAY2BGR)
-    #     # Replace white with random color
-    #     random_color = (0, 0, 255)
-    #     colored_mask[mask_to_save == 255] = random_color
-    #     # Create alpha channel: 0 for black, 255 for colored regions
-    #     alpha_channel = np.ones(mask_to_save.shape, dtype=mask_to_save.dtype) * 255
-    #     alpha_channel[mask_to_save == 0] = 0
-    #     # Merge RGB and alpha into a 4-channel image (BGRA)
-    #     bgra_mask = cv2.merge((colored_mask[:, :, 0], colored_mask[:, :, 1], colored_mask[:, :, 2], alpha_channel))
-    #     # Convert to PIL
-    #     # Convert the BGRA mask to RGBA
-    #     rgba_mask = bgra_mask[..., [2, 1, 0, 3]]
-    #     # Convert the RGBA mask to a Pillow image
-    #     pil_image = Image.fromarray(rgba_mask, 'RGBA')
-    #     # Or grayscale
-    #     grayscale_image = pil_image.convert("L")
-    #     return grayscale_image
-
     @staticmethod
     def convert_colored_mask_cv2(mask):
         # Reduce the dimensions if necessary
@@ -264,9 +238,35 @@ class SegmentAnything:
             mask = mask[0, 0]
         # Convert boolean values to 0 or 255
         mask_to_save = (mask * 255).astype(np.uint8)
+        # Convert grayscale to BGR
+        colored_mask = cv2.cvtColor(mask_to_save, cv2.COLOR_GRAY2BGR)
+        # Replace white with random color
+        random_color = (0, 0, 255)
+        colored_mask[mask_to_save == 255] = random_color
+        # Create alpha channel: 0 for black, 255 for colored regions
+        alpha_channel = np.ones(mask_to_save.shape, dtype=mask_to_save.dtype) * 255
+        alpha_channel[mask_to_save == 0] = 0
+        # Merge RGB and alpha into a 4-channel image (BGRA)
+        bgra_mask = cv2.merge((colored_mask[:, :, 0], colored_mask[:, :, 1], colored_mask[:, :, 2], alpha_channel))
+        # Convert to PIL
+        # Convert the BGRA mask to RGBA
+        rgba_mask = bgra_mask[..., [2, 1, 0, 3]]
+        # Convert the RGBA mask to a Pillow image
+        pil_image = Image.fromarray(rgba_mask, 'RGBA')
+        # Or grayscale
+        grayscale_image = pil_image.convert("L")
+        return grayscale_image
+
+    @staticmethod
+    def convert_colored_mask_thickness_cv2(mask):
+        # Reduce the dimensions if necessary
+        if mask.ndim == 4:
+            mask = mask[0, 0]
+        # Convert boolean values to 0 or 255
+        mask_to_save = (mask * 255).astype(np.uint8)
 
         # Dilation to increase line thickness
-        kernel_size = 3  # Thickness line weight
+        kernel_size = 10  # Thickness line weight
         kernel = np.ones((kernel_size, kernel_size), np.uint8)
         mask_to_save = cv2.dilate(mask_to_save, kernel, iterations=1)
 
