@@ -383,6 +383,6 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * Face Enhancement - https://github.com/TencentARC/GFPGAN
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
 * Real-Time Voice Cloning - https://github.com/CorentinJ/Real-Time-Voice-Cloning
-* Segment Anything - https://github.com/facebookresearch/segment-anything/tree/main
+* Segment Anything - https://github.com/facebookresearch/segment-anything
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>
