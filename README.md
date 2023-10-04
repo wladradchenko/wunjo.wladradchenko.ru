@@ -313,10 +313,11 @@ Update 1.5.5
 - [x] Indicate user how much space on drive for tmp and result folders
 
 Update 1.6.0
-- [ ] Add create deepfake video by text prompts
+- [x] Improved and automated remove object from image or video
+- [x] Improved edit video element
+- [ ] Create Video2Video by text prompt tool
 - [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
 - [ ] Music generation
-- [ ] People position control on image
 
 <!-- VIDEO -->
 ## Video
