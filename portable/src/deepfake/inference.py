@@ -840,9 +840,9 @@ class Retouch:
                 filter_frames = frames[start_frame:end_frame]
                 segment_mask_pil = [convert_colored_mask_thickness_cv2(mask) for mask in segment_mask[key]]
                 # set progress bar
-                progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
-                for i, frame in enumerate(filter_frames):
-                    frame_pil = convert_cv2_to_pil(frame)
+                progress_bar = tqdm(total=len(segment_mask_pil), unit='it', unit_scale=True)
+                for i in range(len(segment_mask_pil)):
+                    frame_pil = convert_cv2_to_pil(filter_frames[i])
                     # retouch_frame
                     retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil[i], model=model_retouch)
                     # update frame

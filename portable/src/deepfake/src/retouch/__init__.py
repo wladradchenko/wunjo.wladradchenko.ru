@@ -102,6 +102,16 @@ class VideoRemoveObjectProcessor:
                 mask_img = mask_img[0, 0]
             # Convert to numpy array
             mask_img = np.array(mask_img)
+
+            # Dilation to increase line thickness
+            # Convert boolean mask to uint8
+            mask_img_uint8 = (mask_img * 255).astype(np.uint8)
+            kernel_size = 10  # Thickness line weight
+            kernel = np.ones((kernel_size, kernel_size), np.uint8)
+            dilated_mask_uint8 = cv2.dilate(mask_img_uint8, kernel, iterations=1)
+            # Convert dilated uint8 mask back to boolean
+            mask_img = dilated_mask_uint8.astype(bool)
+
             # Resize the mask_img using resize_frames method
             resized_masks, _, _ = VideoRemoveObjectProcessor.resize_frames([Image.fromarray(mask_img.astype(np.uint8))], size=(width, height))
             mask_img = np.array(resized_masks[0])
@@ -429,6 +439,15 @@ def upscale_retouch_frame(mask, frame, original_frame, width, height):
     # Reduce the dimensions if necessary
     if mask.ndim == 4:
         mask = mask[0, 0]
+
+    # Dilation to increase line thickness
+    # Convert boolean mask to uint8
+    mask_img_uint8 = (mask * 255).astype(np.uint8)
+    kernel_size = 10  # Thickness line weight
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    dilated_mask_uint8 = cv2.dilate(mask_img_uint8, kernel, iterations=1)
+    # Convert dilated uint8 mask back to boolean
+    mask = dilated_mask_uint8.astype(bool)
 
     mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
     frame_rgb = cv2.resize(frame_rgb, (width, height), interpolation=cv2.INTER_LINEAR)

@@ -242,7 +242,6 @@ class SegmentAnything:
         colored_mask = cv2.cvtColor(mask_to_save, cv2.COLOR_GRAY2BGR)
         # Replace white with random color
         random_color = (0, 0, 255)
-        print(mask_color)
         colored_mask[mask_to_save == 255] = random_color
         # Create alpha channel: 0 for black, 255 for colored regions
         alpha_channel = np.ones(mask_to_save.shape, dtype=mask_to_save.dtype) * 255
