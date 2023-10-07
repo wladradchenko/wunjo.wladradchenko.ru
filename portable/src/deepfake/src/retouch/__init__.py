@@ -106,7 +106,7 @@ class VideoRemoveObjectProcessor:
             # Dilation to increase line thickness
             # Convert boolean mask to uint8
             mask_img_uint8 = (mask_img * 255).astype(np.uint8)
-            kernel_size = 5  # Thickness line weight
+            kernel_size = 10  # Thickness line weight
             kernel = np.ones((kernel_size, kernel_size), np.uint8)
             dilated_mask_uint8 = cv2.dilate(mask_img_uint8, kernel, iterations=1)
             # Convert dilated uint8 mask back to boolean
