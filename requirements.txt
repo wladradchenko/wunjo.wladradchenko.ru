@@ -32,3 +32,4 @@ realesrgan
 onnxruntime
 insightface
 pypinyin
+einops

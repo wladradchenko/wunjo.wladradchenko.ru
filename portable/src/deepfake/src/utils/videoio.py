@@ -43,7 +43,7 @@ def save_video_from_frames(frame_names, save_path, fps):
     frame_path = os.path.join(save_path, frame_names)
     file_name = str(uuid.uuid4())+'.mp4'
     save_file = os.path.join(save_path, file_name)
-    cmd = f"ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -pix_fmt yuv420p {save_file}"
+    cmd = f'ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -pix_fmt yuv420p {save_file}'
     os.system(cmd)
     return file_name
 
@@ -167,7 +167,7 @@ def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
                 break
 
             if resize_factor > 1:
-                frame = cv2.resize(frame, (frame.shape[1] // resize_factor, frame.shape[0] // resize_factor))
+                frame = cv2.resize(frame, (int(frame.shape[1] // resize_factor), int(frame.shape[0] // resize_factor)))
 
             for _ in range(rotate):
                 frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)

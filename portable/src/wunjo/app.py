@@ -377,24 +377,25 @@ def synthesize_retouch():
     source_end = float(request_list.get("source_end", 0))
     source_type = request_list.get("source_type", "img")
     masks = request_list.get("masks", {})
-    model_type = request_list.get("model_type", "retouch_face")
+    model_type = request_list.get("model_type", "retouch_object")
+    mask_color = request_list.get("mask_color", None)
 
     segment_models = app.config['SEGMENT_ANYTHING_MODEL']
     predictor = segment_models.get("predictor")
     session = segment_models.get("session")
     app.config['SEGMENT_ANYTHING_MODEL'] = {}
 
-    try:
-        retouch_result = Retouch.main_retouch(
-            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
-            masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
-            predictor=predictor, session=session
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+    # try:
+    retouch_result = Retouch.main_retouch(
+        output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
+        masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
+        predictor=predictor, session=session, mask_color=mask_color
+    )
+    # except Exception as err:
+    #     app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+    #     print(f"Error ... {err}")
+    #     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    #     return {"status": 400}
 
     retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)

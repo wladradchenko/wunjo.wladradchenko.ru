@@ -33,3 +33,4 @@ onnxruntime
 onnxruntime-gpu
 insightface
 pypinyin
+einops

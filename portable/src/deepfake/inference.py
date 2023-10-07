@@ -1,8 +1,11 @@
 import os
+import cv2
 import sys
 import torch
 import imageio
 import subprocess
+import numpy as np
+from tqdm import tqdm
 from time import strftime
 from argparse import Namespace
 
@@ -33,7 +36,7 @@ from src.utils.video2fake import GenerateFakeVideo2Lip
 from src.utils.faceswap import FaceSwapDeepfake
 """Face Swap"""
 """Retouch"""
-from src.retouch import InpaintModel, process_retouch, pil_to_cv2, convert_cv2_to_pil
+from src.retouch import InpaintModel, process_retouch, pil_to_cv2, convert_cv2_to_pil, VideoRemoveObjectProcessor, convert_colored_mask_thickness_cv2, upscale_retouch_frame
 """Retouch"""
 """Segmentation"""
 from src.utils.segment import SegmentAnything
@@ -560,9 +563,11 @@ class FaceSwap:
 
 class Retouch:
     """Retouch image or video"""
+
     @staticmethod
-    def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_face", predictor=None,
-                     session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img"):
+    def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_object", predictor=None,
+                     session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img",
+                     mask_color: str = None, upscale: bool = True):
         # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -571,29 +576,61 @@ class Retouch:
         if torch.cuda.is_available() and not use_cpu:
             print("Processing will run on GPU")
             device = "cuda"
+            use_half = True
         else:
             print("Processing will run on CPU")
             device = "cpu"
+            use_half = False
         # get models path
         checkpoint_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
         os.environ['TORCH_HOME'] = checkpoint_folder
         if not os.path.exists(checkpoint_folder):
             os.makedirs(checkpoint_folder)
 
-        if retouch_model_type == "retouch_object":
-            model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")
-        elif retouch_model_type == "retouch_face":
+        # load model improved remove object
+        model_pro_painter_path = os.path.join(checkpoint_folder, "ProPainter.pth")
+
+        if not os.path.exists(model_pro_painter_path):
+            link_pro_painter = file_deepfake_config["checkpoints"]["ProPainter.pth"]
+            download_model(model_pro_painter_path, link_pro_painter)
+        else:
+            link_pro_painter = file_deepfake_config["checkpoints"]["ProPainter.pth"]
+            check_download_size(model_pro_painter_path, link_pro_painter)
+
+        model_raft_things_path = os.path.join(checkpoint_folder, "raft-things.pth")
+
+        if not os.path.exists(model_raft_things_path):
+            link_raft_things = file_deepfake_config["checkpoints"]["raft-things.pth"]
+            download_model(model_raft_things_path, link_raft_things)
+        else:
+            link_raft_things = file_deepfake_config["checkpoints"]["raft-things.pth"]
+            check_download_size(model_raft_things_path, link_raft_things)
+
+        model_recurrent_flow_path = os.path.join(checkpoint_folder, "recurrent_flow_completion.pth")
+
+        if not os.path.exists(model_recurrent_flow_path):
+            link_recurrent_flow = file_deepfake_config["checkpoints"]["recurrent_flow_completion.pth"]
+            download_model(model_recurrent_flow_path, link_recurrent_flow)
+        else:
+            link_recurrent_flow = file_deepfake_config["checkpoints"]["recurrent_flow_completion.pth"]
+            check_download_size(model_recurrent_flow_path, link_recurrent_flow)
+
+        # load model retouch
+        if retouch_model_type == "retouch_face":
+            retouch_model_name = "retouch_face"
             model_retouch_path = os.path.join(checkpoint_folder, "retouch_face.pth")
         else:
-            raise "Not correct retouch model type!"
+            retouch_model_name = "retouch_object"
+            model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")
 
         if not os.path.exists(model_retouch_path):
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_type}.pth"]
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_name}.pth"]
             download_model(model_retouch_path, link_model_retouch)
         else:
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_type}.pth"]
+            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_name}.pth"]
             check_download_size(model_retouch_path, link_model_retouch)
 
+        # load model segmentation TODO
         if device == "cuda":
             vit_model_type = "vit_h"
 
@@ -638,9 +675,6 @@ class Retouch:
         if predictor is None:
             predictor = segmentation.init_vit(sam_vit_checkpoint, vit_model_type, device)
 
-        # retouch
-        model_retouch = InpaintModel(model_path=model_retouch_path)
-
         # cut video
         if source_type == "video":
             source = cut_start_video(source, source_start, source_end)
@@ -668,44 +702,155 @@ class Retouch:
         else:
             raise "Source is not detected as image or video"
 
+        orig_height, orig_width, _ = frames[0].shape
+        orig_frames = frames.copy()
+        frame_batch_size = 50  # for improve remove object to limit VRAM, for CPU slowly, but people have a lot RAM
+
+        if source_media_type == "animated" and retouch_model_type == "improved_retouch_object" and device == "cuda":
+            # resize only for VRAM
+            gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
+            # table of gpu memory
+            gpu_table = {19: 1280, 7: 720, 6: 640, 2: 320}
+            # get user resize for gpu
+            max_size = max(val for key, val in gpu_table.items() if key <= gpu_vram)
+            print(f"Limit VRAM is {gpu_vram} Gb. Video will resize before {max_size} for max size")
+            # Resize frames while maintaining aspect ratio
+            resized_frames = []
+            for frame in frames:
+                h, w, _ = frame.shape
+                if max(h, w) > max_size:
+                    if h > w:
+                        new_h = max_size
+                        new_w = int(w * (max_size / h))
+                    else:
+                        new_w = max_size
+                        new_h = int(h * (max_size / w))
+                    resized_frame = cv2.resize(frame, (new_w, new_h))
+                    resized_frames.append(resized_frame)
+                else:
+                    resized_frames.append(frame)
+            frames = resized_frames
+
+
         # get segmentation frames as maks
-        from tqdm import tqdm
+        segmentation.load_models(predictor=predictor, session=session)
+        segment_mask = {}
 
         for key in masks.keys():
             print(f"Processing ID: {key}")
-            segmentation.load_models(predictor=predictor, session=session)
             start_time = masks[key]["start_time"] - source_start
             end_time = masks[key]["end_time"]
             start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps)
+            end_frame = int(end_time * fps) + 1
+            # list of frames of list of one frame
             filter_frames = frames[start_frame:end_frame]
             # set progress bar
             progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
-            segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frames[0])
-            # update first frame
-            segment_mask_pil = segmentation.convert_colored_mask_thickness_cv2(segment_mask)
-            frame_pil = convert_cv2_to_pil(filter_frames[0])
-            # retouch_frame
-            retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
-            # update frame
-            frames[start_frame] = pil_to_cv2(retouch_frame)
+            segment_mask[key] = [segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frames[0])]
             # update progress bar
             progress_bar.update(1)
             if len(filter_frames) > 1:
                 for i, frame in enumerate(filter_frames[1:]):
-                    segment_mask = segmentation.draw_mask_frames(frame=frame)
-                    if segment_mask is None:
+                    segment_mask[key] += [segmentation.draw_mask_frames(frame=frame)]
+                    if segment_mask[key][-1] is None:
+                        segment_mask[key] = segment_mask[key][:-1]
                         print(key, "Encountered None mask. Breaking the loop.")
                         break
-                    segment_mask_pil = segmentation.convert_colored_mask_thickness_cv2(segment_mask)
-                    frame_pil = convert_cv2_to_pil(frame)
-                    # retouch_frame
-                    retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
-                    # update frame
-                    frames[start_frame + i + 1] = pil_to_cv2(retouch_frame)
                     progress_bar.update(1)
             # close progress bar for key
             progress_bar.close()
+
+        if mask_color:
+            print("Save mask")
+            color = segmentation.hex_to_rgba(mask_color)
+            for key in masks.keys():
+                os.makedirs(os.path.join(save_dir, key), exist_ok=True)
+                start_time = masks[key]["start_time"] - source_start
+                end_time = masks[key]["end_time"]
+                start_frame = int(start_time * fps)
+                end_frame = int(end_time * fps) + 1
+                # list of frames of list of one frame
+                filter_frames = orig_frames[start_frame:end_frame]
+                filter_segment_mask = segment_mask[key]
+                for i, mask in enumerate(filter_segment_mask):
+                    saving_mask = segmentation.apply_mask_on_frame(filter_segment_mask[i], filter_frames[i], color, orig_width, orig_height)
+                    saving_mask.save(os.path.join(save_dir, key, f"{i}.png"))
+
+            print("Mask save is finished. Open folder")
+            if os.path.exists(save_dir):
+                if sys.platform == 'win32':
+                    # Open folder for Windows
+                    subprocess.Popen(r'explorer /select,"{}"'.format(save_dir))
+                elif sys.platform == 'darwin':
+                    # Open folder for MacOS
+                    subprocess.Popen(['open', save_dir])
+                elif sys.platform == 'linux':
+                    # Open folder for Linux
+                    subprocess.Popen(['xdg-open', save_dir])
+
+        del segmentation, predictor, session
+
+        if retouch_model_type is None:
+            return save_dir
+
+        if source_media_type == "animated" and retouch_model_type == "improved_retouch_object":
+            # raft
+            retouch_processor = VideoRemoveObjectProcessor(device, model_raft_things_path, model_recurrent_flow_path, model_pro_painter_path)
+
+            for key in masks.keys():
+                start_time = masks[key]["start_time"] - source_start
+                start_frame = int(start_time * fps)
+                end_frame = start_frame + len(segment_mask[key])
+                # transfer to pil list of frames of list of one frame
+                filter_frames = [retouch_processor.transfer_to_pil(f) for f in frames[start_frame:end_frame]]
+                filter_frames, size, out_size = retouch_processor.resize_frames(filter_frames)
+                width, height = size
+                # processing video with batch size because of limit VRAM
+                if len(segment_mask[key]) < 3:
+                    continue
+                comp_frames_bgr = []
+                for i in range(0, len(filter_frames), frame_batch_size):
+                    if len(filter_frames) - i < 3:  # not less than 3 frames for batch
+                        continue
+                    flow_masks, masks_dilated = retouch_processor.read_retouch_mask(segment_mask[key][i: i + frame_batch_size], width, height)
+                    update_frames, flow_masks, masks_dilated, masked_frame_for_save, frames_inp = retouch_processor.process_frames_with_retouch_mask(frames=filter_frames[i: i + frame_batch_size], masks_dilated=masks_dilated, flow_masks=flow_masks, height=height, width=width)
+                    comp_frames = retouch_processor.process_video_with_mask(update_frames, masks_dilated, flow_masks, frames_inp, width, height, use_half=use_half)
+                    comp_frames = [cv2.resize(f, out_size) for f in comp_frames]
+                    comp_frames_bgr += [cv2.cvtColor(f, cv2.COLOR_RGB2BGR) for f in comp_frames]
+                # update list of frames of list of one frame
+                frames[start_frame:end_frame] = comp_frames_bgr
+                # upscale to restore size as this retouch with gpu require a lot VRAM
+                filter_segment_mask = segment_mask[key]
+                filter_orig_frame = orig_frames[start_frame:end_frame]
+                for j in range(len(filter_segment_mask)):
+                    orig_frames[start_frame + j] = upscale_retouch_frame(mask=filter_segment_mask[j], frame=comp_frames_bgr[j], original_frame=filter_orig_frame[j], width=orig_width, height=orig_height)
+
+            if upscale:
+                frames = orig_frames  # set restored frames
+        else:
+            # retouch
+            model_retouch = InpaintModel(model_path=model_retouch_path)
+
+            for key in masks.keys():
+                start_time = masks[key]["start_time"] - source_start
+                end_time = masks[key]["end_time"]
+                start_frame = int(start_time * fps)
+                end_frame = int(end_time * fps) + 1
+                # list of frames of list of one frame
+                filter_frames = frames[start_frame:end_frame]
+                segment_mask_pil = [convert_colored_mask_thickness_cv2(mask) for mask in segment_mask[key]]
+                # set progress bar
+                progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
+                for i, frame in enumerate(filter_frames):
+                    frame_pil = convert_cv2_to_pil(frame)
+                    # retouch_frame
+                    retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil[i], model=model_retouch)
+                    # update frame
+                    frames[start_frame + i] = pil_to_cv2(retouch_frame)
+                    progress_bar.update(1)
+                # close progress bar for key
+                progress_bar.close()
+
 
         for i, frame in enumerate(frames):
             save_name = "retouch_image_%s.png" % i
@@ -717,7 +862,7 @@ class Retouch:
             # get audio from video target
             audio_file_name = extract_audio_from_video(source, save_dir)
             # combine audio and video
-            save_name = save_video_with_audio(os.path.join(save_dir, video_name),  os.path.join(save_dir, str(audio_file_name)), save_dir)
+            save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, str(audio_file_name)), save_dir)
 
         for f in os.listdir(save_dir):
             if save_name == f:
@@ -726,7 +871,7 @@ class Retouch:
                 if os.path.isfile(os.path.join(save_dir, f)):
                     os.remove(os.path.join(save_dir, f))
                 elif os.path.isdir(os.path.join(save_dir, f)):
-                    shutil.rmtree(os.path.join(save_dir, f))
+                    pass
 
         for f in os.listdir(TMP_FOLDER):
             os.remove(os.path.join(TMP_FOLDER, f))

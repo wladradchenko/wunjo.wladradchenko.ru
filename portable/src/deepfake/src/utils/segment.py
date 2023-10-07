@@ -19,8 +19,8 @@ class SegmentAnything:
         self.session = None
         # draw frame
         self.draw_obj = {}
-        self.lower_limit_area = 0.8  # 20% lower
-        self.upper_limit_area = 1.2  # 20% upper
+        self.lower_limit_area = 0.75  # 25% lower
+        self.upper_limit_area = 1.25  # 25% upper
         self.generate_num_positive_points = 4
 
     def load_models(self, predictor, session):
@@ -232,7 +232,7 @@ class SegmentAnything:
         return mask
 
     @staticmethod
-    def convert_colored_mask_cv2(mask):
+    def convert_colored_mask_cv2(mask, mask_color):
         # Reduce the dimensions if necessary
         if mask.ndim == 4:
             mask = mask[0, 0]
@@ -242,6 +242,7 @@ class SegmentAnything:
         colored_mask = cv2.cvtColor(mask_to_save, cv2.COLOR_GRAY2BGR)
         # Replace white with random color
         random_color = (0, 0, 255)
+        print(mask_color)
         colored_mask[mask_to_save == 255] = random_color
         # Create alpha channel: 0 for black, 255 for colored regions
         alpha_channel = np.ones(mask_to_save.shape, dtype=mask_to_save.dtype) * 255
@@ -288,4 +289,50 @@ class SegmentAnything:
         # Or grayscale
         grayscale_image = pil_image.convert("L")
         return grayscale_image
+
+
+    @staticmethod
+    def apply_mask_on_frame(mask, frame, color, width=None, height=None):
+        # Convert frame from BGR to RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # Reduce the dimensions if necessary
+        if mask.ndim == 4:
+            mask = mask[0, 0]
+
+        if width is not None and height is not None:
+            mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
+
+        # Convert mask's False values to 0 and other values to 255
+        mask_to_save = (mask * 255).astype(np.uint8)
+        # Create an empty colored image with the same dimensions as the mask
+        colored_img = np.zeros((mask.shape[0], mask.shape[1], 4), dtype=np.uint8)
+        # If the color is transparent (we'll assume an RGBA tuple where A=0 means fully transparent)
+        if color[3] == 0:
+            colored_img[..., 3] = 0  # Set alpha channel to 0 for full transparency
+        else:
+            # Set the RGB channels to the specified color
+            colored_img[mask_to_save == 0, :3] = color[:3]
+            colored_img[mask_to_save == 0, 3] = 255  # Set alpha channel to 255 for non-transparent regions
+
+        # Convert frame to RGBA format
+        frame_rgba = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2RGBA)
+        # Where the mask is True, replace with the frame values
+        colored_img[mask_to_save == 255] = frame_rgba[mask_to_save == 255]
+        # Convert to PIL Image
+        pil_image = Image.fromarray(colored_img, 'RGBA')
+
+        return pil_image
+
+    @staticmethod
+    def hex_to_rgba(color):
+        # If the color is transparent, return (0, 0, 0, 0) for RGBA
+        if color == "transparent":
+            return (0, 0, 0, 0)
+
+        # Convert hex to RGB
+        rgb = [int(color[i:i + 2], 16) for i in (1, 3, 5)]
+
+        # Return as RGBA with full opacity
+        return tuple(rgb) + (255,)
 

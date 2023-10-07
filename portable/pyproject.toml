@@ -68,7 +68,8 @@ requires = [
     "torch-optimizer",
     "realesrgan",
     "insightface",
-    "pypinyin"
+    "pypinyin",
+    "einops"
 ]
 test_requires = [
 ]

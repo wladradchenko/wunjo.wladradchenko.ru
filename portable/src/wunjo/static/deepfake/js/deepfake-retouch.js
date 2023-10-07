@@ -1,5 +1,24 @@
 let retouchObjIdMask = 1;
 
+
+function toggleRadioOnOrNothing(radio, name) {
+    const wasChecked = radio.hasAttribute('data-checked');
+
+    // Reset all radio buttons in the group
+    document.querySelectorAll(`input[name=${name}]`).forEach(r => {
+        r.removeAttribute('data-checked');
+        r.checked = false;
+    });
+
+    // If the clicked radio was previously checked, leave it unchecked
+    // Otherwise, check it and mark it with the data attribute
+    if (!wasChecked) {
+        radio.setAttribute('data-checked', 'true');
+        radio.checked = true;
+    }
+}
+
+
 // RETOUCH //
 function initiateRetouchAiPop(button) {
   var introRetouch = introJs();
@@ -31,12 +50,30 @@ function initiateRetouchAiPop(button) {
                     <fieldset style="padding: 5pt;">
                         <legend>Выбор препроцессинга</legend>
                         <div>
-                          <input type="radio" id="retouch-object" name="preprocessing_retouch" value="resize">
-                          <label for="retouch-object">Исправить окружение</label>
+                            <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <label for="retouch-face">Исправление лица</label>
                         </div>
                         <div>
-                          <input type="radio" id="retouch-face" name="preprocessing_retouch" value="full" checked>
-                          <label for="retouch-face">Исправить лицо</label>
+                            <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <label for="retouch-object">Удаление объекта</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <label for="improved-retouch-object">Улучшенное удаление объекта</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="get-mask" value="#ffffff">
+                            <label for="get-mask">Save mask</label>
+                        </div>
+                        <div id="colorPanel" style="display: none;">
+                            <div id="maskColorDiv">
+                                <label for="maskColor">Choose a mask color:</label>
+                                <input style="border: none;" type="color" id="maskColor" name="maskColor" value="#ffffff">
+                            </div>
+                            <div>
+                                <input type="checkbox" id="get-mask-transparent">
+                                <label for="get-mask-transparent">Transparent</label>
+                            </div>
                         </div>
                     </fieldset>
                     <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
@@ -54,6 +91,35 @@ function initiateRetouchAiPop(button) {
     doneLabel: "Закрыть",
   });
   introRetouch.start();
+
+  document.getElementById("get-mask").addEventListener("change", function() {
+        if (this.checked) {
+            document.getElementById("colorPanel").style.display = "block";
+        } else {
+            document.getElementById("colorPanel").style.display = "none";
+        }
+    });
+
+    document.getElementById("maskColor").addEventListener("change", function() {
+        this.style.backgroundColor = "transparent";
+        document.getElementById("get-mask").value = this.value;
+    });
+
+    document.getElementById("get-mask-transparent").addEventListener("change", function() {
+        if (this.checked) {
+            document.getElementById("maskColor").disabled = true;
+            document.getElementById("maskColor").style.backgroundColor = "transparent";
+            document.getElementById("maskColor").style.borderColor = "none";
+            document.getElementById("maskColorDiv").style.display = "none";
+        } else {
+            document.getElementById("maskColor").disabled = false;
+            document.getElementById("maskColor").style.backgroundColor = "transparent";
+            document.getElementById("maskColor").style.borderColor = "none";
+            document.getElementById("maskColorDiv").style.display = "block";
+        }
+  });
+
+
 }
 
 async function handleRetouchAi(event, previewElement, parentElement) {
@@ -485,6 +551,11 @@ async function processRetouchAi(data, element) {
     const maskTimelinesList = element.querySelectorAll(".mask-timeline");
     const dataDict = {};
 
+    if (maskTimelinesList.length === 0) {
+        displayMessage(messageAboutStatus, "You need to add mask before run");
+        return null
+    }
+
     maskTimelinesList.forEach(timeline => {
         // Extracting data from canvas
         const canvas = timeline.querySelector("canvas");
@@ -507,10 +578,33 @@ async function processRetouchAi(data, element) {
         };
     });
 
-    const preprocessingRetouch = element.querySelector("#retouch-object").checked
-    let retouchModel = "retouch_face"
-    if (preprocessingRetouch) {
+    const preprocessingRetouchFace = element.querySelector("#retouch-face").getAttribute('data-checked');
+    const preprocessingRetouchObject = element.querySelector("#retouch-object").getAttribute('data-checked');
+    const preprocessingRetouchImprovedObject = element.querySelector("#improved-retouch-object").getAttribute('data-checked');
+    const preprocessingCheckboxSaveMask = element.querySelector("#get-mask");
+    const preprocessingCheckboxSaveMaskTransparent = element.querySelector("#get-mask-transparent").checked;
+
+    let maskColor = null;
+    if (preprocessingCheckboxSaveMask.checked) {
+        if (preprocessingCheckboxSaveMaskTransparent) {
+            maskColor = "transparent";
+        } else {
+            maskColor = preprocessingCheckboxSaveMask.value;
+        }
+    }
+
+    let retouchModel = null
+    if (preprocessingRetouchFace) {
+        retouchModel = "retouch_face"
+    } else if (preprocessingRetouchObject) {
         retouchModel = "retouch_object"
+    } else if (preprocessingRetouchImprovedObject) {
+        retouchModel = "improved_retouch_object"
+    }
+
+    if (!maskColor && !retouchModel) {
+        displayMessage(messageAboutStatus, "You need to choose preprocessing or save mask");
+        return null
     }
 
     const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media"));
@@ -521,10 +615,11 @@ async function processRetouchAi(data, element) {
         source_end: targetDetails.mediaEnd,
         source_type: targetDetails.mediaType,
         model_type: retouchModel,
+        mask_color: maskColor,
         masks: dataDict
     };
 
-    console.log(retouchAiParameters);
+    console.log(JSON.stringify(retouchAiParameters, null, 4));
 
     synthesisTable.innerHTML = "";
     fetch("/synthesize_retouch/", {
