@@ -567,7 +567,7 @@ class Retouch:
     @staticmethod
     def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_object", predictor=None,
                      session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img",
-                     mask_color: str = None, upscale: bool = True):
+                     mask_color: str = None, upscale: bool = True, blur: int = 1, segment_percentage: int = 25):
         # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -630,7 +630,7 @@ class Retouch:
             link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_name}.pth"]
             check_download_size(model_retouch_path, link_model_retouch)
 
-        # load model segmentation TODO
+        # load model segmentation
         if device == "cuda":
             vit_model_type = "vit_h"
 
@@ -669,7 +669,8 @@ class Retouch:
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
 
         # segment
-        segmentation = SegmentAnything()
+        segment_percentage = segment_percentage / 100
+        segmentation = SegmentAnything(segment_percentage)
         if session is None:
             session = segmentation.init_onnx(onnx_vit_checkpoint, device)
         if predictor is None:
@@ -812,7 +813,7 @@ class Retouch:
                 for i in range(0, len(filter_frames), frame_batch_size):
                     if len(filter_frames) - i < 3:  # not less than 3 frames for batch
                         continue
-                    flow_masks, masks_dilated = retouch_processor.read_retouch_mask(segment_mask[key][i: i + frame_batch_size], width, height)
+                    flow_masks, masks_dilated = retouch_processor.read_retouch_mask(segment_mask[key][i: i + frame_batch_size], width, height, kernel_size=blur)
                     update_frames, flow_masks, masks_dilated, masked_frame_for_save, frames_inp = retouch_processor.process_frames_with_retouch_mask(frames=filter_frames[i: i + frame_batch_size], masks_dilated=masks_dilated, flow_masks=flow_masks, height=height, width=width)
                     comp_frames = retouch_processor.process_video_with_mask(update_frames, masks_dilated, flow_masks, frames_inp, width, height, use_half=use_half)
                     comp_frames = [cv2.resize(f, out_size) for f in comp_frames]

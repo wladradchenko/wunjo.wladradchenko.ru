@@ -13,7 +13,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
         displayStatusMessage(elem, "The process is busy. Wait for it to finish");
         return null;
     }
-    // TODO forget add checked synthesed table from autio to video
 
     const synthesisResultTable = document.getElementById("table_body_deepfake_result");
     const mediaPreview = elem.querySelector("#preview-media");

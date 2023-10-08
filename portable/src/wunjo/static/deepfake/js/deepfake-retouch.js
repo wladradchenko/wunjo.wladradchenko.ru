@@ -16,7 +16,19 @@ function toggleRadioOnOrNothing(radio, name) {
         radio.setAttribute('data-checked', 'true');
         radio.checked = true;
     }
-}
+};
+
+
+function showExtraOptionsRetouch() {
+    const improvedRetouchObject = document.getElementById("improved-retouch-object");
+    var extraOptions = document.getElementById('extraOptions');
+    if (improvedRetouchObject.getAttribute('data-checked') === 'true') {
+        extraOptions.style.display = 'block';
+        availableFeaturesByCUDA(document.getElementById('upscaleCheckboxDiv')); // Show the extra options
+    } else {
+        extraOptions.style.display = 'none'; // Hide the extra options
+    }
+};
 
 
 // RETOUCH //
@@ -47,26 +59,41 @@ function initiateRetouchAiPop(button) {
                         <button class="introjs-button" onclick="maskToList();">Добавить новый объект</button>
                         <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
                     </fieldset>
-                    <fieldset style="padding: 5pt;">
+                    <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh">
                         <legend>Выбор препроцессинга</legend>
                         <div>
-                            <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
                             <label for="retouch-face">Исправление лица</label>
                         </div>
                         <div>
-                            <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
                             <label for="retouch-object">Удаление объекта</label>
                         </div>
                         <div>
-                            <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name)">
+                            <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
                             <label for="improved-retouch-object">Улучшенное удаление объекта</label>
+                        </div>
+                        <div id="extraOptions" style="display: none;">
+                            <div>
+                                <label for="blurCoefficient">Thickness of mask:</label>
+                                <input type="number" id="blurCoefficient" name="blurCoefficient" min="1" max="100" value="10" style="width: 45px;"> %
+                            </div>
+                            <div id="upscaleCheckboxDiv">
+                                <label for="upscaleCheckbox">
+                                    <input type="checkbox" id="upscaleCheckbox" name="upscale"> Restore size
+                                </label>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label for="percentageInput">Matching of masks: </label>
+                            <input type="number" id="percentageInput" name="percentage" min="1" max="50" value="25" style="width: 45px;"> %
                         </div>
                         <div>
                             <input type="checkbox" id="get-mask" value="#ffffff">
                             <label for="get-mask">Save mask</label>
                         </div>
                         <div id="colorPanel" style="display: none;">
-                            <div id="maskColorDiv">
+                            <div id="maskColorDiv" style="align-items: center;display: flex;">
                                 <label for="maskColor">Choose a mask color:</label>
                                 <input style="border: none;" type="color" id="maskColor" name="maskColor" value="#ffffff">
                             </div>
@@ -607,6 +634,27 @@ async function processRetouchAi(data, element) {
         return null
     }
 
+    // Get value for segmentation parameters and improve remove object
+    let blurCoefficientInput = element.querySelector("#blurCoefficient");
+    let blurCoefficient = blurCoefficientInput.value;
+    let blurCoefficientMin = parseInt(blurCoefficientInput.getAttribute('min'));
+    let blurCoefficientMax = parseInt(blurCoefficientInput.getAttribute('max'));
+
+    if (blurCoefficient === '' || blurCoefficient < blurCoefficientMin || blurCoefficient > blurCoefficientMax) {
+        blurCoefficient = 1; // default value
+    }
+
+    const upscaleCheckbox = element.querySelector("#upscaleCheckbox").checked;
+
+    let percentageInputElem = element.querySelector("#percentageInput");
+    let percentageInput = parseInt(percentageInputElem.value);
+    let percentageInputMin = parseInt(percentageInputElem.getAttribute('min'));
+    let percentageInputMax = parseInt(percentageInputElem.getAttribute('max'));
+
+    if (isNaN(percentageInput) || percentageInput < percentageInputMin || percentageInput > percentageInputMax) {
+        percentageInput = 25; // default value
+    }
+
     const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media"));
 
     const retouchAiParameters = {
@@ -616,7 +664,10 @@ async function processRetouchAi(data, element) {
         source_type: targetDetails.mediaType,
         model_type: retouchModel,
         mask_color: maskColor,
-        masks: dataDict
+        masks: dataDict,
+        blur: blurCoefficient,
+        upscale: upscaleCheckbox,
+        segment_percentage: percentageInput
     };
 
     console.log(JSON.stringify(retouchAiParameters, null, 4));

@@ -14,13 +14,13 @@ sys.path.pop(0)
 
 
 class SegmentAnything:
-    def __init__(self):
+    def __init__(self, segment_percentage: float = 0.25):
         self.predictor = None
         self.session = None
         # draw frame
         self.draw_obj = {}
-        self.lower_limit_area = 0.75  # 25% lower
-        self.upper_limit_area = 1.25  # 25% upper
+        self.lower_limit_area = 1 - segment_percentage  # 25% lower
+        self.upper_limit_area = 1 + segment_percentage  # 25% upper
         self.generate_num_positive_points = 4
 
     def load_models(self, predictor, session):

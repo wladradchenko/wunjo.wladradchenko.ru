@@ -93,7 +93,7 @@ class VideoRemoveObjectProcessor:
         return mask
 
     @staticmethod
-    def read_retouch_mask(masks, width, height, flow_mask_dilates=8, mask_dilates=5):
+    def read_retouch_mask(masks, width, height, flow_mask_dilates=8, mask_dilates=5, kernel_size=10):
         masks_img = masks
         masks_dilated = []
         flow_masks = []
@@ -106,7 +106,7 @@ class VideoRemoveObjectProcessor:
             # Dilation to increase line thickness
             # Convert boolean mask to uint8
             mask_img_uint8 = (mask_img * 255).astype(np.uint8)
-            kernel_size = 10  # Thickness line weight
+            # Thickness line weight
             kernel = np.ones((kernel_size, kernel_size), np.uint8)
             dilated_mask_uint8 = cv2.dilate(mask_img_uint8, kernel, iterations=1)
             # Convert dilated uint8 mask back to boolean
