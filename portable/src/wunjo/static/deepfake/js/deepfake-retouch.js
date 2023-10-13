@@ -145,8 +145,6 @@ function initiateRetouchAiPop(button) {
             document.getElementById("maskColorDiv").style.display = "block";
         }
   });
-
-
 }
 
 async function handleRetouchAi(event, previewElement, parentElement) {
@@ -583,6 +581,10 @@ async function processRetouchAi(data, element) {
         return null
     }
 
+    const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media"));
+    const mediaStartNumber = parseFloat(targetDetails.mediaStart).toFixed(2);
+    const mediaEndNumber = parseFloat(targetDetails.mediaEnd).toFixed(2);
+
     maskTimelinesList.forEach(timeline => {
         // Extracting data from canvas
         const canvas = timeline.querySelector("canvas");
@@ -597,13 +599,22 @@ async function processRetouchAi(data, element) {
         const startTime = convertTimeToSeconds(startTimeStr);
         const endTime = convertTimeToSeconds(endTimeStr);
 
-        // Populate the dataDict
-        dataDict[objid] = {
-            "start_time": startTime,
-            "end_time": endTime,
-            "point_list": pointList
+        if (mediaStartNumber > startTime) {
+            console.log("Skip mask because start time less than cut start time", targetDetails.mediaStart, startTime);
+        } else {
+            // Populate the dataDict
+            dataDict[objid] = {
+                "start_time": startTime,
+                "end_time": endTime,
+                "point_list": pointList
+            };
         };
     });
+
+    if (Object.keys(dataDict).length === 0) {
+        displayMessage(messageAboutStatus, "All mask start time less than cut start time");
+        return null
+    }
 
     const preprocessingRetouchFace = element.querySelector("#retouch-face").getAttribute('data-checked');
     const preprocessingRetouchObject = element.querySelector("#retouch-object").getAttribute('data-checked');
@@ -655,12 +666,10 @@ async function processRetouchAi(data, element) {
         percentageInput = 25; // default value
     }
 
-    const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media"));
-
     const retouchAiParameters = {
         source: targetDetails.mediaName,
-        source_start: targetDetails.mediaStart,
-        source_end: targetDetails.mediaEnd,
+        source_start: mediaStartNumber,
+        source_end: mediaEndNumber,
         source_type: targetDetails.mediaType,
         model_type: retouchModel,
         mask_color: maskColor,

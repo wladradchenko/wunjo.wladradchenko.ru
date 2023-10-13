@@ -689,7 +689,10 @@ class Retouch:
                 remove_keys += [key]
                 continue
             if masks[key].get("end_time") > source_end:
+                # if video was cut in end
                 masks[key]["end_time"] = source_end
+            # if video was cut in start
+            masks[key]["start_time"] = masks[key]["start_time"] - source_start
         else:
             for remove_key in remove_keys:
                 masks.pop(remove_key)
@@ -739,7 +742,7 @@ class Retouch:
 
         for key in masks.keys():
             print(f"Processing ID: {key}")
-            start_time = masks[key]["start_time"] - source_start
+            start_time = masks[key]["start_time"]
             end_time = masks[key]["end_time"]
             start_frame = int(start_time * fps)
             end_frame = int(end_time * fps) + 1
@@ -766,7 +769,7 @@ class Retouch:
             color = segmentation.hex_to_rgba(mask_color)
             for key in masks.keys():
                 os.makedirs(os.path.join(save_dir, key), exist_ok=True)
-                start_time = masks[key]["start_time"] - source_start
+                start_time = masks[key]["start_time"]
                 end_time = masks[key]["end_time"]
                 start_frame = int(start_time * fps)
                 end_frame = int(end_time * fps) + 1
@@ -799,7 +802,7 @@ class Retouch:
             retouch_processor = VideoRemoveObjectProcessor(device, model_raft_things_path, model_recurrent_flow_path, model_pro_painter_path)
 
             for key in masks.keys():
-                start_time = masks[key]["start_time"] - source_start
+                start_time = masks[key]["start_time"]
                 start_frame = int(start_time * fps)
                 end_frame = start_frame + len(segment_mask[key])
                 # transfer to pil list of frames of list of one frame
@@ -833,7 +836,7 @@ class Retouch:
             model_retouch = InpaintModel(model_path=model_retouch_path)
 
             for key in masks.keys():
-                start_time = masks[key]["start_time"] - source_start
+                start_time = masks[key]["start_time"]
                 end_time = masks[key]["end_time"]
                 start_frame = int(start_time * fps)
                 end_frame = int(end_time * fps) + 1

@@ -13,6 +13,7 @@ from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
+from diffusers.inference import Video2Video
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -348,6 +349,54 @@ def synthesize_video_editor():
 
     return {"status": 200}
 
+
+@app.route("/synthesize_diffuser/", methods=["POST"])
+@cross_origin()
+def synthesize_diffuser():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
+        print("The process is already running... ")
+        return {"status": 400}
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print("Please wait... Processing is started")
+
+    if not os.path.exists(DEEPFAKE_FOLDER):
+        os.makedirs(DEEPFAKE_FOLDER)
+
+    source = request_list.get("source")
+    source_start = float(request_list.get("source_start", 0))
+    source_end = float(request_list.get("source_end", 0))
+    source_type = request_list.get("source_type", "video")
+    masks = request_list.get("masks", {})
+    interval_generation = int(request_list.get("interval_generation", 10))
+    controlnet = request_list.get("controlnet", "canny")
+    preprocessor = request_list.get("preprocessor", "loose_cfattn")
+
+    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
+    predictor = segment_models.get("predictor")
+    session = segment_models.get("session")
+    app.config['SEGMENT_ANYTHING_MODEL'] = {}
+
+    # TODO
+    diffusion_result = Video2Video.main_video_render(
+        source=os.path.join(TMP_FOLDER, source), output_folder=DEEPFAKE_FOLDER, source_start=source_start,
+        source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation,
+        control_type=controlnet, translation=preprocessor, predictor=predictor, session=session
+    )
+
+    print("Diffusion synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+
+    return {"status": 200}
 
 
 @app.route("/synthesize_retouch/", methods=["POST"])

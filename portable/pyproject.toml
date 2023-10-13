@@ -90,6 +90,7 @@ requires = [
     "onnxruntime-gpu"
 ]
 sources = [
+    "src/diffusers",
     "../venv/lib/python3.10/site-packages/insightface",
 ]
 

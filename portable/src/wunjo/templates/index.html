@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-retouch.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/video-editor.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='diffusers/js/diffusers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/train/train.js') }}"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='video/css/timeline.css') }}">
@@ -25,6 +26,9 @@
     <!--EXTENSIONS-->
     <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Выбор процессора"><i class="fa-solid fa-microchip"></i></a>
     <!--EXTENSIONS-->
+    <!--GPU-->
+    <a id="a-video-to-video-diffuser" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Открыть окно преобразования видео текстовым запросом" onclick="initiateDiffusersPop(this);"><i class="fa-solid fa-palette"></i></a>
+    <!--GPU-->
 </div>
 {% endblock %}
 
