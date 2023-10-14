@@ -38,11 +38,14 @@ def save_video_with_audio(video, audio, save_path):
     return file_name
 
 
-def save_video_from_frames(frame_names, save_path, fps):
+def save_video_from_frames(frame_names, save_path, fps, alternative_save_path=None):
     # frames has to have name from 0
     frame_path = os.path.join(save_path, frame_names)
     file_name = str(uuid.uuid4())+'.mp4'
-    save_file = os.path.join(save_path, file_name)
+    if alternative_save_path:
+        save_file = os.path.join(alternative_save_path, file_name)
+    else:
+        save_file = os.path.join(save_path, file_name)
     cmd = f'ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -pix_fmt yuv420p {save_file}'
     os.system(cmd)
     return file_name

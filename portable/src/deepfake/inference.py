@@ -1048,7 +1048,15 @@ class GetSegment:
         import time
         time.sleep(5)
         # read frame
-        frame = read_image_cv2(source)
+        source_media_type = check_media_type(source)
+        if source_media_type == "static":
+            frame = read_image_cv2(source)
+        elif source_media_type == "animated":
+            frames, _ = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            frame = frames[0]
+        else:
+            # return source
+            return os.path.basename(source)
         # segmentation
         segmentation = SegmentAnything()
         mask = segmentation.draw_mask(predictor=predictor, session=session, frame=frame, point_list=point_list)

@@ -21,7 +21,7 @@ from cog import Input
 from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
 from backend.download import download_model, unzip, check_download_size
 from deepfake.src.utils.segment import SegmentAnything
-from deepfake.src.utils.videoio import cut_start_video, get_frames, check_media_type
+from deepfake.src.utils.videoio import cut_start_video, get_frames, check_media_type, save_video_from_frames
 from diffusers.src.utils.mediaio import (
     save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion, save_empty_mask
 )
@@ -116,7 +116,7 @@ class Video2Video:
             link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
             check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
 
-        # load diffuser TODO add download and check
+        # load diffuser
         diffuser_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "diffusion")
         os.environ['TORCH_HOME'] = diffuser_folder
         if not os.path.exists(diffuser_folder):
@@ -222,6 +222,10 @@ class Video2Video:
         # read frames files
         frame_files = sorted(os.listdir(frame_save_path))
         frame_files_with_interval = frame_files[::interval]
+
+        if source_media_type == "animated":
+            source = save_video_from_frames(frame_names="%04d.png", save_path=frame_save_path, alternative_save_path=cfg.work_dir, fps=fps)
+            print(source)
 
         # Extract the background data and remove it from the original dictionary
         background_mask = masks.pop('background', None)
