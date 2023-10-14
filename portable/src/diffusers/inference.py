@@ -192,7 +192,9 @@ class Video2Video:
             mask_key_save_path = os.path.join(mask_save_path, "mask_background")
             os.makedirs(mask_key_save_path, exist_ok=True)
             # Generate and save black images
-            for i in range(num_frames - 1):
+            for i in range(num_frames):
+                if i == num_frames:
+                    break
                 save_empty_mask(i + 1, width, height, mask_key_save_path, '%04d.png')
             background_mask["frame_files_path"] = mask_key_save_path
 
@@ -226,6 +228,7 @@ class Video2Video:
             # update background
             if background_mask:
                 background_mask_frame_file_path = os.path.join(mask_save_path, "mask_background", filter_frame_file_name)
+                print(background_mask_frame_file_path, filter_frames_files)
                 background_mask_frame = cv2.imread(background_mask_frame_file_path)
                 segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, width, height)
 

@@ -51,7 +51,7 @@ def save_image_frame_cv2(image_path, save_path, filename_pattern, resolution_vra
     if resolution_vram_func is not None:
         frame = resize_frame(frame, resolution)
         height, width, _ = frame.shape
-    cv2.imwrite(os.path.join(save_path, filename_pattern % 0), frame)
+    cv2.imwrite(os.path.join(save_path, filename_pattern % 1), frame)
     return 0, 1, width, height
 
 

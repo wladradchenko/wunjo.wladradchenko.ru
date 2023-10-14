@@ -11,7 +11,7 @@ from pytorch_lightning import seed_everything
 import torch.nn.functional as F
 import torchvision.transforms as T
 
-from .blend import BlendType, blendLayers  # TODO check work this or not
+from .blend import BlendType, blendLayers
 from .config import RenderConfig
 from .ddim_v_hacked import DDIMVSampler
 from .freeu import freeu_forward
@@ -134,7 +134,7 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
 
     for mask_id in masks.keys():
         # for each mask
-        # TODO нужно начинать с бэкрауда, потом пропускать изменения кадров, которые не входят в старт
+        # TODO нужно начинать с бэкрауда, потом пропускать изменения кадров, которые не входят в старт?
         mask_files_path = masks[mask_id]["frame_files_path"]
         mask_files_path = sorted(os.listdir(mask_files_path))
         common_mask_files = sorted(list(set(mask_files_path) & set(frame_files_with_interval)))
@@ -150,8 +150,6 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
         seed = int(masks[mask_id]["input_seed"])  # TODO maybe will be one general? or it better to rewrite and change only mask element
         if seed == -1:
             seed = random.randint(0, 65535)
-
-        # TODO mask path is os.path.join(frame_path, f"mask_{mask_id}", common_mask_files[0])
 
         with torch.no_grad():
             first_frame_file = os.path.join(frame_path, common_mask_files[0])
@@ -200,8 +198,6 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
         color_corrections = setup_color_correction(Image.fromarray(x_samples[0]))
         Image.fromarray(x_samples[0]).save(os.path.join(cfg.first_dir, 'first.jpg'))
         cv2.imwrite(os.path.join(cfg.first_dir, 'first_edge.jpg'), detected_img)
-
-        # TODO if is other frames to do next code
 
         for common_frame_name in common_mask_files:
             # load frame
@@ -353,7 +349,7 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
                 combined_image = Image.fromarray(combined_image_array)
                 # Save the combined image
                 combined_image.save(os.path.join(cfg.key_subdir, common_frame_name))
-                # combined_image.save(os.path.join(frame_path, common_frame_name))
+                # combined_image.save(os.path.join(frame_path, common_frame_name))  # TODO uncomitted
             else:
                 pil_created_image.save(os.path.join(cfg.key_subdir, common_frame_name))
-                # pil_created_image.save(os.path.join(frame_path, common_frame_name))
+                # pil_created_image.save(os.path.join(frame_path, common_frame_name))  # TODO uncomitted
