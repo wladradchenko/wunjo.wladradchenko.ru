@@ -324,6 +324,49 @@ class SegmentAnything:
         return pil_image
 
     @staticmethod
+    def save_black_mask(save_name, mask, mask_save_path, width=None, height=None):
+        # Reduce the dimensions if necessary
+        if mask.ndim == 4:
+            mask = mask[0, 0]
+
+        if width is not None and height is not None:
+            mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
+        # Convert mask's False values to 0 and other values to 255
+        mask_to_save = (mask * 255).astype(np.uint8)
+        # Create an empty black and white image with the same dimensions as the mask
+        bw_img = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
+        # Where the mask is True, set to white
+        bw_img[mask_to_save == 255] = (255, 255, 255)
+        # Convert to PIL Image
+        pil_image = Image.fromarray(bw_img, 'RGB')
+        pil_image.save(os.path.join(mask_save_path, save_name))
+
+
+    @staticmethod
+    def save_white_background_mask(save_path, mask, background_mask_frame, width=None, height=None):
+        # Ensure both the masks have the same shape
+        if background_mask_frame.shape[:2] != mask.shape[:2]:
+            background_mask_frame = cv2.resize(background_mask_frame, (width, height))
+        # Reduce the dimensions if necessary
+        if mask.ndim == 4:
+            mask = mask[0, 0]
+
+        if width is not None and height is not None:
+            mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
+        # Convert mask's False values to 0 and other values to 255
+        mask_to_save = (mask * 255).astype(np.uint8)
+
+        # Invert the mask
+        inverted_mask = cv2.bitwise_not(mask_to_save)
+        # Where the inverted mask
+        background_mask_frame[inverted_mask == 0, :] = (0, 0, 0)
+        # Convert to PIL Image
+        pil_image = Image.fromarray(background_mask_frame, 'RGB')
+        # Save the combined mask
+        pil_image.save(os.path.join(save_path))
+
+
+    @staticmethod
     def hex_to_rgba(color):
         # If the color is transparent, return (0, 0, 0, 0) for RGBA
         if color == "transparent":

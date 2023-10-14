@@ -34,3 +34,8 @@ onnxruntime-gpu
 insightface
 pypinyin
 einops
+pytorch_lightning
+omegaconf
+xformers==0.0.19
+transformers==4.19.2
+open_clip_torch

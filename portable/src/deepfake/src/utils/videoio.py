@@ -95,7 +95,7 @@ def cut_start_video(video, video_start, video_end):
     hms_end_format = seconds_to_hms(video_end)
     print(f"Video will start from {hms_start_format} and end at {hms_end_format}")
     new_video = f"{video}_cut.mp4"
-    cmd = f"ffmpeg -ss {hms_start_format} -to {hms_end_format} -i {video} -c copy {new_video}"
+    cmd = f"ffmpeg -y -ss {hms_start_format} -to {hms_end_format} -i {video} -c copy {new_video}"
     os.system(cmd)
     return new_video
 

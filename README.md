@@ -383,5 +383,10 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 * Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
 * Real-Time Voice Cloning - https://github.com/CorentinJ/Real-Time-Voice-Cloning
 * Segment Anything - https://github.com/facebookresearch/segment-anything
+* Rerender a Video - https://github.com/williamyang1991/Rerender_A_Video
+* GMFlow - https://github.com/haofeixu/gmflow
+* ControlNet - https://github.com/lllyasviel/ControlNet
+* Stable Diffusion - https://github.com/Stability-AI/stablediffusion
+* Ebsynth - https://github.com/jamriska/ebsynth
 
 <p align="right">(<a href="#top">to top</a>)</p>

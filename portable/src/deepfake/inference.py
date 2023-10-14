@@ -691,6 +691,8 @@ class Retouch:
             if masks[key].get("end_time") > source_end:
                 # if video was cut in end
                 masks[key]["end_time"] = source_end
+            # if start cud need to reduce end time
+            masks[key]["end_time"] = masks[key]["end_time"] - source_start
             # if video was cut in start
             masks[key]["start_time"] = masks[key]["start_time"] - source_start
         else:
@@ -793,6 +795,7 @@ class Retouch:
                     subprocess.Popen(['xdg-open', save_dir])
 
         del segmentation, predictor, session
+        torch.cuda.empty_cache()
 
         if retouch_model_type is None:
             return save_dir

@@ -20,6 +20,16 @@ class RenderConfig:
     canny_low = None
     canny_high = None
 
+    style_update_freq = 10
+    mask_strength = 0.5
+    color_preserve = True
+    mask_period = (0.5, 0.8)
+    inner_strength = 0.9
+    cross_period = (0, 1)
+    ada_period = (1.0, 1.0)
+    warp_period = (0, 0.1)
+    smooth_boundary = True
+
     def __init__(self):
         ...
 

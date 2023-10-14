@@ -87,7 +87,12 @@ sources = [
 [tool.briefcase.app.wunjo.linux]
 requires = [
     "dlib-bin",
-    "onnxruntime-gpu"
+    "onnxruntime-gpu",
+    "pytorch_lightning",
+    "omegaconf",
+    "xformers==0.0.19",
+    "transformers==4.19.2",
+    "open_clip_torch"
 ]
 sources = [
     "src/diffusers",
@@ -127,7 +132,7 @@ linuxdeploy_plugins = []
 [tool.briefcase.app.wunjo.windows]
 requires = [
     "dlib-bin",
-    "onnxruntime-gpu"
+    "onnxruntime"
 ]
 sources = [
     "../venv/Lib/site-packages/insightface",

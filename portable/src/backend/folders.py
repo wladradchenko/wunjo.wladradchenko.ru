@@ -27,10 +27,6 @@ DEEPFAKE_MODEL_FOLDER = os.path.join(MEDIA_FOLDER, 'deepfake')
 if not os.path.exists(DEEPFAKE_MODEL_FOLDER):
     os.makedirs(DEEPFAKE_MODEL_FOLDER)
 
-DIFFUSERS_MODEL_FOLDER = os.path.join(MEDIA_FOLDER, 'diffusers')
-if not os.path.exists(DIFFUSERS_MODEL_FOLDER):
-    os.makedirs(DIFFUSERS_MODEL_FOLDER)
-
 VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'voice')
 if not os.path.exists(VOICE_FOLDER):
     os.makedirs(VOICE_FOLDER)

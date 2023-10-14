@@ -364,6 +364,8 @@ def synthesize_diffuser():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
+    # TODO has to work only with GPU
+
     # get parameters
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
