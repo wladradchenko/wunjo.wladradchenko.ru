@@ -123,20 +123,58 @@ class Video2Video:
             os.makedirs(diffuser_folder)
 
         sd_model_path = os.path.join(diffuser_folder, "realisticVisionV20_v20.safetensors")  # TODO
+        if not os.path.exists(sd_model_path):
+            link_sd_model = file_deepfake_config["diffusion"]["realisticVisionV20_v20.safetensors"]
+            download_model(sd_model_path, link_sd_model)
+        else:
+            link_sd_model = file_deepfake_config["diffusion"]["realisticVisionV20_v20.safetensors"]
+            check_download_size(sd_model_path, link_sd_model)
 
         # load controlnet model
         if control_type == "hed":
             controlnet_model_path = os.path.join(diffuser_folder, "control_sd15_hed.pth")
+            if not os.path.exists(controlnet_model_path):
+                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_hed.pth"]
+                download_model(controlnet_model_path, link_controlnet_model)
+            else:
+                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_hed.pth"]
+                check_download_size(controlnet_model_path, link_controlnet_model)
+            # load hed
+            controlnet_model_annotator_path = os.path.join(diffuser_folder, "ControlNetHED.pth")
+            if not os.path.exists(controlnet_model_annotator_path):
+                link_controlnet_model_annotator = file_deepfake_config["diffusion"]["ControlNetHED.pth"]
+                download_model(controlnet_model_annotator_path, link_controlnet_model_annotator)
+            else:
+                link_controlnet_model_annotator = file_deepfake_config["diffusion"]["ControlNetHED.pth"]
+                check_download_size(controlnet_model_annotator_path, link_controlnet_model_annotator)
         elif control_type == "canny":
             controlnet_model_path = os.path.join(diffuser_folder, "control_sd15_canny.pth")
+            if not os.path.exists(controlnet_model_path):
+                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_canny.pth"]
+                download_model(controlnet_model_path, link_controlnet_model)
+            else:
+                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_canny.pth"]
+                check_download_size(controlnet_model_path, link_controlnet_model)
         else:
             raise "Error... undefined controlnet type"
 
         # load vae model
         vae_model_path = os.path.join(diffuser_folder, "vae-ft-mse-840000-ema-pruned.ckpt")
+        if not os.path.exists(vae_model_path):
+            link_vae_model = file_deepfake_config["diffusion"]["vae-ft-mse-840000-ema-pruned.ckpt"]
+            download_model(vae_model_path, link_vae_model)
+        else:
+            link_vae_model = file_deepfake_config["diffusion"]["vae-ft-mse-840000-ema-pruned.ckpt"]
+            check_download_size(vae_model_path, link_vae_model)
 
         # load gmflow model
         gmflow_model_path = os.path.join(diffuser_folder, "gmflow_sintel-0c07dcb3.pth")
+        if not os.path.exists(gmflow_model_path):
+            link_gmflow_model = file_deepfake_config["diffusion"]["gmflow_sintel-0c07dcb3.pth"]
+            download_model(gmflow_model_path, link_gmflow_model)
+        else:
+            link_gmflow_model = file_deepfake_config["diffusion"]["gmflow_sintel-0c07dcb3.pth"]
+            check_download_size(gmflow_model_path, link_gmflow_model)
 
         # segmentation mask
         segment_percentage = segment_percentage / 100
@@ -270,12 +308,43 @@ class Video2Video:
             controlnet_model_path=controlnet_model_path, vae_model_path=vae_model_path, gmflow_model_path=gmflow_model_path,
             frame_path=frame_save_path, mask_path=mask_save_path
         )
+        torch.cuda.empty_cache()
 
         if source_media_type == "static":
             # TODO remove tmp files and all files from folder and keep only image
             return os.path.join(cfg.key_subdir, frame_files[0])
 
         # TODO ebsynth use
+        # download if ebsynth app is not exist
+        ebsynth_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "ebsynth")
+        os.environ['TORCH_HOME'] = ebsynth_folder
+        if not os.path.exists(ebsynth_folder):
+            os.makedirs(ebsynth_folder)
+
+        if sys.platform == 'win32':
+            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth-Beta-Win")
+            ebsynth_path_zip = ebsynth_path + ".zip"
+            if not os.path.exists(ebsynth_path):
+                link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
+                download_model(ebsynth_path_zip, link_ebsynth)
+                unzip(ebsynth_path_zip, ebsynth_folder)
+            else:
+                link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
+                check_download_size(ebsynth_path_zip, link_ebsynth)
+                if not os.listdir(ebsynth_path):
+                    unzip(ebsynth_path_zip, ebsynth_folder)
+        elif sys.platform == 'linux':
+            ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
+            if not os.path.exists(ebsynth_path):
+                link_ebsynth = file_deepfake_config["ebsynth"]["ebsynth_linux_cu118"]
+                download_model(ebsynth_path, link_ebsynth)
+            else:
+                link_ebsynth = file_deepfake_config["ebsynth"]["ebsynth_linux_cu118"]
+                check_download_size(ebsynth_path, link_ebsynth)
+        else:
+            print("Ebsynth is not support this platform")
+
+        # processing ebsynth
 
     @staticmethod
     def load_video2video_default():

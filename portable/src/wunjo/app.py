@@ -12,12 +12,12 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
 try:
     from diffusers.inference import Video2Video
     VIDEO2VIDEO_AVAILABLE = True
 except ImportError:
     VIDEO2VIDEO_AVAILABLE = False
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -410,6 +410,8 @@ def synthesize_diffuser():
 
     print("Diffusion synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # empty cache
+    torch.cuda.empty_cache()
 
     return {"status": 200}
 
@@ -474,6 +476,8 @@ def synthesize_retouch():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
 
     return {"status": 200}
 
@@ -551,6 +555,8 @@ def synthesize_face_swap():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
 
     return {"status": 200}
 
@@ -642,6 +648,8 @@ def synthesize_deepfake():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
 
     return {"status": 200}
 
@@ -779,6 +787,8 @@ def synthesize():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
 
     return {"status": 200}
 
