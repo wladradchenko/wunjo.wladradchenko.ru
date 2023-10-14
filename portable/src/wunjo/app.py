@@ -12,8 +12,12 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
+try:
+    from diffusers.inference import Video2Video
+    VIDEO2VIDEO_AVAILABLE = True
+except ImportError:
+    VIDEO2VIDEO_AVAILABLE = False
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
-from diffusers.inference import Video2Video
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -364,7 +368,16 @@ def synthesize_diffuser():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    # TODO has to work only with GPU
+    # has to work only with GPU
+    current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
+    if current_processor == "cpu":
+        print("You need to use GPU for this function")
+        return {"status": 400}
+
+    # check what module is exist
+    if not VIDEO2VIDEO_AVAILABLE:
+        print("In this app version is not module diffusion")
+        return {"status": 400}
 
     # get parameters
     request_list = request.get_json()
@@ -388,7 +401,7 @@ def synthesize_diffuser():
     session = segment_models.get("session")
     app.config['SEGMENT_ANYTHING_MODEL'] = {}
 
-    # TODO
+    # TODO Video2Video
     diffusion_result = Video2Video.main_video_render(
         source=os.path.join(TMP_FOLDER, source), output_folder=DEEPFAKE_FOLDER, source_start=source_start,
         source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation,

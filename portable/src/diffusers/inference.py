@@ -271,6 +271,12 @@ class Video2Video:
             frame_path=frame_save_path, mask_path=mask_save_path
         )
 
+        if source_media_type == "static":
+            # TODO remove tmp files and all files from folder and keep only image
+            return os.path.join(cfg.key_subdir, frame_files[0])
+
+        # TODO ebsynth use
+
     @staticmethod
     def load_video2video_default():
         return Namespace(
