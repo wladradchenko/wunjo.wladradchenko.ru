@@ -315,7 +315,11 @@ Update 1.5.5
 Update 1.6.0
 - [x] Improved and automated remove object from image or video
 - [x] Improved edit video element
-- [ ] Create Video2Video by text prompt tool
+- [x] Added auto segmentation mask with save
+- [x] Added Video2Video with ControlNet by text prompt tool
+- [x] Added InpaintVideoMask2Video with ControlNet by text prompt tool
+
+Update 1.6.1
 - [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
 - [ ] Music generation
 

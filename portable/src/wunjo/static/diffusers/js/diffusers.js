@@ -30,6 +30,9 @@ function initiateDiffusersPop(button) {
                     </fieldset>
                     <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh;">
                         <div>
+                            <select id="modelDiffusionDropdown" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin: 0;margin-bottom: 10px;"></select>
+                        </div>
+                        <div>
                             <input type="checkbox" id="paintBackground" onclick="document.getElementById('paintBackgroundParam').style.display = this.checked ? 'block' : 'none';">
                             <label for="paintBackground">Change background</label>
                         </div>
@@ -78,7 +81,15 @@ function initiateDiffusersPop(button) {
                         </div>
                         <div style="margin-top: 10px;">
                             <label for="intervalGeneration">Interval generation: </label>
-                            <input type="number" id="intervalGeneration" name="interval" min="1" max="30" value="10" style="width: 45px;">
+                            <input type="number" id="intervalGeneration" name="interval" min="1" max="1000" value="20" style="width: 45px;">
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label for="percentageInput">Matching of masks: </label>
+                            <input type="number" id="percentageInput" name="percentage" min="1" max="50" value="25" style="width: 45px;"> %
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label for="thicknessMask">Thickness mask: </label>
+                            <input type="number" id="thicknessMask" name="thickness" min="1" max="100" value="10" style="width: 45px;">
                         </div>
                     </fieldset>
                     <button class="introjs-button" onclick="triggerDiffuser(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
@@ -96,6 +107,16 @@ function initiateDiffusersPop(button) {
     doneLabel: "Закрыть",
   });
   introRetouch.start();
+
+  const dropdownDiffusion = document.getElementById("modelDiffusionDropdown");
+  const diffusionModelsListParsed = JSON.parse(diffusionModelsList);
+
+  for (const key in diffusionModelsListParsed) {
+     const option = document.createElement("option");
+     option.text = key;
+     option.value = diffusionModelsListParsed[key];
+     dropdownDiffusion.add(option);
+  }
 }
 
 
@@ -327,7 +348,7 @@ async function maskDiffuserToList() {
 
     removeBtn.addEventListener('click', function() {
         // Get the grandparent of the button
-        const grandparent = this.parentNode;
+        const grandparent = this.parentNode.parentNode;
         // Remove the grandparent from the DOM
         grandparent.remove();
     });
@@ -535,6 +556,34 @@ async function processDiffuser(data, element) {
         controlnet = "hed";
     };
 
+    // Segment field
+    let percentageInputElem = element.querySelector("#percentageInput");
+    let percentageInput = parseInt(percentageInputElem.value);
+    let percentageInputMin = parseInt(percentageInputElem.getAttribute('min'));
+    let percentageInputMax = parseInt(percentageInputElem.getAttribute('max'));
+
+    if (isNaN(percentageInput) || percentageInput < percentageInputMin || percentageInput > percentageInputMax) {
+        percentageInput = 25; // default value
+    }
+
+    let thicknessMaskElem = element.querySelector("#thicknessMask");
+    let thicknessMask = parseInt(thicknessMaskElem.value);
+    let thicknessMaskMin = parseInt(thicknessMaskElem.getAttribute('min'));
+    let thicknessMaskMax = parseInt(thicknessMaskElem.getAttribute('max'));
+
+    if (isNaN(thicknessMask) || thicknessMask < thicknessMaskMin || thicknessMask > thicknessMaskMax) {
+        thicknessMask = 10; // default value
+    }
+
+    // get stable diffusion model
+    const modelDiffusionDropdown = element.querySelector("#modelDiffusionDropdown");
+    let selectedDiffusionModelValue;
+    if (modelDiffusionDropdown.selectedIndex !== -1) {
+        selectedDiffusionModelValue = modelDiffusionDropdown.value;
+    } else {
+        selectedDiffusionModelValue = null;
+    }
+
     const diffuserParameters = {
         source: targetDetails.mediaName,
         source_start: mediaStartNumber,
@@ -543,7 +592,10 @@ async function processDiffuser(data, element) {
         masks: dataDict,
         interval_generation: intervalGeneration,
         controlnet: controlnet,
-        preprocessor: preprocessor
+        preprocessor: preprocessor,
+        segment_percentage: percentageInput,
+        thickness_mask: thicknessMask,
+        sd_model_name: selectedDiffusionModelValue
     };
 
     console.log(JSON.stringify(diffuserParameters, null, 4));

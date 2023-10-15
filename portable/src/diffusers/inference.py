@@ -3,6 +3,7 @@ import sys
 import cv2
 import json
 import torch
+import shutil
 import requests
 from tqdm import tqdm
 from time import strftime
@@ -21,12 +22,33 @@ from cog import Input
 from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
 from backend.download import download_model, unzip, check_download_size
 from deepfake.src.utils.segment import SegmentAnything
-from deepfake.src.utils.videoio import cut_start_video, get_frames, check_media_type, save_video_from_frames
+from deepfake.src.utils.videoio import (
+    cut_start_video, get_frames, check_media_type, save_video_from_frames, extract_audio_from_video, save_video_with_audio
+)
 from diffusers.src.utils.mediaio import (
     save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion, save_empty_mask
 )
+from diffusers.src.utils.ebsynth import Ebsynth
 
 DEEPFAKE_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/deepfake.json"
+
+
+def create_diffusion_instruction():
+    # create default.json
+    custom_diffusion_file = os.path.join(DEEPFAKE_MODEL_FOLDER, "custom_diffusion.json")
+    # Check if file exists
+    if not os.path.exists(custom_diffusion_file):
+        # If the file doesn't exist, create and write to it
+        with open(custom_diffusion_file, 'w') as f:
+            json.dump({}, f)
+    else:
+        print(f"{custom_diffusion_file} already exists!")
+
+    with open(custom_diffusion_file, 'r') as f:
+        custom_diffusion = json.load(f)
+    custom_diffusion = {**{"Realistic_Vision_V5.1.safetensors": None}, **custom_diffusion}
+    return custom_diffusion
+
 
 
 def get_config_deepfake() -> dict:
@@ -51,14 +73,15 @@ file_deepfake_config = get_config_deepfake()
 
 class Video2Video:
     @staticmethod
-    def main_video_render(source: str, output_folder: str, masks: dict = None, interval: int = 10, source_start: float = 0,
-                          source_end: float = 0, source_type: str = "video", control_strength: float = 0.7,
+    def main_video_render(source: str, output_folder: str, masks: dict = None, interval: int = 10, source_start: float = 0, sd_model_name: str = None,
+                          source_end: float = 0, source_type: str = "video", control_strength: float = 0.7, thickness_mask: int = 10,
                           use_limit_device_resolution: bool = True, predictor=None, session=None, segment_percentage: int = 25,
                           control_type: str = Input(description="Choose a controlnet", choices=["canny", "hed"], default="canny",),
                           translation: str = Input(description=" Advanced options for the key frame translation", choices=["loose_cfattn", "freeu", None], default="loose_cfattn",),):
         args = Video2Video.load_video2video_default()
         # create config
         cfg = RenderConfig()
+
         # folders and files
         cfg.input_path = source  # input video
         cfg.work_dir = os.path.join(output_folder, strftime("%Y_%m_%d_%H.%M.%S"))  # output folder
@@ -66,6 +89,10 @@ class Video2Video:
 
         frame_save_path = os.path.join(cfg.work_dir, "media")  # frames folder
         os.makedirs(frame_save_path, exist_ok=True)
+
+        source_frame_folder_name = "media_original"
+        source_frame_folder_path = os.path.join(cfg.work_dir, source_frame_folder_name)  # original frames folder
+        os.makedirs(source_frame_folder_path, exist_ok=True)
 
         mask_save_path = os.path.join(cfg.work_dir, "masks")  # mask folder
         os.makedirs(mask_save_path, exist_ok=True)
@@ -88,7 +115,7 @@ class Video2Video:
             cfg.loose_cfattn = False
             cfg.freeu_args = (1, 1, 1, 1)
         cfg.use_limit_device_resolution = use_limit_device_resolution
-        cfg.control_type = control_type  # TODO maybe need to use openpose too?
+        cfg.control_type = control_type
         cfg.canny_low = None if cfg.control_type != "canny" else cfg.canny_low
         cfg.canny_high = None if cfg.control_type != "canny" else cfg.canny_high
 
@@ -122,13 +149,20 @@ class Video2Video:
         if not os.path.exists(diffuser_folder):
             os.makedirs(diffuser_folder)
 
-        sd_model_path = os.path.join(diffuser_folder, "realisticVisionV20_v20.safetensors")  # TODO
-        if not os.path.exists(sd_model_path):
-            link_sd_model = file_deepfake_config["diffusion"]["realisticVisionV20_v20.safetensors"]
-            download_model(sd_model_path, link_sd_model)
+        if sd_model_name is None:
+            sd_model_path = os.path.join(diffuser_folder, "Realistic_Vision_V5.1.safetensors")
+            if not os.path.exists(sd_model_path):
+                link_sd_model = file_deepfake_config["diffusion"]["Realistic_Vision_V5.1.safetensors"]
+                download_model(sd_model_path, link_sd_model)
+            else:
+                link_sd_model = file_deepfake_config["diffusion"]["Realistic_Vision_V5.1.safetensors"]
+                check_download_size(sd_model_path, link_sd_model)
+            # set default prompts to improve quality
+            args.a_prompt = "RAW photo, subject, (high detailed skin:1.2), 8k uhd, dslr, soft lighting, high quality, film grain, Fujifilm XT3"  # improve prompt
+            args.n_prompt = "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4), (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, amputation"  # default negative prompt
         else:
-            link_sd_model = file_deepfake_config["diffusion"]["realisticVisionV20_v20.safetensors"]
-            check_download_size(sd_model_path, link_sd_model)
+            sd_model_path = os.path.join(diffuser_folder, sd_model_name)
+            print(sd_model_path)
 
         # load controlnet model
         if control_type == "hed":
@@ -139,7 +173,7 @@ class Video2Video:
             else:
                 link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_hed.pth"]
                 check_download_size(controlnet_model_path, link_controlnet_model)
-            # load hed
+            # load hed annotator
             controlnet_model_annotator_path = os.path.join(diffuser_folder, "ControlNetHED.pth")
             if not os.path.exists(controlnet_model_annotator_path):
                 link_controlnet_model_annotator = file_deepfake_config["diffusion"]["ControlNetHED.pth"]
@@ -200,7 +234,7 @@ class Video2Video:
             if masks[key].get("start_time") > source_end:
                 remove_keys += [key]
                 continue
-            if masks[key].get("end_time") > source_end:
+            if masks[key].get("end_time") > source_end:  # TODO Maybe some bug here?
                 # if video was cut in end
                 masks[key]["end_time"] = source_end
             # if start cud need to reduce end time
@@ -216,16 +250,16 @@ class Video2Video:
             fps, num_frames, width, height = save_image_frame_cv2(source, frame_save_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
         elif source_media_type == "animated":
             fps, num_frames, width, height = save_video_frames_cv2(source, frame_save_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
+            save_video_frames_cv2(source, source_frame_folder_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
         else:
             raise "Source is not detected as image or video"
 
         # read frames files
         frame_files = sorted(os.listdir(frame_save_path))
-        frame_files_with_interval = frame_files[::interval]
+        frame_files_with_interval = frame_files[::interval] + [frame_files[-1]]
 
         if source_media_type == "animated":
             source = save_video_from_frames(frame_names="%04d.png", save_path=frame_save_path, alternative_save_path=cfg.work_dir, fps=fps)
-            print(source)
 
         # Extract the background data and remove it from the original dictionary
         background_mask = masks.pop('background', None)
@@ -265,14 +299,13 @@ class Video2Video:
             # get segment mask
             segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frame)
             # save first frame as 0001
-            segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, width=width, height=height)
+            segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, kernel_size=thickness_mask, width=width, height=height)
 
             # update background
             if background_mask:
                 background_mask_frame_file_path = os.path.join(mask_save_path, "mask_background", filter_frame_file_name)
-                print(background_mask_frame_file_path, filter_frames_files)
                 background_mask_frame = cv2.imread(background_mask_frame_file_path)
-                segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, width, height)
+                segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, kernel_size=thickness_mask, width=width, height=height)
 
             # update progress bar
             progress_bar.update(1)
@@ -284,12 +317,12 @@ class Video2Video:
                         print(key, "Encountered None mask. Breaking the loop.")
                         break
                     # save frames after 0002
-                    segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, width=width, height=height)
+                    segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, kernel_size=thickness_mask, width=width, height=height)
                     # update background
                     if background_mask:
                         background_mask_frame_file_path = os.path.join(mask_save_path, "mask_background", filter_frame_file_name)
                         background_mask_frame = cv2.imread(background_mask_frame_file_path)
-                        segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, width, height)
+                        segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, kernel_size=thickness_mask, width=width, height=height)
 
                     progress_bar.update(1)
             # set new key
@@ -302,7 +335,8 @@ class Video2Video:
 
         # combine masks and background mask
         if background_mask:
-            masks = {**{"background": background_mask}, **masks}
+            # masks = {**{"background": background_mask}, **masks}
+            masks = {**masks, **{"background": background_mask}}
 
         # generate diffusion images by prompt
         frame_files_with_interval = sorted(list(set(frame_files_with_interval)))
@@ -312,13 +346,14 @@ class Video2Video:
             controlnet_model_path=controlnet_model_path, vae_model_path=vae_model_path, gmflow_model_path=gmflow_model_path,
             frame_path=frame_save_path, mask_path=mask_save_path
         )
-        torch.cuda.empty_cache()
 
         if source_media_type == "static":
-            # TODO remove tmp files and all files from folder and keep only image
+            # remove only tmp folder
+            for f in os.listdir(TMP_FOLDER):
+                os.remove(os.path.join(TMP_FOLDER, f))
+            # return changed image
             return os.path.join(cfg.key_subdir, frame_files[0])
 
-        # TODO ebsynth use
         # download if ebsynth app is not exist
         ebsynth_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "ebsynth")
         os.environ['TORCH_HOME'] = ebsynth_folder
@@ -337,6 +372,10 @@ class Video2Video:
                 check_download_size(ebsynth_path_zip, link_ebsynth)
                 if not os.listdir(ebsynth_path):
                     unzip(ebsynth_path_zip, ebsynth_folder)
+            # access read app
+            os.system(f'icacls "{ebsynth_path}" /grant:r "Users:(R,W)" /T')
+            ebsynth_path = os.path.join(ebsynth_path, "EbSynth.exe")
+            os.system(f'icacls "{ebsynth_path}" /grant:r "Users:(R,W)" /T')
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
             if not os.path.exists(ebsynth_path):
@@ -345,15 +384,45 @@ class Video2Video:
             else:
                 link_ebsynth = file_deepfake_config["ebsynth"]["ebsynth_linux_cu118"]
                 check_download_size(ebsynth_path, link_ebsynth)
+            # access read app
+            os.system(f"chmod +x {ebsynth_path}")
         else:
-            print("Ebsynth is not support this platform")
+            raise "Ebsynth is not support this platform"
 
         # processing ebsynth
+        ebsynth = Ebsynth(gmflow_model_path=gmflow_model_path, ebsynth_path=ebsynth_path)
+        output_frame_folder_path, output_names = ebsynth.processing_ebsynth(
+            frames_path=cfg.key_subdir, frames=frame_files_with_interval,
+            base_folder=cfg.work_dir, input_subdir=source_frame_folder_name
+        )
+
+        # remove first frame
+        os.remove(os.path.join(output_frame_folder_path, output_names % 1))
+        # get saved file as merge frames to video
+        save_name = save_video_from_frames(frame_names=output_names, save_path=output_frame_folder_path, fps=fps, alternative_save_path=cfg.work_dir)
+        # get audio from video target
+        audio_file_name = extract_audio_from_video(source, cfg.work_dir)
+        # combine audio and video
+        save_name = save_video_with_audio(os.path.join(cfg.work_dir, save_name), os.path.join(cfg.work_dir, str(audio_file_name)), cfg.work_dir)
+        # remove files
+        for f in os.listdir(cfg.work_dir):
+            if save_name == f:
+                save_name = os.path.join(cfg.work_dir, f)
+            else:
+                if os.path.isfile(os.path.join(cfg.work_dir, f)):
+                    os.remove(os.path.join(cfg.work_dir, f))
+                elif os.path.isdir(os.path.join(cfg.work_dir, f)):
+                    shutil.rmtree(os.path.join(cfg.work_dir, f))
+
+        for f in os.listdir(TMP_FOLDER):
+            os.remove(os.path.join(TMP_FOLDER, f))
+
+        return save_name
 
     @staticmethod
     def load_video2video_default():
         return Namespace(
-            cfg=None,  # str Path to config file (TODO change on load from frontend)
+            cfg=None,  # str Path to config file
             input=None,  # str The input path to video.
             output=None,  # str
             prompt=None,  # str
@@ -363,10 +432,10 @@ class Video2Video:
             nb=None,  # bool Do not run postprocessing and run rerender only
             ne=None,  # bool Do not run ebsynth (use previous ebsynth temporary output)
             nps=None,  # bool Do not run poisson gradient blending
-            n_proc=1,  # int The max process count (TODO maybe control param)
+            n_proc=1,  # int The max process count (removed multiprocessing because duplicate)
             tmp=None,  # bool Keep ebsynth temporary output,
-            a_prompt="RAW photo, subject, (high detailed skin:1.2), 8k uhd, dslr, soft lighting, high quality, film grain, Fujifilm XT3",  # improve prompt
-            n_prompt="(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4), (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, amputation",  # default negative prompt
+            a_prompt="",  # improve prompt
+            n_prompt="",  # default negative prompt
             crop=[0, 0, 0, 0],  # crop video turn off
             canny_low=50,
             canny_high=100,

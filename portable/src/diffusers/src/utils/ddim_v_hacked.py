@@ -315,8 +315,8 @@ class DDIMVSampler(object):
                         rescale = (1. - weight) * (1 - noise_rescale) + rescale * noise_rescale
                     img_ref = self.model.q_sample(xtrg, ts)
                     img = img_ref * weight + (1. - weight) * (img - dir_xt) + rescale * dir_xt
-                    if inpaint_mask is not None:
-                        img = img * inpaint_mask + (1. - inpaint_mask) * self.model.q_sample(x0, ts)
+                if inpaint_mask is not None:
+                    img = img * inpaint_mask + (1. - inpaint_mask) * self.model.q_sample(x0, ts)
 
             if ucg_schedule is not None:
                 assert len(ucg_schedule) == len(time_range)

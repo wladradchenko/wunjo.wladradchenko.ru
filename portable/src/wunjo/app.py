@@ -1,4 +1,5 @@
 import os
+import gc
 import sys
 import json
 
@@ -14,10 +15,12 @@ from flaskwebgui import FlaskUI
 
 from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
 try:
-    from diffusers.inference import Video2Video
+    from diffusers.inference import Video2Video, create_diffusion_instruction
     VIDEO2VIDEO_AVAILABLE = True
+    diffusion_models = create_diffusion_instruction()
 except ImportError:
     VIDEO2VIDEO_AVAILABLE = False
+    diffusion_models = {}
 from speech.interface import TextToSpeech, VoiceCloneTranslate
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
@@ -30,7 +33,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_SPEECH_RESULT'] = []
 app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
@@ -44,6 +47,15 @@ app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "vid
 logging.getLogger('werkzeug').disabled = True
 
 version_app = get_version_app()
+
+
+def clear_cache():
+    # empty cache before big gpu models
+    del app.config['SEGMENT_ANYTHING_MODEL'], app.config['RTVC_LOADED_MODELS'], app.config['TTS_LOADED_MODELS']
+    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # clear segment data
+    app.config['SEGMENT_ANYTHING_MODEL'], app.config['RTVC_LOADED_MODELS'], app.config['TTS_LOADED_MODELS'] = {}, {}, {}
+    torch.cuda.empty_cache()
+    gc.collect()
 
 
 def get_avatars_static():
@@ -102,7 +114,10 @@ def index():
         default_lang.pop(lang_name)
     ordered_lang = {**{lang_name: lang_code}, **default_lang}
     app.config['USER_LANGUAGE'] = lang_code  # set user language for translate system print
-    return render_template("index.html", version=json.dumps(version_app), existing_langs=ordered_lang, user_lang=lang_code, existing_models=get_avatars_static())
+    return render_template(
+        "index.html", version=json.dumps(version_app), existing_langs=ordered_lang,
+        user_lang=lang_code, existing_models=get_avatars_static(), diffusion_models=json.dumps(diffusion_models)
+    )
 
 
 @app.route('/current_processor', methods=["GET"])
@@ -204,6 +219,10 @@ def create_segment_anything():
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
         return {"status": 400}
+
+    # empty cache without func clear_cache()
+    torch.cuda.empty_cache()
+    gc.collect()
 
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
 
@@ -395,18 +414,29 @@ def synthesize_diffuser():
     interval_generation = int(request_list.get("interval_generation", 10))
     controlnet = request_list.get("controlnet", "canny")
     preprocessor = request_list.get("preprocessor", "loose_cfattn")
+    segment_percentage = int(request_list.get("segment_percentage", 25))
+    thickness_mask = int(request_list.get("thickness_mask", 10))
+    sd_model_name = request_list.get("sd_model_name", None)
 
-    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
-    predictor = segment_models.get("predictor")
-    session = segment_models.get("session")
-    app.config['SEGMENT_ANYTHING_MODEL'] = {}
+    clear_cache()  # clear empty, because will be better load segment models again and after empty cache
 
-    # TODO Video2Video
-    diffusion_result = Video2Video.main_video_render(
-        source=os.path.join(TMP_FOLDER, source), output_folder=DEEPFAKE_FOLDER, source_start=source_start,
-        source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation,
-        control_type=controlnet, translation=preprocessor, predictor=predictor, session=session
-    )
+    try:
+        diffusion_result = Video2Video.main_video_render(
+            source=os.path.join(TMP_FOLDER, source), output_folder=DEEPFAKE_FOLDER, source_start=source_start, sd_model_name=sd_model_name,
+            source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation, thickness_mask=thickness_mask,
+            control_type=controlnet, translation=preprocessor, predictor=None, session=None, segment_percentage=segment_percentage
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    diffusion_result_filename = "/video/" + diffusion_result.replace("\\", "/").split("/video/")[-1]
+    diffusion_url = url_for("media_file", filename=diffusion_result_filename)
+    diffusion_date = current_time("%H:%M:%S")  # maybe did in js parse of date
+
+    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": diffusion_url, "response_video_date": diffusion_date}]
 
     print("Diffusion synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -448,17 +478,14 @@ def synthesize_retouch():
     blur = int(request_list.get("blur", 1))
     upscale = request_list.get("upscale", False)
     segment_percentage = int(request_list.get("segment_percentage", 25))
-
-    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
-    predictor = segment_models.get("predictor")
-    session = segment_models.get("session")
-    app.config['SEGMENT_ANYTHING_MODEL'] = {}
+    # clear empty, because will be better load segment models again and after empty cache, else not empty full
+    clear_cache()
 
     try:
         retouch_result = Retouch.main_retouch(
             output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
             masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
-            predictor=predictor, session=session, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
+            predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
         )
     except Exception as err:
         app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
@@ -519,6 +546,8 @@ def synthesize_face_swap():
     multiface = request_list.get("multiface", False)
     similarface = request_list.get("similarface", False)
     similar_coeff = float(request_list.get("similar_coeff", 0.95))
+
+    clear_cache()  # clear empty
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
@@ -598,6 +627,8 @@ def synthesize_deepfake():
     media_end = request_list.get("media_end", 0)
     emotion_label = request_list.get("emotion_label", None)
     similar_coeff = float(request_list.get("similar_coeff", 0.95))
+
+    clear_cache()  # clear empty
 
     try:
         if type_file == "img":
@@ -929,5 +960,5 @@ def media_file(filename):
 
 
 def main():
-    # FlaskUI(app=app, server="flask").run()
-    app.run()
+    FlaskUI(app=app, server="flask").run()
+    # app.run()

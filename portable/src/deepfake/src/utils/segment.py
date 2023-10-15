@@ -304,6 +304,7 @@ class SegmentAnything:
 
         # Convert mask's False values to 0 and other values to 255
         mask_to_save = (mask * 255).astype(np.uint8)
+
         # Create an empty colored image with the same dimensions as the mask
         colored_img = np.zeros((mask.shape[0], mask.shape[1], 4), dtype=np.uint8)
         # If the color is transparent (we'll assume an RGBA tuple where A=0 means fully transparent)
@@ -324,7 +325,7 @@ class SegmentAnything:
         return pil_image
 
     @staticmethod
-    def save_black_mask(save_name, mask, mask_save_path, width=None, height=None):
+    def save_black_mask(save_name, mask, mask_save_path, width=None, height=None, kernel_size=10):
         # Reduce the dimensions if necessary
         if mask.ndim == 4:
             mask = mask[0, 0]
@@ -333,6 +334,10 @@ class SegmentAnything:
             mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
         # Convert mask's False values to 0 and other values to 255
         mask_to_save = (mask * 255).astype(np.uint8)
+        # Dilation to increase line thickness
+        # Thickness line weight
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        mask_to_save = cv2.dilate(mask_to_save, kernel, iterations=1)
         # Create an empty black and white image with the same dimensions as the mask
         bw_img = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
         # Where the mask is True, set to white
@@ -343,7 +348,7 @@ class SegmentAnything:
 
 
     @staticmethod
-    def save_white_background_mask(save_path, mask, background_mask_frame, width=None, height=None):
+    def save_white_background_mask(save_path, mask, background_mask_frame, width=None, height=None, kernel_size=10):
         # Ensure both the masks have the same shape
         if background_mask_frame.shape[:2] != mask.shape[:2]:
             background_mask_frame = cv2.resize(background_mask_frame, (width, height))
@@ -355,7 +360,10 @@ class SegmentAnything:
             mask = cv2.resize(mask.astype(np.float32), (width, height), interpolation=cv2.INTER_LINEAR)
         # Convert mask's False values to 0 and other values to 255
         mask_to_save = (mask * 255).astype(np.uint8)
-
+        # Dilation to increase line thickness
+        # Thickness line weight
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        mask_to_save = cv2.dilate(mask_to_save, kernel, iterations=1)
         # Invert the mask
         inverted_mask = cv2.bitwise_not(mask_to_save)
         # Where the inverted mask

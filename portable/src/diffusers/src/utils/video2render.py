@@ -123,10 +123,7 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
     blur = T.GaussianBlur(kernel_size=(9, 9), sigma=(18, 18))
     totensor = T.PILToTensor()
 
-    use_insert = False
     style_update_freq = cfg.style_update_freq
-    pixelfusion = True
-    color_preserve = cfg.color_preserve
 
     mask_period = cfg.mask_period
     firstx0 = True
@@ -134,11 +131,10 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
 
     for mask_id in masks.keys():
         # for each mask
-        # TODO нужно начинать с бэкрауда, потом пропускать изменения кадров, которые не входят в старт?
         mask_files_path = masks[mask_id]["frame_files_path"]
         mask_files_path = sorted(os.listdir(mask_files_path))
         common_mask_files = sorted(list(set(mask_files_path) & set(frame_files_with_interval)))
-        print(common_mask_files)
+
         prompt = masks[mask_id]["prompt"]
         a_prompt = args.a_prompt
         n_prompt = masks[mask_id]["n_prompt"] + args.n_prompt
@@ -147,7 +143,7 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
         x0_strength = 1 - float(masks[mask_id]["input_strength"])
         scale = float(masks[mask_id]["input_scale"])
 
-        seed = int(masks[mask_id]["input_seed"])  # TODO maybe will be one general? or it better to rewrite and change only mask element
+        seed = int(masks[mask_id]["input_seed"])
         if seed == -1:
             seed = random.randint(0, 65535)
 
@@ -328,28 +324,9 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
             viz = (einops.rearrange(x_samples, 'b c h w -> b h w c') * 127.5 + 127.5).cpu().numpy().clip(0, 255).astype(np.uint8)
             pil_created_image = Image.fromarray(viz[0])
 
-            if use_insert:
-                # Load the images and mask
-                pil_mask = Image.open(os.path.join(mask_path, f"mask_{mask_id}", common_frame_name)).convert('L')  # Convert to grayscale
-                pil_original_frame = Image.open(os.path.join(frame_path, common_frame_name))
+            pil_created_image.save(os.path.join(cfg.key_subdir, common_frame_name))
+            pil_created_image.save(os.path.join(frame_path, common_frame_name))
 
-                # Convert the mask to binary format (0 and 255)
-                threshold = 128
-                fn = lambda x: 255 if x > threshold else 0
-                pil_binary_mask = pil_mask.point(fn, mode='1')
-
-                # Convert images and binary mask to arrays
-                mask_array = np.array(pil_binary_mask)
-                original_frame_array = np.array(pil_original_frame)
-                created_image_array = np.array(pil_created_image)
-
-                # Combine the two images based on the binary mask
-                combined_image_array = np.where(mask_array[:, :, None].astype(bool), created_image_array, original_frame_array)
-                # Convert the combined array back to a PIL Image
-                combined_image = Image.fromarray(combined_image_array)
-                # Save the combined image
-                combined_image.save(os.path.join(cfg.key_subdir, common_frame_name))
-                # combined_image.save(os.path.join(frame_path, common_frame_name))  # TODO uncomitted
-            else:
-                pil_created_image.save(os.path.join(cfg.key_subdir, common_frame_name))
-                # pil_created_image.save(os.path.join(frame_path, common_frame_name))  # TODO uncomitted
+    # empty cache
+    del model, ddim_v_sampler, flow_model, checkpoint, weights, controller
+    torch.cuda.empty_cache()
