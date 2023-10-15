@@ -68,6 +68,8 @@ class Ebsynth:
 
     def general_process_sequence(self, video_sequence: VideoSequence, i, blend_histogram=True, blend_gradient=True):
         key_img_path = os.path.join(video_sequence.key_dir, video_sequence.frame_files[i])
+        if not os.path.exists(key_img_path):
+            return
         key1_img = cv2.imread(key_img_path)
         img_shape = key1_img.shape
         beg_id = video_sequence.get_sequence_beg_id(i)
@@ -82,9 +84,9 @@ class Ebsynth:
 
         obs = [obs[0]] + list(reversed(obs[1:]))
         inputs = video_sequence.get_input_sequence(i)
-        oas = [cv2.imread(x) for x in oas]
-        obs = [cv2.imread(x) for x in obs]
-        inputs = [cv2.imread(x) for x in inputs]
+        oas = [cv2.imread(x) for x in oas if os.path.exists(x)]
+        obs = [cv2.imread(x) for x in obs if os.path.exists(x)]
+        inputs = [cv2.imread(x) for x in inputs if os.path.exists(x)]
         flow_seq = video_sequence.get_flow_sequence(i)
 
         dist1s = []
@@ -138,7 +140,7 @@ class Ebsynth:
 
             cv2.imwrite(blend_out_path, res)
         end = time()
-        print('Ebsynth others:', round(end - beg), "sec")
+        print(f'Ebsynth others: {round(end - beg)} sec')
 
     @staticmethod
     def load_error(bin_path, img_shape):
