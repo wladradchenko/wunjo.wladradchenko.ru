@@ -1,5 +1,5 @@
 ///CREATE GENERAL TRAIN BUTTON///
-window.onload = function () {
+window.addEventListener('load', function() {
   const menubarGeneral = document.getElementById("menubar");
 
   // Create the 'a' element
@@ -28,7 +28,7 @@ window.onload = function () {
       availableFeaturesByCUDA(trainButton);
     });
   availableFeaturesByCUDA(trainButton);
-};
+});
 ///CREATE GENERAL TRAIN BUTTON///
 
 function trainWindow(event) {

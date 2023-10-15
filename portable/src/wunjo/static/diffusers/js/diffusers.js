@@ -1,4 +1,33 @@
+window.addEventListener('load', function() {
+  const menubarGeneral = document.getElementById("menubar");
 
+  // Create the 'a' element
+  const buttonVideoToVideoDiffusion = document.createElement("a");
+  buttonVideoToVideoDiffusion.id = "a-video-to-video-diffuser";
+  buttonVideoToVideoDiffusion.style.color = "black";
+  buttonVideoToVideoDiffusion.style.width = "3.2vw";
+  buttonVideoToVideoDiffusion.style.height = "3.2vw";
+  buttonVideoToVideoDiffusion.style.fontSize = "1.5rem";
+  buttonVideoToVideoDiffusion.style.display = "none";
+  buttonVideoToVideoDiffusion.title = "Открыть окно преобразования видео текстовым запросом";
+  buttonVideoToVideoDiffusion.addEventListener("click", (event) =>
+    initiateDiffusersPop(event.currentTarget)
+  );
+
+  // Create the 'i' element and append it to the 'a' element
+  const icon = document.createElement("i");
+  icon.className = "fa-solid fa-palette";
+  buttonVideoToVideoDiffusion.appendChild(icon);
+
+  // Append the 'a' element to the 'menubarGeneral'
+  menubarGeneral.appendChild(buttonVideoToVideoDiffusion);
+  document
+    .getElementById("a-change-processor")
+    .addEventListener("click", (event) => {
+      availableFeaturesByCUDA(buttonVideoToVideoDiffusion);
+    });
+  availableFeaturesByCUDA(buttonVideoToVideoDiffusion);
+});
 
 
 function initiateDiffusersPop(button) {
