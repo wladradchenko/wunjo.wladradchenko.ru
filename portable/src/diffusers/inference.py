@@ -221,6 +221,10 @@ class Video2Video:
         # cut video
         if source_type == "video":
             source = cut_start_video(source, source_start, source_end)
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(source, cfg.work_dir)
+        else:
+            audio_file_name = None
 
         remove_keys = []
         for key in masks.keys():
@@ -260,6 +264,7 @@ class Video2Video:
 
         if source_media_type == "animated":
             source = save_video_from_frames(frame_names="%04d.png", save_path=frame_save_path, alternative_save_path=cfg.work_dir, fps=fps)
+            source = os.path.join(cfg.work_dir, source)
 
         # Extract the background data and remove it from the original dictionary
         background_mask = masks.pop('background', None)
@@ -400,10 +405,9 @@ class Video2Video:
         os.remove(os.path.join(output_frame_folder_path, output_names % 1))
         # get saved file as merge frames to video
         save_name = save_video_from_frames(frame_names=output_names, save_path=output_frame_folder_path, fps=fps, alternative_save_path=cfg.work_dir)
-        # get audio from video target
-        audio_file_name = extract_audio_from_video(source, cfg.work_dir)
         # combine audio and video
-        save_name = save_video_with_audio(os.path.join(cfg.work_dir, save_name), os.path.join(cfg.work_dir, str(audio_file_name)), cfg.work_dir)
+        if os.path.exists(os.path.join(cfg.work_dir, str(audio_file_name))):
+            save_name = save_video_with_audio(os.path.join(cfg.work_dir, save_name), os.path.join(cfg.work_dir, str(audio_file_name)), cfg.work_dir)
         # remove files
         for f in os.listdir(cfg.work_dir):
             if save_name == f:
