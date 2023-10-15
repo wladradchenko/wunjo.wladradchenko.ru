@@ -1,3 +1,4 @@
+// DIFFUSION ONLY FOR GPU
 window.addEventListener('load', function() {
   const menubarGeneral = document.getElementById("menubar");
 
@@ -28,6 +29,7 @@ window.addEventListener('load', function() {
     });
   availableFeaturesByCUDA(buttonVideoToVideoDiffusion);
 });
+// DIFFUSION ONLY FOR GPU
 
 
 function initiateDiffusersPop(button) {
