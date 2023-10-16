@@ -15,7 +15,7 @@ sys.path.insert(0, deepfake_root_path)
 
 """Video and image"""
 from src.utils.videoio import (
-    save_video_with_audio, cut_start_video, get_frames, get_first_frame, encrypted,
+    save_video_with_audio, cut_start_video, get_frames, get_first_frame, encrypted, save_frames,
     check_media_type, extract_audio_from_video, save_video_from_frames, video_to_frames
 )
 from src.utils.imageio import save_image_cv2, read_image_cv2, save_colored_mask_cv2
@@ -354,6 +354,7 @@ class AnimationMouthTalk:
         args.face = cut_start_video(args.face, args.video_start, args.video_end)
 
         # get video frames
+        # TODO if users will have problem with RAM for this method, when change approach on save frames in files
         frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
         # get mel of audio
         mel_processor = MelProcessor(args=args, save_output=save_dir, fps=fps)
@@ -497,11 +498,14 @@ class FaceSwap:
             args.target = cut_start_video(args.target, args.target_video_start, args.target_video_end)
 
             # get video frame for source if type is video
-            target_frames, fps = get_frames(video=args.target, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+            frame_dir = os.path.join(save_dir, "frames")
+            os.makedirs(frame_dir, exist_ok=True)
+
+            fps, frame_dir = save_frames(video=args.target, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
             # create face swap
             file_name = "swap_result.mp4"
             saved_file = os.path.join(save_dir, file_name)
-            faceswap.swap_video(target_frames, source_face, args.target_face_fields, saved_file, args.multiface, fps)
+            faceswap.swap_video(frame_dir, source_face, args.target_face_fields, saved_file, args.multiface, fps)
 
             # after face or background enchanter
             if enhancer:
@@ -712,6 +716,7 @@ class Retouch:
         orig_frames = frames.copy()
         frame_batch_size = 50  # for improve remove object to limit VRAM, for CPU slowly, but people have a lot RAM
 
+        # TODO Not keep frames in memory for Retouch
         if source_media_type == "animated" and retouch_model_type == "improved_retouch_object" and device == "cuda":
             # resize only for VRAM
             gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)

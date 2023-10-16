@@ -212,18 +212,17 @@ class FaceSwapDeepfake:
 
         return tmp_frame
 
-    def swap_video(self, target_frames, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
+    def swap_video(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
         if "CUDAExecutionProvider" in self.access_providers and torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
             # thread will not work correct with GPU
-            self.swap_video_cuda(target_frames, source_face, target_face_fields, save_file, multiface, fps, video_format)
+            self.swap_video_cuda(target_frames_path, source_face, target_face_fields, save_file, multiface, fps, video_format)
         else:
-            self.swap_video_thread(target_frames, source_face, target_face_fields, save_file, multiface, fps,video_format)
+            self.swap_video_thread(target_frames_path, source_face, target_face_fields, save_file, multiface, fps,video_format)
 
-    def swap_video_thread(self, target_frames, source_face, target_face_fields, save_file: str,
-                   multiface=False, fps=30, video_format=".mp4"):
+    def swap_video_thread(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
         """
         Face swap video with Threads. Will not work with CUDA
-        :param target_frames: target frames
+        :param target_frames_path: directory containing target frames
         :param source_face: source face
         :param target_face_fields: crop field for target face
         :param save_file: save file path
@@ -233,7 +232,13 @@ class FaceSwapDeepfake:
         :return:
         """
 
-        frame_h, frame_w = target_frames[0].shape[:-1]
+        # Get a list of all frame files in the target_frames_path directory
+        frame_files = sorted([os.path.join(target_frames_path, fname) for fname in os.listdir(target_frames_path) if fname.endswith('.jpg') or fname.endswith('.png')])
+
+        # Read the first frame to get the dimensions
+        first_frame = cv2.imread(frame_files[0])
+        frame_h, frame_w = first_frame.shape[:-1]
+
         if video_format == '.mp4':
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         elif video_format == '.avi':
@@ -243,20 +248,22 @@ class FaceSwapDeepfake:
 
         out = cv2.VideoWriter(save_file, fourcc, fps, (frame_w, frame_h))
 
+        # Adjust the way we get face detection results
         if multiface:
             print("Getting all face...")
-            face_det_results = self.face_detect_with_alignment_all(target_frames)
+            face_det_results = self.face_detect_with_alignment_all([cv2.imread(frame) for frame in frame_files])
         else:
             print("Getting target face...")
-            face_det_results = self.face_detect_with_alignment_crop(target_frames, target_face_fields)
+            face_det_results = self.face_detect_with_alignment_crop([cv2.imread(frame) for frame in frame_files], target_face_fields)
 
         print("Starting face swap...")
 
-        progress_bar = tqdm(total=len(target_frames), unit='it', unit_scale=True)
+        progress_bar = tqdm(total=len(frame_files), unit='it', unit_scale=True)
 
         with ThreadPoolExecutor() as executor:
             processed_frames = list(executor.map(self.process_frame, [
-                (frame, face_det_results[i], source_face, progress_bar) for i, frame in enumerate(target_frames)
+                (cv2.imread(frame_files[i]), face_det_results[i], source_face, progress_bar) for i in
+                range(len(frame_files))
             ]))
 
         progress_bar.close()
@@ -267,10 +274,14 @@ class FaceSwapDeepfake:
         out.release()
         print("Face swap processing finished...")
 
-    def swap_video_cuda(self, target_frames, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
+    def swap_video_cuda(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
         """Face swap video without Threads"""
 
-        frame_h, frame_w = target_frames[0].shape[:-1]
+        # Get a list of all frame files in the target_frames_path directory
+        frame_files = sorted([os.path.join(target_frames_path, fname) for fname in os.listdir(target_frames_path) if fname.endswith('.png')])
+        # Read the first frame to get the dimensions
+        first_frame = cv2.imread(frame_files[0])
+        frame_h, frame_w = first_frame.shape[:-1]
 
         if video_format == '.mp4':
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -281,17 +292,18 @@ class FaceSwapDeepfake:
 
         out = cv2.VideoWriter(save_file, fourcc, fps, (frame_w, frame_h))
 
+        # Adjust the way we get face detection results
         if multiface:
             print("Getting all face...")
-            face_det_results = self.face_detect_with_alignment_all(target_frames)
+            face_det_results = self.face_detect_with_alignment_all([cv2.imread(frame) for frame in frame_files])
         else:
             print("Getting target face...")
-            face_det_results = self.face_detect_with_alignment_crop(target_frames, target_face_fields)
+            face_det_results = self.face_detect_with_alignment_crop([cv2.imread(frame) for frame in frame_files], target_face_fields)
 
         print("Starting face swap...")
         progress_bar = tqdm(total=len(face_det_results), unit='it', unit_scale=True)
         for i, dets in enumerate(face_det_results):
-            tmp_frame = target_frames[i].copy()
+            tmp_frame = cv2.imread(frame_files[i])
             for face in dets:
                 if face is None:
                     break

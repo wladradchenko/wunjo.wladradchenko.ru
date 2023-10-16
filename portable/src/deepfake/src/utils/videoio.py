@@ -190,6 +190,60 @@ def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
     return full_frames, fps
 
 
+def save_frames(video: str, output_dir: str, rotate: int, crop: list, resize_factor: int):
+    """
+    Extract frames from a video, apply resizing, rotation, and cropping, and save them to an output directory.
+
+    :param video: path to the video file
+    :param output_dir: path to the directory where frames should be saved
+    :param rotate: number of 90-degree rotations
+    :param crop: list with cropping coordinates [y1, y2, x1, x2]
+    :param resize_factor: factor by which the frame should be resized
+    :return: fps of the video, path to the directory containing frames
+    """
+    print("Start reading video")
+
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+
+    video_stream = cv2.VideoCapture(video)
+    fps = video_stream.get(cv2.CAP_PROP_FPS)
+    frame_count = 0
+
+    try:
+        while True:
+            still_reading, frame = video_stream.read()
+
+            if not still_reading:
+                break
+
+            if resize_factor > 1:
+                frame = cv2.resize(frame, (int(frame.shape[1] // resize_factor), int(frame.shape[0] // resize_factor)))
+
+            for _ in range(rotate):
+                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+            y1, y2, x1, x2 = crop
+            x2 = x2 if x2 != -1 else frame.shape[1]
+            y2 = y2 if y2 != -1 else frame.shape[0]
+
+            frame = frame[y1:y2, x1:x2]
+
+            # Save the frame to the output directory
+            frame_filename = os.path.join(output_dir, f'frame{frame_count:04}.png')
+            cv2.imwrite(frame_filename, frame)
+
+            frame_count += 1
+
+    finally:
+        video_stream.release()
+
+    print(f"Number of frames saved: {frame_count}")
+
+    return fps, output_dir
+
+
+
 def encrypted(video_path: str, save_dir: str, fn: int = 0):
 
     name = str(os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
