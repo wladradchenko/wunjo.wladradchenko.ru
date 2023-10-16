@@ -183,8 +183,8 @@ class Ebsynth:
             flow_seq = video_sequence.get_flow_sequence(i, is_forward)
             if not flow_seq:
                 continue
-            key_img_id = i if is_forward else i + 1
-
+            # key_img_id = i if is_forward else i + 1  # TODO this is default, it will some bugs when return default
+            key_img_id = i + 1  # TODO I think result look better?
             if len(frame_files) - 1 < i + 1:
                 continue
             key_img = os.path.join(video_sequence.key_dir, frame_files[key_img_id])
