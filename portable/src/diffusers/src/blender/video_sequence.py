@@ -98,6 +98,8 @@ class VideoSequence:
         return path_dir
 
     def get_output_sequence(self, i, is_forward=True):
+        interval_frame_name = None
+
         if i + 1 > len(self.__frame_files_with_interval) - 1:
             # check what file will exist
             last_input_frame = self.__input_frames[-1]
@@ -111,12 +113,13 @@ class VideoSequence:
         else:
             beg_id = self.get_sequence_beg_id(i)
             end_id = self.get_sequence_beg_id(i + 1)
-            interval_frame_name = self.__frame_files_with_interval[i]
         if is_forward:
             id_list = list(range(beg_id, end_id))
         else:
             i += 1
             id_list = list(range(end_id, beg_id, -1))
+        if interval_frame_name is None:
+            interval_frame_name = self.__frame_files_with_interval[i]
         out_subdir = self.__get_out_subdir(interval_frame_name)
         path_dir = [os.path.join(out_subdir, self.__output_format % id) for id in id_list if self.__input_format % id in self.__input_frames]
         return path_dir

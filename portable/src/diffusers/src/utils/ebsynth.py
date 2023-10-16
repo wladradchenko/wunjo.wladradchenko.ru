@@ -106,7 +106,8 @@ class Ebsynth:
         blend_out_path = video_sequence.get_blending_img(beg_id)
         cv2.imwrite(blend_out_path, key1_img)
 
-        for i in range(len(binbs) - 1):
+        # Modify iteration to use flow_seq's length
+        for i in range(len(flow_seq)):
             c_id = beg_id + i + 1
             blend_out_path = video_sequence.get_blending_img(c_id)
 
@@ -118,8 +119,8 @@ class Ebsynth:
             weight2 = 1 - weight1
             mask = g_error_mask(dist1, dist2, weight1, weight2)
             if p_mask is not None:
-                flow_path = flow_seq[i]
-                flow = self.flow_calc.get_flow(inputs[i], inputs[i + 1], flow_path)
+                # Use flow_seq[i] to get the correct flow path for the current iteration
+                flow = self.flow_calc.get_flow(inputs[i], inputs[i + 1], flow_seq[i])
                 p_mask = self.flow_calc.warp(p_mask, flow, 'nearest')
                 mask = p_mask | mask
             p_mask = mask
@@ -183,8 +184,7 @@ class Ebsynth:
             flow_seq = video_sequence.get_flow_sequence(i, is_forward)
             if not flow_seq:
                 continue
-            # key_img_id = i if is_forward else i + 1  # TODO this is default, it will some bugs when return default
-            key_img_id = i + 1  # TODO I think result look better?
+            key_img_id = i if is_forward else i + 1
             if len(frame_files) - 1 < i + 1:
                 continue
             key_img = os.path.join(video_sequence.key_dir, frame_files[key_img_id])
