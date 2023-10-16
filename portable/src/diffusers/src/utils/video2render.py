@@ -138,7 +138,7 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
         prompt = masks[mask_id]["prompt"]
         a_prompt = args.a_prompt
         n_prompt = masks[mask_id]["n_prompt"] + args.n_prompt
-        prompt = prompt + ', ' + a_prompt
+        prompt = prompt + ', ' + a_prompt if prompt != "pass" else prompt
 
         x0_strength = 1 - float(masks[mask_id]["input_strength"])
         scale = float(masks[mask_id]["input_scale"])
@@ -198,6 +198,10 @@ def render(cfg: RenderConfig, args, masks, frame_files_with_interval, sd_model_p
         for common_frame_name in common_mask_files:
             # load frame
             frame = cv2.imread(os.path.join(frame_path, common_frame_name))
+            if prompt == "pass":
+                # prompt pass means skip this object
+                cv2.imwrite(os.path.join(cfg.key_subdir, common_frame_name), frame)
+                continue
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = HWC3(frame)
 

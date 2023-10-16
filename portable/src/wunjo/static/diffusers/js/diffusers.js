@@ -83,8 +83,8 @@ function initiateDiffusersPop(button) {
                                         <input id="diffusionBackgroundSeed" type="number" max="1000" min="0" value="0" step="1" style="width: 50px; margin-left: 5px;">
                                     </div>
                                 </div>
-                            <textarea id="diffusionBackgroundPrompt" placeholder="Подсказка ввода" style="min-height: 25px; max-height: 75px; max-width: 30vw; min-width: 30vw; padding: 5px; margin: 5px;"></textarea>
-                            <textarea id="diffusionBackgroundNegativePrompt" placeholder="Введите отрицательную подсказку" style="min-height: 25px; max-height: 75px; max-width: 30vw; min-width: 30vw; padding: 5px; margin: 5px;"></textarea>
+                            <textarea id="diffusionBackgroundPrompt" placeholder="Input your prompt to draw or input 'pass' to skip" style="min-height: 25px; max-height: 75px; max-width: 30vw; min-width: 30vw; padding: 5px; margin: 5px;"></textarea>
+                            <textarea id="diffusionBackgroundNegativePrompt" placeholder="Input negative prompt" style="min-height: 25px; max-height: 75px; max-width: 30vw; min-width: 30vw; padding: 5px; margin: 5px;"></textarea>
                         </div>
                         </div>
                         <legend>General settings</legend>
@@ -365,7 +365,7 @@ async function maskDiffuserToList() {
     const textareaPrompt = document.createElement('textarea');
     textareaPrompt.className = "diffusionPrompt";
     textareaPrompt.style = "min-height: 25px;max-height: 75px;max-width: 30vw;min-width: 30vw;padding: 5px;margin: 5px;";
-    textareaPrompt.placeholder = "Input prompt";
+    textareaPrompt.placeholder = "Input your prompt to draw or input 'pass' to skip";
     const textareaNegativePrompt = document.createElement('textarea');
     textareaNegativePrompt.className = "diffusionNegativePrompt";
     textareaNegativePrompt.style = "min-height: 25px;max-height: 75px;max-width: 30vw;min-width: 30vw;padding: 5px;margin: 5px;";
@@ -501,18 +501,20 @@ async function processDiffuser(data, element) {
         const inputStrength = timeline.querySelector(".diffusionStrength").value;
         const inputSeed = timeline.querySelector(".diffusionSeed").value;
         const inputScale = timeline.querySelector(".diffusionScale").value;
-        let textareaPrompt = timeline.querySelector(".diffusionPrompt").value;
-        let textareaNegativePrompt = timeline.querySelector(".diffusionNegativePrompt").value;
+        let textareaPrompt = timeline.querySelector(".diffusionPrompt").value.trim();
+        let textareaNegativePrompt = timeline.querySelector(".diffusionNegativePrompt").value.trim();
 
         if (textareaPrompt === "")  {
             displayMessage(messageAboutStatus, "You need to add prompt for each mask");
             return null
         } else {
             textareaPrompt = await translateWithGoogle(textareaPrompt, "auto", "en");
+            textareaPrompt = textareaPrompt.toLowerCase();
         };
 
         if (textareaNegativePrompt !== "")  {
             textareaNegativePrompt = await translateWithGoogle(textareaNegativePrompt, "auto", "en");
+            textareaNegativePrompt = textareaNegativePrompt.toLowerCase();
         };
 
         if (mediaStartNumber > startTime) {
@@ -542,18 +544,20 @@ async function processDiffuser(data, element) {
         const diffusionBackgroundStrength = element.querySelector("#diffusionBackgroundStrength").value;
         const diffusionBackgroundScale = element.querySelector("#diffusionBackgroundScale").value;
         const diffusionBackgroundSeed = element.querySelector("#diffusionBackgroundSeed").value;
-        let diffusionBackgroundPrompt = element.querySelector("#diffusionBackgroundPrompt").value;
-        let diffusionBackgroundNegativePrompt = element.querySelector("#diffusionBackgroundNegativePrompt").value;
+        let diffusionBackgroundPrompt = element.querySelector("#diffusionBackgroundPrompt").value.trim();
+        let diffusionBackgroundNegativePrompt = element.querySelector("#diffusionBackgroundNegativePrompt").value.trim();
 
         if (diffusionBackgroundPrompt === "") {
             displayMessage(messageAboutStatus, "You checked change background but not set prompt");
             return null
         } else {
             diffusionBackgroundPrompt = await translateWithGoogle(diffusionBackgroundPrompt, "auto", "en");
+            diffusionBackgroundPrompt = diffusionBackgroundPrompt.toLowerCase();
         };
 
         if (diffusionBackgroundNegativePrompt !== "")  {
             diffusionBackgroundNegativePrompt = await translateWithGoogle(diffusionBackgroundNegativePrompt, "auto", "en");
+            diffusionBackgroundNegativePrompt = diffusionBackgroundNegativePrompt.toLowerCase();
         };
 
         dataDict["background"] = {
