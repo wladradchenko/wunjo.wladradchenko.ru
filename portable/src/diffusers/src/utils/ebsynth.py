@@ -184,7 +184,7 @@ class Ebsynth:
             if not flow_seq:
                 continue
             key_img_id = i if is_forward else i + 1
-            # TODO не понятно, что будет с последним кадром, нужно будет потом проверять и что-то думать
+
             if len(frame_files) - 1 < i + 1:
                 continue
             key_img = os.path.join(video_sequence.key_dir, frame_files[key_img_id])
