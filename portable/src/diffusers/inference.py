@@ -295,11 +295,6 @@ class Video2Video:
             # set progress bar
             progress_bar = tqdm(total=len(filter_frames_files), unit='it', unit_scale=True)
             filter_frame_file_name = filter_frames_files[0]
-            # update interval list frames by start and last frame, and next after last frame
-            if filter_frames_files[-1] != frame_files[-1]:
-                frame_files_with_interval += [filter_frame_file_name, filter_frames_files[-1], frame_files[end_frame]]
-            else:
-                frame_files_with_interval += [filter_frame_file_name, filter_frames_files[-1]]
             filter_frame = cv2.imread(os.path.join(frame_save_path, filter_frame_file_name))  # read first frame file after filter
             # get segment mask
             segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frame)
@@ -314,6 +309,10 @@ class Video2Video:
 
             # update progress bar
             progress_bar.update(1)
+            # update interval frame
+            start_filter_frame = filter_frame_file_name
+            end_filter_frame = filter_frame_file_name
+
             if len(filter_frames_files) > 1:
                 for filter_frame_file_name in filter_frames_files[1:]:
                     filter_frame = cv2.imread(os.path.join(frame_save_path, filter_frame_file_name))  # read frame file after filter
@@ -321,6 +320,8 @@ class Video2Video:
                     if segment_mask is None:
                         print(key, "Encountered None mask. Breaking the loop.")
                         break
+                    # update infor about end mask frame
+                    end_filter_frame = filter_frame_file_name
                     # save frames after 0002
                     segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, kernel_size=thickness_mask, width=width, height=height)
                     # update background
@@ -330,6 +331,14 @@ class Video2Video:
                         segmentation.save_white_background_mask(background_mask_frame_file_path, segment_mask, background_mask_frame, kernel_size=thickness_mask, width=width, height=height)
 
                     progress_bar.update(1)
+            # update interval list frames by start and last frame, and next after last frame
+            if end_filter_frame != frame_files[-1]:
+                if start_filter_frame != frame_files[0]:
+                    frame_files_with_interval += [frame_files[frame_files.index(start_filter_frame) - 1], start_filter_frame, end_filter_frame, frame_files[frame_files.index(end_filter_frame) + 1]]
+                else:
+                    frame_files_with_interval += [start_filter_frame, end_filter_frame, frame_files[frame_files.index(end_filter_frame) + 1]]
+            else:
+                frame_files_with_interval += [start_filter_frame, end_filter_frame]
             # set new key
             masks[key]["frame_files_path"] = mask_key_save_path
             # close progress bar for key
@@ -393,6 +402,19 @@ class Video2Video:
             os.system(f"chmod +x {ebsynth_path}")
         else:
             raise "Ebsynth is not support this platform"
+
+        # before start set to will be all keys
+        frame_dir = os.path.join(cfg.work_dir, source_frame_folder_name)
+        # Iterate through each file in frame_files_with_interval
+        for frame_file in frame_files_with_interval:
+            # Destination path for the key
+            key_path = os.path.join(cfg.key_subdir, frame_file)
+            # Check if the file doesn't exist in the key directory
+            if not os.path.exists(key_path):
+                # Source path for the frame file
+                frame_path = os.path.join(frame_dir, frame_file)
+                # Copy the file from frame directory to key directory
+                shutil.copy(frame_path, key_path)
 
         # processing ebsynth
         ebsynth = Ebsynth(gmflow_model_path=gmflow_model_path, ebsynth_path=ebsynth_path)
