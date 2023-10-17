@@ -69,7 +69,7 @@ function initiateRetouchAiPop(button) {
                             <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
                             <label for="retouch-object">Удаление объекта</label>
                         </div>
-                        <div>
+                        <div id="improvedRetouchObjectDiv">
                             <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
                             <label for="improved-retouch-object">Улучшенное удаление объекта</label>
                         </div>
@@ -118,6 +118,8 @@ function initiateRetouchAiPop(button) {
     doneLabel: "Закрыть",
   });
   introRetouch.start();
+
+  availableFeaturesByCUDA(document.getElementById("improvedRetouchObjectDiv"));
 
   document.getElementById("get-mask").addEventListener("change", function() {
         if (this.checked) {
