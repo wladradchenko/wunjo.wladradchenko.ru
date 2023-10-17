@@ -318,6 +318,8 @@ Update 1.6.0
 - [x] Added auto segmentation mask with save
 - [x] Added Video2Video with ControlNet by text prompt tool
 - [x] Added InpaintVideoMask2Video with ControlNet by text prompt tool
+- [x] Optimized using memory for face swapping for long video
+- [x] Optimized using memory for retouch and remove object for long video
 
 Update 1.6.1
 - [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning

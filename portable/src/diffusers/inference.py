@@ -238,7 +238,7 @@ class Video2Video:
             if masks[key].get("start_time") > source_end:
                 remove_keys += [key]
                 continue
-            if masks[key].get("end_time") > source_end:  # TODO Maybe some bug here?
+            if masks[key].get("end_time") > source_end:
                 # if video was cut in end
                 masks[key]["end_time"] = source_end
             # if start cud need to reduce end time

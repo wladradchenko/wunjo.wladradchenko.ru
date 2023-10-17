@@ -1,6 +1,7 @@
 import os
 import cv2
 import sys
+import math
 import torch
 import imageio
 import subprocess
@@ -575,6 +576,15 @@ class Retouch:
         # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
+        # create tmp folder
+        tmp_dir = os.path.join(save_dir, "tmp")
+        os.makedirs(tmp_dir, exist_ok=True)
+        # frame folder
+        frame_dir = os.path.join(tmp_dir, "frame")
+        os.makedirs(frame_dir, exist_ok=True)
+        # resized frame folder
+        resized_dir = os.path.join(tmp_dir, "resized")
+        os.makedirs(resized_dir, exist_ok=True)
         # get device
         use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
         if torch.cuda.is_available() and not use_cpu:
@@ -706,17 +716,20 @@ class Retouch:
         source_media_type = check_media_type(source)
         if source_media_type == "static":
             fps = 0
-            frames = [read_image_cv2(source)]
+            # Save frame to frame_dir
+            frame_files = ["static_frame.png"]
+            cv2.imwrite(os.path.join(frame_dir, frame_files[0]), read_image_cv2(source))
         elif source_media_type == "animated":
-            frames, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            fps, frame_dir = save_frames(video=source, output_dir=frame_dir, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
+            frame_files = sorted(os.listdir(frame_dir))
         else:
             raise "Source is not detected as image or video"
 
-        orig_height, orig_width, _ = frames[0].shape
-        orig_frames = frames.copy()
+        first_frame = read_image_cv2(os.path.join(frame_dir, frame_files[0]))
+        orig_height, orig_width, _ = first_frame.shape
         frame_batch_size = 50  # for improve remove object to limit VRAM, for CPU slowly, but people have a lot RAM
+        work_dir = frame_dir
 
-        # TODO Not keep frames in memory for Retouch
         if source_media_type == "animated" and retouch_model_type == "improved_retouch_object" and device == "cuda":
             # resize only for VRAM
             gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
@@ -726,8 +739,8 @@ class Retouch:
             max_size = max(val for key, val in gpu_table.items() if key <= gpu_vram)
             print(f"Limit VRAM is {gpu_vram} Gb. Video will resize before {max_size} for max size")
             # Resize frames while maintaining aspect ratio
-            resized_frames = []
-            for frame in frames:
+            for frame_file in frame_files:
+                frame = read_image_cv2(os.path.join(frame_dir, frame_file))
                 h, w, _ = frame.shape
                 if max(h, w) > max_size:
                     if h > w:
@@ -737,56 +750,72 @@ class Retouch:
                         new_w = max_size
                         new_h = int(h * (max_size / w))
                     resized_frame = cv2.resize(frame, (new_w, new_h))
-                    resized_frames.append(resized_frame)
+                    cv2.imwrite(os.path.join(resized_dir, frame_file), resized_frame)
                 else:
-                    resized_frames.append(frame)
-            frames = resized_frames
+                    cv2.imwrite(os.path.join(resized_dir, frame_file), frame)
+            work_dir = resized_dir
 
+        # read again after resized
+        first_work_frame = read_image_cv2(os.path.join(work_dir, frame_files[0]))
+        work_height, work_width, _ = first_work_frame.shape
 
         # get segmentation frames as maks
         segmentation.load_models(predictor=predictor, session=session)
-        segment_mask = {}
+        thickness_mask = 10
 
         for key in masks.keys():
             print(f"Processing ID: {key}")
+            mask_key_save_path = os.path.join(tmp_dir, f"mask_{key}")
+            os.makedirs(mask_key_save_path, exist_ok=True)
             start_time = masks[key]["start_time"]
             end_time = masks[key]["end_time"]
-            start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps) + 1
+            start_frame = math.floor(start_time * fps)
+            end_frame = math.ceil(end_time * fps) + 1
             # list of frames of list of one frame
-            filter_frames = frames[start_frame:end_frame]
+            filter_frames_files = frame_files[start_frame:end_frame]
             # set progress bar
-            progress_bar = tqdm(total=len(filter_frames), unit='it', unit_scale=True)
-            segment_mask[key] = [segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frames[0])]
+            progress_bar = tqdm(total=len(filter_frames_files), unit='it', unit_scale=True)
+            filter_frame_file_name = filter_frames_files[0]
+            # read mot resized files
+            # TODO [1] work_dir has resized frames, but in this case I don't know quality of image after resize influence on segmentation quality? if not when use work_dir better else need to use frame_dir and resized on retouch
+            filter_frame = cv2.imread(os.path.join(work_dir, filter_frame_file_name))  # read first frame file after filter
+            # get segment mask
+            segment_mask = segmentation.set_obj(point_list=masks[key]["point_list"], frame=filter_frame)
+            # save first frame as 0001
+            segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, kernel_size=thickness_mask, width=work_width, height=work_height)
+            if mask_color:
+                color = segmentation.hex_to_rgba(mask_color)
+                os.makedirs(os.path.join(save_dir, key), exist_ok=True)
+                orig_filter_frame = cv2.imread(os.path.join(frame_dir, filter_frame_file_name))
+                saving_mask = segmentation.apply_mask_on_frame(segment_mask, orig_filter_frame, color, orig_width, orig_height)
+                saving_mask.save(os.path.join(save_dir, key, filter_frame_file_name))
+
             # update progress bar
             progress_bar.update(1)
-            if len(filter_frames) > 1:
-                for i, frame in enumerate(filter_frames[1:]):
-                    segment_mask[key] += [segmentation.draw_mask_frames(frame=frame)]
-                    if segment_mask[key][-1] is None:
-                        segment_mask[key] = segment_mask[key][:-1]
+
+            if len(filter_frames_files) > 1:
+                for filter_frame_file_name in filter_frames_files[1:]:
+                    # TODO [1] work_dir has resized frames, but in this case I don't know quality of image after resize influence on segmentation quality? if not when use work_dir better else need to use frame_dir and resized on retouch
+                    filter_frame = cv2.imread(os.path.join(work_dir, filter_frame_file_name))  # read frame file after filter
+                    segment_mask = segmentation.draw_mask_frames(frame=filter_frame)
+                    if segment_mask is None:
                         print(key, "Encountered None mask. Breaking the loop.")
                         break
+                    # save frames after 0002
+                    segmentation.save_black_mask(filter_frame_file_name, segment_mask, mask_key_save_path, kernel_size=thickness_mask, width=work_width, height=work_height)
+                    if mask_color:
+                        color = segmentation.hex_to_rgba(mask_color)
+                        orig_filter_frame = cv2.imread(os.path.join(frame_dir, filter_frame_file_name))
+                        saving_mask = segmentation.apply_mask_on_frame(segment_mask, orig_filter_frame, color, orig_width, orig_height)
+                        saving_mask.save(os.path.join(save_dir, key, filter_frame_file_name))
+
                     progress_bar.update(1)
+            # set new key
+            masks[key]["frame_files_path"] = mask_key_save_path
             # close progress bar for key
             progress_bar.close()
 
         if mask_color:
-            print("Save mask")
-            color = segmentation.hex_to_rgba(mask_color)
-            for key in masks.keys():
-                os.makedirs(os.path.join(save_dir, key), exist_ok=True)
-                start_time = masks[key]["start_time"]
-                end_time = masks[key]["end_time"]
-                start_frame = int(start_time * fps)
-                end_frame = int(end_time * fps) + 1
-                # list of frames of list of one frame
-                filter_frames = orig_frames[start_frame:end_frame]
-                filter_segment_mask = segment_mask[key]
-                for i, mask in enumerate(filter_segment_mask):
-                    saving_mask = segmentation.apply_mask_on_frame(filter_segment_mask[i], filter_frames[i], color, orig_width, orig_height)
-                    saving_mask.save(os.path.join(save_dir, key, f"{i}.png"))
-
             print("Mask save is finished. Open folder")
             if os.path.exists(save_dir):
                 if sys.platform == 'win32':
@@ -803,6 +832,10 @@ class Retouch:
         torch.cuda.empty_cache()
 
         if retouch_model_type is None:
+            for f in os.listdir(TMP_FOLDER):
+                os.remove(os.path.join(TMP_FOLDER, f))
+            # remove tmp dir
+            shutil.rmtree(tmp_dir)
             return save_dir
 
         if source_media_type == "animated" and retouch_model_type == "improved_retouch_object":
@@ -810,85 +843,103 @@ class Retouch:
             retouch_processor = VideoRemoveObjectProcessor(device, model_raft_things_path, model_recurrent_flow_path, model_pro_painter_path)
 
             for key in masks.keys():
-                start_time = masks[key]["start_time"]
-                start_frame = int(start_time * fps)
-                end_frame = start_frame + len(segment_mask[key])
-                # transfer to pil list of frames of list of one frame
-                filter_frames = [retouch_processor.transfer_to_pil(f) for f in frames[start_frame:end_frame]]
-                filter_frames, size, out_size = retouch_processor.resize_frames(filter_frames)
-                width, height = size
+                mask_files = sorted(os.listdir(masks[key]["frame_files_path"]))
+
                 # processing video with batch size because of limit VRAM
-                if len(segment_mask[key]) < 3:
+                if len(mask_files) < 3:
                     continue
-                comp_frames_bgr = []
-                for i in range(0, len(filter_frames), frame_batch_size):
-                    if len(filter_frames) - i < 3:  # not less than 3 frames for batch
+
+                for i in range(0, len(mask_files), frame_batch_size):
+                    if len(mask_files) - i < 3:  # not less than 3 frames for batch
                         continue
-                    flow_masks, masks_dilated = retouch_processor.read_retouch_mask(segment_mask[key][i: i + frame_batch_size], width, height, kernel_size=blur)
-                    update_frames, flow_masks, masks_dilated, masked_frame_for_save, frames_inp = retouch_processor.process_frames_with_retouch_mask(frames=filter_frames[i: i + frame_batch_size], masks_dilated=masks_dilated, flow_masks=flow_masks, height=height, width=width)
+                    # read mask by batch_size and convert back from file image
+                    current_mask_files = mask_files[i: i + frame_batch_size]
+                    inpaint_mask_frames = [cv2.imread(os.path.join(tmp_dir, f"mask_{key}", current_mask_file), cv2.IMREAD_GRAYSCALE) for current_mask_file in current_mask_files]
+                    # Binarize the image
+                    binary_masks = []
+                    for inpaint_mask_frame in inpaint_mask_frames:
+                        binary_mask = cv2.threshold(inpaint_mask_frame, 128, 1, cv2.THRESH_BINARY)[1]
+                        bool_mask = binary_mask.astype(bool)
+                        reshaped_mask = bool_mask[np.newaxis, np.newaxis, ...]
+                        binary_masks.append(reshaped_mask)
+                    # read frames by name of current_mask_files
+                    current_frame_files = current_mask_files
+                    current_frames = [cv2.imread(os.path.join(work_dir, current_frame_file)) for current_frame_file in current_frame_files]
+
+                    # convert frame to pillow
+                    current_frames = [retouch_processor.transfer_to_pil(f) for f in current_frames]
+                    resized_frames, size, out_size = retouch_processor.resize_frames(current_frames)
+                    width, height = size
+
+                    flow_masks, masks_dilated = retouch_processor.read_retouch_mask(binary_masks, width, height, kernel_size=blur)
+                    update_frames, flow_masks, masks_dilated, masked_frame_for_save, frames_inp = retouch_processor.process_frames_with_retouch_mask(frames=resized_frames, masks_dilated=masks_dilated, flow_masks=flow_masks, height=height, width=width)
                     comp_frames = retouch_processor.process_video_with_mask(update_frames, masks_dilated, flow_masks, frames_inp, width, height, use_half=use_half)
                     comp_frames = [cv2.resize(f, out_size) for f in comp_frames]
-                    comp_frames_bgr += [cv2.cvtColor(f, cv2.COLOR_RGB2BGR) for f in comp_frames]
-                # update list of frames of list of one frame
-                frames[start_frame:end_frame] = comp_frames_bgr
-                # upscale to restore size as this retouch with gpu require a lot VRAM
-                filter_segment_mask = segment_mask[key]
-                filter_orig_frame = orig_frames[start_frame:end_frame]
-                for j in range(len(filter_segment_mask)):
-                    orig_frames[start_frame + j] = upscale_retouch_frame(mask=filter_segment_mask[j], frame=comp_frames_bgr[j], original_frame=filter_orig_frame[j], width=orig_width, height=orig_height)
-
-            if upscale:
-                frames = orig_frames  # set restored frames
+                    comp_frames_bgr = [cv2.cvtColor(f, cv2.COLOR_RGB2BGR) for f in comp_frames]
+                    # update frames in work dir
+                    for j in range(len(comp_frames_bgr)):
+                        cv2.imwrite(os.path.join(work_dir, current_frame_files[j]), comp_frames_bgr[j])
+                        # upscale frame
+                        if upscale:
+                            orig_frame = cv2.imread(os.path.join(frame_dir, current_frame_files[j]))
+                            retouched_orig_frame = upscale_retouch_frame(mask=binary_masks[j], frame=comp_frames_bgr[j],  original_frame=orig_frame, width=orig_width, height=orig_height)
+                            cv2.imwrite(os.path.join(frame_dir, current_frame_files[j]), retouched_orig_frame)
+            # empty cache
+            del retouch_processor
+            torch.cuda.empty_cache()
         else:
             # retouch
             model_retouch = InpaintModel(model_path=model_retouch_path)
 
             for key in masks.keys():
-                start_time = masks[key]["start_time"]
-                end_time = masks[key]["end_time"]
-                start_frame = int(start_time * fps)
-                end_frame = int(end_time * fps) + 1
-                # list of frames of list of one frame
-                filter_frames = frames[start_frame:end_frame]
-                segment_mask_pil = [convert_colored_mask_thickness_cv2(mask) for mask in segment_mask[key]]
+                mask_files = sorted(os.listdir(masks[key]["frame_files_path"]))
                 # set progress bar
-                progress_bar = tqdm(total=len(segment_mask_pil), unit='it', unit_scale=True)
-                for i in range(len(segment_mask_pil)):
-                    frame_pil = convert_cv2_to_pil(filter_frames[i])
+                progress_bar = tqdm(total=len(mask_files), unit='it', unit_scale=True)
+                for file_name in mask_files:
+                    # read mask to pillow
+                    segment_mask = cv2.imread(os.path.join(tmp_dir, f"mask_{key}", file_name), cv2.IMREAD_GRAYSCALE)
+                    binary_mask = cv2.threshold(segment_mask, 128, 1, cv2.THRESH_BINARY)[1]
+                    bool_mask = binary_mask.astype(bool)
+                    reshaped_mask = bool_mask[np.newaxis, np.newaxis, ...]
+                    segment_mask_pil = convert_colored_mask_thickness_cv2(reshaped_mask)
+                    # read frame to pillow
+                    current_frame = cv2.imread(os.path.join(work_dir, file_name))
+                    frame_pil = convert_cv2_to_pil(current_frame)
                     # retouch_frame
-                    retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil[i], model=model_retouch)
+                    retouch_frame = process_retouch(img=frame_pil, mask=segment_mask_pil, model=model_retouch)
                     # update frame
-                    frames[start_frame + i] = pil_to_cv2(retouch_frame)
+                    cv2.imwrite(os.path.join(work_dir, file_name), pil_to_cv2(retouch_frame))
                     progress_bar.update(1)
                 # close progress bar for key
                 progress_bar.close()
+            # empty cache
+            del model_retouch
+            torch.cuda.empty_cache()
 
-
-        for i, frame in enumerate(frames):
-            save_name = "retouch_image_%s.png" % i
-            save_image_cv2(os.path.join(save_dir, save_name), frame)
+        if upscale:
+            # if upscale and was improved animation when change resized dir back
+            # for other methods this will not influence
+            work_dir = frame_dir
 
         if source_media_type == "animated":
             # get saved file as merge frames to video
-            video_name = save_video_from_frames(frame_names="retouch_image_%d.png", save_path=save_dir, fps=fps)
+            video_name = save_video_from_frames(frame_names="frame%04d.png", save_path=work_dir, fps=fps, alternative_save_path=save_dir)
             # get audio from video target
             audio_file_name = extract_audio_from_video(source, save_dir)
             # combine audio and video
             save_name = save_video_with_audio(os.path.join(save_dir, video_name), os.path.join(save_dir, str(audio_file_name)), save_dir)
+        else:
+            save_name = frame_files[0]
+            retouched_frame = read_image_cv2(os.path.join(work_dir, save_name))
+            cv2.imwrite(os.path.join(save_dir, save_name), retouched_frame)
 
-        for f in os.listdir(save_dir):
-            if save_name == f:
-                save_name = os.path.join(save_dir, f)
-            else:
-                if os.path.isfile(os.path.join(save_dir, f)):
-                    os.remove(os.path.join(save_dir, f))
-                elif os.path.isdir(os.path.join(save_dir, f)):
-                    pass
+        # remove tmp dir
+        shutil.rmtree(tmp_dir)
 
         for f in os.listdir(TMP_FOLDER):
             os.remove(os.path.join(TMP_FOLDER, f))
 
-        return save_name
+        return os.path.join(save_dir, save_name)
 
 
 class VideoEdit:
