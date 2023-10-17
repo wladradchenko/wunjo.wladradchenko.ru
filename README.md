@@ -29,7 +29,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Harness the power of neural networks with Wunjo AI for an array of applications—from speech synthesis to deepfake animations.
+Unlock the unparalleled capabilities of neural networks with Wunjo AI. Whether you're delving into speech synthesis, crafting deepfake animations, drawing Stable Diffusion video by text prompt or video making, Wunjo AI has got you covered.
 
 **Key Features:**
 
@@ -38,12 +38,17 @@ Harness the power of neural networks with Wunjo AI for an array of applications�
 - **Multilingual Support:** Currently supports English, Russian, Chinese for voice cloning (from any language audio) and English, Russian synthesis, with plans to extend voice cloning synthesis model for Spanish.
 - **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
 - **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
+- **Video-to-Video by Text Prompt:**
+  - Reshape videos with by text prompt with difference models of Stable Diffusion. Let generative neural networks craft a new visual narrative.
+  - Change individual objects in a video by text prompt with one click, changing them throughout the video with unique text queries.
+  - Preserve specific objects without change by using the «pass» keyword.
 - **Deepfake Animation:**
   - Animate faces using just one photo combined with audio.
   - Achieve precise lip syncing with your audio using our deepfake lips feature.
   - Effortlessly swap faces in videos, GIFs, and photos using just a single photograph with our "Face Swap" feature.
   - Experimental feature. Change the emotions of a person in the video, with the help of a text description.
 - **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes.
+- **Automatic Segmentation Mask:** Select any object at any time period and get a storyboard of the selected object with a transparent or colored background.
 
 **Applications:**
 From voiceovers in commercials to character voicing in games, from audiobook narrations to fun deepfake projects, Wunjo AI offers endless possibilities and all is free and local on your device.
@@ -62,101 +67,24 @@ Step into the future of AI-powered creativity with Wunjo AI.
 
 Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html).
 
-Create venv and activate ones:
-
-```
-python -m venv venv
-source venv/bin/activate
-```
-
-Install dependencies:
-
-```
-// dependencies to use cpu
-pip install -r requirements.txt
-// dependencies to use gpu
-pip install -r requirements-gpu.txt
-```
-
-Go to portable folder
-
-```
-cd portable
-```
-
-Run:
-
-```
-briefcase dev
-```
-
-At the first start, automatic translation into the selected language will be performed, it may take some time. Additionally, you can create a build:
-
-```
-briefcase build
-```
-
-Run build
-```
-briefcase run
-```
-
-Create install packet for your OS:
-```
-briefcase package
-```
-
-Read more in the documentation [BeeWare](https://beeware.org/project/projects/tools/briefcase)
+For detailed instructions about setup Wunjo AI from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
 
 <!-- DOWNLOAD -->
 ## Install packets
 
-### [Ubuntu / Debian v1.5 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.5.5.deb)
+### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.0.deb)
 
-```
-// Requirement to create animation is ffmpeg
-sudo apt install ffmpeg
+For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-ubuntu) from installer
 
-// Install app
-sudo dpkg -i wunjo_{vesrion}.deb
-
-// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
-
-// Remove app
-sudo dpkg -r wunjo
-
-// Remove cache
-rm -rf ~/.wunjo
-
-// If switching to GPU is not available for you, see the documentation for how to install drivers CUDA
-```
-
-### MacOS v1.5 (CPU version)
+### MacOS v1.6 (CPU version)
 
 Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
 
-### [Windows v1.5 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.5.5.msi)
+### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.0.msi)
 
-```
-// Requirement to create animation is ffmpeg. In application ffmpeg will install automatically, but uou can install ffmpeg manually and add to Path env
-setx PATH "%PATH%;C:\path\to\ffmpeg\bin"
+For detailed instructions about install Wunjo AI on [Windows](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-windows) from installer
 
-// Install app
-wunjo_{vesrion}.msi
-
-// Important! How to set up deepfake for Windows. You need to give permission to read the neural network models in the gfpgan folder after the models are installed! Without this setting, the result of deepfake generation will be "Face not found".
-
-icacls "%USERPROFILE%/.wunjo/deepfake/gfpgan/weights/*.pth" /grant:r "Users":(R,W)
-
-// Attention! The first time you run video synthesis, models will be downloaded in .wunja/talker/checkpoints and .wunja/talker/gfpgan in size 5GB. This may take a long time.
-
-//Remove cache
-%USERPROFILE%/.wunjo
-
-// How to adjust the use of the GPU and increase the processing speed by several times, see the documentation.
-```
-
-Read in Wunjo AI documentation how use GPU on Windows.
+Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-use-the-GPU-in-the-application) on Windows.
 
 <!-- EXAMPLE -->
 ## Example
@@ -292,25 +220,6 @@ To find the appropriate code for your language, please refer to the [Google Clou
 <!-- TRANSLATION -->
 
 <!-- UPDATE -->
-
-Update 1.5.5
-- [x] Add voice translation with encoders, vocoder english, russian and synthesis english model
-- [x] Add synthesys audio from text with voice clone from another audio
-- [x] Create hub for voice cloning languages models (or download all default models)
-- [x] Add face swap module for deepfake on video/photo from one photo face
-- [x] Add enchanter face or enchanter background on user video/photo without deepfake
-- [x] Make a version that will include all extensions without extensions download
-- [x] Improve indication and translation of current progress
-- [x] Add check debug module with python console
-- [x] Change real time translation on native translate
-- [x] Improve message about GPU unavailable for user
-- [x] Add module deepfake emotions as experimental research
-- [x] Update guid in application 
-- [x] Add AI retouch frames in video by user tool
-- [x] Add work with Chinese grammatical and train model to use voice clone on Chinese
-- [x] Add auto install ffmpeg on Windows
-- [x] Trained Russian synthesis model voice clone 
-- [x] Indicate user how much space on drive for tmp and result folders
 
 Update 1.6.0
 - [x] Improved and automated remove object from image or video
