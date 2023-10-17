@@ -6,7 +6,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
       {
         title: "Панель смены лица",
         position: "right",
-        intro: `<div style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
+        intro: `<div style="width: 80vw; max-width: 90vw; height: 83vh; max-height: 90vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
                     <div>
                         <fieldset style="padding: 5pt;margin: 13pt;margin-top: 0;flex-direction: row;display: flex;">
                             <legend>Настройки</legend>
