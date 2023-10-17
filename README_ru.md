@@ -93,67 +93,6 @@
 - [Английский голос клонированный из ранее синтезированного русского голоса](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Китайский голос клонированный из ранее синтезированного русского голоса](https://soundcloud.com/vladislav-radchenko-234338135/chinese-voice-clone?si=43d437bbdf4d4d9a80c7a4a0031189c0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 
-### Преобразование видео в видео по текстовой подсказке (Только на GPU)
-
-__Большее разрешение видео__, __дает лучше качество__ для нарисованных кадров. Максимальное разрешение видео зависит от количество VRAM.
-
-#### Разрешение результата 512x512 и используется модель для дипфейков
-
-<div align="center">
-  <table>
-  <tr>
-    <th>Оригинал</th>
-    <th>Блондин + Коричневый пиджак</th>
-  </tr>
-  <tr align="center">
-    <td><img src="example/diffusion/diffusion_original.gif" alt="original" width="360" height="360"></td>
-    <td><img src="example/diffusion/diffusion_object_change.gif" alt="pass" width="360" height="360"></td>
-  </tr>
-</table>
-</div>
-
-#### Разрешение результата 512x512 [кастомная модель stable diffusion](https://civitai.com/models/7371/rev-animated?modelVersionId=19575)
-
-Кроме того, вы можете использовать свою собственную модель stable diffusion для перерисовки видео или объектов в видео с разной временной шкалой.
-
-<div align="center">
-  <table>
-  <tr>
-    <th>Оригинал</th>
-    <th>Pass объекта + Изменение фона</th>
-    <th>Изменить весь кадр</th>
-  </tr>
-  <tr align="center">
-    <td><img src="example/diffusion/original_dance.gif" alt="original" width="228" height="228"></td>
-    <td><img src="example/diffusion/object_pass_dance.gif" alt="pass" width="228" height="228"></td>
-    <td><img  src="example/diffusion/full_dance.gif" alt="full_change" width="228" height="228"></td>
-  </tr>
-</table>
-</div>
-
-#### Ограничения разрешения видео по VRAM графического процессора
-
-<div align="center">
-  <table>
-  <tr>
-    <th>24 GB</th>
-    <th>18 GB</th>
-    <th>14 GB</th>
-    <th>10 GB</th>
-    <th>8 GB</th>
-    <th>7 GB</th>
-  </tr>
-  <tr align="center">
-    <th>1280x1280</th>
-    <th>1024x1024</th>
-    <th>768x768</th>
-    <th>640x640</th>
-    <th>576x576</th>
-    <th>512x512</th>
-  </tr>
-</table>
-</div>
-
 ### Анимация лица из изображения
 
 <div align="center">
@@ -248,6 +187,67 @@ __Большее разрешение видео__, __дает лучше кач
   <tr align="center">
     <td><img src="example/retouch/segmentation_original.gif" alt="original" width="360" height="360"></td>
     <td><img src="example/retouch/segmentstion_mask.gif" alt="original" width="360" height="360"></td>
+  </tr>
+</table>
+</div>
+
+### Преобразование видео в видео по текстовой подсказке (Только на GPU)
+
+__Большее разрешение видео__, __дает лучше качество__ для нарисованных кадров. Максимальное разрешение видео зависит от количество VRAM.
+
+#### Разрешение результата 512x512 и используется модель для дипфейков
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Оригинал</th>
+    <th>Блондин + Коричневый пиджак</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/diffusion/diffusion_original.gif" alt="original" width="360" height="360"></td>
+    <td><img src="example/diffusion/diffusion_object_change.gif" alt="pass" width="360" height="360"></td>
+  </tr>
+</table>
+</div>
+
+#### Разрешение результата 512x512 [кастомная модель stable diffusion](https://civitai.com/models/7371/rev-animated?modelVersionId=19575)
+
+Кроме того, вы можете использовать свою собственную модель stable diffusion для перерисовки видео или объектов в видео с разной временной шкалой.
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Оригинал</th>
+    <th>Pass объекта + Изменение фона</th>
+    <th>Изменить весь кадр</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/diffusion/original_dance.gif" alt="original" width="228" height="228"></td>
+    <td><img src="example/diffusion/object_pass_dance.gif" alt="pass" width="228" height="228"></td>
+    <td><img  src="example/diffusion/full_dance.gif" alt="full_change" width="228" height="228"></td>
+  </tr>
+</table>
+</div>
+
+#### Ограничения разрешения видео по VRAM графического процессора
+
+<div align="center">
+  <table>
+  <tr>
+    <th>24 GB</th>
+    <th>18 GB</th>
+    <th>14 GB</th>
+    <th>10 GB</th>
+    <th>8 GB</th>
+    <th>7 GB</th>
+  </tr>
+  <tr align="center">
+    <th>1280x1280</th>
+    <th>1024x1024</th>
+    <th>768x768</th>
+    <th>640x640</th>
+    <th>576x576</th>
+    <th>512x512</th>
   </tr>
 </table>
 </div>
