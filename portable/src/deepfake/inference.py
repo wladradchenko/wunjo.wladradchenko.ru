@@ -841,6 +841,7 @@ class Retouch:
         if source_media_type == "animated" and retouch_model_type == "improved_retouch_object":
             # raft
             retouch_processor = VideoRemoveObjectProcessor(device, model_raft_things_path, model_recurrent_flow_path, model_pro_painter_path)
+            overlap = int(0.2 * frame_batch_size)
 
             for key in masks.keys():
                 mask_files = sorted(os.listdir(masks[key]["frame_files_path"]))
@@ -849,7 +850,7 @@ class Retouch:
                 if len(mask_files) < 3:
                     continue
 
-                for i in range(0, len(mask_files), frame_batch_size):
+                for i in range(0, len(mask_files), frame_batch_size - overlap):
                     if len(mask_files) - i < 3:  # not less than 3 frames for batch
                         continue
                     # read mask by batch_size and convert back from file image
@@ -857,8 +858,11 @@ class Retouch:
                     inpaint_mask_frames = [cv2.imread(os.path.join(tmp_dir, f"mask_{key}", current_mask_file), cv2.IMREAD_GRAYSCALE) for current_mask_file in current_mask_files]
                     # Binarize the image
                     binary_masks = []
-                    for inpaint_mask_frame in inpaint_mask_frames:
+                    for idx, inpaint_mask_frame in enumerate(inpaint_mask_frames):
                         binary_mask = cv2.threshold(inpaint_mask_frame, 128, 1, cv2.THRESH_BINARY)[1]
+                        # If it's not the first batch and the frame is within the overlap range, set the mask to false
+                        if i > 0 and idx < overlap:
+                            binary_mask = np.zeros_like(binary_mask)
                         bool_mask = binary_mask.astype(bool)
                         reshaped_mask = bool_mask[np.newaxis, np.newaxis, ...]
                         binary_masks.append(reshaped_mask)
