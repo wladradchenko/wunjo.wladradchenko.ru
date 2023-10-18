@@ -113,19 +113,23 @@ class FaceSwapDeepfake:
             boxes[i] = np.mean(window, axis=0)
         return boxes
 
-    def face_detect_with_alignment_crop(self, images, face_fields):
+    def face_detect_with_alignment_crop(self, image_files, face_fields):
         """
         Detect faces to swap if face_fields
-        :param images: frames of target image
+        :param image_files: list of file paths of target images
         :param face_fields: crop target face
         :return:
         """
         predictions = []
         face_embedding_list = []
         face_gender = None
-        x_center, y_center = self.get_real_crop_box(images[0], face_fields)
 
-        for image in tqdm(images):
+        # Read the first image to get the center
+        first_image = cv2.imread(image_files[0])
+        x_center, y_center = self.get_real_crop_box(first_image, face_fields)
+
+        for image_file in tqdm(image_files):
+            image = cv2.imread(image_file)
             dets = self.face_recognition.get_faces(image)
             if not dets:
                 predictions.append([None])
@@ -187,9 +191,15 @@ class FaceSwapDeepfake:
 
         return predictions
 
-    def face_detect_with_alignment_all(self, images):
+    def face_detect_with_alignment_all(self, image_files):
+        """
+        Detect all faces in each image
+        :param image_files: list of file paths of images
+        :return: list of detected faces for each image
+        """
         predictions = []
-        for image in tqdm(images):
+        for image_file in tqdm(image_files):
+            image = cv2.imread(image_file)
             dets = self.face_recognition.get_faces(image)
             if not dets:
                 predictions.append([None])
@@ -251,16 +261,16 @@ class FaceSwapDeepfake:
         # Adjust the way we get face detection results
         if multiface:
             print("Getting all face...")
-            face_det_results = self.face_detect_with_alignment_all([cv2.imread(frame) for frame in frame_files])
+            face_det_results = self.face_detect_with_alignment_all(frame_files)
         else:
             print("Getting target face...")
-            face_det_results = self.face_detect_with_alignment_crop([cv2.imread(frame) for frame in frame_files], target_face_fields)
+            face_det_results = self.face_detect_with_alignment_crop(frame_files, target_face_fields)
 
         print("Starting face swap...")
 
         progress_bar = tqdm(total=len(frame_files), unit='it', unit_scale=True)
 
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=4) as executor:
             processed_frames = list(executor.map(self.process_frame, [
                 (cv2.imread(frame_files[i]), face_det_results[i], source_face, progress_bar) for i in
                 range(len(frame_files))
@@ -295,10 +305,10 @@ class FaceSwapDeepfake:
         # Adjust the way we get face detection results
         if multiface:
             print("Getting all face...")
-            face_det_results = self.face_detect_with_alignment_all([cv2.imread(frame) for frame in frame_files])
+            face_det_results = self.face_detect_with_alignment_all(frame_files)
         else:
             print("Getting target face...")
-            face_det_results = self.face_detect_with_alignment_crop([cv2.imread(frame) for frame in frame_files], target_face_fields)
+            face_det_results = self.face_detect_with_alignment_crop(frame_files, target_face_fields)
 
         print("Starting face swap...")
         progress_bar = tqdm(total=len(face_det_results), unit='it', unit_scale=True)
