@@ -533,7 +533,7 @@ def synthesize_face_swap():
 
     target_content = request_list.get("target_content")
     face_target_fields = request_list.get("face_target_fields")
-    source_face_fields = request_list.get("source_face_fields")
+    source_face_fields = request_list.get("face_source_fields")
     source_content = request_list.get("source_content")
     type_file_target = request_list.get("type_file_target")
     type_file_source = request_list.get("type_file_source")
