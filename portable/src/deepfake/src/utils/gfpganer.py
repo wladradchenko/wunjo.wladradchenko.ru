@@ -89,7 +89,8 @@ class GFPGANer():
             # Set permission if windows on gfpgan files
             if sys.platform == 'win32':
                 try:
-                    cmd = f'icacls "{model_path}" /grant:r "Users:(R,W)" /T'
+                    username = os.environ.get('USERNAME') or os.environ.get('USER')
+                    cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)" /T'
                     os.system(cmd)
                 except Exception as e:
                     print(e)

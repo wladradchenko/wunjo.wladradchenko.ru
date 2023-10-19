@@ -62,7 +62,8 @@ class RealESRGANer():
                 model_path = load_file_from_url(url=model_path, model_dir=root_dir, progress=True, file_name=None)
                 if sys.platform == 'win32':
                     try:
-                        cmd = f'icacls "{model_path}" /grant:r "Users:(R,W)"'
+                        username = os.environ.get('USERNAME') or os.environ.get('USER')
+                        cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)"'
                         os.system(cmd)
                     except Exception as e:
                         print(e)

@@ -29,10 +29,11 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
         # Set permission if windows
         if sys.platform == 'win32':
             try:
+                username = os.environ.get('USERNAME') or os.environ.get('USER')
                 if target_dir_name is None:
-                    cmd = f'icacls "{extract_dir}" /grant:r "Users:(R,W)" /T'
+                    cmd = f'icacls "{extract_dir}" /grant:r "{username}:(R,W)" /T'
                 else:
-                    cmd = f'icacls "{target_dir}" /grant:r "Users:(R,W)" /T'
+                    cmd = f'icacls "{target_dir}" /grant:r "{username}:(R,W)" /T'
                 os.system(cmd)
             except Exception as e:
                 print(e)
@@ -61,7 +62,8 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
                 print(f'Download finished in {download_path}')
                 if sys.platform == 'win32':
                     try:
-                        cmd = f'icacls "{download_path}" /grant:r "Users:(R,W)"'
+                        username = os.environ.get('USERNAME') or os.environ.get('USER')
+                        cmd = f'icacls "{download_path}" /grant:r "{username}:(R,W)"'
                         os.system(cmd)
                     except Exception as e:
                         print(e)

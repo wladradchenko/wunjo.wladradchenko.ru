@@ -387,9 +387,11 @@ class Video2Video:
                 if not os.listdir(ebsynth_path):
                     unzip(ebsynth_path_zip, ebsynth_folder)
             # access read app
-            os.system(f'icacls "{ebsynth_path}" /grant:r "Users:(R,W)" /T')
+            # username = os.environ.get('USERNAME')
+            username = os.environ.get('USERNAME') or os.environ.get('USER')
+            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
             ebsynth_path = os.path.join(ebsynth_path, "EbSynth.exe")
-            os.system(f'icacls "{ebsynth_path}" /grant:r "Users:(R,W)" /T')
+            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}::(R,W)" /T')
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
             if not os.path.exists(ebsynth_path):
