@@ -485,6 +485,7 @@ class FaceSwap:
 
         faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface, similar_coeff)
 
+        # transfer video without format from frontend to mp4 format
         if args.type_file_source == "video":
             args.source = cut_start_video(args.source, 0, args.source_video_end)
         # get fps and calculate current frame and get that frame for source
