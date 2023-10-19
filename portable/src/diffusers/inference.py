@@ -391,7 +391,7 @@ class Video2Video:
             username = os.environ.get('USERNAME') or os.environ.get('USER')
             os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
             ebsynth_path = os.path.join(ebsynth_path, "EbSynth.exe")
-            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}::(R,W)" /T')
+            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
             if not os.path.exists(ebsynth_path):
