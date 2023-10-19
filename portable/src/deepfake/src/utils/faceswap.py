@@ -1,6 +1,7 @@
 import os
 import sys
 import cv2
+import uuid
 import dlib
 import numpy as np
 import torch
@@ -208,28 +209,29 @@ class FaceSwapDeepfake:
         return predictions
 
     def process_frame(self, args):
-        frame, face_det_result, source_face, progress_bar = args
+        frame, face_det_result, source_face, progress_bar, output_directory, idx = args
         tmp_frame = frame.copy()
         for face in face_det_result:
             if face is None:
                 break
             else:
                 tmp_frame = self.face_swap_model.get(tmp_frame, face, source_face, paste_back=True)
-
+        # Save the frame with zero-padded filename
+        filename = os.path.join(output_directory, f"frame_{idx:04d}.png")
+        cv2.imwrite(filename, tmp_frame)
         with self.lock:
             self.progress += 1
             progress_bar.update(1)  # Update progress bar in a thread-safe manner
-
-        return tmp_frame
+        return filename
 
     def swap_video(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
         if "CUDAExecutionProvider" in self.access_providers and torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'):
             # thread will not work correct with GPU
-            self.swap_video_cuda(target_frames_path, source_face, target_face_fields, save_file, multiface, fps, video_format)
+            return self.swap_video_cuda(target_frames_path, source_face, target_face_fields, save_file, multiface, fps, video_format)
         else:
-            self.swap_video_thread(target_frames_path, source_face, target_face_fields, save_file, multiface, fps,video_format)
+            return self.swap_video_thread(target_frames_path, source_face, target_face_fields, save_file, multiface, fps,video_format)
 
-    def swap_video_thread(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
+    def swap_video_thread(self, target_frames_path, source_face, target_face_fields, save_path: str, multiface=False, fps=30, video_format=".mp4"):
         """
         Face swap video with Threads. Will not work with CUDA
         :param target_frames_path: directory containing target frames
@@ -241,6 +243,10 @@ class FaceSwapDeepfake:
         :param video_format: video format
         :return:
         """
+        file_name = str(uuid.uuid4()) + '.mp4'
+        save_file = os.path.join(save_path, file_name)
+        frame_save_path = os.path.join(save_path, "faceswap_frames")
+        os.makedirs(frame_save_path, exist_ok=True)
 
         # Get a list of all frame files in the target_frames_path directory
         frame_files = sorted([os.path.join(target_frames_path, fname) for fname in os.listdir(target_frames_path) if fname.endswith('.jpg') or fname.endswith('.png')])
@@ -271,21 +277,27 @@ class FaceSwapDeepfake:
         progress_bar = tqdm(total=len(frame_files), unit='it', unit_scale=True)
 
         with ThreadPoolExecutor(max_workers=4) as executor:
-            processed_frames = list(executor.map(self.process_frame, [
-                (cv2.imread(frame_files[i]), face_det_results[i], source_face, progress_bar) for i in
-                range(len(frame_files))
+            processed_frame_files = list(executor.map(self.process_frame, [
+                (cv2.imread(frame_files[i]), face_det_results[i], source_face, progress_bar, frame_save_path, i) for i
+                in range(len(frame_files))
             ]))
 
         progress_bar.close()
 
-        for frame in processed_frames:
+        processed_frame_files.sort()  # Ensure files are in the correct order
+
+        for frame_file in processed_frame_files:
+            frame = cv2.imread(frame_file)
             out.write(frame)
 
         out.release()
         print("Face swap processing finished...")
+        return file_name
 
-    def swap_video_cuda(self, target_frames_path, source_face, target_face_fields, save_file: str, multiface=False, fps=30, video_format=".mp4"):
+    def swap_video_cuda(self, target_frames_path, source_face, target_face_fields, save_path: str, multiface=False, fps=30, video_format=".mp4"):
         """Face swap video without Threads"""
+        file_name = str(uuid.uuid4()) + '.mp4'
+        save_file = os.path.join(save_path, file_name)
 
         # Get a list of all frame files in the target_frames_path directory
         frame_files = sorted([os.path.join(target_frames_path, fname) for fname in os.listdir(target_frames_path) if fname.endswith('.png')])
@@ -325,6 +337,8 @@ class FaceSwapDeepfake:
             out.release()
             print("Face swap processing finished...")
         progress_bar.close()
+
+        return file_name
 
 
     def swap_image(self, target_frame, source_face, face_fields, save_dir: str, multiface=False):

@@ -504,10 +504,8 @@ class FaceSwap:
 
             fps, frame_dir = save_frames(video=args.target, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
             # create face swap
-            file_name = "swap_result.mp4"
+            file_name = faceswap.swap_video(frame_dir, source_face, args.target_face_fields, save_dir, args.multiface, fps)
             saved_file = os.path.join(save_dir, file_name)
-            faceswap.swap_video(frame_dir, source_face, args.target_face_fields, saved_file, args.multiface, fps)
-
             # after face or background enchanter
             if enhancer:
                 enhanced_images = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
