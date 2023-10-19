@@ -375,8 +375,8 @@ class Video2Video:
             os.makedirs(ebsynth_folder)
 
         if sys.platform == 'win32':
-            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth-Beta-Win")
-            ebsynth_path_zip = ebsynth_path + ".zip"
+            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
+            ebsynth_path_zip = os.path.join(ebsynth_folder, "EbSynth-Beta-Win.zip")
             if not os.path.exists(ebsynth_path):
                 link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
                 download_model(ebsynth_path_zip, link_ebsynth)
@@ -384,13 +384,13 @@ class Video2Video:
             else:
                 link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
                 check_download_size(ebsynth_path_zip, link_ebsynth)
-                if not os.listdir(ebsynth_path):
+                if not os.listdir(ebsynth_folder):
                     unzip(ebsynth_path_zip, ebsynth_folder)
             # access read app
             # username = os.environ.get('USERNAME')
             username = os.environ.get('USERNAME') or os.environ.get('USER')
             os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
-            ebsynth_path = os.path.join(ebsynth_path, "EbSynth.exe")
+            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
             os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
