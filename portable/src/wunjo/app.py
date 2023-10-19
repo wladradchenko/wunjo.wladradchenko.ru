@@ -539,7 +539,7 @@ def synthesize_face_swap():
     type_file_source = request_list.get("type_file_source")
     video_start_target = request_list.get("video_start_target", 0)
     video_end_target = request_list.get("video_end_target", 0)
-    video_start_source = request_list.get("video_start_source", 0)
+    video_current_time_source = request_list.get("video_current_time_source", 0)
     video_end_source = request_list.get("video_end_source", 0)
     enhancer = request_list.get("enhancer")
     background_enhancer = request_list.get("background_enhancer", False)
@@ -560,7 +560,7 @@ def synthesize_face_swap():
             type_file_source=type_file_source,
             target_video_start=video_start_target,
             target_video_end=video_end_target,
-            source_video_frame=video_start_source,
+            source_current_time=video_current_time_source,
             source_video_end=video_end_source,
             enhancer=enhancer,
             background_enhancer=background_enhancer,

@@ -61,7 +61,7 @@ function initiateDiffusersPop(button) {
                     </fieldset>
                     <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh;">
                         <div>
-                            <select id="modelDiffusionDropdown" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin: 0;margin-bottom: 10px;"></select>
+                            <select id="modelDiffusionDropdown" style="width: 100%;border: inset;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin: 0;margin-bottom: 10px;"></select>
                         </div>
                         <div>
                             <input type="checkbox" id="paintBackground" onclick="document.getElementById('paintBackgroundParam').style.display = this.checked ? 'block' : 'none';">

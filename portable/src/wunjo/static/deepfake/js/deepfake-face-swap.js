@@ -34,7 +34,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                         <div>
                             <div style="padding: 5pt;margin-left: 7pt;">
                               <label for="similar-coeff-face">Коэффициент похожести лица</label>
-                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                              <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ async function processFaceSwap(data, element) {
         type_file_target: targetDetails.mediaType,
         face_source_fields: sourceFaceData,
         source_content: sourceDetails.mediaName,
-        video_start_source: sourceDetails.mediaStart,
+        video_current_time_source: sourceDetails.mediaCurrentTime,
         video_end_source: sourceDetails.mediaEnd,
         type_file_source: sourceDetails.mediaType,
         multiface: multiFaceChecked,

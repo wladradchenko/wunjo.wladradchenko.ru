@@ -115,11 +115,11 @@ function initializeVideoEditor(button, audioURL = undefined, audioName = undefin
                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
                                 <div>
                                 <label for="frames-path">Путь до кадров</label>
-                                <input type="text" id="frames-path" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;">
+                                <input type="text" id="frames-path" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;">
                                 </div>
                                 <div>
                                 <label for="video-fps">FPS </label>
-                                <input type="number" title="Введите число" id="video-fps" name="video-fps" min="1" max="30" step="1" value="30" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;width: 60pt;">
+                                <input type="number" title="Введите число" id="video-fps" name="video-fps" min="1" max="30" step="1" value="30" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;width: 60pt;">
                                 </div>
                             </div>
                             <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> В этом окне вы можете указав путь до директории с кадрами, объединить их в видео. Кадры должны назваться с 1.png по 99...9.png.</i>

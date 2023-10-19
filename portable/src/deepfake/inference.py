@@ -429,7 +429,7 @@ class FaceSwap:
     """
     @staticmethod
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
-                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0, source_video_frame: float = 0, source_video_end: float = 0,
+                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0, source_current_time: float = 0, source_video_end: float = 0,
                       enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
                       background_enhancer: str = None, multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
         args = FaceSwap.load_faceswap_default()
@@ -446,8 +446,8 @@ class FaceSwap:
         args.source = source
         args.source_face_fields = source_face_fields
         args.type_file_source = type_file_source
-        args.source_video_frame = float(source_video_frame)
         args.source_video_end = float(source_video_end)
+        args.source_current_time = float(source_current_time)
         # Additionally processing
         args.multiface = multiface
         args.enhancer = enhancer
@@ -485,11 +485,10 @@ class FaceSwap:
 
         faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface, similar_coeff)
 
-        # get source for face
         if args.type_file_source == "video":
-            args.source = cut_start_video(args.source, args.source_video_frame, args.source_video_end)
-        # get frame
-        source_frame = get_first_frame(args.source)
+            args.source = cut_start_video(args.source, 0, args.source_video_end)
+        # get fps and calculate current frame and get that frame for source
+        source_frame = get_first_frame(args.source, args.source_current_time)
         source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, args.source_face_fields)
 
         # if this is video target

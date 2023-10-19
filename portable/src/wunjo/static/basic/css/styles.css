@@ -644,3 +644,8 @@ select {
   }
 }
 /* LOADER */
+
+fieldset {
+    border: 2px solid #000;
+    border-color: rgb(192, 192, 192);
+}

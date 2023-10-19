@@ -185,26 +185,26 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                         </div>
                         <div id="similar-coeff-face-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                           <label for="similar-coeff-face">Похожесть лица</label>
-                          <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                          <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                         </div>
                         <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);">
                           <legend><button style="background: none;border: none;font-size: 12pt;cursor: pointer;text-decoration" onclick="document.getElementById('advanced-settings').style.display = (document.getElementById('advanced-settings').style.display === 'none') ? 'block' : 'none';this.parentElement.parentElement.style.borderColor = (this.parentElement.parentElement.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255 255 255 / 0%)' : 'rgb(192, 192, 192)';">Продвинутые настройки</button></legend>
                           <div id="advanced-settings" style="display:none;">
                             <div id="expression-scale-deepfake-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                               <label for="expression-scale-deepfake">Выраженность мимики</label>
-                              <input type="number" title="Введите число" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
+                              <input type="number" title="Введите число" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
                             </div>
                             <div id="input-yaw-deepfake-div" style="padding: 5pt;">
                               <label for="input-yaw-deepfake">Угол поворота по XY</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div id="input-pitch-deepfake-div" style="padding: 5pt;">
                               <label for="input-pitch-deepfake">Угол поворота по YZ</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div id="input-roll-deepfake-div" style="padding: 5pt;">
                               <label for="input-roll-deepfake">Угол поворота по ZX</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div style="padding: 5pt;" id="background-enhancer-deepfake-message">
                               <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
@@ -215,7 +215,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                                 <label for="use-experimental-functions">Экспериментальная версия</label>
                                 <div id="deepfake-emotion" style="margin-top: 10pt; margin-bottom: 10pt;display: none;">
                                     <label for="emotion-fake">Выберите эмоцию</label>
-                                    <select id="emotion-fake" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
+                                    <select id="emotion-fake" style="margin-left: 0;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                                         <option value="null" selected>Not use</option>
                                         <option value="0">Angry</option>
                                         <option value="1">Disgust</option>

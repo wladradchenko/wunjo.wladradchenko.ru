@@ -812,6 +812,7 @@ function retrieveMediaDetails(mediaPreview) {
     let mediaBlobUrl = "";
     let mediaStart = 0;
     let mediaEnd = 0;
+    let mediaCurrentTime = 0;
 
     if (imageElements.length > 0) {
         mediaType = "img";
@@ -819,12 +820,14 @@ function retrieveMediaDetails(mediaPreview) {
         mediaName = `image_${Date.now()}_${getRandomString(5)}`;
         mediaStart = 0;
         mediaEnd = 0;
+        mediaCurrentTime = 0;
     } else if (videoElements.length > 0) {
         mediaType = "video";
         mediaBlobUrl = videoElements[0].src;
         mediaName = `video_${Date.now()}_${getRandomString(5)}`;
         mediaStart = videoElements[0].getAttribute("start");
         mediaEnd = videoElements[0].getAttribute("end");
+        mediaCurrentTime = videoElements[0].currentTime;
     }
 
     if (mediaBlobUrl) {
@@ -836,7 +839,7 @@ function retrieveMediaDetails(mediaPreview) {
         });
     }
 
-    return { mediaType, mediaName, mediaBlobUrl, mediaStart, mediaEnd };
+    return { mediaType, mediaName, mediaBlobUrl, mediaStart, mediaEnd, mediaCurrentTime };
 }
 // GET IMAGE OR VIDEO BEFORE SEND IN BEFORE //
 

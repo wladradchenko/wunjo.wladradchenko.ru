@@ -1,5 +1,6 @@
 import shutil
 import uuid
+import time
 
 import os
 
@@ -92,8 +93,8 @@ def seconds_to_hms(seconds):
 
 def cut_start_video(video, video_start, video_end):
     if video_start == video_end:
-        raise ValueError("Start and end times are the same")
-
+        return video
+    time.sleep(5)
     hms_start_format = seconds_to_hms(video_start)
     hms_end_format = seconds_to_hms(video_end)
     print(f"Video will start from {hms_start_format} and end at {hms_end_format}")
@@ -120,7 +121,7 @@ def check_media_type(file_path):
         return "static"
 
 
-def get_first_frame(file_path):
+def get_first_frame(file_path, source_current_time: float = 0):
     """
     Get first frame from content
     :param file_path: file path
@@ -135,6 +136,13 @@ def get_first_frame(file_path):
     elif type_file == "animated":
         # It's a video
         cap = cv2.VideoCapture(file_path)
+        # Get the frames per second of the video
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        # Calculate the frame number
+        num_frame = int(fps * source_current_time)
+        # Set the video capture to the desired frame
+        cap.set(cv2.CAP_PROP_POS_FRAMES, num_frame)
+
         ret, frame = cap.read()
         if ret:
             return frame
