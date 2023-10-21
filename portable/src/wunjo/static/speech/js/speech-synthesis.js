@@ -1,6 +1,6 @@
 async function sendTextToSpeech() {
   var voiceCardContainers = document.querySelectorAll(".voice-card-container");
-  var synthesisTable = document.getElementById("table_body_speech_result");
+  var synthesisTable = document.getElementById("table_body_result");
   var allCardSend = [];
 
   for (var i = 0; i < voiceCardContainers.length; i++) {
@@ -78,12 +78,6 @@ async function sendTextToSpeech() {
 
 async function processAsyncSynthesis(allCardSend, synthesisTable) {
   if (allCardSend.length > 0) {
-    synthesisTable.innerHTML = "";
-    const buttonVoiceResultWindows = document.querySelector(
-      "#button-show-animation-window"
-    );
-    buttonVoiceResultWindows.click();
-
     await fetch("/synthesize_speech/", {
       method: "POST",
       headers: {
@@ -102,10 +96,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
     buttonRunSynthesis.addEventListener("click", sendTextToSpeech);
   }
 
-  function pollSynthesizedResults() {
-    var synthesisTable = document.getElementById("table_body_speech_result");
-
-    fetch("/synthesize_speech_result/")
+  function pollGeneralSynthesizedResults() {
+    var synthesisTable = document.getElementById("table_body_result");
+    fetch("/synthesize_result/")
       .then((response) => {
         if (!response.ok) throw response;
         return response.json();
@@ -113,224 +106,161 @@ window.addEventListener("DOMContentLoaded", (event) => {
       .then((response) => {
         response_code = response["response_code"];
         results = response["response"];
-
         // Get the number of existing rows in the table
-        const numExistingRows =
-          synthesisTable.getElementsByTagName("tr").length;
+        const numExistingRows = synthesisTable.querySelectorAll("tr").length;
         // Calculate the number of new rows
         numNewRows = results.length - numExistingRows;
 
         if (response_code === 0 && results && numNewRows > 0) {
           // Get only the new results
           newResults = results.slice(-numNewRows);
-
           newResults.forEach(function (model_ans, index) {
+            const videoID = `video-${index + numExistingRows}`;
             const audioId = `audio-${index + numExistingRows}`;
-            const videoId = `video-windows-${index + numExistingRows}`;
             const playBtnId = `play-${index + numExistingRows}`;
             const pauseBtnId = `pause-${index + numExistingRows}`;
             const downloadBtnId = `download-${index + numExistingRows}`;
+            // Get the existing span element by its ID
+            const existingSpans = synthesisTable.querySelectorAll(".dataResponseResult");
+            let duplicateFound = false;
 
-            synthesisTable.insertAdjacentHTML(
-              "beforeend",
-              `
-                      <tr style="height: 40pt;text-align: center;">
-                        <td style="width: 33%;">
-                          <div class="buttons" style="justify-content: center;">
-                            <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
-                            <a style="margin-left: 5pt;margin-right: 5pt;" href="${
-                              model_ans.response_audio_url
-                            }" download="audio.wav">
-                                <button class="download" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-download"></i></button>
-                            </a>
-                            <button id="${videoId}" onclick="deepfakeGeneralPop(event.target, '${
-                model_ans.response_audio_url
-              }', '${
-                model_ans.recognition_text
-              }');" class="synthesis-video" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-solid fa-film"></i></button>
-                          </div>
-                          <audio id="${audioId}" style="display:none;" controls preload="none">
-                            <source src="${
-                              model_ans.response_audio_url
-                            }" type="audio/wav">
-                            Your browser does not support audio.
-                          </audio>
-                        </td>
-                        <td style="width: 25%;">${
-                          model_ans.recognition_text.length > 10
-                            ? model_ans.recognition_text.slice(0, 10) + "..."
-                            : model_ans.recognition_text
-                        }</td>
-                        <td style="width: 20%;">${model_ans.voice}</td>
-                      </tr>
-                      `
-            );
-
-            const playBtn = document.getElementById(playBtnId);
-            const audio = document.getElementById(audioId);
-
-            playBtn.addEventListener("click", function () {
-              if (audio.paused) {
-                audio.play();
-                playBtn.children[0].style.display = "none";
-                playBtn.children[1].style.display = "inline";
-              } else {
-                audio.pause();
-                playBtn.children[0].style.display = "inline";
-                playBtn.children[1].style.display = "none";
-              }
+            // Loop through each existing span to check if there's a duplicate
+            existingSpans.forEach(span => {
+                if (span.textContent === model_ans.request_date) {
+                    duplicateFound = true;
+                }
             });
 
-            audio.addEventListener("ended", function () {
-              playBtn.children[0].style.display = "inline";
-              playBtn.children[1].style.display = "none";
-            });
-          });
-        } else if (!results || numNewRows < 1) {
-          //
-        } else {
-          alert("Error: " + response);
-        }
-        var textareaTextAll = document.querySelectorAll(".text-input");
-        for (var k = 0; k < textareaTextAll.length; k++) {
-          textareaTextAll[k].readOnly = false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  // function for deepfake
-  function pollSynthesizedDeepfakeResults() {
-    var synthesisDeepfakeTable = document.getElementById(
-      "table_body_deepfake_result"
-    );
-
-    fetch("/synthesize_deepfake_result/")
-      .then((response) => {
-        if (!response.ok) throw response;
-        return response.json();
-      })
-      .then((response) => {
-        response_code = response["response_code"];
-        results = response["response"];
-
-        // Get the number of existing rows in the table
-        const numExistingRows =
-          synthesisDeepfakeTable.getElementsByTagName("tr").length;
-        // Calculate the number of new rows
-        numNewRows = results.length - numExistingRows;
-
-        if (response_code === 0 && results && numNewRows > 0) {
-          // Get only the new results
-          newResults = results.slice(-numNewRows);
-
-          newResults.forEach(function (model_ans, index) {
-            const videoID = `video-${index + numExistingRows}`;
-            const playBtnId = `video-play-${index + numExistingRows}`;
-            const pauseBtnId = `video-pause-${index + numExistingRows}`;
-            const downloadBtnId = `video-download-${index + numExistingRows}`;
-
-            synthesisDeepfakeTable.insertAdjacentHTML(
-              "beforeend",
-              `
-                      <tr style="height: 40pt;">
-                        <td>
-                          <div class="buttons" style="justify-content: center;">
-                            <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
-                            <a href="${model_ans.response_video_url}" download="video.mp4">
-                                <button class="download" style="width: 30pt;height: 30pt;"><i class="fa fa-download"></i></button>
-                            </a>
-                          </div>
-                        </td>
-                        <td style="text-align: center;">${model_ans.response_video_date}</td>
-                      </tr>
-                      `
-            );
-
-            // Check the file extension to determine the media type
-            let mediaURLElementResult = model_ans.response_video_url;
-            let extensionElementResult = mediaURLElementResult.split(".").pop();
-            let mediaPlayElementResult = "<div>Unsupported media format.</div>";
-            if (
-              ["mp4", "avi", "mkv", "mov", "flv", "wmv"].includes(
-                extensionElementResult
-              )
-            ) {
-              mediaPlayElementResult = `
-                        <div>
-                          <video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
-                            <source src="${mediaURLElementResult}" type="video/${extensionElementResult}">
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
-                      `;
-            } else if (
-              ["jpg", "jpeg", "png", "gif"].includes(extensionElementResult)
-            ) {
-              mediaPlayElementResult = `
-                        <div>
-                          <img src="${mediaURLElementResult}" id="${videoID}" style="border: 2px dashed #000;" width="250" height="auto" />
-                        </div>
-                      `;
+            // If no duplicate found, insert the new span
+            if (!duplicateFound) {
+                const spanHTML = `<span class="dataResponseResult" style="padding: 15px;font-size: 12px;">${model_ans.request_date}</span>`;
+                synthesisTable.insertAdjacentHTML("beforeend", spanHTML);
             }
 
-            const playBtn = document.getElementById(playBtnId);
-            playBtn.addEventListener("click", function () {
-              var introVideoDeepfake = introJs();
-              introVideoDeepfake.setOptions({
-                steps: [
-                  {
-                    element: playBtn,
-                    title: "Результат синтеза",
-                    position: "left",
-                    intro: `${mediaPlayElementResult}`,
-                  },
-                ],
-                showButtons: false,
-                showStepNumbers: false,
-                showBullets: false,
-                nextLabel: "Продолжить",
-                prevLabel: "Вернуться",
-                doneLabel: "Закрыть",
-              });
-              introVideoDeepfake.start();
-            });
-          });
-        } else if (!results || numNewRows < 1) {
-          //
-        } else {
-          alert("Error: " + response);
-        }
-        var textareaTextAll = document.querySelectorAll(".text-input");
-        for (var k = 0; k < textareaTextAll.length; k++) {
-          textareaTextAll[k].readOnly = false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+            if (model_ans.request_mode === "speech") {
+                 synthesisTable.insertAdjacentHTML(
+                  "beforeend",
+                          `<tr data-type="speech" style="text-align: center;font-size: 12px;">
+                            <td class="notranslate" style="display: flex;flex-direction: row;align-items: center;padding-left: 10pt;padding-right: 10pt;">
+                              <span class="notranslate" style="width: 80pt;background: #f7db4d;padding-left: 10px;padding-right: 10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">${model_ans.voice.length > 10 ? model_ans.voice.slice(0, 10) + "...": model_ans.voice}</span>
+                              <div class="buttons" style="width: 70pt;justify-content: center;scale:0.8;">
+                                <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
+                                <a style="margin-left: 5pt;margin-right: 5pt;" href="${
+                                  model_ans.response_url
+                                }" download="audio.wav">
+                                    <button class="download" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-download"></i></button>
+                                </a>
+                              </div>
+                              <audio id="${audioId}" style="display:none;" controls preload="none">
+                                <source src="${
+                                  model_ans.response_url
+                                }" type="audio/wav">
+                                Your browser does not support audio.
+                              </audio>
+                            ${
+                              model_ans.request_information.length > 20
+                                ? model_ans.request_information.slice(0, 20) + "..."
+                                : model_ans.request_information
+                            }
+                            </td>
+                          </tr>
+                          `
+                );
 
-  const buttonTurnOnSpeechSynthesisWindows = document.getElementById(
-    "button-show-animation-window"
-  );
-  if (buttonTurnOnSpeechSynthesisWindows) {
-    buttonTurnOnSpeechSynthesisWindows.addEventListener(
-      "click",
-      pollSynthesizedResults
-    );
-  }
+                const playBtn = document.getElementById(playBtnId);
+                const audio = document.getElementById(audioId);
 
-  const buttonTurnOnAnimationSynthesisWindows = document.getElementById(
-    "button-show-voice-window"
-  );
-  if (buttonTurnOnAnimationSynthesisWindows) {
-    buttonTurnOnAnimationSynthesisWindows.addEventListener(
-      "click",
-      pollSynthesizedDeepfakeResults
-    );
-  }
+                playBtn.addEventListener("click", function () {
+                  if (audio.paused) {
+                    audio.play();
+                    playBtn.children[0].style.display = "none";
+                    playBtn.children[1].style.display = "inline";
+                  } else {
+                    audio.pause();
+                    playBtn.children[0].style.display = "inline";
+                    playBtn.children[1].style.display = "none";
+                  }
+                });
+
+                audio.addEventListener("ended", function () {
+                  playBtn.children[0].style.display = "inline";
+                  playBtn.children[1].style.display = "none";
+                });
+            } else if (model_ans.request_mode === "deepfake") {
+                synthesisTable.insertAdjacentHTML(
+                  "beforeend",
+                  `
+                  <tr data-type="deepfake" style="text-align: center; font-size: 12px;">
+                    <td class="notranslate" style="display: flex;flex-direction: row;align-items: center;padding-left: 10pt;padding-right: 10pt;">
+                      <span class="notranslate" style="width: 80pt;background: #f7db4d;padding-left: 10px;padding-right: 10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">${model_ans.mode.length > 10 ? model_ans.mode.slice(0, 10) + "...": model_ans.mode}</span>
+                      <div class="buttons" style="width: 70pt;justify-content: center;scale:0.8;">
+                        <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
+                        <a href="${model_ans.response_url}" download="video.mp4" style="margin-left: 5pt;margin-right: 5pt;">
+                            <button class="download" style="width: 30pt;height: 30pt;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-download"></i></button>
+                        </a>
+                      </div>
+                    ${
+                      model_ans.request_information.length > 20
+                        ? model_ans.request_information.slice(0, 20) + "..."
+                        : model_ans.request_information
+                    }
+                  </tr>
+                  `
+                );
+
+                // Check the file extension to determine the media type
+                let mediaURLElementResult = model_ans.response_url;
+                let extensionElementResult = mediaURLElementResult.split(".").pop();
+                let mediaPlayElementResult = "<div>Unsupported media format.</div>";
+                if (
+                  ["mp4", "avi", "mkv", "mov", "flv", "wmv"].includes(
+                    extensionElementResult
+                  )
+                ) {
+                  mediaPlayElementResult = `
+                            <div>
+                              <video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
+                                <source src="${mediaURLElementResult}" type="video/${extensionElementResult}">
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          `;
+                } else if (
+                  ["jpg", "jpeg", "png", "gif"].includes(extensionElementResult)
+                ) {
+                  mediaPlayElementResult = `
+                            <div>
+                              <img src="${mediaURLElementResult}" id="${videoID}" style="border: 2px dashed #000;" width="250" height="auto" />
+                            </div>
+                          `;
+                }
+
+                const playBtn = document.getElementById(playBtnId);
+                playBtn.addEventListener("click", function () {
+                  var introVideoDeepfake = introJs();
+                  introVideoDeepfake.setOptions({
+                    steps: [
+                      {
+                        element: playBtn,
+                        title: "Результат синтеза",
+                        position: "left",
+                        intro: `${mediaPlayElementResult}`,
+                      },
+                    ],
+                    showButtons: false,
+                    showStepNumbers: false,
+                    showBullets: false,
+                    nextLabel: "Продолжить",
+                    prevLabel: "Вернуться",
+                    doneLabel: "Закрыть",
+                  });
+                  introVideoDeepfake.start();
+                });
+            };
+           });
+            };
+        });
+  };
 
   // Define the URL of the /synthesize_process/ page
   const synthesizeProcessUrl = "/synthesize_process/";
@@ -363,6 +293,5 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   // Start checking the status
   checkStatus();
-  setInterval(pollSynthesizedResults, 2000);
-  setInterval(pollSynthesizedDeepfakeResults, 2000);
+  setInterval(pollGeneralSynthesizedResults, 2000);
 });

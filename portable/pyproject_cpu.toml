@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.6.0"
+version = "1.6.1"
 url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"

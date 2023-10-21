@@ -16,10 +16,8 @@ from src.facerender.modules.mapping import MappingNet
 from src.facerender.modules.generator import OcclusionAwareGenerator, OcclusionAwareSPADEGenerator
 from src.facerender.modules.make_animation import make_animation 
 
-from pydub import AudioSegment 
-from src.utils.face_enhancer import enhancer as face_enhancer
+from pydub import AudioSegment
 from src.utils.paste_pic import paste_pic
-from src.utils.videoio import save_video_with_audio
 
 
 class AnimateFromCoeff():
@@ -118,7 +116,7 @@ class AnimateFromCoeff():
 
         return checkpoint['epoch']
 
-    def generate(self, x, video_save_dir, pic_path, crop_info, enhancer=None, background_enhancer=None, preprocess='crop', pic_path_type="static", device="cpu"):
+    def generate(self, x, video_save_dir, pic_path, crop_info, preprocess='crop', pic_path_type="static", device="cpu"):
 
         source_image = x['source_image'].type(torch.FloatTensor)
         source_semantics = x['source_semantics'].type(torch.FloatTensor)
@@ -182,18 +180,6 @@ class AnimateFromCoeff():
         video_name_full = x['video_name'] + '_full.mp4'
         new_video_name = paste_pic(video_path=temp_video_file, pic_path=pic_path, crop_info=crop_info, new_audio_path=new_audio_file, video_save_dir=video_save_dir, preprocess=preprocess, pic_path_type=pic_path_type)
         print(f'The generated video is named {video_save_dir}/{video_name_full}')
-
-        #### paste back then enhancers
-        if enhancer:
-            video_name_enhancer = x['video_name'] + '_enhanced.mp4'
-            enhanced_video = os.path.join(video_save_dir, 'temp_'+video_name_enhancer)
-            current_video = os.path.join(video_save_dir, new_video_name)
-            enhanced_images = face_enhancer(current_video, method=enhancer, bg_upsampler=background_enhancer, device=device)
-
-            imageio.mimsave(enhanced_video, enhanced_images, fps=float(25))
-            
-            new_video_name = save_video_with_audio(enhanced_video, new_audio_file, video_save_dir)
-            print(f'The generated video is named {video_save_dir}/{video_name_enhancer}')
 
         return new_video_name
 

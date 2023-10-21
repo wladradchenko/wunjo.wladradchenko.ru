@@ -1,76 +1,20 @@
-function initializeVideoEditor(button, audioURL = undefined, audioName = undefined) {
-    function setupAudioPreview(url, name) {
-        const audioInputLabel = document.getElementById("upload-audio-for-merge-label");
-        audioInputLabel.textContent = name.length > 20 ? name.slice(0, 20) + "..." : name;
-
-        const audioInputButton = document.getElementById("upload-audio-for-merge");
-        audioInputButton.disabled = true;
-
-        const audioBlob = URL.createObjectURL(url);
-        const audioPreview = document.getElementById("preview-audio-for-merge");
-        audioPreview.innerHTML = `
-            <button id="audio-play-button-for-merge" class="introjs-button" style="display:inline;margin-left: 5pt;">
-                <i class="fa fa-play"></i>
-                <i style="display: none;" class="fa fa-pause"></i>
-            </button>
-            <audio id="audio-play-for-merge" style="display:none;" controls preload="none">
-                <source src="${audioBlob}">
-                Your browser does not support audio.
-            </audio>
-        `;
-
-        const playBtn = document.getElementById("audio-play-button-for-merge");
-        const audioElement = document.getElementById("audio-play-for-merge");
-
-        playBtn.addEventListener("click", function () {
-            if (audioElement.paused) {
-                audioElement.play();
-                playBtn.children[0].style.display = "none";
-                playBtn.children[1].style.display = "inline";
-            } else {
-                audioElement.pause();
-                playBtn.children[0].style.display = "inline";
-                playBtn.children[1].style.display = "none";
-            }
-        });
-
-        audioElement.addEventListener("ended", function () {
-            playBtn.children[0].style.display = "inline";
-            playBtn.children[1].style.display = "none";
-        });
-    }
-
+async function initializeVideoEditor(button, audioURL = undefined, audioName = undefined) {
     const audioInputField = `
         <div style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
-            <label id="upload-audio-for-merge-label" for="upload-audio-for-merge" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
+            <label id="upload-audio-for-merge-label" for="upload-audio-for-merge" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
             <input style="width: 0;" accept="audio/*" type="file" onChange="dragDropAudioVideoMerge(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="upload-audio-for-merge"  />
             <div id="preview-audio-for-merge"></div>
         </div>
     `;
 
-    if (audioURL) {
-        const request = new XMLHttpRequest();
-        request.open("GET", audioURL, true);
-        request.responseType = "blob";
-        request.onload = function () {
-            setupAudioPreview(request.response, audioName);
-        };
-        request.send();
-    }
-
-    const introEditorVideo = introJs();
-    introEditorVideo.setOptions({
-        steps: [
-          {
-            title: "Панель обработки видео и изображений",
-            position: "right",
-            intro: `
+    // translated media edit
+    const introMediaEdit = `
                     <div style="width: 60vw; max-width: 70vw; height: 70vh; max-height: 80vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
                     <div></div>
                     <div>
                         <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
                             <span class="dragBox" style="margin-bottom: 15px;width: 60vw;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
-                                  Загрузите изображение или видео
+                                  Load image or video
                                 <input accept="image/*,video/*" type="file" onChange="handleEditorVideo(event, document.getElementById('preview-media'), this.parentElement)" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -80,79 +24,110 @@ function initializeVideoEditor(button, audioURL = undefined, audioName = undefin
                     </div>
                     <div style="display: flex;flex-direction: column;justify-content: space-between;">
                         <fieldset style="padding: 5pt;">
-                            <legend>Выбор препроцессинга</legend>
+                            <legend>Processing mode</legend>
                             <div>
-                              <input type="radio" id="enhancer-face" name="preprocessing_editor" value="face">
-                              <label for="enhancer-face">Улучшить лицо</label>
+                              <input type="radio" id="gfpgan" name="preprocessing" value="gfpgan">
+                              <label for="gfpgan">Improve face quality</label>
+                            </div>
+                            <div id="realesrganDiv">
+                              <input type="radio" id="realesrgan" name="preprocessing" value="realesrgan"  onclick="radioSetMessage(document.getElementById('message-about-status'), 'Sides under 640px will be adjusted to 640px, keeping the aspect ratio');">
+                              <label for="realesrgan">Improve visual quality</label>
+                            </div>
+                            <div id="animesganDiv">
+                              <input type="radio" id="animesgan" name="preprocessing" value="animesgan" onclick="radioSetMessage(document.getElementById('message-about-status'), 'Sides under 640px will be adjusted to 640px, keeping the aspect ratio');">
+                              <label for="animesgan">Improve hand-drawn quality</label>
                             </div>
                             <div>
-                              <input type="radio" id="enhancer-background" name="preprocessing_editor" value="background">
-                              <label for="enhancer-background">Улучшить окружение</label>
-                            </div>
-                            <div>
-                              <input type="radio" id="get-frames" name="preprocessing_editor" value="frames" checked>
-                              <label for="get-frames">Получить кадры</label>
+                              <input type="radio" id="getFrames" name="preprocessing" value="frames" checked>
+                              <label for="getFrames">Extract frames</label>
                             </div>
                         </fieldset>
                         <div>
                             <p id="message-editor-video" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
-                            <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerVideoEditorProcess(this.parentElement.parentElement.parentElement);">Начать обрабатывать</button>
+                            <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerVideoEditorProcess(this.parentElement.parentElement.parentElement);">Start processing</button>
                         </div>
                     </div>
                     </div>
-                    <script>
-                        availableFeaturesByCUDA(document.getElementById("enhancer-background"));
-                    </script>
-                    `,
-          },
-          {
-            element: button,
-            title: "Панель обработки видео",
-            position: "right",
-            intro: `
-                    <div style="width: 280pt;display: flex;flex-direction: column;align-items: center;">
+                    `;
+
+    const introTranslatedMediaEdit = await translateHtmlString(introMediaEdit, targetLang);
+    const introTranslatedTitleMediaEdit = await translateWithGoogle("Panel video and image processing","auto",targetLang);
+
+    // translate video merge
+    const introMediaMerge = `
+                    <div style="width: 450px;display: flex;flex-direction: column;align-items: center;">
                         <div style="padding: 5pt;display: flex;flex-direction: column;">
                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
                                 <div>
-                                <label for="frames-path">Путь до кадров</label>
+                                <label for="frames-path">Path to frames</label>
                                 <input type="text" id="frames-path" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;">
                                 </div>
                                 <div>
                                 <label for="video-fps">FPS </label>
-                                <input type="number" title="Введите число" id="video-fps" name="video-fps" min="1" max="30" step="1" value="30" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;width: 60pt;">
+                                <input type="number" title="Input number" id="video-fps" name="video-fps" min="1" max="30" step="1" value="30" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin-top: 5pt;width: 60pt;">
                                 </div>
                             </div>
-                            <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> В этом окне вы можете указав путь до директории с кадрами, объединить их в видео. Кадры должны назваться с 1.png по 99...9.png.</i>
+                            <i style="margin-top: 5pt;font-size: 10pt;"><b>Note:</b> Specify the directory path containing frames to create a video and frames should be named from 1.png up to 99...9.png</i>
                         </div>
-                        <div style="padding: 5pt;display: flex;flex-direction: column;width: 370px;">
+                        <div style="padding: 5pt;display: flex;flex-direction: column;width: 450px;">
                             <div style="margin-bottom:5pt;">
                               <input onclick="document.getElementById('editor-video-audio').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="editor-video-audio-checkpoint-info" name="editor-video-audio-checkpoint">
-                              <label for="editor-video-audio-checkpoint">Добавить аудио</label>
+                              <label for="editor-video-audio-checkpoint">Merge to audio</label>
                             </div>
                             <div id="editor-video-audio" style="display:none;margin-top:5pt;">
                                 ${audioInputField}
                             </div>
                             <div>
                                 <p id="message-editor-video" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
-                                <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerVideoMerge(this.parentElement.parentElement.parentElement);">Начать обрабатывать</button>
+                                <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerVideoMerge(this.parentElement.parentElement.parentElement);">Start processing</button>
                             </div>
                         </div>
                     </div>
-                    `,
+                    `;
+
+    const introTranslatedMediaMerge = await translateHtmlString(introMediaMerge, targetLang);
+    const introTranslatedTitleMediaMerge = await translateWithGoogle("Panel merge images to video","auto",targetLang);
+
+    // translated buttons
+    nextTranslatedLabel = await translateWithGoogle("Next","auto",targetLang);
+    prevTranslatedLabel = await translateWithGoogle("Back","auto",targetLang);
+    doneTranslatedLabel = await translateWithGoogle("Close","auto",targetLang);
+
+    const introEditorVideo = introJs();
+    introEditorVideo.setOptions({
+        steps: [
+          {
+            title: introTranslatedTitleMediaEdit,
+            position: "right",
+            intro: introTranslatedMediaEdit,
+          },
+          {
+            element: button,
+            title: introTranslatedTitleMediaMerge,
+            position: "right",
+            intro: introTranslatedMediaMerge,
           },
         ],
         showButtons: true,
         showStepNumbers: false,
-        showBullets: true,
-        nextLabel: "Продолжить",
-        prevLabel: "Вернуться",
-        doneLabel: "Закрыть",
+        showBullets: false,
+        nextLabel: nextTranslatedLabel,
+        prevLabel: prevTranslatedLabel,
+        doneLabel: doneTranslatedLabel,
     });
     introEditorVideo.start();
+    availableFeaturesByCUDA(document.getElementById("realesrganDiv"));
+    availableFeaturesByCUDA(document.getElementById("animesganDiv"));
+}
+
+async function radioSetMessage(msgElement, msg) {
+    msgElement.style.display = "flex";
+    msgElement.style.background = getRandomColor();
+    messageAboutStatusText = await translateWithGoogle(msg,"auto",targetLang);
+    msgElement.innerHTML = `${messageAboutStatusText}`;
 }
 
 function dragDropAudioVideoMerge(event) {
-    console.log(event)
     if (event.target.files.length === 0) {
         console.warn("No files selected");
         return;
@@ -209,11 +184,11 @@ async function handleEditorVideo(event, previewElement, parentElement) {
         if (fileType === 'image') {
             messageElement.style.display = "flex";
             messageElement.style.background = getRandomColor();
-            messageAboutStatusText = await translateWithGoogle("Choose a face to animate by tool","auto",targetLang);
-            messageElement.innerHTML = `${messageAboutStatusText} <i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>`;
+            messageAboutStatusText = await translateWithGoogle("Choose a preprocessing mode","auto",targetLang);
+            messageElement.innerHTML = `${messageAboutStatusText}`;
             canvas = await setupImageCanvas(previewElement, fileUrl, "35vh", "80vw");
-            document.getElementById("enhancer-face").checked = true;
-            document.getElementById("get-frames").disabled = true;
+            document.getElementById("gfpgan").checked = true;
+            document.getElementById("getFrames").disabled = true;
         } else if (fileType === 'video') {
             messageElement.style.display = "flex";
             messageElement.style.background = getRandomColor();
@@ -221,9 +196,9 @@ async function handleEditorVideo(event, previewElement, parentElement) {
             messageElement.innerHTML = `${messageAboutStatusText}`;
             canvas = await setupVideoTimeline(previewElement, fileUrl, "35vh", "80vw");
             messageElement.style.background = getRandomColor();
-            messageAboutStatusText = await translateWithGoogle("Video was loaded and you can cut the video","auto",targetLang);
+            messageAboutStatusText = await translateWithGoogle("Video was loaded and you can cut the video and choose preprocessing mode","auto",targetLang);
             messageElement.innerHTML = `${messageAboutStatusText}`;
-            document.getElementById("get-frames").disabled = false;
+            document.getElementById("getFrames").disabled = false;
         }
     }
 }
@@ -261,19 +236,15 @@ function clearMessage(element) {
 }
 
 function executeVideoEditorProcess(mediaDetails, elem) {
-    const buttonAnimationWindows = document.querySelector("#button-show-voice-window");
-    buttonAnimationWindows.click();
-
     const parameters = {
         source: mediaDetails.mediaName,
-        enhancer: elem.querySelector("#enhancer-face").checked ? "gfpgan" : false,
-        enhancer_background: elem.querySelector("#enhancer-background").checked,
-        get_frames: elem.querySelector("#get-frames").checked,
+        gfpgan: elem.querySelector("#gfpgan").checked ? "gfpgan" : false,
+        animesgan: elem.querySelector("#animesgan").checked ? "animesgan" : false,
+        realesrgan: elem.querySelector("#realesrgan").checked ? "realesrgan" : false,
+        get_frames: elem.querySelector("#getFrames").checked,
         media_start: mediaDetails.mediaStart,
         media_end: mediaDetails.mediaEnd,
     };
-
-    document.getElementById("table_body_deepfake_result").innerHTML = "";
 
     fetch("/synthesize_video_editor/", {
         method: "POST",
@@ -284,8 +255,6 @@ function executeVideoEditorProcess(mediaDetails, elem) {
     });
 
     // This open display result for deepfake videos
-    const tutorialButton = document.querySelector("#button-show-voice-window");
-    tutorialButton.click();
     closeTutorial();
 }
 
@@ -322,18 +291,17 @@ async function handleVideoMergeProcess(data, elem) {
         return audioName;
     }
 
-    const synthesisTable = document.getElementById("table_body_deepfake_result");
     const messageElement = elem.querySelector("#message-editor-video");
     clearMessage(messageElement);
 
     if (data.status_code !== 200) {
-        displayTranslatedMessage(messageElement, "Процесс занят. Дождитесь его окончания.");
+        displayTranslatedMessage(messageElement, "The process is busy. Wait for it to finish.");
         return;
     }
 
     const framesPath = elem.querySelector("#frames-path").value;
     if (!framesPath) {
-        displayTranslatedMessage(messageElement, "Вы не указали абсолютный путь до изображений.");
+        displayTranslatedMessage(messageElement, "You did not specify the absolute path to the images.");
         return;
     }
 
@@ -346,8 +314,6 @@ async function handleVideoMergeProcess(data, elem) {
         fps: videoFps
     };
 
-    synthesisTable.innerHTML = "";
-
     fetch("/synthesize_video_merge/", {
         method: "POST",
         headers: {
@@ -357,7 +323,5 @@ async function handleVideoMergeProcess(data, elem) {
     });
 
     // This open display result for deepfake videos
-    const tutorialButton = document.querySelector("#button-show-voice-window");
-    tutorialButton.click();
     closeTutorial();
 }

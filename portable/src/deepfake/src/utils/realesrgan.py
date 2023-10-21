@@ -53,6 +53,16 @@ class RealESRGANer():
             self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if device is None else device
 
         if isinstance(model_path, list):
+            for m in range(len(model_path)):
+                if model_path[m].startswith('https://'):
+                    model_path[m] = load_file_from_url(url=model_path[m], model_dir=root_dir, progress=True, file_name=None)
+                    if sys.platform == 'win32':
+                        try:
+                            username = os.environ.get('USERNAME') or os.environ.get('USER')
+                            cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)"'
+                            os.system(cmd)
+                        except Exception as e:
+                            print(e)
             # dni
             assert len(model_path) == len(dni_weight), 'model_path and dni_weight should have the save length.'
             loadnet = self.dni(model_path[0], model_path[1], dni_weight)

@@ -143,6 +143,19 @@ def current_time(time_format: str = None):
     return strftime("%Y%m%d%H%M%S", gmtime())
 
 
+def format_dir_time(dir_time):
+    # Extract components from the string
+    year = dir_time[0:4]
+    month = dir_time[4:6]
+    day = dir_time[6:8]
+    hour = dir_time[8:10]
+    minute = dir_time[10:12]
+
+    # Format the date and time
+    formatted_date = f"{day}.{month}.{year} {hour}:{minute}"
+    return formatted_date
+
+
 def _create_localization():
     localization_path = os.path.join(SETTING_FOLDER, "localization.json")
     with open(localization_path, 'w', encoding='utf-8') as f:

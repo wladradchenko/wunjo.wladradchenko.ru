@@ -14,7 +14,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
         return null;
     }
 
-    const synthesisResultTable = document.getElementById("table_body_deepfake_result");
     const mediaPreview = elem.querySelector("#preview-media");
     const selectedFaceData = retrieveSelectedFaceData(mediaPreview);
 
@@ -32,9 +31,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
 
     if (synthesisSettings) {
         triggerSynthesisAPI(synthesisSettings);
-        // This open display result for deepfake videos
-        const tutorialButton = document.querySelector("#button-show-voice-window");
-        tutorialButton.click();
         closeTutorial();
     }
 
@@ -71,7 +67,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
         }
 
         const preprocessingType = getSelectedPreprocessingType(elem);
-        const enhancerType = getSelectedEnhancerType(elem);
         const advancedSettings = getAdvancedSettings(elem);
 
         return {
@@ -80,7 +75,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
             driven_audio: audioName,
             preprocess: preprocessingType,
             still: elem.querySelector("#still-deepfake").checked,
-            enhancer: enhancerType,
             type_file: mediaType,
             media_start: mediaStart,
             media_end: mediaEnd,
@@ -94,17 +88,12 @@ async function initiateFaceAndMouthProcess(data, elem) {
         return "full";
     }
 
-    function getSelectedEnhancerType(elem) {
-        return elem.querySelector("#enhancer-deepfake").checked ? "gfpgan" : false;
-    }
-
     function getAdvancedSettings(elem) {
         return {
             expression_scale: elem.querySelector("#expression-scale-deepfake").value,
             input_yaw: elem.querySelector("#input-yaw-deepfake").value,
             input_pitch: elem.querySelector("#input-pitch-deepfake").value,
             input_roll: elem.querySelector("#input-roll-deepfake").value,
-            background_enhancer: elem.querySelector("#background-enhancer-deepfake").checked,
             emotion_label: getSelectedEmotionLabel(elem),
             similar_coeff: elem.querySelector("#similar-coeff-face").value
         };
@@ -179,10 +168,6 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                           <input type="checkbox" id="still-deepfake" name="still">
                           <label for="still-deepfake">Отключить движение головой</label>
                         </div>
-                        <div style="padding: 5pt;">
-                          <input type="checkbox" id="enhancer-deepfake" name="enhancer">
-                          <label for="enhancer-deepfake">Улучшение лица</label>
-                        </div>
                         <div id="similar-coeff-face-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                           <label for="similar-coeff-face">Похожесть лица</label>
                           <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
@@ -205,10 +190,6 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                             <div id="input-roll-deepfake-div" style="padding: 5pt;">
                               <label for="input-roll-deepfake">Угол поворота по ZX</label>
                               <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
-                            </div>
-                            <div style="padding: 5pt;" id="background-enhancer-deepfake-message">
-                              <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
-                              <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
                             </div>
                             <div style="padding: 5pt;" id="use-experimental-functions-message">
                                 <input onclick="document.getElementById('deepfake-emotion').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="use-experimental-functions" name="experimental-functions">
@@ -245,7 +226,6 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
     doneLabel: "Закрыть",
   });
   introFaceAndMouth.start();
-  availableFeaturesByCUDA(document.getElementById("background-enhancer-deepfake-message"));
   // IF USER ADD AUDIO FROM SYNTHESIS PANEL //
   if (audio_url) {
     var request = new XMLHttpRequest();

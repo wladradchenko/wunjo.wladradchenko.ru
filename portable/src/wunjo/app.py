@@ -26,17 +26,17 @@ from speech.tts_models import load_voice_models, voice_names, file_voice_config,
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
-from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size
+from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size, format_dir_time
 
 import logging
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
+
 app.config['DEBUG'] = False
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
-app.config['SYNTHESIZE_SPEECH_RESULT'] = []
-app.config['SYNTHESIZE_DEEPFAKE_RESULT'] = []
+app.config['SYNTHESIZE_RESULT'] = []
 app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
 app.config['SEGMENT_ANYTHING_MODEL'] = {}  # load segment anything model to dynamically change
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
@@ -204,15 +204,6 @@ def get_voice_list():
     return voice_models_status
 
 
-@app.route("/synthesize_deepfake_result/", methods=["GET"])
-@cross_origin()
-def get_synthesize_deepfake_result():
-    general_results = app.config['SYNTHESIZE_DEEPFAKE_RESULT']
-    return {
-        "response_code": 0,
-        "response": general_results
-    }
-
 @app.route("/create_segment_anything/", methods=["POST"])
 @cross_origin()
 def create_segment_anything():
@@ -292,22 +283,24 @@ def synthesize_video_merge():
     audio_path = os.path.join(TMP_FOLDER, audio_name) if audio_name else None
     fps = request_list.get("fps", 30)
 
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
+
     try:
         result = VideoEdit.main_merge_frames(
             output=DEEPFAKE_FOLDER, source_folder=source_folder,
             audio_path=audio_path, fps=fps
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video merge"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
     result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
     url = url_for("media_file", filename=result_filename)
-    date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": url, "response_video_date": date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video merge"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Merge frames to video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -340,30 +333,36 @@ def synthesize_video_editor():
         os.makedirs(DEEPFAKE_FOLDER)
 
     source = request_list.get("source")
-    enhancer = request_list.get("enhancer", False)
-    enhancer_background = request_list.get("enhancer_background", False)
+    gfpgan = request_list.get("gfpgan", False)
+    animesgan = request_list.get("animesgan", False)
+    realesrgan = request_list.get("realesrgan", False)
+    # List of enhancer options in preferred order
+    enhancer_options = [gfpgan, animesgan, realesrgan]
+    # Find the first non-False option
+    enhancer = next((enhancer_option for enhancer_option in enhancer_options if enhancer_option), False)
     is_get_frames = request_list.get("get_frames", False)
     media_start = request_list.get("media_start", 0)
     media_end = request_list.get("media_end", 0)
 
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
+
     try:
         result = VideoEdit.main_video_work(
-            output=DEEPFAKE_FOLDER,
-            source=os.path.join(TMP_FOLDER, source), enhancer=enhancer,
-            enhancer_background=enhancer_background, is_get_frames=is_get_frames,
+            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
+            enhancer=enhancer, is_get_frames=is_get_frames,
             media_start=media_start, media_end=media_end
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video editor"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
     result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
     url = url_for("media_file", filename=result_filename)
-    date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": url, "response_video_date": date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video editor"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Edit video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -418,6 +417,9 @@ def synthesize_diffuser():
     thickness_mask = int(request_list.get("thickness_mask", 10))
     sd_model_name = request_list.get("sd_model_name", None)
 
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
+
     clear_cache()  # clear empty, because will be better load segment models again and after empty cache
 
     try:
@@ -427,16 +429,15 @@ def synthesize_diffuser():
             control_type=controlnet, translation=preprocessor, predictor=None, session=None, segment_percentage=segment_percentage
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Diffusion"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
     diffusion_result_filename = "/video/" + diffusion_result.replace("\\", "/").split("/video/")[-1]
     diffusion_url = url_for("media_file", filename=diffusion_result_filename)
-    diffusion_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": diffusion_url, "response_video_date": diffusion_date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Diffusion"), "request_mode": "deepfake", "response_url": diffusion_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Diffusion synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -478,6 +479,9 @@ def synthesize_retouch():
     blur = int(request_list.get("blur", 1))
     upscale = request_list.get("upscale", False)
     segment_percentage = int(request_list.get("segment_percentage", 25))
+
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
     # clear empty, because will be better load segment models again and after empty cache, else not empty full
     clear_cache()
 
@@ -488,16 +492,15 @@ def synthesize_retouch():
             predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Retouch"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
     retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)
-    retouch_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": retouch_url, "response_video_date": retouch_date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Retouch"), "request_mode": "deepfake", "response_url": retouch_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -541,11 +544,12 @@ def synthesize_face_swap():
     video_end_target = request_list.get("video_end_target", 0)
     video_current_time_source = request_list.get("video_current_time_source", 0)
     video_end_source = request_list.get("video_end_source", 0)
-    enhancer = request_list.get("enhancer")
-    background_enhancer = request_list.get("background_enhancer", False)
     multiface = request_list.get("multiface", False)
     similarface = request_list.get("similarface", False)
     similar_coeff = float(request_list.get("similar_coeff", 0.95))
+
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
 
     clear_cache()  # clear empty
 
@@ -562,23 +566,20 @@ def synthesize_face_swap():
             target_video_end=video_end_target,
             source_current_time=video_current_time_source,
             source_video_end=video_end_source,
-            enhancer=enhancer,
-            background_enhancer=background_enhancer,
             multiface=multiface,
             similarface=similarface,
             similar_coeff=similar_coeff
         )
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face swap"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
     face_swap_result_filename = "/video/" + face_swap_result.replace("\\", "/").split("/video/")[-1]
     face_swap_url = url_for("media_file", filename=face_swap_result_filename)
-    face_swap_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": face_swap_url, "response_video_date": face_swap_date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face swap"), "request_mode": "deepfake", "response_url": face_swap_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Face swap synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -616,17 +617,18 @@ def synthesize_deepfake():
     driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
     preprocess = request_list.get("preprocess")
     still = request_list.get("still")
-    enhancer = request_list.get("enhancer")
     expression_scale = float(request_list.get("expression_scale", 1.0))
     input_yaw = split_input_deepfake(request_list.get("input_yaw"))
     input_pitch = split_input_deepfake(request_list.get("input_pitch"))
     input_roll = split_input_deepfake(request_list.get("input_roll"))
-    background_enhancer = request_list.get("background_enhancer")
     type_file = request_list.get("type_file")
     media_start = request_list.get("media_start", 0)
     media_end = request_list.get("media_end", 0)
     emotion_label = request_list.get("emotion_label", None)
     similar_coeff = float(request_list.get("similar_coeff", 0.95))
+
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
 
     clear_cache()  # clear empty
 
@@ -637,14 +639,12 @@ def synthesize_deepfake():
                 source_image=source_image,
                 driven_audio=driven_audio,
                 still=still,
-                enhancer=enhancer,
                 preprocess=preprocess,
                 face_fields=face_fields,
                 expression_scale=expression_scale,
                 input_yaw=input_yaw,
                 input_pitch=input_pitch,
                 input_roll=input_roll,
-                background_enhancer=background_enhancer,
                 pose_style=random.randint(0, 45)
                 )
         elif type_file == "video":
@@ -653,8 +653,6 @@ def synthesize_deepfake():
                 face=source_image,
                 audio=driven_audio,
                 face_fields=face_fields,
-                enhancer=enhancer,
-                background_enhancer=background_enhancer,
                 video_start=float(media_start),
                 video_end=float(media_end),
                 emotion_label=emotion_label,
@@ -663,7 +661,7 @@ def synthesize_deepfake():
 
         torch.cuda.empty_cache()
     except Exception as err:
-        app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": "", "response_video_date": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face and mouth animation"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -671,9 +669,8 @@ def synthesize_deepfake():
 
     deepfake_filename = "/video/" + deepfake_result.replace("\\", "/").split("/video/")[-1]
     deepfake_url = url_for("media_file", filename=deepfake_filename)
-    deepfake_date = current_time("%H:%M:%S")  # maybe did in js parse of date
 
-    app.config['SYNTHESIZE_DEEPFAKE_RESULT'] += [{"response_video_url": deepfake_url, "response_video_date": deepfake_date}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face and mouth animation"), "request_mode": "deepfake", "response_url": deepfake_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Deepfake synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -684,10 +681,10 @@ def synthesize_deepfake():
 
     return {"status": 200}
 
-@app.route("/synthesize_speech_result/", methods=["GET"])
+@app.route("/synthesize_result/", methods=["GET"])
 @cross_origin()
 def get_synthesize_result():
-    general_results = app.config['SYNTHESIZE_SPEECH_RESULT']
+    general_results = app.config['SYNTHESIZE_RESULT']
     return {
         "response_code": 0,
         "response": general_results
@@ -706,6 +703,7 @@ def synthesize():
     print(get_print_translate("Please wait... Processing is started"))
 
     dir_time = current_time()
+    request_date = format_dir_time(dir_time)
 
     for request_json in request_list:
         text = request_json["text"]
@@ -781,13 +779,16 @@ def synthesize():
 
                     filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                     print("Synthesized file: ", filename)
-                    audio_bytes = result.pop("response_audio")
-                    result["response_audio_url"] = url_for("media_file", filename=filename)
-                    result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
+                    result.pop("response_audio")
+                    result["response_url"] = url_for("media_file", filename=filename)
+                    # result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
                     result["response_code"] = response_code
-                    result["recognition_text"] = text
+                    result["request_date"] = request_date
+                    result["request_information"] = text
+                    result["request_mode"] = "speech"
+                    result["voice"] = get_print_translate(result.get("voice"))
                     # Add result in frontend
-                    app.config['SYNTHESIZE_SPEECH_RESULT'] += [result]
+                    app.config['SYNTHESIZE_RESULT'] += [result]
 
         # here use for voice cloning of audio file without tts
         if use_voice_clone_on_audio:
@@ -805,13 +806,16 @@ def synthesize():
                 filename = result.pop("filename")
                 filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                 print("Synthesized file: ", filename)
-                audio_bytes = result.pop("response_audio")
-                result["response_audio_url"] = url_for("media_file", filename=filename)
-                result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
+                result.pop("response_audio")
+                result["response_url"] = url_for("media_file", filename=filename)
+                # result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
                 result["response_code"] = response_code
-                result["recognition_text"] = text
+                result["request_date"] = request_date
+                result["request_information"] = text
+                result["request_mode"] = "speech"
+                result["voice"] = get_print_translate(result.get("voice"))
                 # Add result in frontend
-                app.config['SYNTHESIZE_SPEECH_RESULT'] += [result]
+                app.config['SYNTHESIZE_RESULT'] += [result]
 
     app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
     print("Text to speech synthesis completed successfully!")
@@ -960,5 +964,7 @@ def media_file(filename):
 
 
 def main():
-    FlaskUI(app=app, server="flask").run()
-    # app.run()
+    if not app.config['DEBUG'] and sys.platform != 'darwin':
+        FlaskUI(app=app, server="flask").run()
+    else:
+        app.run()

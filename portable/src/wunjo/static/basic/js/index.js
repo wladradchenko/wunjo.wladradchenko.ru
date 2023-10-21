@@ -1434,6 +1434,30 @@ function updateLangSetting(lang_code, lang_name) {
       console.error("Error:", error);
     });
 }
+
+// translate html element from string
+// translation
+async function translateHtmlString(htmlString, targetLang) {
+    // Convert string to DOM elements
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+
+    // Recursive function to traverse and translate nodes
+    const translateNodes = async (node) => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "") {
+            node.textContent = await translateWithGoogle(node.textContent.trim(), "auto", targetLang);
+        } else {
+            for (let child of node.childNodes) {
+                await translateNodes(child);
+            }
+        }
+    };
+
+    await translateNodes(doc.body);
+
+    // Convert translated DOM back to a string
+    return doc.body.innerHTML;
+}
 ///TRANSLATE///
 
 ///UPDATE VERSION///

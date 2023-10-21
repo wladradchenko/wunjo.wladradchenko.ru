@@ -574,7 +574,6 @@ async function processRetouchAi(data, element) {
         return;
     }
 
-    const synthesisTable = document.getElementById("table_body_deepfake_result");
     const maskTimelinesList = element.querySelectorAll(".mask-timeline");
     const dataDict = {};
 
@@ -683,7 +682,6 @@ async function processRetouchAi(data, element) {
 
     console.log(JSON.stringify(retouchAiParameters, null, 4));
 
-    synthesisTable.innerHTML = "";
     fetch("/synthesize_retouch/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -691,7 +689,5 @@ async function processRetouchAi(data, element) {
     });
 
     // This open display result for deepfake videos
-    const tutorialButton = document.querySelector("#button-show-voice-window");
-    tutorialButton.click();
     closeTutorial();
 }

@@ -1,4 +1,14 @@
 // FACE SWAP //
+function handleCheckboxFaceSwapClick(clickedId) {
+    const checkboxes = ['multiface-deepfake', 'similarface-deepfake'];
+    checkboxes.forEach(id => {
+        if (id !== clickedId) {
+            document.getElementById(id).checked = false;
+        }
+    });
+}
+
+
 function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefined) {
   var introFaceSwap = introJs();
   introFaceSwap.setOptions({
@@ -9,26 +19,14 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
         intro: `<div style="width: 80vw; max-width: 90vw; height: 83vh; max-height: 90vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
                     <div>
                         <fieldset style="padding: 5pt;margin: 13pt;margin-top: 0;flex-direction: row;display: flex;">
-                            <legend>Настройки</legend>
-                            <div>
+                        <legend>Настройки</legend>
                             <div style="padding: 5pt;">
-                              <input type="checkbox" id="multiface-deepfake" name="multiface">
+                              <input type="checkbox" id="multiface-deepfake" name="multiface" onclick="handleCheckboxFaceSwapClick('multiface-deepfake')">
                               <label for="multiface-deepfake">Заменить все лица</label>
                             </div>
                             <div style="padding: 5pt;">
-                              <input type="checkbox" id="similarface-deepfake" name="similarface">
+                              <input type="checkbox" id="similarface-deepfake" name="similarface" onclick="handleCheckboxFaceSwapClick('similarface-deepfake')">
                               <label for="similarface-deepfake">Несколько одинаковых лиц</label>
-                            </div>
-                            </div>
-                            <div>
-                            <div style="padding: 5pt;">
-                              <input type="checkbox" id="enhancer-deepfake" name="enhancer">
-                              <label for="enhancer-deepfake">Улучшение лица</label>
-                            </div>
-                            <div style="padding: 5pt;" id="background-enhancer-deepfake-message">
-                              <input type="checkbox" id="background-enhancer-deepfake" name="background-enhancer">
-                              <label for="background-enhancer-deepfake">Улучшение фона (долго)</label>
-                            </div>
                             </div>
                         </fieldset>
                         <div>
@@ -73,7 +71,6 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
     doneLabel: "Закрыть",
   });
   introFaceSwap.start();
-  availableFeaturesByCUDA(document.getElementById("background-enhancer-deepfake-message"));
 }
 
 // HANDLE FACE SWAP //
@@ -140,7 +137,6 @@ async function processFaceSwap(data, element) {
         return;
     }
 
-    const synthesisTable = document.getElementById("table_body_deepfake_result");
     const targetDetails = retrieveMediaDetails(element.querySelector("#preview-media-target"));
     const sourceDetails = retrieveMediaDetails(element.querySelector("#preview-media-source"));
 
@@ -179,9 +175,6 @@ async function processFaceSwap(data, element) {
         return;
     }
 
-    const enhancerElement = element.querySelector("#enhancer-deepfake");
-    const enhancerValue = enhancerElement.checked ? "gfpgan" : false;
-
     const faceSwapParameters = {
         face_target_fields: targetFaceData,
         target_content: targetDetails.mediaName,
@@ -195,12 +188,9 @@ async function processFaceSwap(data, element) {
         type_file_source: sourceDetails.mediaType,
         multiface: multiFaceChecked,
         similarface: element.querySelector("#similarface-deepfake").checked,
-        enhancer: enhancerValue,
-        background_enhancer: element.querySelector("#background-enhancer-deepfake").checked,
         similar_coeff: element.querySelector("#similar-coeff-face").value
     };
 
-    synthesisTable.innerHTML = "";
     fetch("/synthesize_face_swap/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -208,7 +198,5 @@ async function processFaceSwap(data, element) {
     });
 
     // This open display result for deepfake videos
-    const tutorialButton = document.querySelector("#button-show-voice-window");
-    tutorialButton.click();
     closeTutorial();
 }

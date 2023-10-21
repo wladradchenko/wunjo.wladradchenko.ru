@@ -3,7 +3,6 @@ import cv2
 import sys
 import math
 import torch
-import imageio
 import subprocess
 import numpy as np
 from tqdm import tqdm
@@ -30,7 +29,7 @@ from src.generate_facerender_batch import get_facerender_data
 """Animation Face"""
 """Wav2Lip"""
 from src.wav2mel import MelProcessor
-from src.utils.face_enhancer import enhancer as face_enhancer
+from src.utils.face_enhancer import enhancer as content_enhancer
 from src.utils.video2fake import GenerateFakeVideo2Lip
 """Wav2Lip"""
 """Face Swap"""
@@ -83,9 +82,8 @@ class AnimationFaceTalk:
     """
     @staticmethod
     def main_img_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, still: bool = True, face_fields: list = None,
-                          enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
                           preprocess: str = Input(description="how to preprocess the images", choices=["crop", "resize", "full"], default="full",),
-                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, background_enhancer=None, pose_style=0):
+                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, pose_style=0):
 
         if file_deepfake_config == {}:
             raise "[Error] Config file deepfake.json is not exist"
@@ -106,13 +104,10 @@ class AnimationFaceTalk:
             args.device = "cpu"
 
         args.still = still
-        args.enhancer = enhancer
-
         args.expression_scale = expression_scale
         args.input_yaw = input_yaw
         args.input_pitch = input_pitch
         args.input_roll = input_roll
-        args.background_enhancer = "realesrgan" if background_enhancer else None
 
         if preprocess is None:
             preprocess = "crop"
@@ -257,9 +252,8 @@ class AnimationFaceTalk:
         coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
 
         # coeff2video
-        args.enhancer = "gfpgan" if background_enhancer else enhancer
         data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, audio_path, batch_size, input_yaw_list, input_pitch_list, input_roll_list, expression_scale=args.expression_scale, still_mode=args.still, preprocess=args.preprocess)
-        mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess, pic_path_type=pic_path_type, device=device)
+        mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, preprocess=args.preprocess, pic_path_type=pic_path_type, device=device)
 
         for f in os.listdir(save_dir):
             if mp4_path == f:
@@ -297,8 +291,8 @@ class AnimationMouthTalk:
     """
     @staticmethod
     def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
-                            enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                            box: list = [-1, -1, -1, -1], background_enhancer: str = None, video_start: float = 0, video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
+                            box: list = [-1, -1, -1, -1], video_start: float = 0,
+                            video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
         args.checkpoint_dir = "checkpoints"
         args.result_dir = deepfake_dir
@@ -310,8 +304,6 @@ class AnimationMouthTalk:
         args.box = box  # a constant bounding box for the face. Use only as a last resort if the face is not detected.
         # Also (about box), might work only if the face is not moving around much. Syntax: (top, bottom, left, right).
         args.face_fields = face_fields
-        args.enhancer = enhancer
-        args.background_enhancer = background_enhancer
 
         cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
@@ -321,8 +313,6 @@ class AnimationMouthTalk:
         else:
             print("Processing will run on CPU")
             args.device = "cpu"
-
-        args.background_enhancer = "realesrgan" if background_enhancer else None
 
         save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -377,21 +367,6 @@ class AnimationMouthTalk:
         if wav2lip_processed_video is None:
             return
         wav2lip_result_video = wav2lip_processed_video
-
-        # after face or background enchanter
-        enhancer = "gfpgan" if background_enhancer else enhancer
-        if enhancer:
-            video_name_enhancer = 'wav2lip_video_enhanced.mp4'
-            enhanced_path = os.path.join(save_dir, 'temp_' + video_name_enhancer)
-            enhanced_images = face_enhancer(wav2lip_processed_video, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
-            imageio.mimsave(enhanced_path, enhanced_images, fps=float(fps))
-            wav2lip_result_video = enhanced_path
-
-        try:
-            file_name = encrypted(wav2lip_result_video, save_dir)  # encrypted
-            wav2lip_result_video = os.path.join(save_dir, file_name)
-        except Exception as err:
-            print(f"Error with encrypted {err}")
         mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
 
         for f in os.listdir(save_dir):
@@ -429,9 +404,9 @@ class FaceSwap:
     """
     @staticmethod
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
-                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0, source_current_time: float = 0, source_video_end: float = 0,
-                      enhancer: str = Input(description="Choose a face enhancer", choices=["gfpgan", "RestoreFormer"], default="gfpgan",),
-                      background_enhancer: str = None, multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
+                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0,
+                      source_current_time: float = 0, source_video_end: float = 0,
+                      multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
         args = FaceSwap.load_faceswap_default()
         # Folders
         args.checkpoint_dir = "checkpoints"
@@ -450,8 +425,6 @@ class FaceSwap:
         args.source_current_time = float(source_current_time)
         # Additionally processing
         args.multiface = multiface
-        args.enhancer = enhancer
-        args.background_enhancer = background_enhancer
 
         cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
@@ -461,9 +434,6 @@ class FaceSwap:
         else:
             print("Processing will run on CPU")
             args.device = "cpu"
-
-        args.background_enhancer = "realesrgan" if background_enhancer else None
-        enhancer = "gfpgan" if background_enhancer else enhancer
 
         save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -506,13 +476,7 @@ class FaceSwap:
             # create face swap
             file_name = faceswap.swap_video(frame_dir, source_face, args.target_face_fields, save_dir, args.multiface, fps)
             saved_file = os.path.join(save_dir, file_name)
-            # after face or background enchanter
-            if enhancer:
-                enhanced_images = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
-                file_name = "swap_result_enhanced.mp4"
-                saved_file = os.path.join(save_dir, file_name)
-                imageio.mimsave(saved_file, enhanced_images, fps=float(fps))
-
+            # after generation
             try:
                 file_name = encrypted(saved_file, save_dir)  # encrypted
                 saved_file = os.path.join(save_dir, file_name)
@@ -530,12 +494,7 @@ class FaceSwap:
             target_image = faceswap.swap_image(target_frame, source_face, args.target_face_fields, save_dir, args.multiface)
             file_name = "swap_result.png"
             saved_file = save_image_cv2(os.path.join(save_dir, file_name), target_image)
-            if enhancer:
-                enhanced_image = face_enhancer(saved_file, method=enhancer, bg_upsampler=background_enhancer, device=args.device)
-                file_name = "swap_result_enhanced.png"
-                saved_file = os.path.join(save_dir, file_name)
-                imageio.imsave(saved_file, enhanced_image[0])
-
+            # after generation
             try:
                 file_name = encrypted(saved_file, save_dir)  # encrypted
             except Exception as err:
@@ -947,7 +906,7 @@ class Retouch:
 class VideoEdit:
     """Edit video"""
     @staticmethod
-    def main_video_work(output, source, enhancer, enhancer_background, is_get_frames, media_start=0, media_end=0):
+    def main_video_work(output, source, is_get_frames, enhancer="gfpgan", media_start=0, media_end=0):
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
 
@@ -957,8 +916,6 @@ class VideoEdit:
         import time
         time.sleep(5)
 
-        enhancer_background = "realesrgan" if enhancer_background else None
-        enhancer = "gfpgan" if enhancer_background else enhancer
         audio_file_name = extract_audio_from_video(source, save_dir)
 
         if enhancer:
@@ -974,18 +931,13 @@ class VideoEdit:
             _, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
             if check_media_type(source) == "animated":
                 source = cut_start_video(source, media_start, media_end)
-                name_enhancer = 'video_enhanced.mp4'
-                enhanced_path = os.path.join(output, 'temp_' + name_enhancer)
                 print("Starting improve video")
-                enhanced_video = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
-                imageio.mimsave(enhanced_path, enhanced_video, fps=float(fps))
+                enhanced_name = content_enhancer(source, save_folder=save_dir, method=enhancer, fps=float(fps), device=device)
+                enhanced_path = os.path.join(save_dir, enhanced_name)
                 save_name = save_video_with_audio(enhanced_path, os.path.join(save_dir, audio_file_name), save_dir)
             else:
-                save_name = 'image_enhanced.png'
                 print("Starting improve image")
-                enhanced_image = face_enhancer(source, method=enhancer, bg_upsampler=enhancer_background, device=device)
-                saved_file = os.path.join(save_dir, save_name)
-                imageio.imsave(saved_file, enhanced_image[0])
+                save_name = content_enhancer(source, save_folder=save_dir, method=enhancer, device=device)
 
             for f in os.listdir(save_dir):
                 if save_name == f:

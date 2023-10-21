@@ -307,6 +307,7 @@ Update 1.6.0
 - [x] Optimized using memory for retouch and remove object for long video
 
 Update 1.6.1
+- [x] Fix bug with enhancer. Improve enhancer for video and face. Added enhancer for drawing video
 - [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
 - [ ] Music generation
 - [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
