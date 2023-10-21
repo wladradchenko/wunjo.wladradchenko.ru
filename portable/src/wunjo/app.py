@@ -292,7 +292,7 @@ def synthesize_video_merge():
             audio_path=audio_path, fps=fps
         )
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video merge"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Image to video"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -300,7 +300,7 @@ def synthesize_video_merge():
     result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
     url = url_for("media_file", filename=result_filename)
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video merge"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Image to video"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Merge frames to video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -347,6 +347,11 @@ def synthesize_video_editor():
     request_time = current_time()
     request_date = format_dir_time(request_time)
 
+    if enhancer:
+        mode_msg = get_print_translate("Content improve")
+    else:
+        mode_msg = get_print_translate("Video to images")
+
     try:
         result = VideoEdit.main_video_work(
             output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
@@ -354,7 +359,7 @@ def synthesize_video_editor():
             media_start=media_start, media_end=media_end
         )
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video editor"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -362,7 +367,7 @@ def synthesize_video_editor():
     result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
     url = url_for("media_file", filename=result_filename)
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Video editor"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Edit video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -492,7 +497,7 @@ def synthesize_retouch():
             predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
         )
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Retouch"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -500,7 +505,7 @@ def synthesize_retouch():
     retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Retouch"), "request_mode": "deepfake", "response_url": retouch_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": retouch_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
@@ -632,6 +637,11 @@ def synthesize_deepfake():
 
     clear_cache()  # clear empty
 
+    if type_file == "img":
+        mode_msg = get_print_translate("Face in sync")
+    else:
+        mode_msg = get_print_translate("Lip in sync")
+
     try:
         if type_file == "img":
             deepfake_result = AnimationFaceTalk.main_img_deepfake(
@@ -661,7 +671,7 @@ def synthesize_deepfake():
 
         torch.cuda.empty_cache()
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face and mouth animation"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
@@ -670,7 +680,7 @@ def synthesize_deepfake():
     deepfake_filename = "/video/" + deepfake_result.replace("\\", "/").split("/video/")[-1]
     deepfake_url = url_for("media_file", filename=deepfake_filename)
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face and mouth animation"), "request_mode": "deepfake", "response_url": deepfake_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": deepfake_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Deepfake synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}

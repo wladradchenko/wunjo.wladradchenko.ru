@@ -83,7 +83,6 @@ async function initiateFaceAndMouthProcess(data, elem) {
     }
 
     function getSelectedPreprocessingType(elem) {
-        if (elem.querySelector("#cover-deepfake").checked) return "cover";
         if (elem.querySelector("#resize-deepfake").checked) return "resize";
         return "full";
     }
@@ -127,14 +126,14 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
   introFaceAndMouth.setOptions({
     steps: [
       {
-        title: "Панель анимации лица и губ",
+        title: "Face and lip animation panel",
         position: "left",
         intro: `
                     <div id="main-windows-face-and-mouth-animation" style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh; columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
                     <div id="previewDiv" style="display: flex;flex-direction: column;overflow: auto;justify-content: center;width: 100%;">
                         <div id="divGeneralPreviewMediaAndAudio" style="height: 100%;">
                             <span id="spanLoadMediaElement" class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 100%;justify-content: center;">
-                                  Загрузить изображение или видео
+                                  Load image or video
                                 <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media')); document.getElementById('divGeneralPreviewMediaAndAudio').style.height = '';" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -143,59 +142,55 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                         </div>
 
                         <div style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
-                            <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
+                            <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
                             <input style="width: 0;" accept="audio/*" type="file" onChange="dragDropAudioDeepfakeFaceAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
                             <div id="previewDeepfakeAudio"></div>
                         </div>
                     </div>
                     <div id="face-animation-parameters-windows" style="display: none;align-items: stretch;flex-direction: column;justify-content: center;width: 25vw;">
                         <fieldset id="fieldset-preprocessing" style="padding: 5pt;">
-                            <legend>Выбор препроцессинга</legend>
-                            <div style="display: none;">
-                              <input type="radio" id="cover-deepfake" name="preprocessing_deepfake" value="crop">
-                              <label for="cover-deepfake">Crop</label>
-                            </div>
+                            <legend>Processing mode</legend>
                             <div>
                               <input type="radio" id="resize-deepfake" name="preprocessing_deepfake" value="resize">
-                              <label for="resize-deepfake">Изменить размер</label>
+                              <label for="resize-deepfake">Resize</label>
                             </div>
                             <div>
                               <input type="radio" id="full-deepfake" name="preprocessing_deepfake" value="full" checked>
-                              <label for="full-deepfake">Без изменений</label>
+                              <label for="full-deepfake">Without changes</label>
                             </div>
                         </fieldset>
                         <div id="still-deepfake-div" style="padding: 5pt;margin-top:5pt;">
                           <input type="checkbox" id="still-deepfake" name="still">
-                          <label for="still-deepfake">Отключить движение головой</label>
+                          <label for="still-deepfake">Disable head movement</label>
                         </div>
                         <div id="similar-coeff-face-div" style="justify-content: space-between;padding: 5pt; display: flex;">
-                          <label for="similar-coeff-face">Похожесть лица</label>
-                          <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
+                          <label for="similar-coeff-face">Coefficient facial similarity</label>
+                          <input type="number" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                         </div>
                         <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);">
-                          <legend><button style="background: none;border: none;font-size: 12pt;cursor: pointer;text-decoration" onclick="document.getElementById('advanced-settings').style.display = (document.getElementById('advanced-settings').style.display === 'none') ? 'block' : 'none';this.parentElement.parentElement.style.borderColor = (this.parentElement.parentElement.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255 255 255 / 0%)' : 'rgb(192, 192, 192)';">Продвинутые настройки</button></legend>
+                          <legend><button style="background: none;border: none;font-size: 12pt;cursor: pointer;text-decoration" onclick="document.getElementById('advanced-settings').style.display = (document.getElementById('advanced-settings').style.display === 'none') ? 'block' : 'none';this.parentElement.parentElement.style.borderColor = (this.parentElement.parentElement.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255 255 255 / 0%)' : 'rgb(192, 192, 192)';">Advanced settings</button></legend>
                           <div id="advanced-settings" style="display:none;">
                             <div id="expression-scale-deepfake-div" style="justify-content: space-between;padding: 5pt; display: flex;">
-                              <label for="expression-scale-deepfake">Выраженность мимики</label>
-                              <input type="number" title="Введите число" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
+                              <label for="expression-scale-deepfake">Facial expressiveness</label>
+                              <input type="number" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
                             </div>
                             <div id="input-yaw-deepfake-div" style="padding: 5pt;">
-                              <label for="input-yaw-deepfake">Угол поворота по XY</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <label for="input-yaw-deepfake">Rotation angle XY</label>
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div id="input-pitch-deepfake-div" style="padding: 5pt;">
-                              <label for="input-pitch-deepfake">Угол поворота по YZ</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <label for="input-pitch-deepfake">Rotation angle YZ</label>
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div id="input-roll-deepfake-div" style="padding: 5pt;">
-                              <label for="input-roll-deepfake">Угол поворота по ZX</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Введите числа через запятую" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
+                              <label for="input-roll-deepfake">Rotation angle ZX</label>
+                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
                             </div>
                             <div style="padding: 5pt;" id="use-experimental-functions-message">
                                 <input onclick="document.getElementById('deepfake-emotion').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="use-experimental-functions" name="experimental-functions">
-                                <label for="use-experimental-functions">Экспериментальная версия</label>
+                                <label for="use-experimental-functions">Experimental feature</label>
                                 <div id="deepfake-emotion" style="margin-top: 10pt; margin-bottom: 10pt;display: none;">
-                                    <label for="emotion-fake">Выберите эмоцию</label>
+                                    <label for="emotion-fake">Select emotion</label>
                                     <select id="emotion-fake" style="margin-left: 0;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                                         <option value="null" selected>Not use</option>
                                         <option value="0">Angry</option>
@@ -205,14 +200,14 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                                         <option value="4">Neutral</option>
                                         <option value="5">Sad</option>
                                     </select>
-                                    <p style="font-size: 10pt;"><b>Примечание:</b> <a>Находится на стадии исследования и представлена исключительно для демонстрации.</a></p>
+                                    <p style="font-size: 10pt;"><b>Note:</b> <a>This is under research and is provided for display purposes only.</a></p>
                                 </div>
                             </div>
-                            <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">Подробнее о настройках</a>
+                            <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">More about settings</a>
                           </div>
                         </fieldset>
 
-                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement);">Синтезировать видео</button>
+                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement);">Start processing</button>
                     </div>
                     </div>
                     `,
@@ -221,9 +216,9 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introFaceAndMouth.start();
   // IF USER ADD AUDIO FROM SYNTHESIS PANEL //

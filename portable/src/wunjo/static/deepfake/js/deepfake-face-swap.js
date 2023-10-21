@@ -14,24 +14,24 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
   introFaceSwap.setOptions({
     steps: [
       {
-        title: "Панель смены лица",
+        title: "Face swap panel",
         position: "right",
         intro: `<div style="width: 80vw; max-width: 90vw; height: 83vh; max-height: 90vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
                     <div>
                         <fieldset style="padding: 5pt;margin: 13pt;margin-top: 0;flex-direction: row;display: flex;">
-                        <legend>Настройки</legend>
+                        <legend>Settings</legend>
                             <div style="padding: 5pt;">
                               <input type="checkbox" id="multiface-deepfake" name="multiface" onclick="handleCheckboxFaceSwapClick('multiface-deepfake')">
-                              <label for="multiface-deepfake">Заменить все лица</label>
+                              <label for="multiface-deepfake">Replace all faces</label>
                             </div>
                             <div style="padding: 5pt;">
                               <input type="checkbox" id="similarface-deepfake" name="similarface" onclick="handleCheckboxFaceSwapClick('similarface-deepfake')">
-                              <label for="similarface-deepfake">Несколько одинаковых лиц</label>
+                              <label for="similarface-deepfake">Several identical faces</label>
                             </div>
                         </fieldset>
                         <div>
                             <div style="padding: 5pt;margin-left: 7pt;">
-                              <label for="similar-coeff-face">Коэффициент похожести лица</label>
+                              <label for="similar-coeff-face">Coefficient facial similarity</label>
                               <input type="number" title="Введите число" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                             </div>
                         </div>
@@ -40,7 +40,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                         <div style="display: flex;justify-content: space-evenly;">
                             <div style="width: 35vw;">
                                 <span class="dragBox" style="margin-bottom: 15px;width: 100%;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
-                                      Загрузить целевое изображение или видео
+                                      Load target image or video
                                     <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-target'), this.parentElement, document.getElementById('message-about-status-target'))" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                                 </span>
                                 <p id="message-about-status-target" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -49,7 +49,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                             </div>
                             <div style="width: 35vw;">
                                 <span class="dragBox" style="margin-bottom: 15px;width: 100%;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
-                                      Загрузить исходное изображение или видео
+                                      Load source image or video
                                     <input accept="image/*,video/*" type="file" onChange="handleFaceSwap(event, document.getElementById('preview-media-source'), this.parentElement, document.getElementById('message-about-status-source'))" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                                 </span>
                                 <p id="message-about-status-source" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -57,18 +57,17 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                                 </div>
                             </div>
                         </div>
-                        <p style="display: none;">TEST</p>
                     </div>
-                    <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceSwapSynthesis(this.parentElement.parentElement);">Заменить лицо</button>
+                    <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceSwapSynthesis(this.parentElement.parentElement);">Start processing</button>
                     </div>`,
       },
     ],
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introFaceSwap.start();
 }

@@ -649,3 +649,18 @@ fieldset {
     border: 2px solid #000;
     border-color: rgb(192, 192, 192);
 }
+
+/* SPAN MODE PANEL */
+.marquee-container {
+    width: 80pt;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.marquee {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    animation: marquee 20s linear infinite;
+}
+/* SPAN MODE PANEL */

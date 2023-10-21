@@ -108,6 +108,7 @@ function changeAvatarSelect(event) {
     var checkbox = event.target.closest(".model-checkbox-value");
     var voiceCardContainer = event.target.closest(".voice-card-container");
     var avatar = voiceCardContainer.querySelector(".img-avatar");
+    var modelCheckboxes = voiceCardContainer.querySelector(".model-checkboxes");
     // clear set interval to change avatars
     stopChangeAvatarSrc(avatar);
 
@@ -135,6 +136,7 @@ function changeAvatarSelect(event) {
           // Show or not show message
           if (!checkpoint || !waveglow) {
             avatarInfoPop(avatar, checkbox.value);
+            modelCheckboxes.style.display = "none";
           }
           // console.log(checkpoint, waveglow); // Output: true true
         })
@@ -180,14 +182,13 @@ function avatarInfoPop(avatar, name) {
     steps: [
       {
         element: avatar,
-        title: "Сообщение",
+        title: "Message",
         position: "right",
         intro: `<div style="width: 200pt">
-                            <p style="font-weight: 600;">Выбранный голос еще не загружен на устройство</p>
-                            <p style="margin-top: 5pt;">Для синтеза необходима модель checkpoint и waveglow</p>
-                            <p style="margin-top: 5pt;">При запуске синтеза речи, необходимые модели будут скачаны автоматически</p>
-                            <p style="margin-top: 5pt;margin-bottom: 5pt;">Либо вы можете скачать самостоятельно модели из репозитория по <a style="text-transform: lowercase;" href="https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice_multi.json" target="_blank" rel="noopener noreferrer" >ссылке</a><text style="text-transform: lowercase;"> и добавить модели в директорию </text><button class="notranslate" style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/name/</button></p>
-                            <p><b>Как установить модели ручным способом</b><text style="text-transform: lowercase;"> для синтеза речи, вы найдете в </text><a style="text-transform: lowercase;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">документации проекта</a></p>
+                            <p style="font-weight: 600;">The voice has not been downloaded to the device before.</p>
+                            <p style="margin-top: 5pt;">Initiating synthesis will auto-download the needed models.</p>
+                            <p style="margin-top: 5pt;margin-bottom: 5pt;"><a href="https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice_multi.json" target="_blank" rel="noopener noreferrer">List of models for manual download. </a><text>You need to put them in a directory <button class="notranslate" style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;text-transform: lowercase;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/name/.</button></text></p>
+                            <p>Instructions <b style="text-transform: lowercase;">how to install models manually</b><a style="text-transform: lowercase;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> in the project documentation</a>.</p>
                         </div>
                 `,
       },
@@ -195,9 +196,9 @@ function avatarInfoPop(avatar, name) {
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introAvatarStatus.start();
   translateReload(targetLang); // Idea how translate open elements!
@@ -448,20 +449,20 @@ function settingTextToSpeech(elem, languages) {
     steps: [
       {
         element: elem,
-        title: "Настройки",
+        title: "Voices configuration panel",
         position: "right",
         intro: `<div style="min-height: 180pt;">
                     <div style="display: flex;flex-direction: row;">
                         <div style="width: 250pt;margin: 10pt;">
                             <div id="setting-tts-lang-select-field" style="display:block;margin-top:5pt;">
-                                <label for="setting-tts-lang-select">Выбрать язык</label>
+                                <label for="setting-tts-lang-select">Set language for synthesis</label>
                                 <select id="setting-tts-user-lang-select" style="margin-left: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                                 </select>
                             </div>
                             <div>
                                 <div class="uploadSTTAudio" style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
-                                    <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onChange="audioRecordVoiceSTT(event)"  id="recordSTTAudio">Записать голос</button>
-                                    <label id="uploadSTTAudioLabel" for="uploadSTTAudio" class="introjs-button" style="margin-left: 5pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Загрузить аудио</label>
+                                    <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onChange="audioRecordVoiceSTT(event)"  id="recordSTTAudio">Record voice</button>
+                                    <label id="uploadSTTAudioLabel" for="uploadSTTAudio" class="introjs-button" style="margin-left: 5pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
                                     <input style="width: 0;" accept="audio/*" type="file" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSTTAudio"  />
                                     <div id="previewSTTAudio">
                                       <button id="audioSTTPlay" class="introjs-button" style="display:none;margin-left: 5pt;">
@@ -475,32 +476,23 @@ function settingTextToSpeech(elem, languages) {
                                 </div>
                             </div>
                             <div>
-                                <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important; display: none;" id="recognitionSTTAudio">Распознать</button>
+                                <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important; display: none;" id="recognitionSTTAudio">Recognize text</button>
                             </div>
-                            <i style="margin-top: 5pt;margin-bottom: 15pt;font-size: 10pt;display: flow;">
-                                <b>Примечание:</b> Как добавить любой язык в приложение?
-                                <a style="color: blue;" onclick="document.querySelector('.setting-tts-translation-info').style.display = (document.querySelector('.setting-tts-translation-info').style.display === 'block' ? 'none' : 'block');">Открыть инструкцию.</a>
-                            </i>
-                            <i class="setting-tts-translation-info" style="margin-top: 0pt;margin-bottom: 15pt;font-size: 10pt;display: none;padding:10pt;background-color: rgb(235 240 243 / 0%);border-color: rgb(230, 231, 238);box-shadow: rgb(184, 185, 190) 2px 2px 5px inset, rgb(255, 255, 255) -3px -3px 7px inset;">
-                                Перейдите в <b class="notranslate">.wunjo/settings/settings.json</b>.
-                                Добавьте желаемый язык в формате: <b class="notranslate">"default_language": {"name": "code"}</b>.
-                                Чтобы найти соответствующий код для вашего языка, обратитесь к языковым кодам <a class="notranslate" target="_blank" rel="noopener noreferrer" href="https://cloud.google.com/translate/docs/languages">Google Cloud Translate Language Codes</a>.
-                            </i>
                         </div>
                         <div style="width: 250pt;margin: 10pt;">
                             <div style="display: none;" id="cloneVoiceMessage">
                                 <div style="margin-bottom:5pt;margin-top: 15pt;">
                                   <input onclick="" type="checkbox" id="setting-rtvc-check-info" name="setting-rtvc-check">
-                                  <label for="setting-rtvc-check">Клонировать голос</label>
+                                  <label for="setting-rtvc-check">Cloning voice</label>
                                 </div>
-                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Примечание:</b> При клонировании голоса, аудио будет синтезировано на основе текста и прикрепленного или записанного аудио. В этом случая можно не выбирать голос для озвучки. Поддерживается английский, русский и китайский.</i>
+                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Note:</b> For cloning voice, the audio is generated from the provided text and any attached or recorded audio. No separate voice selection is needed for dubbing. Supported languages are English, Russian, and Chinese.</i>
                                 <hr style="margin-top: 15pt;">
                             </div>
                             <div style="margin-bottom:5pt;margin-top: 15pt">
                               <input onclick="" type="checkbox" id="setting-tts-translation-check-info" name="setting-tts-translation-check">
-                              <label for="setting-tts-translation-check">Автоматический перевод</label>
+                              <label for="setting-tts-translation-check">Automatic translation</label>
                             </div>
-                            <i style="margin-top: 5pt;font-size: 10pt;"><b>Примечание:</b> Автоматический перевод означает, что текст будет озвучен на выбранном языке с клонированием голоса модели на любой язык, даже если текст введен на другом языке или нейронная сеть имеет голос на другом языке, перевод будет совершен на выбранный язык.</i>
+                            <i style="margin-top: 5pt;font-size: 10pt;"><b>Note:</b>Automatic translation ensures that the text will be translated in the language of your choice, regardless of the language of the text.</i>
                         </div>
                     </div>
                 </div>`,
@@ -509,9 +501,9 @@ function settingTextToSpeech(elem, languages) {
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introSettingTextToSpeech.start();
 
@@ -1394,7 +1386,7 @@ document
   .getElementById("translate-application-btn")
   .addEventListener("click", function () {
     const dropdown = document.getElementById("language-dropdown");
-    dropdown.style.display = "block";
+    dropdown.focus();
   });
 
 document
@@ -1406,6 +1398,7 @@ document
 
     translateNewUserLang(selectedLangCode);
     updateLangSetting(selectedLangCode, selectedLangName);
+    document.getElementById("translate-application-text").innerText = selectedLangName;
   });
 
 function updateLangSetting(lang_code, lang_name) {
@@ -1517,9 +1510,9 @@ function updateVersion(serverVersionData) {
 
       // Update the content of the paragraph
       document.getElementById("version").innerHTML =
-        "Доступно обновление " +
+        "Update available " +
         serverVersion +
-        `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">Что нового?</button>`;
+        `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">What is new?</button>`;
     }
   }
 }
@@ -1530,20 +1523,20 @@ function openUpdateHistory(elem, info) {
     steps: [
       {
         element: elem,
-        title: "Что нового",
+        title: "What is new",
         position: "left",
         intro: `
                 <div style="max-width: 400pt;max-height: 70vh;padding-left: 20pt;padding-right: 20pt;">${info}</div>
-                <a class="introjs-button" href="https://wladradchenko.ru/wunjo" target="_blank" rel="noopener noreferrer" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;">Загрузить обновление</a>
+                <a class="introjs-button" href="https://wladradchenko.ru/wunjo" target="_blank" rel="noopener noreferrer" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;">Download update</a>
                 `,
       },
     ],
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introUpdateVersion.start();
 }

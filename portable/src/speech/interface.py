@@ -69,7 +69,7 @@ class VoiceCloneTranslate:
 
     @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder,
-                              text, src_lang, need_translate, tts_model_name="Voice Clone", **options):
+                              text, src_lang, need_translate, tts_model_name="Cloning voice", **options):
         try:
             download_ntlk()  # inspect what ntlk downloaded
 

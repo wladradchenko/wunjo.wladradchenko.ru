@@ -10,7 +10,7 @@ window.addEventListener('load', function() {
   buttonVideoToVideoDiffusion.style.height = "3.2vw";
   buttonVideoToVideoDiffusion.style.fontSize = "1.5rem";
   buttonVideoToVideoDiffusion.style.display = "none";
-  buttonVideoToVideoDiffusion.title = "Открыть окно преобразования видео текстовым запросом";
+  buttonVideoToVideoDiffusion.title = "Open video to video conversion window by prompt";
   buttonVideoToVideoDiffusion.addEventListener("click", (event) =>
     initiateDiffusersPop(event.currentTarget)
   );
@@ -37,14 +37,14 @@ function initiateDiffusersPop(button) {
   introRetouch.setOptions({
     steps: [
       {
-        title: "Панель преобразования видео текстовым запросом",
+        title: "Panel of video to video by prompt",
         position: "right",
         intro: `
         <div style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh;display: flex;flex-direction: column;">
             <div id="div-general-upper"  style="display: flex;flex-direction: row;justify-content: space-around;height: 100%;">
                 <div id="div-general-preview-media" style="width: 100%;">
                     <span class="dragBox" style="margin-bottom: 15px;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 100%;">
-                          Загрузите изображение или видео
+                          Load image or video
                         <input accept="image/*,video/*" type="file" onChange="handleDiffuser(event, document.getElementById('preview-media'), this.parentElement);" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                     </span>
                     <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -55,8 +55,8 @@ function initiateDiffusersPop(button) {
                     <div id="div-preview-mask" style="justify-content: center;display: flex;">
                     </div>
                     <fieldset style="padding: 5px;display: flex; flex-direction: column;margin-top: 30px;">
-                        <legend>Маски</legend>
-                        <button class="introjs-button" onclick="maskDiffuserToList();">Добавить новый объект</button>
+                        <legend>List of elements</legend>
+                        <button class="introjs-button" onclick="maskDiffuserToList();">Add new element</button>
                         <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
                     </fieldset>
                     <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh;">
@@ -123,7 +123,7 @@ function initiateDiffusersPop(button) {
                             <input type="number" id="thicknessMask" name="thickness" min="1" max="100" value="10" style="width: 45px;">
                         </div>
                     </fieldset>
-                    <button class="introjs-button" onclick="triggerDiffuser(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
+                    <button class="introjs-button" onclick="triggerDiffuser(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
                 </div>
             </div>
         </div>
@@ -635,7 +635,6 @@ async function processDiffuser(data, element) {
 
     console.log(JSON.stringify(diffuserParameters, null, 4));
 
-    synthesisTable.innerHTML = "";
     fetch("/synthesize_diffuser/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -643,7 +642,5 @@ async function processDiffuser(data, element) {
     });
 
     // This open display result for deepfake videos
-    const tutorialButton = document.querySelector("#button-show-voice-window");
-    tutorialButton.click();
     closeTutorial();
 }

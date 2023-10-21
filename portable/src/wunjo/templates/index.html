@@ -103,10 +103,11 @@
     </div>
     <div class="synthesized_field">
         <div class="buttons" style="margin-bottom: 20pt;">
-            <button title="Translate application" id="translate-application-btn">
-                <i class="fa-solid fa-language"></i>
+            <button title="Translate application" id="translate-application-btn" style="text-align: center;font-size: 12pt;">
+                {% set first_key = existing_langs.keys()|list|first %}
+                <i class="fa-solid fa-language"></i><text id="translate-application-text" style="margin-left: 10px;">{{ first_key }}</text>
                 <!-- Hidden dropdown for selecting languages -->
-                <select id="language-dropdown" class="notranslate" style="text-align: center;font-size: 12pt;">
+                <select id="language-dropdown" class="notranslate" style="opacity: 0;position: absolute;top: 0;left: 0;width: 100%;height: 100%;cursor: pointer;">
                     {% for key, value in existing_langs.items() %}
                         <option value="{{value}}" name="{{key}}" class="notranslate">{{key}}</option>
                     {% endfor %}

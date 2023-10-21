@@ -10,7 +10,7 @@ window.addEventListener('load', function() {
   trainButton.style.height = "3.2vw";
   trainButton.style.fontSize = "1.5rem";
   trainButton.style.display = "none";
-  trainButton.title = "Панель обучения";
+  trainButton.title = "Start to train voice";
   trainButton.addEventListener("click", (event) =>
     trainWindow(event.currentTarget)
   );
@@ -37,33 +37,33 @@ function trainWindow(event) {
     steps: [
       {
         element: event,
-        title: "Панель обучения голоса",
+        title: "Panel to train voice",
         position: "right",
         intro: `
                     <div style="padding: 5pt;display: flex;flex-direction: column;width: 370px;">
                         <div style="margin-bottom:5pt;">
                           <input onclick="document.getElementById('speech-train-checkpoint-path-field').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="speech-train-checkpoint-info" name="speech-train-checkpoint">
-                          <label for="speech-train-checkpoint">Предобученная модель</label>
+                          <label for="speech-train-checkpoint">Pretrained model</label>
                         </div>
                         <div id="speech-train-checkpoint-path-field" style="display:none;margin-top:5pt;">
-                            <label for="speech-train-checkpoint-path">Путь до модели</label>
+                            <label for="speech-train-checkpoint-path">Path to voice model</label>
                             <input type="text" id="speech-train-checkpoint-path" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                         </div>
                     </div>
                     <div style="padding: 5pt;display: flex;flex-direction: column;">
-                        <label for="speech-train-audio-path">Путь до аудио файлов</label>
+                        <label for="speech-train-audio-path">Path to waves</label>
                         <input type="text" id="speech-train-audio-path" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                     </div>
                     <div style="padding: 5pt;display: flex;flex-direction: column;">
-                        <label for="speech-train-mark-path">Путь до файла разметки</label>
+                        <label for="speech-train-mark-path">Path to markdown file</label>
                         <input type="text" id="speech-train-mark-path" style="border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
                     </div>
                     <div style="display: flex;justify-content: space-between;">
                         <div style="padding: 5pt;display: flex;flex-direction: column;width: 50%;">
-                            <label for="speech-train-select-lang">Язык аудио файлов</label>
+                            <label for="speech-train-select-lang">Audio language</label>
                             <select id="speech-train-select-lang" style="margin: 0;border-width: 2px;border-style: groove;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 100%;margin-top: 5pt;">
-                                <option value="en" selected>Английский</option>
-                                <option value="ru">Русский</option>
+                                <option value="en" selected>English</option>
+                                <option value="ru">Russian</option>
                             </select>
                         </div>
                         <div style="padding: 5pt;display: flex;flex-direction: column;width: 50%;">
@@ -76,9 +76,9 @@ function trainWindow(event) {
                             </select>
                         </div>
                     </div>
-                    <i style="margin: 5pt;font-size: 10pt;"><b>Примечание:</b><a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> Подробнее об обучение в документации</a></i>
+                    <i style="margin: 5pt;font-size: 10pt;"><b>Note:</b><a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> Read more about training in the documentation</a></i>
                     <fieldset style="margin: 5pt;padding: 10pt;">
-                        <legend>Соотношение данных</legend>
+                        <legend>Data ratio</legend>
                         <input style="width: 100%;" class="range speech-train-split" type="range" min="0" max="100" step="1" value="80">
                         <div style="display: flex;justify-content: space-between;font-size: 10pt;color: #686868;">
                             <div>Train</div>
@@ -88,16 +88,16 @@ function trainWindow(event) {
                     </fieldset>
                 </div>
                 <p id="message-train-speech" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
-                <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="sendDataToTrain(this.parentElement, 'tacotron2');">Начать обучение</button>
+                <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="sendDataToTrain(this.parentElement, 'tacotron2');">Start to train model</button>
                 `,
       },
     ],
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   trainPanel.start();
 }

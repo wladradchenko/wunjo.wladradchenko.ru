@@ -142,7 +142,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
                   "beforeend",
                           `<tr data-type="speech" style="text-align: center;font-size: 12px;">
                             <td class="notranslate" style="display: flex;flex-direction: row;align-items: center;padding-left: 10pt;padding-right: 10pt;">
-                              <span class="notranslate" style="width: 80pt;background: #f7db4d;padding-left: 10px;padding-right: 10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">${model_ans.voice.length > 10 ? model_ans.voice.slice(0, 10) + "...": model_ans.voice}</span>
+                              <div class="marquee-container" style="background: #f7db4d;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
+                                <span class="notranslate marquee" style="width: 80pt;padding-left: 10px;padding-right: 10px;">${model_ans.voice}</span>
+                              </div>
                               <div class="buttons" style="width: 70pt;justify-content: center;scale:0.8;">
                                 <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
                                 <a style="margin-left: 5pt;margin-right: 5pt;" href="${
@@ -166,6 +168,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
                           </tr>
                           `
                 );
+
+                // Transition of label
+                applyMarqueeTransition(synthesisTable);
 
                 const playBtn = document.getElementById(playBtnId);
                 const audio = document.getElementById(audioId);
@@ -192,7 +197,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
                   `
                   <tr data-type="deepfake" style="text-align: center; font-size: 12px;">
                     <td class="notranslate" style="display: flex;flex-direction: row;align-items: center;padding-left: 10pt;padding-right: 10pt;">
-                      <span class="notranslate" style="width: 80pt;background: #f7db4d;padding-left: 10px;padding-right: 10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">${model_ans.mode.length > 10 ? model_ans.mode.slice(0, 10) + "...": model_ans.mode}</span>
+                      <div class="marquee-container" style="background: #f7db4d;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
+                        <span class="notranslate marquee" style="width: 80pt;padding-left: 10px;padding-right: 10px;">${model_ans.mode}</span>
+                      </div>
                       <div class="buttons" style="width: 70pt;justify-content: center;scale:0.8;">
                         <button id="${playBtnId}" style="width: 30pt;height: 30pt;display:inline;margin-left:0 !important;margin-right:0 !important"><i class="fa fa-play"></i><i style="display: none;" class="fa fa-pause"></i></button>
                         <a href="${model_ans.response_url}" download="video.mp4" style="margin-left: 5pt;margin-right: 5pt;">
@@ -208,6 +215,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
                   `
                 );
 
+                // Transition of label
+                applyMarqueeTransition(synthesisTable);
+
                 // Check the file extension to determine the media type
                 let mediaURLElementResult = model_ans.response_url;
                 let extensionElementResult = mediaURLElementResult.split(".").pop();
@@ -219,7 +229,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 ) {
                   mediaPlayElementResult = `
                             <div>
-                              <video style="border: 2px dashed #000;" id="${videoID}" width="250" height="auto" controls>
+                              <video style="border: 2px dashed #000;" id="${videoID}" width="400" height="auto" controls>
                                 <source src="${mediaURLElementResult}" type="video/${extensionElementResult}">
                                 Your browser does not support the video tag.
                               </video>
@@ -241,8 +251,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                   introVideoDeepfake.setOptions({
                     steps: [
                       {
-                        element: playBtn,
-                        title: "Результат синтеза",
+                        element: document.getElementsByClassName("synthesized_field")[0],
                         position: "left",
                         intro: `${mediaPlayElementResult}`,
                       },
@@ -250,9 +259,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
                     showButtons: false,
                     showStepNumbers: false,
                     showBullets: false,
-                    nextLabel: "Продолжить",
-                    prevLabel: "Вернуться",
-                    doneLabel: "Закрыть",
+                    nextLabel: "Next",
+                    prevLabel: "Back",
+                    doneLabel: "Close",
                   });
                   introVideoDeepfake.start();
                 });
@@ -295,3 +304,40 @@ window.addEventListener("DOMContentLoaded", (event) => {
   checkStatus();
   setInterval(pollGeneralSynthesizedResults, 2000);
 });
+
+
+function applyMarqueeTransition(synthesisTable) {
+    let lastInsertedRow = synthesisTable.lastElementChild;
+    let marqueeElement = lastInsertedRow.querySelector('.marquee');
+
+    // Temporarily remove fixed width to get accurate content width
+    marqueeElement.style.width = 'auto';
+    let textWidth = marqueeElement.offsetWidth;
+
+    if (textWidth > 100) {
+        // Reapply fixed width (since it was set to 'auto' temporarily)
+        marqueeElement.style.width = '120px';
+
+        // Dynamically create the marquee animation with the acquired text width
+        let animationName = `marquee${Date.now()}`;  // Unique animation name to prevent conflicts
+        let animationCSS = `
+            @keyframes ${animationName} {
+                0%   { transform: translateX(0%); }
+                25%  { transform: translateX(0%); }
+                50%  { transform: translateX(calc(-1 * ${textWidth}px + 100px)); }
+                75%  { transform: translateX(0%); }
+                100% { transform: translateX(0%); }
+            }
+        `;
+
+        // Create a style element specifically for this marquee
+        let style = document.createElement('style');
+        style.innerHTML = animationCSS;
+
+        // Attach this style to the marquee element itself
+        marqueeElement.appendChild(style);
+
+        // Apply the newly created animation to the marquee element
+        marqueeElement.style.animation = `${animationName} 10s linear infinite`;
+    }
+}

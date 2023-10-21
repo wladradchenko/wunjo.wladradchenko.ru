@@ -26,7 +26,7 @@ async function initializeVideoEditor(button, audioURL = undefined, audioName = u
                         <fieldset style="padding: 5pt;">
                             <legend>Processing mode</legend>
                             <div>
-                              <input type="radio" id="gfpgan" name="preprocessing" value="gfpgan">
+                              <input type="radio" id="gfpgan" name="preprocessing" value="gfpgan" checked>
                               <label for="gfpgan">Improve face quality</label>
                             </div>
                             <div id="realesrganDiv">
@@ -38,7 +38,7 @@ async function initializeVideoEditor(button, audioURL = undefined, audioName = u
                               <label for="animesgan">Improve hand-drawn quality</label>
                             </div>
                             <div>
-                              <input type="radio" id="getFrames" name="preprocessing" value="frames" checked>
+                              <input type="radio" id="getFrames" name="preprocessing" value="frames">
                               <label for="getFrames">Extract frames</label>
                             </div>
                         </fieldset>
@@ -198,7 +198,10 @@ async function handleEditorVideo(event, previewElement, parentElement) {
             messageElement.style.background = getRandomColor();
             messageAboutStatusText = await translateWithGoogle("Video was loaded and you can cut the video and choose preprocessing mode","auto",targetLang);
             messageElement.innerHTML = `${messageAboutStatusText}`;
-            document.getElementById("getFrames").disabled = false;
+            let getFrames = document.getElementById("getFrames");
+            if (getFrames) {
+               getFrames.disabled = false;
+            };
         }
     }
 }

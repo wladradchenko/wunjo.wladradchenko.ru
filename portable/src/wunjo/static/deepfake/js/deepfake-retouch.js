@@ -37,14 +37,14 @@ function initiateRetouchAiPop(button) {
   introRetouch.setOptions({
     steps: [
       {
-        title: "Панель удаления объектов и ретуши",
+        title: "Panel of remove and retouch",
         position: "right",
         intro: `
         <div style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh;display: flex;flex-direction: column;">
             <div id="div-general-upper"  style="display: flex;flex-direction: row;justify-content: space-around;height: 100%;">
                 <div id="div-general-preview-media" style="width: 100%;">
                     <span class="dragBox" style="margin-bottom: 15px;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 100%;">
-                          Загрузите изображение или видео
+                          Load image or video
                         <input accept="image/*,video/*" type="file" onChange="handleRetouchAi(event, document.getElementById('preview-media'), this.parentElement);" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                     </span>
                     <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
@@ -55,23 +55,23 @@ function initiateRetouchAiPop(button) {
                     <div id="div-preview-mask" style="justify-content: center;display: flex;">
                     </div>
                     <fieldset style="padding: 5px;display: flex; flex-direction: column;margin-top: 30px;">
-                        <legend>Маски</legend>
-                        <button class="introjs-button" onclick="maskToList();">Добавить новый объект</button>
+                        <legend>List of masks</legend>
+                        <button class="introjs-button" onclick="maskToList();">Add new mask</button>
                         <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
                     </fieldset>
                     <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh">
-                        <legend>Выбор препроцессинга</legend>
+                        <legend>Processing mode</legend>
                         <div>
                             <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
-                            <label for="retouch-face">Исправление лица</label>
+                            <label for="retouch-face">Retouch face</label>
                         </div>
                         <div>
                             <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
-                            <label for="retouch-object">Удаление объекта</label>
+                            <label for="retouch-object">Remove object</label>
                         </div>
                         <div id="improvedRetouchObjectDiv">
                             <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
-                            <label for="improved-retouch-object">Улучшенное удаление объекта</label>
+                            <label for="improved-retouch-object">Improve remove object</label>
                         </div>
                         <div id="extraOptions" style="display: none;">
                             <div>
@@ -103,7 +103,7 @@ function initiateRetouchAiPop(button) {
                             </div>
                         </div>
                     </fieldset>
-                    <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Обработать</button>
+                    <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
                 </div>
             </div>
         </div>
@@ -113,9 +113,9 @@ function initiateRetouchAiPop(button) {
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introRetouch.start();
 
