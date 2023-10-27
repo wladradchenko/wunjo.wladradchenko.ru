@@ -115,8 +115,11 @@ def gen_camera_pose(camera_degree_list, frame_num, batch_size):
     degree_per_frame = degree_sum/(frame_num-1)
     for i, degree in enumerate(camera_degree_list[1:]):
         degree_last = camera_degree_list[i]
+        if degree - degree_last == 0:
+            new_degree_list.append(degree_last)
+            continue
         degree_step = degree_per_frame * abs(degree-degree_last)/(degree-degree_last)
-        new_degree_list =  new_degree_list + list(np.arange(degree_last, degree, degree_step))
+        new_degree_list = new_degree_list + list(np.arange(degree_last, degree, degree_step))
     if len(new_degree_list) > frame_num:
         new_degree_list = new_degree_list[:frame_num]
     elif len(new_degree_list) < frame_num:
