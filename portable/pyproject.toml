@@ -77,7 +77,6 @@ test_requires = [
 [tool.briefcase.app.wunjo.macOS]
 requires = [
     "std-nslog~=1.0.0",
-    "dlib",
     "onnxruntime"
 ]
 sources = [
@@ -86,7 +85,6 @@ sources = [
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
-    "dlib-bin",
     "onnxruntime-gpu",
     "pytorch_lightning",
     "omegaconf",
@@ -131,7 +129,6 @@ linuxdeploy_plugins = []
 
 [tool.briefcase.app.wunjo.windows]
 requires = [
-    "dlib-bin",
     "onnxruntime"
 ]
 sources = [

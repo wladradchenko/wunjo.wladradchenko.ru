@@ -131,14 +131,6 @@ class AnimationFaceTalk:
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
-        path_of_lm_croper = os.path.join(checkpoint_dir_full, 'shape_predictor_68_face_landmarks.dat')
-        if not os.path.exists(path_of_lm_croper):
-            link_of_lm_croper = file_deepfake_config["checkpoints"]["shape_predictor_68_face_landmarks.dat"]
-            download_model(path_of_lm_croper, link_of_lm_croper)
-        else:
-            link_of_lm_croper = file_deepfake_config["checkpoints"]["shape_predictor_68_face_landmarks.dat"]
-            check_download_size(path_of_lm_croper, link_of_lm_croper)
-
         path_of_net_recon_model = os.path.join(checkpoint_dir_full, 'epoch_20.pth')
         if not os.path.exists(path_of_net_recon_model):
             link_of_net_recon_model = file_deepfake_config["checkpoints"]["epoch_20.pth"]
@@ -225,7 +217,7 @@ class AnimationFaceTalk:
 
         # init model
         print("Starting to crop and extract frames")
-        preprocess_model = CropAndExtract(path_of_lm_croper, path_of_net_recon_model, dir_of_BFM_fitting, device, face_fields)
+        preprocess_model = CropAndExtract(DEEPFAKE_MODEL_FOLDER, path_of_net_recon_model, dir_of_BFM_fitting, device, face_fields)
 
         print("Starting get audio coefficient")
         audio_to_coeff = Audio2Coeff(audio2pose_checkpoint, audio2pose_yaml_path, audio2exp_checkpoint, audio2exp_yaml_path, wav2lip_checkpoint, device)

@@ -1,21 +1,30 @@
+import os
 import cv2
+import torch  # import torch first to use cuda for onnx, also need to install onnxruntime-gpu for this
 import numpy as np
 from PIL import Image
-import dlib
+import insightface
+import onnxruntime
 
 
 class Croper:
-    def __init__(self, path_of_lm):
-        # download model from: http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-        self.predictor = dlib.shape_predictor(path_of_lm)
+    def __init__(self, model_path):
+        # use cpu as with cuda on onnx can be problem
+        access_providers = onnxruntime.get_available_providers()
+        if "CUDAExecutionProvider" in access_providers:
+            provider = ["CUDAExecutionProvider"] if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else ["CPUExecutionProvider"]
+        else:
+            provider = ["CPUExecutionProvider"]
+        self.face_recognition = insightface.app.FaceAnalysis(allowed_modules=['detection', 'landmark_3d_68'], root=model_path, providers=provider)
+        self.face_recognition.prepare(ctx_id=0, det_size=(640, 640))
 
     def get_landmark(self, img_np, face_fields):
-        """get landmark with dlib
+        """
+        Get landmark
         :return: np.array shape=(68, 2)
         """
-        detector = dlib.get_frontal_face_detector()  # detector face
-        dets = detector(img_np, 1)
-        if len(dets) == 0:
+        dets = self.face_recognition.get(img_np)
+        if not dets:
             return None
 
         if face_fields is None:
@@ -37,32 +46,22 @@ class Croper:
             newX2 = (squareFace['x'] + 1) * scaleFactorX
             newY1 = squareFace['y'] * scaleFactorY
             newY2 = (squareFace['y'] + 1) * scaleFactorY
-            print(newX1, newX2, newY1, newY2)
-
-            d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
-            # print(int(newX1), int(newY1), int(newX2), int(newY2))
-            # get the center point of d_new
-            user_crop_center = d_user_crop.center()
-            # check if user_crop_center is inside det
-            for det in dets:
-                if det.contains(user_crop_center):
-                    print("center is inside det")
-                    d = det
+            # Calculate center point
+            x_center = int((newX1 + newX2) / 2)
+            y_center = int((newY1 + newY2) / 2)
+            for face in dets:
+                x1, y1, x2, y2 = face.bbox
+                if x1 <= x_center <= x2 and y1 <= y_center <= y2:
+                    print("Center is inside det")
+                    d = face
                     break
             else:
-                d = []
+                print("Not indicated face in choose filed")
+                return None
 
-        # Get the landmarks/parts for the face in box d.
-        try:
-            shape = self.predictor(img_np, d)
-        except Exception as err:
-            raise "Error..Not predict face"
-
-        t = list(shape.parts())
-        a = []
-        for tt in t:
-            a.append([tt.x, tt.y])
-        lm = np.array(a)
+        # Extract landmarks directly
+        lm = np.array(d.landmark_3d_68)
+        lm = lm[:, :2]  # Keep only x and y coordinates
         return lm
 
     @staticmethod
@@ -127,7 +126,7 @@ class Croper:
         img_np = img_np_list[0]
         lm = self.get_landmark(img_np, face_fields)
         if lm is None:
-            raise 'can not detect the landmark from source image'
+            raise 'Can not detect the landmark from source image'
         rsize, crop, quad = self.align_face(img=Image.fromarray(img_np), lm=lm, output_size=xsize)
         clx, cly, crx, cry = crop
         lx, ly, rx, ry = quad

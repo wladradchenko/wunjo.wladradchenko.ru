@@ -2,7 +2,6 @@ import os
 import sys
 import cv2
 import uuid
-import dlib
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -76,11 +75,11 @@ class FaceSwapDeepfake:
             newY1 = squareFace['y'] * scaleFactorY
             newY2 = (squareFace['y'] + 1) * scaleFactorY  # 1 is height
 
-            d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
-            # get the center point of d_new
-            user_crop_center = d_user_crop.center()
+            # Calculate center point
+            center_x = (newX1 + newX2) / 2
+            center_y = (newY1 + newY2) / 2
 
-            return user_crop_center.x, user_crop_center.y
+            return int(center_x), int(center_y)
         return None, None
 
     def face_detect_with_alignment_from_source_frame(self, frame, face_fields=None):

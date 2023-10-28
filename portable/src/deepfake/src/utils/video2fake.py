@@ -1,8 +1,6 @@
-import face_alignment
 import numpy as np
 from tqdm import tqdm
 import torch
-import dlib
 import cv2
 import sys
 import os
@@ -62,11 +60,11 @@ class GenerateFakeVideo2Lip:
             newY1 = squareFace['y'] * scaleFactorY
             newY2 = (squareFace['y'] + 1) * scaleFactorY
 
-            d_user_crop = dlib.rectangle(int(newX1), int(newY1), int(newX2), int(newY2))
-            # get the center point of d_new
-            user_crop_center = d_user_crop.center()
+            # Calculate center point
+            center_x = (newX1 + newX2) / 2
+            center_y = (newY1 + newY2) / 2
 
-            return user_crop_center.x, user_crop_center.y
+            return int(center_x), int(center_y)
         return None, None
 
     def face_detect_with_alignment(self, images, pads, nosmooth):
