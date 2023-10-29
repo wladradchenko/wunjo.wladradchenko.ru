@@ -220,7 +220,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
     prevLabel: "Back",
     doneLabel: "Close",
   });
-  introFaceAndMouth.start();
+  introFaceAndMouth.setOption('keyboardNavigation', false).start();
   // IF USER ADD AUDIO FROM SYNTHESIS PANEL //
   if (audio_url) {
     var request = new XMLHttpRequest();

@@ -21,7 +21,7 @@ def get_translate(text: str, targetLang: str, sourceLang: str="auto") -> str:
         translation_data = json.loads(response.text)
         return "".join(item[0] for item in translation_data[0])
     except requests.RequestException as e:
-        print(f"Error... during the request to translate text: {e}")
+        print(f"Error... during the request to translate text")
     except (IndexError, TypeError):
         print("Error... Could not retrieve translation from response")
     except json.JSONDecodeError:

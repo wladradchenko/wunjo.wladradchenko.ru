@@ -115,7 +115,7 @@ async function initializeVideoEditor(button, audioURL = undefined, audioName = u
         prevLabel: prevTranslatedLabel,
         doneLabel: doneTranslatedLabel,
     });
-    introEditorVideo.start();
+    introEditorVideo.setOption('keyboardNavigation', false).start();
     availableFeaturesByCUDA(document.getElementById("realesrganDiv"));
     availableFeaturesByCUDA(document.getElementById("animesganDiv"));
 }

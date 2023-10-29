@@ -117,7 +117,7 @@ function initiateRetouchAiPop(button) {
     prevLabel: "Back",
     doneLabel: "Close",
   });
-  introRetouch.start();
+  introRetouch.setOption('keyboardNavigation', false).start();
 
   availableFeaturesByCUDA(document.getElementById("improvedRetouchObjectDiv"));
 

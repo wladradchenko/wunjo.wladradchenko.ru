@@ -50,7 +50,7 @@ import shutil
 import json
 
 from backend.folders import DEEPFAKE_MODEL_FOLDER, TMP_FOLDER
-from backend.download import download_model, unzip, check_download_size
+from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
 
 
 DEEPFAKE_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/deepfake.json"
@@ -83,137 +83,131 @@ class AnimationFaceTalk:
     @staticmethod
     def main_img_deepfake(source_image: str, driven_audio: str, deepfake_dir: str, still: bool = True, face_fields: list = None,
                           preprocess: str = Input(description="how to preprocess the images", choices=["crop", "resize", "full"], default="full",),
-                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, pose_style=0):
+                          expression_scale=1.0, input_yaw=None, input_pitch=None, input_roll=None, pose_style=0, batch_size=2):
 
         if file_deepfake_config == {}:
             raise "[Error] Config file deepfake.json is not exist"
         # torch.backends.cudnn.enabled = False
-        args = AnimationFaceTalk.load_img_default()
-        args.checkpoint_dir = "checkpoints"
-        args.source_image = source_image
-        args.driven_audio = driven_audio
-        args.result_dir = deepfake_dir
+        use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
-        cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-
-        if torch.cuda.is_available() and not cpu:
+        if torch.cuda.is_available() and not use_cpu:
             print("Processing will run on GPU")
-            args.device = "cuda"
+            device = "cuda"
         else:
             print("Processing will run on CPU")
-            args.device = "cpu"
-
-        args.still = still
-        args.expression_scale = expression_scale
-        args.input_yaw = input_yaw
-        args.input_pitch = input_pitch
-        args.input_roll = input_roll
+            device = "cpu"
 
         if preprocess is None:
             preprocess = "crop"
-        args.preprocess = preprocess
 
-        pic_path = args.source_image
-        audio_path = args.driven_audio
-        save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
-        device = args.device
-        batch_size = args.batch_size
-        input_yaw_list = args.input_yaw
-        input_pitch_list = args.input_pitch
-        input_roll_list = args.input_roll
 
-        current_root_path = deepfake_root_path  # os.path.split(current_code_path)[0]
-        model_user_path = DEEPFAKE_MODEL_FOLDER
-
-        os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
-        checkpoint_dir_full = os.path.join(model_user_path, args.checkpoint_dir)
+        checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
+        os.environ['TORCH_HOME'] = checkpoint_dir_full
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
         path_of_net_recon_model = os.path.join(checkpoint_dir_full, 'epoch_20.pth')
+        link_of_net_recon_model = get_nested_url(file_deepfake_config, ["checkpoints", "epoch_20.pth"])
         if not os.path.exists(path_of_net_recon_model):
-            link_of_net_recon_model = file_deepfake_config["checkpoints"]["epoch_20.pth"]
+            # check what is internet access
+            is_connected(path_of_net_recon_model)
+            # download pre-trained models from url
             download_model(path_of_net_recon_model, link_of_net_recon_model)
         else:
-            link_of_net_recon_model = file_deepfake_config["checkpoints"]["epoch_20.pth"]
             check_download_size(path_of_net_recon_model, link_of_net_recon_model)
 
         dir_of_BFM_fitting = os.path.join(checkpoint_dir_full, 'BFM_Fitting')
-        args.bfm_folder = dir_of_BFM_fitting
+        link_of_BFM_fitting = get_nested_url(file_deepfake_config, ["checkpoints", "BFM_Fitting.zip"])
         if not os.path.exists(dir_of_BFM_fitting):
-            link_of_BFM_fitting = file_deepfake_config["checkpoints"]["BFM_Fitting.zip"]
+            # check what is internet access
+            is_connected(dir_of_BFM_fitting)
+            # download pre-trained models from url
             download_model(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
             unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
         else:
-            link_of_BFM_fitting = file_deepfake_config["checkpoints"]["BFM_Fitting.zip"]
             check_download_size(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
             if not os.listdir(dir_of_BFM_fitting):
                 unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
 
         dir_of_hub_models = os.path.join(checkpoint_dir_full, 'hub')
+        link_of_hub_models = get_nested_url(file_deepfake_config, ["checkpoints", "hub.zip"])
         if not os.path.exists(dir_of_hub_models):
-            link_of_hub_models = file_deepfake_config["checkpoints"]["hub.zip"]
+            # check what is internet access
+            is_connected(dir_of_hub_models)
+            # download pre-trained models from url
             download_model(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
             unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
         else:
-            link_of_hub_models = file_deepfake_config["checkpoints"]["hub.zip"]
             check_download_size(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
             if not os.listdir(dir_of_hub_models):
                 unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
 
         wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
+        link_wav2lip_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "wav2lip.pth"])
         if not os.path.exists(wav2lip_checkpoint):
-            link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+            # check what is internet access
+            is_connected(wav2lip_checkpoint)
+            # download pre-trained models from url
             download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
         else:
-            link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
             check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         audio2pose_checkpoint = os.path.join(checkpoint_dir_full, 'auido2pose_00140-model.pth')
+        link_audio2pose_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "auido2pose_00140-model.pth"])
         if not os.path.exists(audio2pose_checkpoint):
-            link_audio2pose_checkpoint = file_deepfake_config["checkpoints"]["auido2pose_00140-model.pth"]
+            # check what is internet access
+            is_connected(audio2pose_checkpoint)
+            # download pre-trained models from url
             download_model(audio2pose_checkpoint, link_audio2pose_checkpoint)
         else:
-            link_audio2pose_checkpoint = file_deepfake_config["checkpoints"]["auido2pose_00140-model.pth"]
             check_download_size(audio2pose_checkpoint, link_audio2pose_checkpoint)
-        audio2pose_yaml_path = os.path.join(current_root_path, 'src', 'config', 'auido2pose.yaml')
+        audio2pose_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2pose.yaml')
 
         audio2exp_checkpoint = os.path.join(checkpoint_dir_full, 'auido2exp_00300-model.pth')
+        link_audio2exp_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "auido2exp_00300-model.pth"])
         if not os.path.exists(audio2exp_checkpoint):
-            link_audio2exp_checkpoint = file_deepfake_config["checkpoints"]["auido2exp_00300-model.pth"]
+            # check what is internet access
+            is_connected(audio2exp_checkpoint)
+            # download pre-trained models from url
             download_model(audio2exp_checkpoint, link_audio2exp_checkpoint)
         else:
-            link_audio2exp_checkpoint = file_deepfake_config["checkpoints"]["auido2exp_00300-model.pth"]
             check_download_size(audio2exp_checkpoint, link_audio2exp_checkpoint)
-        audio2exp_yaml_path = os.path.join(current_root_path, 'src', 'config', 'auido2exp.yaml')
+        audio2exp_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2exp.yaml')
 
         free_view_checkpoint = os.path.join(checkpoint_dir_full, 'facevid2vid_00189-model.pth.tar')
+        link_free_view_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "facevid2vid_00189-model.pth.tar"])
         if not os.path.exists(free_view_checkpoint):
-            link_free_view_checkpoint = file_deepfake_config["checkpoints"]["facevid2vid_00189-model.pth.tar"]
+            # check what is internet access
+            is_connected(free_view_checkpoint)
+            # download pre-trained models from url
             download_model(free_view_checkpoint, link_free_view_checkpoint)
         else:
-            link_free_view_checkpoint = file_deepfake_config["checkpoints"]["facevid2vid_00189-model.pth.tar"]
             check_download_size(free_view_checkpoint, link_free_view_checkpoint)
 
-        if args.preprocess == 'full':
+        if preprocess == 'full':
             mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00109-model.pth.tar')
+            link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00109-model.pth.tar"])
             if not os.path.exists(mapping_checkpoint):
-                link_mapping_checkpoint = file_deepfake_config["checkpoints"]["mapping_00109-model.pth.tar"]
+                # check what is internet access
+                is_connected(mapping_checkpoint)
+                # download pre-trained models from url
                 download_model(mapping_checkpoint, link_mapping_checkpoint)
             else:
-                link_mapping_checkpoint = file_deepfake_config["checkpoints"]["mapping_00109-model.pth.tar"]
                 check_download_size(mapping_checkpoint, link_mapping_checkpoint)
-            facerender_yaml_path = os.path.join(current_root_path, 'src', 'config', 'facerender_still.yaml')
+            facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender_still.yaml')
         else:
             mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00229-model.pth.tar')
+            link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00229-model.pth.tar"])
             if not os.path.exists(mapping_checkpoint):
-                link_mapping_checkpoint = file_deepfake_config["checkpoints"]["mapping_00229-model.pth.tar"]
+                # check what is internet access
+                is_connected(mapping_checkpoint)
+                # download pre-trained models from url
                 download_model(mapping_checkpoint, link_mapping_checkpoint)
             else:
-                link_mapping_checkpoint = file_deepfake_config["checkpoints"]["mapping_00229-model.pth.tar"]
                 check_download_size(mapping_checkpoint, link_mapping_checkpoint)
-            facerender_yaml_path = os.path.join(current_root_path, 'src', 'config', 'facerender.yaml')
+            facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender.yaml')
 
         # init model
         print("Starting to crop and extract frames")
@@ -230,8 +224,8 @@ class AnimationFaceTalk:
         os.makedirs(first_frame_dir, exist_ok=True)
 
         print('Extraction 3DMM for source image')
-        pic_path_type = check_media_type(pic_path)
-        first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(pic_path, first_frame_dir, args.preprocess, source_image_flag=True, pic_path_type=pic_path_type)
+        pic_path_type = check_media_type(source_image)
+        first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(source_image, first_frame_dir, preprocess, source_image_flag=True, pic_path_type=pic_path_type)
         if first_coeff_path is None:
             print("Can't get the coefficients by 3DMM of the input")
             return
@@ -240,12 +234,12 @@ class AnimationFaceTalk:
         ref_pose_coeff_path = None
 
         # audio2ceoff
-        batch = get_data(first_coeff_path, audio_path, device, ref_eyeblink_coeff_path, still=args.still)
+        batch = get_data(first_coeff_path, driven_audio, device, ref_eyeblink_coeff_path, still=still)
         coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
 
         # coeff2video
-        data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, audio_path, batch_size, input_yaw_list, input_pitch_list, input_roll_list, expression_scale=args.expression_scale, still_mode=args.still, preprocess=args.preprocess)
-        mp4_path = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, preprocess=args.preprocess, pic_path_type=pic_path_type, device=device)
+        data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, driven_audio, batch_size, input_yaw, input_pitch, input_roll, expression_scale=expression_scale, still_mode=still, preprocess=preprocess)
+        mp4_path = animate_from_coeff.generate(data, save_dir, source_image, crop_info, preprocess=preprocess, pic_path_type=pic_path_type, device=device)
 
         for f in os.listdir(save_dir):
             if mp4_path == f:
@@ -258,24 +252,6 @@ class AnimationFaceTalk:
 
         return mp4_path
 
-    @staticmethod
-    def load_img_default():
-        return Namespace(
-            batch_size=2,
-            ref_eyeblink=None,
-            ref_pose=None,
-            net_recon="resnet50",
-            init_path=None,
-            use_last_fc=False,
-            bfm_folder=os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints", "BFM_Fitting"),
-            bfm_model="BFM_model_front.mat",
-            focal=1015.0,
-            center=112.0,
-            camera_d=10.0,
-            z_near=5.0,
-            z_far=15.0,
-        )
-
 
 class AnimationMouthTalk:
     """
@@ -286,80 +262,71 @@ class AnimationMouthTalk:
                             box: list = [-1, -1, -1, -1], video_start: float = 0,
                             video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
-        args.checkpoint_dir = "checkpoints"
-        args.result_dir = deepfake_dir
-        args.video_start = float(video_start)
-        args.video_end = float(video_end)
-        args.face = face
-        args.audio = audio
-        args.static = static  # ok, we will check what it is video, not img
-        args.box = box  # a constant bounding box for the face. Use only as a last resort if the face is not detected.
-        # Also (about box), might work only if the face is not moving around much. Syntax: (top, bottom, left, right).
-        args.face_fields = face_fields
+        use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
-        cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-
-        if torch.cuda.is_available() and not cpu:
+        if torch.cuda.is_available() and not use_cpu:
             print("Processing will run on GPU")
-            args.device = "cuda"
+            device = "cuda"
         else:
             print("Processing will run on CPU")
-            args.device = "cpu"
+            device = "cpu"
 
-        save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
 
-        model_user_path = DEEPFAKE_MODEL_FOLDER
-
-        os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
-        checkpoint_dir_full = os.path.join(model_user_path, args.checkpoint_dir)
+        checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
+        os.environ['TORCH_HOME'] = checkpoint_dir_full
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
         if emotion_label is None:
             wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
+            link_wav2lip_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "wav2lip.pth"])
             if not os.path.exists(wav2lip_checkpoint):
-                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
+                # check what is internet access
+                is_connected(wav2lip_checkpoint)
+                # download pre-trained models from url
                 download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
             else:
-                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["wav2lip.pth"]
                 check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
         else:
             wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'emo2lip.pth')
+            link_wav2lip_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "emo2lip.pth"])
             if not os.path.exists(wav2lip_checkpoint):
-                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["emo2lip.pth"]
+                # check what is internet access
+                is_connected(wav2lip_checkpoint)
+                # download pre-trained models from url
                 download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
             else:
-                link_wav2lip_checkpoint = file_deepfake_config["checkpoints"]["emo2lip.pth"]
                 check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         # If video_start is not 0 when cut video from start
-        args.face = cut_start_video(args.face, args.video_start, args.video_end)
+        face = cut_start_video(face, float(video_start), float(video_end))
 
         # get video frames
         # TODO if users will have problem with RAM for this method, when change approach on save frames in files
-        frames, fps = get_frames(video=args.face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+        frames, fps = get_frames(video=face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
         # get mel of audio
-        mel_processor = MelProcessor(args=args, save_output=save_dir, fps=fps)
+        mel_processor = MelProcessor(audio=audio, save_output=save_dir, fps=fps)
         mel_chunks = mel_processor.process()
         # create wav to lip
         full_frames = frames[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
         wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label, similar_coeff=similar_coeff)
-        wav2lip.face_fields = args.face_fields
+        wav2lip.face_fields = face_fields
 
         print("Face detect starting")
         gen = wav2lip.datagen(
-            full_frames.copy(), mel_chunks, args.box, args.static, args.img_size, args.wav2lip_batch_size,
+            full_frames.copy(), mel_chunks, box, static, args.img_size, args.wav2lip_batch_size,
             args.pads, args.nosmooth
         )
         # load wav2lip
         print("Starting mouth animate")
-        wav2lip_processed_video = wav2lip.generate_video_from_chunks(gen, mel_chunks, batch_size, wav2lip_checkpoint, args.device, save_dir, fps)
+        wav2lip_processed_video = wav2lip.generate_video_from_chunks(gen, mel_chunks, batch_size, wav2lip_checkpoint, device, save_dir, fps)
         if wav2lip_processed_video is None:
             return
         wav2lip_result_video = wav2lip_processed_video
-        mp4_path = save_video_with_audio(wav2lip_result_video, args.audio, save_dir)
+        mp4_path = save_video_with_audio(wav2lip_result_video, audio, save_dir)
 
         for f in os.listdir(save_dir):
             if mp4_path == f:
@@ -396,77 +363,62 @@ class FaceSwap:
     """
     @staticmethod
     def main_faceswap(deepfake_dir: str, target: str, target_face_fields: str, source: str, source_face_fields: str,
-                      type_file_target: str, type_file_source: str, target_video_start: float = 0, target_video_end: float = 0,
+                      type_file_source: str, target_video_start: float = 0, target_video_end: float = 0,
                       source_current_time: float = 0, source_video_end: float = 0,
                       multiface: bool = False, similarface: bool = False, similar_coeff: float = 0.95):
         args = FaceSwap.load_faceswap_default()
-        # Folders
-        args.checkpoint_dir = "checkpoints"
-        args.result_dir = deepfake_dir
-        # Target
-        args.target = target
-        args.target_face_fields = target_face_fields
-        args.type_file_target = type_file_target
-        args.target_video_start = float(target_video_start)
-        args.target_video_end = float(target_video_end)
-        # Source
-        args.source = source
-        args.source_face_fields = source_face_fields
-        args.type_file_source = type_file_source
-        args.source_video_end = float(source_video_end)
-        args.source_current_time = float(source_current_time)
-        # Additionally processing
-        args.multiface = multiface
 
-        cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+        use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
-        if torch.cuda.is_available() and not cpu:
+        if torch.cuda.is_available() and not use_cpu:
             print("Processing will run on GPU")
-            args.device = "cuda"
+            device = "cuda"
         else:
             print("Processing will run on CPU")
-            args.device = "cpu"
+            device = "cpu"
 
-        save_dir = os.path.join(args.result_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         model_user_path = DEEPFAKE_MODEL_FOLDER
 
-        os.environ['TORCH_HOME'] = os.path.join(model_user_path, args.checkpoint_dir)
-        checkpoint_dir_full = os.path.join(model_user_path, args.checkpoint_dir)
+        checkpoint_dir_full = os.path.join(model_user_path, "checkpoints")
+        os.environ['TORCH_HOME'] = checkpoint_dir_full
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
         faceswap_checkpoint = os.path.join(checkpoint_dir_full, 'faceswap.onnx')
+        link_faceswap_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "faceswap.onnx"])
         if not os.path.exists(faceswap_checkpoint):
-            link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
+            # check what is internet access
+            is_connected(faceswap_checkpoint)
+            # download pre-trained models from url
             download_model(faceswap_checkpoint, link_faceswap_checkpoint)
         else:
-            link_faceswap_checkpoint = file_deepfake_config["checkpoints"]["faceswap.onnx"]
             check_download_size(faceswap_checkpoint, link_faceswap_checkpoint)
 
-        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface, similar_coeff)
+        faceswap = FaceSwapDeepfake(DEEPFAKE_MODEL_FOLDER, faceswap_checkpoint, similarface, similar_coeff, device)
 
         # transfer video without format from frontend to mp4 format
-        if args.type_file_source == "video":
-            args.source = cut_start_video(args.source, 0, args.source_video_end)
+        if type_file_source == "video":
+            source = cut_start_video(source, 0, float(source_video_end))
         # get fps and calculate current frame and get that frame for source
-        source_frame = get_first_frame(args.source, args.source_current_time)
-        source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, args.source_face_fields)
+        source_frame = get_first_frame(source, float(source_current_time))
+        source_face = faceswap.face_detect_with_alignment_from_source_frame(source_frame, source_face_fields)
 
         # if this is video target
-        args.type_file_target = check_media_type(args.target)
-        if args.type_file_target == "animated":
+        type_file_target = check_media_type(target)
+        if type_file_target == "animated":
             # If video_start for target is not 0 when cut video from start
-            args.target = cut_start_video(args.target, args.target_video_start, args.target_video_end)
+            target = cut_start_video(target, float(target_video_start), float(target_video_end))
 
             # get video frame for source if type is video
             frame_dir = os.path.join(save_dir, "frames")
             os.makedirs(frame_dir, exist_ok=True)
 
-            fps, frame_dir = save_frames(video=args.target, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+            fps, frame_dir = save_frames(video=target, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
             # create face swap
-            file_name = faceswap.swap_video(frame_dir, source_face, args.target_face_fields, save_dir, args.multiface, fps)
+            file_name = faceswap.swap_video(frame_dir, source_face, target_face_fields, save_dir, multiface, fps)
             saved_file = os.path.join(save_dir, file_name)
             # after generation
             try:
@@ -476,14 +428,14 @@ class FaceSwap:
                 print(f"Error with encrypted {err}")
 
             # get audio from video target
-            audio_file_name = extract_audio_from_video(args.target, save_dir)
+            audio_file_name = extract_audio_from_video(target, save_dir)
             # combine audio and video
             file_name = save_video_with_audio(saved_file, os.path.join(save_dir, str(audio_file_name)), save_dir)
 
         else:  # static file
             # create face swap on image
-            target_frame = get_first_frame(args.target)
-            target_image = faceswap.swap_image(target_frame, source_face, args.target_face_fields, save_dir, args.multiface)
+            target_frame = get_first_frame(target)
+            target_image = faceswap.swap_image(target_frame, source_face, target_face_fields, save_dir, multiface)
             file_name = "swap_result.png"
             saved_file = save_image_cv2(os.path.join(save_dir, file_name), target_image)
             # after generation
@@ -552,30 +504,33 @@ class Retouch:
 
         # load model improved remove object
         model_pro_painter_path = os.path.join(checkpoint_folder, "ProPainter.pth")
-
+        link_pro_painter = get_nested_url(file_deepfake_config, ["checkpoints", "ProPainter.pth"])
         if not os.path.exists(model_pro_painter_path):
-            link_pro_painter = file_deepfake_config["checkpoints"]["ProPainter.pth"]
+            # check what is internet access
+            is_connected(model_pro_painter_path)
+            # download pre-trained models from url
             download_model(model_pro_painter_path, link_pro_painter)
         else:
-            link_pro_painter = file_deepfake_config["checkpoints"]["ProPainter.pth"]
             check_download_size(model_pro_painter_path, link_pro_painter)
 
         model_raft_things_path = os.path.join(checkpoint_folder, "raft-things.pth")
-
+        link_raft_things = get_nested_url(file_deepfake_config, ["checkpoints", "raft-things.pth"])
         if not os.path.exists(model_raft_things_path):
-            link_raft_things = file_deepfake_config["checkpoints"]["raft-things.pth"]
+            # check what is internet access
+            is_connected(model_raft_things_path)
+            # download pre-trained models from url
             download_model(model_raft_things_path, link_raft_things)
         else:
-            link_raft_things = file_deepfake_config["checkpoints"]["raft-things.pth"]
             check_download_size(model_raft_things_path, link_raft_things)
 
         model_recurrent_flow_path = os.path.join(checkpoint_folder, "recurrent_flow_completion.pth")
-
+        link_recurrent_flow = get_nested_url(file_deepfake_config, ["checkpoints", "recurrent_flow_completion.pth"])
         if not os.path.exists(model_recurrent_flow_path):
-            link_recurrent_flow = file_deepfake_config["checkpoints"]["recurrent_flow_completion.pth"]
+            # check what is internet access
+            is_connected(model_recurrent_flow_path)
+            # download pre-trained models from url
             download_model(model_recurrent_flow_path, link_recurrent_flow)
         else:
-            link_recurrent_flow = file_deepfake_config["checkpoints"]["recurrent_flow_completion.pth"]
             check_download_size(model_recurrent_flow_path, link_recurrent_flow)
 
         # load model retouch
@@ -586,11 +541,13 @@ class Retouch:
             retouch_model_name = "retouch_object"
             model_retouch_path = os.path.join(checkpoint_folder, "retouch_object.pth")
 
+        link_model_retouch = get_nested_url(file_deepfake_config, ["checkpoints", f"{retouch_model_name}.pth"])
         if not os.path.exists(model_retouch_path):
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_name}.pth"]
+            # check what is internet access
+            is_connected(model_retouch_path)
+            # download pre-trained models from url
             download_model(model_retouch_path, link_model_retouch)
         else:
-            link_model_retouch = file_deepfake_config["checkpoints"][f"{retouch_model_name}.pth"]
             check_download_size(model_retouch_path, link_model_retouch)
 
         # load model segmentation
@@ -598,37 +555,45 @@ class Retouch:
             vit_model_type = "vit_h"
 
             sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
+            link_sam_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "sam_vit_h.pth"])
             if not os.path.exists(sam_vit_checkpoint):
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                # check what is internet access
+                is_connected(sam_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
             else:
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
                 check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
             onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
+            link_onnx_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
             if not os.path.exists(onnx_vit_checkpoint):
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                # check what is internet access
+                is_connected(onnx_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
             else:
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
         else:
             vit_model_type = "vit_b"
 
             sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
+            link_sam_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "sam_vit_b.pth"])
             if not os.path.exists(sam_vit_checkpoint):
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                # check what is internet access
+                is_connected(sam_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
             else:
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
                 check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
             onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
+            link_onnx_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
             if not os.path.exists(onnx_vit_checkpoint):
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                # check what is internet access
+                is_connected(onnx_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
             else:
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
 
         # segment
@@ -911,8 +876,8 @@ class VideoEdit:
         audio_file_name = extract_audio_from_video(source, save_dir)
 
         if enhancer:
-            cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-            if torch.cuda.is_available() and not cpu:
+            use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+            if torch.cuda.is_available() and not use_cpu:
                 print("Processing will run on GPU")
                 device = "cuda"
             else:
@@ -998,44 +963,52 @@ class GetSegment:
             device = "cpu"
 
         checkpoint_dir = "checkpoints"
-        os.environ['TORCH_HOME'] = os.path.join(DEEPFAKE_MODEL_FOLDER, checkpoint_dir)
         checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, checkpoint_dir)
+        os.environ['TORCH_HOME'] = checkpoint_dir_full
 
         if device == "cuda":
             model_type = "vit_h"
 
             sam_vit_checkpoint = os.path.join(checkpoint_dir_full, 'sam_vit_h.pth')
+            link_sam_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "sam_vit_h.pth"])
             if not os.path.exists(sam_vit_checkpoint):
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+                # check what is internet access
+                is_connected(sam_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
             else:
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
                 check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
             onnx_vit_checkpoint = os.path.join(checkpoint_dir_full, 'vit_h_quantized.onnx')
+            link_onnx_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
             if not os.path.exists(onnx_vit_checkpoint):
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+                # check what is internet access
+                is_connected(onnx_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
             else:
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
         else:
             model_type = "vit_b"
 
             sam_vit_checkpoint = os.path.join(checkpoint_dir_full, 'sam_vit_b.pth')
+            link_sam_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "sam_vit_b.pth"])
             if not os.path.exists(sam_vit_checkpoint):
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
+                # check what is internet access
+                is_connected(sam_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
             else:
-                link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_b.pth"]
                 check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
             onnx_vit_checkpoint = os.path.join(checkpoint_dir_full, 'vit_b_quantized.onnx')
+            link_onnx_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
             if not os.path.exists(onnx_vit_checkpoint):
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
+                # check what is internet access
+                is_connected(onnx_vit_checkpoint)
+                # download pre-trained models from url
                 download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
             else:
-                link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_b_quantized.onnx"]
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
 
         segmentation = SegmentAnything()

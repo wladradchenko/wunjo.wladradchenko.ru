@@ -4,21 +4,21 @@ import numpy as np
 import src.utils.audio as audio
 
 class MelProcessor:
-    def __init__(self, args, save_output, fps):
-        self.args = args
+    def __init__(self, audio, save_output, fps):
+        self.audio = audio
         self.save_output = save_output
         self.fps = fps
         self.mel_step_size = 16
 
     def convert_to_wav(self):
-        if not self.args.audio.endswith('.wav'):
+        if not self.audio.endswith('.wav'):
             print('Extracting raw audio...')
-            command = 'ffmpeg -y -i {} -strict -2 {}'.format(self.args.audio, os.path.join(self.save_output, "transfer_audio_temp.wav"))
+            command = 'ffmpeg -y -i {} -strict -2 {}'.format(self.audio, os.path.join(self.save_output, "transfer_audio_temp.wav"))
             subprocess.call(command, shell=True)
-            self.args.audio = os.path.join(self.save_output, "transfer_audio_temp.wav")
+            self.audio = os.path.join(self.save_output, "transfer_audio_temp.wav")
 
     def load_audio(self):
-        wav = audio.load_wav(self.args.audio, 16000)
+        wav = audio.load_wav(self.audio, 16000)
         mel = audio.melspectrogram(wav)
         print(mel.shape)
         return mel

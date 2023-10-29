@@ -22,12 +22,13 @@ class FaceSwapDeepfake:
     """
     Face swap by one photo
     """
-    def __init__(self, model_path, face_swap_model_path, similarface = False, similar_coeff=0.95):
+    def __init__(self, model_path, face_swap_model_path, similarface = False, similar_coeff=0.95, device="cpu"):
         """
         Initialization
         :param model_path: path to model deepfake where will be download face recognition
         :param face_swap_model_path: path to face swap model
         """
+        self.device = device
         self.face_recognition = FaceRecognition(model_path)
         self.access_providers = onnxruntime.get_available_providers()
         self.face_swap_model = self.load(face_swap_model_path)
@@ -35,7 +36,7 @@ class FaceSwapDeepfake:
         self.similarface = similarface
         self.lock = threading.Lock()  # Create a lock
         self.progress = 0  # Initialize a progress counter
-        self.similar_coeff = similar_coeff  #
+        self.similar_coeff = similar_coeff
 
     def load(self, face_swap_model_path):
         """
@@ -45,7 +46,7 @@ class FaceSwapDeepfake:
         """
         # use cpu as with cuda on onnx can be problem
         if "CUDAExecutionProvider" in self.access_providers:
-            provider = ["CUDAExecutionProvider"] if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else ["CPUExecutionProvider"]
+            provider = ["CUDAExecutionProvider"] if self.device == "cuda" else ["CPUExecutionProvider"]
         else:
             provider = ["CPUExecutionProvider"]
 

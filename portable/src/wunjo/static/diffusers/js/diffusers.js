@@ -137,7 +137,7 @@ function initiateDiffusersPop(button) {
     prevLabel: "Вернуться",
     doneLabel: "Закрыть",
   });
-  introRetouch.start();
+  introRetouch.setOption('keyboardNavigation', false).start();
 
   const dropdownDiffusion = document.getElementById("modelDiffusionDropdown");
   const diffusionModelsListParsed = JSON.parse(diffusionModelsList);

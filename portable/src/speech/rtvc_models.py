@@ -14,7 +14,7 @@ from speech.rtvc.synthesizer.inference import Synthesizer
 from speech.rtvc.synthesizer.utils.signature import DigitalSignature
 from speech.rtvc.vocoder.inference import VoiceCloneVocoder
 from backend.folders import MEDIA_FOLDER, RTVC_VOICE_FOLDER
-from backend.download import download_model, check_download_size
+from backend.download import download_model, check_download_size, get_nested_url, is_connected
 
 sys.path.pop(0)
 
@@ -52,6 +52,9 @@ def inspect_rtvc_model(rtvc_model: str, rtvc_model_url: str) -> str:
     if not os.path.exists(os.path.dirname(rtvc_model)):
         os.makedirs(os.path.dirname(rtvc_model))
     if not os.path.exists(rtvc_model):
+        # check what is internet access
+        is_connected(rtvc_model)
+        # download pre-trained models from url
         download_model(rtvc_model, rtvc_model_url)
     else:
         check_download_size(rtvc_model, rtvc_model_url)
@@ -67,12 +70,12 @@ def load_rtvc_encoder(lang: str, device: str):
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
-        language_dict = rtvc_models_config.get("en")
-    encoder_url = language_dict.get("encoder")
+        lang = "en"
+    encoder_url = get_nested_url(rtvc_models_config, [lang, "encoder"])
     encoder_path = os.path.join(RTVC_VOICE_FOLDER, lang, "encoder.pt")
     model_path = inspect_rtvc_model(encoder_path, encoder_url)
     if not os.path.exists(model_path):
-        raise f"Model {encoder_path} not found. Check you internet connection to download"
+        raise Exception(f"Model {encoder_path} not found. Check you internet connection to download")
     encoder = VoiceCloneEncoder()
     encoder.load_model(model_path, device)
     return encoder
@@ -87,12 +90,12 @@ def load_rtvc_synthesizer(lang: str, device: str):
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
-        language_dict = rtvc_models_config.get("en")
-    synthesizer_url = language_dict.get("synthesizer")
+        lang = "en"
+    synthesizer_url = get_nested_url(rtvc_models_config, [lang, "synthesizer"])
     synthesizer_path = os.path.join(RTVC_VOICE_FOLDER, lang, "synthesizer.pt")
     model_path = inspect_rtvc_model(synthesizer_path, synthesizer_url)
     if not os.path.exists(model_path):
-        raise f"Model {synthesizer_path} not found. Check you internet connection to download"
+        raise Exception(f"Model {synthesizer_path} not found. Check you internet connection to download")
     return Synthesizer(model_fpath=model_path, device=device, charset=lang)
 
 
@@ -105,12 +108,12 @@ def load_rtvc_digital_signature(lang: str, device: str):
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
-        language_dict = rtvc_models_config.get("en")
-    signature_url = language_dict.get("signature")
+        lang = "en"
+    signature_url = get_nested_url(rtvc_models_config, [lang, "signature"])
     signature_path = os.path.join(RTVC_VOICE_FOLDER, lang, "signature.pt")
     model_path = inspect_rtvc_model(signature_path, signature_url)
     if not os.path.exists(model_path):
-        raise f"Model {signature_path} not found. Check you internet connection to download"
+        raise Exception(f"Model {signature_path} not found. Check you internet connection to download")
     return DigitalSignature(model_path=model_path, device=device)
 
 
@@ -123,12 +126,12 @@ def load_rtvc_vocoder(lang: str, device: str):
     """
     language_dict = rtvc_models_config.get(lang)
     if language_dict is None:
-        language_dict = rtvc_models_config.get("en")
-    vocoder_url = language_dict.get("vocoder")
+        lang = "en"
+    vocoder_url = get_nested_url(rtvc_models_config, [lang, "vocoder"])
     vocoder_path = os.path.join(RTVC_VOICE_FOLDER, lang, "vocoder.pt")
     model_path = inspect_rtvc_model(vocoder_path, vocoder_url)
     if not os.path.exists(model_path):
-        raise f"Model {vocoder_path} not found. Check you internet connection to download"
+        raise Exception(f"Model {vocoder_path} not found. Check you internet connection to download")
     vocoder = VoiceCloneVocoder()
     vocoder.load_model(model_path, device=device)
     return vocoder
@@ -140,8 +143,8 @@ def load_rtvc(lang: str):
     :param lang:
     :return:
     """
-    cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
-    if torch.cuda.is_available() and not cpu:
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    if torch.cuda.is_available() and not use_cpu:
         print("Processing will run on GPU")
         device = "cuda"
     else:

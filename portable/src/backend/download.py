@@ -1,10 +1,32 @@
 import os
 import sys
 import time
+import socket
 import zipfile
 import requests
 import shutil
 from tqdm import tqdm
+
+
+def is_connected(model_path):
+    try:
+        socket.create_connection(("www.google.com", 80))
+        return True
+    except OSError:
+        pass
+    raise Exception(f"Model not found at {model_path}. The application cannot access the internet. Please allow Wunjo AI through your firewall or download the models manually. For more details, visit our documentation: https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki")
+
+
+def get_nested_url(d, keys: list):
+    if not isinstance(d, dict):
+        return d
+    if len(keys) == 0:
+        return d
+    key = keys[0]
+    if key in d:
+        return get_nested_url(d[key], keys[1:])
+    else:
+        raise Exception(f"This {key} is not found in config file. Update config file via internet! For more details, visit our documentation: https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki")
 
 
 def unzip(zip_file_path, extract_dir, target_dir_name=None):

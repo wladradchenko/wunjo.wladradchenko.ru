@@ -263,7 +263,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
                     prevLabel: "Back",
                     doneLabel: "Close",
                   });
-                  introVideoDeepfake.start();
+                  introVideoDeepfake.setOption('keyboardNavigation', false).start();
                 });
             };
            });

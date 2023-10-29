@@ -20,7 +20,7 @@ sys.path.pop(0)
 
 from cog import Input
 from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
-from backend.download import download_model, unzip, check_download_size
+from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
 from deepfake.src.utils.segment import SegmentAnything
 from deepfake.src.utils.videoio import (
     cut_start_video, get_frames, check_media_type, save_video_from_frames, extract_audio_from_video, save_video_with_audio
@@ -128,19 +128,23 @@ class Video2Video:
         vit_model_type = "vit_h"
 
         sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
+        link_sam_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "sam_vit_h.pth"])
         if not os.path.exists(sam_vit_checkpoint):
-            link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
+            # check what is internet access
+            is_connected(sam_vit_checkpoint)
+            # download pre-trained models from url
             download_model(sam_vit_checkpoint, link_sam_vit_checkpoint)
         else:
-            link_sam_vit_checkpoint = file_deepfake_config["checkpoints"]["sam_vit_h.pth"]
             check_download_size(sam_vit_checkpoint, link_sam_vit_checkpoint)
 
         onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
+        link_onnx_vit_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
         if not os.path.exists(onnx_vit_checkpoint):
-            link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
+            # check what is internet access
+            is_connected(onnx_vit_checkpoint)
+            # download pre-trained models from url
             download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
         else:
-            link_onnx_vit_checkpoint = file_deepfake_config["checkpoints"]["vit_h_quantized.onnx"]
             check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
 
         # load diffuser
@@ -151,63 +155,75 @@ class Video2Video:
 
         if sd_model_name is None:
             sd_model_path = os.path.join(diffuser_folder, "Realistic_Vision_V5.1.safetensors")
+            link_sd_model = get_nested_url(file_deepfake_config, ["diffusion", "Realistic_Vision_V5.1.safetensors"])
             if not os.path.exists(sd_model_path):
-                link_sd_model = file_deepfake_config["diffusion"]["Realistic_Vision_V5.1.safetensors"]
+                # check what is internet access
+                is_connected(sd_model_path)
+                # download pre-trained models from url
                 download_model(sd_model_path, link_sd_model)
             else:
-                link_sd_model = file_deepfake_config["diffusion"]["Realistic_Vision_V5.1.safetensors"]
                 check_download_size(sd_model_path, link_sd_model)
             # set default prompts to improve quality
             args.a_prompt = "RAW photo, subject, (high detailed skin:1.2), 8k uhd, dslr, soft lighting, high quality, film grain, Fujifilm XT3"  # improve prompt
             args.n_prompt = "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4), (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, amputation"  # default negative prompt
         else:
             sd_model_path = os.path.join(diffuser_folder, sd_model_name)
-            print(sd_model_path)
+            print("Will use sd model ", sd_model_path)
 
         # load controlnet model
         if control_type == "hed":
             controlnet_model_path = os.path.join(diffuser_folder, "control_sd15_hed.pth")
+            link_controlnet_model = get_nested_url(file_deepfake_config, ["diffusion", "control_sd15_hed.pth"])
             if not os.path.exists(controlnet_model_path):
-                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_hed.pth"]
+                # check what is internet access
+                is_connected(controlnet_model_path)
+                # download pre-trained models from url
                 download_model(controlnet_model_path, link_controlnet_model)
             else:
-                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_hed.pth"]
                 check_download_size(controlnet_model_path, link_controlnet_model)
             # load hed annotator
             controlnet_model_annotator_path = os.path.join(diffuser_folder, "ControlNetHED.pth")
+            link_controlnet_model_annotator = get_nested_url(file_deepfake_config, ["diffusion", "ControlNetHED.pth"])
             if not os.path.exists(controlnet_model_annotator_path):
-                link_controlnet_model_annotator = file_deepfake_config["diffusion"]["ControlNetHED.pth"]
+                # check what is internet access
+                is_connected(controlnet_model_annotator_path)
+                # download pre-trained models from url
                 download_model(controlnet_model_annotator_path, link_controlnet_model_annotator)
             else:
-                link_controlnet_model_annotator = file_deepfake_config["diffusion"]["ControlNetHED.pth"]
                 check_download_size(controlnet_model_annotator_path, link_controlnet_model_annotator)
         elif control_type == "canny":
             controlnet_model_path = os.path.join(diffuser_folder, "control_sd15_canny.pth")
+            link_controlnet_model = get_nested_url(file_deepfake_config, ["diffusion", "control_sd15_canny.pth"])
             if not os.path.exists(controlnet_model_path):
-                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_canny.pth"]
+                # check what is internet access
+                is_connected(controlnet_model_path)
+                # download pre-trained models from url
                 download_model(controlnet_model_path, link_controlnet_model)
             else:
-                link_controlnet_model = file_deepfake_config["diffusion"]["control_sd15_canny.pth"]
                 check_download_size(controlnet_model_path, link_controlnet_model)
         else:
-            raise "Error... undefined controlnet type"
+            raise Exception("Error... undefined controlnet type")
 
         # load vae model
         vae_model_path = os.path.join(diffuser_folder, "vae-ft-mse-840000-ema-pruned.ckpt")
+        link_vae_model = get_nested_url(file_deepfake_config, ["diffusion", "vae-ft-mse-840000-ema-pruned.ckpt"])
         if not os.path.exists(vae_model_path):
-            link_vae_model = file_deepfake_config["diffusion"]["vae-ft-mse-840000-ema-pruned.ckpt"]
+            # check what is internet access
+            is_connected(vae_model_path)
+            # download pre-trained models from url
             download_model(vae_model_path, link_vae_model)
         else:
-            link_vae_model = file_deepfake_config["diffusion"]["vae-ft-mse-840000-ema-pruned.ckpt"]
             check_download_size(vae_model_path, link_vae_model)
 
         # load gmflow model
         gmflow_model_path = os.path.join(diffuser_folder, "gmflow_sintel-0c07dcb3.pth")
+        link_gmflow_model = get_nested_url(file_deepfake_config, ["diffusion", "gmflow_sintel-0c07dcb3.pth"])
         if not os.path.exists(gmflow_model_path):
-            link_gmflow_model = file_deepfake_config["diffusion"]["gmflow_sintel-0c07dcb3.pth"]
+            # check what is internet access
+            is_connected(vae_model_path)
+            # download pre-trained models from url
             download_model(gmflow_model_path, link_gmflow_model)
         else:
-            link_gmflow_model = file_deepfake_config["diffusion"]["gmflow_sintel-0c07dcb3.pth"]
             check_download_size(gmflow_model_path, link_gmflow_model)
 
         # segmentation mask
@@ -256,7 +272,7 @@ class Video2Video:
             fps, num_frames, width, height = save_video_frames_cv2(source, frame_save_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
             save_video_frames_cv2(source, source_frame_folder_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
         else:
-            raise "Source is not detected as image or video"
+            raise Exception("Source is not detected as image or video")
 
         # read frames files
         frame_files = sorted(os.listdir(frame_save_path))
@@ -377,12 +393,14 @@ class Video2Video:
         if sys.platform == 'win32':
             ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
             ebsynth_path_zip = os.path.join(ebsynth_folder, "EbSynth-Beta-Win.zip")
+            link_ebsynth = get_nested_url(file_deepfake_config, ["ebsynth", "EbSynth-Beta-Win.zip"])
             if not os.path.exists(ebsynth_path):
-                link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
+                # check what is internet access
+                is_connected(ebsynth_path)
+                # download pre-trained models from url
                 download_model(ebsynth_path_zip, link_ebsynth)
                 unzip(ebsynth_path_zip, ebsynth_folder)
             else:
-                link_ebsynth = file_deepfake_config["ebsynth"]["EbSynth-Beta-Win.zip"]
                 check_download_size(ebsynth_path_zip, link_ebsynth)
                 if not os.listdir(ebsynth_folder):
                     unzip(ebsynth_path_zip, ebsynth_folder)
@@ -394,16 +412,18 @@ class Video2Video:
             os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
+            link_ebsynth = get_nested_url(file_deepfake_config, ["ebsynth", "ebsynth_linux_cu118"])
             if not os.path.exists(ebsynth_path):
-                link_ebsynth = file_deepfake_config["ebsynth"]["ebsynth_linux_cu118"]
+                # check what is internet access
+                is_connected(ebsynth_path)
+                # download pre-trained models from url
                 download_model(ebsynth_path, link_ebsynth)
             else:
-                link_ebsynth = file_deepfake_config["ebsynth"]["ebsynth_linux_cu118"]
                 check_download_size(ebsynth_path, link_ebsynth)
             # access read app
             os.system(f"chmod +x {ebsynth_path}")
         else:
-            raise "Ebsynth is not support this platform"
+            raise Exception("Ebsynth is not support this platform")
 
         # before start set to will be all keys
         frame_dir = os.path.join(cfg.work_dir, source_frame_folder_name)

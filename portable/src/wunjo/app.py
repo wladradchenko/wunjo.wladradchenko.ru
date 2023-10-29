@@ -543,7 +543,6 @@ def synthesize_face_swap():
     face_target_fields = request_list.get("face_target_fields")
     source_face_fields = request_list.get("face_source_fields")
     source_content = request_list.get("source_content")
-    type_file_target = request_list.get("type_file_target")
     type_file_source = request_list.get("type_file_source")
     video_start_target = request_list.get("video_start_target", 0)
     video_end_target = request_list.get("video_end_target", 0)
@@ -565,7 +564,6 @@ def synthesize_face_swap():
             target_face_fields=face_target_fields,
             source=os.path.join(TMP_FOLDER, source_content),
             source_face_fields=source_face_fields,
-            type_file_target=type_file_target,
             type_file_source=type_file_source,
             target_video_start=video_start_target,
             target_video_end=video_end_target,

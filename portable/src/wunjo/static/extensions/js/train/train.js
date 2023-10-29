@@ -99,7 +99,7 @@ function trainWindow(event) {
     prevLabel: "Back",
     doneLabel: "Close",
   });
-  trainPanel.start();
+  trainPanel.setOption('keyboardNavigation', false).start();
 }
 
 function sendDataToTrain(elem, trainType) {

@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from deepfake.src.utils.videoio import save_video_from_frames
 from backend.folders import DEEPFAKE_MODEL_FOLDER
+from backend.download import get_nested_url, is_connected
 
 
 def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
@@ -24,9 +25,11 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         from deepfake.src.utils.gfpganer import GFPGANer
 
         model_path = os.path.join(local_model_path, 'GFPGANv1.4.pth')
-        url = config_deepfake["gfpgan"]["GFPGANv1.4.pth"]
+        url = get_nested_url(config_deepfake, ["gfpgan", "GFPGANv1.4.pth"])
 
         if not os.path.isfile(model_path):
+            # check what is internet access
+            is_connected(model_path)
             # download pre-trained models from url
             model_path = url
 
@@ -45,7 +48,8 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         from deepfake.src.utils.realesrgan import RealESRGANer
 
         model_path = os.path.join(local_model_path, 'realesr-animevideov3.pth')
-        url = config_deepfake["gfpgan"]["realesr-animevideov3.pth"]
+        url = get_nested_url(config_deepfake, ["gfpgan", "realesr-animevideov3.pth"])
+
         if device == "cpu":  # CPU
             import warnings
             warnings.warn('The unoptimized RealESRGAN is slow on CPU. We do not use it. '
@@ -54,6 +58,8 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
 
         model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
         if not os.path.isfile(model_path):
+            # check what is internet access
+            is_connected(model_path)
             # download pre-trained models from url
             model_path = url
 
@@ -72,9 +78,9 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         from deepfake.src.utils.realesrgan import RealESRGANer
 
         general_model_path = os.path.join(local_model_path, 'realesr-general-x4v3.pth')
-        general_url = config_deepfake["gfpgan"]["realesr-general-x4v3.pth"]
+        general_url = get_nested_url(config_deepfake, ["gfpgan", "realesr-general-x4v3.pth"])
         wdn_model_path = os.path.join(local_model_path, 'realesr-general-wdn-x4v3.pth')
-        wdn_url = config_deepfake["gfpgan"]["realesr-general-wdn-x4v3.pth"]
+        wdn_url = get_nested_url(config_deepfake, ["gfpgan", "realesr-general-wdn-x4v3.pth"])
         models_path = [general_model_path, wdn_model_path]
 
         if device == "cpu":  # CPU
@@ -88,10 +94,14 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         dni_weight = [denoise_strength, 1 - denoise_strength]
 
         if not os.path.isfile(general_model_path):
+            # check what is internet access
+            is_connected(general_model_path)
             # download pre-trained models from url
             models_path[0] = general_url
 
         if not os.path.isfile(wdn_model_path):
+            # check what is internet access
+            is_connected(wdn_model_path)
             # download pre-trained models from url
             models_path[1] = wdn_url
 

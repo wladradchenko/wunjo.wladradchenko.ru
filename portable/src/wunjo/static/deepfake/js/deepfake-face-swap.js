@@ -69,7 +69,7 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
     prevLabel: "Back",
     doneLabel: "Close",
   });
-  introFaceSwap.start();
+  introFaceSwap.setOption('keyboardNavigation', false).start();
 }
 
 // HANDLE FACE SWAP //
