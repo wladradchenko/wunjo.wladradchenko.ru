@@ -69,7 +69,8 @@ requires = [
     "realesrgan",
     "insightface",
     "pypinyin",
-    "einops"
+    "einops",
+    "praat-parselmouth"
 ]
 test_requires = [
 ]

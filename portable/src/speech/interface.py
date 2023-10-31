@@ -96,16 +96,23 @@ class VoiceCloneTranslate:
     @staticmethod
     def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, **options):
         from speech.rtvc_models import clone_voice_rtvc
+        from speech.rtvc.speed.inference import AudioSpeedProcessor
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
 
         start = time()
 
-        clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder)
+        # set format for audio to use praat processing
+        audio_file_with_format = audio_file + ".wav"
+        cmd = f"ffmpeg -i {audio_file} {audio_file_with_format}"
+        os.system(cmd)
+        # clone voice
+        clone_voice_rtvc(audio_file_with_format, text, encoder, synthesizer, vocoder, save_folder)
 
         output_name = str(uuid.uuid4()) + ".wav"
         output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
+        output_file = AudioSpeedProcessor().process_and_save(audio_file_with_format, output_file)  # set speed from original
 
         end = time()
 

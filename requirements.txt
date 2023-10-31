@@ -32,3 +32,4 @@ onnxruntime
 insightface
 pypinyin
 einops
+praat-parselmouth
