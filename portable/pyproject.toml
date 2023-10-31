@@ -70,7 +70,9 @@ requires = [
     "insightface",
     "pypinyin",
     "einops",
-    "praat-parselmouth"
+    "praat-parselmouth",
+    "denoiser",
+    "noisereduce"
 ]
 test_requires = [
 ]

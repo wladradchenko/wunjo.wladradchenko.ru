@@ -3,7 +3,7 @@ import sys
 import torch
 import numpy as np
 
-from denoiser import Denoiser
+from waveglow_denoiser import Denoiser
 import glow
 
 

@@ -1,5 +1,8 @@
 import os
 import sys
+import numpy as np
+import noisereduce as nr
+from denoiser.pretrained import master64
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
@@ -52,7 +55,7 @@ class VoiceCloneVocoder:
     def is_loaded(self):
         return self._model is not None
 
-    def infer_waveform(self, mel, normalize=True,  batched=True, target=8000, overlap=800, progress_callback=None):
+    def infer_waveform(self, mel, normalize=True,  batched=True, target=8000, overlap=800, progress_callback=None, device="cpu"):
         """
         Infers the waveform of a mel spectrogram output by the synthesizer (the format must match
         that of the synthesizer!)
@@ -70,4 +73,16 @@ class VoiceCloneVocoder:
             mel = mel / hp.mel_max_abs_value
         mel = torch.from_numpy(mel[None, ...])
         wav = self._model.generate(mel, batched, target, overlap, hp.mu_law, progress_callback)
+        wav = self.waveform_denoising(wav, device)
         return wav
+
+    @staticmethod
+    def waveform_denoising(wav, device):
+        prop_decrease = hp.prop_decrease_low_freq
+        # TODO if on Windows will be problem to download, use location .wunjo and download by request
+        model = master64().to(device)
+        noisy = torch.from_numpy(np.array([wav])).to(device).float()
+        estimate = model(noisy)
+        estimate = estimate * (1 - hp.dry) + noisy * hp.dry
+        estimate = estimate[0].cpu().detach().numpy()
+        return nr.reduce_noise(np.squeeze(estimate), hp.sample_rate, prop_decrease=prop_decrease)

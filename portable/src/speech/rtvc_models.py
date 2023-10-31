@@ -190,6 +190,9 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
 
     try:
         embed = encoder.embed_utterance(original_wav, using_partials=False)
+        # embed denoising zero threshold
+        set_zero_thres = 0.03
+        embed[embed < set_zero_thres] = 0
         print("Created the embedding for audio")
     except Exception as e:
         print(f"Could not create embedding for audio: {e}")

@@ -33,3 +33,5 @@ insightface
 pypinyin
 einops
 praat-parselmouth
+denoiser
+noisereduce
