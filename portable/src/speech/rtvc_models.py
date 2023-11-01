@@ -9,6 +9,7 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from speech.rtvc.encoder.inference import VoiceCloneEncoder
+from speech.rtvc.encoder.hubert import HubertEmbedder
 from speech.rtvc.encoder.audio import preprocess_wav   # We want to expose this function from here
 from speech.rtvc.synthesizer.inference import Synthesizer
 from speech.rtvc.synthesizer.utils.signature import DigitalSignature
@@ -61,7 +62,7 @@ def inspect_rtvc_model(rtvc_model: str, rtvc_model_url: str) -> str:
     return rtvc_model
 
 
-def load_rtvc_encoder(lang: str, device: str):
+def load_rtvc_encoder(lang: str, device: str) -> tuple:
     """
     Load Real Time Voice Clone encoder
     :param lang: encode lang
@@ -73,12 +74,19 @@ def load_rtvc_encoder(lang: str, device: str):
         lang = "en"
     encoder_url = get_nested_url(rtvc_models_config, [lang, "encoder"])
     encoder_path = os.path.join(RTVC_VOICE_FOLDER, lang, "encoder.pt")
-    model_path = inspect_rtvc_model(encoder_path, encoder_url)
-    if not os.path.exists(model_path):
-        raise Exception(f"Model {encoder_path} not found. Check you internet connection to download")
+    encoder_model_path = inspect_rtvc_model(encoder_path, encoder_url)
+    if not os.path.exists(encoder_model_path):
+        raise Exception(f"Model {encoder_model_path} not found. Check you internet connection to download")
     encoder = VoiceCloneEncoder()
-    encoder.load_model(model_path, device)
-    return encoder
+    encoder.load_model(encoder_model_path, device)
+    # load hubert
+    hubert_url = get_nested_url(rtvc_models_config, ["general", "hubert"])
+    hubert_path = os.path.join(RTVC_VOICE_FOLDER, "general", "hubert.pt")
+    hubert_model_path = inspect_rtvc_model(hubert_path, hubert_url)
+    if not os.path.exists(hubert_model_path):
+        raise Exception(f"Model {hubert_model_path} not found. Check you internet connection to download")
+    hubert_encoder = HubertEmbedder(hubert_model_path, device)
+    return encoder, hubert_encoder
 
 
 def load_rtvc_synthesizer(lang: str, device: str):
@@ -99,18 +107,15 @@ def load_rtvc_synthesizer(lang: str, device: str):
     return Synthesizer(model_fpath=model_path, device=device, charset=lang)
 
 
-def load_rtvc_digital_signature(lang: str, device: str):
+def load_rtvc_digital_signature(device: str):
     """
     Load Real Time Voice Clone digital signature
     :param lang: lang
     :param device: cuda or cpu
     :return: encoder
     """
-    language_dict = rtvc_models_config.get(lang)
-    if language_dict is None:
-        lang = "en"
-    signature_url = get_nested_url(rtvc_models_config, [lang, "signature"])
-    signature_path = os.path.join(RTVC_VOICE_FOLDER, lang, "signature.pt")
+    signature_url = get_nested_url(rtvc_models_config, ["general", "signature"])
+    signature_path = os.path.join(RTVC_VOICE_FOLDER, "general", "signature.pt")
     model_path = inspect_rtvc_model(signature_path, signature_url)
     if not os.path.exists(model_path):
         raise Exception(f"Model {signature_path} not found. Check you internet connection to download")
@@ -156,7 +161,7 @@ def load_rtvc(lang: str):
     print("Load RTVC synthesizer")
     synthesizer = load_rtvc_synthesizer(lang, device)
     print("Load RTVC signature")
-    signature = load_rtvc_digital_signature(lang, device)
+    signature = load_rtvc_digital_signature(device)
     print("Load RTVC vocoder")
     vocoder = load_rtvc_vocoder(lang, device)
 
@@ -170,12 +175,12 @@ def translate_text_from_audio():
     pass
 
 
-def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folder):
+def clone_voice_rtvc(audio_file, text, encoders, synthesizer, vocoder, save_folder):
     """
 
     :param audio_file: audio file
     :param text: text to voice
-    :param encoder: encoder
+    :param encoders: encoder and hubert encoder
     :param synthesizer: synthesizer
     :param vocoder: vocoder
     :param save_folder: folder to save
@@ -189,7 +194,21 @@ def clone_voice_rtvc(audio_file, text, encoder, synthesizer, vocoder, save_folde
         return None
 
     try:
+        encoder, hubert_encoder = encoders  # get encoders
+        # get embedding
         embed = encoder.embed_utterance(original_wav, using_partials=False)
+        # get embedding max and min values by hubert encoder to improve quality
+        hubert_embed = hubert_encoder.embed_audio(str(audio_file))
+        hubert_embed_mean = np.mean(hubert_embed, axis=0)  # set equal shape with embed.shape
+        # Get max and min values from hubert_embed
+        hubert_max = np.max(hubert_embed_mean)
+        hubert_min = np.min(hubert_embed_mean)
+        # Get the indices of the max and min values in embed
+        embed_max_index = np.argmax(embed)
+        embed_min_index = np.argmin(embed)
+        # Set the values in embed to the max and min values from hubert_embed
+        embed[embed_max_index] = hubert_max
+        embed[embed_min_index] = hubert_min
         # embed denoising zero threshold
         set_zero_thres = 0.03
         embed[embed < set_zero_thres] = 0
