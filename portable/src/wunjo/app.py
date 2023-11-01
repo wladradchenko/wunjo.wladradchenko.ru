@@ -785,6 +785,7 @@ def synthesize():
                         # get new filename
                         filename = result.pop("filename")
 
+                    result["file_name"] = os.path.basename(filename)
                     filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                     print("Synthesized file: ", filename)
                     result.pop("response_audio")
@@ -812,6 +813,7 @@ def synthesize():
             )
             if response_code == 0:
                 filename = result.pop("filename")
+                result["file_name"] = os.path.basename(filename)
                 filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
                 print("Synthesized file: ", filename)
                 result.pop("response_audio")
@@ -824,6 +826,18 @@ def synthesize():
                 result["voice"] = get_print_translate(result.get("voice"))
                 # Add result in frontend
                 app.config['SYNTHESIZE_RESULT'] += [result]
+
+    # remove subfiles
+    try:
+        result_filenames = []
+        for result in app.config['SYNTHESIZE_RESULT']:
+            result_filenames += [result["file_name"]]
+        current_result_folder = os.path.join(WAVES_FOLDER, dir_time)
+        for f in os.listdir(current_result_folder):
+            if f not in result_filenames:
+                os.remove(os.path.join(current_result_folder, f))
+    except Exception as err:
+        print("Some error during remove files for speech synthesis")
 
     app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
     print("Text to speech synthesis completed successfully!")

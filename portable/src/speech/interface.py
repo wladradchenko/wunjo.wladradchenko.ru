@@ -103,16 +103,15 @@ class VoiceCloneTranslate:
 
         start = time()
 
-        # set format for audio to use praat processing
-        audio_file_with_format = audio_file + ".wav"
-        cmd = f"ffmpeg -i {audio_file} {audio_file_with_format}"
-        os.system(cmd)
+        # get voice for audio to use praat processing in wav format TODO device set?
+        audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=True, target="vocals", device="cpu")
+
         # clone voice
-        clone_voice_rtvc(audio_file_with_format, text, encoder, synthesizer, vocoder, save_folder)
+        clone_voice_rtvc(audio_file_voice, text, encoder, synthesizer, vocoder, save_folder)
 
         output_name = str(uuid.uuid4()) + ".wav"
-        output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
-        output_file = AudioSpeedProcessor().process_and_save(audio_file_with_format, output_file)  # set speed from original
+        rtvc_output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
+        output_file = AudioSpeedProcessor().process_and_save(audio_file_voice, rtvc_output_file)  # set speed from original
 
         end = time()
 
@@ -192,3 +191,21 @@ class VoiceCloneTranslate:
         print(f"Merged all .wav files into {output_file_name}")
 
         return output_file_path
+
+
+class AudioSeparatorVoice:
+    """
+    Separate voice and noise from audio
+    """
+    @staticmethod
+    def get_audio_separator(wav_audio_path, output_path, converted_wav=True, target="vocals", device="cpu", trim_silence=True):
+        from speech.unmix.utils.model import AudioSeparator
+
+        separator = AudioSeparator()
+        output_file = separator.separate_audio(wav_audio_path, output_path, converted_wav=converted_wav, target_wav=target, device=device)
+        # trim silence before analysis
+        if trim_silence:
+            source_output_file = output_file
+            output_file = separator.trim_silence(source_output_file, output_path)
+            os.remove(source_output_file)
+        return output_file

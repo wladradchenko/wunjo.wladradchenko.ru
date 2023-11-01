@@ -1,6 +1,8 @@
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 import os
 import sys
 
@@ -8,8 +10,9 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from speech.rtvc.vocoder.distribution import sample_from_discretized_mix_logistic
-from speech.rtvc.vocoder.display import *
-from speech.rtvc.vocoder.audio import *
+from speech.rtvc.vocoder.display import progbar, stream
+from speech.rtvc.vocoder.audio import decode_mu_law, de_emphasis
+from speech.rtvc.vocoder.hparams import apply_preemphasis
 
 sys.path.pop(0)
 
@@ -252,14 +255,18 @@ class WaveRNN(nn.Module):
 
         if mu_law:
             output = decode_mu_law(output, self.n_classes, False)
-        if hp.apply_preemphasis:
+        if apply_preemphasis:
             output = de_emphasis(output)
 
         # Fade-out at the end to avoid signal cutting out suddenly
-        fade_out = np.linspace(1, 0, 20 * self.hop_length)
+        # fade_out = np.linspace(1, 0, 20 * self.hop_length)
+        # output = output[:wave_len]
+        # output[-20 * self.hop_length:] *= fade_out
         output = output[:wave_len]
-        output[-20 * self.hop_length:] *= fade_out
-        
+        fade_size = min(20 * self.hop_length, len(output))
+        fade_out = np.linspace(1, 0, fade_size)
+        output[-fade_size:] *= fade_out
+
         self.train()
 
         return output

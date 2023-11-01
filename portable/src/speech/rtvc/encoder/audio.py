@@ -125,7 +125,7 @@ def trim_long_silences(wav):
 def trim_silence_librosa(audio_path, output_path):
     """Trim silence from audio file by librosa (quality better than pydub)"""
     y, sr = librosa.load(audio_path)
-    y_trim, index = librosa.effects.trim(y)  # Default top_db=60, adjust if needed
+    y_trim, index = librosa.effects.trim(y, top_db=65)  # Default top_db=60, adjust if needed
     sf.write(output_path, y_trim, sr)
     return output_path
 

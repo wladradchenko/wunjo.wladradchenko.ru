@@ -485,7 +485,7 @@ function settingTextToSpeech(elem, languages) {
                                   <input onclick="" type="checkbox" id="setting-rtvc-check-info" name="setting-rtvc-check">
                                   <label for="setting-rtvc-check">Cloning voice</label>
                                 </div>
-                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Note:</b> For cloning voice, the audio is generated from the provided text and any attached or recorded audio. No separate voice selection is needed for dubbing. Supported languages are English, Russian, and Chinese.</i>
+                                <i style="margin-top: 5pt;font-size: 10pt;margin-bottom: 15pt;"><b>Note:</b><text> For cloning voice, the audio is generated in 16 Hz from the provided text and any attached or recorded audio.</text><text> Supported languages are English, Russian, and Chinese.</text></i>
                                 <hr style="margin-top: 15pt;">
                             </div>
                             <div style="margin-bottom:5pt;margin-top: 15pt">

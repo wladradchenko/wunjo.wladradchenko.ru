@@ -310,7 +310,8 @@ Update 1.6.1
 - [x] Fix bug with enhancer. Improve enhancer for video and face. Added enhancer for drawing video
 - [x] Improved vocoder for voice cloning
 - [x] Added cloning speed speech
-- [ ] Added VAE to get background sound for deepfakes
+- [x] Added model to get background sound for deepfakes and clear voice without background noise
+- [ ] Added feature to get background noise from audio or video 
 - [x] Improved encoder for voice cloning
 - [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
 - [ ] Music generation

@@ -94,7 +94,7 @@ class Synthesizer:
                 phrases = self.split_into_phrases(unit_value)
                 for phrase in phrases:
                     print(phrase)
-                    phrase = [text_to_sequence(phrase.replace("~", ""), hparams.tts_cleaner_names, _symbol_to_id)]
+                    phrase = [text_to_sequence(phrase.replace("~", ","), hparams.tts_cleaner_names, _symbol_to_id)]
                     batched_inputs = [phrase[i:i + hparams.synthesis_batch_size] for i in range(0, len(phrase), hparams.synthesis_batch_size)]
                     batched_embeds = [embeddings[i:i + hparams.synthesis_batch_size] for i in range(0, len(embeddings), hparams.synthesis_batch_size)]
                     for i, batch in enumerate(batched_inputs, 1):

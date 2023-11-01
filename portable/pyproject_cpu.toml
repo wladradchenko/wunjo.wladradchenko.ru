@@ -72,7 +72,8 @@ requires = [
     "einops",
     "praat-parselmouth",
     "denoiser",
-    "noisereduce"
+    "noisereduce",
+    "openunmix"
 ]
 test_requires = [
 ]
