@@ -385,5 +385,6 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * ControlNet - https://github.com/lllyasviel/ControlNet
 * Stable Diffusion - https://github.com/Stability-AI/stablediffusion
 * Ebsynth - https://github.com/jamriska/ebsynth
+* Open-Unmix - https://github.com/sigsep/open-unmix-pytorch
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>

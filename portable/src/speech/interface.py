@@ -198,11 +198,11 @@ class AudioSeparatorVoice:
     Separate voice and noise from audio
     """
     @staticmethod
-    def get_audio_separator(wav_audio_path, output_path, converted_wav=True, target="vocals", device="cpu", trim_silence=True):
+    def get_audio_separator(wav_audio_path, output_path, converted_wav=True, target="vocals", device="cpu", trim_silence=True, resample=True):
         from speech.unmix.utils.model import AudioSeparator
 
         separator = AudioSeparator()
-        output_file = separator.separate_audio(wav_audio_path, output_path, converted_wav=converted_wav, target_wav=target, device=device)
+        output_file = separator.separate_audio(wav_audio_path, output_path, converted_wav=converted_wav, target_wav=target, device=device, resample=resample)
         # trim silence before analysis
         if trim_silence:
             source_output_file = output_file

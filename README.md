@@ -313,7 +313,7 @@ Update 1.6.1
 - [x] Added model to get background sound for deepfakes and clear voice without background noise
 - [ ] Added feature to get background noise from audio or video 
 - [x] Improved encoder for voice cloning
-- [ ] Imitate [emotions](https://github.com/PlayVoice/whisper-vits-svc/tree/bigvgan-mix-v2/crepe) in voice and improve voice cloning
+- [ ] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~.
 - [ ] Music generation
 - [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
 
@@ -386,5 +386,6 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 * ControlNet - https://github.com/lllyasviel/ControlNet
 * Stable Diffusion - https://github.com/Stability-AI/stablediffusion
 * Ebsynth - https://github.com/jamriska/ebsynth
+* Open-Unmix - https://github.com/sigsep/open-unmix-pytorch
 
 <p align="right">(<a href="#top">to top</a>)</p>

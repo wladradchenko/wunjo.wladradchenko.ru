@@ -25,6 +25,7 @@ class AudioSeparator:
         audio_tensor = torch.tensor(audio).float()
 
         # Separate sources using Open-Unmix
+        # TODO check what will not be problem with download model on windows
         estimates = predict.separate(
             audio_tensor,
             rate=rate,
