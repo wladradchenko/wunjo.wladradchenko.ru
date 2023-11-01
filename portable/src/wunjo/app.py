@@ -21,7 +21,7 @@ try:
 except ImportError:
     VIDEO2VIDEO_AVAILABLE = False
     diffusion_models = {}
-from speech.interface import TextToSpeech, VoiceCloneTranslate
+from speech.interface import TextToSpeech, VoiceCloneTranslate, AudioSeparatorVoice
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
@@ -310,9 +310,9 @@ def synthesize_video_merge():
     return {"status": 200}
 
 
-@app.route("/synthesize_video_editor/", methods=["POST"])
+@app.route("/synthesize_media_editor/", methods=["POST"])
 @cross_origin()
-def synthesize_video_editor():
+def synthesize_media_editor():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
@@ -336,40 +336,60 @@ def synthesize_video_editor():
     gfpgan = request_list.get("gfpgan", False)
     animesgan = request_list.get("animesgan", False)
     realesrgan = request_list.get("realesrgan", False)
+    vocals = request_list.get("vocals", False)
+    residual = request_list.get("residual", False)
     # List of enhancer options in preferred order
     enhancer_options = [gfpgan, animesgan, realesrgan]
+    separator_options = [vocals, residual]
     # Find the first non-False option
     enhancer = next((enhancer_option for enhancer_option in enhancer_options if enhancer_option), False)
+    audio_separator = next((separator_option for separator_option in separator_options if separator_option), False)
     is_get_frames = request_list.get("get_frames", False)
     media_start = request_list.get("media_start", 0)
     media_end = request_list.get("media_end", 0)
+    media_type = request_list.get("media_type", "img")
 
     request_time = current_time()
     request_date = format_dir_time(request_time)
 
-    if enhancer:
+    if enhancer and not audio_separator:
+        request_mode = "deepfake"
         mode_msg = get_print_translate("Content improve")
+    elif not enhancer and audio_separator:
+        request_mode = "speech"
+        mode_msg = get_print_translate("Separator audio")
     else:
+        request_mode = "deepfake"
         mode_msg = get_print_translate("Video to images")
 
     try:
-        result = VideoEdit.main_video_work(
-            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
-            enhancer=enhancer, is_get_frames=is_get_frames,
-            media_start=media_start, media_end=media_end
-        )
+        if not audio_separator and media_type in ["img", "video"]:
+            result = VideoEdit.main_video_work(
+                output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
+                enhancer=enhancer, is_get_frames=is_get_frames,
+                media_start=media_start, media_end=media_end
+            )
+            result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
+        elif audio_separator and media_type in ["audio", "video"]:
+            dir_time = current_time()
+            result_path = AudioSeparatorVoice.get_audio_separator(
+                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(WAVES_FOLDER, dir_time), file_type=media_type,
+                converted_wav=True, target=audio_separator, trim_silence=False, resample=False
+            )
+            result_filename = "/waves/" + result_path.replace("\\", "/").split("/waves/")[-1]
+        else:
+            raise Exception("Not recognition options for media content editor")
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "voice": mode_msg, "request_mode": request_mode, "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
         print(f"Error ... {err}")
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
     url = url_for("media_file", filename=result_filename)
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "voice": mode_msg, "request_mode": request_mode, "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
-    print("Edit video completed successfully!")
+    print("Edit media completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
@@ -831,7 +851,8 @@ def synthesize():
     try:
         result_filenames = []
         for result in app.config['SYNTHESIZE_RESULT']:
-            result_filenames += [result["file_name"]]
+            if result.get("file_name"):
+                result_filenames += [result["file_name"]]
         current_result_folder = os.path.join(WAVES_FOLDER, dir_time)
         for f in os.listdir(current_result_folder):
             if f not in result_filenames:

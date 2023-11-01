@@ -311,10 +311,11 @@ Update 1.6.1
 - [x] Improved vocoder for voice cloning
 - [x] Added cloning speed speech
 - [x] Added model to get background sound for deepfakes and clear voice without background noise
-- [ ] Added feature to get background noise from audio or video 
+- [x] Added feature to get background noise from audio or video 
 - [x] Improved encoder for voice cloning
-- [ ] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~.
+- [x] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~ and improved voice cloning quality.
 - [ ] Music generation
+- [ ] Multilanguage speech by one text
 - [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
 
 <!-- VIDEO -->

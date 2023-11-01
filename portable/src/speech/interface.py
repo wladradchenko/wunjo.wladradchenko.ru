@@ -198,14 +198,32 @@ class AudioSeparatorVoice:
     Separate voice and noise from audio
     """
     @staticmethod
-    def get_audio_separator(wav_audio_path, output_path, converted_wav=True, target="vocals", device="cpu", trim_silence=True, resample=True):
+    def get_audio_separator(source, output_path, file_type="audio", converted_wav=True, target="vocals", device="cpu", trim_silence=True, resample=True):
         from speech.unmix.utils.model import AudioSeparator
 
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+
+        if file_type == "video":
+            extracted_audio = AudioSeparatorVoice.extract_audio_from_video(source, output_path)
+            if not extracted_audio:
+                raise ValueError("Unable to extract audio from the provided video")
+            source = os.path.join(output_path, extracted_audio)
+
         separator = AudioSeparator()
-        output_file = separator.separate_audio(wav_audio_path, output_path, converted_wav=converted_wav, target_wav=target, device=device, resample=resample)
+        output_file = separator.separate_audio(source, output_path, converted_wav=converted_wav, target_wav=target, device=device, resample=resample)
         # trim silence before analysis
         if trim_silence:
             source_output_file = output_file
             output_file = separator.trim_silence(source_output_file, output_path)
             os.remove(source_output_file)
         return output_file
+
+    @staticmethod
+    def extract_audio_from_video(video_path, save_path):
+        # If not a GIF, proceed with audio extraction
+        file_name = str(uuid.uuid4()) + '.wav'
+        save_file = os.path.join(save_path, file_name)
+        cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
+        os.system(cmd)
+        return file_name

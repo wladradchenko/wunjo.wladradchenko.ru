@@ -807,6 +807,7 @@ async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '4
 function retrieveMediaDetails(mediaPreview) {
     const imageElements = mediaPreview.querySelectorAll(".imageMedia");
     const videoElements = mediaPreview.querySelectorAll(".videoMedia");
+    const audioElements = mediaPreview.querySelectorAll(".audioMedia");
     let mediaType = "";
     let mediaName = "";
     let mediaBlobUrl = "";
@@ -828,6 +829,13 @@ function retrieveMediaDetails(mediaPreview) {
         mediaStart = videoElements[0].getAttribute("start");
         mediaEnd = videoElements[0].getAttribute("end");
         mediaCurrentTime = videoElements[0].currentTime;
+    } else if (audioElements.length > 0) {
+        mediaType = "audio";
+        mediaBlobUrl = audioElements[0].src;
+        mediaName = `audio_${Date.now()}_${getRandomString(5)}`;
+        mediaStart = audioElements[0].getAttribute("start");
+        mediaEnd = audioElements[0].getAttribute("end");
+        mediaCurrentTime = audioElements[0].currentTime;
     }
 
     if (mediaBlobUrl) {

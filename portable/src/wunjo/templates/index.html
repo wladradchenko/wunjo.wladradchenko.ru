@@ -8,10 +8,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-animation.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-retouch.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/video-editor.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/editor.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='diffusers/js/diffusers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='extensions/js/train/train.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='speech/js/sound-separator.js') }}"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='video/css/timeline.css') }}">
 {% endblock %}
@@ -24,8 +23,7 @@
     <a id="button-run-animation-and-mouth" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel face and mouth animation" onclick="initiateFaceAndMouthPop(this);"><i class="fa-solid fa-face-smile-wink"></i></a>
     <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel face swap deepfake creator" onclick="initiateFaceSwapPop(this);"><i class="fa-solid fa-masks-theater"></i></a>
     <a id="button-run-retouch" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel remove objects and retouch" onclick="initiateRetouchAiPop(this);"><i class="fa-solid fa-wand-magic-sparkles"></i></a>
-    <a id="button-run-editor-video" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel work with media" onclick="initializeVideoEditor(this);"><i class="fa-solid fa-screwdriver-wrench"></i></a>
-    <a id="button-get-audio-separator" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel for audio separator" onclick="initializeAudioSeparator(this);"><i class="fa-solid fa-ear-listen"></i></a>
+    <a id="button-run-editor" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel work with media content" onclick="initializeMediaEditor(this);"><i class="fa-solid fa-screwdriver-wrench"></i></a>
     <!--EXTENSIONS-->
     <a id="a-change-processor" style="color: red;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Processor toggle"><i class="fa-solid fa-microchip"></i></a>
     <!--EXTENSIONS-->

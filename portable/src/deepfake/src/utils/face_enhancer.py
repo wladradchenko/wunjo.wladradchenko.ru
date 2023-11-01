@@ -153,7 +153,7 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         if method == 'gfpgan':
             _, _, output = restorer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
             print("GFPGANer finished")
-        elif method == 'realesrgan':
+        elif method in ['animesgan', 'realesrgan']:
             output, _ = restorer.enhance(img)
             print("RealESRGANer finished")
         else:
