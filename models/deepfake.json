@@ -1,0 +1,49 @@
+{
+  "checkpoints": {
+    "auido2exp_00300-model.pth": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/auido2exp_00300-model.pth",
+    "auido2pose_00140-model.pth": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/auido2pose_00140-model.pth",
+    "epoch_20.pth": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/epoch_20.pth",
+    "facevid2vid_00189-model.pth.tar": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/facevid2vid_00189-model.pth.tar",
+    "shape_predictor_68_face_landmarks.dat": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/shape_predictor_68_face_landmarks.dat",
+    "wav2lip.pth": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/wav2lip.pth",
+    "mapping_00229-model.pth.tar": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/mapping_00229-model.pth.tar",
+    "mapping_00109-model.pth.tar": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/mapping_00109-model.pth.tar",
+    "BFM_Fitting.zip": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/BFM_Fitting.zip",
+    "hub.zip": "https://github.com/Winfredy/SadTalker/releases/download/v0.0.2/hub.zip",
+    "s3fd.pth": "https://www.adrianbulat.com/downloads/python-fan/s3fd-619a316812.pth",
+    "faceswap.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/faceswap.onnx",
+    "emo2lip.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/emo2lip.pth",
+    "retouch_face.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/retouch_face.pth",
+    "retouch_object.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/retouch_object.pth",
+    "vit_b_quantized.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vit_b_quantized.onnx",
+    "vit_h_quantized.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vit_h_quantized.onnx",
+    "sam_vit_b.pth": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth",
+    "sam_vit_h.pth": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth",
+    "ProPainter.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/ProPainter.pth",
+    "raft-things.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/raft-things.pth",
+    "recurrent_flow_completion.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/recurrent_flow_completion.pth"
+  },
+  "gfpgan": {
+    "alignment_WFLW_4HG.pth": "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth",
+    "detection_Resnet50_Final.pth": "https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth",
+    "GFPGANv1.4.pth": "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth",
+    "parsing_parsenet.pth": "https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth",
+    "realesr-general-wdn-x4v3.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth",
+    "realesr-general-x4v3.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
+    "RealESRGAN_x2plus.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth",
+    "RealESRGAN_x4plus_anime_6B.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+    "realesr-animevideov3.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth"
+  },
+  "diffusion": {
+      "control_sd15_canny.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_canny.pth",
+      "control_sd15_hed.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_hed.pth",
+      "gmflow_sintel-0c07dcb3.pth": "https://huggingface.co/PKUWilliamYang/Rerender/resolve/main/models/gmflow_sintel-0c07dcb3.pth",
+      "vae-ft-mse-840000-ema-pruned.ckpt": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt",
+      "ControlNetHED.pth": "https://huggingface.co/lllyasviel/Annotators/resolve/main/ControlNetHED.pth",
+      "Realistic_Vision_V5.1.safetensors": "https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE/resolve/main/Realistic_Vision_V5.1.safetensors"
+  },
+  "ebsynth": {
+      "EbSynth-Beta-Win.zip": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/EbSynth-Beta-Win.zip",
+      "ebsynth_linux_cu118": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/ebsynth_linux_cu118"
+  }
+}

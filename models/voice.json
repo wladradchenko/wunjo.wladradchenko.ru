@@ -1,0 +1,189 @@
+{
+  "Unknown": {
+      "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Unknown.png"
+  },
+  "Russian female": {
+    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Female.png",
+    "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/female/checkpoint_female",
+    "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/female/waveglow_female.pt",
+    "voice_control_cfg": {
+      "psola": {
+        "max_hz": 1130,
+        "min_hz": 60,
+        "analysis_win_ms": 40,
+        "max_change": 1.455,
+        "min_change": 0.595
+      },
+      "phase": {
+        "nfft": 256,
+        "hop": 64
+      }
+    },
+    "user_dict": null,
+    "text_handler": {
+      "config": "ru",
+      "out_max_length": 200
+    },
+    "modules": {
+      "engine": "tacotron2",
+      "vocoder": "waveglow"
+    },
+    "engine": {
+      "tacotron2": {
+        "model_path": "voice/female/checkpoint_female",
+        "hparams_path": null,
+        "options": {
+          "steps_per_symbol": 10,
+          "gate_threshold": 0.5
+        }
+      }
+    },
+    "vocoder": {
+      "waveglow": {
+        "model_path": "voice/female/waveglow_female.pt",
+        "options": {
+          "sigma": 0.666,
+          "strength": 0.1
+        }
+      }
+    }
+  },
+  "Russian man": {
+    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Man.png",
+    "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/man/checkpoint_man",
+    "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/man/waveglow_man.pt",
+    "voice_control_cfg": {
+      "psola": {
+        "max_hz": 2100,
+        "min_hz": 30,
+        "analysis_win_ms": 40,
+        "max_change": 2.955,
+        "min_change": 0.795
+      },
+      "phase": {
+        "nfft": 256,
+        "hop": 64
+      }
+    },
+    "user_dict": null,
+    "text_handler": {
+      "config": "ru",
+      "out_max_length": 200
+    },
+    "modules": {
+      "engine": "tacotron2",
+      "vocoder": "waveglow"
+    },
+    "engine": {
+      "tacotron2": {
+        "model_path": "voice/man/checkpoint_man",
+        "hparams_path": null,
+        "options": {
+          "steps_per_symbol": 10,
+          "gate_threshold": 0.5
+        }
+      }
+    },
+    "vocoder": {
+      "waveglow": {
+        "model_path": "voice/man/waveglow_man.pt",
+        "options": {
+          "sigma": 0.666,
+          "strength": 0.1
+        }
+      }
+    }
+  },
+  "Russian robot": {
+    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Robot.png",
+    "checkpoint_download":  "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/tacotron2/checkpoint_man",
+    "waveglow_download":  "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/waveglows/waveglow_robot.pt",
+    "voice_control_cfg": {
+      "psola": {
+        "max_hz": 2100,
+        "min_hz": 30,
+        "analysis_win_ms": 40,
+        "max_change": 2.955,
+        "min_change": 0.795
+      },
+      "phase": {
+        "nfft": 256,
+        "hop": 64
+      }
+    },
+    "user_dict": null,
+    "text_handler": {
+      "config": "ru",
+      "out_max_length": 200
+    },
+    "modules": {
+      "engine": "tacotron2",
+      "vocoder": "waveglow"
+    },
+    "engine": {
+      "tacotron2": {
+        "model_path": "voice/robot/checkpoint_robot",
+        "hparams_path": null,
+        "options": {
+          "steps_per_symbol": 10,
+          "gate_threshold": 0.5
+        }
+      }
+    },
+    "vocoder": {
+      "waveglow": {
+        "model_path": "voice/robot/waveglow_robot.pt",
+        "options": {
+          "sigma": 0.666,
+          "strength": 0.1
+        }
+      }
+    }
+  },
+  "Englishwoman": {
+    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Englishwoman.png",
+    "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/englishwoman/checkpoint_englishwoman",
+    "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/englishwoman/waveglow_englishwoman.pt",
+    "voice_control_cfg": {
+      "psola": {
+        "max_hz": 2100,
+        "min_hz": 30,
+        "analysis_win_ms": 40,
+        "max_change": 2.955,
+        "min_change": 0.795
+      },
+      "phase": {
+        "nfft": 256,
+        "hop": 64
+      }
+    },
+    "user_dict": null,
+    "text_handler": {
+      "config": "en",
+      "out_max_length": 200
+    },
+    "modules": {
+      "engine": "tacotron2",
+      "vocoder": "waveglow"
+    },
+    "engine": {
+      "tacotron2": {
+        "model_path": "voice/englishwoman/checkpoint_englishwoman",
+        "hparams_path": null,
+        "options": {
+          "steps_per_symbol": 10,
+          "gate_threshold": 0.5
+        }
+      }
+    },
+    "vocoder": {
+      "waveglow": {
+        "model_path": "voice/englishwoman/waveglow_englishwoman.pt",
+        "options": {
+          "sigma": 0.666,
+          "strength": 0.1
+        }
+      }
+    }
+  }
+}
