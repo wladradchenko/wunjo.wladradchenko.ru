@@ -388,5 +388,6 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 * Stable Diffusion - https://github.com/Stability-AI/stablediffusion
 * Ebsynth - https://github.com/jamriska/ebsynth
 * Open-Unmix - https://github.com/sigsep/open-unmix-pytorch
+* Hugging Face Model Storage by Author - https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru
 
 <p align="right">(<a href="#top">to top</a>)</p>
