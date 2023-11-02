@@ -6,7 +6,6 @@ import json
 import torch
 import random
 import subprocess
-from base64 import b64encode
 from werkzeug.utils import secure_filename
 
 from flask import Flask, render_template, request, send_from_directory, url_for, jsonify
@@ -26,7 +25,7 @@ from speech.tts_models import load_voice_models, voice_names, file_voice_config,
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.translator import get_translate
-from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size, format_dir_time
+from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size, format_dir_time, clean_text_by_language
 
 import logging
 
@@ -790,7 +789,10 @@ def synthesize():
                     filename = result.pop("filename")
 
                     # translated audio if user choose lang not equal for model and set auto translation
-                    if tacotron2_lang != lang_translation:
+                    # or text has not tacotron lang fonts
+                    print(clean_text_by_language(text, None, True))
+                    print(clean_text_by_language(text, tacotron2_lang), tacotron2_lang)
+                    if (tacotron2_lang != lang_translation and auto_translation) or clean_text_by_language(text, tacotron2_lang) != clean_text_by_language(text, None, True):
                         # voice clone on tts audio result
                         # init models if not defined
                         if app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
@@ -806,7 +808,7 @@ def synthesize():
                         response_code, result = VoiceCloneTranslate.get_synthesized_audio(
                             audio_file=filename, encoder=encoder, synthesizer=synthesizer, signature=signature,
                             vocoder=vocoder, text=text, src_lang=lang_translation, need_translate=auto_translation,
-                            save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model
+                            save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model, converted_wav=False
                         )
                         # get new filename
                         filename = result.pop("filename")

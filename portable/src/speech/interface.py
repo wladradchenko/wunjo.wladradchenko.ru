@@ -68,8 +68,8 @@ class VoiceCloneTranslate:
     """
 
     @staticmethod
-    def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder,
-                              text, src_lang, need_translate, tts_model_name="Cloning voice", **options):
+    def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder, text, src_lang,
+                              need_translate, tts_model_name="Cloning voice", converted_wav=True, **options):
         try:
             download_ntlk()  # inspect what ntlk downloaded
 
@@ -86,6 +86,7 @@ class VoiceCloneTranslate:
                 vocoder,
                 save_folder,
                 tts_model_name,
+                converted_wav,
                 **options
             )
             return 0, results
@@ -94,7 +95,7 @@ class VoiceCloneTranslate:
             return 1, str(err)
 
     @staticmethod
-    def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, **options):
+    def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, converted_wav, **options):
         from speech.rtvc_models import clone_voice_rtvc
         from speech.rtvc.speed.inference import AudioSpeedProcessor
 
@@ -104,7 +105,8 @@ class VoiceCloneTranslate:
         start = time()
 
         # get voice for audio to use praat processing in wav format TODO device set?
-        audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=True, target="vocals", device="cpu")
+        print(audio_file, save_folder)
+        audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=converted_wav, target="vocals", device="cpu")
 
         # clone voice
         clone_voice_rtvc(audio_file_voice, text, encoder, synthesizer, vocoder, save_folder)

@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import json
 import shutil
@@ -7,6 +8,27 @@ from time import gmtime, strftime
 
 from backend.folders import SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size
+
+
+def clean_text_by_language(text, lang, only_punct=False):
+    # Define patterns for each language
+    patterns = {
+        'en': re.compile(r'[^a-zA-Z\s]'),  # Keep only English letters and spaces
+        'ru': re.compile(r'[^а-яА-Я\s]'),  # Keep only Russian letters and spaces
+        'zh': re.compile(r'[^\u4e00-\u9fff\s]'),  # Keep only Chinese characters and spaces
+        'punct': re.compile(r'[.!?;,:\s]+')  # Pattern to match punctuation and spaces
+    }
+
+    # Remove punctuation first
+    text = patterns['punct'].sub('', text)
+
+    if only_punct:
+        return text
+
+    # Remove all characters not belonging to the specified language
+    text = patterns[lang].sub('', text)
+
+    return text
 
 
 def is_ffmpeg_installed():
