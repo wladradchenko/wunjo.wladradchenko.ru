@@ -790,6 +790,7 @@ def synthesize():
 
                     # translated audio if user choose lang not equal for model and set auto translation
                     # or text has not tacotron lang fonts
+                    # (1) remove clean_text_by_language if I will want to delete multilanguage
                     if (tacotron2_lang != lang_translation and auto_translation) or clean_text_by_language(text, tacotron2_lang) != clean_text_by_language(text, None, True):
                         # voice clone on tts audio result
                         # init models if not defined
@@ -803,13 +804,18 @@ def synthesize():
                         vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
 
                         # text translated inside get_synthesized_audio
-                        response_code, result = VoiceCloneTranslate.get_synthesized_audio(
+                        response_code, clone_result = VoiceCloneTranslate.get_synthesized_audio(
                             audio_file=filename, encoder=encoder, synthesizer=synthesizer, signature=signature,
                             vocoder=vocoder, text=text, src_lang=lang_translation, need_translate=auto_translation,
                             save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model, converted_wav=False
                         )
-                        # get new filename
-                        filename = result.pop("filename")
+
+                        if response_code == 0:
+                            result = clone_result
+                            # get new filename
+                            filename = result.pop("filename")
+                        else:
+                            print("Error...during clone synthesized voice")
 
                     result["file_name"] = os.path.basename(filename)
                     filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
