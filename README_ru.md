@@ -388,6 +388,6 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 * Stable Diffusion - https://github.com/Stability-AI/stablediffusion
 * Ebsynth - https://github.com/jamriska/ebsynth
 * Open-Unmix - https://github.com/sigsep/open-unmix-pytorch
-* Hugging Face Model Storage by Author - https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru
+* Hugging Face Model Storage - https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru
 
 <p align="right">(<a href="#top">вернуться наверх</a>)</p>
