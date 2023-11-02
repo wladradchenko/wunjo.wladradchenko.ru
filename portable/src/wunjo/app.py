@@ -34,7 +34,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
 app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
@@ -790,8 +790,12 @@ def synthesize():
                     filename = result.pop("filename")
 
                     # translated audio if user choose lang not equal for model and set auto translation
-                    if tacotron2_lang != lang_translation and auto_translation:
+                    if tacotron2_lang != lang_translation:
                         # voice clone on tts audio result
+                        # init models if not defined
+                        if app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
+                            encoder, synthesizer, signature, vocoder = load_rtvc(rtvc_models_lang)
+                            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "signature": signature, "vocoder": vocoder}
                         # get models
                         encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
                         synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
