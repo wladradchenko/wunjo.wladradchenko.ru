@@ -315,7 +315,7 @@ Update 1.6.1
 - [x] Improved encoder for voice cloning
 - [x] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~ and improved voice cloning quality.
 - [ ] Music generation
-- [ ] Multilanguage speech by one text
+- [x] Multilanguage speech by one text
 - [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
 
 <!-- VIDEO -->

@@ -1,7 +1,9 @@
 import os
+import re
 import sys
 import json
 import requests
+import itertools
 import numpy as np
 import torch
 
@@ -16,6 +18,7 @@ from speech.rtvc.synthesizer.utils.signature import DigitalSignature
 from speech.rtvc.vocoder.inference import VoiceCloneVocoder
 from backend.folders import MEDIA_FOLDER, RTVC_VOICE_FOLDER
 from backend.download import download_model, check_download_size, get_nested_url, is_connected
+from backend.translator import get_translate
 
 sys.path.pop(0)
 
@@ -219,15 +222,82 @@ def clone_voice_rtvc(audio_file, text, encoders, synthesizer, vocoder, save_fold
 
     # Generating the spectrogram and the waveform
     try:
-        generated_wavs = synthesizer.synthesize(text=text, embeddings=embed, vocoder=vocoder)
+        # Load synthesizer for each language
+        text_list = detect_text_language(text)
+        device = synthesizer.device
+        synthesizer_dict = {synthesizer.text_handler.charset: synthesizer}
+        generated_waves = []
+        for text_param in text_list:
+            lang, text = text_param
+            if synthesizer_dict.get(lang) is None:
+                synthesizer_dict[lang] = load_rtvc_synthesizer(lang, device)
+            # generator of text waves
+            generated_waves.append(synthesizer_dict[lang].synthesize(text=text, embeddings=embed, vocoder=vocoder))
         print("Created the mel spectrogram and waveform")
     except Exception as e:
         print(f"Could not create spectrogram or waveform: {e}\n")
         return None
 
-    for i, generated_wav in enumerate(generated_wavs):
+    for i, generated_wav in enumerate(itertools.chain(*generated_waves)):
         audio = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
         audio = preprocess_wav(fpath_or_wav=audio)
         # Save to disk
         synthesizer.save(audio=audio, path=save_folder, name="rtvc_output_part%02d.wav" % i)
         print(f"\nSaved output as tvc_output_part%02d.wav\n\n" % i)
+
+
+def detect_text_language(text: str) -> list:
+    """
+    Detection text language with Regular Expressions as English, Chinese and Russian
+    TODO if will be a more clone voice than improve this method, maybe use with langdetect
+    :param text: text
+    :return: list of list as lang and text
+    """
+    # Define patterns for different languages
+    patterns = {
+        'ru': re.compile(r'[\u0400-\u04FF]+'),
+        'zh': re.compile(r'[\u4e00-\u9fff]+'),
+        'punct': re.compile(r'[.!?;,:\s]')  # Pattern to match punctuation and spaces
+    }
+
+    # Function to determine the language of a word
+    def get_language(word):
+        for lang, pattern in patterns.items():
+            if pattern.search(word):
+                return lang
+        return 'en'  # Default to English
+
+    # Split the text into words
+    words = re.split(r'(\W)', text)
+
+    # List to hold tuples of language and text
+    language_segments = []
+    current_lang = None
+    current_segment = ""
+
+    # Build the language segments list
+    for word in words:
+        if not word.strip():  # Skip empty strings
+            continue
+
+        # Check if word is punctuation, if so, append it to the current segment
+        if patterns['punct'].match(word) and current_segment:
+            current_segment += word
+        else:
+            word_lang = get_language(word)
+            # If the language changes, append the current segment and start a new one
+            if current_lang and word_lang != current_lang:
+                language_segments.append([current_lang, current_segment.strip()])
+                current_segment = word
+            else:
+                current_segment += " " + word
+            current_lang = word_lang
+
+    # Add the last segment if it exists
+    if current_segment:
+        language_segments.append([current_lang, current_segment.strip()])
+
+    # translate text on english if not Chinese or Russian
+    language_segments = [[lang, get_translate(phrase, lang)] if lang == "en" else [lang, phrase] for lang, phrase in language_segments]
+
+    return language_segments
