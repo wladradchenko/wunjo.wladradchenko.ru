@@ -222,7 +222,7 @@ def clone_voice_rtvc(audio_file, text, encoders, synthesizer, vocoder, save_fold
 
     # Generating the spectrogram and the waveform
     try:
-        # Load synthesizer for each language
+        # Load synthesizer for each language to use multilanguage in one text
         text_list = detect_text_language(text)
         device = synthesizer.device
         synthesizer_dict = {synthesizer.text_handler.charset: synthesizer}
@@ -234,6 +234,7 @@ def clone_voice_rtvc(audio_file, text, encoders, synthesizer, vocoder, save_fold
             # generator of text waves
             generated_waves.append(synthesizer_dict[lang].synthesize(text=text, embeddings=embed, vocoder=vocoder))
         # (1) remove loop and uncommented down line if I will want to delete multilanguage
+        # also change itertools.chain(*generated_waves) on generated_waves
         # generated_waves = synthesizer.synthesize(text=text, embeddings=embed, vocoder=vocoder)
         print("Created the mel spectrogram and waveform")
     except Exception as e:

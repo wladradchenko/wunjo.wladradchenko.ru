@@ -11,6 +11,7 @@ from backend.download import download_model, unzip, check_download_size
 
 
 def clean_text_by_language(text, lang, only_punct=False):
+    """Clean text to use multilanguage synthesized in one text"""
     # Define patterns for each language
     patterns = {
         'en': re.compile(r'[^a-zA-Z\s]'),  # Keep only English letters and spaces
