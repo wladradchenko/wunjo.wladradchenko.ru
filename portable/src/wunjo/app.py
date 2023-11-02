@@ -790,8 +790,6 @@ def synthesize():
 
                     # translated audio if user choose lang not equal for model and set auto translation
                     # or text has not tacotron lang fonts
-                    print(clean_text_by_language(text, None, True))
-                    print(clean_text_by_language(text, tacotron2_lang), tacotron2_lang)
                     if (tacotron2_lang != lang_translation and auto_translation) or clean_text_by_language(text, tacotron2_lang) != clean_text_by_language(text, None, True):
                         # voice clone on tts audio result
                         # init models if not defined

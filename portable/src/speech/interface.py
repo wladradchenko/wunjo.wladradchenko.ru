@@ -105,7 +105,6 @@ class VoiceCloneTranslate:
         start = time()
 
         # get voice for audio to use praat processing in wav format TODO device set?
-        print(audio_file, save_folder)
         audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=converted_wav, target="vocals", device="cpu")
 
         # clone voice
