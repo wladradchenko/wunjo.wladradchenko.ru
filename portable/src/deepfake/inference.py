@@ -53,7 +53,7 @@ from backend.folders import DEEPFAKE_MODEL_FOLDER, TMP_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
 
 
-DEEPFAKE_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/deepfake.json"
+DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/deepfake.json"
 
 
 def get_config_deepfake() -> dict:

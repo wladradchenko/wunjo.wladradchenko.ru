@@ -30,7 +30,7 @@ from diffusers.src.utils.mediaio import (
 )
 from diffusers.src.utils.ebsynth import Ebsynth
 
-DEEPFAKE_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/deepfake.json"
+DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/deepfake.json"
 
 
 def create_diffusion_instruction():

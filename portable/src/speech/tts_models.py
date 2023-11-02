@@ -12,7 +12,7 @@ from backend.download import download_model, check_download_size
 
 sys.path.pop(0)
 
-VOICE_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice_multi.json"
+VOICE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/voice.json"
 SUB_CUSTOM_VOICE = "(Custom)"  # sub name for custom voice to do uniq
 
 

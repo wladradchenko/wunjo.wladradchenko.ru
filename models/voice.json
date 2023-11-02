@@ -1,9 +1,9 @@
 {
   "Unknown": {
-      "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Unknown.png"
+      "avatar_download": "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/avatar/Unknown.png"
   },
   "Russian female": {
-    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Female.png",
+    "avatar_download": "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/avatar/Female.png",
     "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/female/checkpoint_female",
     "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/female/waveglow_female.pt",
     "voice_control_cfg": {
@@ -49,7 +49,7 @@
     }
   },
   "Russian man": {
-    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Man.png",
+    "avatar_download": "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/avatar/Man.png",
     "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/man/checkpoint_man",
     "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/man/waveglow_man.pt",
     "voice_control_cfg": {
@@ -95,9 +95,9 @@
     }
   },
   "Russian robot": {
-    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Robot.png",
-    "checkpoint_download":  "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/tacotron2/checkpoint_man",
-    "waveglow_download":  "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/waveglows/waveglow_robot.pt",
+    "avatar_download": "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/avatar/Robot.png",
+    "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/robot/checkpoint_robot",
+    "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/robot/waveglow_robot.pt",
     "voice_control_cfg": {
       "psola": {
         "max_hz": 2100,
@@ -141,7 +141,7 @@
     }
   },
   "Englishwoman": {
-    "avatar_download": "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/avatar/Englishwoman.png",
+    "avatar_download": "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/avatar/Englishwoman.png",
     "checkpoint_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/englishwoman/checkpoint_englishwoman",
     "waveglow_download":  "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/voice/englishwoman/waveglow_englishwoman.pt",
     "voice_control_cfg": {

@@ -23,7 +23,7 @@ from backend.translator import get_translate
 sys.path.pop(0)
 
 
-RTVC_MODELS_JSON_URL = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/rtvc.json"
+RTVC_MODELS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/rtvc.json"
 
 
 def get_config_voice() -> dict:
