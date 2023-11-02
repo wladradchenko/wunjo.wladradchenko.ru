@@ -215,9 +215,7 @@ class AudioSeparatorVoice:
         output_file = separator.separate_audio(source, output_path, converted_wav=converted_wav, target_wav=target, device=device, resample=resample)
         # trim silence before analysis
         if trim_silence:
-            source_output_file = output_file
-            output_file = separator.trim_silence(source_output_file, output_path)
-            os.remove(source_output_file)
+            output_file = separator.trim_silence(output_file, output_path)
         return output_file
 
     @staticmethod
