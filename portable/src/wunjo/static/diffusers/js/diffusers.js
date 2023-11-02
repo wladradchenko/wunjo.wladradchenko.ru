@@ -91,11 +91,11 @@ function initiateDiffusersPop(button) {
                         <p style="margin-top:10px;" >Preprocessor</p>
                         <div style="display: flex;">
                             <div>
-                                <input type="radio" id="diffuserLooseCfattn" name="translation" value="loose_cfattn" checked>
+                                <input type="checkbox" id="diffuserLooseCfattn" name="translation" value="loose_cfattn" checked>
                                 <label for="diffuserLooseCfattn" class="notranslate">Loose cfattn</label>
                             </div>
                             <div style="margin-left: 15px;">
-                                <input type="radio" id="diffuserFreeu" name="translation" value="freeu">
+                                <input type="checkbox" id="diffuserFreeu" name="translation" value="freeu">
                                 <label for="diffuserFreeu" class="notranslate">Freeu</label>
                             </div>
                         </div>
@@ -575,14 +575,6 @@ async function processDiffuser(data, element) {
     // Interval generation
     const intervalGeneration = element.querySelector("#intervalGeneration").value;
 
-    // Preprocessor
-    const diffuserLooseCfattn = element.querySelector("#diffuserLooseCfattn").checked;
-    const diffuserFreeu = element.querySelector("#diffuserFreeu").checked;
-    let preprocessor = "loose_cfattn";
-    if (diffuserFreeu) {
-        preprocessor = "freeu";
-    };
-
     // Control Net
     const controlnetCanny = element.querySelector("#controlnetCanny").checked;
     const controlnetHed = element.querySelector("#controlnetHed").checked;
@@ -627,7 +619,8 @@ async function processDiffuser(data, element) {
         masks: dataDict,
         interval_generation: intervalGeneration,
         controlnet: controlnet,
-        preprocessor: preprocessor,
+        preprocessor_loose_cfattn: element.querySelector("#diffuserLooseCfattn").checked ? "loose_cfattn" : false,
+        preprocessor_freeu: element.querySelector("#diffuserFreeu").checked ? "freeu" : false,
         segment_percentage: percentageInput,
         thickness_mask: thicknessMask,
         sd_model_name: selectedDiffusionModelValue

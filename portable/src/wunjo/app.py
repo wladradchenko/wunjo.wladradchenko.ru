@@ -437,7 +437,9 @@ def synthesize_diffuser():
     masks = request_list.get("masks", {})
     interval_generation = int(request_list.get("interval_generation", 10))
     controlnet = request_list.get("controlnet", "canny")
-    preprocessor = request_list.get("preprocessor", "loose_cfattn")
+    loose_cfattn = request_list.get("preprocessor_loose_cfattn", False)
+    freeu = request_list.get("preprocessor_freeu", False)
+    preprocessor = [loose_cfattn, freeu]
     segment_percentage = int(request_list.get("segment_percentage", 25))
     thickness_mask = int(request_list.get("thickness_mask", 10))
     sd_model_name = request_list.get("sd_model_name", None)

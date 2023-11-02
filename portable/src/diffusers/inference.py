@@ -77,7 +77,7 @@ class Video2Video:
                           source_end: float = 0, source_type: str = "video", control_strength: float = 0.7, thickness_mask: int = 10,
                           use_limit_device_resolution: bool = True, predictor=None, session=None, segment_percentage: int = 25,
                           control_type: str = Input(description="Choose a controlnet", choices=["canny", "hed"], default="canny",),
-                          translation: str = Input(description=" Advanced options for the key frame translation", choices=["loose_cfattn", "freeu", None], default="loose_cfattn",),):
+                          translation: list = None):
         args = Video2Video.load_video2video_default()
         # create config
         cfg = RenderConfig()
@@ -106,14 +106,14 @@ class Video2Video:
         # values
         cfg.interval = interval
         cfg.control_strength = control_strength
-        if translation == "loose_cfattn":
+        if translation is None:
+            translation = []
+        if "loose_cfattn" in translation:
             cfg.loose_cfattn = True
-            cfg.freeu_args = (1, 1, 1, 1)
-        elif translation == "freeu":
-            cfg.loose_cfattn = False
-        else:
-            cfg.loose_cfattn = False
-            cfg.freeu_args = (1, 1, 1, 1)
+        if "freeu" in translation:
+            cfg.freeu_args = (1.1, 1.2, 1.0, 0.2)
+        print(translation, cfg.loose_cfattn, cfg.freeu_args)
+
         cfg.use_limit_device_resolution = use_limit_device_resolution
         cfg.control_type = control_type
         cfg.canny_low = None if cfg.control_type != "canny" else cfg.canny_low
