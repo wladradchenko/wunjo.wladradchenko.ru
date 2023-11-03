@@ -4,7 +4,7 @@
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 
-<p align="right">(<a href="README.md">EN</a>)</p>
+<p align="right">[<a href="README.md">EN</a>]</p>
 <div id="top"></div>
 
 <br />
@@ -384,4 +384,4 @@ Wunjo AI создан на основе замечательных резуль�
 
 Я выражаю благодарность первоначальным авторам этих технологий. Их новаторская работа сыграла важную роль в расширении возможностей Wunjo AI. Для постоянного хранения и управления версиями моделей, которые я лично обучил, используется [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). Если вы заинтересованы в том, чтобы внести свой вклад в Wunjo AI, особенно в области клонирования голоса для новых языков, не стесняйтесь предлагать свои модели или обращаться к сотрудничеству через [GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) или [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 
-<p align="right">(<a href="#top">вернуться наверх</a>)</p>
+<p align="right">[<a href="#top">вернуться наверх</a>]</p>
