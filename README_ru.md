@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
-    <img src="example/man.gif" alt="Logo" width="180" height="180">
+    <img src="example/man.gif" alt="Logo" width="165" height="165">
   </a>
 
   <h3 align="center">Wunjo AI</h3>
