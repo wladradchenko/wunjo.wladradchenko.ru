@@ -1,0 +1,72 @@
+{
+    "version": "1.6.1",
+    "history": {
+        "1.4.0": [
+          "Introduced deepfake synchronization with source video for lip movements",
+          "Implemented video segment selection for deepfake based on audio track length",
+          "Enabled customization of .wunjo cache directory",
+          "Added multi-language support for application interface",
+          "Trained and integrated TTS models for English",
+          "Implemented model language identification in the user interface",
+          "Enabled cross-language speech synthesis for Russian and English TTS models",
+          "Included update notifications within the application",
+          "Integrated training videos and wiki page links"
+        ],
+        "1.5.1": [
+          "Added voice translation features with encoder and vocoder support for English and Russian",
+          "Implemented voice cloning synthesis from text",
+          "Established a centralized hub for voice cloning language models",
+          "Introduced face and background enchantment for photos and videos without deepfake technology",
+          "Released a comprehensive version including all extensions",
+          "Enhanced real-time progress indication and translation",
+          "Integrated a debug module with Python console",
+          "Transitioned to native language translation for real-time updates",
+          "Improved GPU availability notifications for users",
+          "Launched a deepfake emotion module for experimental research",
+          "Updated the application guide",
+          "Implemented AI-powered retouching of video frames",
+          "Enhanced Chinese language support for voice cloning",
+          "Addressed Windows-specific bugs in Wunjo AI"
+        ],
+        "1.5.2": [
+          "Resolved the model auto-loading issue on Windows",
+          "Accelerated application startup",
+          "Enhanced performance of speech synthesis and deepfakes on CPU",
+          "Fixed GIF processing errors in face replacement and retouching",
+          "Corrected the frame-audio merging issue"
+        ],
+        "1.5.3": [
+          "Automated ffmpeg installation for Windows"
+        ],
+        "1.5.4": [
+          "Corrected the Russian voice model training from checkpoint issue",
+          "Introduced a similarity coefficient parameter for Face Swapping and Mouth Animation",
+          "Enhanced English voice cloning for extended phrases"
+        ],
+        "1.5.5": [
+          "Enabled voice cloning in Russian",
+          "Optimized facial animation and improved error handling for GIF processing",
+          "Improved log display within the console",
+          "Added a disk space indicator for output from speech synthesis and deepfakes"
+        ],
+        "1.6.0": [
+          "Advanced the object removal tool for images and videos",
+          "Enhanced video editing capabilities",
+          "Implemented automatic segmentation mask saving",
+          "Introduced Video2Video and InpaintVideoMask2Video with ControlNet via text prompts",
+          "Optimized memory usage for face swapping and object removal in lengthy videos"
+        ],
+        "1.6.1": [
+          "Resolved issues with the enhancer and upgraded its capabilities for videos and drawings",
+          "Refined vocoder performance for voice cloning",
+          "Introduced variable speech cloning speeds",
+          "Added models for isolating background sound in deepfakes and purifying voice tracks",
+          "Incorporated a feature to extract background noise from media",
+          "Enhanced the encoder for more accurate voice cloning",
+          "Improved overall voice cloning fidelity",
+          "Implemented multilingual speech synthesis from a single text input",
+          "Added a new interactive tool for user-defined mask creation that tracks and moves with segmented objects",
+          "Launched a music generation feature"
+        ]
+    }
+}
