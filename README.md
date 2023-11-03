@@ -372,23 +372,16 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 <!-- CREDITS -->
 ## Credits
 
-* Tacatron 2 - https://github.com/NVIDIA/tacotron2
-* Waveglow - https://github.com/NVIDIA/waveglow
-* Flask UI - https://github.com/ClimenteA/flaskwebgui
-* BeeWare - https://beeware.org/project/projects/tools/briefcase/
-* Sad Talker - https://github.com/OpenTalker/SadTalker
-* Wav2lip - https://github.com/Rudrabha/Wav2Lip
-* Face Utils - https://github.com/xinntao/facexlib
-* Face Enhancement - https://github.com/TencentARC/GFPGAN
-* Image/Video Enhancement - https://github.com/xinntao/Real-ESRGAN
-* Real-Time Voice Cloning - https://github.com/CorentinJ/Real-Time-Voice-Cloning
-* Segment Anything - https://github.com/facebookresearch/segment-anything
-* Rerender a Video - https://github.com/williamyang1991/Rerender_A_Video
-* GMFlow - https://github.com/haofeixu/gmflow
-* ControlNet - https://github.com/lllyasviel/ControlNet
-* Stable Diffusion - https://github.com/Stability-AI/stablediffusion
-* Ebsynth - https://github.com/jamriska/ebsynth
-* Open-Unmix - https://github.com/sigsep/open-unmix-pytorch
-* Hugging Face Model Storage - https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru
+Wunjo AI is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo AI:
+
+- **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and enhanced [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning)
+- **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
+- **Audio Processing:** Adapted [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) for audio separation
+- **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib) and enhanced [Sad Talker](https://github.com/OpenTalker/SadTalker)
+- **Image & Video Enhancement:** Adapted [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) for superior quality enhancements
+- **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)
+- **AI Art Generation:** Adaptations of [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) for creative video AI-driven art
+
+I extend my deepest gratitude to the original contributors of these technologies. Their groundbreaking work has been instrumental in advancing the capabilities of Wunjo AI. For the persistent storage and versioning of the models I have personally trained, I utilize the [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). If you're interested in contributing to Wunjo AI, especially in the area of voice cloning for new languages, please feel free to propose your models or reach out for collaboration via [GitHub Discussions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) or the [Hugging Face discussion forum](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 
 <p align="right">(<a href="#top">to top</a>)</p>
