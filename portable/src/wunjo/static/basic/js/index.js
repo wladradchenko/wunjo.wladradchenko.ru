@@ -187,7 +187,7 @@ function avatarInfoPop(avatar, name) {
         intro: `<div style="width: 200pt">
                             <p style="font-weight: 600;">The voice has not been downloaded to the device before.</p>
                             <p style="margin-top: 5pt;">Initiating synthesis will auto-download the needed models.</p>
-                            <p style="margin-top: 5pt;margin-bottom: 5pt;"><a href="https://wladradchenko.ru/static/wunjo.wladradchenko.ru/voice_multi.json" target="_blank" rel="noopener noreferrer">List of models for manual download. </a><text>You need to put them in a directory <button class="notranslate" style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;text-transform: lowercase;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/name/.</button></text></p>
+                            <p style="margin-top: 5pt;margin-bottom: 5pt;"><a href="https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru" target="_blank" rel="noopener noreferrer">List of models for manual download. </a><text>You need to put them in a directory <button class="notranslate" style="background: none;border: none;color: blue;font-size: 12pt;cursor: pointer;text-transform: lowercase;" onclick="document.getElementById('a-link-open-folder').click();">.wunjo/voice/name/.</button></text></p>
                             <p>Instructions <b style="text-transform: lowercase;">how to install models manually</b><a style="text-transform: lowercase;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer"> in the project documentation</a>.</p>
                         </div>
                 `,
@@ -1456,77 +1456,74 @@ async function translateHtmlString(htmlString, targetLang) {
 ///UPDATE VERSION///
 // Convert version string to array for easy comparison
 function versionUpdateToArray(version) {
-  return version.split(".").map(Number);
+  return version.split('.').map(num => parseInt(num, 10));
+}
+
+function isVersionGreater(currentVersionArray, checkVersionArray) {
+  for (let i = 0; i < currentVersionArray.length; i++) {
+    if (checkVersionArray[i] > currentVersionArray[i]) {
+      return true;
+    } else if (checkVersionArray[i] < currentVersionArray[i]) {
+      return false;
+    }
+  }
+  return false; // If all parts are equal, the version is not greater.
 }
 
 function updateVersion(serverVersionData) {
-  // Get the version passed from Jinja
+  // Parse the version data passed from the server
   let serverVersionDataJSON = JSON.parse(serverVersionData);
   if (
     Object.keys(serverVersionDataJSON).length !== 0 &&
     serverVersionDataJSON.hasOwnProperty("version")
   ) {
     let serverVersion = serverVersionDataJSON.version;
+    let currentVersion = document.getElementById("version").getAttribute("vers");
+    let currentVersionArray = versionUpdateToArray(currentVersion);
 
-    // Get the current version displayed in the HTML
-    let currentVersion = document
-      .getElementById("version")
-      .getAttribute("vers");
-
-    // Check if the version from the server is newer
-    if (serverVersion !== currentVersion) {
-      // Get history witch upper current version
+    // Compare the server version with the current version
+    if (isVersionGreater(currentVersionArray, versionUpdateToArray(serverVersion))) {
       let allVersionHistory = serverVersionDataJSON.history;
 
-      let currentVersionArray = versionUpdateToArray(currentVersion);
-
-      // Filter versions that are less than or equal to the current version
+      // Filter versions that are greater than the current version
       let filteredVersions = Object.keys(allVersionHistory)
-        .filter((version) => {
-          let versionArray = versionUpdateToArray(version);
-          for (let i = 0; i < 3; i++) {
-            if (versionArray[i] < currentVersionArray[i]) return false;
-            if (versionArray[i] > currentVersionArray[i]) return true;
-          }
-          return false; // if all parts are equal
-        })
-        .sort(
-          (a, b) =>
-            versionUpdateToArray(b).join(".") -
-            versionUpdateToArray(a).join(".")
-        ); // Sort versions in descending order
+        .filter(version => isVersionGreater(currentVersionArray, versionUpdateToArray(version)))
+        .sort((a, b) => {
+          let versionArrayA = versionUpdateToArray(a);
+          let versionArrayB = versionUpdateToArray(b);
+          return versionArrayB.join('.') - versionArrayA.join('.');
+        });
 
-      // Generate HTML
+      // Build the HTML for the update info
       let htmlUpdateInfo = "";
-
-      filteredVersions.forEach((version) => {
+      filteredVersions.forEach(version => {
         htmlUpdateInfo += `<h3>${version}</h3><ul>`;
-        let items = allVersionHistory[version].split("\n");
-        items.forEach((item) => {
+        let items = allVersionHistory[version];
+        items.forEach(item => {
           htmlUpdateInfo += `<li>${item}</li>`;
         });
-        htmlUpdateInfo += `<br></ul>`;
+        htmlUpdateInfo += `</ul><br>`;
       });
 
-      // Update the content of the paragraph
+      // Update the version information in the HTML
       document.getElementById("version").innerHTML =
         "Update available " +
         serverVersion +
-        `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">What is new?</button>`;
+        `. <button style="text-decoration: underline;background: transparent;border: none;font-size: 8pt;color: blue;" id="version-history-info" onclick="(() => openUpdateHistory(this, '${htmlUpdateInfo}'))()">What's new?</button>`;
     }
   }
 }
+
 
 function openUpdateHistory(elem, info) {
   var introUpdateVersion = introJs();
   introUpdateVersion.setOptions({
     steps: [
       {
-        element: elem,
         title: "What is new",
         position: "left",
         intro: `
-                <div style="max-width: 400pt;max-height: 70vh;padding-left: 20pt;padding-right: 20pt;">${info}</div>
+                <div style="overflow-y: auto;max-width: 80vw;width: 60vw;max-height: 70vh;padding-left: 20pt;padding-right: 20pt;">${info}</div>
                 <a class="introjs-button" href="https://wladradchenko.ru/wunjo" target="_blank" rel="noopener noreferrer" style="margin-top: 20pt;right: 0;left: 0;display: flex;justify-content: center;width: 100%;padding-left: 0;padding-right: 0;">Download update</a>
                 `,
       },

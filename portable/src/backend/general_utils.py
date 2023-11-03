@@ -96,9 +96,10 @@ def download_ntlk():
 
 
 def get_version_app():
-    version_json_url = "https://wladradchenko.ru/static/wunjo.wladradchenko.ru/version_control.json"
+    version_json_url = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/CHANGELOG.json"
     try:
-        response = requests.get(version_json_url)
+        response = requests.get(version_json_url, timeout=5)  # timeout in seconds
+        response.raise_for_status()  # This will raise an HTTPError if the HTTP request is not connected
         return json.loads(response.text)
     except requests.RequestException:
         print("Error fetching the version information, when get information about updates of application")
