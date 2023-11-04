@@ -112,7 +112,6 @@ class Video2Video:
             cfg.loose_cfattn = True
         if "freeu" in translation:
             cfg.freeu_args = (1.1, 1.2, 1.0, 0.2)
-        print(translation, cfg.loose_cfattn, cfg.freeu_args)
 
         cfg.use_limit_device_resolution = use_limit_device_resolution
         cfg.control_type = control_type

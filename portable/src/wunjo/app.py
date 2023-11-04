@@ -33,7 +33,12 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-app.config['DEBUG'] = False
+device = "cuda"
+print(torch.cuda.get_device_properties(device).total_memory / (1024 ** 3))
+print(torch.cuda.memory_allocated(device))
+print(torch.cuda.memory_reserved(device))
+
+app.config['DEBUG'] = True
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
 app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
