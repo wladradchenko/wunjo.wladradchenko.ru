@@ -463,7 +463,7 @@ function settingTextToSpeech(elem, languages) {
                                 <div class="uploadSTTAudio" style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
                                     <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onChange="audioRecordVoiceSTT(event)"  id="recordSTTAudio">Record voice</button>
                                     <label id="uploadSTTAudioLabel" for="uploadSTTAudio" class="introjs-button" style="margin-left: 5pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
-                                    <input style="width: 0;" accept="audio/*" type="file" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSTTAudio"  />
+                                    <input style="width: 0;" accept=".mp3,.wav,.ogg,.flac" type="file" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadSTTAudio"  />
                                     <div id="previewSTTAudio">
                                       <button id="audioSTTPlay" class="introjs-button" style="display:none;margin-left: 5pt;">
                                         <i class="fa fa-play"></i>

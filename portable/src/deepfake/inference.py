@@ -100,7 +100,7 @@ class AnimationFaceTalk:
         if preprocess is None:
             preprocess = "crop"
 
-        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
@@ -271,7 +271,7 @@ class AnimationMouthTalk:
             print("Processing will run on CPU")
             device = "cpu"
 
-        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
@@ -377,7 +377,7 @@ class FaceSwap:
             print("Processing will run on CPU")
             device = "cpu"
 
-        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(deepfake_dir, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         model_user_path = DEEPFAKE_MODEL_FOLDER
@@ -475,7 +475,7 @@ class Retouch:
                      session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img",
                      mask_color: str = None, upscale: bool = True, blur: int = 1, segment_percentage: int = 25):
         # create folder
-        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
         # create tmp folder
         tmp_dir = os.path.join(save_dir, "tmp")
@@ -860,11 +860,11 @@ class Retouch:
         return os.path.join(save_dir, save_name)
 
 
-class VideoEdit:
-    """Edit video"""
+class MediaEdit:
+    """Edit media"""
     @staticmethod
     def main_video_work(output, source, is_get_frames, enhancer="gfpgan", media_start=0, media_end=0):
-        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         media_start = float(media_start)
@@ -935,7 +935,7 @@ class VideoEdit:
 
     @staticmethod
     def main_merge_frames(output, source_folder, audio_path, fps):
-        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H.%M.%S"))
+        save_dir = os.path.join(output, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
 
         # get saved file as merge frames to video

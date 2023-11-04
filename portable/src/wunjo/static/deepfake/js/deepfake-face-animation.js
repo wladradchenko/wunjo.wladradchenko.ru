@@ -112,7 +112,7 @@ async function initiateFaceAndMouthProcess(data, elem) {
     }
 
     function triggerSynthesisAPI(settings) {
-        fetch("/synthesize_deepfake/", {
+        fetch("/synthesize_animation_talk/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(settings)
@@ -143,7 +143,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
 
                         <div style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
                             <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
-                            <input style="width: 0;" accept="audio/*" type="file" onChange="dragDropAudioDeepfakeFaceAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
+                            <input style="width: 0;" accept=".mp3,.wav,.ogg,.flac" type="file" onChange="dragDropAudioDeepfakeFaceAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
                             <div id="previewDeepfakeAudio"></div>
                         </div>
                     </div>

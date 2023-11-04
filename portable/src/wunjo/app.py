@@ -12,7 +12,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, VideoEdit, GetSegment
+from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, MediaEdit, GetSegment
 try:
     from diffusers.inference import Video2Video, create_diffusion_instruction
     VIDEO2VIDEO_AVAILABLE = True
@@ -23,7 +23,11 @@ except ImportError:
 from speech.interface import TextToSpeech, VoiceCloneTranslate, AudioSeparatorVoice
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
-from backend.folders import MEDIA_FOLDER, WAVES_FOLDER, DEEPFAKE_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER
+from backend.folders import (
+    MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER, CONTENT_FOLDER, CONTENT_MEDIA_EDIT_FOLDER,
+    CONTENT_AUDIO_SEPARATOR_FOLDER, CONTENT_DIFFUSER_FOLDER, CONTENT_RETOUCH_FOLDER, CONTENT_FACE_SWAP_FOLDER,
+    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER
+)
 from backend.translator import get_translate
 from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size, format_dir_time, clean_text_by_language
 
@@ -33,12 +37,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-device = "cuda"
-print(torch.cuda.get_device_properties(device).total_memory / (1024 ** 3))
-print(torch.cuda.memory_allocated(device))
-print(torch.cuda.memory_reserved(device))
-
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
 app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
@@ -46,7 +45,7 @@ app.config['SEGMENT_ANYTHING_MODEL'] = {}  # load segment anything model to dyna
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
-app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
 
 logging.getLogger('werkzeug').disabled = True
 
@@ -279,8 +278,8 @@ def synthesize_video_merge():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print("Please wait... Processing is started")
 
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
+    if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
+        os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
 
     source_folder = request_list.get("source_folder")
     audio_name = request_list.get("audio_name")
@@ -291,8 +290,8 @@ def synthesize_video_merge():
     request_date = format_dir_time(request_time)
 
     try:
-        result = VideoEdit.main_merge_frames(
-            output=DEEPFAKE_FOLDER, source_folder=source_folder,
+        result = MediaEdit.main_merge_frames(
+            output=CONTENT_MEDIA_EDIT_FOLDER, source_folder=source_folder,
             audio_path=audio_path, fps=fps
         )
     except Exception as err:
@@ -301,7 +300,8 @@ def synthesize_video_merge():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    result_filename = f"/{save_folder_name}/" + result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
     url = url_for("media_file", filename=result_filename)
 
     app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Image to video"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
@@ -309,7 +309,7 @@ def synthesize_video_merge():
     print("Merge frames to video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
 
     return {"status": 200}
 
@@ -332,9 +332,6 @@ def synthesize_media_editor():
     request_list = request.get_json()
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print("Please wait... Processing is started")
-
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
 
     source = request_list.get("source")
     gfpgan = request_list.get("gfpgan", False)
@@ -368,19 +365,27 @@ def synthesize_media_editor():
 
     try:
         if not audio_separator and media_type in ["img", "video"]:
-            result = VideoEdit.main_video_work(
-                output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source),
+            if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
+                os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
+
+            result = MediaEdit.main_video_work(
+                output=CONTENT_MEDIA_EDIT_FOLDER, source=os.path.join(TMP_FOLDER, source),
                 enhancer=enhancer, is_get_frames=is_get_frames,
                 media_start=media_start, media_end=media_end
             )
-            result_filename = "/video/" + result.replace("\\", "/").split("/video/")[-1]
+            save_folder_name = os.path.basename(CONTENT_FOLDER)
+            result_filename = f"/{save_folder_name}/" + result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
         elif audio_separator and media_type in ["audio", "video"]:
+            if not os.path.exists(CONTENT_AUDIO_SEPARATOR_FOLDER):
+                os.makedirs(CONTENT_AUDIO_SEPARATOR_FOLDER)
+
             dir_time = current_time()
             result_path = AudioSeparatorVoice.get_audio_separator(
-                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(WAVES_FOLDER, dir_time), file_type=media_type,
+                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time), file_type=media_type,
                 converted_wav=True, target=audio_separator, trim_silence=False, resample=False
             )
-            result_filename = "/waves/" + result_path.replace("\\", "/").split("/waves/")[-1]
+            save_folder_name = os.path.basename(CONTENT_FOLDER)
+            result_filename = f"/{save_folder_name}/" + result_path.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
         else:
             raise Exception("Not recognition options for media content editor")
     except Exception as err:
@@ -396,7 +401,7 @@ def synthesize_media_editor():
     print("Edit media completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
 
     return {"status": 200}
 
@@ -431,8 +436,8 @@ def synthesize_diffuser():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print("Please wait... Processing is started")
 
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
+    if not os.path.exists(CONTENT_DIFFUSER_FOLDER):
+        os.makedirs(CONTENT_DIFFUSER_FOLDER)
 
     source = request_list.get("source")
     source_start = float(request_list.get("source_start", 0))
@@ -455,7 +460,7 @@ def synthesize_diffuser():
 
     try:
         diffusion_result = Video2Video.main_video_render(
-            source=os.path.join(TMP_FOLDER, source), output_folder=DEEPFAKE_FOLDER, source_start=source_start, sd_model_name=sd_model_name,
+            source=os.path.join(TMP_FOLDER, source), output_folder=CONTENT_DIFFUSER_FOLDER, source_start=source_start, sd_model_name=sd_model_name,
             source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation, thickness_mask=thickness_mask,
             control_type=controlnet, translation=preprocessor, predictor=None, session=None, segment_percentage=segment_percentage
         )
@@ -465,7 +470,8 @@ def synthesize_diffuser():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    diffusion_result_filename = "/video/" + diffusion_result.replace("\\", "/").split("/video/")[-1]
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    diffusion_result_filename = f"/{save_folder_name}/" + diffusion_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
     diffusion_url = url_for("media_file", filename=diffusion_result_filename)
 
     app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Diffusion"), "request_mode": "deepfake", "response_url": diffusion_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
@@ -497,8 +503,8 @@ def synthesize_retouch():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print("Please wait... Processing is started")
 
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
+    if not os.path.exists(CONTENT_RETOUCH_FOLDER):
+        os.makedirs(CONTENT_RETOUCH_FOLDER)
 
     source = request_list.get("source")
     source_start = float(request_list.get("source_start", 0))
@@ -518,7 +524,7 @@ def synthesize_retouch():
 
     try:
         retouch_result = Retouch.main_retouch(
-            output=DEEPFAKE_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
+            output=CONTENT_RETOUCH_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
             masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
             predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
         )
@@ -528,7 +534,8 @@ def synthesize_retouch():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    retouch_result_filename = "/video/" + retouch_result.replace("\\", "/").split("/video/")[-1]
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    retouch_result_filename = f"/{save_folder_name}/" + retouch_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
     retouch_url = url_for("media_file", filename=retouch_result_filename)
 
     app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": retouch_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
@@ -536,7 +543,7 @@ def synthesize_retouch():
     print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -562,8 +569,8 @@ def synthesize_face_swap():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print("Please wait... Processing is started")
 
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
+    if not os.path.exists(CONTENT_FACE_SWAP_FOLDER):
+        os.makedirs(CONTENT_FACE_SWAP_FOLDER)
 
     target_content = request_list.get("target_content")
     face_target_fields = request_list.get("face_target_fields")
@@ -585,7 +592,7 @@ def synthesize_face_swap():
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
-            deepfake_dir=DEEPFAKE_FOLDER,
+            deepfake_dir=CONTENT_FACE_SWAP_FOLDER,
             target=os.path.join(TMP_FOLDER, target_content),
             target_face_fields=face_target_fields,
             source=os.path.join(TMP_FOLDER, source_content),
@@ -605,7 +612,8 @@ def synthesize_face_swap():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
-    face_swap_result_filename = "/video/" + face_swap_result.replace("\\", "/").split("/video/")[-1]
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    face_swap_result_filename = f"/{save_folder_name}/" + face_swap_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
     face_swap_url = url_for("media_file", filename=face_swap_result_filename)
 
     app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face swap"), "request_mode": "deepfake", "response_url": face_swap_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
@@ -613,16 +621,16 @@ def synthesize_face_swap():
     print("Face swap synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
     return {"status": 200}
 
 
-@app.route("/synthesize_deepfake/", methods=["POST"])
+@app.route("/synthesize_animation_talk/", methods=["POST"])
 @cross_origin()
-def synthesize_deepfake():
+def synthesize_animation_talk():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
@@ -638,8 +646,8 @@ def synthesize_deepfake():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
     print(get_print_translate("Please wait... Processing is started"))
 
-    if not os.path.exists(DEEPFAKE_FOLDER):
-        os.makedirs(DEEPFAKE_FOLDER)
+    if not os.path.exists(CONTENT_ANIMATION_TALK_FOLDER):
+        os.makedirs(CONTENT_ANIMATION_TALK_FOLDER)
 
     face_fields = request_list.get("face_fields")
     source_image = os.path.join(TMP_FOLDER, request_list.get("source_media"))
@@ -668,8 +676,8 @@ def synthesize_deepfake():
 
     try:
         if type_file == "img":
-            deepfake_result = AnimationFaceTalk.main_img_deepfake(
-                deepfake_dir=DEEPFAKE_FOLDER,
+            animation_talk_result = AnimationFaceTalk.main_img_deepfake(
+                deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
                 source_image=source_image,
                 driven_audio=driven_audio,
                 still=still,
@@ -682,8 +690,8 @@ def synthesize_deepfake():
                 pose_style=random.randint(0, 45)
                 )
         elif type_file == "video":
-            deepfake_result = AnimationMouthTalk.main_video_deepfake(
-                deepfake_dir=DEEPFAKE_FOLDER,
+            animation_talk_result = AnimationMouthTalk.main_video_deepfake(
+                deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
                 face=source_image,
                 audio=driven_audio,
                 face_fields=face_fields,
@@ -700,16 +708,16 @@ def synthesize_deepfake():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    animation_talk_filename = f"/{save_folder_name}/" + animation_talk_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
+    animation_talk_url = url_for("media_file", filename=animation_talk_filename)
 
-    deepfake_filename = "/video/" + deepfake_result.replace("\\", "/").split("/video/")[-1]
-    deepfake_url = url_for("media_file", filename=deepfake_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": deepfake_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": animation_talk_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
 
     print("Deepfake synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -726,7 +734,7 @@ def get_synthesize_result():
 
 @app.route("/synthesize_speech/", methods=["POST"])
 @cross_origin()
-def synthesize():
+def synthesize_speech():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")
@@ -787,7 +795,7 @@ def synthesize():
             else:
                 tts_text = text
 
-            response_code, results = TextToSpeech.get_synthesized_audio(tts_text, model, app.config['TTS_LOADED_MODELS'], os.path.join(WAVES_FOLDER, dir_time), **options)
+            response_code, results = TextToSpeech.get_synthesized_audio(tts_text, model, app.config['TTS_LOADED_MODELS'], os.path.join(CONTENT_SPEECH_FOLDER, dir_time), **options)
 
             if response_code == 0:
                 for result in results:
@@ -812,7 +820,7 @@ def synthesize():
                         response_code, clone_result = VoiceCloneTranslate.get_synthesized_audio(
                             audio_file=filename, encoder=encoder, synthesizer=synthesizer, signature=signature,
                             vocoder=vocoder, text=text, src_lang=lang_translation, need_translate=auto_translation,
-                            save_folder=os.path.join(WAVES_FOLDER, dir_time), tts_model_name=model, converted_wav=False
+                            save_folder=os.path.join(CONTENT_SPEECH_FOLDER, dir_time), tts_model_name=model, converted_wav=False
                         )
 
                         if response_code == 0:
@@ -823,11 +831,11 @@ def synthesize():
                             print("Error...during clone synthesized voice")
 
                     result["file_name"] = os.path.basename(filename)
-                    filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
+                    save_folder_name = os.path.basename(CONTENT_FOLDER)
+                    filename = f"/{save_folder_name}/" + filename.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
                     print("Synthesized file: ", filename)
                     result.pop("response_audio")
                     result["response_url"] = url_for("media_file", filename=filename)
-                    # result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
                     result["response_code"] = response_code
                     result["request_date"] = request_date
                     result["request_information"] = text
@@ -846,16 +854,16 @@ def synthesize():
 
             response_code, result = VoiceCloneTranslate.get_synthesized_audio(
                 audio_file=rtvc_audio_clone_path, encoder=encoder, synthesizer=synthesizer, signature=signature, vocoder=vocoder,
-                text=text, src_lang=lang_translation, need_translate=auto_translation, save_folder= os.path.join(WAVES_FOLDER, dir_time)
+                text=text, src_lang=lang_translation, need_translate=auto_translation, save_folder= os.path.join(CONTENT_SPEECH_FOLDER, dir_time)
             )
             if response_code == 0:
                 filename = result.pop("filename")
                 result["file_name"] = os.path.basename(filename)
-                filename = "/waves/" + filename.replace("\\", "/").split("/waves/")[-1]
+                save_folder_name = os.path.basename(CONTENT_FOLDER)
+                filename = f"/{save_folder_name}/" + filename.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
                 print("Synthesized file: ", filename)
                 result.pop("response_audio")
                 result["response_url"] = url_for("media_file", filename=filename)
-                # result["response_audio"] = b64encode(audio_bytes).decode("utf-8")
                 result["response_code"] = response_code
                 result["request_date"] = request_date
                 result["request_information"] = text
@@ -870,7 +878,7 @@ def synthesize():
         for result in app.config['SYNTHESIZE_RESULT']:
             if result.get("file_name"):
                 result_filenames += [result["file_name"]]
-        current_result_folder = os.path.join(WAVES_FOLDER, dir_time)
+        current_result_folder = os.path.join(CONTENT_SPEECH_FOLDER, dir_time)
         for f in os.listdir(current_result_folder):
             if f not in result_filenames:
                 os.remove(os.path.join(current_result_folder, f))
@@ -881,7 +889,7 @@ def synthesize():
     print("Text to speech synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(WAVES_FOLDER), "video": get_folder_size(DEEPFAKE_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 

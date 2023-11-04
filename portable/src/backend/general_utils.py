@@ -4,7 +4,7 @@ import sys
 import json
 import shutil
 import requests
-from time import gmtime, strftime
+from time import strftime
 
 from backend.folders import SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size
@@ -161,19 +161,18 @@ def get_folder_size(folder_path):
     return size_in_bytes / (1024 * 1024)
 
 
-def current_time(time_format: str = None):
-    if time_format:
-        return strftime(time_format, gmtime())
-    return strftime("%Y%m%d%H%M%S", gmtime())
-
+def current_time():
+    """Return the current time formatted as YYYYMMDD_HHMMSS."""
+    return strftime("%Y_%m_%d_%H%M%S")
 
 def format_dir_time(dir_time):
+    """Convert a time string from YYYYMMDD_HHMMSS to DD.MM.YYYY HH:MM format."""
     # Extract components from the string
     year = dir_time[0:4]
-    month = dir_time[4:6]
-    day = dir_time[6:8]
-    hour = dir_time[8:10]
-    minute = dir_time[10:12]
+    month = dir_time[5:7]
+    day = dir_time[8:10]
+    hour = dir_time[11:13]
+    minute = dir_time[13:15]
 
     # Format the date and time
     formatted_date = f"{day}.{month}.{year} {hour}:{minute}"

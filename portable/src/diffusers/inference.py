@@ -84,7 +84,7 @@ class Video2Video:
 
         # folders and files
         cfg.input_path = source  # input video
-        cfg.work_dir = os.path.join(output_folder, strftime("%Y_%m_%d_%H.%M.%S"))  # output folder
+        cfg.work_dir = os.path.join(output_folder, strftime("%Y_%m_%d_%H%M%S"))  # output folder
         os.makedirs(cfg.work_dir, exist_ok=True)
 
         frame_save_path = os.path.join(cfg.work_dir, "media")  # frames folder
