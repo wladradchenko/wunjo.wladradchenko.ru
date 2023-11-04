@@ -45,7 +45,7 @@ app.config['SEGMENT_ANYTHING_MODEL'] = {}  # load segment anything model to dyna
 app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
-app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
 
 logging.getLogger('werkzeug').disabled = True
 
@@ -150,8 +150,8 @@ def upload_file_deepfake():
 @app.route('/open_folder', methods=["POST"])
 @cross_origin()
 def open_folder():
-    if os.path.exists(MEDIA_FOLDER):
-        path = MEDIA_FOLDER
+    if os.path.exists(CONTENT_FOLDER):
+        path = CONTENT_FOLDER
         if sys.platform == 'win32':
             # Open folder for Windows
             subprocess.Popen(r'explorer /select,"{}"'.format(path))
@@ -309,7 +309,7 @@ def synthesize_video_merge():
     print("Merge frames to video completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
 
     return {"status": 200}
 
@@ -401,7 +401,7 @@ def synthesize_media_editor():
     print("Edit media completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
 
     return {"status": 200}
 
@@ -543,7 +543,7 @@ def synthesize_retouch():
     print("Retouch synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -621,7 +621,7 @@ def synthesize_face_swap():
     print("Face swap synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -717,7 +717,7 @@ def synthesize_animation_talk():
     print("Deepfake synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -889,7 +889,7 @@ def synthesize_speech():
     print("Text to speech synthesis completed successfully!")
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"audio": get_folder_size(CONTENT_FOLDER), "video": get_folder_size(CONTENT_FOLDER)}
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
 
@@ -903,9 +903,9 @@ def get_synthesize_status():
     return status
 
 
-@app.route("/disk_space_used/", methods=["GET"])
+@app.route("/system_resources_status/", methods=["GET"])
 @cross_origin()
-def get_disk_space_used_status():
+def get_system_resources_status():
     status = app.config['FOLDER_SIZE_RESULT']
     return jsonify(status)
 

@@ -1555,29 +1555,25 @@ function getRandomString(length) {
 }
 ///GENERATE RANDOM NAME///
 
-///GET DISK SPACE USED///
-function getDriveSpace() {
-  fetch("/disk_space_used/")
+///GET DISK SPACE AND RAM USED///
+function getSystemResourcesStatus() {
+  fetch("/system_resources_status/")
     .then((response) => response.json())
     .then((data) => {
       // Assuming the sizes are in bytes, convert them to MB and round to 1 decimal place
-      const audioSizeMB = data.audio.toFixed(1);
-      const videoSizeMB = data.video.toFixed(1);
+      const driveSizeMB = data.drive.toFixed(1);
 
       // Set the content for the HTML elements
       document.getElementById(
-        "drive-space-wavs-used"
-      ).textContent = `.wunjo/waves ${audioSizeMB} Mb,`;
-      document.getElementById(
-        "drive-space-video-used"
-      ).textContent = `.wunjo/video ${videoSizeMB} Mb`;
+        "content-drive-space"
+      ).textContent = `.wunjo/content ${driveSizeMB} Mb,`;
     })
     .catch((error) => {
       console.error("Error fetching disk space used:", error);
     });
 }
 // Init message about disk space used
-getDriveSpace();
+getSystemResourcesStatus();
 // TUpdate information about disk space used each 10 seconds
-setInterval(getDriveSpace, 10000);
-///GET DISK SPACE USED///
+setInterval(getSystemResourcesStatus, 10000);
+///GET DISK SPACE AND RAM USED///
