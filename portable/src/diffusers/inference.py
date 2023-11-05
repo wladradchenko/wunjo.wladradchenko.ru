@@ -23,10 +23,12 @@ from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
 from deepfake.src.utils.segment import SegmentAnything
 from deepfake.src.utils.videoio import (
-    cut_start_video, get_frames, check_media_type, save_video_from_frames, extract_audio_from_video, save_video_with_audio
+    cut_start_video, get_frames, check_media_type, save_video_from_frames,
+    extract_audio_from_video, save_video_with_audio
 )
 from diffusers.src.utils.mediaio import (
-    save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion, save_empty_mask
+    save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion,
+    save_empty_mask, get_new_dimensions, resize_and_save_video
 )
 from diffusers.src.utils.ebsynth import Ebsynth
 
@@ -266,8 +268,10 @@ class Video2Video:
 
         source_media_type = check_media_type(source)
         if source_media_type == "static":
+            default_width, default_height = get_new_dimensions(source, vram_limit_device_resolution_diffusion, "cuda")
             fps, num_frames, width, height = save_image_frame_cv2(source, frame_save_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
         elif source_media_type == "animated":
+            default_width, default_height = get_new_dimensions(source, vram_limit_device_resolution_diffusion, "cuda")
             fps, num_frames, width, height = save_video_frames_cv2(source, frame_save_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
             save_video_frames_cv2(source, source_frame_folder_path, '%04d.png', vram_limit_device_resolution_diffusion, "cuda")
         else:
@@ -380,8 +384,12 @@ class Video2Video:
             # remove only tmp folder
             for f in os.listdir(TMP_FOLDER):
                 os.remove(os.path.join(TMP_FOLDER, f))
-            # return changed image
-            return os.path.join(cfg.key_subdir, frame_files[0])
+            # return changed image with restore size
+            changed_frame = cv2.imread(os.path.join(cfg.key_subdir, frame_files[0]))
+            resized_changed_frame = cv2.resize(changed_frame, (default_width, default_height))
+            resized_changed_file_name = os.path.join(cfg.key_subdir, "resized_result.png")
+            cv2.imwrite(resized_changed_file_name, resized_changed_frame)
+            return resized_changed_file_name
 
         # download if ebsynth app is not exist
         ebsynth_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "ebsynth")
@@ -463,6 +471,9 @@ class Video2Video:
 
         for f in os.listdir(TMP_FOLDER):
             os.remove(os.path.join(TMP_FOLDER, f))
+
+        # restore aspect ratio for video
+        save_name = resize_and_save_video(save_name, cfg.work_dir, default_width, default_height)
 
         return save_name
 

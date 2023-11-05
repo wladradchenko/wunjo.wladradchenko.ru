@@ -1,5 +1,6 @@
 import os
 import cv2
+import uuid
 import torch
 import numpy as np
 
@@ -55,6 +56,43 @@ def save_image_frame_cv2(image_path, save_path, filename_pattern, resolution_vra
     return 0, 1, width, height
 
 
+def get_new_dimensions(media_path, resolution_vram_func, device="cuda"):
+    # Attempt to read as an image first
+    frame = cv2.imread(media_path)
+    if frame is None:
+        # If reading as an image fails, try as a video
+        cap = cv2.VideoCapture(media_path)
+        if not cap.isOpened():
+            raise ValueError("Unable to open media file.")
+        ret, frame = cap.read()
+        if not ret:
+            raise ValueError("Unable to read from video file.")
+        cap.release()
+
+    width = frame.shape[1]
+    height = frame.shape[0]
+    if width > height:
+        resolution = width
+    else:
+        resolution = height
+    resolution = resolution_vram_func(resolution, device)
+
+    H, W, C = frame.shape
+    H = float(H)
+    W = float(W)
+    aspect_ratio = W / H
+    k = float(resolution) / min(H, W)
+    H *= k
+    W *= k
+    if H < W:
+        W = resolution
+        H = int(resolution / aspect_ratio)
+    else:
+        H = resolution
+        W = int(aspect_ratio * resolution)
+    return W, H
+
+
 def resize_frame(frame, resolution):
     H, W, C = frame.shape
     H = float(H)
@@ -73,6 +111,13 @@ def resize_frame(frame, resolution):
     W = int(np.round(W / 64.0)) * 64
     resized_frame = cv2.resize(frame, (W, H), interpolation=cv2.INTER_LANCZOS4 if k > 1 else cv2.INTER_AREA)
     return resized_frame
+
+
+def resize_and_save_video(input_video_path, save_folder, new_width, new_height):
+    output_video_path = os.path.join(save_folder, str(uuid.uuid4()) + ".mp4")
+    cmd = f'ffmpeg -i {input_video_path} -vf scale={new_width}:{new_height} -c:a copy {output_video_path}'
+    os.system(cmd)
+    return output_video_path
 
 
 def vram_limit_device_resolution_diffusion(resolution, device="cuda"):
