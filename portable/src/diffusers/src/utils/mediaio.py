@@ -3,6 +3,7 @@ import cv2
 import uuid
 import torch
 import numpy as np
+import subprocess
 
 
 def save_empty_mask(num_frame, width, height, mask_save_path, filename_pattern):
@@ -116,7 +117,11 @@ def resize_frame(frame, resolution):
 def resize_and_save_video(input_video_path, save_folder, new_width, new_height):
     output_video_path = os.path.join(save_folder, str(uuid.uuid4()) + ".mp4")
     cmd = f'ffmpeg -i {input_video_path} -vf scale={new_width}:{new_height} -c:a copy {output_video_path}'
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    # Run the command silently
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return output_video_path
 
 

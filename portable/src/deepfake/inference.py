@@ -870,8 +870,9 @@ class MediaEdit:
         media_start = float(media_start)
         media_end = float(media_end)
 
-        import time
-        time.sleep(5)
+        if not os.path.exists(source):
+            import time
+            time.sleep(5)
 
         audio_file_name = extract_audio_from_video(source, save_dir)
 
@@ -1020,8 +1021,9 @@ class GetSegment:
     @staticmethod
     def get_segment_mask_file(predictor, session, source: str, point_list: list):
         # set time sleep else file will not still loaded
-        import time
-        time.sleep(5)
+        if not os.path.exists(source):
+            import time
+            time.sleep(5)
         # read frame
         source_media_type = check_media_type(source)
         if source_media_type == "static":

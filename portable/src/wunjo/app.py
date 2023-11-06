@@ -402,6 +402,10 @@ def synthesize_media_editor():
     app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
     # Update disk space size
     app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
+    # empty loop cache from animation if not clear yet
+    gc.collect()
 
     return {"status": 200}
 
@@ -624,6 +628,8 @@ def synthesize_face_swap():
     app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
+    # empty loop cache from animation if not clear yet
+    gc.collect()
 
     return {"status": 200}
 
@@ -720,6 +726,8 @@ def synthesize_animation_talk():
     app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
     # empty cache
     torch.cuda.empty_cache()
+    # empty loop cache from animation if not clear yet
+    gc.collect()
 
     return {"status": 200}
 

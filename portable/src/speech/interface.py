@@ -205,6 +205,10 @@ class AudioSeparatorVoice:
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
+        if not os.path.exists(source):
+            import time
+            time.sleep(5)
+
         if file_type == "video":
             extracted_audio = AudioSeparatorVoice.extract_audio_from_video(source, output_path)
             if not extracted_audio:
@@ -224,5 +228,8 @@ class AudioSeparatorVoice:
         file_name = str(uuid.uuid4()) + '.wav'
         save_file = os.path.join(save_path, file_name)
         cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
-        os.system(cmd)
+        # not silence run TODO remove
+        # os.system(cmd)
+        # silence run
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return file_name

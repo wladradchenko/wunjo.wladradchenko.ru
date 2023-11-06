@@ -2,6 +2,7 @@ import os
 import uuid
 import torch
 import librosa
+import subprocess
 import soundfile as sf
 from openunmix import predict
 
@@ -11,7 +12,10 @@ class AudioSeparator:
     def _convert_to_wav(audio_path, output_path):
         wav_audio_path = os.path.join(output_path, str(uuid.uuid4()) + ".wav")
         cmd = f"ffmpeg -i {audio_path} {wav_audio_path}"
-        os.system(cmd)
+        # not silence run TODO remove
+        # os.system(cmd)
+        # silence run
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return wav_audio_path
 
     def separate_audio(self, wav_audio_path, output_path, converted_wav=False, target_wav="vocals", device="cpu",

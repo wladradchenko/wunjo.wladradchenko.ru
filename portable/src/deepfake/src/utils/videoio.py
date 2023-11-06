@@ -3,6 +3,7 @@ import uuid
 import time
 
 import os
+import subprocess
 
 import cv2
 import random
@@ -27,15 +28,16 @@ def load_video_to_cv2(input_path):
 def save_video_with_audio(video, audio, save_path):
     file_name = str(uuid.uuid4()) + '.mp4'
     save_file = os.path.join(save_path, file_name)
-
     if os.path.exists(audio):
         # If there is an audio file, include it in the ffmpeg command
         cmd = r'ffmpeg -y -i "%s" -i "%s" -c:v libx264 -c:a aac -crf 23 -preset medium -movflags +faststart -shortest "%s"' % (video, audio, save_file)
     else:
         # If there is no audio file, omit the audio input and codec options
         cmd = r'ffmpeg -y -i "%s" -c:v libx264 -crf 23 -preset medium -movflags +faststart "%s"' % (video, save_file)
-
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return file_name
 
 
@@ -48,23 +50,26 @@ def save_video_from_frames(frame_names, save_path, fps, alternative_save_path=No
     else:
         save_file = os.path.join(save_path, file_name)
     cmd = f'ffmpeg -framerate {fps} -i {frame_path} -c:v libx264 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -pix_fmt yuv420p {save_file}'
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return file_name
 
 
 def video_to_frames(video_path, output_folder, start_seconds=0, end_seconds=None, extract_nth_frame=1, reduce_size=1):
     start_hms = seconds_to_hms(start_seconds)
-
     if end_seconds is not None:
         select_cmd = f"select=between(t\\,{start_seconds}\\,{end_seconds})*not(mod(n\\,{extract_nth_frame}))"
     else:
         select_cmd = f"select=not(mod(n\\,{extract_nth_frame}))"
-
     # Add the scale filter to reduce frame size by a factor
     vf_cmd = f"{select_cmd},scale=iw/{int(reduce_size)}:ih/{int(reduce_size)}" if reduce_size > 1 else select_cmd
-
     cmd = f'ffmpeg -ss {start_hms} -i "{video_path}" -vf "{vf_cmd}" -vsync vfr "{output_folder}/%d.png"'
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def extract_audio_from_video(video_path, save_path):
@@ -81,7 +86,10 @@ def extract_audio_from_video(video_path, save_path):
     file_name = str(uuid.uuid4()) + '.wav'
     save_file = os.path.join(save_path, file_name)
     cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return file_name
 
 
@@ -100,7 +108,10 @@ def cut_start_video(video, video_start, video_end):
     print(f"Video will start from {hms_start_format} and end at {hms_end_format}")
     new_video = f"{video}_cut.mp4"
     cmd = f"ffmpeg -y -ss {hms_start_format} -to {hms_end_format} -i {video} -c copy {new_video}"
-    os.system(cmd)
+    # not silence run TODO remove?
+    # os.system(cmd)
+    # silence run
+    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return new_video
 
 
@@ -353,8 +364,10 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
 
         # Save the video using ffmpeg as a lossless video; frame rate is kept the same
         cmd = f"ffmpeg -framerate {src_fps} -i {os.path.join(save_dir, 'enc', '%d.png')} -c:v copy {file_path}"
-        os.system(cmd)
-
+        # not silence run TODO remove?
+        # os.system(cmd)
+        # silence run
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         # Delete the temporary image sequence folder
         shutil.rmtree(os.path.join(save_dir, 'enc'))
 

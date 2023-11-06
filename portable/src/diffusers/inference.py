@@ -5,6 +5,7 @@ import json
 import torch
 import shutil
 import requests
+import subprocess
 from tqdm import tqdm
 from time import strftime
 from argparse import Namespace
@@ -414,9 +415,17 @@ class Video2Video:
             # access read app
             # username = os.environ.get('USERNAME')
             username = os.environ.get('USERNAME') or os.environ.get('USER')
-            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
+            cmd = f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T'
+            # not silence run TODO remove
+            # os.system(cmd)
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
-            os.system(f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T')
+            cmd = f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T'
+            # not silence run TODO remove
+            # os.system(cmd)
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         elif sys.platform == 'linux':
             ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
             link_ebsynth = get_nested_url(file_deepfake_config, ["ebsynth", "ebsynth_linux_cu118"])
@@ -428,7 +437,11 @@ class Video2Video:
             else:
                 check_download_size(ebsynth_path, link_ebsynth)
             # access read app
-            os.system(f"chmod +x {ebsynth_path}")
+            cmd = f"chmod +x {ebsynth_path}"
+            # not silence run TODO remove
+            # os.system(cmd)
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         else:
             raise Exception("Ebsynth is not support this platform")
 

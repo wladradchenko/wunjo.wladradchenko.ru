@@ -2,6 +2,7 @@ import os
 import sys
 import cv2
 import torch
+import subprocess
 from basicsr.utils import img2tensor, tensor2img
 from basicsr.utils.download_util import load_file_from_url
 from facexlib.utils.face_restoration_helper import FaceRestoreHelper
@@ -91,7 +92,10 @@ class GFPGANer():
                 try:
                     username = os.environ.get('USERNAME') or os.environ.get('USER')
                     cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)" /T'
-                    os.system(cmd)
+                    # not silence run TODO remove
+                    # os.system(cmd)
+                    # silence run
+                    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 except Exception as e:
                     print(e)
         loadnet = torch.load(model_path)

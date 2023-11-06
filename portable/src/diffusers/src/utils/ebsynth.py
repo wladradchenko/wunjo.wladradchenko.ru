@@ -1,6 +1,7 @@
 import os
 import cv2
 import struct
+import subprocess
 import numpy as np
 from time import time
 from typing import List
@@ -214,7 +215,10 @@ class Ebsynth:
                     for g, w in zip(guides, weights):
                         cmd += ' ' + g.get_cmd(j, w)
                     cmd += f' -output {os.path.abspath(output_seq[j])} -searchvoteiters 12 -patchmatchiters 6'
-                    os.system(cmd)
+                    # not silence run TODO remove
+                    # os.system(cmd)
+                    # silence run
+                    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 # update progress bar
                 progress_bar.update(1)
             # close progress bar for key

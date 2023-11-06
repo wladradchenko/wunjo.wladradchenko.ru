@@ -7,6 +7,7 @@ import os
 import queue
 import threading
 import torch
+import subprocess
 from basicsr.utils.download_util import load_file_from_url
 from torch.nn import functional as F
 
@@ -60,7 +61,10 @@ class RealESRGANer():
                         try:
                             username = os.environ.get('USERNAME') or os.environ.get('USER')
                             cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)"'
-                            os.system(cmd)
+                            # not silence run TODO remove
+                            # os.system(cmd)
+                            # silence run
+                            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         except Exception as e:
                             print(e)
             # dni
@@ -74,7 +78,10 @@ class RealESRGANer():
                     try:
                         username = os.environ.get('USERNAME') or os.environ.get('USER')
                         cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)"'
-                        os.system(cmd)
+                        # not silence run TODO remove
+                        # os.system(cmd)
+                        # silence run
+                        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     except Exception as e:
                         print(e)
             loadnet = torch.load(model_path, map_location=torch.device('cpu'))
