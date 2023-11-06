@@ -45,9 +45,11 @@ class AudioSpeedProcessor:
         # Adjust speed using ffmpeg
         out_file = os.path.join(path_syn, f"{name_syn}_{speed_factor}{suffix_syn}")
         cmd = f"ffmpeg -i {synthesized_audio} -filter:a atempo={speed_factor} {out_file}"
-        # not silence run TODO remove
-        # os.system(cmd)
-        # silence run
-        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.environ.get('DEBUG', 'False') == 'True':
+            # not silence run
+            os.system(cmd)
+        else:
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Finished! The path of out_file is {out_file}")
         return out_file

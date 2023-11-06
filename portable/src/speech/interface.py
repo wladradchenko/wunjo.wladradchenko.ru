@@ -228,8 +228,10 @@ class AudioSeparatorVoice:
         file_name = str(uuid.uuid4()) + '.wav'
         save_file = os.path.join(save_path, file_name)
         cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
-        # not silence run TODO remove
-        # os.system(cmd)
-        # silence run
-        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.environ.get('DEBUG', 'False') == 'True':
+            # not silence run
+            os.system(cmd)
+        else:
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return file_name

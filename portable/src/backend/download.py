@@ -57,10 +57,12 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
                     cmd = f'icacls "{extract_dir}" /grant:r "{username}:(R,W)" /T'
                 else:
                     cmd = f'icacls "{target_dir}" /grant:r "{username}:(R,W)" /T'
-                # not silence run TODO remove
-                # os.system(cmd)
-                # silence run
-                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                if os.environ.get('DEBUG', 'False') == 'True':
+                    # not silence run
+                    os.system(cmd)
+                else:
+                    # silence run
+                    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             except Exception as e:
                 print(e)
 
@@ -90,10 +92,12 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
                     try:
                         username = os.environ.get('USERNAME') or os.environ.get('USER')
                         cmd = f'icacls "{download_path}" /grant:r "{username}:(R,W)"'
-                        # not silence run TODO remove
-                        # os.system(cmd)
-                        # silence run
-                        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        if os.environ.get('DEBUG', 'False') == 'True':
+                            # not silence run
+                            os.system(cmd)
+                        else:
+                            # silence run
+                            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     except Exception as e:
                         print(e)
                 return True

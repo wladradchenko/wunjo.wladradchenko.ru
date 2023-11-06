@@ -36,8 +36,8 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-
-app.config['DEBUG'] = False
+os.environ["DEBUG"] = "False"  # str False or True
+app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
 app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
