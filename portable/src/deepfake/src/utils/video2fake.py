@@ -67,23 +67,32 @@ class GenerateFakeVideo2Lip:
             return int(center_x), int(center_y)
         return None, None
 
-    def face_detect_with_alignment(self, images, pads, nosmooth):
+    def face_detect_with_alignment_crop(self, image_files):
+        """
+        Detect faces to swap if face_fields
+        :param image_files: list of file paths of target images
+        :return:
+        """
         predictions = []
         face_embedding_list = []
         face_gender = None
-        x_center, y_center = self.get_real_crop_box(images[0])
 
-        for image in tqdm(images):
+        # Read the first image to get the center
+        first_image = cv2.imread(image_files[0])
+        x_center, y_center = self.get_real_crop_box(first_image)
+
+        for image_file in tqdm(image_files):
+            image = cv2.imread(image_file)
             dets = self.face_recognition.get_faces(image)
             if not dets:
-                predictions.append(None)
+                predictions.append([None])
                 continue
             # this is init first face
             if x_center is None or y_center is None:
                 face = dets[0]  # get first face
                 x1, y1, x2, y2 = face.bbox
                 face_gender = face.gender  # face gender
-                predictions.append([x1, y1, x2, y2])  # prediction
+                predictions.append([face])  # prediction
                 face_embedding_list += [face.normed_embedding]
                 x_center = int((x1 + x2) / 2)  # set new center
                 y_center = int((y1 + y2) / 2)  # set new center
@@ -92,14 +101,14 @@ class GenerateFakeVideo2Lip:
                     x1, y1, x2, y2 = face.bbox
                     if x1 <= x_center <= x2 and y1 <= y_center <= y2:
                         face_gender = face.gender  # face gender
-                        predictions.append([x1, y1, x2, y2])  # prediction
+                        predictions.append([face])  # prediction
                         face_embedding_list += [face.normed_embedding]
                         x_center = int((x1 + x2) / 2)  # set new center
                         y_center = int((y1 + y2) / 2)  # set new center
                         break
             else:  # here is already recognition
                 local_face_param = []
-                for face in dets:  # TODO can not be art use hasattr
+                for i, face in enumerate(dets):
                     x1, y1, x2, y2 = face.bbox
                     x_center = int((x1 + x2) / 2)  # set new center
                     y_center = int((y1 + y2) / 2)  # set new center
@@ -108,57 +117,38 @@ class GenerateFakeVideo2Lip:
                     if x1 <= x_center <= x2 and y1 <= y_center <= y2:
                         local_face_param += [{
                             "is_center": True, "is_gender": face_gender == face.gender, "is_embed": is_similar,
-                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding
+                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding, "id": i
                         }]
                     else:
                         local_face_param += [{
                             "is_center": False, "is_gender": face_gender == face.gender, "is_embed": is_similar,
-                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding
+                            "bbox": face.bbox, "gender": face.gender, "embed": normed_embedding, "id": i
                         }]
-
+                local_predictions = []
                 for param in local_face_param:
                     if (param["is_center"] or param["is_gender"]) and param["is_embed"]:
                         # this predicted
                         x1, y1, x2, y2 = param["bbox"]
                         face_gender = param["gender"]  # face gender
-                        predictions.append([x1, y1, x2, y2])  # prediction
+                        local_predictions.append(dets[param["id"]])
                         face_embedding_list += [param["embed"]]
                         x_center = int((x1 + x2) / 2)  # set new center
                         y_center = int((y1 + y2) / 2)  # set new center
                         break
+                if len(local_predictions) > 0:
+                    predictions.append(local_predictions)
                 else:
-                    predictions.append(None)
+                    predictions.append([None])
 
-        smooth_windows_size = 5
-        results = []
-        pady1, pady2, padx1, padx2 = pads
-        for rect, image in zip(predictions, images):
-            if rect is None:
-                results.append([0, 0, 1, 1])
-            else:
-                y1 = max(0, rect[1] - pady1)
-                y2 = min(image.shape[0], rect[3] + pady2)
-                x1 = max(0, rect[0] - padx1)
-                x2 = min(image.shape[1], rect[2] + padx2)
-                results.append([x1, y1, x2, y2])
-
-        boxes = np.array(results)
-        if not nosmooth:
-            boxes = self.get_smoothened_boxes(boxes, T=smooth_windows_size)
-
-        results = [[image[int(y1): int(y2), int(x1):int(x2)], (int(y1), int(y2), int(x1), int(x2))] for image, (x1, y1, x2, y2) in zip(images, boxes)]
-        return results
+        return predictions
 
 
-    def datagen(self, frames: list, mels: list, box: list, static: bool, img_size: int, wav2lip_batch_size: int,
-                pads: list =[0, 10, 0, 0], nosmooth: bool = False):
+    def datagen(self, frame_files: list, mels: list, img_size: int, wav2lip_batch_size: int, pads: list =[0, 10, 0, 0]):
         """
         Generator function that processes frames and their corresponding mel spectrograms
         for feeding into a Wav2Lip model.
-        :param frames: List of input face frames (images).
+        :param frame_files: List of input path to images.
         :param mels: List of mel spectrogram chunks corresponding to each frame.
-        :param box: A bounding box [y1, y2, x1, x2] or [-1] for automatic face detection.
-        :param static: Whether to use only the first frame for all mels.
         :param img_size: The target size to which detected faces will be resized.
         :param wav2lip_batch_size: Batch size for the Wav2Lip model.
         :param pads: Padding for the face bounding box.
@@ -167,28 +157,26 @@ class GenerateFakeVideo2Lip:
         """
 
         img_batch, mel_batch, frame_batch, coords_batch = [], [], [], []
-
-        if box[0] == -1:
-            if not static:
-                face_det_results = self.face_detect_with_alignment(frames, pads, nosmooth)  # BGR2RGB for CNN face detection
-            else:
-                face_det_results = self.face_detect_with_alignment([frames[0]], pads, nosmooth)
-        else:
-            print('Using the specified bounding box instead of face detection...')
-            y1, y2, x1, x2 = box
-            face_det_results = [[f[y1: y2, x1:x2], (y1, y2, x1, x2)] for f in frames]
+        face_det_results = self.face_detect_with_alignment_crop(frame_files)  # BGR2RGB for CNN face detection
 
         for i, m in enumerate(mels):
-            idx = 0 if static else i % len(frames)
-            frame_to_save = frames[idx].copy()
-            face, coords = face_det_results[idx].copy()
+            idx = i % len(frame_files)
 
-            face = cv2.resize(face, (img_size, img_size))
+            frame_to_save = cv2.imread(frame_files[idx])
+            dets = face_det_results[idx]
+            coords = dets[0].get("bbox") if dets[0] is not None else (0, 0, 0, 0)
+            x1, y1, x2, y2 = map(int, coords)
+            if int(x2 - x1) == 0 and int(y2 - y1) == 0:
+                # if empty face add as face full frame
+                img_batch.append(cv2.resize(frame_to_save, (img_size, img_size)))
+            else:
+                face = frame_to_save[int(y1): int(y2), int(x1):int(x2)]
+                face = cv2.resize(face, (img_size, img_size))
+                img_batch.append(face)
 
-            img_batch.append(face)
             mel_batch.append(m)
             frame_batch.append(frame_to_save)
-            coords_batch.append(coords)
+            coords_batch.append((y1, y2, x1, x2))
 
             if len(img_batch) >= wav2lip_batch_size:
                 img_batch, mel_batch = np.asarray(img_batch), np.asarray(mel_batch)
@@ -292,24 +280,29 @@ class GenerateFakeVideo2Lip:
 
             for p, f, c in zip(pred, frames, coords):
                 y1, y2, x1, x2 = c
-                center_current = np.array([(x1 + x2) / 2, (y1 + y2) / 2])  # Calculate the center of the current bounding box
-                p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
-                # Check if the current bounding box is non-empty
-                if y1 != 0 and y2 != 1 and x1 != 0 and x2 != 1:
-                    # If less than 5 coordinates are stored, add the new one
-                    if len(coords_mouth) < len_coords_mouth:
-                        coords_mouth.append(center_current)
-                        f[y1:y2, x1:x2] = p
-                    else:
-                        # Calculate distances between the current center and the centers stored in keep_coords
-                        distances = [self.face_recognition.calculate_distance(center_current, prev_center) for prev_center in coords_mouth]
-                        # If the current center is near any of the previous centers, update the frame
-                        # if any(distance < max_distance for distance in distances):
-                        if np.mean(distances) < max_distance_mouth:
+                if int(x2 - x1) == 0 and int(y2 - y1) == 0:
+                    # save clear frame
+                    out.write(f)
+                else:
+                    # save processed frame
+                    center_current = np.array([(x1 + x2) / 2, (y1 + y2) / 2])  # Calculate the center of the current bounding box
+                    p = cv2.resize(p.astype(np.uint8), (int(x2 - x1), int(y2 - y1)))
+                    # Check if the current bounding box is non-empty
+                    if y1 != 0 and y2 != 1 and x1 != 0 and x2 != 1:
+                        # If less than 5 coordinates are stored, add the new one
+                        if len(coords_mouth) < len_coords_mouth:
+                            coords_mouth.append(center_current)
                             f[y1:y2, x1:x2] = p
-                        coords_mouth.pop(0)  # Remove the oldest center
-                        coords_mouth.append(center_current)  # Add the current center
-                out.write(f)
+                        else:
+                            # Calculate distances between the current center and the centers stored in keep_coords
+                            distances = [self.face_recognition.calculate_distance(center_current, prev_center) for prev_center in coords_mouth]
+                            # If the current center is near any of the previous centers, update the frame
+                            # if any(distance < max_distance for distance in distances):
+                            if np.mean(distances) < max_distance_mouth:
+                                f[y1:y2, x1:x2] = p
+                            coords_mouth.pop(0)  # Remove the oldest center
+                            coords_mouth.append(center_current)  # Add the current center
+                    out.write(f)
         else:
             out.release()
 

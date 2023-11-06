@@ -15,7 +15,7 @@ sys.path.insert(0, deepfake_root_path)
 
 """Video and image"""
 from src.utils.videoio import (
-    save_video_with_audio, cut_start_video, get_frames, get_first_frame, encrypted, save_frames,
+    save_video_with_audio, cut_start_video, get_first_frame, encrypted, save_frames,
     check_media_type, extract_audio_from_video, save_video_from_frames, video_to_frames
 )
 from src.utils.imageio import save_image_cv2, read_image_cv2, save_colored_mask_cv2
@@ -258,8 +258,8 @@ class AnimationMouthTalk:
     Animation mouth talk on video
     """
     @staticmethod
-    def main_video_deepfake(deepfake_dir: str, face: str, audio: str, static: bool = False, face_fields: list = None,
-                            box: list = [-1, -1, -1, -1], video_start: float = 0,
+    def main_video_deepfake(deepfake_dir: str, source: str, audio: str, face_fields: list = None,
+                            video_start: float = 0,
                             video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
         use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
@@ -301,25 +301,24 @@ class AnimationMouthTalk:
                 check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
         # If video_start is not 0 when cut video from start
-        face = cut_start_video(face, float(video_start), float(video_end))
-
-        # get video frames
-        # TODO if users will have problem with RAM for this method, when change approach on save frames in files
-        frames, fps = get_frames(video=face, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+        source = cut_start_video(source, float(video_start), float(video_end))
+        # get video frame for source if type is video
+        frame_dir = os.path.join(save_dir, "frames")
+        os.makedirs(frame_dir, exist_ok=True)
+        fps, frame_dir = save_frames(video=source, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
         # get mel of audio
         mel_processor = MelProcessor(audio=audio, save_output=save_dir, fps=fps)
         mel_chunks = mel_processor.process()
         # create wav to lip
-        full_frames = frames[:len(mel_chunks)]
+        # Get a list of all frame files in the target_frames_path directory
+        frame_files = sorted([os.path.join(frame_dir, fname) for fname in os.listdir(frame_dir) if fname.endswith('.png')])
+        full_frames_files = frame_files[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
         wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label, similar_coeff=similar_coeff)
         wav2lip.face_fields = face_fields
 
         print("Face detect starting")
-        gen = wav2lip.datagen(
-            full_frames.copy(), mel_chunks, box, static, args.img_size, args.wav2lip_batch_size,
-            args.pads, args.nosmooth
-        )
+        gen = wav2lip.datagen(full_frames_files, mel_chunks, args.img_size, args.wav2lip_batch_size, args.pads)
         # load wav2lip
         print("Starting mouth animate")
         wav2lip_processed_video = wav2lip.generate_video_from_chunks(gen, mel_chunks, batch_size, wav2lip_checkpoint, device, save_dir, fps)
@@ -886,8 +885,10 @@ class MediaEdit:
                 device = "cpu"
 
             print("Get audio and video frames")
-            _, fps = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
             if check_media_type(source) == "animated":
+                stream = cv2.VideoCapture(source)
+                fps = stream.get(cv2.CAP_PROP_FPS)
+                stream.release()
                 source = cut_start_video(source, media_start, media_end)
                 print("Starting improve video")
                 enhanced_name = content_enhancer(source, save_folder=save_dir, method=enhancer, fps=float(fps), device=device)
@@ -1029,8 +1030,7 @@ class GetSegment:
         if source_media_type == "static":
             frame = read_image_cv2(source)
         elif source_media_type == "animated":
-            frames, _ = get_frames(video=source, rotate=False, crop=[0, -1, 0, -1], resize_factor=1)
-            frame = frames[0]
+            frame = get_first_frame(source, float(0))
         else:
             # return source
             return os.path.basename(source)

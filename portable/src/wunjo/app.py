@@ -698,7 +698,7 @@ def synthesize_animation_talk():
         elif type_file == "video":
             animation_talk_result = AnimationMouthTalk.main_video_deepfake(
                 deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
-                face=source_image,
+                source=source_image,
                 audio=driven_audio,
                 face_fields=face_fields,
                 video_start=float(media_start),

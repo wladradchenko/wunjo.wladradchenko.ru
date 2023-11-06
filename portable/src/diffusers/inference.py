@@ -24,7 +24,7 @@ from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
 from deepfake.src.utils.segment import SegmentAnything
 from deepfake.src.utils.videoio import (
-    cut_start_video, get_frames, check_media_type, save_video_from_frames,
+    cut_start_video, check_media_type, save_video_from_frames,
     extract_audio_from_video, save_video_with_audio
 )
 from diffusers.src.utils.mediaio import (

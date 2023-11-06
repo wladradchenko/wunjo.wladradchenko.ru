@@ -175,50 +175,6 @@ def get_first_frame(file_path, source_current_time: float = 0):
     return None
 
 
-def get_frames(video: str, rotate: int, crop: list, resize_factor: int):
-    """
-    Extract frames from a video, apply resizing, rotation, and cropping.
-
-    :param video: path to the video file
-    :param rotate: number of 90-degree rotations
-    :param crop: list with cropping coordinates [y1, y2, x1, x2]
-    :param resize_factor: factor by which the frame should be resized
-    :return: list of processed frames, fps of the video
-    """
-    print("Start reading video")
-
-    video_stream = cv2.VideoCapture(video)
-    fps = video_stream.get(cv2.CAP_PROP_FPS)
-    full_frames = []
-
-    try:
-        while True:
-            still_reading, frame = video_stream.read()
-
-            if not still_reading:
-                break
-
-            if resize_factor > 1:
-                frame = cv2.resize(frame, (int(frame.shape[1] // resize_factor), int(frame.shape[0] // resize_factor)))
-
-            for _ in range(rotate):
-                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
-
-            y1, y2, x1, x2 = crop
-            x2 = x2 if x2 != -1 else frame.shape[1]
-            y2 = y2 if y2 != -1 else frame.shape[0]
-
-            frame = frame[y1:y2, x1:x2]
-            full_frames.append(frame)
-
-    finally:
-        video_stream.release()
-
-    print(f"Number of frames available for inference: {len(full_frames)}")
-
-    return full_frames, fps
-
-
 def save_frames(video: str, output_dir: str, rotate: int, crop: list, resize_factor: int):
     """
     Extract frames from a video, apply resizing, rotation, and cropping, and save them to an output directory.
