@@ -166,6 +166,10 @@ class GenerateFakeVideo2Lip:
             dets = face_det_results[idx]
             coords = dets[0].get("bbox") if dets[0] is not None else (0, 0, 0, 0)
             x1, y1, x2, y2 = map(int, coords)
+            x1 = max(x1, 0)
+            x2 = max(x2, 0)
+            y1 = max(y1, 0)
+            y2 = max(y2, 0)
             if int(x2 - x1) == 0 and int(y2 - y1) == 0:
                 # if empty face add as face full frame
                 img_batch.append(cv2.resize(frame_to_save, (img_size, img_size)))
