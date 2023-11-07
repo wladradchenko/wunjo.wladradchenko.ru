@@ -29,8 +29,10 @@ from backend.folders import (
     CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER
 )
 from backend.translator import get_translate
-from backend.general_utils import get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size, format_dir_time, clean_text_by_language
-
+from backend.general_utils import (
+    get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size,
+    format_dir_time, clean_text_by_language, check_tmp_file_uploaded
+)
 import logging
 
 app = Flask(__name__)
@@ -234,6 +236,10 @@ def create_segment_anything():
     segment_models = app.config['SEGMENT_ANYTHING_MODEL']
     predictor = segment_models.get("predictor")
     session = segment_models.get("session")
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
     result_filename = GetSegment.get_segment_mask_file(
         predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
     )
@@ -363,6 +369,11 @@ def synthesize_media_editor():
         request_mode = "deepfake"
         mode_msg = get_print_translate("Video to images")
 
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
+
     try:
         if not audio_separator and media_type in ["img", "video"]:
             if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
@@ -462,6 +473,11 @@ def synthesize_diffuser():
 
     clear_cache()  # clear empty, because will be better load segment models again and after empty cache
 
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
+
     try:
         diffusion_result = Video2Video.main_video_render(
             source=os.path.join(TMP_FOLDER, source), output_folder=CONTENT_DIFFUSER_FOLDER, source_start=source_start, sd_model_name=sd_model_name,
@@ -525,6 +541,11 @@ def synthesize_retouch():
     request_date = format_dir_time(request_time)
     # clear empty, because will be better load segment models again and after empty cache, else not empty full
     clear_cache()
+
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
 
     try:
         retouch_result = Retouch.main_retouch(
@@ -593,6 +614,11 @@ def synthesize_face_swap():
     request_date = format_dir_time(request_time)
 
     clear_cache()  # clear empty
+
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, target_content)) or not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source_content)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
@@ -674,6 +700,11 @@ def synthesize_animation_talk():
     request_date = format_dir_time(request_time)
 
     clear_cache()  # clear empty
+
+    if not check_tmp_file_uploaded(source_image) or check_tmp_file_uploaded(driven_audio):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
 
     if type_file == "img":
         mode_msg = get_print_translate("Face in sync")

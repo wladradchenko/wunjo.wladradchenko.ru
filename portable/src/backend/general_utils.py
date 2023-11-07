@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import json
+import time
 import shutil
 import requests
 from time import strftime
@@ -177,6 +178,22 @@ def format_dir_time(dir_time):
     # Format the date and time
     formatted_date = f"{day}.{month}.{year} {hour}:{minute}"
     return formatted_date
+
+
+def check_tmp_file_uploaded(file_path, retries=5, delay=5):
+    """
+    Check if a file exists, with a specified number of retries and delay between retries.
+
+    :param file_path: Path to the file to check.
+    :param retries: Number of times to retry.
+    :param delay: Delay in seconds between retries.
+    :return: True if file exists, False otherwise.
+    """
+    for _ in range(retries):
+        if os.path.exists(file_path):
+            return True
+        time.sleep(delay)
+    return False
 
 
 def _create_localization():
