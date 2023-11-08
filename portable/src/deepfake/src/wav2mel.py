@@ -15,6 +15,12 @@ class MelProcessor:
             print('Extracting raw audio...')
             command = 'ffmpeg -y -i {} -strict -2 {}'.format(self.audio, os.path.join(self.save_output, "transfer_audio_temp.wav"))
             subprocess.call(command, shell=True)
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                subprocess.call(command, shell=True)
+            else:
+                # silence run
+                subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.audio = os.path.join(self.save_output, "transfer_audio_temp.wav")
 
     def load_audio(self):

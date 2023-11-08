@@ -701,7 +701,7 @@ def synthesize_animation_talk():
 
     clear_cache()  # clear empty
 
-    if not check_tmp_file_uploaded(source_image) or check_tmp_file_uploaded(driven_audio):
+    if not check_tmp_file_uploaded(source_image) or not check_tmp_file_uploaded(driven_audio):
         # check what file is uploaded in tmp
         print("File is too big... ")
         return {"status": 400}

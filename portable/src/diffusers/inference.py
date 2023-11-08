@@ -385,12 +385,15 @@ class Video2Video:
             # remove only tmp folder
             for f in os.listdir(TMP_FOLDER):
                 os.remove(os.path.join(TMP_FOLDER, f))
-            # return changed image with restore size
-            changed_frame = cv2.imread(os.path.join(cfg.key_subdir, frame_files[0]))
-            resized_changed_frame = cv2.resize(changed_frame, (default_width, default_height))
-            resized_changed_file_name = os.path.join(cfg.key_subdir, "resized_result.png")
-            cv2.imwrite(resized_changed_file_name, resized_changed_frame)
-            return resized_changed_file_name
+            if width != default_width or height != default_height:  # if ratio was changed
+                # return changed image with restore size
+                changed_frame = cv2.imread(os.path.join(cfg.key_subdir, frame_files[0]))
+                resized_changed_frame = cv2.resize(changed_frame, (default_width, default_height))
+                resized_changed_file_name = os.path.join(cfg.key_subdir, "resized_result.png")
+                cv2.imwrite(resized_changed_file_name, resized_changed_frame)
+                return resized_changed_file_name
+            else:
+                return os.path.join(cfg.key_subdir, frame_files[0])
 
         # download if ebsynth app is not exist
         ebsynth_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "ebsynth")
@@ -492,7 +495,8 @@ class Video2Video:
             os.remove(os.path.join(TMP_FOLDER, f))
 
         # restore aspect ratio for video
-        save_name = resize_and_save_video(save_name, cfg.work_dir, default_width, default_height)
+        if width != default_width or height != default_height:  # if ratio was changed
+            save_name = resize_and_save_video(save_name, cfg.work_dir, default_width, default_height)
 
         return save_name
 

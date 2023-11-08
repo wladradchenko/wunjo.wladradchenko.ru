@@ -48,7 +48,12 @@ def convert_video(in_file,
           f'{out_file}'
     if print_cmd:
         print(cmd)
-    subprocess.call(cmd, shell=True)
+    if os.environ.get('DEBUG', 'False') == 'True':
+        # not silence run
+        subprocess.call(cmd, shell=True)
+    else:
+        # silence run
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 @requires_executable('ffmpeg')
