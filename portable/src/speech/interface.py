@@ -263,8 +263,10 @@ class SpeechEnhancement:
         file_name = str(uuid.uuid4()) + '.wav'
         output_file = os.path.join(save_dir, file_name)
 
-        model_vocoder_path = load_speech_enhancement_vocoder
-        model_fixer_path = load_speech_enhancement_fixer
+        model_vocoder_path = load_speech_enhancement_vocoder()
+        model_fixer_path = load_speech_enhancement_fixer()
+
+        print(model_vocoder_path, model_fixer_path)
 
         voicefixer = VoiceFixer(model_voicefixer_path=model_fixer_path, model_vocoder_path=model_vocoder_path)
         print("Start speech enhancement")

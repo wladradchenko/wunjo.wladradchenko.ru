@@ -194,8 +194,8 @@ def load_speech_enhancement_fixer():
     Load speech enhancement voicefixer for voice cloning
     :return: path to models
     """
-    link_model_fixer = get_nested_url(rtvc_models_config, ["general", "fixer.ckpt"])
-    model_fixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "fixer.ckpt")
+    link_model_fixer = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
+    model_fixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "voicefixer.ckpt")
     if not os.path.exists(model_fixer_path):
         # check what is internet access
         is_connected(model_fixer_path)
