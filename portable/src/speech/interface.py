@@ -220,6 +220,7 @@ class AudioSeparatorVoice:
             source = os.path.join(output_path, extracted_audio)
 
         separator = AudioSeparator()
+        print("Start audio separator")
         output_file = separator.separate_audio(source, output_path, converted_wav=converted_wav, target_wav=target, device=device, resample=resample)
         # trim silence before analysis
         if trim_silence:
@@ -262,6 +263,7 @@ class SpeechEnhancement:
         output_file = os.path.join(save_dir, file_name)
 
         voicefixer = VoiceFixer()
+        print("Start speech enhancement")
         voicefixer.restore(input=source, output=output_file, cuda=use_cuda)
 
         return output_file
