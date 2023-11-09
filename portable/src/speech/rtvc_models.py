@@ -171,6 +171,42 @@ def load_rtvc(lang: str):
     return encoder, synthesizer, signature, vocoder
 
 
+def load_speech_enhancement_vocoder():
+    """
+    Load speech enhancement vocoder for voice cloning
+    :return: path to models
+    """
+    link_model_vocoder = get_nested_url(rtvc_models_config, ["general", "trimed.pt"])
+    model_vocoder_path = os.path.join(RTVC_VOICE_FOLDER, "general", "trimed.pt")
+    if not os.path.exists(model_vocoder_path):
+        # check what is internet access
+        is_connected(model_vocoder_path)
+        # download pre-trained models from url
+        download_model(model_vocoder_path, link_model_vocoder)
+    else:
+        check_download_size(model_vocoder_path, link_model_vocoder)
+
+    return model_vocoder_path
+
+
+def load_speech_enhancement_voicefixer():
+    """
+    Load speech enhancement voicefixer for voice cloning
+    :return: path to models
+    """
+    link_model_voicefixer = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
+    model_voicefixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "voicefixer.ckpt")
+    if not os.path.exists(model_voicefixer_path):
+        # check what is internet access
+        is_connected(model_voicefixer_path)
+        # download pre-trained models from url
+        download_model(model_voicefixer_path, link_model_voicefixer)
+    else:
+        check_download_size(model_voicefixer_path, link_model_voicefixer)
+
+    return model_voicefixer_path
+
+
 def get_text_from_audio():
     pass
 

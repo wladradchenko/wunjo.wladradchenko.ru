@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+import torch
 from time import time
 import subprocess
 
@@ -112,7 +113,10 @@ class VoiceCloneTranslate:
 
         output_name = str(uuid.uuid4()) + ".wav"
         rtvc_output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
-        output_file = AudioSpeedProcessor().process_and_save(audio_file_voice, rtvc_output_file)  # set speed from original
+        # improve enhancement of cloning voice
+        rtvc_enhancement_file = SpeechEnhancement().get_speech_enhancement(rtvc_output_file, save_folder)
+        # set speed from original
+        output_file = AudioSpeedProcessor().process_and_save(audio_file_voice, rtvc_enhancement_file)
 
         end = time()
 
@@ -179,7 +183,7 @@ class VoiceCloneTranslate:
             "-i", os.path.join(audio_folder, "merged_files.txt"),
             "-c", "copy",
             output_file_path
-        ])
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # Optionally, remove the temporary merged_files.txt file
         os.remove(merged_files)
@@ -235,3 +239,29 @@ class AudioSeparatorVoice:
             # silence run
             subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return file_name
+
+
+class SpeechEnhancement:
+    """
+    Speech audio enhancement
+    """
+    @staticmethod
+    def get_speech_enhancement(source, save_dir, device="cpu"):
+        from speech.enhancement import VoiceFixer
+
+        # inspect models
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+
+        if not os.path.exists(source):
+            import time
+            time.sleep(5)
+
+        use_cuda = True if device == 'cuda' else False
+        file_name = str(uuid.uuid4()) + '.wav'
+        output_file = os.path.join(save_dir, file_name)
+
+        voicefixer = VoiceFixer()
+        voicefixer.restore(input=source, output=output_file, cuda=use_cuda)
+
+        return output_file

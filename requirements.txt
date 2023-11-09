@@ -36,3 +36,4 @@ praat-parselmouth
 denoiser
 noisereduce
 openunmix
+torchlibrosa
