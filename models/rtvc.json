@@ -18,7 +18,7 @@
     "signature": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/rtvc/general/signature.pt",
     "hubert": "https://github.com/bshall/hubert/releases/download/v0.1/hubert-soft-0d54a1f4.pt",
     "unmix_voice": "https://zenodo.org/api/files/f8209c3e-ba60-48cf-8e79-71ae65beca61/vocals-bccbd9aa.pth",
-    "fixer.ckpt": "https://zenodo.org/record/5600188/files/vf.ckpt?download=1",
-    "trimed.pt": "https://zenodo.org/record/5469951/files/model.ckpt-1490000_trimed.pt?download=1"
+    "fixer.ckpt": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/rtvc/general/trimed.pt",
+    "trimed.pt": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/rtvc/general/fixer.ckpt"
   }
 }
