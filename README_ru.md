@@ -317,6 +317,7 @@ __Большее разрешение видео__, __дает лучше кач
 - [x] ~~Имитирование [эмоций](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion) голосом~~ и улучшено качество клонирования голоса.
 - [x] Уменьшение объема RAM, используемой для анимации рта, и улучшение качества видео.
 - [x] Добавлено улучшение качества речи в аудио
+- [ ] Добавление отдельной панели для Ebsynth
 - [ ] Генерация музыки
 - [x] Многоязычная речь по одному тексту
 - [ ] Добавление нового инструмента создания маски рисуемой пользователем, которая прикрепляется к объекту сегментации и двигается вместе с ним 
@@ -376,7 +377,7 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 
 Wunjo AI создан на основе замечательных результатов различных проектов с открытым исходным кодом. Каждый интегрированный компонент отражает стремление к улучшению и адаптации существующих технологий в рамках совместной разработки с открытым исходным кодом. В списке ниже представлены проекты, которые были адаптированы и улучшены для включения в Wunjo AI:
 
-- **Синтез речи и клонирование голоса:** Адаптированные версии [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow) и улучшена версия [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) от первоначального решения
+- **Синтез речи и клонирование голоса:** Адаптированные версии [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow) и улучшена версия [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) от первоначального решения с добавлением [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **Пользовательский интерфейс и упаковка:** Реализация [Flask UI](https://github.com/ClimenteA/flaskwebgui) и [BeeWare](https://beeware.org/project/projects/tools/briefcase/ )
 - **Обработка звука:** Адаптированная версия [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) для разделения звука
 - **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib) и улучшена версия [Sad Talker](https://github.com/OpenTalker/SadTalker) от первоначального решения

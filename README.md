@@ -377,7 +377,7 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 
 Wunjo AI is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo AI:
 
-- **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and enhanced [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning)
+- **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and improved [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) with [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
 - **Audio Processing:** Adapted [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) for audio separation
 - **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib) and enhanced [Sad Talker](https://github.com/OpenTalker/SadTalker)
