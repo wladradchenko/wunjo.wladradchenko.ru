@@ -1086,4 +1086,5 @@ def main():
     if not app.config['DEBUG'] and sys.platform != 'darwin':
         FlaskUI(app=app, server="flask").run()
     else:
-        app.run()
+        print("http://127.0.0.1:8000")
+        app.run(port=8000)
