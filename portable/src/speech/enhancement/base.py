@@ -8,17 +8,15 @@ from speech.enhancement.tools.pytorch_util import tensor2numpy, from_log, try_te
 from speech.enhancement.tools.wav import save_wave
 from speech.enhancement.restorer.model import VoiceFixer as voicefixer_fe
 
-from backend.rtvc_models import load_speech_enhancement_voicefixer
-
 
 EPS = 1e-8
 
 
 class VoiceFixer(nn.Module):
-    def __init__(self, model_voicefixer_path):
+    def __init__(self, model_voicefixer_path, model_vocoder_path):
         super(VoiceFixer, self).__init__()
-        self._model = voicefixer_fe(channels=2, sample_rate=44100)
-        self.analysis_module_ckpt = load_speech_enhancement_voicefixer()
+        self._model = voicefixer_fe(channels=2, sample_rate=44100, model_vocoder_path=model_vocoder_path)
+        self.analysis_module_ckpt = model_voicefixer_path
         if(not os.path.exists(self.analysis_module_ckpt)):
             raise RuntimeError("Error 0: The checkpoint for analysis module (vf.ckpt) is not found in ~/.wunjo/rtvc/general. \
                                 By default the checkpoint should be download automatically by this program. Something bad may happened.\

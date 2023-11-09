@@ -125,6 +125,7 @@ class VoiceFixer(nn.Module):
     def __init__(
         self,
         channels,
+        model_vocoder_path,
         type_target="vocals",
         nsrc=1,
         loss="l1",
@@ -174,7 +175,7 @@ class VoiceFixer(nn.Module):
         self.batchsize = batchsize
         self.frame_length = frame_length
 
-        self.vocoder = Vocoder(sample_rate=44100)
+        self.vocoder = Vocoder(sample_rate=44100, model_vocoder_path=model_vocoder_path)
 
         self.valid = None
         self.fake = None

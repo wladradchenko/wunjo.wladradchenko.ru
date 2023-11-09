@@ -10,20 +10,17 @@ from speech.enhancement.tools.pytorch_util import check_cuda_availability, try_t
 from speech.enhancement.vocoder.model.util import load_checkpoint, load_try, tr_normalize, linear_to_mel, pre, amp_to_db, normalize, tr_amp_to_db, tr_pre
 from speech.enhancement.vocoder.config import Config
 
-from backend.rtvc_models import load_speech_enhancement_vocoder
-
 
 class Vocoder(nn.Module):
-    def __init__(self, sample_rate):
+    def __init__(self, sample_rate, model_vocoder_path):
         super(Vocoder, self).__init__()
         Config.refresh(sample_rate)
         self.rate = sample_rate
-        model_path = load_speech_enhancement_vocoder()
-        if(not os.path.exists(model_path)):
+        if(not os.path.exists(model_vocoder_path)):
             raise RuntimeError("Error 1: The checkpoint for synthesis module / vocoder (model.ckpt-1490000_trimed) is not found in ~/.wunjo/rtvc/general. \
                                 By default the checkpoint should be download automatically by this program. Something bad may happened. Apologies for the inconvenience.\
                                 But don't worry! Alternatively you can download it directly from Zenodo: https://zenodo.org/record/5600188/files/model.ckpt-1490000_trimed.pt?download=1")
-        self._load_pretrain(model_path)
+        self._load_pretrain(model_vocoder_path)
         self.weight_torch = Config.get_mel_weight_torch(percent=1.0)[
             None, None, None, ...
         ]

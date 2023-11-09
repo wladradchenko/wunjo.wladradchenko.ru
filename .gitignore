@@ -3,6 +3,5 @@ venv/
 __pycache__/
 icons/
 dataset/
-tools/
 gitkey
 NOTE.md

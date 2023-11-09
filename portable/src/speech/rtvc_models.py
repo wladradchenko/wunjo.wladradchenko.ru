@@ -189,22 +189,22 @@ def load_speech_enhancement_vocoder():
     return model_vocoder_path
 
 
-def load_speech_enhancement_voicefixer():
+def load_speech_enhancement_fixer():
     """
     Load speech enhancement voicefixer for voice cloning
     :return: path to models
     """
-    link_model_voicefixer = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
-    model_voicefixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "voicefixer.ckpt")
-    if not os.path.exists(model_voicefixer_path):
+    link_model_fixer = get_nested_url(rtvc_models_config, ["general", "fixer.ckpt"])
+    model_fixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "fixer.ckpt")
+    if not os.path.exists(model_fixer_path):
         # check what is internet access
-        is_connected(model_voicefixer_path)
+        is_connected(model_fixer_path)
         # download pre-trained models from url
-        download_model(model_voicefixer_path, link_model_voicefixer)
+        download_model(model_fixer_path, link_model_fixer)
     else:
-        check_download_size(model_voicefixer_path, link_model_voicefixer)
+        check_download_size(model_fixer_path, link_model_fixer)
 
-    return model_voicefixer_path
+    return model_fixer_path
 
 
 def get_text_from_audio():

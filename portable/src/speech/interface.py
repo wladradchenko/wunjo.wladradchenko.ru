@@ -71,7 +71,7 @@ class VoiceCloneTranslate:
     @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder, text, src_lang,
                               need_translate, tts_model_name="Cloning voice", converted_wav=True, **options):
-        try:
+        # try:
             download_ntlk()  # inspect what ntlk downloaded
 
             if need_translate:
@@ -91,9 +91,9 @@ class VoiceCloneTranslate:
                 **options
             )
             return 0, results
-        except Exception as err:
-            print(f"Error ... {err}")
-            return 1, str(err)
+        # except Exception as err:
+        #     print(f"Error ... {err}")
+        #     return 1, str(err)
 
     @staticmethod
     def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, converted_wav, **options):
@@ -249,6 +249,7 @@ class SpeechEnhancement:
     @staticmethod
     def get_speech_enhancement(source, save_dir, device="cpu"):
         from speech.enhancement import VoiceFixer
+        from speech.rtvc_models import load_speech_enhancement_vocoder, load_speech_enhancement_fixer
 
         # inspect models
         if not os.path.exists(save_dir):
@@ -262,7 +263,10 @@ class SpeechEnhancement:
         file_name = str(uuid.uuid4()) + '.wav'
         output_file = os.path.join(save_dir, file_name)
 
-        voicefixer = VoiceFixer()
+        model_vocoder_path = load_speech_enhancement_vocoder
+        model_fixer_path = load_speech_enhancement_fixer
+
+        voicefixer = VoiceFixer(model_voicefixer_path=model_fixer_path, model_vocoder_path=model_vocoder_path)
         print("Start speech enhancement")
         voicefixer.restore(input=source, output=output_file, cuda=use_cuda)
 
