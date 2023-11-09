@@ -35,7 +35,7 @@ class AudioSeparator:
         estimates = predict.separate(
             audio_tensor,
             rate=rate,
-            targets=['vocals'],
+            targets=[target_wav if target_wav != "residual" else "vocals"],  # I set this condition if I will add radios for target_wav as bass or dump
             residual=True,
             device=device,
         )

@@ -64,6 +64,10 @@ CONTENT_AUDIO_SEPARATOR_FOLDER = os.path.join(CONTENT_FOLDER, "audio_separator")
 if not os.path.exists(CONTENT_AUDIO_SEPARATOR_FOLDER):
     os.makedirs(CONTENT_AUDIO_SEPARATOR_FOLDER)
 
+CONTENT_SPEECH_ENHANCEMENT_FOLDER = os.path.join(CONTENT_FOLDER, "speech_enhancement")
+if not os.path.exists(CONTENT_SPEECH_ENHANCEMENT_FOLDER):
+    os.makedirs(CONTENT_SPEECH_ENHANCEMENT_FOLDER)
+
 CONTENT_DIFFUSER_FOLDER = os.path.join(CONTENT_FOLDER, "diffuser")
 if not os.path.exists(CONTENT_DIFFUSER_FOLDER):
     os.makedirs(CONTENT_DIFFUSER_FOLDER)

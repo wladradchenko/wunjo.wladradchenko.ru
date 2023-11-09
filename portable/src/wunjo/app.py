@@ -20,13 +20,13 @@ try:
 except ImportError:
     VIDEO2VIDEO_AVAILABLE = False
     diffusion_models = {}
-from speech.interface import TextToSpeech, VoiceCloneTranslate, AudioSeparatorVoice
+from speech.interface import TextToSpeech, VoiceCloneTranslate, AudioSeparatorVoice, SpeechEnhancement
 from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
 from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import (
     MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER, CONTENT_FOLDER, CONTENT_MEDIA_EDIT_FOLDER,
     CONTENT_AUDIO_SEPARATOR_FOLDER, CONTENT_DIFFUSER_FOLDER, CONTENT_RETOUCH_FOLDER, CONTENT_FACE_SWAP_FOLDER,
-    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER
+    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER, CONTENT_SPEECH_ENHANCEMENT_FOLDER
 )
 from backend.translator import get_translate
 from backend.general_utils import (
@@ -38,7 +38,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-os.environ['DEBUG'] = 'True'  # str False or True
+os.environ['DEBUG'] = 'False'  # str False or True
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
@@ -345,6 +345,7 @@ def synthesize_media_editor():
     realesrgan = request_list.get("realesrgan", False)
     vocals = request_list.get("vocals", False)
     residual = request_list.get("residual", False)
+    speech_enhancement = request_list.get("voicefixer", False)
     # List of enhancer options in preferred order
     enhancer_options = [gfpgan, animesgan, realesrgan]
     separator_options = [vocals, residual]
@@ -359,12 +360,13 @@ def synthesize_media_editor():
     request_time = current_time()
     request_date = format_dir_time(request_time)
 
-    if enhancer and not audio_separator:
+    if enhancer and not audio_separator and not speech_enhancement:
         request_mode = "deepfake"
         mode_msg = get_print_translate("Content improve")
-    elif not enhancer and audio_separator:
+    elif not enhancer and (audio_separator or speech_enhancement):
         request_mode = "speech"
-        mode_msg = get_print_translate("Separator audio")
+        msg = "Separator audio" if audio_separator else "Speech enhancement"
+        mode_msg = get_print_translate(msg)
     else:
         request_mode = "deepfake"
         mode_msg = get_print_translate("Video to images")
@@ -375,28 +377,36 @@ def synthesize_media_editor():
         return {"status": 400}
 
     try:
-        if not audio_separator and media_type in ["img", "video"]:
+        if not audio_separator and not speech_enhancement and media_type in ["img", "video"]:
+            # media edit video or image
             if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
                 os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
 
-            result = MediaEdit.main_video_work(
+            result_path = MediaEdit.main_video_work(
                 output=CONTENT_MEDIA_EDIT_FOLDER, source=os.path.join(TMP_FOLDER, source),
                 enhancer=enhancer, is_get_frames=is_get_frames,
                 media_start=media_start, media_end=media_end
             )
-            save_folder_name = os.path.basename(CONTENT_FOLDER)
-            result_filename = f"/{save_folder_name}/" + result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
         elif audio_separator and media_type in ["audio", "video"]:
+            # audio separate from video or audio
             if not os.path.exists(CONTENT_AUDIO_SEPARATOR_FOLDER):
                 os.makedirs(CONTENT_AUDIO_SEPARATOR_FOLDER)
 
             dir_time = current_time()
             result_path = AudioSeparatorVoice.get_audio_separator(
                 source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time), file_type=media_type,
-                converted_wav=True, target=audio_separator, trim_silence=False, resample=False
+                converted_wav=True, target=audio_separator, trim_silence=False, resample=False, device=os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
             )
-            save_folder_name = os.path.basename(CONTENT_FOLDER)
-            result_filename = f"/{save_folder_name}/" + result_path.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
+        elif speech_enhancement and media_type in ["audio", "video"]:
+            # speech enhancement from video or audio
+            if not os.path.exists(CONTENT_SPEECH_ENHANCEMENT_FOLDER):
+                os.makedirs(CONTENT_SPEECH_ENHANCEMENT_FOLDER)
+
+            dir_time = current_time()
+            result_path = SpeechEnhancement().get_speech_enhancement(
+                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time),
+                device=os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'), file_type=media_type
+            )
         else:
             raise Exception("Not recognition options for media content editor")
     except Exception as err:
@@ -405,6 +415,8 @@ def synthesize_media_editor():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 400}
 
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    result_filename = f"/{save_folder_name}/" + result_path.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
     url = url_for("media_file", filename=result_filename)
 
     app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "voice": mode_msg, "request_mode": request_mode, "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]

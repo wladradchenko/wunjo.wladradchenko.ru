@@ -39,11 +39,15 @@ async function initializeMediaEditor(button, audioURL = undefined, audioName = u
                                       <input type="radio" id="animesgan" name="preprocessing" value="animesgan" onclick="radioSetMessage(document.getElementById('message-about-status'), 'Sides under 640px will be adjusted to 640px, keeping the aspect ratio');">
                                       <label for="animesgan">Improve hand-drawn quality</label>
                                     </div>
-                                </div>
-                                <div style="margin-left:5vw;">
                                     <div>
                                       <input type="radio" id="getFrames" name="preprocessing" value="frames">
                                       <label for="getFrames">Extract frames</label>
+                                    </div>
+                                </div>
+                                <div style="margin-left:5vw;">
+                                    <div>
+                                      <input type="radio" id="getVoicefixer" name="preprocessing" value="voicefixer">
+                                      <label for="getVoicefixer">Speech enhancement</label>
                                     </div>
                                     <div>
                                       <input type="radio" id="getVocals" name="preprocessing" value="vocals">
@@ -328,6 +332,7 @@ function executeMediaEditorProcess(mediaDetails, elem) {
         get_frames: elem.querySelector("#getFrames").checked,
         vocals: elem.querySelector("#getVocals").checked ? "vocals" : false,
         residual: elem.querySelector("#getResidual").checked ? "residual" : false,
+        voicefixer: elem.querySelector("#getVoicefixer").checked ? true : false,
         media_start: mediaDetails.mediaStart,
         media_end: mediaDetails.mediaEnd,
         media_type: mediaDetails.mediaType,

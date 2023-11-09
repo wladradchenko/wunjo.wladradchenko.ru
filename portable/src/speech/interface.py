@@ -71,7 +71,7 @@ class VoiceCloneTranslate:
     @staticmethod
     def get_synthesized_audio(audio_file, encoder, synthesizer, signature, vocoder, save_folder, text, src_lang,
                               need_translate, tts_model_name="Cloning voice", converted_wav=True, **options):
-        # try:
+        try:
             download_ntlk()  # inspect what ntlk downloaded
 
             if need_translate:
@@ -91,9 +91,9 @@ class VoiceCloneTranslate:
                 **options
             )
             return 0, results
-        # except Exception as err:
-        #     print(f"Error ... {err}")
-        #     return 1, str(err)
+        except Exception as err:
+            print(f"Error ... {err}")
+            return 1, str(err)
 
     @staticmethod
     def get_models_results(audio_file, text, encoder, synthesizer, signature, vocoder, save_folder, tts_model_name, converted_wav, **options):
@@ -247,29 +247,47 @@ class SpeechEnhancement:
     Speech audio enhancement
     """
     @staticmethod
-    def get_speech_enhancement(source, save_dir, device="cpu"):
+    def get_speech_enhancement(source, output_path, device="cpu", file_type="audio"):
         from speech.enhancement import VoiceFixer
         from speech.rtvc_models import load_speech_enhancement_vocoder, load_speech_enhancement_fixer
 
         # inspect models
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
 
         if not os.path.exists(source):
             import time
             time.sleep(5)
 
+        if file_type == "video":
+            extracted_audio = SpeechEnhancement.extract_audio_from_video(source, output_path)
+            if not extracted_audio:
+                raise ValueError("Unable to extract audio from the provided video")
+            source = os.path.join(output_path, extracted_audio)
+
         use_cuda = True if device == 'cuda' else False
         file_name = str(uuid.uuid4()) + '.wav'
-        output_file = os.path.join(save_dir, file_name)
+        output_file = os.path.join(output_path, file_name)
 
         model_vocoder_path = load_speech_enhancement_vocoder()
         model_fixer_path = load_speech_enhancement_fixer()
-
-        print(model_vocoder_path, model_fixer_path)
 
         voicefixer = VoiceFixer(model_voicefixer_path=model_fixer_path, model_vocoder_path=model_vocoder_path)
         print("Start speech enhancement")
         voicefixer.restore(input=source, output=output_file, cuda=use_cuda)
 
         return output_file
+
+    @staticmethod
+    def extract_audio_from_video(video_path, save_path):
+        # If not a GIF, proceed with audio extraction
+        file_name = str(uuid.uuid4()) + '.wav'
+        save_file = os.path.join(save_path, file_name)
+        cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
+        if os.environ.get('DEBUG', 'False') == 'True':
+            # not silence run
+            os.system(cmd)
+        else:
+            # silence run
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return file_name
