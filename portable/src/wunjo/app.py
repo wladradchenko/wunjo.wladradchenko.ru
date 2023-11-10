@@ -395,7 +395,7 @@ def synthesize_media_editor():
             dir_time = current_time()
             result_path = AudioSeparatorVoice.get_audio_separator(
                 source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time), file_type=media_type,
-                converted_wav=True, target=audio_separator, trim_silence=False, resample=False, device=os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')
+                converted_wav=True, target=audio_separator, trim_silence=False, resample=False, use_gpu=os.environ.get('WUNJO_TORCH_DEVICE', 'cuda') == 'cuda'
             )
         elif speech_enhancement and media_type in ["audio", "video"]:
             # speech enhancement from video or audio
@@ -405,7 +405,7 @@ def synthesize_media_editor():
             dir_time = current_time()
             result_path = SpeechEnhancement().get_speech_enhancement(
                 source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time),
-                device=os.environ.get('WUNJO_TORCH_DEVICE', 'cpu'), file_type=media_type
+                use_gpu=os.environ.get('WUNJO_TORCH_DEVICE', 'cuda') == 'cuda', file_type=media_type
             )
         else:
             raise Exception("Not recognition options for media content editor")

@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from backend.translator import get_translate
 from backend.general_utils import download_ntlk
+from backend.download import download_model, check_download_size, get_nested_url, is_connected
 
 sys.path.pop(0)
 
@@ -106,7 +107,7 @@ class VoiceCloneTranslate:
         start = time()
 
         # get voice for audio to use praat processing in wav format TODO device set?
-        audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=converted_wav, target="vocals", device="cpu")
+        audio_file_voice = AudioSeparatorVoice.get_audio_separator(audio_file, save_folder, converted_wav=converted_wav, target="vocals", use_gpu=False)
 
         # clone voice
         clone_voice_rtvc(audio_file_voice, text, encoder, synthesizer, vocoder, save_folder)
@@ -114,7 +115,7 @@ class VoiceCloneTranslate:
         output_name = str(uuid.uuid4()) + ".wav"
         rtvc_output_file = VoiceCloneTranslate.merge_audio_parts(save_folder, "rtvc_output_part", output_name)
         # improve enhancement of cloning voice
-        rtvc_enhancement_file = SpeechEnhancement().get_speech_enhancement(rtvc_output_file, save_folder)
+        rtvc_enhancement_file = SpeechEnhancement().get_speech_enhancement(rtvc_output_file, save_folder, file_type="audio", use_gpu=False)
         # set speed from original
         output_file = AudioSpeedProcessor().process_and_save(audio_file_voice, rtvc_enhancement_file)
 
@@ -203,8 +204,9 @@ class AudioSeparatorVoice:
     Separate voice and noise from audio
     """
     @staticmethod
-    def get_audio_separator(source, output_path, file_type="audio", converted_wav=True, target="vocals", device="cpu", trim_silence=True, resample=True):
+    def get_audio_separator(source, output_path, file_type="audio", converted_wav=True, target="vocals", use_gpu=False, trim_silence=True, resample=True):
         from speech.unmix.utils.model import AudioSeparator
+        from speech.rtvc_models import load_audio_separator_model
 
         if not os.path.exists(output_path):
             os.makedirs(output_path)
@@ -212,6 +214,15 @@ class AudioSeparatorVoice:
         if not os.path.exists(source):
             import time
             time.sleep(5)
+
+        load_audio_separator_model(target)
+
+        if torch.cuda.is_available() and use_gpu:
+            print("Processing will run on GPU")
+            device = "cuda"
+        else:
+            print("Processing will run on CPU")
+            device = "cpu"
 
         if file_type == "video":
             extracted_audio = AudioSeparatorVoice.extract_audio_from_video(source, output_path)
@@ -247,7 +258,7 @@ class SpeechEnhancement:
     Speech audio enhancement
     """
     @staticmethod
-    def get_speech_enhancement(source, output_path, device="cpu", file_type="audio"):
+    def get_speech_enhancement(source, output_path, use_gpu=False, file_type="audio"):
         from speech.enhancement import VoiceFixer
         from speech.rtvc_models import load_speech_enhancement_vocoder, load_speech_enhancement_fixer
 
@@ -258,6 +269,13 @@ class SpeechEnhancement:
         if not os.path.exists(source):
             import time
             time.sleep(5)
+
+        if torch.cuda.is_available() and use_gpu:
+            print("Processing will run on GPU")
+            device = "cuda"
+        else:
+            print("Processing will run on CPU")
+            device = "cpu"
 
         if file_type == "video":
             extracted_audio = SpeechEnhancement.extract_audio_from_video(source, output_path)

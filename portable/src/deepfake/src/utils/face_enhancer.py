@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from deepfake.src.utils.videoio import save_video_from_frames
 from backend.folders import DEEPFAKE_MODEL_FOLDER
-from backend.download import get_nested_url, is_connected
+from backend.download import get_nested_url, is_connected, download_model, check_download_size
 
 
 def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
@@ -61,7 +61,9 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
             # check what is internet access
             is_connected(model_path)
             # download pre-trained models from url
-            model_path = url
+            download_model(model_path, url)
+        else:
+            check_download_size(model_path, url)
 
         restorer = RealESRGANer(
             scale=4,  # 4
@@ -97,13 +99,17 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
             # check what is internet access
             is_connected(general_model_path)
             # download pre-trained models from url
-            models_path[0] = general_url
+            download_model(models_path[0], general_url)
+        else:
+            check_download_size(models_path[0], general_url)
 
         if not os.path.isfile(wdn_model_path):
             # check what is internet access
             is_connected(wdn_model_path)
             # download pre-trained models from url
-            models_path[1] = wdn_url
+            download_model(models_path[1], wdn_url)
+        else:
+            check_download_size(models_path[1], wdn_url)
 
         restorer = RealESRGANer(
             scale=4,  # 4

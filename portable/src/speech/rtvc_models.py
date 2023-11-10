@@ -207,6 +207,31 @@ def load_speech_enhancement_fixer():
     return model_fixer_path
 
 
+def load_audio_separator_model(target) -> None:
+    """
+    Load audio separator model torch hub dir
+    :param target:
+    :return:
+    """
+    hub_dir = torch.hub.get_dir()
+    print(hub_dir)
+    if not os.path.exists(os.path.dirname(hub_dir)):
+        os.makedirs(os.path.dirname(hub_dir))
+
+    if target in ["vocals", "residual"]:
+        link_audio_separator = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
+        model_audio_separator = os.path.join(hub_dir, "vocals-bccbd9aa.pth")
+
+        if not os.path.exists(model_audio_separator):
+            # check what is internet access
+            is_connected(model_audio_separator)
+            # download pre-trained models from url
+            download_model(model_audio_separator, link_audio_separator)
+            print("Model installed in PyTorch Hub Cache Directory:", model_audio_separator)
+        else:
+            check_download_size(model_audio_separator, link_audio_separator)
+
+
 def get_text_from_audio():
     pass
 
