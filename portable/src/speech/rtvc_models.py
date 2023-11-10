@@ -55,7 +55,7 @@ def inspect_rtvc_model(rtvc_model: str, rtvc_model_url: str) -> str:
     :return:
     """
     if not os.path.exists(os.path.dirname(rtvc_model)):
-        os.makedirs(os.path.dirname(rtvc_model))
+        os.makedirs(os.path.dirname(rtvc_model), exist_ok=True)
     if not os.path.exists(rtvc_model):
         # check what is internet access
         is_connected(rtvc_model)
@@ -216,12 +216,13 @@ def load_audio_separator_model(target) -> None:
     :return:
     """
     hub_dir = torch.hub.get_dir()
-    if not os.path.exists(os.path.dirname(hub_dir)):
-        os.makedirs(os.path.dirname(hub_dir))
+    hub_dir_checkpoints = os.path.join(hub_dir, "checkpoints")
+    if not os.path.exists(os.path.dirname(hub_dir_checkpoints)):
+        os.makedirs(os.path.dirname(hub_dir_checkpoints), exist_ok=True)
 
     if target in ["vocals", "residual"]:
         link_audio_separator = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
-        model_audio_separator = os.path.join(hub_dir, "vocals-bccbd9aa.pth")
+        model_audio_separator = os.path.join(hub_dir_checkpoints, "vocals-bccbd9aa.pth")
 
         if not os.path.exists(model_audio_separator):
             # check what is internet access
@@ -239,10 +240,11 @@ def load_master64() -> None:
     :return:
     """
     hub_dir = torch.hub.get_dir()
-    if not os.path.exists(os.path.dirname(hub_dir)):
-        os.makedirs(os.path.dirname(hub_dir))
+    hub_dir_checkpoints = os.path.join(hub_dir, "checkpoints")
+    if not os.path.exists(os.path.dirname(hub_dir_checkpoints)):
+        os.makedirs(os.path.dirname(hub_dir_checkpoints), exist_ok=True)
 
-    master_64_path = os.path.join(hub_dir, MASTER_64_URL.split("/")[-1])
+    master_64_path = os.path.join(hub_dir_checkpoints, MASTER_64_URL.split("/")[-1])
     if not os.path.exists(master_64_path):
         # check what is internet access
         is_connected(master_64_path)
