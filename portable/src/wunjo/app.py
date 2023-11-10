@@ -986,6 +986,9 @@ if not app.config['DEBUG']:
     from io import StringIO
 
 
+    if sys.platform == 'darwin':
+        print("http://127.0.0.1:8000")
+
     class TimestampedIO(StringIO):
         def __init__(self):
             super().__init__()
