@@ -361,6 +361,10 @@ function fetchSegmentAnythingAndSetCanvas() {
                 }
 
                 canvas.style.position = "absolute";
+                const computedStyle = window.getComputedStyle(previewMask);
+                for (let prop of computedStyle) {
+                    canvas.style[prop] = computedStyle[prop];
+                }
                 ctx.drawImage(img, 0, 0);
 
                 // Add attributes to the canvas
@@ -419,6 +423,7 @@ async function maskToList() {
         }
     }
     clonedCanvas.style.boxShadow = "";
+    clonedCanvas.style.marginTop = "25px";
 
     const objId = originalCanvas.getAttribute("data-objId");
     const currentTime = originalCanvas.getAttribute("data-currentTime");

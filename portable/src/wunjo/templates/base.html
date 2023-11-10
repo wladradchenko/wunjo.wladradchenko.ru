@@ -2,12 +2,12 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <meta property="og:image" content="static/basic/icon/gray/logo.png">
-    <link rel="apple-touch-icon" type="image/png" href="static/basic/icon/gray/logo.png">
+    <meta property="og:image" content="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
+    <link rel="apple-touch-icon" type="image/png" href="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
     <meta name="apple-mobile-web-app-title" content="Wunjo AI">
-    <link rel="shortcut icon" type="image/x-icon" href="static/basic/icon/gray/logo.ico">
-    <link rel="icon" type="image/png" href="static/basic/icon/gray/logo.png">
-    <link rel="mask-icon" type="image/x-icon" href="static/basic/icon/gray/logo.svg" color="#111">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='basic/icon/gray/logo.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
+    <link rel="mask-icon" type="image/x-icon" href="{{ url_for('static', filename='basic/icon/gray/logo.svg') }}" color="#111">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='basic/css/introjs.min.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='basic/js/js.cookie.min.js') }}" defer></script>

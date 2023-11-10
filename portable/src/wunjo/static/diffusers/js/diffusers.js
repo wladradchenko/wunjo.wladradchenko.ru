@@ -133,9 +133,9 @@ function initiateDiffusersPop(button) {
     showButtons: false,
     showStepNumbers: false,
     showBullets: false,
-    nextLabel: "Продолжить",
-    prevLabel: "Вернуться",
-    doneLabel: "Закрыть",
+    nextLabel: "Next",
+    prevLabel: "Back",
+    doneLabel: "Close",
   });
   introRetouch.setOption('keyboardNavigation', false).start();
 
@@ -186,6 +186,7 @@ async function maskDiffuserToList() {
         }
     }
     clonedCanvas.style.boxShadow = "";
+    clonedCanvas.style.marginTop = "25px"
 
     const objId = originalCanvas.getAttribute("data-objId");
     const currentTime = originalCanvas.getAttribute("data-currentTime");
