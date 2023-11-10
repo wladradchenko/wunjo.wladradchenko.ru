@@ -47,10 +47,6 @@ requires = [
     "Unidecode",
     "inflect",
     "librosa==0.9.2",
-    "torch==2.0.0",
-    "torchaudio==2.0.1",
-    "torchvision==0.15.1",
-    "soundfile==0.10.3.post1",
     "flaskwebgui",
     "waitress",
     "opencv-python",
@@ -81,6 +77,10 @@ test_requires = [
 
 [tool.briefcase.app.wunjo.macOS]
 requires = [
+    "torch==2.1.0",
+    "torchaudio==2.1.0",
+    "torchvision==0.16.0",
+    "soundfile==0.11.0",
     "std-nslog~=1.0.0",
     "onnxruntime"
 ]
@@ -90,6 +90,10 @@ sources = [
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
+    "torch==2.0.0",
+    "torchaudio==2.0.1",
+    "torchvision==0.15.1",
+    "soundfile==0.10.3.post1",
     "onnxruntime",
 ]
 sources = [
@@ -128,6 +132,10 @@ linuxdeploy_plugins = []
 
 [tool.briefcase.app.wunjo.windows]
 requires = [
+    "torch==2.0.0",
+    "torchaudio==2.0.1",
+    "torchvision==0.15.1",
+    "soundfile==0.10.3.post1",
     "onnxruntime"
 ]
 sources = [
