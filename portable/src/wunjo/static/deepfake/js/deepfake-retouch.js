@@ -361,10 +361,9 @@ function fetchSegmentAnythingAndSetCanvas() {
                 }
 
                 canvas.style.position = "absolute";
-                const computedStyle = window.getComputedStyle(previewMask);
-                for (let prop of computedStyle) {
-                    canvas.style[prop] = computedStyle[prop];
-                }
+                canvas.style.maxWidth = previewMask.style.maxWidth;
+                canvas.style.maxHeight = previewMask.style.maxHeight;
+                canvas.style.marginTop = previewMask.style.marginTop;
                 ctx.drawImage(img, 0, 0);
 
                 // Add attributes to the canvas
