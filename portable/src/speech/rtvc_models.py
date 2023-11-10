@@ -217,8 +217,8 @@ def load_audio_separator_model(target) -> None:
     """
     hub_dir = torch.hub.get_dir()
     hub_dir_checkpoints = os.path.join(hub_dir, "checkpoints")
-    if not os.path.exists(os.path.dirname(hub_dir_checkpoints)):
-        os.makedirs(os.path.dirname(hub_dir_checkpoints), exist_ok=True)
+    if not os.path.exists(hub_dir_checkpoints):
+        os.makedirs(hub_dir_checkpoints, exist_ok=True)
 
     if target in ["vocals", "residual"]:
         link_audio_separator = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
@@ -241,8 +241,8 @@ def load_master64() -> None:
     """
     hub_dir = torch.hub.get_dir()
     hub_dir_checkpoints = os.path.join(hub_dir, "checkpoints")
-    if not os.path.exists(os.path.dirname(hub_dir_checkpoints)):
-        os.makedirs(os.path.dirname(hub_dir_checkpoints), exist_ok=True)
+    if not os.path.exists(hub_dir_checkpoints):
+        os.makedirs(hub_dir_checkpoints, exist_ok=True)
 
     master_64_path = os.path.join(hub_dir_checkpoints, MASTER_64_URL.split("/")[-1])
     if not os.path.exists(master_64_path):
