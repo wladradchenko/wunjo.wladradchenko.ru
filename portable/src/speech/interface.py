@@ -10,7 +10,6 @@ sys.path.insert(0, os.path.join(root_path, "backend"))
 
 from backend.translator import get_translate
 from backend.general_utils import download_ntlk
-from backend.download import download_model, check_download_size, get_nested_url, is_connected
 
 sys.path.pop(0)
 

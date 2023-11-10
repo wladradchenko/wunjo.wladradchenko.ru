@@ -6,6 +6,7 @@ import requests
 import itertools
 import numpy as np
 import torch
+from denoiser.pretrained import MASTER_64_URL
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
@@ -140,7 +141,8 @@ def load_rtvc_vocoder(lang: str, device: str):
     model_path = inspect_rtvc_model(vocoder_path, vocoder_url)
     if not os.path.exists(model_path):
         raise Exception(f"Model {vocoder_path} not found. Check you internet connection to download")
-    vocoder = VoiceCloneVocoder()
+    load_master64()  # download denoiser in torch hub cache dir witch using in VoiceCloneVocoder
+    vocoder = VoiceCloneVocoder()  # load voice clone vocoder
     vocoder.load_model(model_path, device=device)
     return vocoder
 
@@ -214,7 +216,6 @@ def load_audio_separator_model(target) -> None:
     :return:
     """
     hub_dir = torch.hub.get_dir()
-    print(hub_dir)
     if not os.path.exists(os.path.dirname(hub_dir)):
         os.makedirs(os.path.dirname(hub_dir))
 
@@ -227,10 +228,29 @@ def load_audio_separator_model(target) -> None:
             is_connected(model_audio_separator)
             # download pre-trained models from url
             download_model(model_audio_separator, link_audio_separator)
-            print("Model installed in PyTorch Hub Cache Directory:", model_audio_separator)
+            print("Audio sepearator model installed in PyTorch Hub Cache Directory:", model_audio_separator)
         else:
             check_download_size(model_audio_separator, link_audio_separator)
 
+
+def load_master64() -> None:
+    """
+    Load denoser model in torch hub
+    :return:
+    """
+    hub_dir = torch.hub.get_dir()
+    if not os.path.exists(os.path.dirname(hub_dir)):
+        os.makedirs(os.path.dirname(hub_dir))
+
+    master_64_path = os.path.join(hub_dir, MASTER_64_URL.split("/")[-1])
+    if not os.path.exists(master_64_path):
+        # check what is internet access
+        is_connected(master_64_path)
+        # download pre-trained models from url
+        download_model(master_64_path, MASTER_64_URL)
+        print("Denoiser model installed in PyTorch Hub Cache Directory:", master_64_path)
+    else:
+        check_download_size(master_64_path, MASTER_64_URL)
 
 def get_text_from_audio():
     pass

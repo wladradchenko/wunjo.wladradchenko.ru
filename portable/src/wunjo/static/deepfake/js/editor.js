@@ -15,7 +15,7 @@ async function initializeMediaEditor(button, audioURL = undefined, audioName = u
                         <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
                             <span class="dragBox" style="margin-bottom: 15px;width: 60vw;display: flex;text-align: center;flex-direction: column;position: relative;justify-content: center;height: 45vh;">
                                   Load image, video or audio
-                                <input accept="image/*,video/*" type="file" onChange="handleEditorVideo(event, document.getElementById('preview-media'), this.parentElement)" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
+                                <input accept="image/*,video/*,audio/*" type="file" onChange="handleEditorVideo(event, document.getElementById('preview-media'), this.parentElement)" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                             <div id="preview-media" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
