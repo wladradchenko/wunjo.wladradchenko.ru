@@ -79,7 +79,6 @@ class VoiceCloneVocoder:
     @staticmethod
     def waveform_denoising(wav, device):
         prop_decrease = hp.prop_decrease_low_freq
-        # TODO if on Windows will be problem to download, use location .wunjo and download by request
         model = master64().to(device)
         noisy = torch.from_numpy(np.array([wav])).to(device).float()
         estimate = model(noisy)

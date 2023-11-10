@@ -76,6 +76,7 @@ def _make_scratch(in_shape, out_shape, groups=1, expand=False):
 
 
 def _make_pretrained_efficientnet_lite3(use_pretrained, exportable=False):
+    # TODO midas is not used, but if I will add midas for controlnet when need to sove trouble with torch hub CERTIFICATE_VERIFY_FAILED
     efficientnet = torch.hub.load(
         "rwightman/gen-efficientnet-pytorch",
         "tf_efficientnet_lite3",
@@ -112,6 +113,7 @@ def _make_resnet_backbone(resnet):
 
 
 def _make_pretrained_resnext101_wsl(use_pretrained):
+    # TODO midas is not used, but if I will add midas for controlnet when need to sove trouble with torch hub CERTIFICATE_VERIFY_FAILED
     resnet = torch.hub.load("facebookresearch/WSL-Images", "resnext101_32x8d_wsl")
     return _make_resnet_backbone(resnet)
 

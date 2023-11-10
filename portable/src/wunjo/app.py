@@ -1016,6 +1016,9 @@ if not app.config['DEBUG']:
         combined_logs = console_stdout.logs + console_stderr.logs
         combined_logs.sort(key=lambda x: x[0])  # Sort by timestamp
 
+        # Remove bytes log
+        combined_logs = [(log[0], log[1].decode('utf-8')) if isinstance(log[1], bytes) else log for log in combined_logs]
+
         # Filter out unwanted phrases and extract log messages
         filtered_logs = [
             log[1] for log in combined_logs
