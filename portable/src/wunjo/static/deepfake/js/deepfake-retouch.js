@@ -19,6 +19,22 @@ function toggleRadioOnOrNothing(radio, name) {
 };
 
 
+async function toggleRadioOnResolutionGPURetouchAI(radio, preview, useGpu = false) {
+    const wasChecked = radio.hasAttribute('data-checked');
+    // If the clicked radio was previously checked, leave it unchecked
+    // Otherwise, check it and mark it with the data attribute
+    if (wasChecked) {
+        const useLimitResolution = true;
+        const gpuTable = {19: 1280, 7: 720, 6: 640, 2: 320};
+        if (useGpu === true) {
+            fetchVramResolution(preview, useLimitResolution, gpuTable);
+        } else {
+            preview.getElementsByClassName("spanResolution")[0].style.display = "none";
+        };
+    };
+};
+
+
 function showExtraOptionsRetouch() {
     const improvedRetouchObject = document.getElementById("improved-retouch-object");
     var extraOptions = document.getElementById('extraOptions');
@@ -32,7 +48,7 @@ function showExtraOptionsRetouch() {
 
 
 // RETOUCH //
-function initiateRetouchAiPop(button) {
+async function initiateRetouchAiPop(button) {
   var introRetouch = introJs();
   introRetouch.setOptions({
     steps: [
@@ -62,15 +78,15 @@ function initiateRetouchAiPop(button) {
                     <fieldset style="padding: 5pt;margin-top:10px;overflow-y: auto;max-height: 15vh">
                         <legend>Processing mode</legend>
                         <div>
-                            <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
+                            <input type="radio" id="retouch-face" name="preprocessing_retouch" value="face" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();toggleRadioOnResolutionGPURetouchAI(this, document.getElementById('preview-media'), false);">
                             <label for="retouch-face">Retouch face</label>
                         </div>
                         <div>
-                            <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
+                            <input type="radio" id="retouch-object" name="preprocessing_retouch" value="object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();toggleRadioOnResolutionGPURetouchAI(this, document.getElementById('preview-media'), false);">
                             <label for="retouch-object">Remove object</label>
                         </div>
                         <div id="improvedRetouchObjectDiv">
-                            <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();">
+                            <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();toggleRadioOnResolutionGPURetouchAI(this, document.getElementById('preview-media'), true);">
                             <label for="improved-retouch-object">Improve remove object</label>
                         </div>
                         <div id="extraOptions" style="display: none;">
@@ -118,8 +134,6 @@ function initiateRetouchAiPop(button) {
     doneLabel: "Close",
   });
   introRetouch.setOption('keyboardNavigation', false).start();
-
-  availableFeaturesByCUDA(document.getElementById("improvedRetouchObjectDiv"));
 
   document.getElementById("get-mask").addEventListener("change", function() {
         if (this.checked) {
@@ -174,6 +188,8 @@ async function handleRetouchAi(event, previewElement, parentElement) {
 
             const imagePreview = previewElement.getElementsByClassName("imageMedia")[0];
             previewMask.src = imagePreview.src;
+            // Hidden improved remove object for image
+            document.getElementById("improvedRetouchObjectDiv").style.display = "none";
         } else if (fileType === 'video') {
             displayMessage(messageElement, "Video is loading...");
             canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
@@ -181,8 +197,15 @@ async function handleRetouchAi(event, previewElement, parentElement) {
             displayMessage(messageElement, "Choose a point to get field by tool", '<i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>');
 
             const videoPreview = previewElement.getElementsByClassName("videoMedia")[0];
-
             previewMask.src = captureFrame(videoPreview);
+            // Show improved remove object for video if gpu turn on
+            const improvedRetouchObjectDiv = document.getElementById("improvedRetouchObjectDiv");
+            availableFeaturesByCUDA(improvedRetouchObjectDiv);
+            // If improved remove object turn on
+            const improvedRetouchRadio = improvedRetouchObjectDiv.querySelector("#improved-retouch-object");
+            if (improvedRetouchRadio.hasAttribute('data-checked')) {
+                toggleRadioOnResolutionGPURetouchAI(improvedRetouchRadio, previewElement, true)
+            };
         }
 
         previewMask.style.display = "";

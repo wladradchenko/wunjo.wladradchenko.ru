@@ -407,6 +407,8 @@ async function maskDiffuserToList() {
 async function handleDiffuser(event, previewElement, parentElement) {
     const fileInput = event.target;
     const file = fileInput.files[0];
+    const useLimitResolution = true;
+    const gpuTable = {24: 1280, 18: 1024, 14: 768, 10: 640, 8: 576, 7: 512, 6: 448, 5: 320, 4: 192}
 
     if (file) {
         document.getElementById('div-general-preview-media').style.width = '';
@@ -429,6 +431,8 @@ async function handleDiffuser(event, previewElement, parentElement) {
 
             const imagePreview = previewElement.getElementsByClassName("imageMedia")[0];
             previewMask.src = imagePreview.src;
+            // Set information about resolution
+            await fetchVramResolution(previewElement, useLimitResolution, gpuTable)
         } else if (fileType === 'video') {
             displayMessage(messageElement, "Video is loading...");
             canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
@@ -438,6 +442,8 @@ async function handleDiffuser(event, previewElement, parentElement) {
             const videoPreview = previewElement.getElementsByClassName("videoMedia")[0];
 
             previewMask.src = captureFrame(videoPreview);
+            // Set information about resolution
+            await fetchVramResolution(previewElement, useLimitResolution, gpuTable)
         }
 
         previewMask.style.display = "";

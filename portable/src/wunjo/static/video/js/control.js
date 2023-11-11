@@ -24,6 +24,19 @@ async function setupVideoTimeline(parentElement, videoUrl, videoDisplayHeight='4
     canvasElement.style.top = "0";
     canvasElement.style.zIndex = "2";
 
+    const spanResolutionElement = document.createElement('span');
+    spanResolutionElement.className = "spanResolution";
+    spanResolutionElement.style.position = "absolute";
+    spanResolutionElement.style.left = "0";
+    spanResolutionElement.style.top = "0";
+    spanResolutionElement.style.color = "white";
+    spanResolutionElement.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    spanResolutionElement.style.padding = "2px";
+    spanResolutionElement.style.fontSize = "small";
+    spanResolutionElement.style.zIndex = "10";
+    spanResolutionElement.style.display = "none";
+    videoContainer.appendChild(spanResolutionElement);
+
     videoContainer.appendChild(canvasElement);
 
     const controlDiv = document.createElement('div');
@@ -603,6 +616,19 @@ async function setupImageCanvas(parentElement, imageUrl, imageDisplayHeight = '4
     imageContainer.className = "ui-widget-content";
     imageContainer.style = "position: relative; overflow: hidden;z-index: 1;position: relative;";
 
+    const spanResolutionElement = document.createElement('span');
+    spanResolutionElement.className = "spanResolution";
+    spanResolutionElement.style.position = "absolute";
+    spanResolutionElement.style.left = "0";
+    spanResolutionElement.style.top = "0";
+    spanResolutionElement.style.color = "white";
+    spanResolutionElement.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    spanResolutionElement.style.padding = "2px";
+    spanResolutionElement.style.fontSize = "small";
+    spanResolutionElement.style.zIndex = "10";
+    spanResolutionElement.style.display = "none";
+    imageContainer.appendChild(spanResolutionElement);
+
     const imageElement = document.createElement('img');
     imageElement.className = "imageMedia";
     imageElement.src = imageUrl;
@@ -1015,3 +1041,78 @@ async function displayMessage(element, message, partition = undefined) {
     element.style.display = "flex";
     element.style.background = getRandomColor();
 }
+
+
+// RESOLUTION INFORMATION //
+async function setVideoResolution(previewElement, maxDeviceResolution, useLimitResolution) {
+    const videoElements = previewElement.getElementsByClassName("videoMedia");
+    const imageElements = previewElement.getElementsByClassName("imageMedia");
+    const spanResolution = previewElement.getElementsByClassName("spanResolution");
+
+    if (imageElements.length === 0 && videoElements.length === 0) {
+        console.error("Media element not found");
+        return;
+    }
+
+    let realWidth;
+    let realHeight;
+    let resolution;
+
+    if (imageElements.length > 0) {
+        realWidth = imageElements[0].naturalWidth;
+        realHeight = imageElements[0].naturalHeight;
+    } else if (videoElements.length > 0) {
+        realWidth = videoElements[0].videoWidth;
+        realHeight = videoElements[0].videoHeight;
+    }
+
+    resolution = Math.max(realWidth, realHeight);
+
+    if (useLimitResolution && resolution > maxDeviceResolution) {
+        if (realWidth > realHeight) {
+            realHeight = (maxDeviceResolution / realWidth) * realHeight;
+            realWidth = maxDeviceResolution;
+        } else {
+            realWidth = (maxDeviceResolution / realHeight) * realWidth;
+            realHeight = maxDeviceResolution;
+        }
+    }
+
+    spanResolution[0].innerText = `${realWidth.toFixed(0)} x ${realHeight.toFixed(0)}`;
+    spanResolution[0].style.display = "";
+}
+
+
+async function fetchVramResolution(previewElement, useLimitResolution, gpuTable) {
+    fetch('/get_vram')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.gpu_vram) {
+            console.log('GPU VRAM:', data.gpu_vram, 'GB');
+
+            // Calculate maxDeviceResolution based on VRAM
+            let maxDeviceResolution = Math.max(...Object.entries(gpuTable)
+                .filter(([key,]) => key <= data.gpu_vram)
+                .map(([,val]) => val));
+
+            if (typeof maxDeviceResolution === 'undefined') {
+                maxDeviceResolution = Math.min(...Object.values(gpuTable)); // Default to smallest if VRAM is less than any key
+            }
+
+            console.log('Max Device Resolution:', maxDeviceResolution);
+
+            setVideoResolution(previewElement, maxDeviceResolution, useLimitResolution);
+        } else {
+            console.log('GPU VRAM not available');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+}
+// RESOLUTION INFORMATION //

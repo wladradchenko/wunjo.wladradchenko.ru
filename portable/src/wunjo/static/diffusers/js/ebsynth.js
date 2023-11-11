@@ -132,6 +132,11 @@ async function handleEbsynth(event, previewElement, parentElement) {
                 }
             }
             canvas.addEventListener('mousedown', setFrameByCurrentTimeEbsynth);
+
+            // Set information about resolution
+            const maxDeviceResolution = 1280;
+            const useLimitResolution = true;
+            setVideoResolution(previewElement, maxDeviceResolution, useLimitResolution);
         }
 
         canvas.addEventListener('contextmenu', function(event) {
@@ -271,7 +276,7 @@ async function createFrameDivEbsynth(frameUrl, frameNumber) {
     });
 
     // Add a visible button icon over the file input
-    const changeButtonIcon = createOverlayButtonEbsynth('<i class="fa-solid fa-download"></i>');
+    const changeButtonIcon = createOverlayButtonEbsynth('<i class="fa-solid fa-cloud-arrow-up"></i>');
     changeButtonIcon.style.top = '0';
     changeButtonIcon.style.left = '0';
     changeButtonIcon.addEventListener('click', () => changeButton.click()); // Trigger file input on icon click

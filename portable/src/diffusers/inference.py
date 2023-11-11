@@ -284,7 +284,6 @@ class Video2Video:
 
         if source_media_type == "animated":
             source = save_video_from_frames(frame_names="%04d.png", save_path=frame_save_path, alternative_save_path=cfg.work_dir, fps=fps)
-            source = os.path.join(cfg.work_dir, source)
 
         # Extract the background data and remove it from the original dictionary
         background_mask = masks.pop('background', None)

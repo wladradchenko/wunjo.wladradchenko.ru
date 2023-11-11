@@ -133,6 +133,16 @@ def current_processor():
     return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
 
 
+@app.route('/get_vram', methods=["GET"])
+@cross_origin()
+def get_vram():
+    if torch.cuda.is_available():
+        device = "cuda"
+        gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
+        return {"gpu_vram": gpu_vram}
+    return {"gpu_vram": False}
+
+
 @app.route('/upload_tmp', methods=['POST'])
 @cross_origin()
 def upload_file_deepfake():
@@ -264,6 +274,7 @@ def get_segment_anything():
     return {
         "response_code": 0, "response": segment_preview
     }
+
 
 @app.route("/synthesize_video_merge/", methods=["POST"])
 @cross_origin()
