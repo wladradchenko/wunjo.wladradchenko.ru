@@ -134,6 +134,8 @@ async function initiateRetouchAiPop(button) {
     doneLabel: "Close",
   });
   introRetouch.setOption('keyboardNavigation', false).start();
+  // Reset retouchObjIdMask
+  retouchObjIdMask = 1;
 
   document.getElementById("get-mask").addEventListener("change", function() {
         if (this.checked) {
@@ -387,6 +389,7 @@ function fetchSegmentAnythingAndSetCanvas() {
                 canvas.style.maxWidth = previewMask.style.maxWidth;
                 canvas.style.maxHeight = previewMask.style.maxHeight;
                 canvas.style.marginTop = previewMask.style.marginTop;
+                canvas.style.background = "";
                 ctx.drawImage(img, 0, 0);
 
                 // Add attributes to the canvas
@@ -459,20 +462,38 @@ async function maskToList() {
     clonedCanvas.style.maxWidth = "10vw";
     clonedCanvas.style.maxHeight = "10vh";
     clonedCanvas.style.position = "absolute";
+    clonedCanvas.style.background = "";
+    clonedCanvas.style.padding = "";
 
     // Create a new div, append the new canvas and previewMask to it
     const newDiv = document.createElement('div');
     newDiv.style = "display: flex;flex-direction: row;justify-content: space-around;align-items: center;";
     const newDivChild = document.createElement('div');
     newDivChild.style.position = "relative";
+    newDivChild.style.padding = "";
     newDivChild.appendChild(clonedCanvas);
     // Adjust the size of the appended previewMask
     const clonedPreviewMask = previewMask.cloneNode(true);
     clonedPreviewMask.style.maxWidth = "10vw";
     clonedPreviewMask.style.maxHeight = "10vh";
     clonedPreviewMask.style.boxShadow = "";
-
+    clonedPreviewMask.style.padding = "";
     newDivChild.appendChild(clonedPreviewMask);
+    // Set id info
+    const spanObjId = document.createElement('span');
+    spanObjId.className = "notranslate";
+    spanObjId.innerText = "ID " + objId;
+    retouchObjIdMask += 1;  // update global count for objId
+    spanObjId.style.marginTop = "25px";
+    spanObjId.style.position = "absolute";
+    spanObjId.style.left = "0";
+    spanObjId.style.top = "0";
+    spanObjId.style.color = "white";
+    spanObjId.style.padding = "2px";
+    spanObjId.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    spanObjId.style.fontSize = "small";
+    spanObjId.style.zIndex = "10";
+    newDivChild.appendChild(spanObjId);
 
     // Append the new div to maskTimelines
     const maskTimelines = document.getElementById("mask-timelines");
@@ -481,11 +502,6 @@ async function maskToList() {
     const ulElem = document.createElement('ul');
     ulElem.style.fontSize = "small";
     ulElem.style.listStyleType = "none";
-
-    const liObjId = document.createElement('li');
-    liObjId.innerText = "Id " + objId;
-    retouchObjIdMask += 1;  // update global count for objId
-    liObjId.style.margin = "5px";
 
     const timePattern = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.\\d{1,3}$";
 
@@ -513,7 +529,6 @@ async function maskToList() {
     liEndTime.style.margin = "5px";
     liEndTime.appendChild(endTimeInput);
 
-    ulElem.appendChild(liObjId);
     ulElem.appendChild(liCurrentTime);
     ulElem.appendChild(liEndTime);
     newDiv.appendChild(ulElem);
