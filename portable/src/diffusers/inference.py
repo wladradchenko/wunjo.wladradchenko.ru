@@ -28,8 +28,8 @@ from deepfake.src.utils.videoio import (
     extract_audio_from_video, save_video_with_audio
 )
 from diffusers.src.utils.mediaio import (
-    save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion,
-    save_empty_mask, get_new_dimensions, resize_and_save_video
+    save_video_frames_cv2, save_image_frame_cv2, vram_limit_device_resolution_diffusion, resize_and_save_image,
+    save_empty_mask, get_new_dimensions, resize_and_save_video, vram_limit_device_resolution_only_ebsynth
 )
 from diffusers.src.utils.ebsynth import Ebsynth
 
@@ -222,7 +222,7 @@ class Video2Video:
         link_gmflow_model = get_nested_url(file_deepfake_config, ["diffusion", "gmflow_sintel-0c07dcb3.pth"])
         if not os.path.exists(gmflow_model_path):
             # check what is internet access
-            is_connected(vae_model_path)
+            is_connected(gmflow_model_path)
             # download pre-trained models from url
             download_model(gmflow_model_path, link_gmflow_model)
         else:
@@ -468,6 +468,7 @@ class Video2Video:
                 shutil.copy(frame_path, key_path)
 
         # processing ebsynth
+        print("Ebsynth processing is started")
         ebsynth = Ebsynth(gmflow_model_path=gmflow_model_path, ebsynth_path=ebsynth_path)
         output_frame_folder_path, output_names = ebsynth.processing_ebsynth(
             frames_path=cfg.key_subdir, frames=frame_files_with_interval,
@@ -499,6 +500,191 @@ class Video2Video:
             save_name = resize_and_save_video(save_name, cfg.work_dir, default_width, default_height)
 
         return save_name
+
+    @staticmethod
+    def only_ebsynth_video_render(source: str, output_folder: str, masks: dict = None, source_start: float = 0, source_end: float = 0):
+        work_dir = os.path.join(output_folder, strftime("%Y_%m_%d_%H%M%S"))  # output folder
+        os.makedirs(work_dir, exist_ok=True)
+
+        key_subdir = os.path.join(work_dir, "keys")  # frame folder
+        os.makedirs(key_subdir, exist_ok=True)
+        key_path = os.path.join(work_dir, key_subdir)
+
+        source_frame_folder_name = "media_original"
+        source_frame_folder_path = os.path.join(work_dir, source_frame_folder_name)  # original frames folder
+        os.makedirs(source_frame_folder_path, exist_ok=True)
+        # before start set to will be all keys
+        frame_dir = os.path.join(work_dir, source_frame_folder_name)
+
+        # cut video and save frames
+        source_media_type = check_media_type(source)
+        if source_media_type == "animated":
+            source = cut_start_video(source, source_start, source_end)
+            # get audio from video target
+            audio_file_name = extract_audio_from_video(source, work_dir)
+            # get resolution
+            default_width, default_height = get_new_dimensions(source, vram_limit_device_resolution_only_ebsynth, "cuda")
+            fps, num_frames, width, height = save_video_frames_cv2(source, source_frame_folder_path, '%04d.png', vram_limit_device_resolution_only_ebsynth, "cuda")
+        else:
+            raise Exception("Source is not detected as video")
+
+        # interval frames
+        num_first_frame = 1
+        num_last_frame = num_frames - num_first_frame
+        num_interval_frame_list = []
+
+        # transfer user keys in key dir
+        for mask in masks.values():
+            if mask.get("img_name") is None:
+                raise Exception("Problem with image name")
+            tmp_mask_name = os.path.join(TMP_FOLDER, mask.get("img_name"))
+            mask_time = round(float(mask.get("frame_time")), 2) - round(source_start, 2)  # reduce frame time by start
+            mask_num = int(mask_time * fps + 1)
+            mask_num = num_last_frame if mask_num > num_last_frame else mask_num
+            num_interval_frame_list += [mask_num]
+            key_mask_name = os.path.join(key_path, "{:04d}.png".format(mask_num))
+            # Read the image from tmp folder
+            resize_and_save_image(tmp_mask_name, key_mask_name, width, height)
+
+        num_interval_frame_list = sorted(list(set(num_interval_frame_list)))
+        media_frame_files = sorted(os.listdir(source_frame_folder_path))
+        # inspect first frame
+        if num_first_frame != num_interval_frame_list[0]:
+            frame_file = "{:04d}.png".format(num_first_frame)
+            # Source path for the frame file
+            frame_path = os.path.join(frame_dir, frame_file)
+            # Copy the file from frame directory to key directory
+            if frame_file in media_frame_files:
+                num_interval_frame_list += [num_first_frame]
+                shutil.copy(frame_path, key_path)
+            else:
+                print(f"File is not found {frame_path}")
+        # inspect last frame
+        if num_last_frame != num_interval_frame_list[0]:
+            frame_file = "{:04d}.png".format(num_last_frame)
+            # Source path for the frame file
+            frame_path = os.path.join(frame_dir, frame_file)
+            # Copy the file from frame directory to key directory
+            if frame_file in media_frame_files:
+                num_interval_frame_list += [num_last_frame]
+                shutil.copy(frame_path, key_path)
+            else:
+                print(f"File is not found {frame_path}")
+
+        # load diffuser
+        diffuser_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "diffusion")
+        os.environ['TORCH_HOME'] = diffuser_folder
+        if not os.path.exists(diffuser_folder):
+            os.makedirs(diffuser_folder)
+
+        # load gmflow model
+        gmflow_model_path = os.path.join(diffuser_folder, "gmflow_sintel-0c07dcb3.pth")
+        link_gmflow_model = get_nested_url(file_deepfake_config, ["diffusion", "gmflow_sintel-0c07dcb3.pth"])
+        if not os.path.exists(gmflow_model_path):
+            # check what is internet access
+            is_connected(gmflow_model_path)
+            # download pre-trained models from url
+            download_model(gmflow_model_path, link_gmflow_model)
+        else:
+            check_download_size(gmflow_model_path, link_gmflow_model)
+
+        # download if ebsynth app is not exist
+        ebsynth_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "ebsynth")
+        os.environ['TORCH_HOME'] = ebsynth_folder
+        if not os.path.exists(ebsynth_folder):
+            os.makedirs(ebsynth_folder)
+
+        if sys.platform == 'win32':
+            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
+            ebsynth_path_zip = os.path.join(ebsynth_folder, "EbSynth-Beta-Win.zip")
+            link_ebsynth = get_nested_url(file_deepfake_config, ["ebsynth", "EbSynth-Beta-Win.zip"])
+            if not os.path.exists(ebsynth_path):
+                # check what is internet access
+                is_connected(ebsynth_path)
+                # download pre-trained models from url
+                download_model(ebsynth_path_zip, link_ebsynth)
+                unzip(ebsynth_path_zip, ebsynth_folder)
+            else:
+                check_download_size(ebsynth_path_zip, link_ebsynth)
+                if not os.listdir(ebsynth_folder):
+                    unzip(ebsynth_path_zip, ebsynth_folder)
+            # access read app
+            # username = os.environ.get('USERNAME')
+            username = os.environ.get('USERNAME') or os.environ.get('USER')
+            cmd = f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T'
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(cmd)
+            else:
+                # silence run
+                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            ebsynth_path = os.path.join(ebsynth_folder, "EbSynth.exe")
+            cmd = f'icacls "{ebsynth_path}" /grant:r "{username}:(R,W)" /T'
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(cmd)
+            else:
+                # silence run
+                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        elif sys.platform == 'linux':
+            ebsynth_path = os.path.join(ebsynth_folder, "ebsynth_linux_cu118")
+            link_ebsynth = get_nested_url(file_deepfake_config, ["ebsynth", "ebsynth_linux_cu118"])
+            if not os.path.exists(ebsynth_path):
+                # check what is internet access
+                is_connected(ebsynth_path)
+                # download pre-trained models from url
+                download_model(ebsynth_path, link_ebsynth)
+            else:
+                check_download_size(ebsynth_path, link_ebsynth)
+            # access read app
+            cmd = f"chmod +x {ebsynth_path}"
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(cmd)
+            else:
+                # silence run
+                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            raise Exception("Ebsynth is not support this platform")
+
+        # Get interval frames
+        num_interval_frame_list = sorted(list(set(num_interval_frame_list)))
+        frame_files_with_interval = ["{:04d}.png".format(frame_file) for frame_file in num_interval_frame_list]
+
+        # processing ebsynth
+        print(f"Ebsynth processing is started with {', '.join(frame_files_with_interval)}")
+        ebsynth = Ebsynth(gmflow_model_path=gmflow_model_path, ebsynth_path=ebsynth_path)
+        output_frame_folder_path, output_names = ebsynth.processing_ebsynth(
+            frames_path=key_subdir, frames=frame_files_with_interval,
+            base_folder=work_dir, input_subdir=source_frame_folder_name
+        )
+
+        # remove first frame
+        os.remove(os.path.join(output_frame_folder_path, output_names % 1))
+        # get saved file as merge frames to video
+        save_name = save_video_from_frames(frame_names=output_names, save_path=output_frame_folder_path, fps=fps, alternative_save_path=work_dir)
+        # combine audio and video
+        if os.path.exists(os.path.join(work_dir, str(audio_file_name))):
+            save_name = save_video_with_audio(os.path.join(work_dir, save_name), os.path.join(work_dir, str(audio_file_name)), work_dir)
+        # remove files
+        for f in os.listdir(work_dir):
+            if save_name == f:
+                save_name = os.path.join(work_dir, f)
+            else:
+                if os.path.isfile(os.path.join(work_dir, f)):
+                    os.remove(os.path.join(work_dir, f))
+                elif os.path.isdir(os.path.join(work_dir, f)):
+                    shutil.rmtree(os.path.join(work_dir, f))
+
+        for f in os.listdir(TMP_FOLDER):
+            os.remove(os.path.join(TMP_FOLDER, f))
+
+        # restore aspect ratio for video
+        if width != default_width or height != default_height:  # if ratio was changed
+            save_name = resize_and_save_video(save_name, work_dir, default_width, default_height)
+
+        return save_name
+
 
     @staticmethod
     def load_video2video_default():

@@ -114,6 +114,23 @@ def resize_frame(frame, resolution):
     return resized_frame
 
 
+def resize_and_save_image(image_path, output_path, width, height):
+    image = cv2.imread(image_path)
+    if image is None:
+        raise Exception(f"Could not read image from {image_path}")
+    H, W, C = image.shape
+    H = float(H)
+    W = float(W)
+    if width > height:
+        resolution = width
+    else:
+        resolution = height
+    k = float(resolution) / min(H, W)
+    # Save the image in new dir with specific name
+    image = cv2.resize(image, (width, height), interpolation=cv2.INTER_LANCZOS4 if k > 1 else cv2.INTER_AREA)
+    cv2.imwrite(output_path, image)
+
+
 def resize_and_save_video(input_video_path, save_folder, new_width, new_height):
     output_video_path = os.path.join(save_folder, str(uuid.uuid4()) + ".mp4")
     cmd = f'ffmpeg -i {input_video_path} -vf scale={new_width}:{new_height} -c:a copy {output_video_path}'
@@ -140,3 +157,10 @@ def vram_limit_device_resolution_diffusion(resolution, device="cuda"):
         print(f"Video will not resize")
         return resolution
     return device_resolution
+
+
+def vram_limit_device_resolution_only_ebsynth(resolution, device="cuda"):
+    device_resolution = 1280
+    if resolution > device_resolution:
+        return device_resolution
+    return resolution

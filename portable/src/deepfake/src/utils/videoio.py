@@ -91,7 +91,7 @@ def extract_audio_from_video(video_path, save_path):
     # If not a GIF, proceed with audio extraction
     file_name = str(uuid.uuid4()) + '.wav'
     save_file = os.path.join(save_path, file_name)
-    cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a "{save_file}" -y'
+    cmd = f'ffmpeg -i "{video_path}" -q:a 0 -map a? "{save_file}" -y'
     if os.environ.get('DEBUG', 'False') == 'True':
         # not silence run
         os.system(cmd)

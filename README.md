@@ -318,7 +318,7 @@ Update 1.6.1
 - [x] Reducing the amount of RAM used for mouth animation and improving video quality
 - [x] Added speech enhancement
 - [ ] Music generation
-- [ ] Added module as Ebsynth
+- [x] Added module a video style change by images
 - [x] Multilanguage speech by one text
 - [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
 

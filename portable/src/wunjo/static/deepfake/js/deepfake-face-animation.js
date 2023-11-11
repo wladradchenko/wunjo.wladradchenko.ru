@@ -167,8 +167,20 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                           <label for="similar-coeff-face">Coefficient facial similarity</label>
                           <input type="number" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
                         </div>
-                        <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);">
-                          <legend><button style="background: none;border: none;font-size: 12pt;cursor: pointer;text-decoration" onclick="document.getElementById('advanced-settings').style.display = (document.getElementById('advanced-settings').style.display === 'none') ? 'block' : 'none';this.parentElement.parentElement.style.borderColor = (this.parentElement.parentElement.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255 255 255 / 0%)' : 'rgb(192, 192, 192)';">Advanced settings</button></legend>
+                        <fieldset style="margin-top:10pt;padding: 5pt;border-color: rgb(255 255 255 / 0%);box-shadow: none;">
+                          <legend>
+                            <button
+                                style="background: none; border: none; font-size: 12pt; cursor: pointer; text-decoration: none;"
+                                onclick="
+                                    var advancedSettings = document.getElementById('advanced-settings');
+                                    var parentLegend = this.parentElement.parentElement;
+                                    advancedSettings.style.display = (advancedSettings.style.display === 'none') ? 'block' : 'none';
+                                    parentLegend.style.borderColor = (parentLegend.style.borderColor === 'rgb(192, 192, 192)') ? 'rgb(255, 255, 255, 0)' : 'rgb(192, 192, 192)';
+                                    parentLegend.style.boxShadow = (parentLegend.style.boxShadow === 'none' || parentLegend.style.boxShadow === '') ? 'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset' : 'none';
+                                ">
+                                Advanced settings
+                            </button>
+                          </legend>
                           <div id="advanced-settings" style="display:none;">
                             <div id="expression-scale-deepfake-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                               <label for="expression-scale-deepfake">Facial expressiveness</label>

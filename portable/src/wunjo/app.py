@@ -433,6 +433,75 @@ def synthesize_media_editor():
     return {"status": 200}
 
 
+@app.route("/synthesize_only_ebsynth/", methods=["POST"])
+@cross_origin()
+def synthesize_only_ebsynth():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
+        print("The process is already running... ")
+        return {"status": 400}
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    # has to work only with GPU
+    current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
+    if current_processor == "cpu":
+        print("You need to use GPU for this function")
+        return {"status": 400}
+
+    # check what module is exist
+    if not VIDEO2VIDEO_AVAILABLE:
+        print("In this app version is not module diffusion")
+        return {"status": 400}
+
+    # get parameters
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print("Please wait... Processing is started")
+
+    source = request_list.get("source")
+    source_start = float(request_list.get("source_start", 0))
+    source_end = float(request_list.get("source_end", 0))
+    masks = request_list.get("masks", {})
+
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
+
+    clear_cache()  # clear empty, because will be better load segment models again and after empty cache
+
+    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
+        # check what file is uploaded in tmp
+        print("File is too big... ")
+        return {"status": 400}
+
+    try:
+        ebsynth_result = Video2Video.only_ebsynth_video_render(
+            source=os.path.join(TMP_FOLDER, source), output_folder=CONTENT_DIFFUSER_FOLDER, source_start=source_start,
+            source_end=source_end, masks=masks
+        )
+    except Exception as err:
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Style transfer"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    diffusion_result_filename = f"/{save_folder_name}/" + ebsynth_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
+    diffusion_url = url_for("media_file", filename=diffusion_result_filename)
+
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Style transfer"), "request_mode": "deepfake", "response_url": diffusion_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+
+    print("Only ebsynth synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # empty cache
+    torch.cuda.empty_cache()
+
+    return {"status": 200}
+
 @app.route("/synthesize_diffuser/", methods=["POST"])
 @cross_origin()
 def synthesize_diffuser():

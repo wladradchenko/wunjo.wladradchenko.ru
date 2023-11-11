@@ -57,9 +57,9 @@ function initiateDiffusersPop(button) {
                     <fieldset style="padding: 5px;display: flex; flex-direction: column;margin-top: 30px;">
                         <legend>List of elements</legend>
                         <button class="introjs-button" onclick="maskDiffuserToList();">Add new element</button>
-                        <div id="mask-timelines" style="overflow-y: auto;height: 20vh;"></div>
+                        <div id="mask-timelines" style="overflow-y: auto;max-height: 20vh;"></div>
                     </fieldset>
-                    <fieldset style="padding: 5pt;overflow-y: auto;max-height: 15vh;">
+                    <fieldset style="padding: 5pt;margin-top:10px;overflow-y: auto;max-height: 15vh;">
                         <div>
                             <select id="modelDiffusionDropdown" style="width: 100%;border: inset;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;margin: 0;margin-bottom: 10px;"></select>
                         </div>
@@ -413,7 +413,7 @@ async function handleDiffuser(event, previewElement, parentElement) {
         document.getElementById('div-general-upper').style.height = '';
         document.getElementById('div-control-panel').style.display = '';
         document.getElementById('mask-timelines').innerHTML = "";
-        document.getElementById('div-preview-mask').innerHTML = `<img id="preview-mask" style="display: none;max-width: 30vw;max-height:25vh;overflow: auto;margin-top: 25px;object-fit: contain;box-shadow: rgba(240, 46, 170, 0.4) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px;">`;
+        document.getElementById('div-preview-mask').innerHTML = `<img id="preview-mask" style="display: none;padding:10px;max-width: 30vw;max-height:25vh;overflow: auto;margin-top: 25px;object-fit: contain;box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;background: #f7db4d;">`;
         const previewMask = document.getElementById('preview-mask');
 
         const fileUrl = window.URL.createObjectURL(file);
@@ -468,7 +468,6 @@ async function processDiffuser(data, element) {
         return;
     }
 
-    const synthesisTable = document.getElementById("table_body_deepfake_result");
     const maskTimelinesList = element.querySelectorAll(".mask-timeline");
     const dataDict = {};
 
