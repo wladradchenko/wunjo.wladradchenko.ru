@@ -38,7 +38,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-os.environ['DEBUG'] = 'True'  # str False or True
+os.environ['DEBUG'] = 'False'  # str False or True
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
@@ -624,6 +624,7 @@ def synthesize_retouch():
     source_type = request_list.get("source_type", "img")
     masks = request_list.get("masks", {})
     model_type = request_list.get("model_type", "retouch_object")
+    mask_text = request_list.get("mask_text", False)
     mask_color = request_list.get("mask_color", None)
     blur = int(request_list.get("blur", 1))
     upscale = request_list.get("upscale", False)
@@ -642,7 +643,7 @@ def synthesize_retouch():
     try:
         retouch_result = Retouch.main_retouch(
             output=CONTENT_RETOUCH_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
-            masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type,
+            masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type, mask_text=mask_text,
             predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
         )
     except Exception as err:

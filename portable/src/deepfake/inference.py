@@ -763,8 +763,19 @@ class Retouch:
                 mask_text_frame_path = os.path.join(mask_text_save_path, frame_file)
                 mask_text_frame.save(mask_text_frame_path)
                 progress_bar.update(1)
+
+                if mask_color:
+                    mask_color_cv2 = pil_to_cv2(mask_text_frame)
+                    color = segment_text.hex_to_rgba(mask_color)
+                    os.makedirs(os.path.join(save_dir, "text"), exist_ok=True)
+                    orig_filter_frame = cv2.imread(os.path.join(frame_dir, frame_file))
+                    saving_mask = segment_text.apply_mask_on_frame(mask_color_cv2, convert_cv2_to_pil(orig_filter_frame), color, orig_width, orig_height)
+                    saving_mask.save(os.path.join(save_dir, "text", frame_file))
             # close progress bar for text mask
             progress_bar.close()
+            del segment_text
+            # Set mask path in masks
+            masks["text"] = {'frame_files_path': mask_text_save_path}
 
         print(masks)
 

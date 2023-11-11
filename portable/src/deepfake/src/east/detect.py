@@ -237,3 +237,38 @@ class SegmentText:
         filled_mask = plot_filled_mask(img, boxes)
         # Restore image
         return filled_mask.resize((w, h))
+
+    @staticmethod
+    def apply_mask_on_frame(mask, frame, color, width=None, height=None):
+        # Assuming mask is a single-channel image where non-zero values indicate the mask
+        if width is not None and height is not None:
+            mask = Image.fromarray(mask.astype('uint8'))
+            mask = mask.resize((width, height), Image.ANTIALIAS)
+
+        # Convert mask's values to 255 where mask is non-zero (True)
+        mask_to_save = mask.point(lambda p: 0 if p > 0 else 255)
+        mask_to_save = mask_to_save.convert('L')  # Ensure it's L mode for the mask
+
+        # Create an image for the colored mask with the same dimensions as the mask
+        # If the color is transparent (we'll assume an RGBA tuple where A=0 means fully transparent)
+        if color[3] == 0:
+            colored_mask = Image.new('RGBA', mask.size, (0, 0, 0, 0))
+        else:
+            colored_mask = Image.new('RGBA', mask.size, color)
+
+        # Composite the colored mask with the frame using the mask
+        frame_rgba = frame.convert('RGBA')
+        result_img = Image.composite(colored_mask, frame_rgba, mask_to_save)
+
+        return result_img
+
+    @staticmethod
+    def hex_to_rgba(hex_color):
+        hex_color = hex_color.lstrip('#')
+        # If the color is transparent, return (0, 0, 0, 0) for RGBA
+        if hex_color.lower() == 'transparent':
+            return (0, 0, 0, 0)
+
+        # Convert hex to RGB
+        lv = len(hex_color)
+        return tuple(int(hex_color[i:i + lv // 3], 16) for i in range(0, lv, lv // 3)) + (255,)

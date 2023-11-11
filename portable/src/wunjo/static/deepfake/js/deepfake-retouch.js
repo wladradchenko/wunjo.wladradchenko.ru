@@ -89,6 +89,10 @@ async function initiateRetouchAiPop(button) {
                             <input type="radio" id="improved-retouch-object" name="preprocessing_retouch" value="remove_object" onclick="toggleRadioOnOrNothing(this, this.name);showExtraOptionsRetouch();toggleRadioOnResolutionGPURetouchAI(this, document.getElementById('preview-media'), true);">
                             <label for="improved-retouch-object">Improve remove object</label>
                         </div>
+                         <div>
+                            <input type="checkbox" id="remove-text" value="#ffffff">
+                            <label for="remove-text">Auto remove text</label>
+                        </div>
                         <div id="extraOptions" style="display: none;">
                             <div>
                                 <label for="blurCoefficient">Thickness of mask:</label>
@@ -616,10 +620,17 @@ async function processRetouchAi(data, element) {
         return;
     }
 
+    const preprocessingRetouchFace = element.querySelector("#retouch-face").getAttribute('data-checked');
+    const preprocessingRetouchObject = element.querySelector("#retouch-object").getAttribute('data-checked');
+    const preprocessingRetouchImprovedObject = element.querySelector("#improved-retouch-object").getAttribute('data-checked');
+    const preprocessingRemoveText = element.querySelector("#remove-text").checked;
+    const preprocessingCheckboxSaveMask = element.querySelector("#get-mask");
+    const preprocessingCheckboxSaveMaskTransparent = element.querySelector("#get-mask-transparent").checked;
+
     const maskTimelinesList = element.querySelectorAll(".mask-timeline");
     const dataDict = {};
 
-    if (maskTimelinesList.length === 0) {
+    if (maskTimelinesList.length === 0 && !preprocessingRemoveText) {
         displayMessage(messageAboutStatus, "You need to add mask before run");
         return null
     }
@@ -654,16 +665,10 @@ async function processRetouchAi(data, element) {
         };
     });
 
-    if (Object.keys(dataDict).length === 0) {
+    if (Object.keys(dataDict).length === 0  && !preprocessingRemoveText) {
         displayMessage(messageAboutStatus, "All mask start time less than cut start time");
         return null
     }
-
-    const preprocessingRetouchFace = element.querySelector("#retouch-face").getAttribute('data-checked');
-    const preprocessingRetouchObject = element.querySelector("#retouch-object").getAttribute('data-checked');
-    const preprocessingRetouchImprovedObject = element.querySelector("#improved-retouch-object").getAttribute('data-checked');
-    const preprocessingCheckboxSaveMask = element.querySelector("#get-mask");
-    const preprocessingCheckboxSaveMaskTransparent = element.querySelector("#get-mask-transparent").checked;
 
     let maskColor = null;
     if (preprocessingCheckboxSaveMask.checked) {
@@ -715,6 +720,7 @@ async function processRetouchAi(data, element) {
         source_end: mediaEndNumber,
         source_type: targetDetails.mediaType,
         model_type: retouchModel,
+        mask_text: preprocessingRemoveText,
         mask_color: maskColor,
         masks: dataDict,
         blur: blurCoefficient,

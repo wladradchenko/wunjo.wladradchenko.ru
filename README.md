@@ -320,7 +320,7 @@ Update 1.6.1
 - [ ] Music generation
 - [x] Added module a video style change by images
 - [x] Multilanguage speech by one text
-- [ ] Adding a new tool for creating a user-drawable mask that is attached to the segmentation object and moves with it
+- [x] Added auto remove text from video or image with auto create text mask
 
 <!-- VIDEO -->
 ## Video
