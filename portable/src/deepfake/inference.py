@@ -40,6 +40,7 @@ from src.retouch import InpaintModel, process_retouch, pil_to_cv2, convert_cv2_t
 """Retouch"""
 """Segmentation"""
 from src.utils.segment import SegmentAnything
+from src.east.detect import SegmentText
 """Segmentation"""
 
 sys.path.pop(0)
@@ -471,7 +472,7 @@ class Retouch:
 
     @staticmethod
     def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_object", predictor=None,
-                     session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img",
+                     session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img", mask_text=True,
                      mask_color: str = None, upscale: bool = True, blur: int = 1, segment_percentage: int = 25):
         # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H%M%S"))
@@ -594,6 +595,27 @@ class Retouch:
                 download_model(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
             else:
                 check_download_size(onnx_vit_checkpoint, link_onnx_vit_checkpoint)
+
+        # Get models for text detection
+        vgg16_baseline_path = os.path.join(checkpoint_folder, "vgg16_baseline.pth")
+        link_vgg16_baseline = get_nested_url(file_deepfake_config, ["checkpoints", "vgg16_baseline.pth"])
+        if not os.path.exists(vgg16_baseline_path):
+            # check what is internet access
+            is_connected(vgg16_baseline_path)
+            # download pre-trained models from url
+            download_model(vgg16_baseline_path, link_vgg16_baseline)
+        else:
+            check_download_size(vgg16_baseline_path, link_vgg16_baseline)
+
+        vgg16_east_path = os.path.join(checkpoint_folder, "vgg16_east.pth")
+        link_vgg16_east = get_nested_url(file_deepfake_config, ["checkpoints", "vgg16_east.pth"])
+        if not os.path.exists(vgg16_east_path):
+            # check what is internet access
+            is_connected(vgg16_east_path)
+            # download pre-trained models from url
+            download_model(vgg16_east_path, link_vgg16_east)
+        else:
+            check_download_size(vgg16_east_path, link_vgg16_east)
 
         # segment
         segment_percentage = segment_percentage / 100
@@ -727,6 +749,24 @@ class Retouch:
             masks[key]["frame_files_path"] = mask_key_save_path
             # close progress bar for key
             progress_bar.close()
+
+        if mask_text:
+            print(f"Processing text")
+            mask_text_save_path = os.path.join(tmp_dir, f"mask_text")
+            os.makedirs(mask_text_save_path, exist_ok=True)
+            segment_text = SegmentText(device=device, vgg16_path=vgg16_baseline_path, east_path=vgg16_east_path)
+            # set progress bar
+            progress_bar = tqdm(total=len(frame_files), unit='it', unit_scale=True)
+            for frame_file in frame_files:
+                frame_file_path = os.path.join(frame_dir, frame_file)
+                mask_text_frame = segment_text.detect_text(frame_file_path)
+                mask_text_frame_path = os.path.join(mask_text_save_path, frame_file)
+                mask_text_frame.save(mask_text_frame_path)
+                progress_bar.update(1)
+            # close progress bar for text mask
+            progress_bar.close()
+
+        print(masks)
 
         if mask_color:
             print("Mask save is finished. Open folder")

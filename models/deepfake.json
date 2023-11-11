@@ -21,7 +21,9 @@
     "sam_vit_h.pth": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth",
     "ProPainter.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/ProPainter.pth",
     "raft-things.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/raft-things.pth",
-    "recurrent_flow_completion.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/recurrent_flow_completion.pth"
+    "recurrent_flow_completion.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/recurrent_flow_completion.pth",
+    "vgg16_baseline.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_baseline.pth",
+    "vgg16_east.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_east.pth"
   },
   "gfpgan": {
     "alignment_WFLW_4HG.pth": "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth",
