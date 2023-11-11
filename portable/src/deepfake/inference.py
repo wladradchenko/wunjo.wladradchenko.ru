@@ -777,8 +777,6 @@ class Retouch:
             # Set mask path in masks
             masks["text"] = {'frame_files_path': mask_text_save_path}
 
-        print(masks)
-
         if mask_color:
             print("Mask save is finished. Open folder")
             if os.path.exists(save_dir):
