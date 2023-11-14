@@ -126,7 +126,6 @@ class VoiceCloneTranslate:
         try:
             output_file_signature = signature.set_encrypted(output_file, save_folder)
             if output_file_signature is not None:
-                os.remove(output_file)
                 output_file = output_file_signature
         except Exception as err:
             print(f"Error...during set signature {err}")
