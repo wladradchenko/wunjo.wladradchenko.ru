@@ -75,7 +75,7 @@ For detailed instructions about setup Wunjo AI from GitHub, refer to the [Launch
 <!-- DOWNLOAD -->
 ## Install packets
 
-### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.0.deb)
+### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.1.deb)
 
 For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-ubuntu) from installer
 
@@ -83,7 +83,7 @@ For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https:/
 
 Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
 
-### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.0.msi)
+### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.1.msi)
 
 For detailed instructions about install Wunjo AI on [Windows](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-windows) from installer
 
@@ -97,6 +97,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
 - [Russian synthesized voice from text](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [English voice cloned from previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Chinese voice cloned from a previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/chinese-voice-clone?si=43d437bbdf4d4d9a80c7a4a0031189c0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+
+- [Russian audio song](https://soundcloud.com/vladislav-radchenko-234338135/kotletki-s-pyureshkoy-mp3storecc?si=b1f80ace3216458e8f40ea757388b08d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [Russian vocal extract from audio](https://soundcloud.com/vladislav-radchenko-234338135/vocals?si=91b0d2e903204f73b5f3133c0a3a6d7f&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [Russian clone voice from audio](https://soundcloud.com/vladislav-radchenko-234338135/russian-clone-voice-from-song-wunjo-ai-161?si=2c4e6929313346eeaeb95da849e8e4d7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 
 ### Face animation from image src
 

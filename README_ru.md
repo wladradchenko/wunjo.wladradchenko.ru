@@ -75,7 +75,7 @@
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.0.deb)
+### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.1.deb)
 
 Подробные инструкции по установке Wunjo AI с установщика на [Ubuntu/Debian OS](https://github.com/wladradченко/wunjo.wladradkova.ru/wiki/How-to-install-the-application#installation-on-ubuntu).
 
@@ -83,7 +83,7 @@
 
 В связи с тем, что у автора проекта нет лицензии Apple, на данный момент нет возможности создать официальный установщик.
 
-### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.0.msi)
+### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.1.msi)
 
 Подробные инструкции по установке Wunjo AI с установщика на [Windows](https://github.com/wladradченко/wunjo.wladradkova.ru/wiki/How-to-install-the-application#installation-on-ubuntu).
 
@@ -95,6 +95,10 @@
 - [Русский синтезированный голос из текста](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Английский голос клонированный из ранее синтезированного русского голоса](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Китайский голос клонированный из ранее синтезированного русского голоса](https://soundcloud.com/vladislav-radchenko-234338135/chinese-voice-clone?si=43d437bbdf4d4d9a80c7a4a0031189c0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+
+- [Оригинальный отрывок песни](https://soundcloud.com/vladislav-radchenko-234338135/kotletki-s-pyureshkoy-mp3storecc?si=b1f80ace3216458e8f40ea757388b08d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [Извлечение голоса из песни](https://soundcloud.com/vladislav-radchenko-234338135/vocals?si=91b0d2e903204f73b5f3133c0a3a6d7f&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+- [Клонирование голоса из песни](https://soundcloud.com/vladislav-radchenko-234338135/russian-clone-voice-from-song-wunjo-ai-161?si=2c4e6929313346eeaeb95da849e8e4d7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 
 ### Анимация лица из изображения
 
