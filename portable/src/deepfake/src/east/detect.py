@@ -243,7 +243,7 @@ class SegmentText:
         # Assuming mask is a single-channel image where non-zero values indicate the mask
         if width is not None and height is not None:
             mask = Image.fromarray(mask.astype('uint8'))
-            mask = mask.resize((width, height), Image.ANTIALIAS)
+            mask = mask.resize((width, height))
 
         # Convert mask's values to 255 where mask is non-zero (True)
         mask_to_save = mask.point(lambda p: 0 if p > 0 else 255)
