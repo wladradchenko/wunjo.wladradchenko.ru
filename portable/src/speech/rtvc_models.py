@@ -307,8 +307,8 @@ def clone_voice_rtvc(audio_file, text, encoders, synthesizer, vocoder, save_fold
         # Set the values in embed to the max and min values from hubert_embed
         embed[embed_max_index] = hubert_max
         embed[embed_min_index] = hubert_min
-        # embed denoising zero threshold
-        set_zero_thres = 0.03
+        # # embed denoising zero threshold
+        set_zero_thres = 0.06
         embed[embed < set_zero_thres] = 0
         print("Created the embedding for audio")
     except Exception as e:
