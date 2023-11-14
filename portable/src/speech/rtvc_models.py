@@ -84,8 +84,11 @@ def load_rtvc_encoder(lang: str, device: str) -> tuple:
     encoder = VoiceCloneEncoder()
     encoder.load_model(encoder_model_path, device)
     # load hubert
+    model_general_path = os.path.join(RTVC_VOICE_FOLDER, "general")
+    if not os.path.exists(model_general_path):
+        os.makedirs(model_general_path, exist_ok=True)
     hubert_url = get_nested_url(rtvc_models_config, ["general", "hubert"])
-    hubert_path = os.path.join(RTVC_VOICE_FOLDER, "general", "hubert.pt")
+    hubert_path = os.path.join(model_general_path, "hubert.pt")
     hubert_model_path = inspect_rtvc_model(hubert_path, hubert_url)
     if not os.path.exists(hubert_model_path):
         raise Exception(f"Model {hubert_model_path} not found. Check you internet connection to download")
@@ -118,8 +121,11 @@ def load_rtvc_digital_signature(device: str):
     :param device: cuda or cpu
     :return: encoder
     """
+    model_general_path = os.path.join(RTVC_VOICE_FOLDER, "general")
+    if not os.path.exists(model_general_path):
+        os.makedirs(model_general_path, exist_ok=True)
     signature_url = get_nested_url(rtvc_models_config, ["general", "signature"])
-    signature_path = os.path.join(RTVC_VOICE_FOLDER, "general", "signature.pt")
+    signature_path = os.path.join(model_general_path, "signature.pt")
     model_path = inspect_rtvc_model(signature_path, signature_url)
     if not os.path.exists(model_path):
         raise Exception(f"Model {signature_path} not found. Check you internet connection to download")
@@ -178,8 +184,11 @@ def load_speech_enhancement_vocoder():
     Load speech enhancement vocoder for voice cloning
     :return: path to models
     """
+    model_general_path = os.path.join(RTVC_VOICE_FOLDER, "general")
+    if not os.path.exists(model_general_path):
+        os.makedirs(model_general_path, exist_ok=True)
     link_model_vocoder = get_nested_url(rtvc_models_config, ["general", "trimed.pt"])
-    model_vocoder_path = os.path.join(RTVC_VOICE_FOLDER, "general", "trimed.pt")
+    model_vocoder_path = os.path.join(model_general_path, "trimed.pt")
     if not os.path.exists(model_vocoder_path):
         # check what is internet access
         is_connected(model_vocoder_path)
@@ -196,8 +205,11 @@ def load_speech_enhancement_fixer():
     Load speech enhancement voicefixer for voice cloning
     :return: path to models
     """
+    model_general_path = os.path.join(RTVC_VOICE_FOLDER, "general")
+    if not os.path.exists(model_general_path):
+        os.makedirs(model_general_path, exist_ok=True)
     link_model_fixer = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
-    model_fixer_path = os.path.join(RTVC_VOICE_FOLDER, "general", "voicefixer.ckpt")
+    model_fixer_path = os.path.join(model_general_path, "voicefixer.ckpt")
     if not os.path.exists(model_fixer_path):
         # check what is internet access
         is_connected(model_fixer_path)
