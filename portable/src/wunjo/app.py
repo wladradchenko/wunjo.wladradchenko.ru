@@ -415,7 +415,7 @@ def synthesize_media_editor():
 
             dir_time = current_time()
             result_path = SpeechEnhancement().get_speech_enhancement(
-                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time),
+                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_SPEECH_ENHANCEMENT_FOLDER, dir_time),
                 use_gpu=os.environ.get('WUNJO_TORCH_DEVICE', 'cuda') == 'cuda', file_type=media_type
             )
         else:
