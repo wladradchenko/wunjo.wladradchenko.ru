@@ -36,19 +36,21 @@ Unlock the unparalleled capabilities of neural networks with Wunjo AI. Whether y
 
 - **Speech Synthesis:** Effortlessly convert text into human-like speech.
 - **Voice Cloning:** Clone voices from provided audio files or directly record your voice within the app for real-time cloning.
-- **Multilingual Support:** Currently supports English, Russian, Chinese for voice cloning (from any language audio) and English, Russian synthesis, with plans to extend voice cloning synthesis model for Spanish.
+- **Multilingual Support:** Currently supports English, Russian, Chinese for voice cloning (from any language audio) and English, Russian synthesis, you can also offer your language for voice cloning. Multilanguage speech by one text.
 - **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
 - **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
+- **Audio processing** Speech enhancement and separating vocals and music.
 - **Video-to-Video by Text Prompt:**
   - Reshape videos with by text prompt with difference models of Stable Diffusion. Let generative neural networks craft a new visual narrative.
   - Change individual objects in a video by text prompt with one click, changing them throughout the video with unique text queries.
   - Preserve specific objects without change by using the «pass» keyword.
+  - Change video style by changed img2img frame,
 - **Deepfake Animation:**
   - Animate faces using just one photo combined with audio.
   - Achieve precise lip syncing with your audio using our deepfake lips feature.
   - Effortlessly swap faces in videos, GIFs, and photos using just a single photograph with our "Face Swap" feature.
   - Experimental feature. Change the emotions of a person in the video, with the help of a text description.
-- **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes.
+- **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes. Automatic removal of animated text.
 - **Automatic Segmentation Mask:** Select any object at any time period and get a storyboard of the selected object with a transparent or colored background.
 
 **Applications:**
@@ -317,7 +319,7 @@ Update 1.6.1
 - [x] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~ and improved voice cloning quality.
 - [x] Reducing the amount of RAM used for mouth animation and improving video quality
 - [x] Added speech enhancement
-- [ ] Music generation
+- [x] ~~Music generation~~
 - [x] Added module a video style change by images
 - [x] Multilanguage speech by one text
 - [x] Added auto remove text from video or image with auto create text mask
