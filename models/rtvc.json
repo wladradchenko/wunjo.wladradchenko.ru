@@ -20,6 +20,6 @@
     "unmix_voice": "https://zenodo.org/api/files/f8209c3e-ba60-48cf-8e79-71ae65beca61/vocals-bccbd9aa.pth",
     "voicefixer.ckpt": "https://zenodo.org/record/5600188/files/vf.ckpt?download=1",
     "trimed.pt": "https://zenodo.org/record/5469951/files/model.ckpt-1490000_trimed.pt?download=1",
-    "vocals-bccbd9aa.pth": "https://zenodo.org/api/files/f8209c3e-ba60-48cf-8e79-71ae65beca61/vocals-bccbd9aa.pth"
+    "vocals-bccbd9aa.pth": "https://zenodo.org/api/files/f8209c3e-ba60-48cf-8e79-71ae65beca61/vocals-bccbd9aa.pth?download=1"
   }
 }

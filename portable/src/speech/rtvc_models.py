@@ -233,7 +233,7 @@ def load_audio_separator_model(target) -> None:
         os.makedirs(hub_dir_checkpoints, exist_ok=True)
 
     if target in ["vocals", "residual"]:
-        link_audio_separator = get_nested_url(rtvc_models_config, ["general", "voicefixer.ckpt"])
+        link_audio_separator = get_nested_url(hub_dir_checkpoints, ["vocals-bccbd9aa.pth"])
         model_audio_separator = os.path.join(hub_dir_checkpoints, "vocals-bccbd9aa.pth")
 
         if not os.path.exists(model_audio_separator):
