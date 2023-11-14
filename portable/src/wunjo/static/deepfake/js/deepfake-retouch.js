@@ -25,7 +25,7 @@ async function toggleRadioOnResolutionGPURetouchAI(radio, preview, useGpu = fals
     // Otherwise, check it and mark it with the data attribute
     if (wasChecked) {
         const useLimitResolution = true;
-        const gpuTable = {19: 1280, 7: 720, 6: 640, 2: 320};
+        const gpuTable = {32: 1280, 23: 1080, 15: 768, 7: 720, 6: 640, 2: 320};
         if (useGpu === true) {
             fetchVramResolution(preview, useLimitResolution, gpuTable);
         } else {

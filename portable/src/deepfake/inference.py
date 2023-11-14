@@ -669,7 +669,7 @@ class Retouch:
             # resize only for VRAM
             gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
             # table of gpu memory
-            gpu_table = {19: 1280, 7: 720, 6: 640, 2: 320}
+            gpu_table = {32: 1280, 23: 1080, 15: 768, 7: 720, 6: 640, 2: 320}
             # get user resize for gpu
             max_size = max(val for key, val in gpu_table.items() if key <= gpu_vram)
             print(f"Limit VRAM is {gpu_vram} Gb. Video will resize before {max_size} for max size")
