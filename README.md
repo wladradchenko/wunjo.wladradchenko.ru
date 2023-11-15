@@ -225,13 +225,13 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
   <table>
   <tr>
     <th>Original</th>
-    <th>Pass object + Background change</th>
-    <th>Full change</th>
+    <th>Object pass + Background change</th>
+    <th>Object change</th>
   </tr>
   <tr align="center">
-    <td><img src="example/diffusion/original_dance.gif" alt="original" width="228" height="228"></td>
-    <td><img src="example/diffusion/object_pass_dance.gif" alt="pass" width="228" height="228"></td>
-    <td><img  src="example/diffusion/full_dance.gif" alt="full_change" width="228" height="228"></td>
+    <td><img src="example/diffusion/original.gif" alt="original" width="400" height="225"></td>
+    <td><img src="example/diffusion/pass.gif" alt="pass" width="400" height="225"></td>
+    <td><img  src="example/diffusion/upscale_move.gif" alt="full_change" width="400" height="225"></td>
   </tr>
 </table>
 </div>
@@ -241,7 +241,8 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
 <div align="center">
   <table>
   <tr>
-    <th>24 GB</th>
+    <th>32 GB</th>
+    <th>23 GB</th>
     <th>18 GB</th>
     <th>14 GB</th>
     <th>10 GB</th>
@@ -250,6 +251,7 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
   </tr>
   <tr align="center">
     <th>1280x1280</th>
+    <th>1080x1080</th>
     <th>1024x1024</th>
     <th>768x768</th>
     <th>640x640</th>
