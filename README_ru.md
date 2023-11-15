@@ -224,14 +224,20 @@ __Большее разрешение видео__, __дает лучше кач
 <div align="center">
   <table>
   <tr>
-    <th>Original</th>
-    <th>Pass объекта + Изменение фона</th>
-    <th>Изменение объекта</th>
+    <th>Оригинал</th>
+    <th>Пропуск объекта + Изменение фона</th>
   </tr>
   <tr align="center">
     <td><img src="example/diffusion/original.gif" alt="original" width="400" height="225"></td>
     <td><img src="example/diffusion/pass.gif" alt="pass" width="400" height="225"></td>
+  </tr>
+  <tr>
+    <th>Изменение объекта + Улучшение видео</th>
+    <th>Изменение объекта + Улучшение аниме</th>
+  </tr>
+  <tr align="center">
     <td><img  src="example/diffusion/upscale_move.gif" alt="full_change" width="400" height="225"></td>
+    <td><img  src="example/diffusion/upscale_anime.gif" alt="full_change" width="400" height="225"></td>
   </tr>
 </table>
 </div>

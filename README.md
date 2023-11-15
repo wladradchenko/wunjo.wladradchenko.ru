@@ -226,12 +226,18 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
   <tr>
     <th>Original</th>
     <th>Object pass + Background change</th>
-    <th>Object change</th>
   </tr>
   <tr align="center">
     <td><img src="example/diffusion/original.gif" alt="original" width="400" height="225"></td>
     <td><img src="example/diffusion/pass.gif" alt="pass" width="400" height="225"></td>
+  </tr>
+  <tr>
+    <th>Object change + Enhancement move</th>
+    <th>Object change + Enhancement anime</th>
+  </tr>
+  <tr align="center">
     <td><img  src="example/diffusion/upscale_move.gif" alt="full_change" width="400" height="225"></td>
+    <td><img  src="example/diffusion/upscale_anime.gif" alt="full_change" width="400" height="225"></td>
   </tr>
 </table>
 </div>
