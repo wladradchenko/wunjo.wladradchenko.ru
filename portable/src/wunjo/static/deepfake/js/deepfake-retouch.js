@@ -310,7 +310,7 @@ function sendSegmentationDataMaskPreview(mediaName, mediaBlobUrl, pointsList, me
         obj_id: objId
     };
     // message for user
-    displayMessage(document.getElementById("message-about-status"), "Waiting for model is loading for AI segmentation...");
+    displayMessage(document.getElementById("message-about-status"), "The first time running, will be download a model.... Please avoid closing the process until the completes");
 
     fetch(endpointUrl, {
         method: 'POST',
