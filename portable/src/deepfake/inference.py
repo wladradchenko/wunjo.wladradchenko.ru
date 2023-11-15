@@ -550,8 +550,13 @@ class Retouch:
         else:
             check_download_size(model_retouch_path, link_model_retouch)
 
-        # load model segmentation
         if device == "cuda":
+            gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
+        else:
+            gpu_vram = 0
+
+        # load model segmentation
+        if device == "cuda" and gpu_vram > 7:  # min 7 Gb VRAM
             vit_model_type = "vit_h"
 
             sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
@@ -1014,6 +1019,12 @@ class GetSegment:
         os.environ['TORCH_HOME'] = checkpoint_dir_full
 
         if device == "cuda":
+            gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
+        else:
+            gpu_vram = 0
+
+        # load model segmentation
+        if device == "cuda" and gpu_vram > 7:  # min 7 Gb VRAM
             model_type = "vit_h"
 
             sam_vit_checkpoint = os.path.join(checkpoint_dir_full, 'sam_vit_h.pth')
