@@ -2,7 +2,7 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
-[![Dev.to Articles](https://img.shields.io/badge/dev.to-Articles-black)](https://dev.to/wladradchenko/series/24089)
+[![Dev.to Articles](https://img.shields.io/badge/dev.to-Articles-lightgrey)](https://dev.to/wladradchenko/series/24089)
 [![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 
