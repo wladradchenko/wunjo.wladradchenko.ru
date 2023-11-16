@@ -629,6 +629,7 @@ def synthesize_retouch():
     blur = int(request_list.get("blur", 1))
     upscale = request_list.get("upscale", False)
     segment_percentage = int(request_list.get("segment_percentage", 25))
+    delay_mask = int(request_list.get("delay_mask", 0))
 
     request_time = current_time()
     request_date = format_dir_time(request_time)
@@ -644,7 +645,7 @@ def synthesize_retouch():
         retouch_result = Retouch.main_retouch(
             output=CONTENT_RETOUCH_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
             masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type, mask_text=mask_text,
-            predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage
+            predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage, delay_mask=delay_mask
         )
     except Exception as err:
         app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]

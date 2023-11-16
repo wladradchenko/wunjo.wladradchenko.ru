@@ -6,7 +6,7 @@ import torch
 import subprocess
 import numpy as np
 from tqdm import tqdm
-from time import strftime
+from time import strftime, sleep
 from argparse import Namespace
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -473,7 +473,7 @@ class Retouch:
     @staticmethod
     def main_retouch(output: str, source: str, masks: dict, retouch_model_type: str = "retouch_object", predictor=None,
                      session=None, source_start: float = 0, source_end: float = 0, source_type: str = "img", mask_text=True,
-                     mask_color: str = None, upscale: bool = True, blur: int = 1, segment_percentage: int = 25):
+                     mask_color: str = None, upscale: bool = True, blur: int = 1, segment_percentage: int = 25, delay_mask: int = 0):
         # create folder
         save_dir = os.path.join(output, strftime("%Y_%m_%d_%H%M%S"))
         os.makedirs(save_dir, exist_ok=True)
@@ -781,6 +781,21 @@ class Retouch:
             del segment_text
             # Set mask path in masks
             masks["text"] = {'frame_files_path': mask_text_save_path}
+
+        if delay_mask != 0:
+            print(f"Open folder with mask for manually edit with delay time {delay_mask} sec")
+            if os.path.exists(tmp_dir):
+                if sys.platform == 'win32':
+                    # Open folder for Windows
+                    subprocess.Popen(r'explorer /select,"{}"'.format(tmp_dir))
+                elif sys.platform == 'darwin':
+                    # Open folder for MacOS
+                    subprocess.Popen(['open', tmp_dir])
+                elif sys.platform == 'linux':
+                    # Open folder for Linux
+                    subprocess.Popen(['xdg-open', tmp_dir])
+            # delay time before next run
+            sleep(int(delay_mask))
 
         if mask_color:
             print("Mask save is finished. Open folder")

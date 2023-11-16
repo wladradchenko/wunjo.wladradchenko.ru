@@ -109,6 +109,10 @@ async function initiateRetouchAiPop(button) {
                             <input type="number" id="percentageInput" name="percentage" min="1" max="50" value="25" style="width: 45px;"> %
                         </div>
                         <div>
+                            <label for="delayMask">Mask inspection delay time (sec): </label>
+                            <input type="number" id="delayMask" name="delay" min="0" max="7200" value="0" style="width: 45px;">
+                        </div>
+                        <div>
                             <input type="checkbox" id="get-mask" value="#ffffff">
                             <label for="get-mask">Save mask</label>
                         </div>
@@ -714,6 +718,15 @@ async function processRetouchAi(data, element) {
         percentageInput = 25; // default value
     }
 
+    let delayMaskElem = element.querySelector("#delayMask");
+    let delayMask = parseInt(delayMaskElem.value);
+    let delayMaskMin = parseInt(delayMaskElem.getAttribute('min'));
+    let delayMaskMax = parseInt(delayMaskElem.getAttribute('max'));
+
+    if (isNaN(delayMask) || delayMask < delayMaskMin || delayMask > delayMaskMax) {
+        delayMask = 0; // default value
+    }
+
     const retouchAiParameters = {
         source: targetDetails.mediaName,
         source_start: mediaStartNumber,
@@ -725,7 +738,8 @@ async function processRetouchAi(data, element) {
         masks: dataDict,
         blur: blurCoefficient,
         upscale: upscaleCheckbox,
-        segment_percentage: percentageInput
+        segment_percentage: percentageInput,
+        delay_mask: delayMask
     };
 
     console.log(JSON.stringify(retouchAiParameters, null, 4));
