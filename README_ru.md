@@ -3,7 +3,8 @@
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 [![Habr Articles](https://img.shields.io/badge/Habr-Articles-blue)](https://habr.com/ru/search/?target_type=posts&order=relevance&q=%5Bwunjo%5D)
-[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
+[![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
+[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 
 <p align="right">[<a href="README.md">EN</a>]</p>
 <div id="top"></div>
