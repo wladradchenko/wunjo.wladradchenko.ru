@@ -355,7 +355,6 @@ def detect_text_language(text: str) -> list:
     patterns = {
         'ru': re.compile(r'[\u0400-\u04FF]+'),
         'zh': re.compile(r'[\u4e00-\u9fff]+'),
-        'punct': re.compile(r'[.!?;,:\s]')  # Pattern to match punctuation and spaces
     }
 
     # Function to determine the language of a word
@@ -366,7 +365,7 @@ def detect_text_language(text: str) -> list:
         return 'en'  # Default to English
 
     # Split the text into words
-    words = re.split(r'(\W)', text)
+    words = text.split(" ")
 
     # List to hold tuples of language and text
     language_segments = []
@@ -379,9 +378,7 @@ def detect_text_language(text: str) -> list:
             continue
 
         # Check if word is punctuation, if so, append it to the current segment
-        if patterns['punct'].match(word) and current_segment:
-            current_segment += word
-        else:
+        if len(word.replace(" ", "")) > 0:
             word_lang = get_language(word)
             # If the language changes, append the current segment and start a new one
             if current_lang and word_lang != current_lang:
