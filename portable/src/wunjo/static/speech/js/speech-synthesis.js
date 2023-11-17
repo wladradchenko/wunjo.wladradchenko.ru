@@ -41,7 +41,7 @@ async function sendTextToSpeech() {
               const res = await fetch(voiceCloneBlobUrl);
               const blob = await res.blob();
               var file = new File([blob], voiceCloneName);
-              uploadFile(file);
+              uploadFile(file, voiceCloneName);
             } catch (error) {
               console.error("An error occurred while fetching the voice clone blob:", error);
             }

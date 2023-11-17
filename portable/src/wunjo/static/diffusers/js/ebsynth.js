@@ -387,7 +387,7 @@ async function processEbsynth(data, element) {
                 .then((res) => res.blob())
                 .then((blob) => {
                     var file = new File([blob], mediaName);
-                    uploadFile(file); // Ensure this function is defined elsewhere
+                    uploadFile(file, mediaName); // Ensure this function is defined elsewhere
                 })
                 .catch(error => console.error('Error uploading file:', error));
         }

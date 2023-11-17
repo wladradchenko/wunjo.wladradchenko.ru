@@ -45,7 +45,7 @@ async function initiateFaceAndMouthProcess(data, elem) {
             .then((res) => res.blob())
             .then((blob) => {
               var file = new File([blob], audioName);
-              uploadFile(file);
+              uploadFile(file, audioName);
             });
         }
 

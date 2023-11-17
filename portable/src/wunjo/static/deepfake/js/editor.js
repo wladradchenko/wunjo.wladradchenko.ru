@@ -378,7 +378,7 @@ async function handleVideoMergeProcess(data, elem) {
 
         const blob = await fetch(audioBlobUrl).then(res => res.blob());
         const file = new File([blob], audioName);
-        uploadFile(file);
+        uploadFile(file, audioName);
 
         return audioName;
     }

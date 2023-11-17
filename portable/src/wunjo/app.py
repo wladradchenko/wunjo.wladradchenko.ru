@@ -48,6 +48,7 @@ app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it 
 app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
 app.config['USER_LANGUAGE'] = "en"
 app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 * 1024  # Set the limit to 10GB (adjust as needed)
 
 logging.getLogger('werkzeug').disabled = True
 
@@ -145,19 +146,23 @@ def get_vram():
 
 @app.route('/upload_tmp', methods=['POST'])
 @cross_origin()
-def upload_file_deepfake():
+def upload_file_media():
     if not os.path.exists(TMP_FOLDER):
         os.makedirs(TMP_FOLDER)
 
     if 'file' not in request.files:
         return {"status": 'No file uploaded'}
-    file = request.files['file']
-    if file.filename == '':
+    chunk = request.files['file']
+    if chunk.filename == '':
         return {"status": 'No file selected'}
-    if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(TMP_FOLDER, filename))
-        return {"status": 'File uploaded'}
+    filename = secure_filename(chunk.filename)
+
+    file_path = os.path.join(TMP_FOLDER, filename)
+    with open(file_path, 'ab') as f:  # Open in append-binary mode to append chunks
+        f.write(chunk.read())  # Write the received chunk to the file
+
+    return {"status": 'Chunk uploaded successfully'}
+
 
 @app.route('/open_folder', methods=["POST"])
 @cross_origin()
@@ -249,6 +254,7 @@ def create_segment_anything():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
     result_filename = GetSegment.get_segment_mask_file(
         predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
@@ -385,6 +391,7 @@ def synthesize_media_editor():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     try:
@@ -487,6 +494,7 @@ def synthesize_only_ebsynth():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     try:
@@ -568,6 +576,7 @@ def synthesize_diffuser():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     try:
@@ -639,6 +648,7 @@ def synthesize_retouch():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     try:
@@ -712,6 +722,7 @@ def synthesize_face_swap():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, target_content)) or not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source_content)):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     try:
@@ -798,6 +809,7 @@ def synthesize_animation_talk():
     if not check_tmp_file_uploaded(source_image) or not check_tmp_file_uploaded(driven_audio):
         # check what file is uploaded in tmp
         print("File is too big... ")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
     if type_file == "img":

@@ -269,7 +269,7 @@ function retrieveMediaDetailsFramePreviewMask(mediaPreview) {
         .then((res) => res.blob())
         .then((blob) => {
           var file = new File([blob], mediaName);
-          uploadFile(file);
+          uploadFile(file, mediaName);
         });
     }
 

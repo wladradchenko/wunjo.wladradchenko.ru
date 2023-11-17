@@ -869,7 +869,7 @@ function retrieveMediaDetails(mediaPreview) {
         .then((res) => res.blob())
         .then((blob) => {
           var file = new File([blob], mediaName);
-          uploadFile(file);
+          uploadFile(file, mediaName);
         });
     }
 
@@ -1011,23 +1011,40 @@ function closeTutorial() {
 // CLOSE INTROJS //
 
 // UPLOAD FILE TO TMP //
-function uploadFile(file) {
-  const formData = new FormData();
-  formData.append("file", file);
+function uploadFile(file, mediaName="blob") {
+  const CHUNK_SIZE = 10 * 1024 * 1024; // Set the chunk size to 50MB (adjust as needed)
+  const fileSize = file.size;
+  let start = 0;
 
-  fetch("/upload_tmp", {
-    method: "POST",
-    body: formData,
-  })
+  function uploadChunk() {
+    const chunk = file.slice(start, start + CHUNK_SIZE);
+    const formData = new FormData();
+
+    // Append the chunk with the specific filename (mediaName)
+    formData.append('file', chunk, mediaName);
+
+    fetch('/upload_tmp', {
+      method: 'POST',
+      body: formData,
+    })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Upload failed");
+      if (response.ok) {
+        start += CHUNK_SIZE;
+        if (start < fileSize) {
+          uploadChunk(); // Upload the next chunk
+        } else {
+          console.log('File uploaded successfully');
+        }
+      } else {
+        console.error('Upload failed');
       }
-      console.log("File uploaded");
     })
     .catch((error) => {
-      console.error(error);
+      console.error('Error:', error);
     });
+  }
+
+  uploadChunk();
 }
 // UPLOAD FILE TO TMP //
 
