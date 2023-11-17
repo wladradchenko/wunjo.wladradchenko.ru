@@ -249,7 +249,7 @@ def create_segment_anything():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
     result_filename = GetSegment.get_segment_mask_file(
         predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
     )
@@ -385,7 +385,7 @@ def synthesize_media_editor():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     try:
         if not audio_separator and not speech_enhancement and media_type in ["img", "video"]:
@@ -487,7 +487,7 @@ def synthesize_only_ebsynth():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     try:
         ebsynth_result = Video2Video.only_ebsynth_video_render(
@@ -568,7 +568,7 @@ def synthesize_diffuser():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     try:
         diffusion_result = Video2Video.main_video_render(
@@ -639,7 +639,7 @@ def synthesize_retouch():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     try:
         retouch_result = Retouch.main_retouch(
@@ -712,7 +712,7 @@ def synthesize_face_swap():
     if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, target_content)) or not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source_content)):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     try:
         face_swap_result = FaceSwap.main_faceswap(
@@ -798,7 +798,7 @@ def synthesize_animation_talk():
     if not check_tmp_file_uploaded(source_image) or not check_tmp_file_uploaded(driven_audio):
         # check what file is uploaded in tmp
         print("File is too big... ")
-        return {"status": 400}
+        return {"status": 200}
 
     if type_file == "img":
         mode_msg = get_print_translate("Face in sync")

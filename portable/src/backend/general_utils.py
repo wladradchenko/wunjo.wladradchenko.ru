@@ -180,7 +180,7 @@ def format_dir_time(dir_time):
     return formatted_date
 
 
-def check_tmp_file_uploaded(file_path, retries=10, delay=30):
+def check_tmp_file_uploaded(file_path, retries=5, delay=10):
     """
     Check if a file exists, with a specified number of retries and delay between retries.
 
