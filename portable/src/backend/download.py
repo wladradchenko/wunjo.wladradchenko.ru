@@ -68,6 +68,10 @@ def unzip(zip_file_path, extract_dir, target_dir_name=None):
 
 
 def download_model(download_path: str, download_link: str, retry_count: int = 2, retry_delay: int = 5) -> bool:
+    # Create directory if it doesn't exist using exist_ok=True
+    download_dir = os.path.dirname(download_path)
+    os.makedirs(download_dir, exist_ok=True)
+
     for i in range(retry_count + 1):
         try:
             response = requests.get(download_link, stream=True)
