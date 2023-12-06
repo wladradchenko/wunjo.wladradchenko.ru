@@ -101,7 +101,7 @@ def update_translation():
     # create here file if not exist
     localization_path = os.path.join(SETTING_FOLDER, "localization.json")
     req = request.get_json()
-    with open(localization_path, 'w', encoding='utf-8') as f:
+    with open(localization_path, 'a', encoding='utf-8') as f:
             json.dump(req, f, ensure_ascii=False)
 
     return {"status": 200}
