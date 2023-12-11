@@ -128,7 +128,8 @@ def set_settings():
 
     default_settings = {
         "user_language": standard_language,
-        "default_language": default_language
+        "default_language": default_language,
+        "browser": "default"
     }
     setting_file = os.path.join(SETTING_FOLDER, "settings.json")
     # Check if the SETTING_FILE exists
@@ -146,10 +147,30 @@ def set_settings():
                     user_settings["user_language"] = standard_language
                 if user_settings.get("default_language") is None:
                     user_settings["default_language"] = default_language
+                if user_settings.get("browser") is None:
+                    user_settings["browser"] = "default"
                 return user_settings
             except Exception as err:
                 print(f"Error ... {err}")
                 return default_settings
+
+
+def get_utils_config(save_dir: str) -> dict:
+    UTILS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/utils.json"
+    try:
+        response = requests.get(UTILS_JSON_URL)
+        with open(os.path.join(save_dir, 'utils.json'), 'wb') as file:
+            file.write(response.content)
+    except:
+        print("Not internet connection to get actual versions of deepfake models")
+    finally:
+        if not os.path.isfile(os.path.join(save_dir, 'utils.json')):
+            utils = {}
+        else:
+            with open(os.path.join(save_dir, 'utils.json'), 'r', encoding="utf8") as file:
+                utils = json.load(file)
+
+    return utils
 
 
 def get_folder_size(folder_path):

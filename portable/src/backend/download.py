@@ -148,3 +148,39 @@ def get_download_filename(download_link):
                 filename = value.strip("\"'")
 
     return filename
+
+
+def get_custom_browser(save_dir: str, utils_config: dict = None):
+    # Use default browser if config is not downloaded
+    if utils_config is None:
+        return None
+    # Find sys platform
+    if sys.platform == 'win32':
+        # Use custom browser for windows
+        dir_webgui = os.path.join(save_dir, 'webgui')
+        link_webgui = get_nested_url(utils_config, ["webgui", "windows"])
+        if not os.path.exists(os.path.join(dir_webgui, "webgui.exe")):
+            # check what is internet access
+            is_connected(dir_webgui)
+            # download pre-trained models from url
+            download_model(os.path.join(dir_webgui, 'webgui.zip'), link_webgui)
+            unzip(os.path.join(dir_webgui, 'webgui.zip'), dir_webgui)
+        browser_path = os.path.join(dir_webgui, "webgui.exe")
+    elif sys.platform == 'linux':
+        # Use custom browser for linux
+        dir_webgui = os.path.join(save_dir, "webgui.AppImage")
+        link_webgui = get_nested_url(utils_config, ["webgui", "linux"])
+        if not os.path.exists(dir_webgui):
+            # check what is internet access
+            is_connected(dir_webgui)
+            # download pre-trained models from url
+            download_model(dir_webgui, link_webgui)
+        browser_path = dir_webgui
+        os.system(f"chmod +x {browser_path}")
+    else:
+        # Use default browser
+        browser_path = None
+    if not os.path.exists(str(browser_path)) and browser_path is not None:
+        # Use default browser because some errors with download
+        browser_path = None
+    return browser_path

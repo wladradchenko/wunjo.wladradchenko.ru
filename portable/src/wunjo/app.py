@@ -28,10 +28,11 @@ from backend.folders import (
     CONTENT_AUDIO_SEPARATOR_FOLDER, CONTENT_DIFFUSER_FOLDER, CONTENT_RETOUCH_FOLDER, CONTENT_FACE_SWAP_FOLDER,
     CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER, CONTENT_SPEECH_ENHANCEMENT_FOLDER
 )
+from backend.download import get_custom_browser
 from backend.translator import get_translate
 from backend.general_utils import (
     get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size,
-    format_dir_time, clean_text_by_language, check_tmp_file_uploaded
+    format_dir_time, clean_text_by_language, check_tmp_file_uploaded, get_utils_config
 )
 import logging
 
@@ -1184,7 +1185,13 @@ def media_file(filename):
 
 def main():
     if not app.config['DEBUG'] and sys.platform != 'darwin':
-        FlaskUI(app=app, server="flask").run()
+        settings = set_settings()
+        if settings.get("browser") == "custom":
+            utils_config = get_utils_config(SETTING_FOLDER)
+            browser_path = get_custom_browser(SETTING_FOLDER, utils_config)
+        else:
+            browser_path = None
+        FlaskUI(app=app, server="flask", browser_path=browser_path).run()
     else:
         print("http://127.0.0.1:8000")
         app.run(port=8000)

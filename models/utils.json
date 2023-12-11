@@ -1,0 +1,6 @@
+{
+  "webgui": {
+    "linux": "https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases/download/build-v1.6.1/webgui.AppImage",
+    "windows": "https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases/download/build-v1.6.1/webgui.zip"
+  }
+}
