@@ -73,8 +73,7 @@ requires = [
     "denoiser",
     "noisereduce",
     "openunmix",
-    "torchlibrosa",
-    "customtkinter"
+    "torchlibrosa"
 ]
 test_requires = [
 ]

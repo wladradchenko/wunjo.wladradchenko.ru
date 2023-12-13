@@ -37,4 +37,3 @@ denoiser
 noisereduce
 openunmix
 torchlibrosa
-customtkinter
