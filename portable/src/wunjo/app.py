@@ -93,6 +93,9 @@ def split_input_deepfake(input_param):
 
 
 def get_print_translate(text):
+    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+        # Offline mode
+        return text
     return get_translate(text=text, targetLang=app.config['USER_LANGUAGE'])
 
 
@@ -1186,7 +1189,7 @@ def media_file(filename):
 def main():
     if not app.config['DEBUG'] and sys.platform != 'darwin':
         settings = set_settings()
-        if settings.get("browser") == "custom":
+        if settings.get("browser") == "webgui":
             utils_config = get_utils_config(SETTING_FOLDER)
             browser_path = get_custom_browser(SETTING_FOLDER, utils_config)
         else:

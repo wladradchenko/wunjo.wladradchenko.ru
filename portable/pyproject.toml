@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo AI"
 bundle = "wladradchenko.ru"
-version = "1.6.1"
+version = "1.6.2"
 url = "https://wladradchenko.ru/wunjo"
 license = "MIT license"
 author = "Wladislav Radchenko"
@@ -73,7 +73,8 @@ requires = [
     "denoiser",
     "noisereduce",
     "openunmix",
-    "torchlibrosa"
+    "torchlibrosa",
+    "customtkinter"
 ]
 test_requires = [
 ]

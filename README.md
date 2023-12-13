@@ -338,6 +338,13 @@ Update 1.6.1
 - [x] Multilanguage speech by one text
 - [x] Added auto remove text from video or image with auto create text mask
 
+Update 1.6.2
+- [x] Custom browser for WebGUI
+- [x] Added window to select browser to run
+- [x] Added check to offline mode
+- [x] Added check not show more hello window
+- [x] Added indicate what features can be used in offline because all modes downloaded 
+
 <!-- VIDEO -->
 ## Video
 

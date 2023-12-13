@@ -10,6 +10,9 @@ from tqdm import tqdm
 
 
 def is_connected(model_path):
+    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+        # Offline mode
+        return False
     try:
         socket.create_connection(("www.google.com", 80))
         return True
@@ -72,6 +75,11 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
     download_dir = os.path.dirname(download_path)
     os.makedirs(download_dir, exist_ok=True)
 
+    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+        # Offline mode
+        print("Error... Internet connection is failed for offline mode!")
+        return False
+
     for i in range(retry_count + 1):
         try:
             response = requests.get(download_link, stream=True)
@@ -112,8 +120,12 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
             time.sleep(retry_delay)
 
 
-
 def check_download_size(download_path: str, download_link: str) -> bool:
+    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+        # Offline mode
+        print("In offline mode, it is impossible to check compliance with the installed model. The model will be automatically returned as the size matches")
+        return True
+
     try:
         # if is internet connection
         response = requests.get(download_link, stream=True)
@@ -159,7 +171,7 @@ def get_custom_browser(save_dir: str, utils_config: dict = None):
         # Use custom browser for windows
         dir_webgui = os.path.join(save_dir, 'webgui')
         link_webgui = get_nested_url(utils_config, ["webgui", "windows"])
-        if not os.path.exists(os.path.join(dir_webgui, "webgui.exe")):
+        if not os.path.exists(os.path.join(dir_webgui, "webgui.exe")) and not os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
             # check what is internet access
             is_connected(dir_webgui)
             # download pre-trained models from url
@@ -170,11 +182,13 @@ def get_custom_browser(save_dir: str, utils_config: dict = None):
         # Use custom browser for linux
         dir_webgui = os.path.join(save_dir, "webgui.AppImage")
         link_webgui = get_nested_url(utils_config, ["webgui", "linux"])
-        if not os.path.exists(dir_webgui):
+        if not os.path.exists(dir_webgui) and not os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
             # check what is internet access
             is_connected(dir_webgui)
             # download pre-trained models from url
             download_model(dir_webgui, link_webgui)
+        else:
+            check_download_size(dir_webgui, link_webgui)
         browser_path = dir_webgui
         os.system(f"chmod +x {browser_path}")
     else:

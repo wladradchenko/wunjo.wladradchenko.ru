@@ -129,7 +129,9 @@ def set_settings():
     default_settings = {
         "user_language": standard_language,
         "default_language": default_language,
-        "browser": "default"
+        "browser": "default",
+        "offline_mode": False,
+        "not_show_preload_window": False
     }
     setting_file = os.path.join(SETTING_FOLDER, "settings.json")
     # Check if the SETTING_FILE exists
@@ -149,6 +151,10 @@ def set_settings():
                     user_settings["default_language"] = default_language
                 if user_settings.get("browser") is None:
                     user_settings["browser"] = "default"
+                if user_settings.get("offline_mode") is None:
+                    user_settings["offline_mode"] = False
+                if user_settings.get("not_show_preload_window") is None:
+                    user_settings["not_show_preload_window"] = False
                 return user_settings
             except Exception as err:
                 print(f"Error ... {err}")

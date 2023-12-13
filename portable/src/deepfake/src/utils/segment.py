@@ -6,11 +6,7 @@ import numpy as np
 import onnxruntime
 from PIL import Image
 
-root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-deepfake_root_path = os.path.join(root_path, "deepfake")
-sys.path.insert(0, deepfake_root_path)
-from src.segment_anything import sam_model_registry, SamPredictor
-sys.path.pop(0)
+from deepfake.src.segment_anything import sam_model_registry, SamPredictor
 
 
 class SegmentAnything:

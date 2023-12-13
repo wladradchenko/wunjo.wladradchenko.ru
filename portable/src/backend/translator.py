@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 
@@ -11,6 +12,9 @@ def get_translate(text: str, targetLang: str, sourceLang: str="auto") -> str:
     :return: translation text
     """
     if not text:
+        return text
+    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+        # Offline mode
         return text
 
     google_url = f"https://translate.googleapis.com/translate_a/single?client=gtx&sl={sourceLang}&tl={targetLang}&dt=t&q={text}"
