@@ -43,3 +43,4 @@ denoiser
 noisereduce
 openunmix
 torchlibrosa
+dearpygui

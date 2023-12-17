@@ -73,7 +73,8 @@ requires = [
     "denoiser",
     "noisereduce",
     "openunmix",
-    "torchlibrosa"
+    "torchlibrosa",
+    "dearpygui"
 ]
 test_requires = [
 ]
