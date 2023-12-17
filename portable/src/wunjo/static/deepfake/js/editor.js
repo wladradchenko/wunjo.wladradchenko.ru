@@ -9,7 +9,7 @@ async function initializeMediaEditor(button, audioURL = undefined, audioName = u
 
     // translated media edit
     const introMediaEdit = `
-                    <div style="width: 60vw; max-width: 70vw; height: 70vh; max-height: 80vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
+                    <div style="width: 60vw; max-width: 70vw; height: 75vh; max-height: 80vh;align-items: inherit;display: flex;flex-direction: column;justify-content: space-between">
                     <div></div>
                     <div>
                         <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
@@ -62,6 +62,7 @@ async function initializeMediaEditor(button, audioURL = undefined, audioName = u
                         </fieldset>
                         <div>
                             <p id="message-editor-video" style="color: red;margin-top: 5pt;text-align: center;font-size: 14px;"></p>
+                            <i id="inspect-models-media-editor" style="font-size: 10pt;margin-top: 5px;"></i>
                             <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerMediaEditorProcess(this.parentElement.parentElement.parentElement);">Start processing</button>
                         </div>
                     </div>
@@ -189,6 +190,9 @@ function dragDropAudioVideoMerge(event) {
 async function handleEditorVideo(event, previewElement, parentElement) {
     const fileInput = event.target;
     const file = fileInput.files[0];
+    // Msg about inspect models
+    const inspectElem = document.getElementById("inspect-models-media-editor")
+    inspectElem.innerHTML = "";
 
     if (file) {
         const fileUrl = window.URL.createObjectURL(file);
@@ -209,6 +213,8 @@ async function handleEditorVideo(event, previewElement, parentElement) {
             document.getElementById("getFrames").disabled = true;
             document.getElementById("getVocals").disabled = true;
             document.getElementById("getResidual").disabled = true;
+
+            getInspectMessage(inspectElem, "/inspect_media_editor");
         } else if (fileType === 'video') {
             messageElement.style.display = "flex";
             messageElement.style.background = getRandomColor();
@@ -230,6 +236,8 @@ async function handleEditorVideo(event, previewElement, parentElement) {
             if (getResidual) {
                getResidual.disabled = false;
             };
+
+            getInspectMessage(inspectElem, "/inspect_media_editor");
         } else if (fileType === 'audio') {
             document.getElementById("gfpgan").disabled = true;
             document.getElementById("realesrgan").disabled = true;
@@ -287,6 +295,8 @@ async function handleEditorVideo(event, previewElement, parentElement) {
             messageElement.style.background = getRandomColor();
             messageAboutStatusText = await translateWithGoogle("Audio was loaded","auto",targetLang);
             messageElement.innerHTML = `${messageAboutStatusText}`;
+
+            getInspectMessage(inspectElem, "/inspect_media_editor");
         };
     }
 }

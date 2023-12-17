@@ -22,6 +22,7 @@ sys.path.pop(0)
 from cog import Input
 from backend.folders import TMP_FOLDER, DEEPFAKE_MODEL_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
+from backend.config import get_deepfake_config
 from deepfake.src.utils.segment import SegmentAnything
 from deepfake.src.utils.videoio import (
     cut_start_video, check_media_type, save_video_from_frames,
@@ -32,8 +33,6 @@ from diffusers.src.utils.mediaio import (
     save_empty_mask, get_new_dimensions, resize_and_save_video, vram_limit_device_resolution_only_ebsynth
 )
 from diffusers.src.utils.ebsynth import Ebsynth
-
-DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/deepfake.json"
 
 
 def create_diffusion_instruction():
@@ -53,25 +52,7 @@ def create_diffusion_instruction():
     return custom_diffusion
 
 
-
-def get_config_deepfake() -> dict:
-    try:
-        response = requests.get(DEEPFAKE_JSON_URL)
-        with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'wb') as file:
-            file.write(response.content)
-    except:
-        print("Not internet connection to get actual versions of deepfake models")
-    finally:
-        if not os.path.isfile(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json')):
-            deepfake = {}
-        else:
-            with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'r', encoding="utf8") as file:
-                deepfake = json.load(file)
-
-    return deepfake
-
-
-file_deepfake_config = get_config_deepfake()
+file_deepfake_config = get_deepfake_config()
 
 
 class Video2Video:

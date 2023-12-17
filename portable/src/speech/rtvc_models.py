@@ -20,31 +20,13 @@ from speech.rtvc.vocoder.inference import VoiceCloneVocoder
 from backend.folders import MEDIA_FOLDER, RTVC_VOICE_FOLDER
 from backend.download import download_model, check_download_size, get_nested_url, is_connected
 from backend.translator import get_translate
+from backend.config import get_rtvc_config
 
 sys.path.pop(0)
 
 
-RTVC_MODELS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/rtvc.json"
-
-
-def get_config_voice() -> dict:
-    try:
-        response = requests.get(RTVC_MODELS_JSON_URL)
-        with open(os.path.join(RTVC_VOICE_FOLDER, 'rtvc.json'), 'wb') as file:
-            file.write(response.content)
-    except:
-        print("Not internet connection to get clone voice models")
-    finally:
-        if not os.path.isfile(os.path.join(RTVC_VOICE_FOLDER, 'rtvc.json')):
-            rtvc_models = {}
-        else:
-            with open(os.path.join(RTVC_VOICE_FOLDER, 'rtvc.json'), 'r', encoding="utf8") as file:
-                rtvc_models = json.load(file)
-    return rtvc_models
-
-
 # get rtvc models config
-rtvc_models_config = get_config_voice()
+rtvc_models_config = get_rtvc_config()
 
 
 def inspect_rtvc_model(rtvc_model: str, rtvc_model_url: str) -> str:

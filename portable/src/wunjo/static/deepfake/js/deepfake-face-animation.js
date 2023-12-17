@@ -218,8 +218,10 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                             <a style="padding: 5pt;" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki" target="_blank" rel="noopener noreferrer">More about settings</a>
                           </div>
                         </fieldset>
-
-                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement);">Start processing</button>
+                        <div>
+                            <i id="inspect-models-face-and-mouth-animation" style="font-size: 10pt;margin-top: 5px;"></i>
+                            <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement.parentElement);">Start processing</button>
+                        </div>
                     </div>
                     </div>
                     `,
@@ -301,6 +303,8 @@ async function handleFaceAndMouthAnimation(event, previewElement) {
         previewElement.innerHTML = "";
         document.getElementById("previewDiv").style.width = "";
         document.getElementById("spanLoadMediaElement").style.height = "30px";
+        const inspectElem = document.getElementById("inspect-models-face-and-mouth-animation")
+        inspectElem.innerHTML = "";
 
         let canvas;
         if (fileType === 'image') {
@@ -321,6 +325,7 @@ async function handleFaceAndMouthAnimation(event, previewElement) {
             document.getElementById("use-experimental-functions-message").style.display = "none";
 
             document.getElementById("face-animation-parameters-windows").style.display = "flex";
+            getInspectMessage(inspectElem, "/inspect_face_animation");
         } else if (fileType === 'video') {
             document.getElementById("fieldset-preprocessing").style.display = "none";
             document.getElementById("still-deepfake-div").style.display = "none";
@@ -342,6 +347,7 @@ async function handleFaceAndMouthAnimation(event, previewElement) {
             messageAboutStatus.style.background = getRandomColor();
             messageAboutStatusText = await translateWithGoogle("Choose a face to animate by tool","auto",targetLang);
             messageAboutStatus.innerHTML = `${messageAboutStatusText} <i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>`;
+            getInspectMessage(inspectElem, "/inspect_mouth_animation");
         }
         canvas.addEventListener('click', setPointOnCanvas);
     }

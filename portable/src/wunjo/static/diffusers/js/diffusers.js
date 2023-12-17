@@ -123,7 +123,10 @@ function initiateDiffusersPop(button) {
                             <input type="number" id="thicknessMask" name="thickness" min="1" max="100" value="10" style="width: 45px;">
                         </div>
                     </fieldset>
-                    <button class="introjs-button" onclick="triggerDiffuser(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
+                    <div style="margin-top: 10px;">
+                        <i id="inspect-models-diffusers" style="font-size: 10pt;margin-top: 5px;"></i>
+                        <button class="introjs-button" onclick="triggerDiffuser(this.parentElement.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -423,6 +426,9 @@ async function handleDiffuser(event, previewElement, parentElement) {
     const file = fileInput.files[0];
     const useLimitResolution = true;
     const gpuTable = {24: 1280, 18: 1024, 14: 768, 10: 640, 8: 576, 7: 512, 6: 448, 5: 320, 4: 192}
+    // Msg about inspect models
+    const inspectElem = document.getElementById("inspect-models-diffusers")
+    inspectElem.innerHTML = "";
 
     if (file) {
         document.getElementById('div-general-preview-media').style.width = '';
@@ -447,6 +453,8 @@ async function handleDiffuser(event, previewElement, parentElement) {
             previewMask.src = imagePreview.src;
             // Set information about resolution
             await fetchVramResolution(previewElement, useLimitResolution, gpuTable)
+
+            getInspectMessage(inspectElem, "/inspect_diffusion");
         } else if (fileType === 'video') {
             displayMessage(messageElement, "Video is loading...");
             canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
@@ -458,6 +466,8 @@ async function handleDiffuser(event, previewElement, parentElement) {
             previewMask.src = captureFrame(videoPreview);
             // Set information about resolution
             await fetchVramResolution(previewElement, useLimitResolution, gpuTable)
+
+            getInspectMessage(inspectElem, "/inspect_diffusion");
         }
 
         previewMask.style.display = "";

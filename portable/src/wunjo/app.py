@@ -34,6 +34,10 @@ from backend.general_utils import (
     get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size,
     format_dir_time, clean_text_by_language, check_tmp_file_uploaded, get_utils_config
 )
+from backend.config import (
+    inspect_face_animation_config, inspect_mouth_animation_config, inspect_face_swap_config, inspect_retouch_config,
+    inspect_media_edit_config, inspect_diffusion_config, inspect_rtvc_config
+)
 import logging
 
 app = Flask(__name__)
@@ -226,6 +230,121 @@ def get_voice_list():
         else:
             voice_models_status[voice_name]["waveglow"] = True
     return voice_models_status
+
+
+"""INSPECT MODELS"""
+
+
+def inspect_update_message(offline_status: bool, model_list: list):
+    if offline_status:
+        new_message = "Can be used in offline mode."
+    else:
+        if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+            new_message = get_print_translate("There are no models available for offline use. Download models manually, or run online for automatic downloading.")
+        else:
+            new_message = get_print_translate("There will be automatically downloading models, but if you wish, you can download them manually by link.")
+        if len(model_list) > 0:
+            msg1 = get_print_translate("Download in")
+            msg2 = get_print_translate("model from link")
+            msg3 = get_print_translate("Download archive by link")
+            msg4 = get_print_translate("and unzip as")
+            msg5 = get_print_translate("not remove .zip too")
+            new_message += '. '.join(f"<br>{msg1} {m[0]} <a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg2}</a>" if ".zip" not in m[1] else f"\n<br><a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg3}</a> {msg4} {m[0]}, {msg5}" for m in model_list)
+    return new_message
+
+
+@app.route("/inspect_face_animation", methods=["GET"])
+@cross_origin()
+def inspect_face_animation():
+    offline_status, models_is_not_exist = inspect_face_animation_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+@app.route("/inspect_mouth_animation", methods=["GET"])
+@cross_origin()
+def inspect_mouth_animation():
+    offline_status, models_is_not_exist = inspect_mouth_animation_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+@app.route("/inspect_face_swap", methods=["GET"])
+@cross_origin()
+def inspect_face_swap():
+    offline_status, models_is_not_exist = inspect_face_swap_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+@app.route("/inspect_retouch", methods=["GET"])
+@cross_origin()
+def inspect_retouch():
+    offline_status, models_is_not_exist = inspect_retouch_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+@app.route("/inspect_media_editor", methods=["GET"])
+@cross_origin()
+def inspect_media_editor():
+    offline_status, models_is_not_exist = inspect_media_edit_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+@app.route("/inspect_diffusion", methods=["GET"])
+@cross_origin()
+def inspect_diffusion():
+    offline_status, models_is_not_exist = inspect_diffusion_config()
+    new_message = inspect_update_message(offline_status, models_is_not_exist)
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+@app.route("/inspect_rtvc", methods=["GET"])
+@cross_origin()
+def inspect_rtvc():
+    offline_status, model_list, online_language, offline_language = inspect_rtvc_config()
+    if offline_status and len(offline_language) > 0:
+        msg1 = get_print_translate("Languages")
+        msg2 = get_print_translate("can be used in offline mode.")
+        new_message = msg1 + " " + ", ".join(l for l in offline_language) + " " + msg2
+        if len(online_language) > 0:
+            msg3 = get_print_translate("However, the following languages are not fully loaded for offline mode")
+            new_message += msg3 + " " + ", ".join(l for l in online_language)
+    else:
+        if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
+            new_message = get_print_translate("There are no models available for offline use. Download models manually, or run online for automatic downloading.")
+        else:
+            new_message = get_print_translate("There will be automatically downloading models, but if you wish, you can download them manually by link.")
+        if len(model_list) > 0:
+            msg4 = get_print_translate("Download in")
+            msg5 = get_print_translate("model from link")
+            new_message += "".join(f"<br>{msg4} {m[0]} model from link <a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg5}</a>" for m in model_list)
+        if len(online_language) > 0:
+            msg6 = get_print_translate("The following languages are not fully loaded")
+            msg7 = get_print_translate("More information in documentation")
+            new_message += "<br>" + msg6 + " " + ", ".join(l for l in online_language) + f". <a target='_blank' rel='noopener noreferrer' href=https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-manually-install-model-for-text-to-speech>{msg7}</a>"
+    return {
+        "offline_status": offline_status, "models_is_not_exist": new_message
+    }
+
+
+"""INSPECT MODELS"""
+
+
+"""FEATURE MODELS"""
 
 
 @app.route("/create_segment_anything/", methods=["POST"])
@@ -1045,6 +1164,9 @@ def synthesize_speech():
     return {"status": 200}
 
 
+"""FEATURE MODELS"""
+
+
 @app.route("/synthesize_process/", methods=["GET"])
 @cross_origin()
 def get_synthesize_status():
@@ -1058,6 +1180,51 @@ def get_system_resources_status():
     status = app.config['FOLDER_SIZE_RESULT']
     return jsonify(status)
 
+
+@app.route('/change_internet_mode', methods=["POST"])
+@cross_origin()
+def change_internet_mode():
+    settings = set_settings()
+    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
+    use_offline = not settings.get("offline_mode", False)
+    with open(setting_file, 'w') as f:
+        settings["offline_mode"] = use_offline
+        json.dump(settings, f)
+    os.environ['WUNJO_OFFLINE_MODE'] = str(use_offline)
+    if use_offline:
+        print("Online mode turn on")
+    else:
+        print("Offline mode turn on")
+    return {"status": 200, "use_offline": use_offline}
+
+@app.route('/get_internet_mode', methods=["POST"])
+@cross_origin()
+def get_internet_mode():
+    settings = set_settings()
+    return {"status": 200, "use_offline": settings.get("offline_mode", False)}
+
+@app.route('/set_webgui', methods=["POST"])
+@cross_origin()
+def set_webgui():
+    utils_config = get_utils_config(SETTING_FOLDER)
+    browser_path = get_custom_browser(SETTING_FOLDER, utils_config)
+    settings = set_settings()
+    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
+    with open(setting_file, 'w') as f:
+        settings["browser"] = "webgui"
+        json.dump(settings, f)
+    print("In order to load new WebGUI, you need to restart the application")
+
+    return {
+        "response_code": 0,
+        "response": f"Downloaded WebGUI {browser_path}"
+    }
+
+@app.route('/get_current_browser', methods=["POST"])
+@cross_origin()
+def get_current_browser():
+    settings = set_settings()
+    return {"current_browser": settings.get("browser", "default")}
 
 @app.route('/change_processor', methods=["POST"])
 @cross_origin()
@@ -1187,8 +1354,16 @@ def media_file(filename):
 
 
 def main():
+    # Get current settings
+    settings = set_settings()
+    # Set internet mode
+    if settings.get("offline_mode"):
+        os.environ['WUNJO_OFFLINE_MODE'] = 'True'
+    else:
+        os.environ['WUNJO_OFFLINE_MODE'] = 'False'
+    # Init app
     if not app.config['DEBUG'] and sys.platform != 'darwin':
-        settings = set_settings()
+        # Set browser
         if settings.get("browser") == "webgui":
             utils_config = get_utils_config(SETTING_FOLDER)
             browser_path = get_custom_browser(SETTING_FOLDER, utils_config)

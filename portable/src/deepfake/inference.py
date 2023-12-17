@@ -52,29 +52,10 @@ import json
 
 from backend.folders import DEEPFAKE_MODEL_FOLDER, TMP_FOLDER
 from backend.download import download_model, unzip, check_download_size, get_nested_url, is_connected
+from backend.config import get_deepfake_config
 
 
-DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/deepfake.json"
-
-
-def get_config_deepfake() -> dict:
-    try:
-        response = requests.get(DEEPFAKE_JSON_URL)
-        with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'wb') as file:
-            file.write(response.content)
-    except:
-        print("Not internet connection to get actual versions of deepfake models")
-    finally:
-        if not os.path.isfile(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json')):
-            deepfake = {}
-        else:
-            with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'r', encoding="utf8") as file:
-                deepfake = json.load(file)
-
-    return deepfake
-
-
-file_deepfake_config = get_config_deepfake()
+file_deepfake_config = get_deepfake_config()
 
 
 class AnimationFaceTalk:

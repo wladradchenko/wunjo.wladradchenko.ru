@@ -341,7 +341,8 @@ Update 1.6.1
 Update 1.6.2
 - [x] Custom browser for WebGUI
 - [x] Added select browser to run
-- [x] Added check to offline mode
+- [x] Added check between offline and online mode
+- [x] Added a message for the user about missing models and how to download manually
 
 <!-- VIDEO -->
 ## Video

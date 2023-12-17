@@ -477,6 +477,7 @@ function settingTextToSpeech(elem, languages) {
                             </div>
                             <div>
                                 <button class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important; display: none;" id="recognitionSTTAudio">Recognize text</button>
+                                <i id="inspect-models-rtvc" style="font-size: 10pt;margin-top: 5px;"></i>
                             </div>
                         </div>
                         <div style="width: 250pt;margin: 10pt;">
@@ -694,6 +695,10 @@ function settingTextToSpeech(elem, languages) {
     // Set prev blob
     document.getElementById("audioSTTSrc").src = voiceCloneBlobUrl;
   }
+
+  // Msg about inspect models
+  const inspectElem = document.getElementById("inspect-models-rtvc")
+  getInspectMessage(inspectElem, "/inspect_rtvc");
 }
 // SETTINGS FOR TEXT RECOGNITION AND TRANSLATION OF TTS //
 
@@ -1574,6 +1579,147 @@ function getSystemResourcesStatus() {
 }
 // Init message about disk space used
 getSystemResourcesStatus();
-// TUpdate information about disk space used each 10 seconds
+// Update information about disk space used each 10 seconds
 setInterval(getSystemResourcesStatus, 10000);
 ///GET DISK SPACE AND RAM USED///
+
+///CHANGE INTERNET MODE///
+function changeInternetMode(elem) {
+  fetch('/change_internet_mode', {
+    method: 'POST'
+  })
+  .then(response => response.json())
+  .then(data => {
+    const useOffline = data.use_offline;
+    if (useOffline === false) {
+      elem.style.color = 'green';
+    } else {
+      elem.style.color = 'red';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here
+  });
+};
+
+function getInternetMode(elem) {
+  fetch('/get_internet_mode', {
+    method: 'POST'
+  })
+  .then(response => response.json())
+  .then(data => {
+    const useOffline = data.use_offline;
+    if (useOffline === false) {
+      elem.style.color = 'green';
+    } else {
+      elem.style.color = 'red';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here
+  });
+};
+getInternetMode(document.getElementById("a-change-internet"));
+///CHANGE INTERNET MODE///
+
+///BROWSER STATUS///
+function setWebGUI(elem) {
+    elem.style.display = 'none';
+    fetch('/set_webgui', {
+      method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.response);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Handle errors here
+  });
+}
+
+function getCurrentBrowser(elem) {
+  fetch('/get_current_browser', {
+    method: 'POST'
+  })
+  .then(response => response.json())
+  .then(data => {
+    const currentBrowser = data.current_browser;
+    if (currentBrowser === "webgui") {
+      elem.style.display = 'none';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here
+  });
+};
+getCurrentBrowser(document.getElementById("a-set-webgui"));
+///BROWSER STATUS///
+
+///INSPECT MODELS///
+function getInspectMessage(elem, url) {
+  fetch(url, {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(data => {
+    const status = data.offline_status;
+    const msg = data.models_is_not_exist;
+    if (status === false) {
+      return translateWithGoogle("Details about downloadable models.", "auto", targetLang)
+        .then(translatedLinkInspectModels => {
+          const popupContent = document.createElement('div');
+          popupContent.classList.add('popup-content');
+          popupContent.classList.add('notranslate');
+          popupContent.innerHTML = `<button class='notranslate introjs-skipbutton' style='background: none;border: none;' onclick='closePopup();'>x</button><br><br><ul class="notranslate" style="overflow: auto;text-wrap: wrap;overflow-wrap: anywhere;max-height: 40vh;">${msg}</ul>`;
+          popupContent.style = "z-index: 999999999;position: absolute;top: 25vh;left: 20vw;width: 60vw;max-height: 60vh;background: #fff;padding: 35px;box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;"
+
+          elem.innerHTML = `<a style="color: red; cursor: pointer;">${translatedLinkInspectModels}</a>`;
+          elem.onclick = function(e) {
+            e.stopPropagation(); // Prevent propagation to the document click listener
+            const popup = document.createElement('div');
+            popup.style = "z-index: 999999998;position: absolute;width: 100%;height: 100%;top: 0px;left: 0px;background-color: rgba(0, 0, 0, 0.5);"
+            popup.classList.add('popup');
+            popup.appendChild(popupContent);
+
+            document.body.appendChild(popup);
+
+            // Add click event to close popup when clicking outside of it
+            document.addEventListener('click', closePopupOutside);
+          };
+        })
+        .catch(translationError => {
+          console.error('Translation Error:', translationError);
+          // Handle translation errors here
+        });
+    } else {
+      elem.innerHTML = "";
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here
+  });
+}
+
+// Function to close the popup
+function closePopup() {
+  const popup = document.querySelector('.popup');
+  if (popup) {
+    popup.parentNode.removeChild(popup);
+    // Remove the click event listener for closing outside the popup
+    document.removeEventListener('click', closePopupOutside);
+  }
+}
+
+// Function to close the popup when clicking outside of it
+function closePopupOutside(e) {
+  const popup = document.querySelector('.popup');
+  if (popup && !popup.contains(e.target)) {
+    closePopup();
+  }
+}
+///INSPECT MODELS///

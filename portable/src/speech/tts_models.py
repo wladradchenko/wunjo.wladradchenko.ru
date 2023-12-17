@@ -1,7 +1,6 @@
 import json
 import os
 import sys
-import requests
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))
@@ -9,11 +8,9 @@ sys.path.insert(0, os.path.join(root_path, "backend"))
 from speech.tts.synthesizer import Synthesizer, set_logger, _load_text_handler
 from backend.folders import MEDIA_FOLDER, AVATAR_FOLDER, VOICE_FOLDER, CUSTOM_VOICE_FOLDER
 from backend.download import download_model, check_download_size
+from backend.config import get_tts_config, get_custom_tts_config, cover_windows_media_path_from_str, SUB_CUSTOM_VOICE
 
 sys.path.pop(0)
-
-VOICE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/voice.json"
-SUB_CUSTOM_VOICE = "(Custom)"  # sub name for custom voice to do uniq
 
 
 def create_voice_instruction():
@@ -116,117 +113,11 @@ def create_voice_instruction():
 
 # Call the function
 create_voice_instruction()
-
-
-def cover_windows_media_path_from_str(path_str: str):
-    path_sys = MEDIA_FOLDER
-    for folder_or_file in path_str.split("/"):
-        if folder_or_file:
-            path_sys = os.path.join(path_sys, folder_or_file)
-    return path_sys
-
-
-def _create_config_voice(voices: dict) -> dict:
-    general = {
-        "general": {
-            "device": "cuda",
-            "pause_type": "silence",
-            "sample_rate": 22050,
-
-            "logging": {
-                "log_level": "INFO",
-                "log_file": None
-            }
-        }
-    }
-    return {**general, **voices}
-
-
-def _get_avatars(voices: dict) -> None:
-    if not os.path.exists(AVATAR_FOLDER):
-        os.makedirs(AVATAR_FOLDER)
-
-    for avatar in voices.keys():
-        # Check if the avatar file exists
-        if not os.path.exists(os.path.join(AVATAR_FOLDER, f"{avatar}.png")):
-            # If it doesn't exist, download it from the URL
-            request_png = requests.get(voices[avatar]["avatar_download"])
-            with open(os.path.join(AVATAR_FOLDER, f"{avatar}.png"), 'wb') as file:
-                file.write(request_png.content)
-
-
-def get_config_voice():
-    try:
-        response = requests.get(VOICE_JSON_URL)
-        with open(os.path.join(VOICE_FOLDER, 'voice.json'), 'wb') as file:
-            file.write(response.content)
-    except:
-        print("Not internet connection to update available server voice list")
-    finally:
-        if not os.path.isfile(os.path.join(VOICE_FOLDER, 'voice.json')):
-            voices_config = {}
-        else:
-            with open(os.path.join(VOICE_FOLDER, 'voice.json'), 'r', encoding="utf8") as file:
-                voices_config = json.load(file)
-
-    _get_avatars(voices=voices_config)
-
-    if voices_config.get("Unknown") is not None:
-       voices_config.pop("Unknown")
-
-    voice_names = []
-    for key in voices_config.keys():
-        if voices_config[key].get("engine") and voices_config[key].get("vocoder"):
-            tacotron2 = voices_config[key]["engine"]["tacotron2"]["model_path"]
-            full_tacotron2_path = cover_windows_media_path_from_str(tacotron2)
-            voices_config[key]["engine"]["tacotron2"]["model_path"] = full_tacotron2_path
-
-            waveglow = voices_config[key]["vocoder"]["waveglow"]["model_path"]
-            full_waveglow_path = cover_windows_media_path_from_str(waveglow)
-            voices_config[key]["vocoder"]["waveglow"]["model_path"] = full_waveglow_path
-
-            voice_names += [key]
-
-    return _create_config_voice(voices_config), voice_names
-
-
-def get_custom_config_voice():
-    if not os.path.isfile(os.path.join(CUSTOM_VOICE_FOLDER, 'custom_user.json')):
-        return {}, []
-    else:
-        with open(os.path.join(CUSTOM_VOICE_FOLDER, 'custom_user.json'), 'r', encoding="utf8") as file:
-            voices = json.load(file)
-            file_custom_voice_config = {}
-            custom_voice_names = []
-            for key in voices.keys():
-                voices[key]['avatar_download'] = None
-                voices[key]['checkpoint_download'] = None
-                voices[key]['waveglow_download'] = None
-
-                try:
-                    tacotron2 = voices[key]["engine"]["tacotron2"]["model_path"]
-                    full_tacotron2_path = cover_windows_media_path_from_str(tacotron2)
-                    voices[key]["engine"]["tacotron2"]["model_path"] = full_tacotron2_path
-
-                    waveglow = voices[key]["vocoder"]["waveglow"]["model_path"]
-                    full_waveglow_path = cover_windows_media_path_from_str(waveglow)
-                    voices[key]["vocoder"]["waveglow"]["model_path"] = full_waveglow_path
-                    if not os.path.exists(full_tacotron2_path) or not os.path.exists(full_waveglow_path):
-                        print(f"Waveglow or Tactoron2 models don't exist for user voice {key}")
-                    else:
-                        new_key = key + " " + SUB_CUSTOM_VOICE
-                        file_custom_voice_config[new_key] = voices[key]
-                        custom_voice_names += [new_key]
-                except Exception as err:
-                    print(f"Error when load custom voices ... {err}")
-        return file_custom_voice_config, custom_voice_names
-
-
 # app voices
-file_voice_config, voice_names = get_config_voice()
+file_voice_config, voice_names = get_tts_config()
 set_logger(**file_voice_config["general"].pop("logging"))
 # user voices
-file_custom_voice_config, custom_voice_names = get_custom_config_voice()
+file_custom_voice_config, custom_voice_names = get_custom_tts_config()
 
 
 def inspect_model(voice_name: str):

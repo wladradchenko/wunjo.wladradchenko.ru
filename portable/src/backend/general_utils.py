@@ -168,7 +168,7 @@ def get_utils_config(save_dir: str) -> dict:
         with open(os.path.join(save_dir, 'utils.json'), 'wb') as file:
             file.write(response.content)
     except:
-        print("Not internet connection to get actual versions of deepfake models")
+        print("Not internet connection to get actual versions of utils")
     finally:
         if not os.path.isfile(os.path.join(save_dir, 'utils.json')):
             utils = {}

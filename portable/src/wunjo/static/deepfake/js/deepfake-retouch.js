@@ -127,7 +127,10 @@ async function initiateRetouchAiPop(button) {
                             </div>
                         </div>
                     </fieldset>
-                    <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
+                    <div style="margin-top: 10px;">
+                        <i id="inspect-models-retouch" style="font-size: 10pt;"></i>
+                        <button class="introjs-button" onclick="triggerRetouchAi(this.parentElement.parentElement.parentElement);" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Start processing</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -190,6 +193,9 @@ async function handleRetouchAi(event, previewElement, parentElement) {
         parentElement.style.height = "30px";
         previewElement.innerHTML = "";
         const messageElement = document.getElementById("message-about-status");
+        // Msg about inspect models
+        const inspectElem = document.getElementById("inspect-models-retouch")
+        inspectElem.innerHTML = "";
 
         let canvas;
         if (fileType === 'image') {
@@ -200,6 +206,8 @@ async function handleRetouchAi(event, previewElement, parentElement) {
             previewMask.src = imagePreview.src;
             // Hidden improved remove object for image
             document.getElementById("improvedRetouchObjectDiv").style.display = "none";
+
+            getInspectMessage(inspectElem, "/inspect_retouch");
         } else if (fileType === 'video') {
             displayMessage(messageElement, "Video is loading...");
             canvas = await setupVideoTimeline(previewElement, fileUrl, "60vh", "45vw");
@@ -216,6 +224,8 @@ async function handleRetouchAi(event, previewElement, parentElement) {
             if (improvedRetouchRadio.hasAttribute('data-checked')) {
                 toggleRadioOnResolutionGPURetouchAI(improvedRetouchRadio, previewElement, true)
             };
+
+            getInspectMessage(inspectElem, "/inspect_retouch");
         }
 
         previewMask.style.display = "";

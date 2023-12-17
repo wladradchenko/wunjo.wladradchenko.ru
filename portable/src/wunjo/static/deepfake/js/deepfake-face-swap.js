@@ -58,7 +58,10 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
                             </div>
                         </div>
                     </div>
-                    <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceSwapSynthesis(this.parentElement.parentElement);">Start processing</button>
+                    <div>
+                        <i id="inspect-models-face-swap" style="font-size: 10pt;margin-top: 5px;"></i>
+                        <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceSwapSynthesis(this.parentElement.parentElement.parentElement);">Start processing</button>
+                    </div>
                     </div>`,
       },
     ],
@@ -70,6 +73,11 @@ function initiateFaceSwapPop(button, audio_url = undefined, audio_name = undefin
     doneLabel: "Close",
   });
   introFaceSwap.setOption('keyboardNavigation', false).start();
+
+  // Msg about inspect models
+  const inspectElem = document.getElementById("inspect-models-face-swap")
+  inspectElem.innerHTML = "";
+  getInspectMessage(inspectElem, "/inspect_face_animation");
 }
 
 // HANDLE FACE SWAP //
