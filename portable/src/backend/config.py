@@ -228,7 +228,7 @@ def inspect_face_animation_config() -> tuple:
         link_mapping_checkpoint_crop = get_nested_url(deepfake_config, ["checkpoints", "mapping_00229-model.pth.tar"])
         models_is_not_exist += [(mapping_checkpoint_crop, link_mapping_checkpoint_crop)]
 
-    model_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "model")
+    model_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "models")
     face_recognition = os.path.join(model_dir_full, 'buffalo_l')
     if not os.path.exists(face_recognition):
         BASE_REPO_URL = 'https://github.com/deepinsight/insightface/releases/download/v0.7'
