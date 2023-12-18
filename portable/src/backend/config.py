@@ -390,20 +390,23 @@ def inspect_media_edit_config():
         gfpgan_url = get_nested_url(deepfake_config, ["gfpgan", "GFPGANv1.4.pth"])
         models_is_not_exist += [(gfpgan_model_path, gfpgan_url)]
 
-    animesgan_model_path = os.path.join(local_model_path, 'realesr-animevideov3.pth')
-    if not os.path.exists(animesgan_model_path):
-        animesgan_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-animevideov3.pth"])
-        models_is_not_exist += [(animesgan_model_path, animesgan_url)]
+    # Inspect models by GPU or CPU
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    if not use_cpu:
+        animesgan_model_path = os.path.join(local_model_path, 'realesr-animevideov3.pth')
+        if not os.path.exists(animesgan_model_path):
+            animesgan_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-animevideov3.pth"])
+            models_is_not_exist += [(animesgan_model_path, animesgan_url)]
 
-    general_model_path = os.path.join(local_model_path, 'realesr-general-x4v3.pth')
-    if not os.path.exists(general_model_path):
-        general_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-general-x4v3.pth"])
-        models_is_not_exist += [(general_model_path, general_url)]
+        general_model_path = os.path.join(local_model_path, 'realesr-general-x4v3.pth')
+        if not os.path.exists(general_model_path):
+            general_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-general-x4v3.pth"])
+            models_is_not_exist += [(general_model_path, general_url)]
 
-    wdn_model_path = os.path.join(local_model_path, 'realesr-general-wdn-x4v3.pth')
-    if not os.path.exists(wdn_model_path):
-        wdn_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-general-wdn-x4v3.pth"])
-        models_is_not_exist += [(wdn_model_path, wdn_url)]
+        wdn_model_path = os.path.join(local_model_path, 'realesr-general-wdn-x4v3.pth')
+        if not os.path.exists(wdn_model_path):
+            wdn_url = get_nested_url(deepfake_config, ["gfpgan", "realesr-general-wdn-x4v3.pth"])
+            models_is_not_exist += [(wdn_model_path, wdn_url)]
 
     # Audio models
     general_models = os.path.join(RTVC_VOICE_FOLDER, "general")
