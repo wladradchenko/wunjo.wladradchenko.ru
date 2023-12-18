@@ -335,27 +335,30 @@ def inspect_retouch_config():
         link_model_retouch_object = get_nested_url(deepfake_config, ["checkpoints", f"retouch_object.pth"])
         models_is_not_exist += [(model_retouch_object_path, link_model_retouch_object)]
 
-    # Large model
-    sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
-    if not os.path.exists(sam_vit_checkpoint):
-        link_sam_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_h.pth"])
-        models_is_not_exist += [(sam_vit_checkpoint, link_sam_vit_checkpoint)]
+    # Inspect models by GPU or CPU
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    if not use_cpu:
+        # Large model
+        sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
+        if not os.path.exists(sam_vit_checkpoint):
+            link_sam_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_h.pth"])
+            models_is_not_exist += [(sam_vit_checkpoint, link_sam_vit_checkpoint)]
 
-    onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
-    if not os.path.exists(onnx_vit_checkpoint):
-        link_onnx_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
-        models_is_not_exist += [(onnx_vit_checkpoint, link_onnx_vit_checkpoint)]
+        onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
+        if not os.path.exists(onnx_vit_checkpoint):
+            link_onnx_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
+            models_is_not_exist += [(onnx_vit_checkpoint, link_onnx_vit_checkpoint)]
+    else:
+        # Small model
+        sam_vit_small_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
+        if not os.path.exists(sam_vit_small_checkpoint):
+            link_sam_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_b.pth"])
+            models_is_not_exist += [(sam_vit_small_checkpoint, link_sam_vit_small_checkpoint)]
 
-    # Small model
-    sam_vit_small_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
-    if not os.path.exists(sam_vit_small_checkpoint):
-        link_sam_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_b.pth"])
-        models_is_not_exist += [(sam_vit_small_checkpoint, link_sam_vit_small_checkpoint)]
-
-    onnx_vit_small_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
-    if not os.path.exists(onnx_vit_small_checkpoint):
-        link_onnx_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
-        models_is_not_exist += [(onnx_vit_small_checkpoint, link_onnx_vit_small_checkpoint)]
+        onnx_vit_small_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
+        if not os.path.exists(onnx_vit_small_checkpoint):
+            link_onnx_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
+            models_is_not_exist += [(onnx_vit_small_checkpoint, link_onnx_vit_small_checkpoint)]
 
     # Get models for text detection
     vgg16_baseline_path = os.path.join(checkpoint_folder, "vgg16_baseline.pth")
@@ -446,27 +449,30 @@ def inspect_diffusion_config():
         return offline_status, models_is_not_exist
 
     checkpoint_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
-    # Large model
-    sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
-    if not os.path.exists(sam_vit_checkpoint):
-        link_sam_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_h.pth"])
-        models_is_not_exist += [(sam_vit_checkpoint, link_sam_vit_checkpoint)]
+    # Inspect models by GPU or CPU
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    if not use_cpu:
+        # Large model
+        sam_vit_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_h.pth')
+        if not os.path.exists(sam_vit_checkpoint):
+            link_sam_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_h.pth"])
+            models_is_not_exist += [(sam_vit_checkpoint, link_sam_vit_checkpoint)]
 
-    onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
-    if not os.path.exists(onnx_vit_checkpoint):
-        link_onnx_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
-        models_is_not_exist += [(onnx_vit_checkpoint, link_onnx_vit_checkpoint)]
+        onnx_vit_checkpoint = os.path.join(checkpoint_folder, 'vit_h_quantized.onnx')
+        if not os.path.exists(onnx_vit_checkpoint):
+            link_onnx_vit_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_h_quantized.onnx"])
+            models_is_not_exist += [(onnx_vit_checkpoint, link_onnx_vit_checkpoint)]
+    else:
+        # Small model
+        sam_vit_small_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
+        if not os.path.exists(sam_vit_small_checkpoint):
+            link_sam_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_b.pth"])
+            models_is_not_exist += [(sam_vit_small_checkpoint, link_sam_vit_small_checkpoint)]
 
-    # Small model
-    sam_vit_small_checkpoint = os.path.join(checkpoint_folder, 'sam_vit_b.pth')
-    if not os.path.exists(sam_vit_small_checkpoint):
-        link_sam_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "sam_vit_b.pth"])
-        models_is_not_exist += [(sam_vit_small_checkpoint, link_sam_vit_small_checkpoint)]
-
-    onnx_vit_small_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
-    if not os.path.exists(onnx_vit_small_checkpoint):
-        link_onnx_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
-        models_is_not_exist += [(onnx_vit_small_checkpoint, link_onnx_vit_small_checkpoint)]
+        onnx_vit_small_checkpoint = os.path.join(checkpoint_folder, 'vit_b_quantized.onnx')
+        if not os.path.exists(onnx_vit_small_checkpoint):
+            link_onnx_vit_small_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "vit_b_quantized.onnx"])
+            models_is_not_exist += [(onnx_vit_small_checkpoint, link_onnx_vit_small_checkpoint)]
 
     diffuser_folder = os.path.join(DEEPFAKE_MODEL_FOLDER, "diffusion")
     controlnet_model_path = os.path.join(diffuser_folder, "control_sd15_hed.pth")
