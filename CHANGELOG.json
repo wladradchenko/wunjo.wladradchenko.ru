@@ -1,5 +1,5 @@
 {
-    "version": "1.6.1",
+    "version": "1.6.2",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -67,6 +67,12 @@
           "Implemented multilingual speech synthesis from a single text input",
           "Added a new interactive tool for user-defined mask creation that tracks and moves with segmented objects",
           "Launched a music generation feature"
+        ],
+        "1.6.2": [
+          "Custom browser for WebGUI to solve trouble with opening additional tabs",
+          "Added select browser to run",
+          "Added check between offline and online mode",
+          "Added a message for the user about missing models and how to download manually"
         ]
     }
 }

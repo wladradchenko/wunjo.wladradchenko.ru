@@ -77,7 +77,7 @@ For detailed instructions about setup Wunjo AI from GitHub, refer to the [Launch
 <!-- DOWNLOAD -->
 ## Install packets
 
-### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.1.deb)
+### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.2.deb)
 
 For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-ubuntu) from installer
 
@@ -85,7 +85,7 @@ For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https:/
 
 Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
 
-### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.1.msi)
+### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.2.msi)
 
 For detailed instructions about install Wunjo AI on [Windows](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-windows) from installer
 

@@ -77,7 +77,7 @@
 <!-- DOWNLOAD -->
 ## Готовые сборки
 
-### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.1.deb)
+### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.2.deb)
 
 Подробные инструкции по установке Wunjo AI с установщика на [Ubuntu/Debian OS](https://github.com/wladradченко/wunjo.wladradkova.ru/wiki/How-to-install-the-application#installation-on-ubuntu).
 
@@ -85,7 +85,7 @@
 
 В связи с тем, что у автора проекта нет лицензии Apple, на данный момент нет возможности создать официальный установщик.
 
-### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.1.msi)
+### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.2.msi)
 
 Подробные инструкции по установке Wunjo AI с установщика на [Windows](https://github.com/wladradченко/wunjo.wladradkova.ru/wiki/How-to-install-the-application#installation-on-ubuntu).
 
