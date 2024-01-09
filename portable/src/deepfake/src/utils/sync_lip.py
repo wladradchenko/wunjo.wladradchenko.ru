@@ -13,7 +13,7 @@ from src.face3d.recognition import FaceRecognition
 sys.path.pop(0)
 
 
-class GenerateFakeVideo2Lip:
+class GenerateWave2Lip:
     def __init__(self, model_path, emotion_label, similar_coeff=0.95):
         self.face_recognition = FaceRecognition(model_path)
         self.face_fields = None

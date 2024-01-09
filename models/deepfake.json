@@ -23,7 +23,8 @@
     "raft-things.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/raft-things.pth",
     "recurrent_flow_completion.pth": "https://github.com/sczhou/ProPainter/releases/download/v0.1.0/recurrent_flow_completion.pth",
     "vgg16_baseline.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_baseline.pth",
-    "vgg16_east.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_east.pth"
+    "vgg16_east.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_east.pth",
+    "vox512.pt": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vox512.pt"
   },
   "gfpgan": {
     "alignment_WFLW_4HG.pth": "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth",

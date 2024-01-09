@@ -5,7 +5,8 @@
 
 {% block head %}
 	<script type="text/javascript" src="{{ url_for('static', filename='speech/js/speech-synthesis.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-animation.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-move.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-mouth-animation.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-face-swap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/deepfake-retouch.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='deepfake/js/editor.js') }}"></script>
@@ -21,7 +22,8 @@
     <a class="notranslate" id="a-link-open-author" href="https://wladradchenko.ru" target="_blank" rel="noopener noreferrer" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i style="font-family: 'Birthstone Bounce', cursive;font-weight: 900;margin-left: -3pt" title="About author">W</i></a>
     <a class="notranslate" id="a-link-open-tutorial" onclick="supportUser();" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;"><i class="fa-solid fa-circle-question" title="Tutorial"></i></a>
     <a id="a-link-open-folder" href="/open_folder" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open media folder"><i class="fa fa-folder"></i></a>
-    <a id="button-run-animation-and-mouth" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel face and mouth animation" onclick="initiateFaceAndMouthPop(this);"><i class="fa-solid fa-face-smile-wink"></i></a>
+    <a id="button-run-face-move" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel face animation" onclick="initiateFaceMovePop(this);"><i class="fa-solid fa-robot"></i></a>
+    <a id="button-run-mouth" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel mouth animation" onclick="initiateMouthPop(this);"><i class="fa-solid fa-teeth"></i></a>
     <a id="button-run-face-swap" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel face swap deepfake creator" onclick="initiateFaceSwapPop(this);"><i class="fa-solid fa-masks-theater"></i></a>
     <a id="button-run-retouch" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel remove objects and retouch" onclick="initiateRetouchAiPop(this);"><i class="fa-solid fa-hand-sparkles"></i></a>
     <a id="button-run-editor" style="color: black;width:3.2vw;height:3.2vw;font-size:1.5rem;" title="Open panel work with media content" onclick="initializeMediaEditor(this);"><i class="fa-solid fa-photo-film"></i></a>
@@ -76,7 +78,7 @@
             <div class="voice-card-textarea">
                 <section>
                     <div class="additional-options">
-                        <label class="neumorphic-slider">Hight
+                        <label class="neumorphic-slider">Pitch
                             <input style="max-width: 80pt;" class="range pitch-range" type="range" min="0.75" max="1.5" step="0.05" value="1.0">
                         </label>
 
@@ -137,7 +139,7 @@
     </div>
 
     <div style="position: absolute;left: 0;bottom: 0;padding: 5pt;font-size: 8pt;color: gray;display: flex;flex-direction: row;">
-        <p id="version" vers="1.6.2">Release 1.6.2.</p>
+        <p id="version" vers="1.6.3">Release 1.6.3.</p>
         <span style="font-weight: bold;margin-left:5pt;">Disk space used:</span>
         <span style="margin-left:5pt;" id="content-drive-space" class="notranslate"></span>
     </div>

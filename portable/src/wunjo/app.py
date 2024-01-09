@@ -26,7 +26,7 @@ from speech.rtvc_models import load_rtvc, rtvc_models_config
 from backend.folders import (
     MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER, CONTENT_FOLDER, CONTENT_MEDIA_EDIT_FOLDER,
     CONTENT_AUDIO_SEPARATOR_FOLDER, CONTENT_DIFFUSER_FOLDER, CONTENT_RETOUCH_FOLDER, CONTENT_FACE_SWAP_FOLDER,
-    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER, CONTENT_SPEECH_ENHANCEMENT_FOLDER
+    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER, CONTENT_SPEECH_ENHANCEMENT_FOLDER, CONTENT_FACE_MOVE_FOLDER
 )
 from backend.download import get_custom_browser
 from backend.translator import get_translate
@@ -43,7 +43,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-os.environ['DEBUG'] = 'False'  # str False or True
+os.environ['DEBUG'] = 'True'  # str False or True
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
@@ -888,6 +888,58 @@ def synthesize_face_swap():
     return {"status": 200}
 
 
+@app.route("/synthesize_face_move/", methods=["POST"])
+@cross_origin()
+def synthesize_face_move():
+    # check what it is not repeat button click
+    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
+        print("The process is already running... ")
+        return {"status": 400}
+
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    request_list = request.get_json()
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    print(get_print_translate("Please wait... Processing is started"))
+
+    if not os.path.exists(CONTENT_FACE_MOVE_FOLDER):
+        os.makedirs(CONTENT_FACE_MOVE_FOLDER)
+
+    request_time = current_time()
+    request_date = format_dir_time(request_time)
+
+    mode_msg = get_print_translate("Face move")
+
+    try:
+        face_move_result = ""
+    except Exception as err:
+        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
+        print(f"Error ... {err}")
+        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+        return {"status": 400}
+
+    save_folder_name = os.path.basename(CONTENT_FOLDER)
+    face_move_filename = f"/{save_folder_name}/" + face_move_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
+    face_move_url = url_for("media_file", filename=face_move_filename)
+
+    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": face_move_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+
+    print("Deepfake synthesis completed successfully!")
+    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
+    # Update disk space size
+    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
+    # empty cache
+    torch.cuda.empty_cache()
+    # empty loop cache from animation if not clear yet
+    gc.collect()
+
+    return {"status": 200}
+
+
 @app.route("/synthesize_animation_talk/", methods=["POST"])
 @cross_origin()
 def synthesize_animation_talk():
@@ -912,13 +964,6 @@ def synthesize_animation_talk():
     face_fields = request_list.get("face_fields")
     source_image = os.path.join(TMP_FOLDER, request_list.get("source_media"))
     driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
-    preprocess = request_list.get("preprocess")
-    still = request_list.get("still")
-    expression_scale = float(request_list.get("expression_scale", 1.0))
-    input_yaw = split_input_deepfake(request_list.get("input_yaw"))
-    input_pitch = split_input_deepfake(request_list.get("input_pitch"))
-    input_roll = split_input_deepfake(request_list.get("input_roll"))
-    type_file = request_list.get("type_file")
     media_start = request_list.get("media_start", 0)
     media_end = request_list.get("media_end", 0)
     emotion_label = request_list.get("emotion_label", None)
@@ -935,37 +980,19 @@ def synthesize_animation_talk():
         app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
         return {"status": 200}
 
-    if type_file == "img":
-        mode_msg = get_print_translate("Face in sync")
-    else:
-        mode_msg = get_print_translate("Lip in sync")
+    mode_msg = get_print_translate("Lip in sync")
 
     try:
-        if type_file == "img":
-            animation_talk_result = AnimationFaceTalk.main_img_deepfake(
-                deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
-                source_image=source_image,
-                driven_audio=driven_audio,
-                still=still,
-                preprocess=preprocess,
-                face_fields=face_fields,
-                expression_scale=expression_scale,
-                input_yaw=input_yaw,
-                input_pitch=input_pitch,
-                input_roll=input_roll,
-                pose_style=random.randint(0, 45)
-                )
-        elif type_file == "video":
-            animation_talk_result = AnimationMouthTalk.main_video_deepfake(
-                deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
-                source=source_image,
-                audio=driven_audio,
-                face_fields=face_fields,
-                video_start=float(media_start),
-                video_end=float(media_end),
-                emotion_label=emotion_label,
-                similar_coeff=similar_coeff
-            )
+        animation_talk_result = AnimationMouthTalk.main_video_deepfake(
+            deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
+            source=source_image,
+            audio=driven_audio,
+            face_fields=face_fields,
+            video_start=float(media_start),
+            video_end=float(media_end),
+            emotion_label=emotion_label,
+            similar_coeff=similar_coeff
+        )
 
         torch.cuda.empty_cache()
     except Exception as err:

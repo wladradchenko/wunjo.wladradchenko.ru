@@ -182,59 +182,7 @@ def inspect_face_animation_config() -> tuple:
     if not deepfake_config:
         return offline_status, models_is_not_exist
 
-    checkpoint_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "checkpoints")
-    path_of_net_recon_model = os.path.join(checkpoint_dir_full, 'epoch_20.pth')
-    if not os.path.exists(path_of_net_recon_model):
-        link_of_net_recon_model = get_nested_url(deepfake_config, ["checkpoints", "epoch_20.pth"])
-        models_is_not_exist += [(path_of_net_recon_model, link_of_net_recon_model)]
-
-    dir_of_BFM_fitting = os.path.join(checkpoint_dir_full, 'BFM_Fitting')
-    if not os.path.exists(dir_of_BFM_fitting):
-        link_of_BFM_fitting = get_nested_url(deepfake_config, ["checkpoints", "BFM_Fitting.zip"])
-        models_is_not_exist += [(dir_of_BFM_fitting, link_of_BFM_fitting)]
-
-    dir_of_hub_models = os.path.join(checkpoint_dir_full, 'hub')
-    if not os.path.exists(dir_of_hub_models):
-        link_of_hub_models = get_nested_url(deepfake_config, ["checkpoints", "hub.zip"])
-        models_is_not_exist += [(dir_of_hub_models, link_of_hub_models)]
-
-    wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
-    if not os.path.exists(wav2lip_checkpoint):
-        link_wav2lip_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "wav2lip.pth"])
-        models_is_not_exist += [(wav2lip_checkpoint, link_wav2lip_checkpoint)]
-
-    audio2pose_checkpoint = os.path.join(checkpoint_dir_full, 'auido2pose_00140-model.pth')
-    if not os.path.exists(audio2pose_checkpoint):
-        link_audio2pose_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "auido2pose_00140-model.pth"])
-        models_is_not_exist += [(audio2pose_checkpoint, link_audio2pose_checkpoint)]
-
-    audio2exp_checkpoint = os.path.join(checkpoint_dir_full, 'auido2exp_00300-model.pth')
-    if not os.path.exists(audio2exp_checkpoint):
-        link_audio2exp_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "auido2exp_00300-model.pth"])
-        models_is_not_exist += [(audio2exp_checkpoint, link_audio2exp_checkpoint)]
-
-    free_view_checkpoint = os.path.join(checkpoint_dir_full, 'facevid2vid_00189-model.pth.tar')
-    if not os.path.exists(free_view_checkpoint):
-        link_free_view_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "facevid2vid_00189-model.pth.tar"])
-        models_is_not_exist += [(free_view_checkpoint, link_free_view_checkpoint)]
-
-    mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00109-model.pth.tar')
-    if not os.path.exists(mapping_checkpoint):
-        link_mapping_checkpoint = get_nested_url(deepfake_config, ["checkpoints", "mapping_00109-model.pth.tar"])
-        models_is_not_exist += [(mapping_checkpoint, link_mapping_checkpoint)]
-
-    mapping_checkpoint_crop = os.path.join(checkpoint_dir_full, 'mapping_00229-model.pth.tar')
-    if not os.path.exists(mapping_checkpoint_crop):
-        link_mapping_checkpoint_crop = get_nested_url(deepfake_config, ["checkpoints", "mapping_00229-model.pth.tar"])
-        models_is_not_exist += [(mapping_checkpoint_crop, link_mapping_checkpoint_crop)]
-
-    model_dir_full = os.path.join(DEEPFAKE_MODEL_FOLDER, "models")
-    face_recognition = os.path.join(model_dir_full, 'buffalo_l')
-    if not os.path.exists(face_recognition):
-        BASE_REPO_URL = 'https://github.com/deepinsight/insightface/releases/download/v0.7'
-        name = 'buffalo_l'
-        link_face_recognition = "%s/%s.zip" % (BASE_REPO_URL, name)
-        models_is_not_exist += [(face_recognition, link_face_recognition)]
+    #TODO
 
     offline_status = False if len(models_is_not_exist) > 0 else True
 

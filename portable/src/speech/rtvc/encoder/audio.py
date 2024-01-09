@@ -1,6 +1,7 @@
 import os
 import sys
-from scipy.ndimage.morphology import binary_dilation
+
+from scipy.ndimage import binary_dilation
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "backend"))

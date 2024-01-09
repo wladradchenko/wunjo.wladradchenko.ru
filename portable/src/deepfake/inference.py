@@ -21,16 +21,12 @@ from src.utils.videoio import (
 from src.utils.imageio import save_image_cv2, read_image_cv2, save_colored_mask_cv2
 """Video and image"""
 """Animation Face"""
-from src.utils.preprocess import CropAndExtract
-from src.test_audio2coeff import Audio2Coeff
-from src.facerender.animate import AnimateFromCoeff
-from src.generate_batch import get_data
-from src.generate_facerender_batch import get_facerender_data
+from src.talker.lia import Talker
 """Animation Face"""
 """Wav2Lip"""
 from src.wav2mel import MelProcessor
 from src.utils.face_enhancer import enhancer as content_enhancer
-from src.utils.video2fake import GenerateFakeVideo2Lip
+from src.utils.sync_lip import GenerateWave2Lip
 """Wav2Lip"""
 """Face Swap"""
 from src.utils.faceswap import FaceSwapDeepfake
@@ -69,6 +65,8 @@ class AnimationFaceTalk:
 
         if file_deepfake_config == {}:
             raise "[Error] Config file deepfake.json is not exist"
+
+        args = AnimationFaceTalk.load_video_default()
         # torch.backends.cudnn.enabled = False
         use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
 
@@ -90,41 +88,112 @@ class AnimationFaceTalk:
         if not os.path.exists(checkpoint_dir_full):
             os.makedirs(checkpoint_dir_full)
 
-        path_of_net_recon_model = os.path.join(checkpoint_dir_full, 'epoch_20.pth')
-        link_of_net_recon_model = get_nested_url(file_deepfake_config, ["checkpoints", "epoch_20.pth"])
-        if not os.path.exists(path_of_net_recon_model):
-            # check what is internet access
-            is_connected(path_of_net_recon_model)
-            # download pre-trained models from url
-            download_model(path_of_net_recon_model, link_of_net_recon_model)
-        else:
-            check_download_size(path_of_net_recon_model, link_of_net_recon_model)
-
-        dir_of_BFM_fitting = os.path.join(checkpoint_dir_full, 'BFM_Fitting')
-        link_of_BFM_fitting = get_nested_url(file_deepfake_config, ["checkpoints", "BFM_Fitting.zip"])
-        if not os.path.exists(dir_of_BFM_fitting):
-            # check what is internet access
-            is_connected(dir_of_BFM_fitting)
-            # download pre-trained models from url
-            download_model(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
-            unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
-        else:
-            check_download_size(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
-            if not os.listdir(dir_of_BFM_fitting):
-                unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
-
-        dir_of_hub_models = os.path.join(checkpoint_dir_full, 'hub')
-        link_of_hub_models = get_nested_url(file_deepfake_config, ["checkpoints", "hub.zip"])
-        if not os.path.exists(dir_of_hub_models):
-            # check what is internet access
-            is_connected(dir_of_hub_models)
-            # download pre-trained models from url
-            download_model(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
-            unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
-        else:
-            check_download_size(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
-            if not os.listdir(dir_of_hub_models):
-                unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
+        # dir_of_BFM_fitting = os.path.join(checkpoint_dir_full, 'BFM_Fitting')
+        # link_of_BFM_fitting = get_nested_url(file_deepfake_config, ["checkpoints", "BFM_Fitting.zip"])
+        # if not os.path.exists(dir_of_BFM_fitting):
+        #     # check what is internet access
+        #     is_connected(dir_of_BFM_fitting)
+        #     # download pre-trained models from url
+        #     download_model(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
+        #     unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
+        # else:
+        #     check_download_size(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), link_of_BFM_fitting)
+        #     if not os.listdir(dir_of_BFM_fitting):
+        #         unzip(os.path.join(checkpoint_dir_full, 'BFM_Fitting.zip'), checkpoint_dir_full)
+        #
+        # dir_of_hub_models = os.path.join(checkpoint_dir_full, 'hub')
+        # link_of_hub_models = get_nested_url(file_deepfake_config, ["checkpoints", "hub.zip"])
+        # if not os.path.exists(dir_of_hub_models):
+        #     # check what is internet access
+        #     is_connected(dir_of_hub_models)
+        #     # download pre-trained models from url
+        #     download_model(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
+        #     unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
+        # else:
+        #     check_download_size(os.path.join(checkpoint_dir_full, 'hub.zip'), link_of_hub_models)
+        #     if not os.listdir(dir_of_hub_models):
+        #         unzip(os.path.join(checkpoint_dir_full, 'hub.zip'), checkpoint_dir_full)
+        #
+        # talker_checkpoint = os.path.join(checkpoint_dir_full, 'SadTalker_V0.0.2_256.safetensors')
+        # # link_talker_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "SadTalker_V0.0.2_512.safetensors"])
+        # link_talker_checkpoint = "https://github.com/OpenTalker/SadTalker/releases/download/v0.0.2-rc/SadTalker_V0.0.2_256.safetensors"
+        # if not os.path.exists(talker_checkpoint):
+        #     # check what is internet access
+        #     is_connected(talker_checkpoint)
+        #     # download pre-trained models from url
+        #     download_model(talker_checkpoint, link_talker_checkpoint)
+        # else:
+        #     check_download_size(talker_checkpoint, link_talker_checkpoint)
+        #
+        # wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
+        # link_wav2lip_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "wav2lip.pth"])
+        # if not os.path.exists(wav2lip_checkpoint):
+        #     # check what is internet access
+        #     is_connected(wav2lip_checkpoint)
+        #     # download pre-trained models from url
+        #     download_model(wav2lip_checkpoint, link_wav2lip_checkpoint)
+        # else:
+        #     check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
+        #
+        # audio2pose_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2pose.yaml')
+        # audio2exp_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2exp.yaml')
+        #
+        # if preprocess == 'full':
+        #     mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00109-model.pth.tar')
+        #     # link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00109-model.pth.tar"])
+        #     link_mapping_checkpoint = "https://github.com/OpenTalker/SadTalker/releases/download/v0.0.2-rc/mapping_00109-model.pth.tar"
+        #     if not os.path.exists(mapping_checkpoint):
+        #         # check what is internet access
+        #         is_connected(mapping_checkpoint)
+        #         # download pre-trained models from url
+        #         download_model(mapping_checkpoint, link_mapping_checkpoint)
+        #     else:
+        #         check_download_size(mapping_checkpoint, link_mapping_checkpoint)
+        #     facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender_still.yaml')
+        # else:
+        #     mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00229-model.pth.tar')
+        #     # link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00229-model.pth.tar"])
+        #     link_mapping_checkpoint = "https://github.com/OpenTalker/SadTalker/releases/download/v0.0.2-rc/mapping_00109-model.pth.tar"
+        #     if not os.path.exists(mapping_checkpoint):
+        #         # check what is internet access
+        #         is_connected(mapping_checkpoint)
+        #         # download pre-trained models from url
+        #         download_model(mapping_checkpoint, link_mapping_checkpoint)
+        #     else:
+        #         check_download_size(mapping_checkpoint, link_mapping_checkpoint)
+        #     facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender.yaml')
+        #
+        # # init model
+        # print("Starting to crop and extract frames")
+        # preprocess_model = CropAndExtract(DEEPFAKE_MODEL_FOLDER, talker_checkpoint, dir_of_BFM_fitting, device, face_fields)
+        #
+        # print("Starting get audio coefficient")
+        # audio_to_coeff = Audio2Coeff(talker_checkpoint, audio2pose_yaml_path, audio2exp_yaml_path, wav2lip_checkpoint, device)
+        #
+        # print("Starting animate face from audio coefficient")
+        # animate_from_coeff = AnimateFromCoeff(talker_checkpoint, mapping_checkpoint, facerender_yaml_path, device)
+        #
+        # # crop image and extract 3dmm from image
+        # first_frame_dir = os.path.join(save_dir, 'first_frame_dir')
+        # os.makedirs(first_frame_dir, exist_ok=True)
+        #
+        # print('Extraction 3DMM for source image')
+        # pic_path_type = check_media_type(source_image)
+        # first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(source_image, first_frame_dir, preprocess, source_image_flag=True, pic_path_type=pic_path_type)
+        # if first_coeff_path is None:
+        #     print("Can't get the coefficients by 3DMM of the input")
+        #     return
+        #
+        # ref_eyeblink_coeff_path = None
+        # ref_pose_coeff_path = None
+        #
+        # # audio2ceoff
+        # batch = get_data(first_coeff_path, driven_audio, device, ref_eyeblink_coeff_path, still=still)
+        # coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
+        #
+        # # coeff2video
+        # data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, driven_audio, batch_size, input_yaw, input_pitch, input_roll, expression_scale=expression_scale, still_mode=still, preprocess=preprocess)
+        # mp4_path = animate_from_coeff.generate(data, save_dir, source_image, crop_info, preprocess=preprocess, pic_path_type=pic_path_type, device=device)
 
         wav2lip_checkpoint = os.path.join(checkpoint_dir_full, 'wav2lip.pth')
         link_wav2lip_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "wav2lip.pth"])
@@ -136,103 +205,34 @@ class AnimationFaceTalk:
         else:
             check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
-        audio2pose_checkpoint = os.path.join(checkpoint_dir_full, 'auido2pose_00140-model.pth')
-        link_audio2pose_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "auido2pose_00140-model.pth"])
-        if not os.path.exists(audio2pose_checkpoint):
-            # check what is internet access
-            is_connected(audio2pose_checkpoint)
-            # download pre-trained models from url
-            download_model(audio2pose_checkpoint, link_audio2pose_checkpoint)
-        else:
-            check_download_size(audio2pose_checkpoint, link_audio2pose_checkpoint)
-        audio2pose_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2pose.yaml')
+        talker_model = "/home/user/Downloads/vox512.pt"
+        gen = Talker(DEEPFAKE_MODEL_FOLDER, talker_model, device)
+        driving_path = "/home/user/Downloads/test/driving.mov"
+        mp4_path = gen.driven(save_dir=save_dir, driving_path=driving_path, source=source_image, face_fields=face_fields)
 
-        audio2exp_checkpoint = os.path.join(checkpoint_dir_full, 'auido2exp_00300-model.pth')
-        link_audio2exp_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "auido2exp_00300-model.pth"])
-        if not os.path.exists(audio2exp_checkpoint):
-            # check what is internet access
-            is_connected(audio2exp_checkpoint)
-            # download pre-trained models from url
-            download_model(audio2exp_checkpoint, link_audio2exp_checkpoint)
-        else:
-            check_download_size(audio2exp_checkpoint, link_audio2exp_checkpoint)
-        audio2exp_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'auido2exp.yaml')
-
-        free_view_checkpoint = os.path.join(checkpoint_dir_full, 'facevid2vid_00189-model.pth.tar')
-        link_free_view_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "facevid2vid_00189-model.pth.tar"])
-        if not os.path.exists(free_view_checkpoint):
-            # check what is internet access
-            is_connected(free_view_checkpoint)
-            # download pre-trained models from url
-            download_model(free_view_checkpoint, link_free_view_checkpoint)
-        else:
-            check_download_size(free_view_checkpoint, link_free_view_checkpoint)
-
-        if preprocess == 'full':
-            mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00109-model.pth.tar')
-            link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00109-model.pth.tar"])
-            if not os.path.exists(mapping_checkpoint):
-                # check what is internet access
-                is_connected(mapping_checkpoint)
-                # download pre-trained models from url
-                download_model(mapping_checkpoint, link_mapping_checkpoint)
-            else:
-                check_download_size(mapping_checkpoint, link_mapping_checkpoint)
-            facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender_still.yaml')
-        else:
-            mapping_checkpoint = os.path.join(checkpoint_dir_full, 'mapping_00229-model.pth.tar')
-            link_mapping_checkpoint = get_nested_url(file_deepfake_config, ["checkpoints", "mapping_00229-model.pth.tar"])
-            if not os.path.exists(mapping_checkpoint):
-                # check what is internet access
-                is_connected(mapping_checkpoint)
-                # download pre-trained models from url
-                download_model(mapping_checkpoint, link_mapping_checkpoint)
-            else:
-                check_download_size(mapping_checkpoint, link_mapping_checkpoint)
-            facerender_yaml_path = os.path.join(deepfake_root_path, 'src', 'config', 'facerender.yaml')
-
-        # init model
-        print("Starting to crop and extract frames")
-        preprocess_model = CropAndExtract(DEEPFAKE_MODEL_FOLDER, path_of_net_recon_model, dir_of_BFM_fitting, device, face_fields)
-
-        print("Starting get audio coefficient")
-        audio_to_coeff = Audio2Coeff(audio2pose_checkpoint, audio2pose_yaml_path, audio2exp_checkpoint, audio2exp_yaml_path, wav2lip_checkpoint, device)
-
-        print("Starting animate face from audio coefficient")
-        animate_from_coeff = AnimateFromCoeff(free_view_checkpoint, mapping_checkpoint, facerender_yaml_path, device)
-
-        # crop image and extract 3dmm from image
-        first_frame_dir = os.path.join(save_dir, 'first_frame_dir')
-        os.makedirs(first_frame_dir, exist_ok=True)
-
-        print('Extraction 3DMM for source image')
-        pic_path_type = check_media_type(source_image)
-        first_coeff_path, crop_pic_path, crop_info = preprocess_model.generate(source_image, first_frame_dir, preprocess, source_image_flag=True, pic_path_type=pic_path_type)
-        if first_coeff_path is None:
-            print("Can't get the coefficients by 3DMM of the input")
-            return
-
-        ref_eyeblink_coeff_path = None
-        ref_pose_coeff_path = None
-
-        # audio2ceoff
-        batch = get_data(first_coeff_path, driven_audio, device, ref_eyeblink_coeff_path, still=still)
-        coeff_path = audio_to_coeff.generate(batch, save_dir, pose_style, ref_pose_coeff_path)
-
-        # coeff2video
-        data = get_facerender_data(coeff_path, crop_pic_path, first_coeff_path, driven_audio, batch_size, input_yaw, input_pitch, input_roll, expression_scale=expression_scale, still_mode=still, preprocess=preprocess)
-        mp4_path = animate_from_coeff.generate(data, save_dir, source_image, crop_info, preprocess=preprocess, pic_path_type=pic_path_type, device=device)
-
-        for f in os.listdir(save_dir):
-            if mp4_path == f:
-                mp4_path = os.path.join(save_dir, f)
-            else:
-                if os.path.isfile(os.path.join(save_dir, f)):
-                    os.remove(os.path.join(save_dir, f))
-                elif os.path.isdir(os.path.join(save_dir, f)):
-                    shutil.rmtree(os.path.join(save_dir, f))
+        # for f in os.listdir(save_dir):
+        #     if mp4_path == f:
+        #         mp4_path = os.path.join(save_dir, f)
+        #     else:
+        #         if os.path.isfile(os.path.join(save_dir, f)):
+        #             os.remove(os.path.join(save_dir, f))
+        #         elif os.path.isdir(os.path.join(save_dir, f)):
+        #             shutil.rmtree(os.path.join(save_dir, f))
 
         return mp4_path
+
+    @staticmethod
+    def load_video_default():
+        return Namespace(
+            pads=[0, 10, 0, 0],
+            face_det_batch_size=16,
+            wav2lip_batch_size=128,
+            resize_factor=1,
+            crop=[0, -1, 0, -1],
+            rotate=False,
+            nosmooth=False,
+            img_size=96
+        )
 
 
 class AnimationMouthTalk:
@@ -240,8 +240,7 @@ class AnimationMouthTalk:
     Animation mouth talk on video
     """
     @staticmethod
-    def main_video_deepfake(deepfake_dir: str, source: str, audio: str, face_fields: list = None,
-                            video_start: float = 0,
+    def main_video_deepfake(deepfake_dir: str, source: str, audio: str, face_fields: list = None, video_start: float = 0,
                             video_end: float = 0, emotion_label: int = None, similar_coeff: float = 0.96):
         args = AnimationMouthTalk.load_video_default()
         use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
@@ -282,21 +281,27 @@ class AnimationMouthTalk:
             else:
                 check_download_size(wav2lip_checkpoint, link_wav2lip_checkpoint)
 
-        # If video_start is not 0 when cut video from start
-        source = cut_start_video(source, float(video_start), float(video_end))
-        # get video frame for source if type is video
-        frame_dir = os.path.join(save_dir, "frames")
-        os.makedirs(frame_dir, exist_ok=True)
-        fps, frame_dir = save_frames(video=source, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+        # if this is video target
+        type_file_target = check_media_type(source)
+        if type_file_target == "animated":
+            # If video_start is not 0 when cut video from start
+            source = cut_start_video(source, float(video_start), float(video_end))
+            # get video frame for source if type is video
+            frame_dir = os.path.join(save_dir, "frames")
+            os.makedirs(frame_dir, exist_ok=True)
+            fps, frame_dir = save_frames(video=source, output_dir=frame_dir, rotate=args.rotate, crop=args.crop, resize_factor=args.resize_factor)
+            # Get a list of all frame files in the target_frames_path directory
+            frame_files = sorted([os.path.join(frame_dir, fname) for fname in os.listdir(frame_dir) if fname.endswith('.png')])
+        else:
+            fps = 25
+            frame_files = [source]
         # get mel of audio
         mel_processor = MelProcessor(audio=audio, save_output=save_dir, fps=fps)
         mel_chunks = mel_processor.process()
         # create wav to lip
-        # Get a list of all frame files in the target_frames_path directory
-        frame_files = sorted([os.path.join(frame_dir, fname) for fname in os.listdir(frame_dir) if fname.endswith('.png')])
         full_frames_files = frame_files[:len(mel_chunks)]
         batch_size = args.wav2lip_batch_size
-        wav2lip = GenerateFakeVideo2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label, similar_coeff=similar_coeff)
+        wav2lip = GenerateWave2Lip(DEEPFAKE_MODEL_FOLDER, emotion_label=emotion_label, similar_coeff=similar_coeff)
         wav2lip.face_fields = face_fields
 
         print("Face detect starting")

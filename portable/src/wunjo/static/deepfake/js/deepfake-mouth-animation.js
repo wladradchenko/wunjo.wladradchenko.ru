@@ -1,14 +1,14 @@
 // SEND DATA IN BACKEND //
-function triggerFaceAndMouthSynthesis(elem) {
+function triggerMouthSynthesis(elem) {
     fetch("/synthesize_process/")
         .then(response => response.json())
-        .then(data => initiateFaceAndMouthProcess(data, elem))
+        .then(data => initiateMouthProcess(data, elem))
         .catch(error => {
             console.error("Error fetching the synthesis process status:", error);
         });
 }
 
-async function initiateFaceAndMouthProcess(data, elem) {
+async function initiateMouthProcess(data, elem) {
     if (data.status_code !== 200) {
         displayStatusMessage(elem, "The process is busy. Wait for it to finish");
         return null;
@@ -25,7 +25,7 @@ async function initiateFaceAndMouthProcess(data, elem) {
         mediaEnd: mediaEnd
     } = retrieveMediaDetails(mediaPreview);
 
-    const audioDetails = retrieveAudioDetailsFaceAndMouthAnimation(elem);
+    const audioDetails = retrieveAudioDetailsMouthAnimation(elem);
 
     const synthesisSettings = gatherSynthesisSettings(elem, mediaType, mediaName, mediaStart, mediaEnd, audioDetails.audioName, selectedFaceData);
 
@@ -35,7 +35,7 @@ async function initiateFaceAndMouthProcess(data, elem) {
     }
 
     // FUNCTIONS TO GET PARAMETERS //
-    function retrieveAudioDetailsFaceAndMouthAnimation(elem) {
+    function retrieveAudioDetailsMouthAnimation(elem) {
         const audioElement = elem.querySelector("#audioDeepfakeSrc");
         const audioBlobUrl = audioElement ? audioElement.querySelector("source").src : null;
         const audioName = audioBlobUrl ? `audio_${Date.now()}` : "";
@@ -66,15 +66,12 @@ async function initiateFaceAndMouthProcess(data, elem) {
             return null;
         }
 
-        const preprocessingType = getSelectedPreprocessingType(elem);
         const advancedSettings = getAdvancedSettings(elem);
 
         return {
             face_fields: selectedFaceData,
             source_media: mediaName,
             driven_audio: audioName,
-            preprocess: preprocessingType,
-            still: elem.querySelector("#still-deepfake").checked,
             type_file: mediaType,
             media_start: mediaStart,
             media_end: mediaEnd,
@@ -82,17 +79,8 @@ async function initiateFaceAndMouthProcess(data, elem) {
         };
     }
 
-    function getSelectedPreprocessingType(elem) {
-        if (elem.querySelector("#resize-deepfake").checked) return "resize";
-        return "full";
-    }
-
     function getAdvancedSettings(elem) {
         return {
-            expression_scale: elem.querySelector("#expression-scale-deepfake").value,
-            input_yaw: elem.querySelector("#input-yaw-deepfake").value,
-            input_pitch: elem.querySelector("#input-pitch-deepfake").value,
-            input_roll: elem.querySelector("#input-roll-deepfake").value,
             emotion_label: getSelectedEmotionLabel(elem),
             similar_coeff: elem.querySelector("#similar-coeff-face").value
         };
@@ -121,12 +109,12 @@ async function initiateFaceAndMouthProcess(data, elem) {
 }
 
 // ANIMATE WINDOWS //
-function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = undefined) {
+function initiateMouthPop(button, audio_url = undefined, audio_name = undefined) {
   var introFaceAndMouth = introJs();
   introFaceAndMouth.setOptions({
     steps: [
       {
-        title: "Face and lip animation panel",
+        title: "Lip animation panel",
         position: "left",
         intro: `
                     <div id="main-windows-face-and-mouth-animation" style="width: 80vw; max-width: 90vw; height: 80vh; max-height: 90vh; columns: 2;display: flex;flex-direction: row;justify-content: space-around;">
@@ -134,7 +122,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                         <div id="divGeneralPreviewMediaAndAudio" style="height: 100%;">
                             <span id="spanLoadMediaElement" class="dragBox" style="width: 100%;display: flex;text-align: center;margin-bottom: 15px;flex-direction: column;position: relative;height: 100%;justify-content: center;">
                                   Load image or video
-                                <input accept="image/*,video/*" type="file" onChange="handleFaceAndMouthAnimation(event, document.getElementById('preview-media')); document.getElementById('divGeneralPreviewMediaAndAudio').style.height = '';" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
+                                <input accept="image/*,video/*" type="file" onChange="handleMouthAnimation(event, document.getElementById('preview-media')); document.getElementById('divGeneralPreviewMediaAndAudio').style.height = '';" ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" />
                             </span>
                             <p id="message-about-status" style="text-align: center;color: #393939;height: 30px;display: none;justify-content: center;align-items: center;padding: 5px;margin-bottom: 15px;"></p>
                             <div id="preview-media" style="position: relative;max-width: 60vw; max-height:60vh;display: flex;flex-direction: column;align-items: center;">
@@ -143,26 +131,11 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
 
                         <div style="margin-top: 10pt;margin-bottom: 10pt;display: flex;">
                             <label id="uploadAudioDeepfakeLabel" for="uploadAudioDeepfake" class="introjs-button" style="text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;">Load audio</label>
-                            <input style="width: 0;" accept=".mp3,.wav,.ogg,.flac" type="file" onChange="dragDropAudioDeepfakeFaceAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
+                            <input style="width: 0;" accept=".mp3,.wav,.ogg,.flac" type="file" onChange="dragDropAudioDeepfakeMouthAnimation(event)"  ondragover="drag(this.parentElement)" ondrop="drop(this.parentElement)" id="uploadAudioDeepfake"  />
                             <div id="previewDeepfakeAudio"></div>
                         </div>
                     </div>
                     <div id="face-animation-parameters-windows" style="display: none;align-items: stretch;flex-direction: column;justify-content: center;width: 25vw;">
-                        <fieldset id="fieldset-preprocessing" style="padding: 5pt;">
-                            <legend>Processing mode</legend>
-                            <div>
-                              <input type="radio" id="resize-deepfake" name="preprocessing_deepfake" value="resize">
-                              <label for="resize-deepfake">Resize</label>
-                            </div>
-                            <div>
-                              <input type="radio" id="full-deepfake" name="preprocessing_deepfake" value="full" checked>
-                              <label for="full-deepfake">Without changes</label>
-                            </div>
-                        </fieldset>
-                        <div id="still-deepfake-div" style="padding: 5pt;margin-top:5pt;">
-                          <input type="checkbox" id="still-deepfake" name="still">
-                          <label for="still-deepfake">Disable head movement</label>
-                        </div>
                         <div id="similar-coeff-face-div" style="justify-content: space-between;padding: 5pt; display: flex;">
                           <label for="similar-coeff-face">Coefficient facial similarity</label>
                           <input type="number" id="similar-coeff-face" name="similar-coeff" min="0.1" max="3" step="0.1" value="1.2" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 60pt;">
@@ -182,22 +155,6 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                             </button>
                           </legend>
                           <div id="advanced-settings" style="display:none;">
-                            <div id="expression-scale-deepfake-div" style="justify-content: space-between;padding: 5pt; display: flex;">
-                              <label for="expression-scale-deepfake">Facial expressiveness</label>
-                              <input type="number" id="expression-scale-deepfake" name="expression-scale" min="0.5" max="1.5" step="0.05" value="1.0" style="border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;width: 30pt;">
-                            </div>
-                            <div id="input-yaw-deepfake-div" style="padding: 5pt;">
-                              <label for="input-yaw-deepfake">Rotation angle XY</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-yaw-deepfake" name="input-yaw" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
-                            </div>
-                            <div id="input-pitch-deepfake-div" style="padding: 5pt;">
-                              <label for="input-pitch-deepfake">Rotation angle YZ</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-pitch-deepfake" name="input-pitch" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
-                            </div>
-                            <div id="input-roll-deepfake-div" style="padding: 5pt;">
-                              <label for="input-roll-deepfake">Rotation angle ZX</label>
-                              <input type="text" pattern="[0-9,]+" oninput="this.value = this.value.replace(/[^0-9,-]/g, '');" title="Enter numbers separated by commas" id="input-roll-deepfake" name="input-roll" style="width: 100%;border-color: rgb(192, 192, 192);background-color: #fff;padding: 1pt;">
-                            </div>
                             <div style="padding: 5pt;" id="use-experimental-functions-message">
                                 <input onclick="document.getElementById('deepfake-emotion').style.display = this.checked ? 'block' : 'none';" type="checkbox" id="use-experimental-functions" name="experimental-functions">
                                 <label for="use-experimental-functions">Experimental feature</label>
@@ -220,7 +177,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
                         </fieldset>
                         <div>
                             <i id="inspect-models-face-and-mouth-animation" style="font-size: 10pt;margin-top: 5px;"></i>
-                            <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerFaceAndMouthSynthesis(this.parentElement.parentElement.parentElement);">Start processing</button>
+                            <button class="introjs-button" style="background: #f7db4d;margin-top: 10pt;text-align: center;width: 100%;padding-right: 0 !important;padding-left: 0 !important;padding-bottom: 0.5rem !important;padding-top: 0.5rem !important;" onclick="triggerMouthSynthesis(this.parentElement.parentElement.parentElement);">Start processing</button>
                         </div>
                     </div>
                     </div>
@@ -291,7 +248,7 @@ function initiateFaceAndMouthPop(button, audio_url = undefined, audio_name = und
 }
 
 // UPDATE PREVIEW //
-async function handleFaceAndMouthAnimation(event, previewElement) {
+async function handleMouthAnimation(event, previewElement) {
     const messageAboutStatus = document.getElementById("message-about-status");
     let messageAboutStatusText = "";
     const fileInput = event.target;
@@ -314,26 +271,12 @@ async function handleFaceAndMouthAnimation(event, previewElement) {
             messageAboutStatus.innerHTML = `${messageAboutStatusText} <i class="fa-solid fa-draw-polygon" style="margin-left: 10px;"></i>`;
             canvas = await setupImageCanvas(previewElement, fileUrl, "55vh", "45vw");
 
-            document.getElementById("fieldset-preprocessing").style.display = "block";
-            document.getElementById("still-deepfake-div").style.display = "block";
-            document.getElementById("expression-scale-deepfake-div").style.display = "block";
-            document.getElementById("input-yaw-deepfake-div").style.display = "block";
-            document.getElementById("input-pitch-deepfake-div").style.display = "block";
-            document.getElementById("input-roll-deepfake-div").style.display = "block";
-
-            document.getElementById("similar-coeff-face-div").style.display = "none";
-            document.getElementById("use-experimental-functions-message").style.display = "none";
+            document.getElementById("similar-coeff-face-div").style.display = "block";
+            document.getElementById("use-experimental-functions-message").style.display = "block";
 
             document.getElementById("face-animation-parameters-windows").style.display = "flex";
-            getInspectMessage(inspectElem, "/inspect_face_animation");
+            getInspectMessage(inspectElem, "/inspect_mouth_animation");
         } else if (fileType === 'video') {
-            document.getElementById("fieldset-preprocessing").style.display = "none";
-            document.getElementById("still-deepfake-div").style.display = "none";
-            document.getElementById("expression-scale-deepfake-div").style.display = "none";
-            document.getElementById("input-yaw-deepfake-div").style.display = "none";
-            document.getElementById("input-pitch-deepfake-div").style.display = "none";
-            document.getElementById("input-roll-deepfake-div").style.display = "none";
-
             document.getElementById("similar-coeff-face-div").style.display = "block";
             document.getElementById("use-experimental-functions-message").style.display = "block";
 
@@ -353,7 +296,7 @@ async function handleFaceAndMouthAnimation(event, previewElement) {
     }
 }
 
-async function dragDropAudioDeepfakeFaceAnimation(event) {
+async function dragDropAudioDeepfakeMouthAnimation(event) {
     if (event.target.files.length === 0) {
         console.warn("No files selected");
         return;
