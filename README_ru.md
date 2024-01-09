@@ -75,6 +75,8 @@
 Подробные инструкции по установке Wunjo AI с GitHub см. в разделе [Запуск проекта с GitHub](https://github.com/wladradченко/wunjo.wladradkova.ru/wiki/How-to-install-the-application#launch- project-from-github) в нашей вики.
 
 <!-- DOWNLOAD -->
+Вы найдете на [сайте](https://wladradchenko.ru/wunjo) официальные установщики или портативные версии.
+
 ## Готовые сборки
 
 ### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.2.deb)

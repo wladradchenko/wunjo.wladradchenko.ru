@@ -75,6 +75,8 @@ Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpe
 For detailed instructions about setup Wunjo AI from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
 
 <!-- DOWNLOAD -->
+You will find on [website](https://wladradchenko.ru/wunjo) official installer or portable versions.
+
 ## Install packets
 
 ### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.2.deb)
