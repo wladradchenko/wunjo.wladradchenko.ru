@@ -110,12 +110,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
   <table>
   <tr>
     <th>Original</th>
-    <th>Move face + Enhancer</th>
     <th>Fix face + Enhancer</th>
   </tr>
   <tr align="center">
     <td><img src="example/animation_face/samurai_original.gif" alt="original" width="228" height="360"></td>
-    <td><img src="example/animation_face/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
     <td><img  src="example/animation_face/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
   </tr>
 </table>

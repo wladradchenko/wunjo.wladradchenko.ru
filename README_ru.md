@@ -108,12 +108,10 @@
   <table>
   <tr>
     <th>Оригинал</th>
-    <th>Движение лица + Улучшение лица</th>
     <th>Фиксированное лицо + Улучшение лица</th>
   </tr>
   <tr align="center">
     <td><img src="example/animation_face/samurai_original.gif" alt="original" width="228" height="360"></td>
-    <td><img src="example/animation_face/samurai_move_enhancer.gif" alt="move_enhancer" width="228" height="360"></td>
     <td><img  src="example/animation_face/samurai_static_enhancer.gif" alt="static_enhancer" width="228" height="360"></td>
   </tr>
 </table>
@@ -402,7 +400,7 @@ Wunjo AI создан на основе замечательных резуль�
 - **Синтез речи и клонирование голоса:** Адаптированные версии [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow) и улучшена версия [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) от первоначального решения с добавлением [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **Пользовательский интерфейс и упаковка:** Реализация [Flask UI](https://github.com/ClimenteA/flaskwebgui) и [BeeWare](https://beeware.org/project/projects/tools/briefcase/ )
 - **Обработка звука:** Адаптированная версия [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) для разделения звука
-- **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib) и улучшена версия [Sad Talker](https://github.com/OpenTalker/SadTalker) от первоначального решения
+- **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib)
 - **Улучшение изображений и видео:** Адаптированная версия [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) для улучшения качества видео и изображений
 - **Обработка и сегментация видео:** Адаптации [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) и обновленная реализация [Ebsynth](https://github.com/SingleZombie/ebsynth/tree/02ec8c4e4d4a568057363ae8b8f8bb8f7e4898c2) 
 - **AI Art Generation:** Адаптация [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) для изменения видео текстовыми запросами

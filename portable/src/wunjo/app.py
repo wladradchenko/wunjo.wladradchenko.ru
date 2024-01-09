@@ -12,7 +12,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for,
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI
 
-from deepfake.inference import AnimationMouthTalk, AnimationFaceTalk, FaceSwap, Retouch, MediaEdit, GetSegment
+from deepfake.inference import AnimationMouthTalk, FaceSwap, Retouch, MediaEdit, GetSegment
 try:
     from diffusers.inference import Video2Video, create_diffusion_instruction
     VIDEO2VIDEO_AVAILABLE = True
@@ -888,61 +888,9 @@ def synthesize_face_swap():
     return {"status": 200}
 
 
-@app.route("/synthesize_face_move/", methods=["POST"])
+@app.route("/synthesize_mouth_talk/", methods=["POST"])
 @cross_origin()
-def synthesize_face_move():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print(get_print_translate("Please wait... Processing is started"))
-
-    if not os.path.exists(CONTENT_FACE_MOVE_FOLDER):
-        os.makedirs(CONTENT_FACE_MOVE_FOLDER)
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    mode_msg = get_print_translate("Face move")
-
-    try:
-        face_move_result = ""
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    face_move_filename = f"/{save_folder_name}/" + face_move_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    face_move_url = url_for("media_file", filename=face_move_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": face_move_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Deepfake synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
-    # empty loop cache from animation if not clear yet
-    gc.collect()
-
-    return {"status": 200}
-
-
-@app.route("/synthesize_animation_talk/", methods=["POST"])
-@cross_origin()
-def synthesize_animation_talk():
+def synthesize_mouth_talk():
     # check what it is not repeat button click
     if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
         print("The process is already running... ")

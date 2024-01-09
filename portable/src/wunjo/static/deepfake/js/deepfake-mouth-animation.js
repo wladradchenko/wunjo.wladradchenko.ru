@@ -100,7 +100,7 @@ async function initiateMouthProcess(data, elem) {
     }
 
     function triggerSynthesisAPI(settings) {
-        fetch("/synthesize_animation_talk/", {
+        fetch("/synthesize_mouth_talk/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(settings)
