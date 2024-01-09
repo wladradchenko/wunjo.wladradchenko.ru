@@ -439,7 +439,7 @@ Wunjo AI is built upon the remarkable work of various open-source projects. Each
 - **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and improved [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) with [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
 - **Audio Processing:** Adapted [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) for audio separation
-- **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib) and enhanced [Sad Talker](https://github.com/OpenTalker/SadTalker)
+- **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib)
 - **Image & Video Enhancement:** Adapted [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) for superior quality enhancements
 - **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)
 - **AI Art Generation:** Adaptation of [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) for creative video AI-driven art
