@@ -4,8 +4,9 @@ import sys
 import json
 
 import torch
-import random
 import subprocess
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)  # remove msg
 from werkzeug.utils import secure_filename
 
 from flask import Flask, render_template, request, send_from_directory, url_for, jsonify
@@ -43,7 +44,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-os.environ['DEBUG'] = 'True'  # str False or True
+os.environ['DEBUG'] = 'False'  # str False or True
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
 app.config['SYNTHESIZE_RESULT'] = []
