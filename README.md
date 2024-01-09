@@ -314,7 +314,9 @@ To find the appropriate code for your language, please refer to the [Google Clou
 
 <!-- UPDATE -->
 
-Update 1.6.0
+## Update
+
+### Update 1.6.0
 - [x] Improved and automated remove object from image or video
 - [x] Improved edit video element
 - [x] Added auto segmentation mask with save
@@ -323,7 +325,7 @@ Update 1.6.0
 - [x] Optimized using memory for face swapping for long video
 - [x] Optimized using memory for retouch and remove object for long video
 
-Update 1.6.1
+### Update 1.6.1
 - [x] Fix bug with enhancer. Improve enhancer for video and face. Added enhancer for drawing video
 - [x] Improved vocoder for voice cloning
 - [x] Added cloning speed speech
@@ -338,11 +340,37 @@ Update 1.6.1
 - [x] Multilanguage speech by one text
 - [x] Added auto remove text from video or image with auto create text mask
 
-Update 1.6.2
+### Update 1.6.2
 - [x] Custom browser for WebGUI
 - [x] Added select browser to run
 - [x] Added check between offline and online mode
 - [x] Added a message for the user about missing models and how to download manually
+
+### Update 2.0.0
+Will there be a v2 version? Yes!
+
+Unlike the familiar Wunjo AI v1, the upcoming v2 will not merely be an update; it's a standalone version, signaling parallel development alongside v1 and introducing a new realm of possibilities.
+
+While v1 was designed as a user-friendly application, simplifying processes like creating deepfakes and speech synthesis into single-click actions with minimal entry barriers, v2 is envisioned as a professional-grade editor, fostering limitless creativity.
+
+In Wunjo v2, users will experience unparalleled freedom, being able to craft their own Node bundles, saving and loading them effortlessly.
+
+A some screenshots showcasing current developing progress.
+
+<div align="center">
+  <table>
+  <tr>
+    <th>Node logical</th>
+    <th>Menu</th>
+  </tr>
+  <tr align="center">
+    <td><img src="example/dev/update_node.gif" alt="video" width="350"></td>
+    <td><img src="example/dev/update_menu.gif" alt="video" width="350"></td>
+  </tr>
+</table>
+</div>
+
+For more insights into the progress of Wunjo V2's development, join our community at [Blog](https://t.me/s/wladblog) on Telegram. Stay tuned for sneak peeks!
 
 <!-- VIDEO -->
 ## Video
@@ -377,6 +405,15 @@ You can support the author of the project in the development of his creative ide
   </tr>
 </table>
 </div>
+
+### Supporters and Donors
+
+I extend our heartfelt gratitude to the following individuals who have generously supported this project through donations:
+
+- **[Konstantin Kravtsov](https://t.me/kostiang)**.
+- Several contributors who have chosen to remain anonymous or opted not to be listed publicly. Your support is immensely appreciated.
+
+I sincerely appreciate the generosity of all our supporters. Your contributions enable us to continue improving and maintaining this project.
 
 <!-- CONTACT -->
 ## Contact
