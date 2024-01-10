@@ -84,10 +84,6 @@ CONTENT_ANIMATION_TALK_FOLDER = os.path.join(CONTENT_FOLDER, "animation_talk")
 if not os.path.exists(CONTENT_ANIMATION_TALK_FOLDER):
     os.makedirs(CONTENT_ANIMATION_TALK_FOLDER)
 
-CONTENT_FACE_MOVE_FOLDER = os.path.join(CONTENT_FOLDER, "face_move")
-if not os.path.exists(CONTENT_FACE_MOVE_FOLDER):
-    os.makedirs(CONTENT_FACE_MOVE_FOLDER)
-
 CONTENT_SPEECH_FOLDER = os.path.join(CONTENT_FOLDER, "speech")
 if not os.path.exists(CONTENT_SPEECH_FOLDER):
     os.makedirs(CONTENT_SPEECH_FOLDER)
