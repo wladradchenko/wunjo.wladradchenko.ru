@@ -408,12 +408,12 @@ You can support the author of the project in the development of his creative ide
 
 ### Supporters and Donors
 
-I extend our heartfelt gratitude to the following individuals who have generously supported this project through donations:
+I extend heartfelt gratitude to the following individuals who have generously supported this project through donations:
 
 - **[Konstantin Kravtsov](https://t.me/kostiang)**.
 - Several contributors who have chosen to remain anonymous or opted not to be listed publicly. Your support is immensely appreciated.
 
-I sincerely appreciate the generosity of all our supporters. Your contributions enable us to continue improving and maintaining this project.
+I sincerely appreciate the generosity of all project supporters. Your contributions enable me to continue improving and maintaining this project.
 
 <!-- CONTACT -->
 ## Contact
