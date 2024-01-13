@@ -6,10 +6,16 @@ import os
 import subprocess
 
 import cv2
+import sys
 import random
 from tqdm import tqdm
 import numpy as np
 from PIL import Image
+
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(root_path, "deepfake"))
+from src.utils.encryption import EncryptionEncoder, EncryptionDecoder
+sys.path.pop(0)
 
 
 def load_video_to_cv2(input_path):
@@ -230,20 +236,17 @@ def save_frames(video: str, output_dir: str, rotate: int, crop: list, resize_fac
 
 
 def encrypted(video_path: str, save_dir: str, fn: int = 0):
-
     name = str(os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    name = name[-4:] if len(name) > 4 else name
     media_type = check_media_type(video_path)
+    # Define the size of the bounding box
+    box_size = 256
 
     if media_type == "animated":
         # Video objects for src
         src = cv2.VideoCapture(video_path)
-        src_w = int(src.get(3))
-        src_h = int(src.get(4))
         src_fps = src.get(cv2.CAP_PROP_FPS)
         src_frame_cnt = src.get(cv2.CAP_PROP_FRAME_COUNT)
-
-        # Load a dummy image to get the shape attributes
-        sec_frame_original = np.zeros((src_h, src_w, 3), dtype=np.uint8)
 
         if not os.path.exists(os.path.join(save_dir, 'enc')):
             os.mkdir(os.path.join(save_dir, 'enc'))
@@ -252,72 +255,49 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
         pbar = tqdm(total=int(src_frame_cnt), unit='frames')
 
         while True:
-            ret, src_frame = src.read()
-
+            ret, bgr = src.read()
             if ret == False:
                 break
-
-            # Create a copy of the dummy frame
-            sec_frame = sec_frame_original.copy()
-
-            # Put the text onto the dummy frame
-            font_scale = int(max(src_w, src_h) // 600)
-            font_thickness = int(font_scale // 0.5)
-
-            # Define text position
-            text_x = src_w // 4
-            text_y = src_h // 2
-
-            # Get the region where the text will be placed
-            text_size = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)[0]
-            region = src_frame[text_y - text_size[1]:text_y, text_x:text_x + text_size[0]]
-
-            # Compute the mean color of the region
-            mean_color = cv2.mean(region)[:3]
-
-            # Compute the contrasting color
-            contrast_color = tuple([255 - int(x) for x in mean_color])
-
-            # Adjusting the coordinates to correctly position the text
-            height, width = src_frame.shape[:2]
-
-            # Get the size of the text
-            (text_width, text_height), baseline = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
-
-            # Center positions
-            center_x = width // 2
-            center_y = height // 2
-
-            # Define potential positions with padding along the edges (adjust as necessary)
-            positions = [
-                (0, text_height),
-                (0, center_y + text_height // 2),
-                (center_x - text_width // 2, text_height),
-                (width - text_width, text_height),
-                (0, height - baseline),
-                (width - text_width, height - baseline),
-                (center_x - text_width // 2, height - baseline),
-                (width - text_width, center_y + text_height // 2),
-                (int(width * 0.25) - text_width // 2, text_height),
-                (int(width * 0.75) - text_width // 2, text_height),
-                (int(width * 0.25) - text_width // 2, height - baseline),
-                (int(width * 0.75) - text_width // 2, height - baseline),
-                None, None, None
-            ]
-
-            # In each call to the method, select one random positions from the list
-            selected_positions = random.sample(positions, 1)
-
-            # Put text at the selected positions
-            for pos in selected_positions:
-                if pos is not None:
-                    cv2.putText(sec_frame, name, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-
-            # Encryption for LSB 3 bits
-            encrypted_img = (src_frame & 0b11111000) | (sec_frame >> 6 & 0b00000111)
-
+            # If the media is an image
             fn = fn + 1
-            cv2.imwrite(os.path.join(save_dir, "enc", "{}.png".format(fn)), encrypted_img)
+            # Get the height and width of the image
+            height, width = bgr.shape[:2]
+            decoder = EncryptionDecoder('bytes', 32)
+            try:
+                encryption = decoder.decode(bgr, 'dwtDctSvd')
+                decoded_text = encryption.decode('utf-8')
+            except UnicodeDecodeError as err:
+                decoded_text = ""
+            if decoded_text != name and width >= box_size and height >= box_size:
+                # Define potential positions with padding along the edges (adjust as necessary)
+                # Calculate the center coordinates
+                center_x = width // 2
+                center_y = height // 2
+                # y1, y2, x1, x2
+                positions = [
+                    (0, box_size, 0, box_size),
+                    (0, box_size, int(width - box_size), width),
+                    (int(height - box_size), height, 0, box_size),
+                    (int(height - box_size), height, int(width - box_size), width),
+                    (int(center_y - box_size // 2), int(center_y + box_size // 2), int(center_x - box_size // 2), int(center_x + box_size // 2)),
+                    (None, None, None, None),
+                    (None, None, None, None),
+                    (None, None, None, None),
+                    (None, None, None, None)
+                ]
+                y1, y2, x1, x2 = random.sample(positions, 1)[0]
+                if y1 is None or y2 is None or x1 is None or x2 is None:
+                    pass
+                else:
+                    encoder = EncryptionEncoder()
+                    encoder.set_encryption('bytes', name.encode('utf-8'))
+                    bgr_center = bgr[y1:y2, x1:x2]
+                    bgr_encoded = encoder.encode(bgr_center, 'dwtDctSvd')
+                    bgr[y1:y2, x1:x2] = bgr_encoded
+                    # Save the encrypted image
+                cv2.imwrite(os.path.join(save_dir, "enc", "{}.png".format(fn)), bgr)
+            else:
+                cv2.imwrite(os.path.join(save_dir, "enc", "{}.png".format(fn)), bgr)
 
             pbar.update(1)
 
@@ -341,73 +321,35 @@ def encrypted(video_path: str, save_dir: str, fn: int = 0):
 
     else:
         # If the media is an image
-        src_frame = cv2.imread(video_path)
-        src_h, src_w = src_frame.shape[:2]
-
-        # Load a dummy image to get the shape attributes
-        sec_frame_original = np.zeros((src_h, src_w, 3), dtype=np.uint8)
-
-        # Create a copy of the dummy frame
-        sec_frame = sec_frame_original.copy()
-
-        # Put the text onto the dummy frame
-        font_scale = int(max(src_w, src_h) // 500)
-        font_thickness = int(font_scale // 0.5)
-
-        # Define text position
-        text_x = src_w // 4
-        text_y = src_h // 2
-
-        # Get the region where the text will be placed
-        text_size = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)[0]
-        region = src_frame[text_y - text_size[1]:text_y, text_x:text_x + text_size[0]]
-
-        # Compute the mean color of the region
-        mean_color = cv2.mean(region)[:3]
-
-        # Compute the contrasting color
-        contrast_color = tuple([255 - int(x) for x in mean_color])
-
-        # Adjusting the coordinates to correctly position the text
-        height, width = src_frame.shape[:2]
-
-        # Get the size of the text
-        (text_width, text_height), baseline = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, font_scale,
-                                                              font_thickness)
-
-        # Center positions
-        center_x = width // 2
-        center_y = height // 2
-
-        # Define potential positions with padding along the edges (adjust as necessary)
-        positions = [
-            (0, text_height),
-            (0, center_y + text_height // 2),
-            (center_x - text_width // 2, text_height),
-            (width - text_width, text_height),
-            (0, height - baseline),
-            (width - text_width, height - baseline),
-            (center_x - text_width // 2, height - baseline),
-            (width - text_width, center_y + text_height // 2),
-            (int(width * 0.25) - text_width // 2, text_height),
-            (int(width * 0.75) - text_width // 2, text_height),
-            (int(width * 0.25) - text_width // 2, height - baseline),
-            (int(width * 0.75) - text_width // 2, height - baseline),
-        ]
-
-        # In each call to the method, select one random positions from the list
-        selected_positions = random.sample(positions, 1)
-
-        # Put text at the selected positions
-        for pos in selected_positions:
-            cv2.putText(sec_frame, name, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, contrast_color, font_thickness, cv2.LINE_AA)
-
-        # Encryption for LSB 3 bits
-        encrypted_img = (src_frame & 0b11111000) | (sec_frame >> 6 & 0b00000111)
-
-        # Save the encrypted image
+        bgr = cv2.imread(video_path)
         file_name = str(uuid.uuid4()) + '.png'
         file_path = os.path.join(save_dir, file_name)
-        cv2.imwrite(file_path, encrypted_img)
+        # Get the height and width of the image
+        height, width = bgr.shape[:2]
+        decoder = EncryptionDecoder('bytes', 32)
+        try:
+            encryption = decoder.decode(bgr, 'dwtDctSvd')
+            decoded_text = encryption.decode('utf-8')
+        except UnicodeDecodeError as err:
+            decoded_text = ""
+        if decoded_text != name and width >= box_size and height >= box_size:
+            # Define potential positions with padding along the edges (adjust as necessary)
+            # y1, y2, x1, x2
+            positions = [
+                (0, box_size, 0, box_size),
+                (0, box_size, int(width - box_size), width),
+                (int(height - box_size), height, 0, box_size),
+                (int(height - box_size), height, int(width - box_size), width)
+            ]
+            y1, y2, x1, x2 = random.sample(positions, 1)[0]
+            encoder = EncryptionEncoder()
+            encoder.set_encryption('bytes', name.encode('utf-8'))
+            bgr_center = bgr[y1:y2, x1:x2]
+            bgr_encoded = encoder.encode(bgr_center, 'dwtDctSvd')
+            bgr[y1:y2, x1:x2] = bgr_encoded
+            # Save the encrypted image
+            cv2.imwrite(file_path, bgr)
+        else:
+            cv2.imwrite(file_path, bgr)
 
     return file_name
