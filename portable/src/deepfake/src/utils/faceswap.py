@@ -15,6 +15,7 @@ import threading
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "deepfake"))
 from src.face3d.recognition import FaceRecognition
+from src.utils.nudenet import NudeDetector
 sys.path.pop(0)
 
 
@@ -32,6 +33,7 @@ class FaceSwapDeepfake:
         self.face_recognition = FaceRecognition(model_path)
         self.access_providers = onnxruntime.get_available_providers()
         self.face_swap_model = self.load(face_swap_model_path)
+        self.filter_model = NudeDetector(providers=self.access_providers if self.device == "cuda" else None)
         self.face_target_fields = None
         self.similarface = similarface
         self.lock = threading.Lock()  # Create a lock
@@ -211,11 +213,14 @@ class FaceSwapDeepfake:
     def process_frame(self, args):
         frame, face_det_result, source_face, progress_bar, output_directory, idx = args
         tmp_frame = frame.copy()
-        for face in face_det_result:
-            if face is None:
-                break
-            else:
-                tmp_frame = self.face_swap_model.get(tmp_frame, face, source_face, paste_back=True)
+        if self.filter_model.status(tmp_frame):
+            for face in face_det_result:
+                if face is None:
+                    break
+                else:
+                    tmp_frame = self.face_swap_model.get(tmp_frame, face, source_face, paste_back=True)
+        else:
+            print("Face swap cannot be applied to nude or explicit content. Please upload images with appropriate content.")
         # Save the frame with zero-padded filename
         filename = os.path.join(output_directory, f"frame_{idx:04d}.png")
         cv2.imwrite(filename, tmp_frame)
@@ -326,11 +331,14 @@ class FaceSwapDeepfake:
         progress_bar = tqdm(total=len(face_det_results), unit='it', unit_scale=True)
         for i, dets in enumerate(face_det_results):
             tmp_frame = cv2.imread(frame_files[i])
-            for face in dets:
-                if face is None:
-                    break
-                else:
-                    tmp_frame = self.face_swap_model.get(tmp_frame, face, source_face, paste_back=True)
+            if self.filter_model.status(tmp_frame):
+                for face in dets:
+                    if face is None:
+                        break
+                    else:
+                        tmp_frame = self.face_swap_model.get(tmp_frame, face, source_face, paste_back=True)
+            else:
+                print("Face swap cannot be applied to nude or explicit content. Please upload images with appropriate content.")
             out.write(tmp_frame)
             progress_bar.update(1)
         else:
@@ -340,27 +348,30 @@ class FaceSwapDeepfake:
 
         return file_name
 
-
     def swap_image(self, target_frame, source_face, face_fields, save_dir: str, multiface=False):
         save_file = os.path.join(save_dir, "swapped_image.png")
-        x_center, y_center = self.get_real_crop_box(target_frame, face_fields)
-        dets = self.face_recognition.get_faces(target_frame)
-        if not dets:
-            raise FaceNotDetectedError("Face is not detected in target image!")
+        if self.filter_model.status(target_frame):
+            x_center, y_center = self.get_real_crop_box(target_frame, face_fields)
+            dets = self.face_recognition.get_faces(target_frame)
+            if not dets:
+                raise FaceNotDetectedError("Face is not detected in target image!")
 
-        if x_center is None or y_center is None or multiface:
-            for face in dets:
-                target_frame = self.face_swap_model.get(target_frame, face, source_face, paste_back=True)
-            else:
-                cv2.imwrite(save_file, target_frame)
-                return target_frame
-        else:
-            for face in dets:
-                x1, y1, x2, y2 = face.bbox
-                if x1 <= x_center <= x2 and y1 <= y_center <= y2:
+            if x_center is None or y_center is None or multiface:
+                for face in dets:
                     target_frame = self.face_swap_model.get(target_frame, face, source_face, paste_back=True)
+                else:
                     cv2.imwrite(save_file, target_frame)
                     return target_frame
+            else:
+                for face in dets:
+                    x1, y1, x2, y2 = face.bbox
+                    if x1 <= x_center <= x2 and y1 <= y_center <= y2:
+                        target_frame = self.face_swap_model.get(target_frame, face, source_face, paste_back=True)
+                        cv2.imwrite(save_file, target_frame)
+                        return target_frame
+        else:
+            cv2.imwrite(save_file, target_frame)
+            return target_frame
 
         raise FaceNotDetectedError("Face is not detected in user crop field in target image!")
 

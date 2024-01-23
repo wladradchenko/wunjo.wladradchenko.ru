@@ -398,44 +398,51 @@ async function submittedSTT(elem, activeTextarea) {
     return;
   }
 
-  elem.querySelector("#recognitionSTTAudio").innerText =
-    await translateWithGoogle(
-      "Распознавание... Не выключайте",
-      "auto",
-      targetLang
-    );
+  const recognitionMessageElement = elem.querySelector("#recognitionSTTAudio");
 
-  const stream = audioElement.captureStream();
-  // const recognition = new window.webkitSpeechRecognition();
+  if ('webkitSpeechRecognition' in window) {
+    recognitionMessageElement.innerText =
+      await translateWithGoogle(
+        "Recognition... Don't turn it off window",
+        "auto",
+        targetLang
+      );
 
-  recognition.onresult = (event) => {
-    const result = event.results[0][0].transcript;
-    activeTextarea.value = result;
-  };
+    const stream = audioElement.captureStream();
+    const recognition = new window.webkitSpeechRecognition();
 
-  recognition.onerror = (event) => {
-    console.error(event.error);
-  };
+    recognition.onresult = (event) => {
+      const result = event.results[0][0].transcript;
+      activeTextarea.value = result;
+    };
 
-  recognition.onend = () => {
-    console.log("Recognition ended");
-  };
+    recognition.onerror = (event) => {
+      console.error(event.error);
+    };
 
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    recognition.onend = () => {
+      console.log("Recognition ended");
+    };
 
-  recognition.start();
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-  const audioTrack = stream.getAudioTracks()[0];
-  audioElement.play();
+    recognition.start();
 
-  // Stop recognition when the audio ends
-  audioElement.addEventListener("ended", () => {
-    recognition.stop();
-    audioTrack.stop();
-    const closeIntroButton = document.querySelector(".introjs-skipbutton");
-    closeIntroButton.click();
-  });
+    const audioTrack = stream.getAudioTracks()[0];
+    audioElement.play();
+
+    // Stop recognition when the audio ends
+    audioElement.addEventListener("ended", () => {
+      recognition.stop();
+      audioTrack.stop();
+      const closeIntroButton = document.querySelector(".introjs-skipbutton");
+      closeIntroButton.click();
+    });
+  } else {
+    recognitionMessageElement.innerText = "This browser is not support recognition";
+    console.error("Speech recognition is not supported in this browser.");
+  }
 }
 
 function settingTextToSpeech(elem, languages) {
