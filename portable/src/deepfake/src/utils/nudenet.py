@@ -1,7 +1,9 @@
 import os
+import sys
 import math
 import cv2
 import numpy as np
+import subprocess
 import onnxruntime
 from onnxruntime.capi import _pybind_state as C
 
@@ -109,8 +111,29 @@ def _postprocess(output, resize_factor, pad_left, pad_top):
 
 class NudeDetector:
     def __init__(self, providers=None):
+        model_path = os.path.join(os.path.dirname(__file__), "filter.onnx")
+        # access read model
+        if sys.platform == 'win32':
+            username = os.environ.get('USERNAME') or os.environ.get('USER')
+            model_cmd = f'icacls "{model_path}" /grant:r "{username}:(R,W)" /T'
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(model_cmd)
+            else:
+                # silence run
+                subprocess.run(model_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        elif sys.platform == 'linux':
+            # access read model
+            model_cmd = f"chmod +x {model_path}"
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(model_cmd)
+            else:
+                # silence run
+                subprocess.run(model_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
         self.onnx_session = onnxruntime.InferenceSession(
-            os.path.join(os.path.dirname(__file__), "filter.onnx"),
+            model_path,
             providers=C.get_available_providers() if not providers else providers,
         )
         model_inputs = self.onnx_session.get_inputs()
