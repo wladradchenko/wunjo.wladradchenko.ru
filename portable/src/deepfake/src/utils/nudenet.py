@@ -132,9 +132,17 @@ class NudeDetector:
                 # silence run
                 subprocess.run(model_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
+        # use cpu as with cuda on onnx can be problem
+        if providers is None:
+            providers = ["CPUExecutionProvider"]
+        if "CUDAExecutionProvider" in providers:
+            provider = ["CUDAExecutionProvider"]
+        else:
+            provider = ["CPUExecutionProvider"]
+
         self.onnx_session = onnxruntime.InferenceSession(
             model_path,
-            providers=C.get_available_providers() if not providers else providers,
+            providers=provider,
         )
         model_inputs = self.onnx_session.get_inputs()
         input_shape = model_inputs[0].shape
