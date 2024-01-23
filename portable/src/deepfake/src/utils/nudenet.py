@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import subprocess
 import onnxruntime
-from onnxruntime.capi import _pybind_state as C
 
 __labels = [
     "FEMALE_GENITALIA_COVERED",
