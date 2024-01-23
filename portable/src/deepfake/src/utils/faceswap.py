@@ -370,6 +370,7 @@ class FaceSwapDeepfake:
                         cv2.imwrite(save_file, target_frame)
                         return target_frame
         else:
+            print("Face swap cannot be applied to nude or explicit content. Please upload images with appropriate content.")
             cv2.imwrite(save_file, target_frame)
             return target_frame
 
