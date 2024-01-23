@@ -132,7 +132,7 @@ class NudeDetector:
         detections = self.detect(img)
         if classes is None:
             classes = [
-                #"BUTTOCKS_EXPOSED",
+                "BUTTOCKS_EXPOSED",
                 "FEMALE_BREAST_EXPOSED",
                 "FEMALE_GENITALIA_EXPOSED",
                 #"MALE_BREAST_EXPOSED",
@@ -159,7 +159,7 @@ class NudeDetector:
         detections = self.detect(img)
         if classes is None:
             classes = [
-                #"BUTTOCKS_EXPOSED",
+                "BUTTOCKS_EXPOSED",
                 "FEMALE_BREAST_EXPOSED",
                 "FEMALE_GENITALIA_EXPOSED",
                 #"MALE_BREAST_EXPOSED",
