@@ -379,11 +379,11 @@ __Большее разрешение видео__, __дает лучше кач
   <table>
   <tr>
     <th>Обзор</th>
-    <th>Как установить на Windows?</th>
+    <th>Как собрать под Windows?</th>
   </tr>
   <tr align="center">
     <td><a href="https://youtu.be/4EfozPBMwXI"><img src="example/thumbnail/update.gif" alt="video" width="350"></a></td>
-    <td><a href="https://youtu.be/UzpEcPhSDrk"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
+    <td><a href="https://youtu.be/fucxKhX7n4E"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
   </tr>
 </table>
 </div>

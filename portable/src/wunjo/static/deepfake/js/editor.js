@@ -348,6 +348,9 @@ function executeMediaEditorProcess(mediaDetails, elem) {
         media_type: mediaDetails.mediaType,
     };
 
+    console.log("/synthesize_media_editor/")
+    console.log(JSON.stringify(parameters, null, 4));
+
     fetch("/synthesize_media_editor/", {
         method: "POST",
         headers: {
@@ -415,6 +418,9 @@ async function handleVideoMergeProcess(data, elem) {
         audio_name: audioName,
         fps: videoFps
     };
+
+    console.log("/synthesize_video_merge/")
+    console.log(JSON.stringify(mergeParameters, null, 4));
 
     fetch("/synthesize_video_merge/", {
         method: "POST",

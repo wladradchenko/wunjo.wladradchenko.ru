@@ -78,6 +78,9 @@ async function sendTextToSpeech() {
 
 async function processAsyncSynthesis(allCardSend, synthesisTable) {
   if (allCardSend.length > 0) {
+    console.log("/synthesize_speech/")
+    console.log(JSON.stringify(allCardSend, null, 4));
+
     await fetch("/synthesize_speech/", {
       method: "POST",
       headers: {

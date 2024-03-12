@@ -379,11 +379,11 @@ For more insights into the progress of Wunjo V2's development, join our communit
   <table>
   <tr>
     <th>Review</th>
-    <th>How install on Windows?</th>
+    <th>How build on Windows?</th>
   </tr>
   <tr align="center">
     <td><a href="https://youtu.be/4EfozPBMwXI"><img src="example/thumbnail/update.gif" alt="video" width="350"></a></td>
-    <td><a href="https://youtu.be/UzpEcPhSDrk"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
+    <td><a href="https://youtu.be/00gzOC_cw9Y"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
   </tr>
 </table>
 </div>

@@ -656,6 +656,7 @@ async function processDiffuser(data, element) {
         sd_model_name: selectedDiffusionModelValue
     };
 
+    console.log("/synthesize_diffuser/")
     console.log(JSON.stringify(diffuserParameters, null, 4));
 
     fetch("/synthesize_diffuser/", {

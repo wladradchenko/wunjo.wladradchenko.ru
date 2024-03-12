@@ -413,6 +413,7 @@ async function processEbsynth(data, element) {
         masks: dataDict
     };
 
+    console.log("/synthesize_only_ebsynth/")
     console.log(JSON.stringify(ebsynthParameters, null, 4));
 
     fetch("/synthesize_only_ebsynth/", {

@@ -752,6 +752,7 @@ async function processRetouchAi(data, element) {
         delay_mask: delayMask
     };
 
+    console.log("/synthesize_retouch/")
     console.log(JSON.stringify(retouchAiParameters, null, 4));
 
     fetch("/synthesize_retouch/", {

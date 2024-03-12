@@ -198,6 +198,9 @@ async function processFaceSwap(data, element) {
         similar_coeff: element.querySelector("#similar-coeff-face").value
     };
 
+    console.log("/synthesize_face_swap/")
+    console.log(JSON.stringify(faceSwapParameters, null, 4));
+
     fetch("/synthesize_face_swap/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
