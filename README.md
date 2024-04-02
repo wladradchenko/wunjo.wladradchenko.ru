@@ -410,7 +410,10 @@ You can support the author of the project in the development of his creative ide
 
 I extend heartfelt gratitude to the following individuals who have generously supported this project through donations:
 
-- **[Konstantin Kravtsov](https://t.me/kostiang)**.
+- **[Monogo](https://github.com/monogo)** - 110$.
+- **S.** - 50$.
+- **[Konstantin Kravtsov](https://t.me/kostiang)** - 35$.
+- **LEO** - 5$.
 - Several contributors who have chosen to remain anonymous or opted not to be listed publicly. Your support is immensely appreciated.
 
 I sincerely appreciate the generosity of all project supporters. Your contributions enable me to continue improving and maintaining this project.
