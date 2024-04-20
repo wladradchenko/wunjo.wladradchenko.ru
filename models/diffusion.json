@@ -1,0 +1,8 @@
+[
+    {
+		"name": "Cinematic", "model": "Realistic_Vision_V5.1.safetensors", "img": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/0dcee20e-415c-42c3-92bc-d596f9b45289/original=true/00000-3898569358.jpeg", "url": "https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE/resolve/main/Realistic_Vision_V5.1.safetensors"
+	},
+	{
+		"name": "Animation", "model": "revAnimated_v11.safetensors", "img": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/5c8e7782-5139-45bf-a3ff-15c732e7b061/original=true/00356-2892850505.jpeg", "url": "https://huggingface.co/ahmmu20/rev_animated/resolve/main/revAnimated_v11.safetensors"
+	}
+]
