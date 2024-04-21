@@ -49,21 +49,21 @@
 
 ### Update
 
--[x] Completely redesigned interface for desktop and mobile devices, from ground zero.
--[x] Enhanced performance with simultaneous task handling, stability, and faster processing.
--[x] Improved face swap functionality now supports multiple face swap at different timings via API.
--[x] Introducing generator of non-existent people face.
--[x] Deepfake analyzer added to discern authentic content from manipulated media.
--[x] Enhanced lip sync for smoother animations and elimination of chin defects.
--[x] Real-time mask selection for seamless editing experience.
--[x] Added select area to remove text.
--[x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
--[x] Custom file manager introduced for efficient file management within the application.
--[x] Improved interaction with neural network models, including seamless downloading from the internet.
--[x] Easy switch from client to server application and back.
--[x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
--[x] Internal tips provided for optimizing content quality.
--[x] Smart generator of prompts for video and object restyling.
+- [x] Completely redesigned interface for desktop and mobile devices, from ground zero.
+- [x] Enhanced performance with simultaneous task handling, stability, and faster processing.
+- [x] Improved face swap functionality now supports multiple face swap at different timings via API.
+- [x] Introducing generator of non-existent people face.
+- [x] Deepfake analyzer added to discern authentic content from manipulated media.
+- [x] Enhanced lip sync for smoother animations and elimination of chin defects.
+- [x] Real-time mask selection for seamless editing experience.
+- [x] Added select area to remove text.
+- [x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
+- [x] Custom file manager introduced for efficient file management within the application.
+- [x] Improved interaction with neural network models, including seamless downloading from the internet.
+- [x] Easy switch from client to server application and back.
+- [x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
+- [x] Internal tips provided for optimizing content quality.
+- [x] Smart generator of prompts for video and object restyling.
 
 </details>
 
