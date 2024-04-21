@@ -28,6 +28,42 @@
   </p>
 </div>
 
+<!-- WUNJO V2 -->
+## Big update Wunjo v2
+
+<b>Hey there!</b> Your <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project">support</a> means the world to me and plays a crucial role in bringing the new update to life faster and motivation to improve features, publicate new version and integrate improve clone voice, etc. Spread the word about the project, invite your friends to join to me, subscribe to Wunjo project and social media <a href="https://wladradchenko.ru/?en">wladradchenko</a> channels or Telegram wladblog, and let's make this journey even more exciting together. Thank you for being part of the community. Follow the news so you don't miss anything. See you soon in update v2!
+
+<details>
+<summary>What is update?</summary>
+  
+<div align="center">
+  <table>
+  <tr>
+    <th>First look on YouTube!</th>
+  </tr>
+  <tr align="center">
+    <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="700"></a></td>
+  </tr>
+</table>
+</div>
+
+-[x] Completely redesigned interface for desktop and mobile devices, from ground zero.
+-[x] Enhanced performance with simultaneous task handling, stability, and faster processing.
+-[x] Improved face swap functionality now supports multiple face swap at different timings via API.
+-[x] Introducing generator of non-existent people face.
+-[x] Deepfake analyzer added to discern authentic content from manipulated media.
+-[x] Enhanced lip sync for smoother animations and elimination of chin defects.
+-[x] Real-time mask selection for seamless editing experience.
+-[x] Added select area to remove text.
+-[x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
+-[x] Custom file manager introduced for efficient file management within the application.
+-[x] Improved interaction with neural network models, including seamless downloading from the internet.
+-[x] Easy switch from client to server application and back.
+-[x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
+-[x] Internal tips provided for optimizing content quality.
+-[x] Smart generator of prompts for video and object restyling.
+
+</details>
 
 <!-- ABOUT THE PROJECT -->
 ## About
@@ -345,32 +381,6 @@ To find the appropriate code for your language, please refer to the [Google Clou
 - [x] Added select browser to run
 - [x] Added check between offline and online mode
 - [x] Added a message for the user about missing models and how to download manually
-
-### Update 2.0.0
-Will there be a v2 version? Yes!
-
-Unlike the familiar Wunjo AI v1, the upcoming v2 will not merely be an update; it's a standalone version, signaling parallel development alongside v1 and introducing a new realm of possibilities.
-
-While v1 was designed as a user-friendly application, simplifying processes like creating deepfakes and speech synthesis into single-click actions with minimal entry barriers, v2 is envisioned as a professional-grade editor, fostering limitless creativity.
-
-In Wunjo v2, users will experience unparalleled freedom, being able to craft their own Node bundles, saving and loading them effortlessly.
-
-A some screenshots showcasing current developing progress.
-
-<div align="center">
-  <table>
-  <tr>
-    <th>Node logical</th>
-    <th>Menu</th>
-  </tr>
-  <tr align="center">
-    <td><img src="example/dev/update_node.gif" alt="video" width="350"></td>
-    <td><img src="example/dev/update_menu.gif" alt="video" width="350"></td>
-  </tr>
-</table>
-</div>
-
-For more insights into the progress of Wunjo V2's development, join our community at [Blog](https://t.me/s/wladblog) on Telegram. Stay tuned for sneak peeks!
 
 <!-- VIDEO -->
 ## Video
