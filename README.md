@@ -34,7 +34,7 @@
 <b>Hey there!</b> Your <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project">support</a> means the world to me and plays a crucial role in bringing the new update to life faster and motivation to improve features, publicate new version and integrate improve clone voice, etc. Spread the word about the project, invite your friends to join to me, subscribe to Wunjo project and social media <a href="https://wladradchenko.ru/?en">wladradchenko</a> channels or Telegram wladblog, and let's make this journey even more exciting together. Thank you for being part of the community. Follow the news so you don't miss anything. See you soon in update v2!
 
 <details>
-<summary>What is update?</summary>
+<summary><a>What is update?</a></summary>
   
 <div align="center">
   <table>
