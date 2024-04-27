@@ -39,9 +39,11 @@
   <table>
   <tr>
     <th>Первый взгляд из YouTube!</th>
+    <th>Обзор новой версии</th>
   </tr>
   <tr align="center">
     <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="700"></a></td>
+    <td><a href="https://youtu.be/-MGow5zCZUQ?si=msVDNhIPruBtg9ah"><img src="example/thumbnail/update_v2_ru.png" alt="video" width="700"></a></td>
   </tr>
 </table>
 </div>
