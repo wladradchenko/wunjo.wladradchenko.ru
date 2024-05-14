@@ -35,7 +35,7 @@
 
 ### Available now
 
-<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download.
+<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download. <b>Community Edition (CE)</b> will be available soon.
 
 <b>And if you wanna help to project, you can do:</b> 
 <ul>
