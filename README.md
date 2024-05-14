@@ -33,6 +33,10 @@
 
 <b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement drives me to enhance features, release new versions, for example integrate improved voice cloning, among other exciting advancements.
 
+### Available now
+
+<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download.
+
 <b>And if you wanna help to project, you can do:</b> 
 <ul>
   <li>Spread the Word: Share the project with your friends and invite them to join our community.</li>
