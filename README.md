@@ -12,10 +12,10 @@
 <br />
 <div align="center">
   <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
-    <img src="example/robot.gif" alt="Logo" width="165" height="165">
+    <img src="https://wunjo.online/static/basic/icon/round/logo-512.png" alt="Logo" width="165" height="165">
   </a>
 
-  <h3 align="center">Wunjo AI: Advanced Speech & Deepfake Neural Network Tool</h3>
+  <h3 align="center">Wunjo Community Edition (CE)</h3>
 
   <p align="center">
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Documentation</a>
@@ -31,112 +31,102 @@
 <!-- WUNJO V2 -->
 ## Big update Wunjo v2
 
-<b>Hey there!</b> Your <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project">support</a> means the world to me and plays a crucial role in bringing the new update to life faster and motivation to improve features, publicate new version and integrate improve clone voice, etc. Spread the word about the project, invite your friends to join to me, subscribe to Wunjo project and social media <a href="https://wladradchenko.ru/?en">wladradchenko</a> channels or Telegram wladblog, and let's make this journey even more exciting together. Thank you for being part of the community. Follow the news so you don't miss anything. See you soon in update v2!
+<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement drives me to enhance features, release new versions, for example integrate improved voice cloning, among other exciting advancements.
+
+<b>And if you wanna help to project, you can do:</b> 
+<ul>
+  <li>Spread the Word: Share the project with your friends and invite them to join our community.</li>
+  <li>Stay Connected: Subscribe to the Wunjo project on GitHub and follow me on social media. You can find me by <a href="https://www.youtube.com/@wladradchenko">wladradchenko</a> in social media and <a href="https://t.me/wladblog">wladblog</a> in Telegram.</li>
+  <li><a href="https://boosty.to/wunjo">Support on Boosty</a>: Your support on Boosty will help determine which features from the Professional version will migrate to the CE.</li>
+</ul>
 
 <details>
-<summary>What is update? Open this list ot see details and first look in YouTube.</summary>
+<summary>What is update? Open this list to see full review on YouTube.</summary>
   
 <div align="center">
   <table>
   <tr>
-    <th>First look on YouTube!</th>
-    <th>Review update</th>
+    <th>Review</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="700"></a></td>
-    <td><a href="https://youtu.be/-MGow5zCZUQ?si=msVDNhIPruBtg9ah"><img src="example/thumbnail/update_v2_en.png" alt="video" width="700"></a></td>
+    <td><a href="https://youtu.be/-MGow5zCZUQ?si=msVDNhIPruBtg9ah"><img src="example/thumbnail/update_v2.png" alt="video" width="500"></a></td>
   </tr>
 </table>
 </div>
-
-### Update
-
-- [x] Completely redesigned interface for desktop and mobile devices, from ground zero.
-- [x] Enhanced performance with simultaneous task handling, stability, and faster processing.
-- [x] Improved face swap functionality now supports multiple face swap at different timings via API.
-- [x] Introducing generator of non-existent people face.
-- [x] Deepfake analyzer added to discern authentic content from manipulated media.
-- [x] Enhanced lip sync for smoother animations and elimination of chin defects.
-- [x] Real-time mask selection for seamless editing experience.
-- [x] Added select area to remove text.
-- [x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
-- [x] Custom file manager introduced for efficient file management within the application.
-- [x] Improved interaction with neural network models, including seamless downloading from the internet.
-- [x] Easy switch from client to server application and back.
-- [x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
-- [x] Internal tips provided for optimizing content quality.
-- [x] Smart generator of prompts for video and object restyling.
 
 </details>
 
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Unlock the unparalleled capabilities of neural networks with Wunjo AI. Whether you're delving into speech synthesis, crafting deepfake animations, drawing Stable Diffusion video by text prompt or video making, Wunjo AI has got you covered.
+Wunjo harnesses the power of neural networks to provide cutting-edge solutions in speech synthesis, voice cloning, content restyling, and deepfake animations. Official website <a href="https://wunjo.online">wunjo.online</a>.
 
-**Key Features:**
+<div align="center">
+  <table>
+  <tr>
+    <th>Try it now</th>
+  </tr>
+  <tr align="center">
+    <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
+  </tr>
+</table>
+</div>
 
-- **Speech Synthesis:** Effortlessly convert text into human-like speech.
-- **Voice Cloning:** Clone voices from provided audio files or directly record your voice within the app for real-time cloning.
-- **Multilingual Support:** Currently supports English, Russian, Chinese for voice cloning (from any language audio) and English, Russian synthesis, you can also offer your language for voice cloning. Multilanguage speech by one text.
-- **Real-time Speech Recognition:** Dictate text and get instant transcriptions. An efficient tool for hands-free content creation.
-- **Multidialogue Creation:** Craft multi-dialogues using unlimited characters with distinct voice profiles.
-- **Audio processing** Speech enhancement and separating vocals and music.
-- **Video-to-Video by Text Prompt:**
-  - Reshape videos with by text prompt with difference models of Stable Diffusion. Let generative neural networks craft a new visual narrative.
-  - Change individual objects in a video by text prompt with one click, changing them throughout the video with unique text queries.
-  - Preserve specific objects without change by using the «pass» keyword.
-  - Change video style by changed img2img frame,
-- **Deepfake Animation:**
-  - Animate faces using just one photo combined with audio.
-  - Achieve precise lip syncing with your audio using our deepfake lips feature.
-  - Effortlessly swap faces in videos, GIFs, and photos using just a single photograph with our "Face Swap" feature.
-  - Experimental feature. Change the emotions of a person in the video, with the help of a text description.
-- **AI Retouch Tool:** Elevate your videos by removing unwanted objects or refining the quality of your deepfakes. Automatic removal of animated text.
-- **Automatic Segmentation Mask:** Select any object at any time period and get a storyboard of the selected object with a transparent or colored background.
+<details>
+<summary><b>Open list to see more details.</b></summary>
 
-**Applications:**
-From voiceovers in commercials to character voicing in games, from audiobook narrations to fun deepfake projects, Wunjo AI offers endless possibilities and all is free and local on your device.
+In <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases">version 1.6</a>, Wunjo supports multiple languages for voice cloning and speech synthesis, TTS model training, real-time speech recognition, audio enhancement, a multi-language interface, and the use of the "pass" keyword in the video-to-video feature.
 
-**Why Choose Wunjo AI?:**
+The new version 2.0 introduces a completely redesigned interface, enhanced performance, improved face swap functionality, a generator for non-existent people’s faces, and a deepfake analyzer. It also includes improvements in lip sync, content enhancement, object, text, and background removal, as well as content and component restyling using text prompts. Additionally, public links enable community creation and collaboration.
+
+Future updates will reintroduce and enhance the missing audio functionalities from version 1.6, making them even better.
+
+Available as both a free Community Edition and a subscription-based Professional Edition on <a href="https://wunjo.online/pricing">wunjo.online</a>, Wunjo caters to a wide range of users, from beginners to professionals, ensuring privacy by operating locally on your device.
+
+**Why Choose Wunjo Community Edition?**
 
 - **All-in-One:** A comprehensive tool catering to both your voice and visual AI needs.
 - **User-friendly:** Designed for all, from beginners to professionals.
 - **Privacy First:** Functions locally on your desktop, ensuring your data remains private.
 - **Open-source & Free:** Benefit from community-driven enhancements and enjoy the app without any cost.
 
-Step into the future of AI-powered creativity with Wunjo AI.
+**Why Choose Wunjo Professional?**
+
+- **More features:** First access to updates, additional and more advanced features.
+- **Public links:** Host your own server (PC) application accessible from anywhere in the world.
+- **Unlimited performance:** Process multiple tasks simultaneously to increase overall productivity.
+
+Step into the future of AI-powered creativity with Wunjo.
+</details>
 
 <!-- FEATURES -->
 ## Setup
 
 Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html).
 
-For detailed instructions about setup Wunjo AI from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
+For detailed instructions about setup Wunjo CE from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
+
+<div align="center">
+  <table>
+  <tr>
+    <th>How build from code on Windows?</th>
+  </tr>
+  <tr align="center">
+    <td><a href="https://youtu.be/fucxKhX7n4E"><img src="example/thumbnail/how_install.png" alt="video" width="500"></a></td>
+  </tr>
+</table>
+</div>
 
 <!-- DOWNLOAD -->
-You will find on [website](https://wladradchenko.ru/wunjo) official installer or portable versions.
-
-## Install packets
-
-### [Ubuntu / Debian v1.6 (GPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/linux/wunjo_1.6.2.deb)
-
-For detailed instructions about install Wunjo AI on [Ubuntu / Debian OS](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-ubuntu) from installer
-
-### MacOS v1.6 (CPU version)
-
-Due to the fact that the author of the project does not have an Apple license, there is currently no way to create an official installer.
-
-### [Windows v1.6 (CPU version)](https://wladradchenko.ru/static/wunjo.wladradchenko.ru/build/windows/wunjo_1.6.2.msi)
-
-For detailed instructions about install Wunjo AI on [Windows](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#installation-on-windows) from installer
-
-Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-use-the-GPU-in-the-application) on Windows.
+You will find on [wunjo.onnline](https://wunjo.online) official installers on Wundows/Ubuntu or portable versions 1.6 and 2.0.
 
 <!-- EXAMPLE -->
-## Example
+## Examples
 
-### Speech synthesis and voice cloning
+<b>Open list to see details about requirements and examples.</b>
+
+<details>
+<summary>1. Speech synthesis and voice cloning</summary>
 
 - [Russian synthesized voice from text](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [English voice cloned from previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
@@ -145,8 +135,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
 - [Russian audio song](https://soundcloud.com/vladislav-radchenko-234338135/kotletki-s-pyureshkoy-mp3storecc?si=b1f80ace3216458e8f40ea757388b08d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Russian vocal extract from audio](https://soundcloud.com/vladislav-radchenko-234338135/vocals?si=91b0d2e903204f73b5f3133c0a3a6d7f&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Russian clone voice from audio](https://soundcloud.com/vladislav-radchenko-234338135/russian-clone-voice-from-song-wunjo-ai-161?si=2c4e6929313346eeaeb95da849e8e4d7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+</details>
 
-### Face animation from image src
+<details>
+<summary>2. Face animation from image src</summary>
 
 <div align="center">
   <table>
@@ -160,8 +152,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
   </tr>
 </table>
 </div>
+</details>
 
-### Mouth animation from video src
+<details>
+<summary>3. Mouth animation from video src</summary>
 
 <div align="center">
   <table>
@@ -177,8 +171,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
   </tr>
 </table>
 </div>
+</details>
 
-### Face swap by one photo
+<details>
+<summary>4. Face swap by one photo</summary>
 
 <div align="center">
   <table>
@@ -194,8 +190,10 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
   </tr>
 </table>
 </div>
+</details>
 
-### Remove object by Retouch AI
+<details>
+<summary>5. Remove object</summary>
 
 <div align="center">
   <table>
@@ -204,28 +202,15 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
     <th>Remove object</th>
   </tr>
   <tr align="center">
-    <td><img src="example/retouch/remove_object_original.gif" alt="original" width="480" height="270"></td>
-    <td><img src="example/retouch/remove_object_retouch.gif" alt="original" width="480" height="270"></td>
+    <td><img src="example/remove/remove_object_original.gif" alt="original" width="480" height="270"></td>
+    <td><img src="example/remove/remove_object_retouch.gif" alt="original" width="480" height="270"></td>
   </tr>
 </table>
 </div>
+</details>
 
-### Retouch AI to improve quality of deepfake
-
-<div align="center">
-  <table>
-  <tr>
-    <th>Defective lines on the chins after animation lip</th>
-    <th>Retouch lines on the chins + Face swap</th>
-  </tr>
-  <tr align="center">
-    <td><img src="example/retouch/speech_wav2lip.gif" alt="original" width="480" height="270"></td>
-    <td><img src="example/retouch/speech_result.gif" alt="original" width="480" height="270"></td>
-  </tr>
-</table>
-</div>
-
-### Get segmentation mask by one click
+<details>
+<summary>6. Get segmentation mask by one click</summary>
 
 <div align="center">
   <table>
@@ -234,13 +219,15 @@ Read in Wunjo AI documentation how [use GPU](https://github.com/wladradchenko/wu
     <th>Mask</th>
   </tr>
   <tr align="center">
-    <td><img src="example/retouch/segmentation_original.gif" alt="original" width="360" height="360"></td>
-    <td><img src="example/retouch/segmentstion_mask.gif" alt="original" width="360" height="360"></td>
+    <td><img src="example/remove/segmentation_original.gif" alt="original" width="360" height="360"></td>
+    <td><img src="example/remove/segmentstion_mask.gif" alt="original" width="360" height="360"></td>
   </tr>
 </table>
 </div>
+</details>
 
-### Video-to-Video by Text Prompt (Only for GPU)
+<details>
+<summary>7. Video-to-Video by Text Prompt (Only for GPU)</summary>
 
 The __higher the video resolution__, __the better the quality__ of the drawn frames.
 
@@ -308,10 +295,12 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
   </tr>
 </table>
 </div>
+</details>
 
-### Emotion deepfake [Experimental]
+<details>
+<summary>8. Emotion deepfake [Experimental]</summary>
 
-This is an experimental feature that is under development, but you can take a look at some of the work right now in Wunjo AI.
+This is an experimental feature that is under development, but you can take a look at some of the work right now in Wunjo CE.
 
 <div align="center">
   <table>
@@ -337,84 +326,61 @@ This is an experimental feature that is under development, but you can take a lo
   </tr>
 </table>
 </div>
+</details>
 
 <!-- EXAMPLE -->
 
-<!-- TRANSLATION -->
-## Language
-
-The application comes with built-in support for the following languages: English, Russian, Chinese, Portuguese, and Korean.
-
-If you wish to add a new language:
-
-Navigate to `.wunjo/settings/settings.json`.
-Add your desired language in the format: `"default_language": {"name": "code"}`.
-To find the appropriate code for your language, please refer to the [Google Cloud Translate Language Codes](https://cloud.google.com/translate/docs/languages).
-<!-- TRANSLATION -->
-
 <!-- UPDATE -->
 
-## Update
+## Updates
 
-### Update 1.6.0
-- [x] Improved and automated remove object from image or video
-- [x] Improved edit video element
-- [x] Added auto segmentation mask with save
-- [x] Added Video2Video with ControlNet by text prompt tool
-- [x] Added InpaintVideoMask2Video with ControlNet by text prompt tool
-- [x] Optimized using memory for face swapping for long video
-- [x] Optimized using memory for retouch and remove object for long video
+<details>
+<summary>Update 2.0.0</summary>
 
-### Update 1.6.1
-- [x] Fix bug with enhancer. Improve enhancer for video and face. Added enhancer for drawing video
-- [x] Improved vocoder for voice cloning
-- [x] Added cloning speed speech
-- [x] Added model to get background sound for deepfakes and clear voice without background noise
-- [x] Added feature to get background noise from audio or video 
-- [x] Improved encoder for voice cloning
-- [x] ~~Imitate voice [emotions](https://github.com/liuhaozhe6788/voice-cloning-collab/tree/add_emotion)~~ and improved voice cloning quality.
-- [x] Reducing the amount of RAM used for mouth animation and improving video quality
-- [x] Added speech enhancement
-- [x] ~~Music generation~~
-- [x] Added module a video style change by images
-- [x] Multilanguage speech by one text
-- [x] Added auto remove text from video or image with auto create text mask
+- [x] Completely redesigned interface for desktop and mobile devices, from ground zero.
+- [x] Enhanced performance with simultaneous task handling, stability, and faster processing.
+- [x] Improved face swap functionality now supports multiple face swap at different timings via API.
+- [x] Introducing generator of non-existent people face.
+- [x] Deepfake analyzer added to discern authentic content from manipulated media.
+- [x] Enhanced lip sync for smoother animations and elimination of chin defects.
+- [x] Real-time mask selection for seamless editing experience.
+- [x] Added select area to remove text.
+- [x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
+- [x] Custom file manager introduced for efficient file management within the application.
+- [x] Improved interaction with neural network models, including seamless downloading from the internet.
+- [x] Easy switch from client to server application and back.
+- [x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
+- [x] Internal tips provided for optimizing content quality.
+- [x] Smart generator of prompts for video and object restyling.
 
-### Update 1.6.2
-- [x] Custom browser for WebGUI
-- [x] Added select browser to run
-- [x] Added check between offline and online mode
-- [x] Added a message for the user about missing models and how to download manually
+</details>
 
-<!-- VIDEO -->
-## Video
+<details>
+<summary>List features updates</summary>
 
-<div align="center">
-  <table>
-  <tr>
-    <th>Review</th>
-    <th>How build on Windows?</th>
-  </tr>
-  <tr align="center">
-    <td><a href="https://youtu.be/4EfozPBMwXI"><img src="example/thumbnail/update.gif" alt="video" width="350"></a></td>
-    <td><a href="https://youtu.be/00gzOC_cw9Y"><img src="example/thumbnail/how_install.gif" alt="video" width="350"></a></td>
-  </tr>
-</table>
-</div>
+- [ ] Public link exchange for online users.
+- [ ] Control restyling video and its components.
+- [ ] Multi language clone voice.
+- [ ] Improve audio separator.
+- [ ] Multi language interface.
+- [ ] Improve user profile.
+- [ ] Improve processing content status.
+
+</details>
 
 <!-- DONAT -->
 ## Support the Project
 
-You can support the author of the project in the development of his creative ideas, or just treat him to [a cup of coffee](https://www.buymeacoffee.com/wladradchenko) in USD or [a slice of pizza](https://wladradchenko.ru/donat) in RUB. There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
+You can support the author of the project in the development of his creative ideas on <a href="https://boosty.to/wunjo">Boosty</a> or <a href="https://wladradchenko.ru/donat">CloudTips</a>. Thanks to Boosty, you will have the opportunity to use your voice to choose which functions from the Professional version will appear in the Community Edition in new updates. There are other ways to support the development of the project, more details on [page](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project).
 
 <div align="center">
   <table>
   <tr>
-    <th>Buy a cup of coffee in USD</th>
-    <th>Buy a slice of pizza in RUB</th>
+    <th>Boosty</th>
+    <th>CloudTips</th>
   </tr>
   <tr align="center">
-    <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/bc6eefa2-705f-4307-89fd-85d96ec29917" alt="pizza" width="250"></td>
+    <td><img src="example/wunjo-donate.png" alt="pizza" width="250"></td>
     <td><img src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/assets/56233697/acc80acd-0e39-4476-88db-0a10f2098e25" alt="coffee" width="250"></td>
   </tr>
 </table>
@@ -441,7 +407,7 @@ Email: [i@wladradchenko.ru](i@wladradchenko.ru)
 
 Project: [https://github.com/wladradchenko/wunjo.wladradchenko.ru](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 
-Web site: [wladradchenko.ru/wunjo](https://wladradchenko.ru/wunjo)
+Web site: [wunjo.online](https://wunjo.online)
 
 <!-- PREMISE -->
 ## Premise
@@ -451,7 +417,7 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 <!-- CREDITS -->
 ## Credits
 
-Wunjo AI is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo AI:
+Wunjo is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo:
 
 - **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and improved [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) with [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
@@ -461,6 +427,6 @@ Wunjo AI is built upon the remarkable work of various open-source projects. Each
 - **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)
 - **AI Art Generation:** Adaptation of [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) for creative video AI-driven art
 
-I extend my deepest gratitude to the original contributors of these technologies. Their groundbreaking work has been instrumental in advancing the capabilities of Wunjo AI. For the persistent storage and versioning of the models I have personally trained, I utilize the [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). If you're interested in contributing to Wunjo AI, especially in the area of voice cloning for new languages, please feel free to propose your models or reach out for collaboration via [GitHub Discussions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) or the [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
+I extend my deepest gratitude to the original contributors of these technologies. Their groundbreaking work has been instrumental in advancing the capabilities of Wunjo CE. For the persistent storage and versioning of the models I have personally trained, I utilize the [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). If you're interested in contributing to Wunjo CE, especially in the area of voice cloning for new languages, please feel free to propose your models or reach out for collaboration via [GitHub Discussions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) or the [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 
 <p align="right">[<a href="#top">to top</a>]</p>

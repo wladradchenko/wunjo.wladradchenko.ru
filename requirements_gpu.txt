@@ -43,3 +43,4 @@ denoiser
 noisereduce
 openunmix
 torchlibrosa
+torchmetrics==1.2.0
