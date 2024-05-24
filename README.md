@@ -71,7 +71,7 @@ Wunjo harnesses the power of neural networks to provide cutting-edge solutions i
     <th>Try it now</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
+    <td><a href="https://youtu.be/xWhEnoO5N7A"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
   </tr>
 </table>
 </div>
@@ -131,6 +131,8 @@ You will find on [wunjo.onnline](https://wunjo.online) official installers on Wu
 
 <details>
 <summary>1. Speech synthesis and voice cloning</summary>
+
+Available on CE 1.6.
 
 - [Russian synthesized voice from text](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [English voice cloned from previously synthesized Russian voice](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
@@ -304,7 +306,7 @@ Additionally, you can use your custom stable diffusion model to redraw video or 
 <details>
 <summary>8. Emotion deepfake [Experimental]</summary>
 
-This is an experimental feature that is under development, but you can take a look at some of the work right now in Wunjo CE.
+This is an experimental feature that is under development, but you can take a look at some of the work right now in Wunjo CE 1.6.
 
 <div align="center">
   <table>

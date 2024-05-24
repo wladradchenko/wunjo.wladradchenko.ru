@@ -1,5 +1,5 @@
 {
-    "version": "1.6.2",
+    "version": "2.0.0",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -73,6 +73,25 @@
           "Added select browser to run",
           "Added check between offline and online mode",
           "Added a message for the user about missing models and how to download manually"
+        ],
+        "2.0.0": [
+          "New generation of Wunjo v2",
+          "Big update features https://youtu.be/-MGow5zCZUQ",
+          "Completely redesigned interface for desktop and mobile devices",
+          "Enhanced performance with simultaneous task handling, stability, and faster processing",
+          "Improved face swap functionality now supports multiple face swap at different timings via API",
+          "Introducing generator of non-existent people face",
+          "Deepfake analyzer added to discern authentic content from manipulated media",
+          "Enhanced lip sync for smoother animations and elimination of chin defects",
+          "Real-time mask selection for seamless editing experience",
+          "Added select area to remove text",
+          "Now you can create chroma key video",
+          "Custom file manager introduced for efficient file management within the application",
+          "Improved interaction with neural network models, including seamless downloading from the internet",
+          "Easy switch from client to server application and back",
+          "Multi-user support with customizable limits on simultaneous tasks and memory usage",
+          "Internal tips provided for optimizing content quality",
+          "Smart generator of prompts for video and object restyling"
         ]
     }
 }

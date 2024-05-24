@@ -71,7 +71,7 @@ Wunjo использует возможности нейронных сетей 
     <th>Попробуйте прямо сейчас</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/ODhp6Bmaykk"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
+    <td><a href="https://youtu.be/xWhEnoO5N7A"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
   </tr>
 </table>
 </div>
@@ -131,6 +131,8 @@ Wunjo использует возможности нейронных сетей 
 
 <details>
 <summary>1. Синтез речи и клонирование голоса</summary>
+
+Доступно в Wunjo CE 1.6.
 
 - [Русский синтезированный голос из текста](https://soundcloud.com/vladislav-radchenko-234338135/russian-voice-text-synthesis?si=ebfc8ea75d0f4c56a3012ca4fdfb6ab5&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 - [Английский голос клонированный из ранее синтезированного русского голоса](https://soundcloud.com/vladislav-radchenko-234338135/english-voice-clone?si=057718ee0e714e79b2023ce2e37dfb39&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
@@ -307,7 +309,7 @@ __Большее разрешение видео__, __дает лучше кач
 <details>
 <summary>8. Дипфейк эмоций [Experimental]</summary>
 
-Это экспериментальная функция, которая находится в стадии разработки, но вы можете прямо сейчас взглянуть на некоторый ее функционал в Wunjo.
+Это экспериментальная функция, которая находится в стадии разработки, но вы можете прямо сейчас взглянуть на некоторый ее функционал в Wunjo CE 1.6.
 
 <div align="center">
   <table>
