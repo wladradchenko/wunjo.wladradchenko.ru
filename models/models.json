@@ -39,14 +39,25 @@
     "realesr-animevideov3.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth"
   },
   "diffusion": {
-      "control_sd15_canny.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_canny.pth",
-      "control_sd15_hed.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_hed.pth",
-      "gmflow_sintel-0c07dcb3.pth": "https://huggingface.co/PKUWilliamYang/Rerender/resolve/main/models/gmflow_sintel-0c07dcb3.pth",
-      "vae-ft-mse-840000-ema-pruned.ckpt": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt",
-      "ControlNetHED.pth": "https://huggingface.co/lllyasviel/Annotators/resolve/main/ControlNetHED.pth"
+    "control_sd15_canny.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_canny.pth",
+    "control_sd15_hed.pth": "https://huggingface.co/lllyasviel/ControlNet/resolve/main/models/control_sd15_hed.pth",
+    "gmflow_sintel-0c07dcb3.pth": "https://huggingface.co/PKUWilliamYang/Rerender/resolve/main/models/gmflow_sintel-0c07dcb3.pth",
+    "vae-ft-mse-840000-ema-pruned.ckpt": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt",
+    "ControlNetHED.pth": "https://huggingface.co/lllyasviel/Annotators/resolve/main/ControlNetHED.pth"
   },
   "ebsynth": {
-      "EbSynth-Beta-Win.zip": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/EbSynth-Beta-Win.zip",
-      "ebsynth_linux_cu118": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/ebsynth_linux_cu118"
+    "EbSynth-Beta-Win.zip": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/EbSynth-Beta-Win.zip",
+    "ebsynth_linux_cu118": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/ebsynth/ebsynth_linux_cu118"
+  },
+  "speech": {
+    "vocals-bccbd9aa.pth": "https://zenodo.org/api/files/f8209c3e-ba60-48cf-8e79-71ae65beca61/vocals-bccbd9aa.pth?download=1",
+    "signature.pt": "https://huggingface.co/M4869/WavMark/resolve/main/step59000_snr39.99_pesq4.35_BERP_none0.30_mean1.81_std1.81.model.pkl?download=true",
+    "converter.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/clone/converter.pth?download=true",
+    "config_converter.json": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/clone/config.json?download=true"
+  },
+  "separator": {
+    "MDX_Inst_HQ_3.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_Inst_HQ_3.onnx?download=true",
+    "MDX_Inst_Main.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_Inst_Main.onnx?download=true",
+    "MDX_KARA_2.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_KARA_2.onnx?download=true"
   }
 }
