@@ -1,5 +1,5 @@
 {
-    "version": "2.0.0",
+    "version": "2.0.2",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -92,6 +92,14 @@
           "Multi-user support with customizable limits on simultaneous tasks and memory usage",
           "Internal tips provided for optimizing content quality",
           "Smart generator of prompts for video and object restyling"
+        ],
+        "2.0.1": [
+          "Fix bugs"
+        ],
+        "2.0.2": [
+          "Added functionality to clone voice in any language from text and audio",
+          "Improved audio separator to remove noise before clone voice",
+          "Enhanced processing speed"
         ]
     }
 }

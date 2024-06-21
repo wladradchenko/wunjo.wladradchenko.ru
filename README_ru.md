@@ -6,7 +6,7 @@
 [![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 
-<p align="right">[<a href="README.md">EN</a>]</p>
+<p align="right">[<a href="README.md">EN v2.0</a>] [see <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/v1.6">v1.6</a>]</p>
 <div id="top"></div>
 
 <br />
@@ -35,7 +35,7 @@
 
 ### Уже доступно
 
-<b>Профессиональная (Pro) версия</b> доступна для скачивания <a href="https://wunjo.online">wunjo.online</a>. <b>Версия для сообщества</b> будет доступна позже.
+<b>Профессиональная (Pro) версия</b> доступна для скачивания <a href="https://wunjo.online">wunjo.online</a>. <b>Версия для сообщества</b> доступна на GitHub с голосованием за функционал на <a href="https://boosty.to/wunjo">Boosty</a>.
 
 <b>Если вы задались вопросом, какая помощь может потребоваться для проекта, тогда:</b>
 
@@ -71,7 +71,7 @@ Wunjo использует возможности нейронных сетей 
     <th>Попробуйте прямо сейчас</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/xWhEnoO5N7A"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
+    <td><a href="https://wunjo.online/static/login/title.mp4"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
   </tr>
 </table>
 </div>
@@ -79,11 +79,10 @@ Wunjo использует возможности нейронных сетей 
 <details>
 <summary><b>Откройте список, чтобы увидеть больше подробностей.</b></summary>
 
-В <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases">версии 1.6</a> Wunjo поддерживает несколько языков для клонирования голосов и синтеза речи, обучение моделей TTS, распознавание речи в реальном времени, улучшение аудио, многоязычный интерфейс и использование ключевого слова "pass" в функции video-to-video.
+В <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases">версии 1.6</a> Wunjo Community Edition поддерживает три языка для клонирования голосов и синтеза речи, обучение моделей TTS, улучшение аудио, многоязычный интерфейс и использование ключевого слова "pass" в функции video-to-video.
 
 Новая версия 2.0 представляет полностью переработанный интерфейс, улучшенную производительность, усовершенствованную функцию смены лиц, генератор лиц несуществующих людей и анализатор deepfake. Также включены улучшения в синхронизацию губ, улучшение контента, удаление объектов, текста и фона, а также изменение и переработка контента и его компонентов с использованием текстовых подсказок. Дополнительно, публичные ссылки позволяют вам пользоваться и делиться ссылками на развернутое приложение с вашими друзьями.
-
-Будущие обновления будут включать возврат и улучшение отсутствующих аудиофункций из версии 1.6, делая их еще лучше.
+Для работы с аудио контентом улучшенное разделение аудио и <b>клонирование речи из текста и аудио на любой язык</b>.
 
 Доступно как в бесплатной Community Edition, так и в подписной Professional Edition на <a href="https://wunjo.online/pricing">wunjo.online</a>, Wunjo подходит для широкого круга пользователей, от начинающих до профессионалов, обеспечивая конфиденциальность за счет работы локально на вашем устройстве.
 
@@ -96,7 +95,7 @@ Wunjo использует возможности нейронных сетей 
 
 **Почему стоит выбрать Wunjo Professional?**
 
-- **Больше функций:** Первый доступ к обновлениям, дополнительные и более продвинутые функции.
+- **Больше функций:** Первый доступ к обновлениям, дополнительные и более продвинутые функции, такие как рестайлинг и клонирования речи.
 - **Публичные ссылки:** Разместите свое собственное серверное (ПК) приложение, доступное из любой точки мира.
 - **Неограниченная производительность:** Обрабатывайте несколько задач одновременно для увеличения общей производительности.
 
@@ -365,15 +364,30 @@ __Большее разрешение видео__, __дает лучше кач
 </details>
 
 <details>
+<summary>Обновление 2.0.1</summary>
+
+- [x] Прочие улучшения.
+
+</details>
+
+<details>
+<summary>Обновление 2.0.2</summary>
+
+- [x] Добавлено клонирование речи на любой язык из текста и аудио.
+- [x] Улучшен разделитель речи для очистки голоса от шума и отделение вокала от музыки.
+- [x] Улучшена производительность.
+
+</details>
+
+<details>
 <summary>Обзор запланированных обновлений</summary>
 
 - [ ] Биржа публичных ссылок.
 - [ ] Полный контроль над преобразованием контента и его компонента текстовыми подсказками.
-- [ ] Клонирование голоса на мульти языки.
-- [ ] Улучшение разделения звуков.
 - [ ] Добавление новых языков в интерфейс.
 - [ ] Улучшение профиля пользователя.
 - [ ] Улучшение статуса готовности контента.
+- [ ] Создание звуковых эффектов по видео и тексту.
 
 </details>
 
@@ -430,9 +444,7 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 
 Wunjo создан на основе замечательных результатов различных проектов с открытым исходным кодом. Каждый интегрированный компонент отражает стремление к улучшению и адаптации существующих технологий в рамках совместной разработки с открытым исходным кодом. В списке ниже представлены проекты, которые были адаптированы и улучшены для включения в Wunjo:
 
-- **Синтез речи и клонирование голоса:** Адаптированные версии [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow) и улучшена версия [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) от первоначального решения с добавлением [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **Пользовательский интерфейс и упаковка:** Реализация [Flask UI](https://github.com/ClimenteA/flaskwebgui) и [BeeWare](https://beeware.org/project/projects/tools/briefcase/ )
-- **Обработка звука:** Адаптированная версия [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) для разделения звука
 - **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib)
 - **Улучшение изображений и видео:** Адаптированная версия [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) для улучшения качества видео и изображений
 - **Обработка и сегментация видео:** Адаптации [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) и обновленная реализация [Ebsynth](https://github.com/SingleZombie/ebsynth/tree/02ec8c4e4d4a568057363ae8b8f8bb8f7e4898c2) 

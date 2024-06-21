@@ -1,0 +1,71 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Remove background{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
+<!-- onnxruntime-web -->
+<script src="{{ url_for('static', filename='modules/js/ort/ort.min.js') }}"></script>
+<!-- numpy -->
+<script src="/static/modules/js/numpy.js"></script>
+<!--sam-->
+<script src="/static/modules/js/sam/init.min.js" type="module"></script>
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<!--In order to see menu like freeze add in class sticky else remove sticky-->
+<div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
+    <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+        <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">Today</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 p-2 text-center"><i class="fa-regular fa-calendar"></i></button>
+    </div>
+</div>
+
+<div class="view-filter"></div>
+
+<div class="flex flex-col gap-10 pt-10">
+    <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div class="mb-[34px]"></div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<div class="footer-block px-4 pt-4 pb-5 md:border-t border-t-white border-opacity-[.15]"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const userContentId = {{ user_content_id|tojson|safe }};
+    const userFileTree = {{ user_file_tree|tojson|safe }};
+    const pageFileFormats = ["video", "image"];
+    let userFileFormats = pageFileFormats;
+    const moduleName = {{ folder_name|tojson|safe }};
+    const modelSAM = {{ model_sam|tojson|safe }};
+    const maxDurationToShow = {{ max_duration_sec|tojson|safe }};
+    // Set the maximum file size to read (in bytes)
+    const maxFileSize = {{ max_files_size|tojson|safe }};
+</script>
+<script>
+    function initScript() {
+        // Import and initialize the content script here
+        const scriptView = document.createElement('script');
+        scriptView.src = "/static/content/js/view.min.js";
+        document.body.appendChild(scriptView);
+        document.querySelector('.view-filter').appendChild(createViewFilter());
+
+        const scriptRemoveBackground = document.createElement('script');
+        scriptRemoveBackground.src = "/static/modules/js/remove.background.min.js";
+        document.body.appendChild(scriptRemoveBackground);
+
+        getModuleTaskEventWithIntervalImmediately();
+    }
+</script>
+{% endblock %}

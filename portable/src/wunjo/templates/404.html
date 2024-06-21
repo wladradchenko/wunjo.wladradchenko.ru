@@ -1,0 +1,95 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Page not found{% endblock %}
+
+{% block head %}
+<style>
+    .four1{
+        animation: swing ease-in-out 1.5s infinite alternate;
+        display: inline-block;
+        scale: 1.05;
+    }
+    .zero{
+        animation: swing2 ease-in-out 1.5s infinite alternate;
+        display: inline-block;
+        scale: 0.90;
+    }
+    .four2{
+        animation: swing3 ease-in-out 1.5s infinite alternate;
+        display: inline-block;
+        scale: 0.95;
+    }
+
+    @keyframes swing {
+        0% { transform: rotate(3deg); }
+        100% { transform: rotate(-3deg); }
+    }
+
+    @keyframes swing2 {
+        0% { transform: rotate(-3deg); }
+        100% { transform: rotate(3deg); }
+    }
+    @keyframes swing3 {
+        0% { transform: rotate(-3deg); }
+        100% { transform: rotate(8deg); }
+    }
+</style>
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<div class="absolute left-0 top-0 flex flex-col items-center justify-center w-full h-full">
+    <div class="flex flex-row">
+        <div class="group four1">
+            <svg class=" opacity-60 group-hover:opacity-100 md:w-[10.375rem] max-md:w-[100px] h-auto" viewBox="0 0 133 234" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(0.000000, -2.000000)" class="fill-dim-gray">
+                        <g transform="translate(0.000000, 2.000000)">
+                            <polygon points="72.5466868 198.372928 0 198.372928 0 166.947514 48.1896202 0 83.5942392 0 33.4376957 166.947514 72.5466868 166.947514 72.5466868 100.495856 105.984382 100.495856 105.984382 166.947514 132.046116 166.947514 132.046116 198.372928 105.984382 198.372928 105.984382 233.071823 72.5466868 233.071823"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div class="group zero">
+            <svg class=" opacity-60 group-hover:opacity-100 md:w-[10.375rem] max-md:w-[100px] h-auto" viewBox="0 0 148 237" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(-148.000000, 0.000000)">
+                        <g transform="translate(148.000000, 0.000000)">
+                        <path  class="fill-dim-gray" d="M0.961656046,50.0842541 C0.961656046,42.2278613 2.96423494,35.2445057 6.96945281,29.1339779 C10.9746707,23.0234501 16.3415821,17.7859334 23.0703481,13.4212707 C29.7991142,9.05660801 37.5691203,5.72860262 46.3805996,3.4371547 C55.1920789,1.14570677 64.4039418,0 74.0164647,0 C83.6289876,0 92.8408505,1.14570677 101.65233,3.4371547 C110.463809,5.72860262 118.233815,9.05660801 124.962581,13.4212707 C131.691347,17.7859334 137.058259,23.0234501 141.063477,29.1339779 C145.068694,35.2445057 147.071273,42.2278613 147.071273,50.0842541 L147.071273,186.915746 C147.071273,194.772139 145.068694,201.755494 141.063477,207.866022 C137.058259,213.97655 131.691347,219.214067 124.962581,223.578729 C118.233815,227.943392 110.463809,231.271397 101.65233,233.562845 C92.8408505,235.854293 83.6289876,237 74.0164647,237 C64.4039418,237 55.1920789,235.854293 46.3805996,233.562845 C37.5691203,231.271397 29.7991142,227.943392 23.0703481,223.578729 C16.3415821,219.214067 10.9746707,213.97655 6.96945281,207.866022 C2.96423494,201.755494 0.961656046,194.772139 0.961656046,186.915746 L0.961656046,50.0842541 Z M29.9573833,186.473826 C29.9573833,191.274955 39.7025876,201.314403 47.9147519,204.478783 C56.1269162,207.643164 61.046071,209.521702 73.9509006,209.521702 C86.8557302,209.521702 96.0430912,206.378605 104.255255,203.214225 C112.46742,200.049844 117.944418,191.274955 117.944418,186.473826 L117.944418,49.6423343 C117.944418,44.8412053 109.271767,36.8600273 101.059602,33.6956468 C92.847438,30.5312663 86.8557302,28.2586018 73.9509006,28.2586018 C61.046071,28.2586018 54.1320606,30.5312663 45.9198963,33.6956468 C37.707732,36.8600273 29.9573833,44.8412053 29.9573833,49.6423343 L29.9573833,186.473826 Z"></path>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div class="group four2">
+            <svg class=" opacity-60 group-hover:opacity-100 md:w-[10.375rem] max-md:w-[100px] h-auto" viewBox="0 0 133 234" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(0.000000, -2.000000)" class="fill-dim-gray">
+                        <g transform="translate(0.000000, 2.000000)">
+                            <polygon points="72.5466868 198.372928 0 198.372928 0 166.947514 48.1896202 0 83.5942392 0 33.4376957 166.947514 72.5466868 166.947514 72.5466868 100.495856 105.984382 100.495856 105.984382 166.947514 132.046116 166.947514 132.046116 198.372928 105.984382 198.372928 105.984382 233.071823 72.5466868 233.071823"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <div class="group">
+        <h1 class=" opacity-60 group-hover:opacity-100 mt-5 text-heading-2-mobile lg:text-heading-1 uppercase font-rubic-ex-ultra text-dim-gray">Page not found</h1>
+        <a class="hidden mt-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 hover:bg-accent-hover text-dark-background bg-accent-primary" purpose="link" href="/">Go to the App</a></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<script>
+    document.querySelector('#author').innerHTML = `<a href="https://github.com/wladradchenko">By wladradchenko</a> © ${new Date().getFullYear()}. All rights reserved`;
+</script>
+{% endblock %}

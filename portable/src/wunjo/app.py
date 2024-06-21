@@ -1,1234 +1,1626 @@
 import os
 import gc
 import sys
+import uuid
 import json
-
 import torch
-import subprocess
+import socket
+import shutil
+import base64
+import requests
+
+from time import sleep
+from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)  # remove msg
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, send_from_directory, url_for, jsonify
+from flask import Flask, render_template, request, send_from_directory, url_for, jsonify, redirect, session
 from flask_cors import CORS, cross_origin
-from flaskwebgui import FlaskUI
+from flaskwebgui import FlaskUI, kill_port, close_application
+from ipaddress import ip_address
+from apscheduler.schedulers.background import BackgroundScheduler
 
-from deepfake.inference import AnimationMouthTalk, FaceSwap, Retouch, MediaEdit, GetSegment
-try:
-    from diffusers.inference import Video2Video, create_diffusion_instruction
-    VIDEO2VIDEO_AVAILABLE = True
-    diffusion_models = create_diffusion_instruction()
-except ImportError:
-    VIDEO2VIDEO_AVAILABLE = False
-    diffusion_models = {}
-from speech.interface import TextToSpeech, VoiceCloneTranslate, AudioSeparatorVoice, SpeechEnhancement
-from speech.tts_models import load_voice_models, voice_names, file_voice_config, file_custom_voice_config, custom_voice_names
-from speech.rtvc_models import load_rtvc, rtvc_models_config
+from deepfake.inference import FaceSwap, Enhancement, SAMGetSegment, RemoveBackground, RemoveObject, LipSync, Analyser
+from speech.inference import Separator
+
 from backend.folders import (
-    MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CUSTOM_VOICE_FOLDER, CONTENT_FOLDER, CONTENT_MEDIA_EDIT_FOLDER,
-    CONTENT_AUDIO_SEPARATOR_FOLDER, CONTENT_DIFFUSER_FOLDER, CONTENT_RETOUCH_FOLDER, CONTENT_FACE_SWAP_FOLDER,
-    CONTENT_ANIMATION_TALK_FOLDER, CONTENT_SPEECH_FOLDER, CONTENT_SPEECH_ENHANCEMENT_FOLDER
+    MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CONTENT_FOLDER, CONTENT_REMOVE_OBJECT_FOLDER_NAME,
+    CONTENT_ENHANCEMENT_FOLDER_NAME, CONTENT_FACE_SWAP_FOLDER_NAME, CONTENT_AVATARS_FOLDER_NAME,
+    CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_LIP_SYNC_FOLDER_NAME, ALL_MODEL_FOLDER, CONTENT_ANALYSIS_NAME,
+    CONTENT_SEPARATOR_FOLDER_NAME
 )
-from backend.download import get_custom_browser
-from backend.translator import get_translate
+from backend.config import Settings, WEBGUI_PATH
 from backend.general_utils import (
-    get_version_app, set_settings, current_time, is_ffmpeg_installed, get_folder_size,
-    format_dir_time, clean_text_by_language, check_tmp_file_uploaded, get_utils_config
+    get_version_app, current_time, is_ffmpeg_installed, get_folder_size, lprint, get_vram_gb, get_ram_gb,
+    format_dir_time, check_tmp_file_uploaded, generate_file_tree, decrypted_val, decrypted_key
 )
-from backend.config import (
-    inspect_face_animation_config, inspect_mouth_animation_config, inspect_face_swap_config, inspect_retouch_config,
-    inspect_media_edit_config, inspect_diffusion_config, inspect_rtvc_config
-)
+
 import logging
 
+scheduler = BackgroundScheduler()
 app = Flask(__name__)
 cors = CORS(app)
+# TODO https://briefcase.readthedocs.io/en/stable/reference/configuration.html
+
+
+def set_available_port():
+    """Check if the given port is free (available)."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(("localhost", Settings.STATIC_PORT))
+        return Settings.STATIC_PORT
+    except OSError as e:
+        print(f"Static port {Settings.STATIC_PORT} is not free: {e}")
+        print(f"Using fallback port: {Settings.DYNAMIC_PORT}")
+        return Settings.DYNAMIC_PORT
+
+
 app.config["CORS_HEADERS"] = "Content-Type"
+app.config["SECRET_KEY"] = Settings.SECRET_KEY
 os.environ['DEBUG'] = 'False'  # str False or True
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
-app.config['SYNTHESIZE_STATUS'] = {"status_code": 200, "message": ""}
-app.config['SYNTHESIZE_RESULT'] = []
-app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # get segment result
-app.config['SEGMENT_ANYTHING_MODEL'] = {}  # load segment anything model to dynamically change
-app.config['RTVC_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
-app.config['TTS_LOADED_MODELS'] = {}  # in order to not load model again if it was loaded in prev synthesize (faster)
-app.config['USER_LANGUAGE'] = "en"
-app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 * 1024  # Set the limit to 10GB (adjust as needed)
+app.config['PORT'] = set_available_port() if not app.config['DEBUG'] else Settings.STATIC_PORT
+app.config['QUEUE_CPU'] = {}
+app.config["QUEUE_MODULE"] = {}
+app.config['SYNTHESIZE_STATUS'] = {}
+app.config['LOGIN_PAGE'] = os.environ.get('DEBUG', 'False') == 'True'
 
 logging.getLogger('werkzeug').disabled = True
 
 version_app = get_version_app()
 
+# CODE
+## 100 - Busy
+## 200 - OK
+## 300 - Warn
+## 404 - Error
+
 
 def clear_cache():
-    # empty cache before big gpu models
-    del app.config['SEGMENT_ANYTHING_MODEL'], app.config['RTVC_LOADED_MODELS'], app.config['TTS_LOADED_MODELS']
-    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}  # clear segment data
-    app.config['SEGMENT_ANYTHING_MODEL'], app.config['RTVC_LOADED_MODELS'], app.config['TTS_LOADED_MODELS'] = {}, {}, {}
     torch.cuda.empty_cache()
+    # TODO torch.cuda.ipc_collect()
     gc.collect()
 
 
-def get_avatars_static():
-    # not need to use os.path.join for windows because it is frontend path to media file with normal symbol use
-    standard_voices = {voice_name: url_for("media_file", filename=f"avatar/{voice_name}.png") for voice_name in voice_names}
-    custom_voices = {voice_name: url_for("media_file", filename=f"avatar/Unknown.png") for voice_name in custom_voice_names}
-    return {**standard_voices, **custom_voices}
+"""FRONTEND METHODS"""
 
 
-def split_input_deepfake(input_param):
-    if input_param is not None:
-        input_param = input_param.split(",")
-        params = []
-        for param in input_param:
-            if len(param) == 0:
-                continue
-            if param[0] == '-' and param[1:].isdigit() or param.isdigit():
-                param = int(param)
-                if param > 30:
-                    param = 30
-                elif param < -30:
-                    param = -30
-                params += [param]
-
-        if params:
-            return params
-    return None
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Cross-Origin-Embedder-Policy"] = "credentialless"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    return response
 
 
-def get_print_translate(text):
-    if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
-        # Offline mode
-        return text
-    return get_translate(text=text, targetLang=app.config['USER_LANGUAGE'])
+# Custom 404 error handler
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_content_page(None, '404.html')
 
 
-@app.route("/update_translation", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 @cross_origin()
-def update_translation():
-    # create here file if not exist
-    localization_path = os.path.join(SETTING_FOLDER, "localization.json")
-    req = request.get_json()
-    with open(localization_path, 'a', encoding='utf-8') as f:
-            json.dump(req, f, ensure_ascii=False)
+def login_page():
+    if request.method == "POST":
+        user_id = user_valid()
+        app.config['LOGIN_PAGE'] = True
+        if user_id is None:
+            return render_template("login.html")
+        return redirect(url_for('index_page'))
+    return render_template("login.html", host=Settings.FRONTEND_HOST, token=Settings.SECRET_KEY)
 
-    return {"status": 200}
+
+@app.route("/logout")
+@cross_origin()
+def logout():
+    return redirect(url_for('login_page'))
 
 
 @app.route("/", methods=["GET"])
 @cross_origin()
-def index():
-    # Define a dictionary of languages
-    settings = set_settings()
-    lang_user = settings["user_language"]
-    lang_code = lang_user.get("code", "en")
-    lang_name = lang_user.get("name", "English")
-    default_lang = settings["default_language"]
-    if default_lang.get(lang_name) is not None:
-        default_lang.pop(lang_name)
-    ordered_lang = {**{lang_name: lang_code}, **default_lang}
-    app.config['USER_LANGUAGE'] = lang_code  # set user language for translate system print
+def index_page():
+    return render_content_page(None, "index.html")
+
+
+def user_valid():
+    user_ids = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if isinstance(user_ids, str):
+        try:
+            user_id = user_ids.split(',')[0]
+            ip_address(user_id)  # Check if user_id is a valid IP address
+            return user_id
+        except ValueError:
+            return None
+    else:
+        return None
+
+
+def render_content_page(content_folder_name, template_name, **kwargs):
+    user_id = user_valid()
+    if user_id is None or not app.config['LOGIN_PAGE']:
+        return redirect(url_for('login_page'))
+    user_folder_name = user_id.replace(".", "_")
+    user_folder = os.path.join(CONTENT_FOLDER, user_folder_name)
+    user_content_folder = os.path.join(user_folder, content_folder_name) if content_folder_name else user_folder
+    if not os.path.exists(user_content_folder):
+        os.makedirs(user_content_folder)
+    user_content_file_tree = generate_file_tree(user_content_folder)
+
+    if getattr(Settings, "SESSION", None) is None:
+        processor("cuda")
+
     return render_template(
-        "index.html", version=json.dumps(version_app), existing_langs=ordered_lang,
-        user_lang=lang_code, existing_models=get_avatars_static(), diffusion_models=json.dumps(diffusion_models)
+        template_name,
+        host=Settings.FRONTEND_HOST,
+        version=Settings.VERSION,
+        changelog=json.dumps(version_app),
+        user_file_tree=user_content_file_tree,
+        user_content_id=user_folder_name,
+        folder_name=content_folder_name,
+        **kwargs
     )
 
 
-@app.route('/current_processor', methods=["GET"])
+@app.route("/content", methods=["GET"])
 @cross_origin()
-def current_processor():
-    if torch.cuda.is_available():
-        return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": True}
-    return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
+def content_page():
+    return render_content_page(None, "content.html")
 
 
-@app.route('/get_vram', methods=["GET"])
+@app.route("/profile", methods=["GET", "POST"])
 @cross_origin()
-def get_vram():
-    if torch.cuda.is_available():
-        device = "cuda"
-        gpu_vram = torch.cuda.get_device_properties(device).total_memory / (1024 ** 3)
-        return {"gpu_vram": gpu_vram}
-    return {"gpu_vram": False}
+def profile_page():
+    user_id = user_valid()
+    if request.method == "POST":
+        if "logout" in request.form:
+            session.pop(user_id, None)
+            return redirect(url_for('logout'))
+        elif "exit" in request.form:
+            if user_id != Settings.ADMIN_ID:  # this will be id admin
+                session.pop(user_id, None)
+                return redirect(url_for('logout'))
+            else:
+                if not app.config['DEBUG'] and sys.platform != 'darwin' and ((sys.platform == 'linux' and os.environ.get('DISPLAY')) or sys.platform == 'win32'):
+                    close_application()
+                else:
+                    port = app.config['PORT']
+                    kill_port(port)
+
+    public_link = f"http://0.0.0.0:{app.config['PORT']}"
+
+    return render_content_page(None, "profile.html", user_id=user_id, public_link=public_link, email="support@wunjo.online")
 
 
-@app.route('/upload_tmp', methods=['POST'])
+@app.route("/settings", methods=["GET"])
+@cross_origin()
+def settings_page():
+    models_dict = {
+        **FaceSwap.inspect(),
+        **LipSync.inspect(),
+        **RemoveObject.inspect(),
+        **RemoveBackground.inspect(),
+        **Enhancement.inspect(),
+        **Separator.inspect(),
+    }
+    return render_content_page(None, "settings.html", models=models_dict)
+
+
+@app.route("/faq", methods=["GET"])
+@cross_origin()
+def faq_page():
+    return render_content_page(None, "faq.html")
+
+
+@app.route("/face-swap", methods=["GET"])
+@cross_origin()
+def face_swap_page():
+    max_duration_sec = Settings.MAX_DURATION_SEC_FACE_SWAP
+    max_files_size = Settings.MAX_FILE_SIZE
+    return render_content_page(CONTENT_FACE_SWAP_FOLDER_NAME, "face_swap.html", max_duration_sec=max_duration_sec, max_files_size=max_files_size, analysis_method=CONTENT_ANALYSIS_NAME)
+
+
+@app.route("/remove-background", methods=["GET"])
+@cross_origin()
+def remove_background_page():
+    model_sam_media_path = RemoveBackground.is_model_sam()
+    max_duration_sec = Settings.MAX_DURATION_SEC_REMOVE_BACKGROUND
+    max_files_size = Settings.MAX_FILE_SIZE
+    return render_content_page(CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, "remove_background.html", model_sam=model_sam_media_path, max_duration_sec=max_duration_sec, max_files_size=max_files_size)
+
+
+@app.route("/remove-object", methods=["GET"])
+@cross_origin()
+def remove_object_page():
+    model_sam_media_path = RemoveObject.is_model_sam()
+    max_duration_sec = Settings.MAX_DURATION_SEC_REMOVE_OBJECT
+    max_files_size = Settings.MAX_FILE_SIZE
+    return render_content_page(CONTENT_REMOVE_OBJECT_FOLDER_NAME, "remove_object.html", model_sam=model_sam_media_path, max_duration_sec=max_duration_sec, max_files_size=max_files_size)
+
+
+@app.route("/enhancement", methods=["GET"])
+@cross_origin()
+def enhancement_page():
+    max_duration_sec = Settings.MAX_DURATION_SEC_ENHANCEMENT
+    max_files_size = Settings.MAX_FILE_SIZE
+    return render_content_page(CONTENT_ENHANCEMENT_FOLDER_NAME, "enhancement.html", max_duration_sec=max_duration_sec, max_files_size=max_files_size)
+
+
+@app.route("/lip-sync", methods=["GET"])
+@cross_origin()
+def lip_sync_page():
+    max_duration_sec = Settings.MAX_DURATION_SEC_LIP_SYNC
+    max_files_size = Settings.MAX_FILE_SIZE
+    return render_content_page(CONTENT_LIP_SYNC_FOLDER_NAME, "lip_sync.html", max_duration_sec=max_duration_sec, max_files_size=max_files_size, analysis_method=CONTENT_ANALYSIS_NAME)
+
+
+@app.route("/separator", methods=["GET"])
+@cross_origin()
+def separator_page():
+    max_duration_sec = Settings.MAX_DURATION_SEC_SEPARATOR
+    max_files_size = 40 * 1024 * 1024  # 40 Mb
+    return render_content_page(CONTENT_SEPARATOR_FOLDER_NAME, "separator.html", max_duration_sec=max_duration_sec, max_files_size=max_files_size)
+
+
+"""FRONTEND METHODS"""
+
+"""API LOGICAL"""
+
+"""WORK WITH CONTENT FOLDER FILES"""
+
+
+@app.route('/content-rename', methods=['POST'])
+@cross_origin()
+def content_secure_rename():
+    data = request.json
+    file_relative_path = data.get('filePath')
+    file_name = data.get('fileName')
+    new_file_name = data.get('newFileName')
+
+    # Check if file_relative_path and file_name are strings and not empty
+    if not isinstance(file_relative_path, str) or not file_relative_path or not isinstance(file_name, str) or not file_name:
+        return {"status": 404, "message": "Invalid file path or name."}
+
+    if not isinstance(new_file_name, str) or not new_file_name:
+        return {"status": 404, "message": "Invalid new file name."}
+
+    # Secure the file name to prevent directory traversal attacks
+    file_name = secure_filename(file_name)
+    new_file_name = secure_filename(new_file_name)
+
+    _, file_extension = os.path.splitext(file_name)
+    _, new_file_extension = os.path.splitext(new_file_name)
+
+    if file_extension != new_file_extension or len(new_file_name) - len(new_file_extension) == 0:
+        return {"status": 404, "message": "Invalid new file name.\nName has to be include file extension in original format"}
+
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+
+    user_folder_name = user_id.replace(".", "_")
+    user_folder = os.path.join(CONTENT_FOLDER, user_folder_name)
+
+    # Validate the file path to prevent directory traversal attacks
+    file_path = user_folder
+    for relative_path in file_relative_path.replace("\\", "/").split("/"):
+        file_path = os.path.join(file_path, relative_path)
+
+    if not os.path.exists(file_path):
+        return {"status": 404, "message": "File path does not exist."}
+
+    file_absolute_path = os.path.join(file_path, file_name)
+    if not file_absolute_path.startswith(CONTENT_FOLDER):
+        return {"status": 404, "message": "Invalid file path."}
+
+    new_file_absolute_path = os.path.join(file_path, new_file_name)
+    if not new_file_absolute_path.startswith(CONTENT_FOLDER):
+        return {"status": 404, "message": "Invalid new file path."}
+
+    if os.path.exists(new_file_absolute_path):
+        return {"status": 404, "message": "File already exist."}
+
+    if os.path.isfile(file_absolute_path):
+        try:
+            # Rename the file
+            os.rename(file_absolute_path, new_file_absolute_path)
+            # Rename file change ctime and this reason why calendar filter after rename file will be have today date
+            # Return success message
+            return {"status": 200, "message": "File renamed successfully. For file set current date.", "newFileName": new_file_name}
+        except Exception as e:
+            # Handle any errors that may occur during the renaming process
+            return {"status": 500, "message": f"Error renaming file: {str(e)}"}
+    else:
+        # If the file does not exist, return an error message
+        return {"status": 404, "message": "File not found."}
+
+
+@app.route('/content-delete', methods=['POST'])
+@cross_origin()
+def content_secure_delete():
+    data = request.json
+    file_relative_path = data.get('filePath')
+    file_name = data.get('fileName')
+
+    # Check if file_relative_path and file_name are strings and not empty
+    if not isinstance(file_relative_path, str) or not file_relative_path or not isinstance(file_name, str) or not file_name:
+        return {"status": 404, "message": "Invalid file path or name."}
+
+    # Secure the file name to prevent directory traversal attacks
+    file_name = secure_filename(file_name)
+
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+
+    user_folder_name = user_id.replace(".", "_")
+    user_folder = os.path.join(CONTENT_FOLDER, user_folder_name)
+
+    # Validate the file path to prevent directory traversal attacks
+    file_path = user_folder
+    for relative_path in file_relative_path.replace("\\", "/").split("/"):
+        file_path = os.path.join(file_path, relative_path)
+
+    if not os.path.exists(file_path):
+        return {"status": 404, "message": "File path does not exist."}
+
+    file_absolute_path = os.path.join(file_path, file_name)
+    if not file_absolute_path.startswith(CONTENT_FOLDER):
+        return {"status": 404, "message": "Invalid file path."}
+
+    if os.path.isfile(file_absolute_path):
+        # Perform file deletion
+        try:
+            os.remove(file_absolute_path)
+            return {"status": 200, "message": "File deleted successfully."}
+        except Exception as e:
+            return {"status": 500, "message": f"Error deleting file: {str(e)}"}
+    else:
+        return {"status": 404, "message": "File not found."}
+
+
+@app.route('/content-reload', methods=['GET'])
+@app.route('/content-reload/<folder_name>', methods=['GET'])  # Define the route with a parameter
+@cross_origin()
+def content_reload(folder_name=None):
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+    else:
+        user_folder_name = user_id.replace(".", "_")
+        user_folder = os.path.join(CONTENT_FOLDER, user_folder_name)
+        if folder_name is not None:
+            user_folder = os.path.join(user_folder, folder_name)
+            if not os.path.exists(user_folder):
+                return {"status": 404, "message": "File path does not exist."}
+        user_file_tree = generate_file_tree(user_folder)  # Get new tree
+        return {"status": 200, "message": "Files reloaded.", "user_file_tree": user_file_tree}
+
+
+@app.route('/upload-tmp', methods=['POST'])
 @cross_origin()
 def upload_file_media():
     if not os.path.exists(TMP_FOLDER):
         os.makedirs(TMP_FOLDER)
 
     if 'file' not in request.files:
-        return {"status": 'No file uploaded'}
+        return {"status": 200, "message": 'No file uploaded'}
     chunk = request.files['file']
     if chunk.filename == '':
-        return {"status": 'No file selected'}
+        return {"status": 200, "message": 'No file selected'}
     filename = secure_filename(chunk.filename)
 
     file_path = os.path.join(TMP_FOLDER, filename)
     with open(file_path, 'ab') as f:  # Open in append-binary mode to append chunks
         f.write(chunk.read())  # Write the received chunk to the file
 
-    return {"status": 'Chunk uploaded successfully'}
+    return {"status": 200, "message": 'Chunk uploaded successfully'}
 
 
-@app.route('/open_folder', methods=["POST"])
+@app.route("/get-avatars", methods=["GET"])
 @cross_origin()
-def open_folder():
-    if os.path.exists(CONTENT_FOLDER):
-        path = CONTENT_FOLDER
-        if sys.platform == 'win32':
-            # Open folder for Windows
-            subprocess.Popen(r'explorer /select,"{}"'.format(path))
-        elif sys.platform == 'darwin':
-            # Open folder for MacOS
-            subprocess.Popen(['open', path])
-        elif sys.platform == 'linux':
-            # Open folder for Linux
-            subprocess.Popen(['xdg-open', path])
-        return {"status_code": 200} #redirect('/')
-    return {"status_code": 300} #redirect('/')
+def get_avatars():
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
+    user_folder_name = user_id.replace(".", "_")
+    user_avatar_folder = os.path.join(CONTENT_FOLDER, user_folder_name, CONTENT_AVATARS_FOLDER_NAME)
+    if not os.path.exists(user_avatar_folder):
+        os.makedirs(user_avatar_folder)
+    user_avatar_file_tree = generate_file_tree(user_avatar_folder)
+    # Message to user if folder is not created yet
+    return jsonify({"status": 200, "user_avatars": user_avatar_file_tree, "folder_name": CONTENT_AVATARS_FOLDER_NAME})
 
 
-@app.route('/record_settings', methods=["POST"])
-@cross_origin()
-def record_lang_setting():
-    req = request.get_json()
-    lang_code = req.get("code", "en")
-    lang_name = req.get("name", "English")
-    settings = set_settings()
-    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
-    with open(setting_file, 'w') as f:
-        settings["user_language"] = {
-            "code": lang_code,
-            "name": lang_name
-        }
-        json.dump(settings, f)
-
-    app.config['USER_LANGUAGE'] = lang_code
-
-    return {
-        "response_code": 0,
-        "response": "Set new language"
-    }
-
-
-@app.route("/voice_status/", methods=["GET"])
-@cross_origin()
-def get_voice_list():
-    voice_models_status = {}
-    for voice_name in voice_names:
-        voice_models_status[voice_name] = {}
-        checkpoint_path = file_voice_config[voice_name]["engine"]["tacotron2"]["model_path"]
-        if not os.path.exists(checkpoint_path):
-            voice_models_status[voice_name]["checkpoint"] = False
-        else:
-            voice_models_status[voice_name]["checkpoint"] = True
-        waveglow = file_voice_config[voice_name]["vocoder"]["waveglow"]["model_path"]
-        if not os.path.exists(waveglow):
-            voice_models_status[voice_name]["waveglow"] = False
-        else:
-            voice_models_status[voice_name]["waveglow"] = True
-    return voice_models_status
-
-
-"""INSPECT MODELS"""
-
-
-def inspect_update_message(offline_status: bool, model_list: list):
-    if offline_status:
-        new_message = "Can be used in offline mode."
-    else:
-        if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
-            new_message = get_print_translate("There are no models available for offline use. Download models manually, or run online for automatic downloading.")
-        else:
-            new_message = get_print_translate("There will be automatically downloading models, but if you wish, you can download them manually by link.")
-        if len(model_list) > 0:
-            msg1 = get_print_translate("Download in")
-            msg2 = get_print_translate("model from link")
-            msg3 = get_print_translate("Download archive by link")
-            msg4 = get_print_translate("and unzip as")
-            msg5 = get_print_translate("not remove .zip too")
-            new_message += '. '.join(f"<br>{msg1} {m[0]} <a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg2}</a>" if ".zip" not in m[1] else f"\n<br><a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg3}</a> {msg4} {m[0]}, {msg5}" for m in model_list)
-    return new_message
-
-
-@app.route("/inspect_face_animation", methods=["GET"])
-@cross_origin()
-def inspect_face_animation():
-    offline_status, models_is_not_exist = inspect_face_animation_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-@app.route("/inspect_mouth_animation", methods=["GET"])
-@cross_origin()
-def inspect_mouth_animation():
-    offline_status, models_is_not_exist = inspect_mouth_animation_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-@app.route("/inspect_face_swap", methods=["GET"])
-@cross_origin()
-def inspect_face_swap():
-    offline_status, models_is_not_exist = inspect_face_swap_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-@app.route("/inspect_retouch", methods=["GET"])
-@cross_origin()
-def inspect_retouch():
-    offline_status, models_is_not_exist = inspect_retouch_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-@app.route("/inspect_media_editor", methods=["GET"])
-@cross_origin()
-def inspect_media_editor():
-    offline_status, models_is_not_exist = inspect_media_edit_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-@app.route("/inspect_diffusion", methods=["GET"])
-@cross_origin()
-def inspect_diffusion():
-    offline_status, models_is_not_exist = inspect_diffusion_config()
-    new_message = inspect_update_message(offline_status, models_is_not_exist)
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-@app.route("/inspect_rtvc", methods=["GET"])
-@cross_origin()
-def inspect_rtvc():
-    offline_status, model_list, online_language, offline_language = inspect_rtvc_config()
-    if offline_status and len(offline_language) > 0:
-        msg1 = get_print_translate("Languages")
-        msg2 = get_print_translate("can be used in offline mode.")
-        new_message = msg1 + " " + ", ".join(l for l in offline_language) + " " + msg2
-        if len(online_language) > 0:
-            msg3 = get_print_translate("However, the following languages are not fully loaded for offline mode")
-            new_message += msg3 + " " + ", ".join(l for l in online_language)
-    else:
-        if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
-            new_message = get_print_translate("There are no models available for offline use. Download models manually, or run online for automatic downloading.")
-        else:
-            new_message = get_print_translate("There will be automatically downloading models, but if you wish, you can download them manually by link.")
-        if len(model_list) > 0:
-            msg4 = get_print_translate("Download in")
-            msg5 = get_print_translate("model from link")
-            new_message += "".join(f"<br>{msg4} {m[0]} model from link <a target='_blank' rel='noopener noreferrer' href='{m[1]}'>{msg5}</a>" for m in model_list)
-        if len(online_language) > 0:
-            msg6 = get_print_translate("The following languages are not fully loaded")
-            msg7 = get_print_translate("More information in documentation")
-            new_message += "<br>" + msg6 + " " + ", ".join(l for l in online_language) + f". <a target='_blank' rel='noopener noreferrer' href=https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-manually-install-model-for-text-to-speech>{msg7}</a>"
-    return {
-        "offline_status": offline_status, "models_is_not_exist": new_message
-    }
-
-
-"""INSPECT MODELS"""
+"""WORK WITH CONTENT FOLDER FILES"""
 
 
 """FEATURE MODELS"""
 
 
-@app.route("/create_segment_anything/", methods=["POST"])
+@app.route("/generate-avatar", methods=["POST"])
 @cross_origin()
-def create_segment_anything():
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
+def generate_avatar():
+    # Generate a unique ID for the request
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
 
-    # empty cache without func clear_cache()
-    torch.cuda.empty_cache()
-    gc.collect()
+    data = request.get_json()
+    gender = data.get("gender", "all")
+    age = data.get("age", "all")
+    ethnic = data.get("ethnic", "all")
+    url = f"{Settings.FRONTEND_HOST}/generate-avatar"
 
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
+    user_folder_name = user_id.replace(".", "_")
+    user_avatar_folder = os.path.join(CONTENT_FOLDER, user_folder_name, CONTENT_AVATARS_FOLDER_NAME)
 
-    if not app.config['SEGMENT_ANYTHING_MODEL']:
-        app.config['SEGMENT_ANYTHING_MODEL'] = GetSegment.load_model()
-
-    # get parameters
-    request_list = request.get_json()
-    source = request_list.get("source")
-    point_list = request_list.get("point_list")
-    current_time = request_list.get("current_time", 0)
-    obj_id = request_list.get("obj_id", 1)
-
-    # call get segment anything
-    segment_models = app.config['SEGMENT_ANYTHING_MODEL']
-    predictor = segment_models.get("predictor")
-    session = segment_models.get("session")
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-    result_filename = GetSegment.get_segment_mask_file(
-        predictor=predictor, session=session, source=os.path.join(TMP_FOLDER, source), point_list=point_list
-    )
-
-    # Set new data to send in frontend
-    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'] = {}
-    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'][str(current_time)] = {}
-    app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT'][str(current_time)][str(obj_id)] = {
-        "mask": url_for("media_file", filename="/tmp/" + result_filename),
-        "point_list": point_list
-    }
-
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-
-    return {"status": 200}
-
-
-@app.route("/get_segment_anything/", methods=["GET"])
-@cross_origin()
-def get_segment_anything():
-    segment_preview = app.config['SEGMENT_ANYTHING_MASK_PREVIEW_RESULT']
-    return {
-        "response_code": 0, "response": segment_preview
-    }
-
-
-@app.route("/synthesize_video_merge/", methods=["POST"])
-@cross_origin()
-def synthesize_video_merge():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
-        os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
-
-    source_folder = request_list.get("source_folder")
-    audio_name = request_list.get("audio_name")
-    audio_path = os.path.join(TMP_FOLDER, audio_name) if audio_name else None
-    fps = request_list.get("fps", 30)
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
+    if not os.path.exists(user_avatar_folder):
+        os.makedirs(user_avatar_folder)
 
     try:
-        result = MediaEdit.main_merge_frames(
-            output=CONTENT_MEDIA_EDIT_FOLDER, source_folder=source_folder,
-            audio_path=audio_path, fps=fps
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Image to video"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+        # Send a POST request with the parameters
+        image_response = requests.post(url, json={"gender": gender, "age": age, "ethnic": ethnic})
 
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    result_filename = f"/{save_folder_name}/" + result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    url = url_for("media_file", filename=result_filename)
+        # Check if the response contains image data
+        if image_response.headers.get("Content-Type", "").startswith("image/jpeg"):
+            # Save the image to the user's folder
+            image_name = str(uuid.uuid4()) + '.jpg'
+            image_file_path = os.path.join(user_avatar_folder, os.path.basename(image_name))
 
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Image to video"), "request_mode": "deepfake", "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
+            # Write the image content to the file
+            with open(image_file_path, "wb") as image_file:
+                image_file.write(image_response.content)
 
-    print("Merge frames to video completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
+            media_file_path = image_file_path.replace(MEDIA_FOLDER, "/media").replace("\\", "/")
 
-    return {"status": 200}
-
-
-@app.route("/synthesize_media_editor/", methods=["POST"])
-@cross_origin()
-def synthesize_media_editor():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    source = request_list.get("source")
-    gfpgan = request_list.get("gfpgan", False)
-    animesgan = request_list.get("animesgan", False)
-    realesrgan = request_list.get("realesrgan", False)
-    vocals = request_list.get("vocals", False)
-    residual = request_list.get("residual", False)
-    speech_enhancement = request_list.get("voicefixer", False)
-    # List of enhancer options in preferred order
-    enhancer_options = [gfpgan, animesgan, realesrgan]
-    separator_options = [vocals, residual]
-    # Find the first non-False option
-    enhancer = next((enhancer_option for enhancer_option in enhancer_options if enhancer_option), False)
-    audio_separator = next((separator_option for separator_option in separator_options if separator_option), False)
-    is_get_frames = request_list.get("get_frames", False)
-    media_start = request_list.get("media_start", 0)
-    media_end = request_list.get("media_end", 0)
-    media_type = request_list.get("media_type", "img")
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    if enhancer and not audio_separator and not speech_enhancement:
-        request_mode = "deepfake"
-        mode_msg = get_print_translate("Content improve")
-    elif not enhancer and (audio_separator or speech_enhancement):
-        request_mode = "speech"
-        msg = "Separator audio" if audio_separator else "Speech enhancement"
-        mode_msg = get_print_translate(msg)
-    else:
-        request_mode = "deepfake"
-        mode_msg = get_print_translate("Video to images")
-
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-
-    try:
-        if not audio_separator and not speech_enhancement and media_type in ["img", "video"]:
-            # media edit video or image
-            if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
-                os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
-
-            result_path = MediaEdit.main_video_work(
-                output=CONTENT_MEDIA_EDIT_FOLDER, source=os.path.join(TMP_FOLDER, source),
-                enhancer=enhancer, is_get_frames=is_get_frames,
-                media_start=media_start, media_end=media_end
-            )
-        elif audio_separator and media_type in ["audio", "video"]:
-            # audio separate from video or audio
-            if not os.path.exists(CONTENT_AUDIO_SEPARATOR_FOLDER):
-                os.makedirs(CONTENT_AUDIO_SEPARATOR_FOLDER)
-
-            dir_time = current_time()
-            result_path = AudioSeparatorVoice.get_audio_separator(
-                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_AUDIO_SEPARATOR_FOLDER, dir_time), file_type=media_type,
-                converted_wav=True, target=audio_separator, trim_silence=False, resample=False, use_gpu=os.environ.get('WUNJO_TORCH_DEVICE', 'cuda') == 'cuda'
-            )
-        elif speech_enhancement and media_type in ["audio", "video"]:
-            # speech enhancement from video or audio
-            if not os.path.exists(CONTENT_SPEECH_ENHANCEMENT_FOLDER):
-                os.makedirs(CONTENT_SPEECH_ENHANCEMENT_FOLDER)
-
-            dir_time = current_time()
-            result_path = SpeechEnhancement().get_speech_enhancement(
-                source=os.path.join(TMP_FOLDER, source), output_path=os.path.join(CONTENT_SPEECH_ENHANCEMENT_FOLDER, dir_time),
-                use_gpu=os.environ.get('WUNJO_TORCH_DEVICE', 'cuda') == 'cuda', file_type=media_type
-            )
+            # Return the cropped image as bytes
+            return jsonify({"status": 200, "media_file": media_file_path})
         else:
-            raise Exception("Not recognition options for media content editor")
+            # Return some default static image if the response does not contain image data
+            return jsonify({"status": 300, "message": "Invalid image data received"})
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "voice": mode_msg, "request_mode": request_mode, "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    result_filename = f"/{save_folder_name}/" + result_path.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    url = url_for("media_file", filename=result_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "voice": mode_msg, "request_mode": request_mode, "response_url": url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Edit media completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
-    # empty loop cache from animation if not clear yet
-    gc.collect()
-
-    return {"status": 200}
+        return jsonify({"status": 400, "message": str(err)})
 
 
-@app.route("/synthesize_only_ebsynth/", methods=["POST"])
+"""CPU TASKS"""
+
+@app.route("/submit-cpu-task", methods=["POST"])
 @cross_origin()
-def synthesize_only_ebsynth():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
+def submit_cpu_task():
+    # Generate a unique ID for the request
+    request_id = str(uuid.uuid4())
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
 
+    data = request.get_json()
+    method = data.pop('method') if data.get('method') is not None else None
+    filename = data.get('filename')
+    # Keep datetime to clear old sessions
+    queue_data = {user_id: {request_id: {"method": method, "data": data, "completed": False, "busy": None, "filename": filename, "response": {}, "date": datetime.now()}}}
+
+    if method not in [CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_REMOVE_OBJECT_FOLDER_NAME, CONTENT_ANALYSIS_NAME]:
+        return jsonify({"status": 404, "message": "Method not found for CPU task."})
+
+    for user in queue_data.keys():
+        if app.config["QUEUE_CPU"].get(user) is None:
+            app.config["QUEUE_CPU"][user] = {}
+        for request_id in queue_data[user].keys():
+            app.config["QUEUE_CPU"][user][request_id] = queue_data[user][request_id]
+            lprint(msg=f"Add in background processing on CPU {request_id}")
+
+    return jsonify({"status": 200, "message": "Updated delay CPU task.", "id": request_id})
+
+
+@app.route("/query-cpu-task/<request_id>", methods=["GET"])
+@cross_origin()
+def query_cpu_task(request_id):
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
+
+    if app.config["QUEUE_CPU"].get(user_id) is not None:
+        if app.config["QUEUE_CPU"][user_id].get(request_id) is not None:
+            queue_task = app.config["QUEUE_CPU"][user_id][request_id]
+            completed = queue_task.get("completed", False) if isinstance(queue_task, dict) else False
+            if isinstance(queue_task, dict) and completed:
+                response = queue_task.get("response")
+                app.config["QUEUE_CPU"][user_id].pop(request_id)  # Clear
+                return jsonify({"status": 200, "message": "Successfully!", "response": response })
+            if completed == "cancel":
+                # Canceled task
+                app.config["QUEUE_CPU"][user_id].pop(request_id)  # Clear
+                return jsonify({"status": 404, "message": "Task is canceled.", "response": None})
+            return jsonify({"status": 100, "message": "Busy.", "response": None })
+    return jsonify({"status": 300, "message": "Not found task.", "response": None})
+
+
+def get_sam_embedding(user, request_id) -> None:
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
     if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
 
-    # has to work only with GPU
-    current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
-    if current_processor == "cpu":
-        print("You need to use GPU for this function")
-        return {"status": 400}
-
-    # check what module is exist
-    if not VIDEO2VIDEO_AVAILABLE:
-        print("In this app version is not module diffusion")
-        return {"status": 400}
-
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    source = request_list.get("source")
-    source_start = float(request_list.get("source_start", 0))
-    source_end = float(request_list.get("source_end", 0))
-    masks = request_list.get("masks", {})
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    clear_cache()  # clear empty, because will be better load segment models again and after empty cache
-
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-
+    # Processing
     try:
-        ebsynth_result = Video2Video.only_ebsynth_video_render(
-            source=os.path.join(TMP_FOLDER, source), output_folder=CONTENT_DIFFUSER_FOLDER, source_start=source_start,
-            source_end=source_end, masks=masks
-        )
+        send_data = app.config["QUEUE_CPU"][user][request_id]
+        filename = send_data.get("filename")
+        file_path = os.path.join(TMP_FOLDER, filename)
+        if check_tmp_file_uploaded(file_path) and SAMGetSegment.is_valid_image(file_path):
+            image_data = SAMGetSegment.read(file_path)  # Read data from path
+            lprint(msg="Start to get embedding by SAM.", user=user)
+            response = SAMGetSegment.extract_embedding(image_data)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = response
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = True
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            SAMGetSegment.clear(file_path)  # Remove tpm file
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Get SAM {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": ""}
+        else:
+            lprint(msg=f"This is not image {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = None
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Error with get SAM embedding on CPU but process busy still.", user=user, level="error")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with get SAM embedding on CPU."}
+
     except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Style transfer"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = None
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg=f"Error with get SAM embedding on CPU but process busy still.", user=user, level="error")
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with get SAM embedding on CPU."}
 
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    diffusion_result_filename = f"/{save_folder_name}/" + ebsynth_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    diffusion_url = url_for("media_file", filename=diffusion_result_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Style transfer"), "request_mode": "deepfake", "response_url": diffusion_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Only ebsynth synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # empty cache
-    torch.cuda.empty_cache()
-
-    return {"status": 200}
-
-@app.route("/synthesize_diffuser/", methods=["POST"])
-@cross_origin()
-def synthesize_diffuser():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    # has to work only with GPU
-    current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
-    if current_processor == "cpu":
-        print("You need to use GPU for this function")
-        return {"status": 400}
-
-    # check what module is exist
-    if not VIDEO2VIDEO_AVAILABLE:
-        print("In this app version is not module diffusion")
-        return {"status": 400}
-
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    if not os.path.exists(CONTENT_DIFFUSER_FOLDER):
-        os.makedirs(CONTENT_DIFFUSER_FOLDER)
-
-    source = request_list.get("source")
-    source_start = float(request_list.get("source_start", 0))
-    source_end = float(request_list.get("source_end", 0))
-    source_type = request_list.get("source_type", "video")
-    masks = request_list.get("masks", {})
-    interval_generation = int(request_list.get("interval_generation", 10))
-    controlnet = request_list.get("controlnet", "canny")
-    loose_cfattn = request_list.get("preprocessor_loose_cfattn", False)
-    freeu = request_list.get("preprocessor_freeu", False)
-    preprocessor = [loose_cfattn, freeu]
-    segment_percentage = int(request_list.get("segment_percentage", 25))
-    thickness_mask = int(request_list.get("thickness_mask", 10))
-    sd_model_name = request_list.get("sd_model_name", None)
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    clear_cache()  # clear empty, because will be better load segment models again and after empty cache
-
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-
-    try:
-        diffusion_result = Video2Video.main_video_render(
-            source=os.path.join(TMP_FOLDER, source), output_folder=CONTENT_DIFFUSER_FOLDER, source_start=source_start, sd_model_name=sd_model_name,
-            source_end=source_end, source_type=source_type, masks=masks, interval=interval_generation, thickness_mask=thickness_mask,
-            control_type=controlnet, translation=preprocessor, predictor=None, session=None, segment_percentage=segment_percentage
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Diffusion"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    diffusion_result_filename = f"/{save_folder_name}/" + diffusion_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    diffusion_url = url_for("media_file", filename=diffusion_result_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Diffusion"), "request_mode": "deepfake", "response_url": diffusion_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Diffusion synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # empty cache
-    torch.cuda.empty_cache()
-
-    return {"status": 200}
-
-
-@app.route("/synthesize_retouch/", methods=["POST"])
-@cross_origin()
-def synthesize_retouch():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    if not os.path.exists(CONTENT_RETOUCH_FOLDER):
-        os.makedirs(CONTENT_RETOUCH_FOLDER)
-
-    source = request_list.get("source")
-    source_start = float(request_list.get("source_start", 0))
-    source_end = float(request_list.get("source_end", 0))
-    source_type = request_list.get("source_type", "img")
-    masks = request_list.get("masks", {})
-    model_type = request_list.get("model_type", "retouch_object")
-    mask_text = request_list.get("mask_text", False)
-    mask_color = request_list.get("mask_color", None)
-    blur = int(request_list.get("blur", 1))
-    upscale = request_list.get("upscale", False)
-    segment_percentage = int(request_list.get("segment_percentage", 25))
-    delay_mask = int(request_list.get("delay_mask", 0))
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-    # clear empty, because will be better load segment models again and after empty cache, else not empty full
     clear_cache()
 
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
 
-    try:
-        retouch_result = Retouch.main_retouch(
-            output=CONTENT_RETOUCH_FOLDER, source=os.path.join(TMP_FOLDER, source), source_start=source_start,
-            masks=masks, retouch_model_type=model_type, source_end=source_end, source_type=source_type, mask_text=mask_text,
-            predictor=None, session=None, mask_color=mask_color, blur=blur, upscale=upscale, segment_percentage=segment_percentage, delay_mask=delay_mask
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    retouch_result_filename = f"/{save_folder_name}/" + retouch_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    retouch_url = url_for("media_file", filename=retouch_result_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Content clean-up"), "request_mode": "deepfake", "response_url": retouch_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Retouch synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
-
-    return {"status": 200}
-
-
-@app.route("/synthesize_face_swap/", methods=["POST"])
-@cross_origin()
-def synthesize_face_swap():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
+def get_analysis(user, request_id) -> None:
     # Check ffmpeg
     is_ffmpeg = is_ffmpeg_installed()
     if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
 
-    # get parameters
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print("Please wait... Processing is started")
-
-    if not os.path.exists(CONTENT_FACE_SWAP_FOLDER):
-        os.makedirs(CONTENT_FACE_SWAP_FOLDER)
-
-    target_content = request_list.get("target_content")
-    face_target_fields = request_list.get("face_target_fields")
-    source_face_fields = request_list.get("face_source_fields")
-    source_content = request_list.get("source_content")
-    type_file_source = request_list.get("type_file_source")
-    video_start_target = request_list.get("video_start_target", 0)
-    video_end_target = request_list.get("video_end_target", 0)
-    video_current_time_source = request_list.get("video_current_time_source", 0)
-    video_end_source = request_list.get("video_end_source", 0)
-    multiface = request_list.get("multiface", False)
-    similarface = request_list.get("similarface", False)
-    similar_coeff = float(request_list.get("similar_coeff", 0.95))
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    clear_cache()  # clear empty
-
-    if not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, target_content)) or not check_tmp_file_uploaded(os.path.join(TMP_FOLDER, source_content)):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-
+    # Processing
     try:
-        face_swap_result = FaceSwap.main_faceswap(
-            deepfake_dir=CONTENT_FACE_SWAP_FOLDER,
-            target=os.path.join(TMP_FOLDER, target_content),
-            target_face_fields=face_target_fields,
-            source=os.path.join(TMP_FOLDER, source_content),
-            source_face_fields=source_face_fields,
-            type_file_source=type_file_source,
-            target_video_start=video_start_target,
-            target_video_end=video_end_target,
-            source_current_time=video_current_time_source,
-            source_video_end=video_end_source,
-            multiface=multiface,
-            similarface=similarface,
-            similar_coeff=similar_coeff
-        )
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face swap"), "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
+        send_data = app.config["QUEUE_CPU"][user][request_id]
+        filename = send_data.get("filename")
+        file_path = os.path.join(TMP_FOLDER, filename)
 
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    face_swap_result_filename = f"/{save_folder_name}/" + face_swap_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    face_swap_url = url_for("media_file", filename=face_swap_result_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": get_print_translate("Face swap"), "request_mode": "deepfake", "response_url": face_swap_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Face swap synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
-    # empty loop cache from animation if not clear yet
-    gc.collect()
-
-    return {"status": 200}
-
-
-@app.route("/synthesize_mouth_talk/", methods=["POST"])
-@cross_origin()
-def synthesize_mouth_talk():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    # Check ffmpeg
-    is_ffmpeg = is_ffmpeg_installed()
-    if not is_ffmpeg:
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print(get_print_translate("Please wait... Processing is started"))
-
-    if not os.path.exists(CONTENT_ANIMATION_TALK_FOLDER):
-        os.makedirs(CONTENT_ANIMATION_TALK_FOLDER)
-
-    face_fields = request_list.get("face_fields")
-    source_image = os.path.join(TMP_FOLDER, request_list.get("source_media"))
-    driven_audio = os.path.join(TMP_FOLDER, request_list.get("driven_audio"))
-    media_start = request_list.get("media_start", 0)
-    media_end = request_list.get("media_end", 0)
-    emotion_label = request_list.get("emotion_label", None)
-    similar_coeff = float(request_list.get("similar_coeff", 0.95))
-
-    request_time = current_time()
-    request_date = format_dir_time(request_time)
-
-    clear_cache()  # clear empty
-
-    if not check_tmp_file_uploaded(source_image) or not check_tmp_file_uploaded(driven_audio):
-        # check what file is uploaded in tmp
-        print("File is too big... ")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 200}
-
-    mode_msg = get_print_translate("Lip in sync")
-
-    try:
-        animation_talk_result = AnimationMouthTalk.main_video_deepfake(
-            deepfake_dir=CONTENT_ANIMATION_TALK_FOLDER,
-            source=source_image,
-            audio=driven_audio,
-            face_fields=face_fields,
-            video_start=float(media_start),
-            video_end=float(media_end),
-            emotion_label=emotion_label,
-            similar_coeff=similar_coeff
-        )
-
-        torch.cuda.empty_cache()
-    except Exception as err:
-        app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": "", "request_date": request_date, "request_information": get_print_translate("Error")}]
-        print(f"Error ... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    save_folder_name = os.path.basename(CONTENT_FOLDER)
-    animation_talk_filename = f"/{save_folder_name}/" + animation_talk_result.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-    animation_talk_url = url_for("media_file", filename=animation_talk_filename)
-
-    app.config['SYNTHESIZE_RESULT'] += [{"mode": mode_msg, "request_mode": "deepfake", "response_url": animation_talk_url, "request_date": request_date, "request_information": get_print_translate("Successfully")}]
-
-    print("Deepfake synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
-    # empty loop cache from animation if not clear yet
-    gc.collect()
-
-    return {"status": 200}
-
-@app.route("/synthesize_result/", methods=["GET"])
-@cross_origin()
-def get_synthesize_result():
-    general_results = app.config['SYNTHESIZE_RESULT']
-    return {
-        "response_code": 0,
-        "response": general_results
-    }
-
-@app.route("/synthesize_speech/", methods=["POST"])
-@cross_origin()
-def synthesize_speech():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    request_list = request.get_json()
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 300}
-    print(get_print_translate("Please wait... Processing is started"))
-
-    dir_time = current_time()
-    request_date = format_dir_time(dir_time)
-
-    for request_json in request_list:
-        text = request_json["text"]
-        model_type = request_json["voice"]
-
-        options = {
-            "rate": float(request_json.get("rate", 1.0)),
-            "pitch": float(request_json.get("pitch", 1.0)),
-            "volume": float(request_json.get("volume", 0.0))
-        }
-
-        auto_translation = request_json.get("auto_translation", False)
-        lang_translation = request_json.get("lang_translation")
-        rtvc_models_lang = lang_translation  # try to use user lang for rtvc models
-
-        use_voice_clone_on_audio = request_json.get("use_voice_clone_on_audio", False)
-        rtvc_audio_clone_voice = request_json.get("rtvc_audio_clone_voice", "")
-
-        if not rtvc_audio_clone_voice:
-            use_voice_clone_on_audio = False
-
-        # rtvc doesn't have models by user lang, set english models
-        if rtvc_models_config.get(lang_translation) is None:
-            rtvc_models_lang = "en"
-
-        # init only one time the models for voice clone if it is needs
-        if (auto_translation or rtvc_audio_clone_voice) and app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
-            # Check ffmpeg
-            is_ffmpeg = is_ffmpeg_installed()
-            if not is_ffmpeg:
-                app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-                return {"status": 400}
-            # init models
-            encoder, synthesizer, signature, vocoder = load_rtvc(rtvc_models_lang)
-            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "signature": signature, "vocoder": vocoder}
-
-        if model_type:
-            app.config['TTS_LOADED_MODELS'] = load_voice_models(model_type, app.config['TTS_LOADED_MODELS'])
-
-        for model in model_type:
-            # if set auto translate, when get clear translation for source of models to clear synthesis audio
-            # get tacotron2 lang from engine
-            tacotron2_lang = app.config['TTS_LOADED_MODELS'][model].engine.charset
-            if auto_translation:
-                print("User use auto translation. Translate text before TTS.")
-                tts_text = get_translate(text=text, targetLang=tacotron2_lang)
+        if check_tmp_file_uploaded(file_path) and Analyser.is_valid(file_path):
+            lprint(msg="Start to get analysis content.", user=user)
+            response = Analyser.analysis(user_name=user, source_file=file_path)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = response
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = True
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Get analysis {request_id} successfully finished but process busy still.", user=user)
             else:
-                tts_text = text
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": ""}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = None
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg="Error with get analysis because of content is not valid but process busy still.", user=user, level="error")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with get analysis because of content is not valid."}
 
-            response_code, results = TextToSpeech.get_synthesized_audio(tts_text, model, app.config['TTS_LOADED_MODELS'], os.path.join(CONTENT_SPEECH_FOLDER, dir_time), **options)
-
-            if response_code == 0:
-                for result in results:
-                    filename = result.pop("filename")
-
-                    # translated audio if user choose lang not equal for model and set auto translation
-                    # or text has not tacotron lang fonts
-                    # (1) remove clean_text_by_language if I will want to delete multilanguage
-                    if (tacotron2_lang != lang_translation and auto_translation) or clean_text_by_language(text, tacotron2_lang) != clean_text_by_language(text, None, True):
-                        # voice clone on tts audio result
-                        # init models if not defined
-                        if app.config['RTVC_LOADED_MODELS'].get(rtvc_models_lang) is None:
-                            encoder, synthesizer, signature, vocoder = load_rtvc(rtvc_models_lang)
-                            app.config['RTVC_LOADED_MODELS'][rtvc_models_lang] = {"encoder": encoder, "synthesizer": synthesizer, "signature": signature, "vocoder": vocoder}
-                        # get models
-                        encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
-                        synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
-                        signature = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["signature"]
-                        vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
-
-                        # text translated inside get_synthesized_audio
-                        response_code, clone_result = VoiceCloneTranslate.get_synthesized_audio(
-                            audio_file=filename, encoder=encoder, synthesizer=synthesizer, signature=signature,
-                            vocoder=vocoder, text=text, src_lang=lang_translation, need_translate=auto_translation,
-                            save_folder=os.path.join(CONTENT_SPEECH_FOLDER, dir_time), tts_model_name=model, converted_wav=False
-                        )
-
-                        if response_code == 0:
-                            result = clone_result
-                            # get new filename
-                            filename = result.pop("filename")
-                        else:
-                            print("Error...during clone synthesized voice")
-
-                    result["file_name"] = os.path.basename(filename)
-                    save_folder_name = os.path.basename(CONTENT_FOLDER)
-                    filename = f"/{save_folder_name}/" + filename.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-                    print("Synthesized file: ", filename)
-                    result.pop("response_audio")
-                    result["response_url"] = url_for("media_file", filename=filename)
-                    result["response_code"] = response_code
-                    result["request_date"] = request_date
-                    result["request_information"] = text
-                    result["request_mode"] = "speech"
-                    result["voice"] = get_print_translate(result.get("voice"))
-                    # Add result in frontend
-                    app.config['SYNTHESIZE_RESULT'] += [result]
-
-        # here use for voice cloning of audio file without tts
-        if use_voice_clone_on_audio:
-            encoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["encoder"]
-            synthesizer = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["synthesizer"]
-            signature = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["signature"]
-            vocoder = app.config['RTVC_LOADED_MODELS'][rtvc_models_lang]["vocoder"]
-            rtvc_audio_clone_path = os.path.join(TMP_FOLDER, rtvc_audio_clone_voice)
-
-            response_code, result = VoiceCloneTranslate.get_synthesized_audio(
-                audio_file=rtvc_audio_clone_path, encoder=encoder, synthesizer=synthesizer, signature=signature, vocoder=vocoder,
-                text=text, src_lang=lang_translation, need_translate=auto_translation, save_folder= os.path.join(CONTENT_SPEECH_FOLDER, dir_time)
-            )
-            if response_code == 0:
-                filename = result.pop("filename")
-                result["file_name"] = os.path.basename(filename)
-                save_folder_name = os.path.basename(CONTENT_FOLDER)
-                filename = f"/{save_folder_name}/" + filename.replace("\\", "/").split(f"/{save_folder_name}/")[-1]
-                print("Synthesized file: ", filename)
-                result.pop("response_audio")
-                result["response_url"] = url_for("media_file", filename=filename)
-                result["response_code"] = response_code
-                result["request_date"] = request_date
-                result["request_information"] = text
-                result["request_mode"] = "speech"
-                result["voice"] = get_print_translate(result.get("voice"))
-                # Add result in frontend
-                app.config['SYNTHESIZE_RESULT'] += [result]
-
-    # remove subfiles
-    try:
-        result_filenames = []
-        for result in app.config['SYNTHESIZE_RESULT']:
-            if result.get("file_name"):
-                result_filenames += [result["file_name"]]
-        current_result_folder = os.path.join(CONTENT_SPEECH_FOLDER, dir_time)
-        for f in os.listdir(current_result_folder):
-            if f not in result_filenames:
-                os.remove(os.path.join(current_result_folder, f))
     except Exception as err:
-        print("Some error during remove files for speech synthesis")
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = None
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg="Error with get analysis on CPU but process busy still.", user=user, level="error")
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with get analysis on CPU."}
 
-    app.config['RTVC_LOADED_MODELS'] = {}  # remove RTVC models
-    print("Text to speech synthesis completed successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    # Update disk space size
-    app.config['FOLDER_SIZE_RESULT'] = {"drive": get_folder_size(CONTENT_FOLDER)}
-    # empty cache
-    torch.cuda.empty_cache()
+    clear_cache()
 
-    return {"status": 200}
+"""CPU TASKS"""
+"""GPU TASKS"""
+
+@app.route("/submit-module-task", methods=["POST"])
+@cross_origin()
+def submit_module_task():
+    # Generate a unique ID for the request
+    request_id = str(uuid.uuid4())
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
+
+    data = request.get_json()
+    method = data.pop('method') if data.get('method') is not None else None
+    # Keep datetime to clear old sessions
+    queue_data = {user_id: {request_id: {"method": method, "data": data, "completed": False, "busy": None, "response": {}, "date": datetime.now()}}}
+
+    module_methods = [CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_REMOVE_OBJECT_FOLDER_NAME,
+                      CONTENT_FACE_SWAP_FOLDER_NAME, CONTENT_ENHANCEMENT_FOLDER_NAME,
+                      CONTENT_LIP_SYNC_FOLDER_NAME, CONTENT_SEPARATOR_FOLDER_NAME]
+
+    if method not in module_methods:
+        return jsonify({"status": 404, "message": "Method not found for module task."})
+
+    # Message about community version
+    current_queue_module = app.config["QUEUE_MODULE"].copy()
+    for user in current_queue_module.keys():
+        # Create a copy of the keys before iterating over them
+        request_ids = list(current_queue_module[user].keys())
+        for request_id in request_ids:
+            busy = current_queue_module[user][request_id].get("busy", False)  # run only with None
+            if busy:
+                return jsonify({"status": 300, "message": "Community Edition version can run only one task at the same time."})
+
+    for user in queue_data.keys():
+        if app.config["QUEUE_MODULE"].get(user) is None:
+            app.config["QUEUE_MODULE"][user] = {}
+        for request_id in queue_data[user].keys():
+            app.config["QUEUE_MODULE"][user][request_id] = queue_data[user][request_id]
+            lprint(msg=f"Add in background module processing on {str(os.environ.get('WUNJO_TORCH_DEVICE', 'cpu')).upper()} {request_id}", user=user_id)
+
+    return jsonify({"status": 200, "message": "Updated delay module task.", "id": request_id})
+
+
+@app.route("/query-module-task/<method>", methods=["GET"])
+@cross_origin()
+def query_module_task(method):
+    user_id = user_valid()
+    if user_id is None:
+        lprint(msg="System couldn't identify user IP address.")
+        return jsonify({"status": 404, "message": "System couldn't identify your IP address."})
+    user_busy_task = []
+
+    if app.config["QUEUE_MODULE"].get(user_id) is not None:
+        user_queue_module = app.config["QUEUE_MODULE"][user_id].copy()
+        request_ids = list(user_queue_module.keys())
+        for request_id in request_ids:
+            user_method = user_queue_module[request_id].get("method")
+            completed = user_queue_module[request_id].get("completed", False)
+            if method == user_method and completed:
+                app.config["QUEUE_MODULE"][user_id].pop(request_id)  # Clear completed task
+                return jsonify({"status": 201, "message": "Successfully!", "response": [{"request_id": request_id}]})
+            if completed == "cancel":
+                # Remove canceled task
+                app.config["QUEUE_MODULE"][user_id].pop(request_id)  # Clear
+            if method == user_method and not completed:
+                created = user_queue_module[request_id].get("date")  # date created
+                data = user_queue_module[request_id].get("data")  # parameters data
+                module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+                user_save_name = module_parameters.get("nameFile")
+                user_busy_task.append({"request_id": request_id, "name": user_save_name, "created": created})
+        else:
+            if len(user_busy_task) > 0:
+                return jsonify({"status": 100, "message": "Busy.", "response": user_busy_task})
+            return jsonify({"status": 200, "message": f"Not found module {method} tasks.", "response": None})
+    return jsonify({"status": 200, "message": "Not found task for user.", "response": None})
+
+
+def synthesize_remove_background(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_REMOVE_BACKGROUND_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_REMOVE_BACKGROUND_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        background_color = module_parameters.get("backgroundColor")
+        inverse_mask = module_parameters.get("reverseSelect", False)
+        point_list = module_parameters.get("SAM", [])  # list of dict(x, y, clickType)
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_offset_width = source_file_parameters.get("offsetWidth")
+        source_offset_height = source_file_parameters.get("offsetHeight")
+        source_start_time = source_file_parameters.get("startTime")
+        source_end_time = source_file_parameters.get("endTime")
+
+        if source_start_time and source_end_time:  # set what time not more limits
+            source_start_time = float(source_start_time)
+            source_end_time = min(float(source_end_time), float(source_start_time) + Settings.MAX_DURATION_SEC_REMOVE_BACKGROUND)
+
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+        if check_tmp_file_uploaded(source_file_path) and RemoveBackground.is_valid(source_file_path):
+            valid_point_list = RemoveBackground.is_valid_point_list(point_list, source_offset_width, source_offset_height)
+            if len(valid_point_list.keys()) == 0:
+                raise
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = RemoveBackground.retries_synthesis(
+                folder_name=folder_name, user_name=user_folder, source_file=source_file_path, inverse_mask=inverse_mask,
+                masks=valid_point_list, user_save_name=user_save_name,  segment_percentage=25, source_start=source_start_time,
+                source_end=source_end_time, max_size=Settings.MAX_RESOLUTION_REMOVE_BACKGROUND, mask_color=background_color
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_REMOVE_BACKGROUND_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not image {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not image or video {request_id} but process busy still.", user=user, level="warn")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not image or video {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params remove background {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+def synthesize_remove_object(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_REMOVE_OBJECT_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_REMOVE_OBJECT_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        use_improved_model = module_parameters.get("modelImproved", False)
+        use_remove_text = module_parameters.get("useRemoveText", False)
+        inverse_mask = module_parameters.get("reverseSelect", False)
+        point_list = module_parameters.get("SAM", [])  # list of dict(x, y, clickType)
+        text_area = module_parameters.get("cropField", [])  # list of dict(x, y, width, height)
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_offset_width = source_file_parameters.get("offsetWidth")
+        source_offset_height = source_file_parameters.get("offsetHeight")
+        source_start_time = source_file_parameters.get("startTime")
+        source_end_time = source_file_parameters.get("endTime")
+
+        if source_start_time and source_end_time:  # set what time not more limits
+            source_start_time = float(source_start_time)
+            source_end_time = min(float(source_end_time), float(source_start_time) + Settings.MAX_DURATION_SEC_REMOVE_OBJECT)
+
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+        if check_tmp_file_uploaded(source_file_path) and RemoveObject.is_valid(source_file_path):
+            valid_point_list = RemoveObject.is_valid_point_list(point_list, source_offset_width, source_offset_height)
+            valid_text_area = RemoveObject.is_valid_text_area(text_area, source_offset_width, source_offset_height)
+            if (len(valid_point_list.keys()) == 0 and not use_remove_text) and (len(valid_text_area.keys()) == 0 and use_remove_text):
+                raise
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = RemoveObject.retries_synthesis(
+                folder_name=folder_name, user_name=user_folder, source_file=source_file_path, use_improved_model=use_improved_model,
+                masks=valid_point_list, user_save_name=user_save_name,  segment_percentage=25, source_start=source_start_time, inverse_mask=inverse_mask,
+                source_end=source_end_time, max_size=Settings.MAX_RESOLUTION_REMOVE_OBJECT, text_area=valid_text_area, use_remove_text=use_remove_text
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_REMOVE_OBJECT_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not image or video {request_id} but process busy still.", user=user, level="warn")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not image or video {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params remove object {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+def synthesize_face_swap(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_FACE_SWAP_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_FACE_SWAP_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        face_discrimination_factor = float(module_parameters.get("faceDiscriminationFactor", 1))
+        is_gemini_faces = module_parameters.get("isGeminiFaces", False)
+        replace_all_faces = module_parameters.get("replaceAllFaces", False)
+        avatar_crop_face = module_parameters.get("avatarCropField", [])  # list of dict(x, y, width, height)
+        changing_crop_face = module_parameters.get("cropField", [])  # list of dict(x, y, width, height)
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+        source_offset_width = int(source_file_parameters.get("offsetWidth"))
+        source_offset_height = int(source_file_parameters.get("offsetHeight"))
+        source_natural_width = int(source_file_parameters.get("naturalWidth"))
+        source_natural_height = int(source_file_parameters.get("naturalHeight"))
+        source_start_time = source_file_parameters.get("startTime")
+        source_end_time = source_file_parameters.get("endTime")
+
+        if source_start_time and source_end_time:  # set what time not more limits
+            source_start_time = float(source_start_time)
+            source_end_time = min(float(source_end_time), float(source_start_time) + Settings.MAX_DURATION_SEC_FACE_SWAP)
+
+        avatar_file_parameters = data.get("avatarFile") if isinstance(data, dict) else {}
+        avatar_file_name = avatar_file_parameters.get("nameFile")
+        avatar_file_path = os.path.join(TMP_FOLDER, str(avatar_file_name))
+        avatar_offset_width = int(avatar_file_parameters.get("offsetWidth"))
+        avatar_offset_height = int(avatar_file_parameters.get("offsetHeight"))
+
+        # valid data
+        valid_source_area = FaceSwap.is_valid_source_area(changing_crop_face, source_offset_width, source_offset_height)
+        valid_avatar_area = FaceSwap.is_valid_avatar_area(avatar_crop_face, avatar_offset_width, avatar_offset_height)
+        resize_factor = FaceSwap.get_resize_factor(source_natural_width, source_natural_height, max_size=Settings.MAX_RESOLUTION_FACE_SWAP)
+        is_valid_source = True if check_tmp_file_uploaded(source_file_path) and FaceSwap.is_valid(source_file_path) else False
+        is_valid_avatar = True if check_tmp_file_uploaded(avatar_file_path) and FaceSwap.is_valid_avatar_image(avatar_file_path) else False
+
+        if is_valid_source and is_valid_avatar:
+            if len(valid_source_area) == 0 or len(valid_avatar_area) == 0:
+                raise
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = FaceSwap.retries_synthesis(
+                folder_name=folder_name, user_name=user_folder, source_file=source_file_path, avatar_file=avatar_file_path,
+                user_save_name=user_save_name, source_crop_area=valid_source_area, avatar_crop_area=valid_avatar_area,
+                source_start=source_start_time, source_end=source_end_time, is_gemini_faces=is_gemini_faces,
+                replace_all_faces=replace_all_faces, face_discrimination_factor=face_discrimination_factor,
+                resize_factor=resize_factor
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_FACE_SWAP_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not image or video {request_id} but process busy still.", user=user, level="warn")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not image or video {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params face swap {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+def synthesize_enhancement(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_ENHANCEMENT_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_ENHANCEMENT_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        enhancement_model = module_parameters.get("model", "gfpgan")
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+
+        is_valid_source = True if check_tmp_file_uploaded(source_file_path) and Enhancement.is_valid(source_file_path) else False
+
+        if is_valid_source:
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = Enhancement.retries_synthesis(
+                folder_name=folder_name, user_name=user, source_file=source_file_path,
+                user_save_name=user_save_name, enhancer=enhancement_model
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200,"message": f"Successfully finished by task {request_id} in {CONTENT_ENHANCEMENT_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not image or video {request_id} but process busy still.", user=user, level="warn")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not image or video {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params face swap {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+def synthesize_lip_sync(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_LIP_SYNC_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_LIP_SYNC_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        face_discrimination_factor = float(module_parameters.get("faceDiscriminationFactor", 1))
+        changing_crop_face = module_parameters.get("cropField", [])  # list of dict(x, y, width, height)
+        overlay_audio = module_parameters.get("overlayAudio", False)
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+        source_offset_width = int(source_file_parameters.get("offsetWidth"))
+        source_offset_height = int(source_file_parameters.get("offsetHeight"))
+        source_natural_width = int(source_file_parameters.get("naturalWidth"))
+        source_natural_height = int(source_file_parameters.get("naturalHeight"))
+        source_start_time = source_file_parameters.get("startTime")
+        source_end_time = source_file_parameters.get("endTime")
+
+        if source_start_time and source_end_time:  # set what time not more limits
+            source_start_time = float(source_start_time)
+            source_end_time = min(float(source_end_time), float(source_start_time) + Settings.MAX_DURATION_SEC_LIP_SYNC)
+
+        audio_file_parameters = data.get("audioFile") if isinstance(data, dict) else {}
+        audio_file_name = audio_file_parameters.get("nameFile")
+        audio_file_path = os.path.join(TMP_FOLDER, str(audio_file_name))
+        audio_start_time = audio_file_parameters.get("startTime")
+        audio_end_time = audio_file_parameters.get("endTime")
+
+        if audio_start_time and audio_end_time:  # set what time not more limits
+            audio_start_time = float(audio_start_time)
+            audio_end_time = min(float(audio_end_time), float(audio_start_time) + Settings.MAX_DURATION_SEC_LIP_SYNC)
+
+        # valid data
+        valid_source_area = LipSync.is_valid_source_area(changing_crop_face, source_offset_width, source_offset_height)
+        resize_factor = LipSync.get_resize_factor(source_natural_width, source_natural_height, max_size=Settings.MAX_RESOLUTION_FACE_SWAP)
+        is_valid_source = True if check_tmp_file_uploaded(source_file_path) and LipSync.is_valid(source_file_path) else False
+        is_valid_audio = True if check_tmp_file_uploaded(audio_file_path) and LipSync.is_valid_audio(audio_file_path) else False
+
+        if is_valid_source and is_valid_audio:
+            if len(valid_source_area) == 0:
+                raise
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = LipSync.retries_synthesis(
+                folder_name=folder_name, user_name=user_folder, source_file=source_file_path, audio_file=audio_file_path,
+                user_save_name=user_save_name, source_crop_area=valid_source_area, source_start=source_start_time,
+                source_end=source_end_time, audio_start=audio_start_time, audio_end=audio_end_time, overlay_audio=overlay_audio,
+                face_discrimination_factor=face_discrimination_factor, resize_factor=resize_factor
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_LIP_SYNC_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not image/video and audio {request_id} but process busy still.", user=user, level="warn")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not image/video and audio {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params lip sync {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+def synthesize_separator(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_SEPARATOR_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_SEPARATOR_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        extractMethod = module_parameters.get("extractMethod", "vocals")
+        trim_silence = module_parameters.get("trimSilence", False)
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+        source_start_time = source_file_parameters.get("startTime")
+        source_end_time = source_file_parameters.get("endTime")
+
+        if source_start_time and source_end_time:  # set what time not more limits
+            source_start_time = float(source_start_time)
+            source_end_time = min(float(source_end_time), float(source_start_time) + Settings.MAX_DURATION_SEC_SEPARATOR)
+
+        # valid data
+        is_valid_source = True if check_tmp_file_uploaded(source_file_path) and Separator.is_valid_audio(source_file_path) else False
+
+        if is_valid_source:
+
+            processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+            response = Separator.synthesis(
+                folder_name=folder_name, user_name=user_folder, source_file=source_file_path, trim_silence=trim_silence,
+                user_save_name=user_save_name, target=extractMethod
+            )
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_SEPARATOR_FOLDER_NAME}"}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_MODULE"][user].get(request_id):
+                app.config["QUEUE_MODULE"][user][request_id]["response"] = None
+                app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+                app.config["QUEUE_MODULE"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"This is not audio {request_id} but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 300, "message": f"This is not audio {request_id}."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params separator {request_id}."}
+
+    # Clear cache
+    clear_cache()
+
+
+# @app.route('/test', methods=["GET"])
+# @cross_origin()
+# def test():
+#     app.config["QUEUE_MODULE"] = {'127.0.0.1': {'103f9a05-9656-4dec-90ed-b3d5a9da6614': {'method': 'enhancement', 'data': {'moduleParameters': {'nameFile': '2055d3cc-1fd2-4f43-aa24-d74c2b544cab', 'model': 'animesgan'}, 'sourceFile': {'nameFile': 'cfa0b4d9-8280-41a8-a41f-640d573d426c.mp4', 'urlFile': None, 'formatFile': 'mp4', 'fileSizeBytes': 872047, 'naturalWidth': 450, 'naturalHeight': 811, 'offsetWidth': None, 'offsetHeight': None, 'startTime': None, 'endTime': None}}, 'completed': False, 'busy': None, 'response': {}, 'date': datetime.now()}}}
+#     background_task_module()
+#     return jsonify({"status": 200})
+
+"""GPU TASKS"""
+"""SYSTEM LOGICAL WITH LIMITS"""
+
+
+@app.route('/get-resolution/<module_id>', methods=["GET"])
+@cross_origin()
+def get_resolution(module_id):
+    max_content_size = 1920  # max size more than will be resize down
+    if module_id == CONTENT_REMOVE_BACKGROUND_FOLDER_NAME:
+        max_content_size = Settings.MAX_RESOLUTION_REMOVE_BACKGROUND
+    if module_id == CONTENT_REMOVE_OBJECT_FOLDER_NAME:
+        max_content_size = Settings.MAX_RESOLUTION_REMOVE_OBJECT
+    if module_id == CONTENT_FACE_SWAP_FOLDER_NAME:
+        max_content_size = Settings.MAX_RESOLUTION_FACE_SWAP
+    if module_id == CONTENT_ENHANCEMENT_FOLDER_NAME:
+        max_content_size = Settings.MAX_RESOLUTION_ENHANCEMENT
+    if module_id == CONTENT_LIP_SYNC_FOLDER_NAME:
+        max_content_size = Settings.MAX_RESOLUTION_LIP_SYNC
+    return jsonify({"status": 200, "max_content_size": max_content_size})
+
+
+def background_task_cpu():
+    max_queue_cpu_task = Settings.CPU_MAX_QUEUE_ALL_USER  # max number task
+    num_queue_one_user = Settings.CPU_MAX_QUEUE_ONE_USER  # max number task for one user
+    cancel_delay_time = datetime.now() - timedelta(minutes=Settings.CPU_QUEUE_CANCEL_TIME_MIN)
+    # Filter old task and calculate number busy task
+    tasks = []
+    current_queue_cpu = app.config["QUEUE_CPU"].copy()
+    for user in current_queue_cpu.keys():
+        user_tasks = []
+        # Create a copy of the keys before iterating over them
+        request_ids = list(current_queue_cpu[user].keys())
+        for request_id in request_ids:
+            busy = current_queue_cpu[user][request_id].get("busy", False)  # run only with None
+            date = current_queue_cpu[user][request_id].get("date")
+            method = current_queue_cpu[user][request_id].get("method", None)
+            if not busy and date is not None and date < cancel_delay_time:
+                app.config["QUEUE_CPU"][user].pop(request_id)
+                continue
+            if busy:
+                max_queue_cpu_task -= 1
+            elif busy is None:
+                user_tasks.append((date, user, request_id, method))
+        else:
+            tasks.extend(user_tasks[:num_queue_one_user])
+
+    sorted_tasks = sorted(tasks, key=lambda x: x[0])
+
+    if max_queue_cpu_task > 0:
+        for task in sorted_tasks[:max_queue_cpu_task]:
+            _, available_ram_gb, busy_ram_gb = get_ram_gb()
+
+            print(f"RAM for task CPU before {available_ram_gb} and busy {busy_ram_gb}.")
+
+            date, user, request_id, method = task
+
+            if app.config["QUEUE_CPU"][user].get(request_id) is None:
+                continue
+
+            if method == CONTENT_REMOVE_BACKGROUND_FOLDER_NAME:
+                if available_ram_gb > Settings.MIN_RAM_CPU_TASK_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_sam_embedding(user, request_id)
+            elif method == CONTENT_REMOVE_OBJECT_FOLDER_NAME:
+                if available_ram_gb > Settings.MIN_RAM_CPU_TASK_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_sam_embedding(user, request_id)
+            elif method == CONTENT_ANALYSIS_NAME:
+                if available_ram_gb > Settings.MIN_RAM_CPU_TASK_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_analysis(user, request_id)
+            else:
+                app.config["QUEUE_CPU"][user].pop(request_id)  # Remove task if not found method and enough RAM
+
+            # Set delay to load models in RAM or VRAM and get real memory
+            sleep(Settings.CPU_DELAY_TIME_SEC)
+
+
+def background_task_module():
+    """
+    Can be on GPU or CPU
+    """
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    max_queue_module_task = 1
+    cancel_delay_time = datetime.now() - timedelta(minutes=Settings.MODULE_QUEUE_CANCEL_TIME_MIN)
+    # Filter old task and calculate number busy task
+    tasks = []
+    current_queue_module = app.config["QUEUE_MODULE"].copy()
+
+    for user in current_queue_module.keys():
+        user_tasks = []
+        # Create a copy of the keys before iterating over them
+        request_ids = list(current_queue_module[user].keys())
+        for request_id in request_ids:
+            busy = current_queue_module[user][request_id].get("busy", False)  # run only with None
+            date = current_queue_module[user][request_id].get("date")
+            method = current_queue_module[user][request_id].get("method", None)
+            if not busy and date is not None and date < cancel_delay_time:
+                app.config["QUEUE_MODULE"][user].pop(request_id)
+                continue
+            if busy:
+                max_queue_module_task -= 1
+            elif busy is None:
+                user_tasks.append((date, user, request_id, method))
+        else:
+            tasks.extend(user_tasks[:1])
+
+    sorted_tasks = sorted(tasks, key=lambda x: x[0])
+
+    # Check min RAM and VRAM from settings if max queue module task can be work a few task else run without check
+    if max_queue_module_task > 0:
+        for task in sorted_tasks[:1]:
+            _, available_ram_gb, busy_ram_gb = get_ram_gb()
+            _, available_vram_gb, busy_vram_gb = get_vram_gb()
+
+            print(f"RAM for task module before {available_ram_gb} and busy {busy_ram_gb}.")
+            print(f"VRAM for task module before {available_vram_gb} and busy {busy_vram_gb}.")
+
+            date, user, request_id, method = task
+
+            if app.config["QUEUE_MODULE"][user].get(request_id) is None:
+                continue
+
+            if method == CONTENT_REMOVE_BACKGROUND_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_REMOVE_BACKGROUND_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_remove_background(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_VRAM_REMOVE_BACKGROUND_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_REMOVE_BACKGROUND_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_remove_background(user, request_id)
+            elif method == CONTENT_REMOVE_OBJECT_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_REMOVE_OBJECT_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_remove_object(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_VRAM_REMOVE_OBJECT_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_REMOVE_OBJECT_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_remove_object(user, request_id)
+            elif method == CONTENT_FACE_SWAP_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_FACE_SWAP_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_face_swap(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_VRAM_FACE_SWAP_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_FACE_SWAP_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_face_swap(user, request_id)
+            elif method == CONTENT_ENHANCEMENT_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_ENHANCEMENT_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_enhancement(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_RAM_ENHANCEMENT_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_ENHANCEMENT_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_enhancement(user, request_id)
+            elif method == CONTENT_LIP_SYNC_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_LIP_SYNC_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_lip_sync(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_VRAM_LIP_SYNC_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_LIP_SYNC_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_lip_sync(user, request_id)
+            elif method == CONTENT_SEPARATOR_FOLDER_NAME:
+                if use_cpu:  # if use cpu, then only ram using
+                    if available_ram_gb > Settings.MIN_RAM_SEPARATOR_GB or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_separator(user, request_id)
+                else:  # if use gpu, then vram using and less ram than on cpu
+                    memory_threshold = max(Settings.MIN_VRAM_SEPARATOR_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_SEPARATOR_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_separator(user, request_id)
+            else:
+                app.config["QUEUE_MODULE"][user].pop(request_id)  # Remove task if not found method
+
+            # Set delay to load models in RAM or VRAM and get real memory
+            sleep(Settings.MODULE_DELAY_TIME_SEC)
+
+
+def background_clear_memory():
+    clear_delay_time = datetime.now() - timedelta(minutes=3)  # minute
+
+    current_queue_cpu = app.config["QUEUE_CPU"].copy()
+    for user in current_queue_cpu.keys():
+        # Create a copy of the keys before iterating over them
+        request_ids = list(current_queue_cpu[user].keys())
+        for request_id in request_ids:
+            completed_date = current_queue_cpu[user][request_id].get("completed_date")
+            if completed_date is not None and completed_date < clear_delay_time:
+                app.config["QUEUE_CPU"][user].pop(request_id)
+
+    current_queue_module = app.config["QUEUE_MODULE"].copy()
+    for user in current_queue_module.keys():
+        # Create a copy of the keys before iterating over them
+        request_ids = list(current_queue_module[user].keys())
+        for request_id in request_ids:
+            completed_date = current_queue_module[user][request_id].get("completed_date")
+            if completed_date is not None and completed_date < clear_delay_time:
+                app.config["QUEUE_MODULE"][user].pop(request_id)
+
+    clear_cache()  # clear cache
+
+
+def background_clear_tmp():
+    # Check if any CPU tasks are pending in the queue
+    if any(cpu_task for cpu_task in app.config["QUEUE_CPU"].values() if cpu_task):
+        return
+
+    # Check if any module tasks are pending in the queue
+    if any(module_task for module_task in app.config["QUEUE_MODULE"].values() if module_task):
+        return
+
+    # Clear the temporary folder (TMP_FOLDER) if it's not empty
+    if os.path.exists(TMP_FOLDER):
+        # Iterate over items in TMP_FOLDER
+        for item in os.listdir(TMP_FOLDER):
+            item_path = os.path.join(TMP_FOLDER, item)
+            try:
+                if os.path.isfile(item_path):
+                    os.remove(item_path)  # Remove file
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)  # Recursively remove directory
+            except Exception as e:
+                print(f"Failed to remove {item_path}: {e}")
 
 
 """FEATURE MODELS"""
 
 
-@app.route("/synthesize_process/", methods=["GET"])
+@app.route('/get-access', methods=["GET"])
+@cross_origin()
+def get_access():
+    user_id = user_valid()
+    full_access = True if user_id == Settings.ADMIN_ID else False  # user or admin access
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    return {"status": 200, "full_access": full_access, "use_cpu": use_cpu, "session": getattr(Settings, "SESSION", None)}
+
+
+@app.route("/synthesize-process/", methods=["GET"])
 @cross_origin()
 def get_synthesize_status():
-    status = app.config['SYNTHESIZE_STATUS']
-    return status
+    user_id = user_valid()
+    if user_id is None:
+        return {"status": 404, "message": "Oops! System couldn't identify your IP address.\nDon't worry, click here to download the log!"}
+
+    user_status = app.config['SYNTHESIZE_STATUS'].get(user_id, None)
+    if user_status is None:
+        user_status = {"status": 200, "message": ""}
+        app.config['SYNTHESIZE_STATUS'][user_id] = user_status
+    return user_status
 
 
-@app.route("/system_resources_status/", methods=["GET"])
+@app.route("/system-resources", methods=["GET"])
 @cross_origin()
 def get_system_resources_status():
-    status = app.config['FOLDER_SIZE_RESULT']
-    return jsonify(status)
+    total_vram_gb, available_vram_gb, _ = get_vram_gb()
+    total_ram_gb, available_ram_gb, _ = get_ram_gb()
+    return jsonify({"status": 200, "models_drive": get_folder_size(ALL_MODEL_FOLDER) / 1024, "content_drive": get_folder_size(CONTENT_FOLDER) / 1024, "total_vram": total_vram_gb, "available_vram": available_vram_gb, "total_ram": total_ram_gb, "available_ram": available_ram_gb})
 
 
-@app.route('/change_internet_mode', methods=["POST"])
+@app.route('/set-init-config', methods=["POST"])
 @cross_origin()
-def change_internet_mode():
-    settings = set_settings()
-    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
-    use_offline = not settings.get("offline_mode", False)
-    with open(setting_file, 'w') as f:
-        settings["offline_mode"] = use_offline
-        json.dump(settings, f)
-    os.environ['WUNJO_OFFLINE_MODE'] = str(use_offline)
-    if use_offline:
-        print("Online mode turn on")
-    else:
-        print("Offline mode turn on")
-    return {"status": 200, "use_offline": use_offline}
+def set_init_config():
+    user_id = user_valid()
+    if user_id is None or user_id != Settings.ADMIN_ID:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+    data = request.get_json()
+    Settings.config_manager.update_config(data)
+    for k, v in data.items():
+        setattr(Settings, k, v)
+    return {"status": 200}
 
-@app.route('/get_internet_mode', methods=["POST"])
+
+@app.route('/get-init-config', methods=["GET"])
 @cross_origin()
-def get_internet_mode():
-    settings = set_settings()
-    return {"status": 200, "use_offline": settings.get("offline_mode", False)}
+def get_init_config():
+    all_parameters = Settings.config_manager.get_all_parameters().copy()
+    all_parameters.pop("SECRET_KEY", None)
+    all_parameters.pop("ADMIN_ID", None)
+    return {"status": 200, "all_parameters": all_parameters}
 
-@app.route('/set_webgui', methods=["POST"])
+@app.route('/set-port', methods=["POST"])
 @cross_origin()
-def set_webgui():
-    utils_config = get_utils_config(SETTING_FOLDER)
-    browser_path = get_custom_browser(SETTING_FOLDER, utils_config)
-    settings = set_settings()
-    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
-    with open(setting_file, 'w') as f:
-        settings["browser"] = "webgui"
-        json.dump(settings, f)
-    print("In order to load new WebGUI, you need to restart the application")
+def set_port():
+    user_id = user_valid()
+    if user_id is None or user_id != Settings.ADMIN_ID:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+    data = request.get_json()
+    port = data.get('port', Settings.STATIC_PORT)
+    if port and isinstance(port, int):
+        Settings.config_manager.update_config({"STATIC_PORT": port})  # update config file
+        Settings.STATIC_PORT = port
+        lprint(f"New port {port} is set.", user=user_id, level="info")
+        return jsonify({"status": 200, "port": port})
+    return jsonify({"status": 300, "message": ""})
 
-    return {
-        "response_code": 0,
-        "response": f"Downloaded WebGUI {browser_path}"
-    }
 
-@app.route('/get_current_browser', methods=["POST"])
+@app.route('/get-port', methods=["GET"])
 @cross_origin()
-def get_current_browser():
-    settings = set_settings()
-    return {"current_browser": settings.get("browser", "default")}
+def get_port():
+    user_id = user_valid()
+    if user_id is None or user_id != Settings.ADMIN_ID:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+    return {"status": 200, "port": Settings.STATIC_PORT, "run_port": app.config['PORT']}
 
-@app.route('/change_processor', methods=["POST"])
+
+@app.route('/get-processor', methods=["GET"])
 @cross_origin()
-def change_processor():
+def get_processor():
+    if torch.cuda.is_available():
+        return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": True}
+    return {"current_processor": os.environ.get('WUNJO_TORCH_DEVICE', "cpu"), "upgrade_gpu": False}
+
+
+@app.route('/set-processor', methods=["POST"])
+@cross_origin()
+def set_processor():
+    user_id = user_valid()
+    if user_id is None or user_id != Settings.ADMIN_ID:
+        lprint(msg="System couldn't identify user IP address.", is_server=False)
+        return {"status": 404, "message": "System couldn't identify your IP address."}
+
+    if getattr(Settings, 'SESSION', None) is None:
+        setattr(Settings, 'SESSION', True)
+
     current_processor = os.environ.get('WUNJO_TORCH_DEVICE', "cpu")
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") == 200:
+    current_users_status = app.config['SYNTHESIZE_STATUS'].copy()
+
+    # 200, 300, 404 - processed finished, 100 is busy
+    if any(u.get("status") not in [200, 300, 404] for u in current_users_status.values()):
+        lprint(msg="At the moment, the model is running on some processor. You cannot change the processor during processing. Wait for the process to complete.", user=user_id, level="info")
+        return {"current_processor": current_processor}
+    else:
         if not torch.cuda.is_available():
-            print("No GPU driver was found on your computer. Working on the GPU will speed up the generation of content several times.")
-            print("Visit the documentation https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki to learn how to install drivers for your computer.")
+            lprint(msg="No GPU driver was found on your computer. Working on the GPU will speed up the generation of content several times.", level="warn", user=user_id)
+            lprint(msg="Visit the documentation https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki to learn how to install drivers for your computer.", level="warn", user=user_id)
             return {"current_processor": 'none'}  # will be message how install cuda or hust hidden changer
         if current_processor == "cpu":
-            print("You turn on GPU")
-            os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
+            lprint(msg="You turn on GPU", user=user_id)
+            processor('cuda')
             return {"current_processor": 'cuda'}
         else:
-            print("You turn on CPU")
-            os.environ['WUNJO_TORCH_DEVICE'] = 'cpu'
+            lprint(msg="You turn on CPU", user=user_id)
+            processor('cpu')
             return {"current_processor": 'cpu'}
-    return {"current_processor": current_processor}
+
+
+@app.route('/session', methods=["POST"])
+@cross_origin()
+def set_session():
+    return {"status": 200}
+
+
+def processor(val):
+    os.environ['WUNJO_TORCH_DEVICE'] = val if 'cuda' == val and torch.cuda.is_available() else 'cpu'
 
 
 if not app.config['DEBUG']:
     from time import time
     from io import StringIO
 
-
-    if sys.platform == 'darwin':
-        print("http://127.0.0.1:8000")
+    lprint(f"http://127.0.0.1:{app.config['PORT']}")
+    lprint(f"http://127.0.0.1:{app.config['PORT']}/console-log")
 
     class TimestampedIO(StringIO):
         def __init__(self):
@@ -1247,9 +1639,9 @@ if not app.config['DEBUG']:
     sys.stderr = console_stderr  # errors and warnings
 
 
-    @app.route('/console_log', methods=['GET'])
+    @app.route('/console-log', methods=['GET'])
     def console_log():
-        max_len_logs = 30
+        max_len_logs = 1000
 
         replace_phrases = [
             "* Debug mode: off", "* Serving Flask app 'wunjo.app'",
@@ -1260,63 +1652,47 @@ if not app.config['DEBUG']:
         combined_logs = console_stdout.logs + console_stderr.logs
         combined_logs.sort(key=lambda x: x[0])  # Sort by timestamp
 
+        # Escape sequences to remove
+        escape_sequence = '\u001b'
+
+        # Get user id for log
+        user_id = user_valid()
+        if user_id is None:
+            return jsonify([])
+
         # Covert bytes log
         combined_logs = [(log[0], log[1].decode('utf-8')) if isinstance(log[1], bytes) else log for log in combined_logs]
 
-        # Filter out unwanted phrases and extract log messages
-        filtered_logs = [
-            log[1] for log in combined_logs
-            if not any(phrase in log[1] for phrase in replace_phrases)
-        ]
+        # Filter out unwanted phrases and extract log messages and show user only user log if not admin
+        if user_id != Settings.ADMIN_ID:
+            user_folder_name = user_id.replace(".", "_")
+            filtered_logs = [
+                log[1] for log in combined_logs
+                if (escape_sequence not in log[1]) and not any(phrase in log[1] for phrase in replace_phrases) and (user_folder_name in log[1])
+            ]
+        else:
+            filtered_logs = [
+                log[1] for log in combined_logs
+                if (escape_sequence not in log[1]) and not any(phrase in log[1] for phrase in replace_phrases)
+            ]
 
         # Send the last max_len_logs lines to the frontend
         return jsonify(filtered_logs[-max_len_logs:])
 else:
-    os.environ['WUNJO_TORCH_DEVICE'] = 'cuda'
-
-    @app.route('/console_log', methods=['GET'])
+    @app.route('/console-log', methods=['GET'])
     def console_log():
         logs = ["Debug mode. Console is turned off"]
         return jsonify(logs)
 
 
-@app.route('/console_log_print', methods=['POST'])
+@app.route('/console-log-print', methods=['POST'])
 def console_log_print():
     resp = request.get_json()
     msg = resp.get("print", None)
     if msg:
-        print(msg)  # show message in backend console
+        user_id = user_valid()
+        lprint(msg=msg, is_server=False, user=user_id if user_id else None)  # show message in backend console
     return jsonify({"status": 200})
-
-
-"""TRAIN MODULE"""
-@app.route('/training_voice', methods=["POST"])
-@cross_origin()
-def common_training_route():
-    # check what it is not repeat button click
-    if app.config['SYNTHESIZE_STATUS'].get("status_code") != 200:
-        print("The process is already running... ")
-        return {"status": 400}
-
-    try:
-        # clear keep models
-        app.config['RTVC_LOADED_MODELS'] = {}
-        app.config['TTS_LOADED_MODELS'] = {}
-        # get params and send
-        print("Sending parameters to route... ")
-        param = request.get_json()
-
-        from train.utils import training_route
-        training_route(param)
-    except Exception as err:
-        print(f"Error training... {err}")
-        app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-        return {"status": 400}
-
-    print("Trained finished successfully!")
-    app.config['SYNTHESIZE_STATUS'] = {"status_code": 200}
-    return {"status": 200}
-"""TRAIN MODULE"""
 
 
 class InvalidVoice(Exception):
@@ -1330,22 +1706,24 @@ def media_file(filename):
 
 
 def main():
-    # Get current settings
-    settings = set_settings()
-    # Set internet mode
-    if settings.get("offline_mode"):
-        os.environ['WUNJO_OFFLINE_MODE'] = 'True'
+    if not app.config['DEBUG']:
+        background_clear_tmp()
+
+    scheduler.add_job(background_task_cpu, 'interval', seconds=10, max_instances=2)
+    scheduler.add_job(background_task_module, 'interval', seconds=30, max_instances=2)
+    scheduler.add_job(background_clear_memory, 'interval', seconds=30, max_instances=1)
+    scheduler.add_job(background_clear_tmp, 'interval', hours=4, max_instances=1)
+    scheduler.start()
+
+    def server(**server_kwargs):
+        server_app = server_kwargs.pop("app", None)
+        server_kwargs.pop("debug", None)
+        server_app.run(host='0.0.0.0', **server_kwargs)
+
+    # Init app by mode, OS and is display or not
+    port = app.config['PORT']  # get set port
+    if not app.config['DEBUG'] and sys.platform != 'darwin' and ((sys.platform == 'linux' and os.environ.get('DISPLAY')) or sys.platform == 'win32'):
+        FlaskUI(server=server, browser_path=WEBGUI_PATH, server_kwargs={"app": app, "port": port}).run()
     else:
-        os.environ['WUNJO_OFFLINE_MODE'] = 'False'
-    # Init app
-    if not app.config['DEBUG'] and sys.platform != 'darwin':
-        # Set browser
-        if settings.get("browser") == "webgui":
-            utils_config = get_utils_config(SETTING_FOLDER)
-            browser_path = get_custom_browser(SETTING_FOLDER, utils_config)
-        else:
-            browser_path = None
-        FlaskUI(app=app, server="flask", browser_path=browser_path).run()
-    else:
-        print("http://127.0.0.1:8000")
-        app.run(port=8000)
+        lprint(f"http://127.0.0.1:{port}")
+        app.run(host="0.0.0.0", port=port)

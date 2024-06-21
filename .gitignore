@@ -3,5 +3,8 @@ venv/
 __pycache__/
 icons/
 dataset/
+portable/src/linux
+portable/src/win
+portable/src/win-unpacked
 gitkey
 NOTE.md

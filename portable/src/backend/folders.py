@@ -27,25 +27,9 @@ SETTING_FOLDER = os.path.join(MEDIA_FOLDER, 'setting')
 if not os.path.exists(SETTING_FOLDER):
     os.makedirs(SETTING_FOLDER)
 
-AVATAR_FOLDER = os.path.join(MEDIA_FOLDER, "avatar")
-if not os.path.exists(AVATAR_FOLDER):
-    os.makedirs(AVATAR_FOLDER)
-
-DEEPFAKE_MODEL_FOLDER = os.path.join(MEDIA_FOLDER, 'deepfake')
-if not os.path.exists(DEEPFAKE_MODEL_FOLDER):
-    os.makedirs(DEEPFAKE_MODEL_FOLDER)
-
-VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'voice')
-if not os.path.exists(VOICE_FOLDER):
-    os.makedirs(VOICE_FOLDER)
-
-RTVC_VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'rtvc')
-if not os.path.exists(RTVC_VOICE_FOLDER):
-    os.makedirs(RTVC_VOICE_FOLDER)
-
-CUSTOM_VOICE_FOLDER = os.path.join(MEDIA_FOLDER, 'user_trained_voice')
-if not os.path.exists(CUSTOM_VOICE_FOLDER):
-    os.makedirs(CUSTOM_VOICE_FOLDER)
+ALL_MODEL_FOLDER = os.path.join(MEDIA_FOLDER, 'all_models')
+if not os.path.exists(ALL_MODEL_FOLDER):
+    os.makedirs(ALL_MODEL_FOLDER)
 
 TMP_FOLDER = os.path.join(MEDIA_FOLDER, 'tmp')
 if not os.path.exists(TMP_FOLDER):
@@ -56,34 +40,11 @@ CONTENT_FOLDER = os.path.join(MEDIA_FOLDER, "content")
 if not os.path.exists(CONTENT_FOLDER):
     os.makedirs(CONTENT_FOLDER)
 
-CONTENT_MEDIA_EDIT_FOLDER = os.path.join(CONTENT_FOLDER, "media_edit")
-if not os.path.exists(CONTENT_MEDIA_EDIT_FOLDER):
-    os.makedirs(CONTENT_MEDIA_EDIT_FOLDER)
-
-CONTENT_AUDIO_SEPARATOR_FOLDER = os.path.join(CONTENT_FOLDER, "audio_separator")
-if not os.path.exists(CONTENT_AUDIO_SEPARATOR_FOLDER):
-    os.makedirs(CONTENT_AUDIO_SEPARATOR_FOLDER)
-
-CONTENT_SPEECH_ENHANCEMENT_FOLDER = os.path.join(CONTENT_FOLDER, "speech_enhancement")
-if not os.path.exists(CONTENT_SPEECH_ENHANCEMENT_FOLDER):
-    os.makedirs(CONTENT_SPEECH_ENHANCEMENT_FOLDER)
-
-CONTENT_DIFFUSER_FOLDER = os.path.join(CONTENT_FOLDER, "diffuser")
-if not os.path.exists(CONTENT_DIFFUSER_FOLDER):
-    os.makedirs(CONTENT_DIFFUSER_FOLDER)
-
-CONTENT_RETOUCH_FOLDER = os.path.join(CONTENT_FOLDER, "retouch")
-if not os.path.exists(CONTENT_RETOUCH_FOLDER):
-    os.makedirs(CONTENT_RETOUCH_FOLDER)
-
-CONTENT_FACE_SWAP_FOLDER = os.path.join(CONTENT_FOLDER, "face_swap")
-if not os.path.exists(CONTENT_FACE_SWAP_FOLDER):
-    os.makedirs(CONTENT_FACE_SWAP_FOLDER)
-
-CONTENT_ANIMATION_TALK_FOLDER = os.path.join(CONTENT_FOLDER, "animation_talk")
-if not os.path.exists(CONTENT_ANIMATION_TALK_FOLDER):
-    os.makedirs(CONTENT_ANIMATION_TALK_FOLDER)
-
-CONTENT_SPEECH_FOLDER = os.path.join(CONTENT_FOLDER, "speech")
-if not os.path.exists(CONTENT_SPEECH_FOLDER):
-    os.makedirs(CONTENT_SPEECH_FOLDER)
+CONTENT_FACE_SWAP_FOLDER_NAME = "face_swap"
+CONTENT_LIP_SYNC_FOLDER_NAME = "lip_sync"
+CONTENT_REMOVE_BACKGROUND_FOLDER_NAME = "remove_background"
+CONTENT_REMOVE_OBJECT_FOLDER_NAME = "remove_object"
+CONTENT_ENHANCEMENT_FOLDER_NAME = "enhancement"
+CONTENT_AVATARS_FOLDER_NAME = "avatars"
+CONTENT_ANALYSIS_NAME = "analysis"
+CONTENT_SEPARATOR_FOLDER_NAME = "separator"

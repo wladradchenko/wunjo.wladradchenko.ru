@@ -5,19 +5,20 @@ import uuid
 
 from tqdm import tqdm
 
-from deepfake.src.utils.videoio import save_video_from_frames
-from backend.folders import DEEPFAKE_MODEL_FOLDER
+from deepfake.src.utils.videoio import VideoManipulation
+from backend.config import Settings
+from backend.folders import ALL_MODEL_FOLDER
 from backend.download import get_nested_url, is_connected, download_model, check_download_size
 
 
 def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
-    if os.path.isfile(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json')):
-        with open(os.path.join(DEEPFAKE_MODEL_FOLDER, 'deepfake.json'), 'r', encoding="utf8") as file:
+    if os.path.isfile(os.path.join(ALL_MODEL_FOLDER, 'all_models.json')):
+        with open(os.path.join(ALL_MODEL_FOLDER, 'all_models.json'), 'r', encoding="utf8") as file:
             config_deepfake = json.load(file)
     else:
-        raise "[Error] Config file deepfake.json is not exist"
+        raise "[Error] Config file all_models.json is not exist"
 
-    local_model_path = os.path.join(DEEPFAKE_MODEL_FOLDER, 'gfpgan', 'weights')
+    local_model_path = os.path.join(ALL_MODEL_FOLDER, 'gfpgan', 'weights')
     save_frame_folder = os.path.join(save_folder, "enhancer")
     os.makedirs(save_frame_folder, exist_ok=True)
 
@@ -29,9 +30,14 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
 
         if not os.path.isfile(model_path):
             # check what is internet access
-            is_connected(model_path)
-            # download pre-trained models from url
-            model_path = url
+            if is_connected(model_path):
+                Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_GFPGAN": True})
+                Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_GFPGAN = True
+                # download pre-trained models from url
+                model_path = url
+            else:
+                print(f"Not internet connection to download model {url} in {model_path}.")
+                raise
 
         restorer = GFPGANer(
             model_path=model_path,
@@ -59,11 +65,17 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
         model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
         if not os.path.isfile(model_path):
             # check what is internet access
-            is_connected(model_path)
-            # download pre-trained models from url
-            download_model(model_path, url)
+            if is_connected(model_path):
+                Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN": True})
+                Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN = True
+                # download pre-trained models from url
+                download_model(model_path, url)
+            else:
+                print(f"Not internet connection to download model {url} in {model_path}.")
+                raise
         else:
-            check_download_size(model_path, url)
+            if Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN:
+                check_download_size(model_path, url)
 
         restorer = RealESRGANer(
             scale=4,  # 4
@@ -97,19 +109,31 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
 
         if not os.path.isfile(general_model_path):
             # check what is internet access
-            is_connected(general_model_path)
-            # download pre-trained models from url
-            download_model(models_path[0], general_url)
+            if is_connected(general_model_path):
+                Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN": True})
+                Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN = True
+                # download pre-trained models from url
+                download_model(models_path[0], general_url)
+            else:
+                print(f"Not internet connection to download model {general_url} in {models_path[0]}.")
+                raise
         else:
-            check_download_size(models_path[0], general_url)
+            if Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN:
+                check_download_size(models_path[0], general_url)
 
         if not os.path.isfile(wdn_model_path):
             # check what is internet access
-            is_connected(wdn_model_path)
-            # download pre-trained models from url
-            download_model(models_path[1], wdn_url)
+            if is_connected(wdn_model_path):
+                Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN": True})
+                Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN = True
+                # download pre-trained models from url
+                download_model(models_path[1], wdn_url)
+            else:
+                print(f"Not internet connection to download model {general_url} in {models_path[1]}.")
+                raise
         else:
-            check_download_size(models_path[1], wdn_url)
+            if Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN:
+                check_download_size(models_path[1], wdn_url)
 
         restorer = RealESRGANer(
             scale=4,  # 4
@@ -151,7 +175,7 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
             cv2.imwrite(save_path, output)
 
         cap.release()
-        file_name = save_video_from_frames(frame_names="%04d.png", save_path=save_frame_folder, fps=fps, alternative_save_path=save_folder)
+        file_name = VideoManipulation.save_video_from_frames(frame_names="%04d.png", save_path=save_frame_folder, fps=fps, alternative_save_path=save_folder)
     else:  # Image
         file_name = str(uuid.uuid4()) + '.png'
         save_path = os.path.join(save_folder, file_name)
@@ -166,6 +190,14 @@ def enhancer(media_path, save_folder, method='gfpgan', device='cpu', fps=30):
             raise ValueError(f'Wrong model version {method}.')
 
         cv2.imwrite(save_path, output)
+
+    # Update config about models if process was successfully
+    if Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN and method == 'animesgan':
+        Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN": False})
+        Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_ANIMESGAN = False
+    if Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN and method == 'realesrgan':
+        Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN": False})
+        Settings.CHECK_DOWNLOAD_SIZE_ENHANCEMENT_REALSRGAN = False
 
     return file_name
 

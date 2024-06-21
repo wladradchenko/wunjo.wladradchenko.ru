@@ -1,0 +1,116 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Settings{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<div class="flex-1 text-white flex flex-col justify-center w-full lg:py-16 py-8">
+    <div class="relative flex max-lg:flex-col w-full items-start gap-10 lg:gap-0 mx-auto" id="settings-page">
+        <ul class="chapters lg:text-regular text-regular-mobile list-none overflow-auto whitespace-nowrap sticky top-[var(--navbar-height)] max-lg:p-5 bg-dark-background max-lg:w-full max-lg:justify-center lg:top-[calc(var(--navbar-height)+4rem)] lg:basis-1/4 lg:flex lg:flex-col gap-5 lg:items-start max-lg:mx-auto scrollbar-hide">
+            <li class="min-h-0 inline-block mr-5 last:mr-0 relative text-accent-primary">
+                <button onclick="scrollToHeader(this, 'General')">General</button>
+                <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
+            </li>
+        </ul>
+        <div class="max-w-[720px] max-lg:mx-auto">
+            <h1 class="text-heading-1-mobile lg:text-heading-1 font-black text-accent-primary uppercase mb-9 font-alumni">Settings</h1>
+            <main class="notion light-mode notion-page text-dim-gray text-m-mobile lg:text-m">
+                <div class="notion-viewport"></div>
+                <h4 class="notion-h notion-h3 notion-h-indent-0">
+                    <span>
+                        <div class="notion-header-anchor"></div>
+                        <a class="notion-hash-link" title="General">
+                            <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
+                        </a>
+                        <span class="notion-h-title">General</span>
+                    </span>
+                </h4>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">Which processor should I use?</span>
+                            </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="system-processor"></div>
+                    </div>
+                </details>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">What is port using?</span>
+                            </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="system-port"></div>
+                    </div>
+                </details>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">Can I get public link?</span>
+                            </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="system-public-share"></div>
+                    </div>
+                </details>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0"><span>
+                            <div class="notion-header-anchor"></div>
+                            <span class="notion-h-title">What system resources?</span>
+                        </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="system-resources"></div>
+                    </div>
+                </details>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0"><span>
+                            <div class="notion-header-anchor"></div>
+                            <span class="notion-h-title">Which application parameters?</span>
+                        </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="system-init-parameters"></div>
+                    </div>
+                </details>
+                <div class="notion-blank">&nbsp;</div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+    const models = {{ models|tojson|safe }};
+</script>
+<script type="text/javascript" src="/static/settings/js/settings.min.js"></script>
+{% endblock %}
+
+{% block footer %}
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<script>
+    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. All rights reserved</a>`;
+</script>
+{% endblock %}

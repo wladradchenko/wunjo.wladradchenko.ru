@@ -1,4 +1,5 @@
 import os
+import cv2
 import math
 import torch
 from torchvision import transforms
@@ -221,6 +222,20 @@ class SegmentText:
         self.model = EAST(pretrained=True, model_path=vgg16_path).to(device)
         self.model.load_state_dict(torch.load(east_path, map_location=device))  # Add map_location for device
         self.model.eval()
+
+    @staticmethod
+    def crop(filled_mask, text_area: list = None):
+        # If text_area is provided, extract the specified region and place it onto a black background
+        if text_area is not None:
+            x1, y1, x2, y2 = text_area
+            # Create a new black image with the same size as the original filled_mask
+            img = Image.new('L', filled_mask.size, color=0)
+            # Paste the specified region onto the black image
+            region = filled_mask.crop((x1, y1, x2, y2))
+            img.paste(region, (x1, y1))
+            return img
+        else:
+            return filled_mask  # Return the original image if no text_area is provided
 
     def detect_text(self, img_path, max_resolution=1280):
         img = Image.open(img_path)

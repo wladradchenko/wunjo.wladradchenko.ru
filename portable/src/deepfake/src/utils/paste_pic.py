@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 import uuid
 
-from src.utils.videoio import save_video_with_audio
+from src.utils.videoio import VideoManipulation
 
 def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, video_format = '.mp4', preprocess = "crop", pic_path_type = "static"):
 
@@ -70,7 +70,7 @@ def paste_pic(video_path, pic_path, crop_info, new_audio_path, video_save_dir, v
 
     out_tmp.release()
 
-    new_video_name = save_video_with_audio(tmp_path, new_audio_path, video_save_dir)
+    new_video_name = VideoManipulation.save_video_with_audio(tmp_path, new_audio_path, video_save_dir)
     os.remove(tmp_path)
 
     return new_video_name

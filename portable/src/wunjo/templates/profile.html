@@ -1,0 +1,269 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Profile{% endblock %}
+
+{% block head %}
+<style>
+    .avatar {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+    }
+</style>
+<script type="text/javascript" src="{{ host }}/static/profile/js/profile.min.js" ></script>
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<div class="flex-1 text-white flex flex-col items-center justify-center w-full pt-8">
+    <a class="hidden-on-touchscreen flex gap-2 items-center mb-auto self-start group" href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.5" class="opacity-60 group-hover:opacity-100 transition-opacity">
+            <path d="M9.99935 15.8332L4.16602 9.99984M4.16602 9.99984L9.99935 4.1665M4.16602 9.99984H15.8327" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Back</span>
+    </a>
+    <div class="flex-1 flex items-center lg:mt-10">
+        <div class="grid grid-cols-1 lg:grid-cols-[17.5rem_1px_21.25rem] gap-10">
+            <div>
+                <h2 class="text-heading-modal mb-5">Profile</h2>
+                <form class="flex flex-col gap-5 w-full max-w-[17.5rem] mx-auto" action="" enctype="multipart/form-data" method="POST">
+                    <input type="hidden" name="$ACTION_ID_">
+                    <div class="flex flex-col items-center gap-2.5">
+                        <input type="text" hidden="" readonly="" name="clear_picture" value="false">
+                        <div class="relative w-[5.625rem] h-[5.625rem] rounded-full bg-accent-primary border border-dashed border-white border-opacity-20">
+                            <button class="avatar appearance-none bg-transparent border-none w-full h-full" type="button">
+                                <svg style="border-radius: 50px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" shape-rendering="auto"><mask ><rect width="200" height="200" rx="100" ry="100" x="0" y="0" fill="#fff" /></mask><g ><rect fill="#c8edd2" width="200" height="200" x="0" y="0" /><g transform="translate(20 20) scale(0.8)"><g transform="matrix(1.5625 0 0 1.5625 37.5 110.94)"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.03 37.05c0-48 70-48 70 0h-70Z" fill="#2B1607"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.12 11.74c11.86-13.39 34.95-13.28 48 0h-48Z" fill="#fff"/><path d="M7.02 29.8h67.96c.32 2.32.47 4.66.44 7h-69c0-2.35.2-4.7.6-7Z" fill="#fff"/><path d="M75.97 38H6.03A1.03 1.03 0 0 1 5 36.97C5 11.6 23.66 0 41 0c17.36 0 36 11.61 36 36.93A1.02 1.02 0 0 1 75.97 38Zm-68.9-2.06h67.8c-.22-10.34-3.87-19-10.58-25.13a34.44 34.44 0 0 0-23.34-8.7C24.89 2.12 7.58 12.72 7.07 35.94Z" fill="#000"/></g><g transform="matrix(1.5625 0 0 1.5625 31.25 59.38)"><path d="M77.41 26.02h-6.59c-9.7 0-9.7.07-9.7-9.7v-4.09A12.2 12.2 0 0 1 73.32.03h1.6a12.2 12.2 0 0 1 12.2 12.2v4.16c-.03 9.7-.03 9.63-9.7 9.63Z" fill="#000"/><path d="M69.87 9.56a2.29 2.29 0 1 0 0-4.58 2.29 2.29 0 0 0 0 4.58Z" fill="#fff"/><path opacity=".1" d="M74.11 18.37a5.32 5.32 0 1 0 0-10.65 5.32 5.32 0 0 0 0 10.65Z" fill="#fff"/><path d="M1.82 19.02c-.17 0-.34-.03-.5-.09a1.68 1.68 0 0 1-1-.84 1.75 1.75 0 0 1-.13-1.32 13.54 13.54 0 0 1 4.86-7.1 13.1 13.1 0 0 1 8.07-2.65c2.9-.02 5.73.91 8.06 2.67a13.63 13.63 0 0 1 4.86 7.08c.13.44.09.91-.12 1.32a1.72 1.72 0 0 1-2.3.73 1.69 1.69 0 0 1-.84-1.03c-.62-2.13-1.9-4-3.66-5.32a9.92 9.92 0 0 0-6.06-2c-2.17-.01-4.28.7-6.02 2.02a10.26 10.26 0 0 0-3.64 5.3c-.1.35-.32.65-.6.87a1.7 1.7 0 0 1-.98.36Z" fill="#000"/></g></g></g></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-s-mobile lg:text-s text-white">User ID</label>
+                        <input onpointerdown="copyInputValue(this);" class="rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background" placeholder="User ID" value="{{ user_id }}" required="" name="user" disabled>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-s-mobile lg:text-s text-white">Public link</label>
+                        <input onpointerdown="copyInputValue(this);" class="rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background" placeholder="Public link" value="{{ public_link }}" required="" name="share" disabled>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-s-mobile lg:text-s text-white">Contact</label>
+                        <input onpointerdown="copyInputValue(this);" class="rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background" placeholder="Email" type="email" required="" disabled="" name="email" value="{{ email }}">
+                    </div>
+                </form>
+                <div class="flex justify-center w-full">
+                    <form action="" enctype="multipart/form-data" method="POST" class="flex flex-row w-full" style="justify-content: space-evenly">
+                        <input type="hidden" name="$ACTION_ID_">
+                        <button name="logout" class="flex items-center gap-2 text-m-mobile lg:text-m mt-7 opacity-60 hover:opacity-100 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5M13.3333 14.1667L17.5 10M17.5 10L13.3333 5.83333M17.5 10H7.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <span>Logout</span>
+                        </button>
+                        <button name="exit" class="flex items-center gap-2 text-m-mobile lg:text-m mt-7 opacity-60 hover:opacity-100 transition-opacity">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V12M18.3611 5.64001C19.6195 6.8988 20.4764 8.50246 20.8234 10.2482C21.1704 11.994 20.992 13.8034 20.3107 15.4478C19.6295 17.0921 18.4759 18.4976 16.9959 19.4864C15.5159 20.4752 13.776 21.0029 11.9961 21.0029C10.2162 21.0029 8.47625 20.4752 6.99627 19.4864C5.51629 18.4976 4.36274 17.0921 3.68146 15.4478C3.00019 13.8034 2.82179 11.994 3.16882 10.2482C3.51584 8.50246 4.37272 6.8988 5.6311 5.64001" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Exit</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <hr class="dashed w-full lg:w-px h-px lg:h-full border-t lg:border-l border-dashed border-white opacity-10">
+            <div>
+                <h2 class="text-heading-modal mb-6">Subscription</h2>
+                <div class="community-edition hidden w-full min-w-[18.75rem] h-full flex flex-col mt-6">
+                    <div class="flex justify-between">
+                        <p class="text-s-mobile lg:text-s">Plan</p>
+                    </div>
+                    <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl p-3.5 mt-2 rounded-md border border-[#2c2623]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-s-mobile lg:text-s">Basic</p>
+                                <p class="mt-1 text-m-mobile lg:text-m font-extra-thick">$0<!-- -->/month</p>
+                            </div>
+                            <div class="bg-white bg-opacity-5 p-0.5 flex rounded-[0.875rem] items-center group w-max">
+                                <div class="bg-plan-credits rounded-xl px-3 py-2 flex items-center">
+                                    <div class="flex items-center">
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="orange" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FF5D00" fill-opacity="1"></path></svg>
+                                    </div>
+                                    <p class="text-m-mobile lg:text-m ml-2.5">infinity</p>
+                                </div>
+                                <div class="group-hover:w-15 w-0 overflow-hidden transition-[width]">
+                                    <div class="pr-2.5">
+                                        <p class="text-s-mobile lg:text-s text-light-secondary ml-2 !font-extra-thick">credits</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-s-mobile lg:text-s">Upgrade</p>
+                    </div>
+                    <div class="relative group bg-basic-plan-card p-3.5 mt-2 rounded-md border border-[#2c2623]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-m-mobile lg:text-m font-extra-thick">Unleash the Speed</p>
+                                <p class="text-s-mobile lg:text-s text-light-secondary">Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power</p>
+                            </div>
+                            <div class="bg-white bg-opacity-5 p-0.5 flex rounded-[0.875rem] items-center group w-max">
+                                <div class="bg-plan-credits rounded-xl px-3 py-3 flex items-center">
+                                    <div class="flex items-center">
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.15"></path></svg>
+                                        <svg style="margin-left: -5px; margin-right: -5px;" width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.5"></path></svg>
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.75"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="w-0 overflow-hidden transition-[width]">
+                                    <div class="pr-2.5">
+                                        <p class="text-s-mobile lg:text-s text-light-secondary ml-2 !font-extra-thick">credits</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden block-on-touchscreen">
+                            <hr class="my-4 dashed h-px w-full border-t border-dashed border-white opacity-10">
+                            <div class="flex justify-between">
+                                <a class="w-full rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 hover:bg-light-disabled text-white bg-light-emphasis" target="_blank" rel="noopener noreferrer" href="{{ host }}/pricing">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" color="white"><path d="M3.66667 2V5.33333M16.3333 14.6667V18M2 3.66667H5.33333M14.6667 16.3333H18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.5343 1.38675C10.4584 1.15585 10.2427 0.999854 9.99966 1C9.7566 1.00015 9.54112 1.1564 9.46545 1.38739L7.6842 6.82489L7.68348 6.82711C7.61963 7.02479 7.50978 7.20448 7.36295 7.35143C7.21612 7.49837 7.03651 7.60836 6.83888 7.67236L1.38675 9.46566C1.15585 9.54161 0.999854 9.75727 1 10.0003C1.00015 10.2434 1.1564 10.4589 1.38739 10.5345L6.82489 12.3158L6.82711 12.3165C7.02479 12.3804 7.20448 12.4902 7.35143 12.6371C7.49837 12.7839 7.60836 12.9635 7.67236 13.1611L7.67316 13.1636L9.46566 18.6133C9.54161 18.8442 9.75727 19.0001 10.0003 19C10.2434 18.9999 10.4589 18.8436 10.5345 18.6126L12.3158 13.1751L12.3165 13.1729C12.3804 12.9752 12.4902 12.7955 12.6371 12.6486C12.7839 12.5016 12.9635 12.3916 13.1611 12.3276L13.1636 12.3268L18.6133 10.5343C18.8442 10.4584 19.0001 10.2427 19 9.99966C18.9999 9.7566 18.8436 9.54112 18.6126 9.46545L13.1751 7.6842L13.1729 7.68348C12.9752 7.61963 12.7955 7.50978 12.6486 7.36295C12.5016 7.21612 12.3916 7.03651 12.3276 6.83888L10.5343 1.38675Z" fill="white"></path></svg>
+                                    Upgrade to Professional
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rounded-md hidden absolute inset-0 group-hover:flex flex-col justify-center items-center p-4 backdrop-blur-lg">
+                            <p class="mb-3 text-m-mobile lg:text-m">Server mobile mode will also be available: </p>
+                            <a class="rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 hover:bg-light-disabled text-white bg-light-emphasis" target="_blank" rel="noopener noreferrer" href="{{ host }}/pricing">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" color="white"><path d="M3.66667 2V5.33333M16.3333 14.6667V18M2 3.66667H5.33333M14.6667 16.3333H18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.5343 1.38675C10.4584 1.15585 10.2427 0.999854 9.99966 1C9.7566 1.00015 9.54112 1.1564 9.46545 1.38739L7.6842 6.82489L7.68348 6.82711C7.61963 7.02479 7.50978 7.20448 7.36295 7.35143C7.21612 7.49837 7.03651 7.60836 6.83888 7.67236L1.38675 9.46566C1.15585 9.54161 0.999854 9.75727 1 10.0003C1.00015 10.2434 1.1564 10.4589 1.38739 10.5345L6.82489 12.3158L6.82711 12.3165C7.02479 12.3804 7.20448 12.4902 7.35143 12.6371C7.49837 12.7839 7.60836 12.9635 7.67236 13.1611L7.67316 13.1636L9.46566 18.6133C9.54161 18.8442 9.75727 19.0001 10.0003 19C10.2434 18.9999 10.4589 18.8436 10.5345 18.6126L12.3158 13.1751L12.3165 13.1729C12.3804 12.9752 12.4902 12.7955 12.6371 12.6486C12.7839 12.5016 12.9635 12.3916 13.1611 12.3276L13.1636 12.3268L18.6133 10.5343C18.8442 10.4584 19.0001 10.2427 19 9.99966C18.9999 9.7566 18.8436 9.54112 18.6126 9.46545L13.1751 7.6842L13.1729 7.68348C12.9752 7.61963 12.7955 7.50978 12.6486 7.36295C12.5016 7.21612 12.3916 7.03651 12.3276 6.83888L10.5343 1.38675Z" fill="white"></path></svg>
+                                Upgrade to Professional
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="professional w-full min-w-[18.75rem] h-full flex flex-col mt-6">
+                    <div class="flex justify-between">
+                        <p class="text-s-mobile lg:text-s">Plan</p>
+                    </div>
+                    <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl p-3.5 mt-2 rounded-md border border-[#2c2623]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-s-mobile lg:text-s">Community Edition</p>
+                                <p class="mt-1 text-m-mobile lg:text-m font-extra-thick">$0<!-- -->/month</p>
+                            </div>
+                            <div class="bg-white bg-opacity-5 p-0.5 flex rounded-[0.875rem] items-center group w-max">
+                                <div class="bg-plan-credits rounded-xl px-3 py-2 flex items-center">
+                                    <div class="flex items-center">
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.15"></path></svg>
+                                    </div>
+                                    <p class="text-m-mobile lg:text-m ml-2.5">infinity</p>
+                                </div>
+                                <div class="group-hover:w-15 w-0 overflow-hidden transition-[width]">
+                                    <div class="pr-2.5">
+                                        <p class="text-s-mobile lg:text-s text-light-secondary ml-2 !font-extra-thick">credits</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-s-mobile lg:text-s">Expiration date</p>
+                    </div>
+                    <div class="relative group bg-basic-plan-card p-3.5 mt-2 rounded-md border border-[#2c2623]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-m-mobile lg:text-m font-extra-thick">Unleash the Speed</p>
+                                <p class="text-s-mobile lg:text-s text-light-secondary">Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power</p>
+                            </div>
+                            <div class="bg-white bg-opacity-5 p-0.5 flex rounded-[0.875rem] items-center group w-max">
+                                <div class="bg-plan-credits rounded-xl px-3 py-3 flex items-center">
+                                    <div class="flex items-center">
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.15"></path></svg>
+                                        <svg style="margin-left: -5px; margin-right: -5px;" width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.5"></path></svg>
+                                        <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.75"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="w-0 overflow-hidden transition-[width]">
+                                    <div class="pr-2.5">
+                                        <p class="text-s-mobile lg:text-s text-light-secondary ml-2 !font-extra-thick">credits</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden block-on-touchscreen">
+                            <hr class="my-4 dashed h-px w-full border-t border-dashed border-white opacity-10">
+                            <div class="flex justify-between">
+                                <a target="_blank" rel="noopener noreferrer" class="w-full rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 hover:bg-light-disabled text-white bg-light-emphasis" purpose="link" href="{{ host }}/pricing">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" color="white"><path d="M3.66667 2V5.33333M16.3333 14.6667V18M2 3.66667H5.33333M14.6667 16.3333H18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.5343 1.38675C10.4584 1.15585 10.2427 0.999854 9.99966 1C9.7566 1.00015 9.54112 1.1564 9.46545 1.38739L7.6842 6.82489L7.68348 6.82711C7.61963 7.02479 7.50978 7.20448 7.36295 7.35143C7.21612 7.49837 7.03651 7.60836 6.83888 7.67236L1.38675 9.46566C1.15585 9.54161 0.999854 9.75727 1 10.0003C1.00015 10.2434 1.1564 10.4589 1.38739 10.5345L6.82489 12.3158L6.82711 12.3165C7.02479 12.3804 7.20448 12.4902 7.35143 12.6371C7.49837 12.7839 7.60836 12.9635 7.67236 13.1611L7.67316 13.1636L9.46566 18.6133C9.54161 18.8442 9.75727 19.0001 10.0003 19C10.2434 18.9999 10.4589 18.8436 10.5345 18.6126L12.3158 13.1751L12.3165 13.1729C12.3804 12.9752 12.4902 12.7955 12.6371 12.6486C12.7839 12.5016 12.9635 12.3916 13.1611 12.3276L13.1636 12.3268L18.6133 10.5343C18.8442 10.4584 19.0001 10.2427 19 9.99966C18.9999 9.7566 18.8436 9.54112 18.6126 9.46545L13.1751 7.6842L13.1729 7.68348C12.9752 7.61963 12.7955 7.50978 12.6486 7.36295C12.5016 7.21612 12.3916 7.03651 12.3276 6.83888L10.5343 1.38675Z" fill="white"></path></svg>
+                                    Upgrade to Professional
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rounded-md hidden absolute inset-0 group-hover:flex flex-col justify-center items-center p-4 backdrop-blur-lg">
+                            <p class="mb-3 text-m-mobile lg:text-m">Server mobile mode will also be available: </p>
+                            <a target="_blank" rel="noopener noreferrer" class="rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 hover:bg-light-disabled text-white bg-light-emphasis" purpose="link" href="{{ host }}/pricing">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" color="white"><path d="M3.66667 2V5.33333M16.3333 14.6667V18M2 3.66667H5.33333M14.6667 16.3333H18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.5343 1.38675C10.4584 1.15585 10.2427 0.999854 9.99966 1C9.7566 1.00015 9.54112 1.1564 9.46545 1.38739L7.6842 6.82489L7.68348 6.82711C7.61963 7.02479 7.50978 7.20448 7.36295 7.35143C7.21612 7.49837 7.03651 7.60836 6.83888 7.67236L1.38675 9.46566C1.15585 9.54161 0.999854 9.75727 1 10.0003C1.00015 10.2434 1.1564 10.4589 1.38739 10.5345L6.82489 12.3158L6.82711 12.3165C7.02479 12.3804 7.20448 12.4902 7.35143 12.6371C7.49837 12.7839 7.60836 12.9635 7.67236 13.1611L7.67316 13.1636L9.46566 18.6133C9.54161 18.8442 9.75727 19.0001 10.0003 19C10.2434 18.9999 10.4589 18.8436 10.5345 18.6126L12.3158 13.1751L12.3165 13.1729C12.3804 12.9752 12.4902 12.7955 12.6371 12.6486C12.7839 12.5016 12.9635 12.3916 13.1611 12.3276L13.1636 12.3268L18.6133 10.5343C18.8442 10.4584 19.0001 10.2427 19 9.99966C18.9999 9.7566 18.8436 9.54112 18.6126 9.46545L13.1751 7.6842L13.1729 7.68348C12.9752 7.61963 12.7955 7.50978 12.6486 7.36295C12.5016 7.21612 12.3916 7.03651 12.3276 6.83888L10.5343 1.38675Z" fill="white"></path></svg>
+                                Upgrade to Professional
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script async>
+    const eyes = ["closed", "closed2", "crying", "cute", "glasses", "love", "pissed", "plain", "sad", "shades", "sleepClose", "stars", "tearDrop", "wink", "wink2"];
+    const mouth = ["drip", "kissHeart", "lilSmile", "pissed", "plain", "sad", "shout", "sick", "smileLol", "smileTeeth", "tongueOut", "wideSmile"];
+    const avatarBtn = document.querySelector('.avatar');
+    const avatarImg = document.createElement('img');
+    avatarImg.alt = 'avatar';
+
+    // Function to check if the image file exists
+    async function checkImageExists(url) {
+        try {
+            const response = await fetch(url);
+            return response.ok;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    // Generate random URLs for eyes and mouth
+    async function generateRandomAvatar() {
+        const randomEyes = eyes[Math.floor(Math.random() * eyes.length)];
+        const randomMouth = mouth[Math.floor(Math.random() * mouth.length)];
+        const avatarUrl = `https://api.dicebear.com/8.x/fun-emoji/svg?radius=50&scale=80&backgroundColor=c8edd2&eyes=${randomEyes}&mouth=${randomMouth}`;
+        return avatarUrl;
+    }
+
+    // Set the avatar image source
+    async function setAvatarImage() {
+        const avatarUrl = await generateRandomAvatar();
+        const imageExists = await checkImageExists(avatarUrl);
+        if (imageExists) {
+            avatarImg.src = avatarUrl;
+            avatarBtn.querySelector('svg').classList.add('hidden');;
+            avatarBtn.appendChild(avatarImg);
+        };
+    }
+
+    setAvatarImage();
+</script>
+<script>
+    // Function to copy the value of the input field to clipboard
+    function copyInputValue(inputElement) {
+        // Create a temporary textarea element to perform the copy operation
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = inputElement.value;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+    }
+</script>
+{% endblock %}
+
+{% block footer %}
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<script>
+    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. All rights reserved</a>`;
+</script>
+{% endblock %}

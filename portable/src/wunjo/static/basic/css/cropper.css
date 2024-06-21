@@ -1,0 +1,67 @@
+.cropper-face {
+    opacity: 0.6;
+    background-color: rgb(234 234 234/0.6);
+}
+.cropper-view-box {
+    outline: 1px solid #fff;
+    outline-color: rgba(234, 234, 234,.75);
+}
+.cropper-dashed {
+
+}
+.cropper-line.line-e, .cropper-line.line-w {
+    opacity: 1;
+    background-color: rgb(234 234 234/1);
+    width: 2px;
+}
+.cropper-line.line-n, .cropper-line.line-s {
+    opacity: 1;
+    background-color: rgb(234 234 234/1);
+    height: 2px;
+}
+.cropper-point, .cropper-point.point-se {
+    background-color: rgb(13 13 13/1);
+    outline: 2px solid #fff;
+    outline-color: rgba(213, 213, 213, 1);
+    height: 10px;
+    opacity: .75;
+    width: 10px;
+}
+.cropper-point.point-nw {
+    left: -6px;
+    top: -6px;
+}
+.cropper-point.point-n {
+    top: -6px;
+}
+.cropper-point.point-ne {
+    right: -6px;
+    top: -6px;
+}
+.cropper-point.point-w {
+    left: -6px;
+}
+.cropper-point.point-sw {
+    left: -6px;
+    bottom: -6px;
+}
+.cropper-point.point-s {
+    bottom: -6px;
+}
+.cropper-point.point-e {
+    right: -6px;
+}
+.cropper-point.point-se {
+    bottom: -6px;
+    right: -6px;
+}
+.cropper-bg {
+    background-image: none;
+}
+.cropper-modal {
+    background-color:none;
+    opacity: 0;
+}
+.cropper-container {
+    z-index: 1;
+}

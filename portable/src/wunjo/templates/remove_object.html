@@ -1,0 +1,94 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Remove object{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
+<!-- onnxruntime-web -->
+<script src="{{ url_for('static', filename='modules/js/ort/ort.min.js') }}"></script>
+<!-- numpy -->
+<script src="/static/modules/js/numpy.js"></script>
+<!--sam-->
+<script src="/static/modules/js/sam/init.min.js" type="module"></script>
+<!--crop-->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/cropper.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/cropper.css') }}">
+<script type="text/javascript" src="/static/basic/js/cropper.min.js"></script>
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<!--In order to see menu like freeze add in class sticky else remove sticky-->
+<div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
+    <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+        <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">Today</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 p-2 text-center"><i class="fa-regular fa-calendar"></i></button>
+    </div>
+</div>
+
+<!--MODAL VIEW-->
+<template class="modal-view-video-suggest">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-[390px]">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary font-telka-extended text-heading-3-mobile md:text-heading-3 uppercase">Suggest</h2>
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span><strong>Enhancement:</strong> So, you've nixed an object from your content, nice move! But hey, sometimes where one thing leaves, a little confusion might creep in because of the neural network does not know what could be in the place of a distant object, it just invents it. Noticed some weird glares or streaks in the now-empty spot? That's where a video enhancement feature swoops in to save the day. Take your pick: transform your video into an anime-style gem, a classic cartoon, or simply give it a polished boost. The module's right <a class="underline text-accent-primary" href="/enhancement?attachment=">here</a>, waiting to sprinkle its magic on your creation.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</template>
+<!--MODAL VIEW-->
+
+<div class="view-filter"></div>
+
+<div class="flex flex-col gap-10 pt-10">
+    <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div class="mb-[34px]"></div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<div class="footer-block px-4 pt-4 pb-5 md:border-t border-t-white border-opacity-[.15]"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const userContentId = {{ user_content_id|tojson|safe }};
+    const userFileTree = {{ user_file_tree|tojson|safe }};
+    const pageFileFormats = ["video", "image"];
+    let userFileFormats = pageFileFormats;
+    const moduleName = {{ folder_name|tojson|safe }};
+    const modelSAM = {{ model_sam|tojson|safe }};
+    const maxDurationToShow = {{ max_duration_sec|tojson|safe }};
+    // Set the maximum file size to read (in bytes)
+    const maxFileSize = {{ max_files_size|tojson|safe }};
+</script>
+<script>
+    function initScript() {
+        // Import and initialize the content script here
+        const scriptView = document.createElement('script');
+        scriptView.src = "/static/content/js/view.min.js";
+        document.body.appendChild(scriptView);
+        document.querySelector('.view-filter').appendChild(createViewFilter());
+
+        const scriptRemoveObject = document.createElement('script');
+        scriptRemoveObject.src = "/static/modules/js/remove.object.min.js";
+        document.body.appendChild(scriptRemoveObject);
+
+        getModuleTaskEventWithIntervalImmediately();
+    }
+</script>
+{% endblock %}

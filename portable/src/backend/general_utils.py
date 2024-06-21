@@ -1,36 +1,127 @@
 import os
-import re
+import gc
 import sys
 import json
 import time
+import torch
+import psutil
 import shutil
+import base64
+import random
 import requests
 from time import strftime
+from cryptography.fernet import Fernet
 
+from backend.config import Settings
 from backend.folders import SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size
 
 
-def clean_text_by_language(text, lang, only_punct=False):
-    """Clean text to use multilanguage synthesized in one text"""
-    # Define patterns for each language
-    patterns = {
-        'en': re.compile(r'[^a-zA-Z\s]'),  # Keep only English letters and spaces
-        'ru': re.compile(r'[^а-яА-Я\s]'),  # Keep only Russian letters and spaces
-        'zh': re.compile(r'[^\u4e00-\u9fff\s]'),  # Keep only Chinese characters and spaces
-        'punct': re.compile(r'[.!?;,:\s]+')  # Pattern to match punctuation and spaces
-    }
+def get_vram_gb():
+    if torch.cuda.is_available():
+        device = "cuda"
+        properties = torch.cuda.get_device_properties(device)
+        total_vram_gb = properties.total_memory / (1024 ** 3)
+        available_vram_gb = (properties.total_memory - torch.cuda.memory_allocated()) / (1024 ** 3)
+        busy_vram_gb = total_vram_gb - available_vram_gb
+        return total_vram_gb, available_vram_gb, busy_vram_gb
+    return 0, 0, 0
 
-    # Remove punctuation first
-    text = patterns['punct'].sub('', text)
 
-    if only_punct:
-        return text
+def get_ram_gb():
+    mem = psutil.virtual_memory()
+    total_ram_gb = mem.total / (1024 ** 3)
+    available_ram_gb = mem.available / (1024 ** 3)
+    busy_ram_gb = total_ram_gb - available_ram_gb
+    return total_ram_gb, available_ram_gb, busy_ram_gb
 
-    # Remove all characters not belonging to the specified language
-    text = patterns[lang].sub('', text)
 
-    return text
+def ensure_memory_capacity(limit_ram=0, limit_vram=0, device="cuda", retries=15, delay=30):
+    """
+    Check what memory will not be out, with a specified number of retries and delay between retries.
+
+    :param limit_ram: How much need to use RAM for module.
+    :param limit_vram: How much need to use VRAM for module.
+    :param device: Whta is device using.
+    :param retries: Number of times to retry.
+    :param delay: Delay in seconds between retries.
+    :return: True if file exists, False otherwise.
+    """
+    if Settings.MODULE_MAX_QUEUE_ALL_USER == 1 and Settings.MODULE_MAX_QUEUE_ONE_USER == 1:
+        print("The parameters MODULE_MAX_QUEUE_ALL_USER and MODULE_MAX_QUEUE_ONE_USER are set to 1, which means that only one task is processed at a time. Go to the settings page to increase the number of MODULE_MAX_QUEUE_ALL_USER, MODULE_MAX_QUEUE_ONE_USER and adjust the RAM settings for the modules.")
+        return True
+    for _ in range(retries):
+        random_delay = random.randint(1, delay)
+        _, available_ram_gb, _ = get_ram_gb()
+        _, available_vram_gb, _ = get_vram_gb()
+        if device == "cuda":
+            if available_ram_gb > limit_ram and available_vram_gb > limit_vram:
+                return True
+        else:
+            if available_ram_gb > limit_ram:
+                return True
+        lprint(f"Waiting for free memory because of available RAM {available_ram_gb}, but need to have free RAM {limit_ram}")
+        lprint(f"Waiting for free memory because of available VRAM {available_vram_gb}, but need to have free VRAM {limit_vram}")
+        time.sleep(random_delay)
+        # Clear memory
+        torch.cuda.empty_cache()
+        gc.collect()
+    return False
+
+
+def format_log_message(msg: str, is_server: bool = True, level: str = None, user: str = None) -> str:
+    """Log formate message"""
+    log_msg = "[SERVER]" if is_server else "[CLIENT]"
+
+    if level == "error":
+        log_msg += "[ERROR]"
+    elif level == "warn":
+        log_msg += "[WARNING]"
+    else:
+        log_msg += "[INFO]"
+
+    if user is not None:
+        log_msg += f"[{user}]"
+
+    log_msg += f'[{strftime("%Y-%m-%d %H:%M:%S")}]'
+    return f"{log_msg} {msg}"
+
+
+def lprint(msg: str, is_server: bool = True, level: str = None, user: str = None) -> None:
+    """Generate log print or maybe save print in file if needed"""
+    print(format_log_message(msg, is_server, level, user))
+
+
+def generate_file_tree(directory: str):
+    """Generate files tress as list of dict"""
+    file_tree = []
+    # Iterate over the contents of the directory
+    for item in sorted(os.listdir(directory), reverse=True, key=lambda x: os.path.getctime(os.path.join(directory, x)) if os.path.exists(os.path.join(directory, x)) else None):
+        item_path = os.path.join(directory, item)
+        item_info = {"name": item}
+        # Check if the item is a directory
+        if os.path.isdir(item_path):
+            # Recursively generate the file tree for the directory
+            item_info["isDirectory"] = True
+            item_info["child"] = generate_file_tree(item_path)
+            item_info["censure"] = False
+            if not item_info["child"]:
+                item_info["visible"] = False
+            else:
+                item_info["visible"] = any(child.get("visible", False) for child in item_info["child"])
+        else:
+            # If the item is a file, mark it as not a directory
+            item_info["isDirectory"] = False
+            item_info["visible"] = True
+            item_info["censure"] = False
+        # Get the creation time of the file or directory
+        try:
+            creation_time = os.path.getctime(item_path)
+            item_info["created"] = creation_time if creation_time is not None else None
+        except OSError:
+            item_info["created"] = None
+        file_tree.append(item_info)
+    return file_tree
 
 
 def is_ffmpeg_installed():
@@ -113,72 +204,6 @@ def get_version_app():
         return {}
 
 
-def set_settings():
-    default_language = {
-            "English": "en",
-            "Русский": "ru",
-            "Portugal": "pt",
-            "中文": "zh",
-            "한국어": "ko"
-        }
-    standard_language = {
-            "code": "en",
-            "name": "English"
-        }
-
-    default_settings = {
-        "user_language": standard_language,
-        "default_language": default_language,
-        "browser": "default",
-        "offline_mode": False,
-        "not_show_preload_window": False
-    }
-    setting_file = os.path.join(SETTING_FOLDER, "settings.json")
-    # Check if the SETTING_FILE exists
-    if not os.path.exists(setting_file):
-        # If not, create it with default settings
-        with open(setting_file, 'w') as f:
-            json.dump(default_settings, f)
-        return default_settings
-    else:
-        # If it exists, read its content
-        with open(setting_file, 'r') as f:
-            try:
-                user_settings = json.load(f)
-                if user_settings.get("user_language") is None:
-                    user_settings["user_language"] = standard_language
-                if user_settings.get("default_language") is None:
-                    user_settings["default_language"] = default_language
-                if user_settings.get("browser") is None:
-                    user_settings["browser"] = "default"
-                if user_settings.get("offline_mode") is None:
-                    user_settings["offline_mode"] = False
-                if user_settings.get("not_show_preload_window") is None:
-                    user_settings["not_show_preload_window"] = False
-                return user_settings
-            except Exception as err:
-                print(f"Error ... {err}")
-                return default_settings
-
-
-def get_utils_config(save_dir: str) -> dict:
-    UTILS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/utils.json"
-    try:
-        response = requests.get(UTILS_JSON_URL)
-        with open(os.path.join(save_dir, 'utils.json'), 'wb') as file:
-            file.write(response.content)
-    except:
-        print("Not internet connection to get actual versions of utils")
-    finally:
-        if not os.path.isfile(os.path.join(save_dir, 'utils.json')):
-            utils = {}
-        else:
-            with open(os.path.join(save_dir, 'utils.json'), 'r', encoding="utf8") as file:
-                utils = json.load(file)
-
-    return utils
-
-
 def get_folder_size(folder_path):
     size_in_bytes = 0
     for dirpath, dirnames, filenames in os.walk(folder_path):
@@ -192,6 +217,7 @@ def get_folder_size(folder_path):
 def current_time():
     """Return the current time formatted as YYYYMMDD_HHMMSS."""
     return strftime("%Y_%m_%d_%H%M%S")
+
 
 def format_dir_time(dir_time):
     """Convert a time string from YYYYMMDD_HHMMSS to DD.MM.YYYY HH:MM format."""
@@ -223,11 +249,21 @@ def check_tmp_file_uploaded(file_path, retries=10, delay=30):
     return False
 
 
-def _create_localization():
-    localization_path = os.path.join(SETTING_FOLDER, "localization.json")
-    with open(localization_path, 'w', encoding='utf-8') as f:
-        json.dump({}, f, ensure_ascii=False)
+def decrypted_bytes(val_base64):
+    return base64.b64decode(val_base64)
 
 
-# create localization file
-_create_localization()
+def decrypted_key(val_base64):
+    return Fernet(decrypted_bytes(val_base64))
+
+
+def decrypted_val(val_base64, key_byte, *args):
+    encrypted_bytes = base64.b64decode(val_base64)
+    decrypted_data = key_byte.decrypt(encrypted_bytes)
+    decrypted_json = json.loads(decrypted_data)
+    for a in args:
+        if isinstance(decrypted_json, dict):
+            decrypted_json = decrypted_json.get(a)
+        else:
+            return decrypted_json
+    return decrypted_json

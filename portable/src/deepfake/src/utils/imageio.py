@@ -9,6 +9,12 @@ def save_image_cv2(save_file, target_frame):
     return save_file
 
 
+def read_image_pil(image_path):
+    with open(image_path, 'rb') as f:
+        image_bytes = f.read()
+    return image_bytes
+
+
 def read_image_cv2(image_path):
     return cv2.imread(image_path)
 

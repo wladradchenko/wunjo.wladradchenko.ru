@@ -6,7 +6,7 @@
 [![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 
-<p align="right">[<a href="README_ru.md">RU</a>]</p>
+<p align="right">[<a href="README_ru.md">RU v2.0</a>] [see <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/v1.6">v1.6</a>]</p>
 <div id="top"></div>
 
 <br />
@@ -35,7 +35,7 @@
 
 ### Available now
 
-<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download. <b>Community Edition (CE)</b> will be available soon.
+<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download. <b>Community Edition (CE)</b> available on GitHub with voting for features to migrate on <a href="https://boosty.to/wunjo">Boosty</a>.
 
 <b>And if you wanna help to project, you can do:</b> 
 <ul>
@@ -71,7 +71,7 @@ Wunjo harnesses the power of neural networks to provide cutting-edge solutions i
     <th>Try it now</th>
   </tr>
   <tr align="center">
-    <td><a href="https://youtu.be/xWhEnoO5N7A"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
+    <td><a href="https://wunjo.online/static/login/title.mp4"><img src="example/thumbnail/wunjov2.png" alt="video" width="500"></a></td>
   </tr>
 </table>
 </div>
@@ -79,11 +79,10 @@ Wunjo harnesses the power of neural networks to provide cutting-edge solutions i
 <details>
 <summary><b>Open list to see more details.</b></summary>
 
-In <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases">version 1.6</a>, Wunjo supports multiple languages for voice cloning and speech synthesis, TTS model training, real-time speech recognition, audio enhancement, a multi-language interface, and the use of the "pass" keyword in the video-to-video feature.
+In <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases">version 1.6</a>, Wunjo supports three languages for old approach voice cloning and text to speech synthesis, TTS model training, audio enhancement, a multi-language interface, and the use of the "pass" keyword in the video-to-video feature for Community Edition.
 
 The new version 2.0 introduces a completely redesigned interface, enhanced performance, improved face swap functionality, a generator for non-existent people’s faces, and a deepfake analyzer. It also includes improvements in lip sync, content enhancement, object, text, and background removal, as well as content and component restyling using text prompts. Additionally, public links enable community creation and collaboration.
-
-Future updates will reintroduce and enhance the missing audio functionalities from version 1.6, making them even better.
+For audio you will able to use improved audio separator and <b>clone voice on any language from text and audio</b>.
 
 Available as both a free Community Edition and a subscription-based Professional Edition on <a href="https://wunjo.online/pricing">wunjo.online</a>, Wunjo caters to a wide range of users, from beginners to professionals, ensuring privacy by operating locally on your device.
 
@@ -96,7 +95,7 @@ Available as both a free Community Edition and a subscription-based Professional
 
 **Why Choose Wunjo Professional?**
 
-- **More features:** First access to updates, additional and more advanced features.
+- **More features:** First access to updates, additional and more advanced features ad restyling and clone voice.
 - **Public links:** Host your own server (PC) application accessible from anywhere in the world.
 - **Unlimited performance:** Process multiple tasks simultaneously to increase overall productivity.
 
@@ -362,16 +361,30 @@ This is an experimental feature that is under development, but you can take a lo
 </details>
 
 <details>
+<summary>Update 2.0.1</summary>
+
+- [x] Fix bugs.
+
+</details>
+
+<details>
+<summary>Update 2.0.2</summary>
+
+- [x] Added functionality to clone voice in any language from text and audio.
+- [x] Improved audio separator to remove noise before clone voice.
+- [x] Enhanced processing speed.
+
+</details>
+
+<details>
 <summary>List features updates</summary>
 
 - [ ] Public link exchange for online users.
 - [ ] Control restyling video and its components.
-- [ ] Multi language clone voice.
-- [ ] Improve audio separator.
 - [ ] Multi language interface.
 - [ ] Improve user profile.
 - [ ] Improve processing content status.
-
+- [ ] Sound generation for video or from text.
 </details>
 
 <!-- DONAT -->
@@ -425,9 +438,7 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 
 Wunjo is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo:
 
-- **Speech Synthesis & Voice Cloning:** Adapted versions of [Tacotron 2](https://github.com/NVIDIA/tacotron2), [Waveglow](https://github.com/NVIDIA/waveglow), and improved [Real-Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) with [VoiceFixer](https://github.com/haoheliu/voicefixer)
 - **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
-- **Audio Processing:** Adapted [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) for audio separation
 - **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib)
 - **Image & Video Enhancement:** Adapted [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) for superior quality enhancements
 - **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)

@@ -1,35 +1,50 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
+    <script defer>
+        // Check if the current URL scheme is HTTPS
+        if (window.location.protocol === "https:") {
+            // Create a new meta element
+            var metaTag = document.createElement("meta");
+
+            // Set attributes for the meta element
+            metaTag.setAttribute("http-equiv", "Content-Security-Policy");
+            metaTag.setAttribute("content", "upgrade-insecure-requests");
+
+            // Add the meta element to the document head
+            document.head.appendChild(metaTag);
+        }
+    </script>
     <title>{% block title %}{% endblock %}</title>
     <meta name="apple-mobile-web-app-title" content="Wunjo AI">
-    <meta property="og:image" content="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='basic/icon/gray/logo.ico') }}">
-    <link rel="apple-touch-icon" type="image/png" href="{{ url_for('static', filename='basic/icon/gray/logo.png') }}">
-    <link rel="mask-icon" type="image/svg+xml" href="{{ url_for('static', filename='basic/icon/gray/logo.svg') }}" color="#111">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:image" content="{{ url_for('static', filename='basic/icon/square/green/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='basic/icon/square/green/logo.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='basic/icon/square/green/logo.ico') }}" id="icon">
+    <link rel="apple-touch-icon" type="image/png" href="{{ url_for('static', filename='basic/icon/square/green/logo.png') }}">
+    <link rel="mask-icon" type="image/svg+xml" href="{{ url_for('static', filename='basic/icon/square/green/logo.svg') }}" color="#111">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='basic/css/introjs.min.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='basic/js/js.cookie.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='basic/js/intro.min.js') }}" defer></script>
+    <!--Change green icon on white for mobile device-->
+    <script>
+        // Function to change the favicon
+        if ((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
+            // This specifies the icon file that represents
+            document.querySelector('link[rel="icon"]').href = "{{ url_for('static', filename='basic/icon/square/white/logo.png') }}";
+            // This is an older method of specifying the favicon
+            document.querySelector('link[rel="shortcut icon"]').href = "{{ url_for('static', filename='basic/icon/square/white/logo.ico') }}";
+            // his specifies the icon that will be used when a user saves the webpage to their home screen on an iOS device (like an iPhone or iPad)
+            // document.querySelector('link[rel="apple-touch-icon"]').href = "{{ url_for('static', filename='basic/icon/square/white/logo.png') }}";
+            // This specifies the icon to be used as a mask for creating a pinned tab icon in browsers that support it
+            // document.querySelector('link[rel="mask-icon"]').href = "{{ url_for('static', filename='basic/icon/square/white/logo.svg') }}";
+        }
+    </script>
+
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/base.css') }}">
     {% block head %}{% endblock %}
 </head>
-<body>
 
-    <header>
-        {% block menubar %}
-        {% endblock %}
-    </header>
-
-    <div class="container">
-        {% block sections %}
-        {% endblock %}
-    </div>
-
-    {% block scripts %}
-    {% endblock %}
-
-</body>
+{% block body %}{% endblock %}
+</html>

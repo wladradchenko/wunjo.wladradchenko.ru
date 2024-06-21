@@ -10,15 +10,23 @@ root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(root_path, "deepfake"))
 from src.video2fake import Wav2Lip, Emo2Lip
 from src.face3d.recognition import FaceRecognition
+from src.gpen.gpen_face_enhancer import FaceEnhancement
+from src.utils.gfpganer import GFPGANer
 sys.path.pop(0)
 
 
 class GenerateWave2Lip:
-    def __init__(self, model_path, emotion_label, similar_coeff=0.95):
+    def __init__(self, model_path: str, retina_face: str, face_parse: str, local_gfpgan_path: str, gfpgan_model_path: str, device: str = "cpu", emotion_label: str = None, similar_coeff: float = 0.95):
         self.face_recognition = FaceRecognition(model_path)
+        self.face_enhancement = FaceEnhancement(retina_face, face_parse, device=device)
+        if device == "cuda":
+            self.gfpgan = GFPGANer(model_path=gfpgan_model_path, root_dir=local_gfpgan_path, upscale=1, arch="clean", channel_multiplier=2, bg_upsampler=None, device=device)
+        else:
+            self.gfpgan = None
+
         self.face_fields = None
         self.emotion, self.use_emotion = (self.to_emotion_categorical(emotion_label), True) if emotion_label else (None, False)
-        self.similar_coeff = 0.95  # Similarity coefficient for face
+        self.similar_coeff = similar_coeff  # Similarity coefficient for face
 
     def get_smoothened_boxes(self, boxes: np.ndarray, T: int = 5):
         """
@@ -44,21 +52,22 @@ class GenerateWave2Lip:
         if self.face_fields is not None:
             # user crop face in frontend
             squareFace = self.face_fields
+
             # real size
             originalHeight, originalWidth, _ = image.shape
 
-            canvasWidth = squareFace["canvasWidth"]
-            canvasHeight = squareFace["canvasHeight"]
+            canvasWidth = int(squareFace["canvasWidth"])
+            canvasHeight = int(squareFace["canvasHeight"])
             # Calculate the scale factor
             scaleFactorX = originalWidth / canvasWidth
             scaleFactorY = originalHeight / canvasHeight
 
             # Calculate the new position and size of the square face on the original image
             # Convert canvas square face coordinates to original image coordinates
-            newX1 = squareFace['x'] * scaleFactorX
-            newX2 = (squareFace['x'] + 1) * scaleFactorX
-            newY1 = squareFace['y'] * scaleFactorY
-            newY2 = (squareFace['y'] + 1) * scaleFactorY
+            newX1 = int(squareFace['x']) * scaleFactorX
+            newX2 = (int(squareFace['x']) + 1) * scaleFactorX
+            newY1 = int(squareFace['y']) * scaleFactorY
+            newY2 = (int(squareFace['y']) + 1) * scaleFactorY
 
             # Calculate center point
             center_x = (newX1 + newX2) / 2
@@ -143,7 +152,7 @@ class GenerateWave2Lip:
         return predictions
 
 
-    def datagen(self, frame_files: list, mels: list, img_size: int, wav2lip_batch_size: int, pads: list =[0, 10, 0, 0]):
+    def datagen(self, frame_files: list, mels: list, img_size: int, wav2lip_batch_size: int):
         """
         Generator function that processes frames and their corresponding mel spectrograms
         for feeding into a Wav2Lip model.
@@ -151,38 +160,51 @@ class GenerateWave2Lip:
         :param mels: List of mel spectrogram chunks corresponding to each frame.
         :param img_size: The target size to which detected faces will be resized.
         :param wav2lip_batch_size: Batch size for the Wav2Lip model.
-        :param pads: Padding for the face bounding box.
-        :param nosmooth: Whether to apply a smoothing function to detected bounding boxes.
         :yield: Batches of processed images, mel spectrograms, original frames, and face coordinates.
         """
 
         img_batch, mel_batch, frame_batch, coords_batch = [], [], [], []
         face_det_results = self.face_detect_with_alignment_crop(frame_files)  # BGR2RGB for CNN face detection
 
-        for i, m in enumerate(mels):
-            idx = i % len(frame_files)
+        if not frame_files or not face_det_results:
+            # Handle empty lists gracefully (e.g., raise an exception or return early)
+            yield img_batch, mel_batch, frame_batch, coords_batch
+        else:
+            for i, m in enumerate(mels):
+                idx = i % len(frame_files)
 
-            frame_to_save = cv2.imread(frame_files[idx])
-            dets = face_det_results[idx]
-            coords = dets[0].get("bbox") if dets[0] is not None else (0, 0, 0, 0)
-            x1, y1, x2, y2 = map(int, coords)
-            x1 = max(x1, 0)
-            x2 = max(x2, 0)
-            y1 = max(y1, 0)
-            y2 = max(y2, 0)
-            if int(x2 - x1) == 0 and int(y2 - y1) == 0:
-                # if empty face add as face full frame
-                img_batch.append(cv2.resize(frame_to_save, (img_size, img_size)))
-            else:
-                face = frame_to_save[int(y1): int(y2), int(x1):int(x2)]
-                face = cv2.resize(face, (img_size, img_size))
-                img_batch.append(face)
+                frame_to_save = cv2.imread(frame_files[idx])
+                dets = face_det_results[idx] if idx < len(face_det_results) else face_det_results[i % len(face_det_results)]
+                coords = dets[0].get("bbox") if len(dets) > 0 and dets[0] is not None and isinstance(dets[0], dict) else (0, 0, 0, 0)
+                x1, y1, x2, y2 = map(int, coords)
+                x1 = max(x1, 0)
+                x2 = max(x2, 0)
+                y1 = max(y1, 0)
+                y2 = max(y2, 0)
+                if int(x2 - x1) == 0 and int(y2 - y1) == 0:
+                    # if empty face add as face full frame
+                    img_batch.append(cv2.resize(frame_to_save, (img_size, img_size)))
+                else:
+                    face = frame_to_save[int(y1): int(y2), int(x1):int(x2)]
+                    img_batch.append(cv2.resize(face, (img_size, img_size)))
 
-            mel_batch.append(m)
-            frame_batch.append(frame_to_save)
-            coords_batch.append((y1, y2, x1, x2))
+                mel_batch.append(m)
+                frame_batch.append(frame_to_save)
+                coords_batch.append((y1, y2, x1, x2))
 
-            if len(img_batch) >= wav2lip_batch_size:
+                if len(img_batch) >= wav2lip_batch_size:
+                    img_batch, mel_batch = np.asarray(img_batch), np.asarray(mel_batch)
+
+                    img_masked = img_batch.copy()
+                    img_masked[:, img_size // 2:] = 0
+
+                    img_batch = np.concatenate((img_masked, img_batch), axis=3) / 255.
+                    mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
+
+                    yield img_batch, mel_batch, frame_batch, coords_batch
+                    img_batch, mel_batch, frame_batch, coords_batch = [], [], [], []
+
+            if len(img_batch) > 0:
                 img_batch, mel_batch = np.asarray(img_batch), np.asarray(mel_batch)
 
                 img_masked = img_batch.copy()
@@ -192,18 +214,6 @@ class GenerateWave2Lip:
                 mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
 
                 yield img_batch, mel_batch, frame_batch, coords_batch
-                img_batch, mel_batch, frame_batch, coords_batch = [], [], [], []
-
-        if len(img_batch) > 0:
-            img_batch, mel_batch = np.asarray(img_batch), np.asarray(mel_batch)
-
-            img_masked = img_batch.copy()
-            img_masked[:, img_size // 2:] = 0
-
-            img_batch = np.concatenate((img_masked, img_batch), axis=3) / 255.
-            mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
-
-            yield img_batch, mel_batch, frame_batch, coords_batch
 
     def _load(self, checkpoint_path, device):
         """Load mode by torch"""
@@ -228,8 +238,7 @@ class GenerateWave2Lip:
         return model.eval()
 
 
-    def generate_video_from_chunks(self, gen, mel_chunks, batch_size, wav2lip_checkpoint, device, save_dir, fps=30,
-                                   video_name_without_format='wav2lip_video',video_format='.mp4'):
+    def generate_video_from_chunks(self, gen, mel_chunks, batch_size, wav2lip_checkpoint, device, save_dir, fps=30,  video_name_without_format='wav2lip_video',video_format='.mp4'):
         """
         Generate a video from audio and face frames using a trained Wav2Lip model.
         :param gen: Generator that produces (img_batch, mel_batch, frames, coords).
@@ -250,6 +259,11 @@ class GenerateWave2Lip:
         max_distance_mouth = 20
 
         for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, total=int(np.ceil(float(len(mel_chunks)) / batch_size)))):
+            if len(img_batch) == 0 or len(mel_batch) == 0 or len(frames) == 0 or len(coords) == 0:
+                return None
+
+            # init progress
+            progress_bar = tqdm(total=len(frames), unit='it', unit_scale=True)
 
             # Load model only once and set record for first frame
             if i == 0:
@@ -291,22 +305,66 @@ class GenerateWave2Lip:
                     # save processed frame
                     center_current = np.array([(x1 + x2) / 2, (y1 + y2) / 2])  # Calculate the center of the current bounding box
                     p = cv2.resize(p.astype(np.uint8), (int(x2 - x1), int(y2 - y1)))
+
                     # Check if the current bounding box is non-empty
                     if y1 != 0 and y2 != 1 and x1 != 0 and x2 != 1:
                         # If less than 5 coordinates are stored, add the new one
                         if len(coords_mouth) < len_coords_mouth:
                             coords_mouth.append(center_current)
-                            f[y1:y2, x1:x2] = p
+
+                            ff = f.copy()
+                            ff[y1:y2, x1:x2] = p
+
+                            # month region enhancement by GFPGAN
+                            if self.gfpgan is not None:
+                                _, _, restored_img = self.gfpgan.enhance(ff, has_aligned=False, only_center_face=True, paste_back=True)
+                            else:
+                                restored_img = ff.copy()
+                            # overlay improved field on original
+                            # 0,   1,   2,   3,   4,   5,   6,   7,   8,  9, 10,  11,  12,
+                            mm = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0]
+                            mouse_mask = np.zeros_like(restored_img)
+                            tmp_mask = self.face_enhancement.faceparser.process(restored_img[y1:y2, x1:x2], mm)[0]
+                            mouse_mask[y1:y2, x1:x2] = cv2.resize(tmp_mask, (x2 - x1, y2 - y1))[:, :, np.newaxis] / 255.
+                            height, width = ff.shape[:2]
+                            restored_img, ff, full_mask = [cv2.resize(x, (512, 512)) for x in (restored_img, ff, np.float32(mouse_mask))]
+                            img = laplacian_pyramid_blending_with_mask(restored_img, ff, full_mask[:, :, 0], 10)
+                            pp = np.uint8(cv2.resize(np.clip(img, 0, 255), (width, height)))
+                            f, _, _ = self.face_enhancement.process(pp, f, bbox=c, possion_blending=True)
                         else:
                             # Calculate distances between the current center and the centers stored in keep_coords
                             distances = [self.face_recognition.calculate_distance(center_current, prev_center) for prev_center in coords_mouth]
                             # If the current center is near any of the previous centers, update the frame
                             # if any(distance < max_distance for distance in distances):
                             if np.mean(distances) < max_distance_mouth:
-                                f[y1:y2, x1:x2] = p
+                                # f[y1:y2, x1:x2] = p
+                                ff = f.copy()
+                                ff[y1:y2, x1:x2] = p
+
+                                # month region enhancement by GFPGAN
+                                if self.gfpgan is not None:
+                                    _, _, restored_img = self.gfpgan.enhance(ff, has_aligned=False, only_center_face=True, paste_back=True)
+                                else:
+                                    restored_img = ff.copy()
+                                # overlay improved field on original
+                                # 0,   1,   2,   3,   4,   5,   6,   7,   8,  9, 10,  11,  12,
+                                mm = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0]
+                                mouse_mask = np.zeros_like(restored_img)
+                                tmp_mask = self.face_enhancement.faceparser.process(restored_img[y1:y2, x1:x2], mm)[0]
+                                mouse_mask[y1:y2, x1:x2] = cv2.resize(tmp_mask, (x2 - x1, y2 - y1))[:, :, np.newaxis] / 255.
+                                height, width = ff.shape[:2]
+                                restored_img, ff, full_mask = [cv2.resize(x, (512, 512)) for x in (restored_img, ff, np.float32(mouse_mask))]
+                                img = laplacian_pyramid_blending_with_mask(restored_img, ff, full_mask[:, :, 0], 10)
+                                pp = np.uint8(cv2.resize(np.clip(img, 0, 255), (width, height)))
+                                f, _, _ = self.face_enhancement.process(pp, f,  bbox=c, possion_blending=True)
+
                             coords_mouth.pop(0)  # Remove the oldest center
                             coords_mouth.append(center_current)  # Add the current center
                     out.write(f)
+                # Update progress
+                progress_bar.update(1)
+            # Close progress bar
+            progress_bar.close()
         else:
             out.release()
 
@@ -327,3 +385,47 @@ class GenerateWave2Lip:
         output_shape = input_shape + (num_classes,)
         categorical = np.reshape(categorical, output_shape)
         return torch.tensor(categorical)
+
+
+def laplacian_pyramid_blending_with_mask(A, B, m, num_levels = 6):
+    # generate Gaussian pyramid for A,B and mask
+    GA = A.copy()
+    GB = B.copy()
+    GM = m.copy()
+    gpA = [GA]
+    gpB = [GB]
+    gpM = [GM]
+    for i in range(num_levels):
+        GA = cv2.pyrDown(GA)
+        GB = cv2.pyrDown(GB)
+        GM = cv2.pyrDown(GM)
+        gpA.append(np.float32(GA))
+        gpB.append(np.float32(GB))
+        gpM.append(np.float32(GM))
+
+    # generate Laplacian Pyramids for A,B and masks
+    lpA  = [gpA[num_levels-1]] # the bottom of the Lap-pyr holds the last (smallest) Gauss level
+    lpB  = [gpB[num_levels-1]]
+    gpMr = [gpM[num_levels-1]]
+    for i in range(num_levels-1,0,-1):
+        # Laplacian: subtract upscaled version of lower level from current level
+        # to get the high frequencies
+        LA = np.subtract(gpA[i-1], cv2.pyrUp(gpA[i]))
+        LB = np.subtract(gpB[i-1], cv2.pyrUp(gpB[i]))
+        lpA.append(LA)
+        lpB.append(LB)
+        gpMr.append(gpM[i-1]) # also reverse the masks
+
+    # Now blend images according to mask in each level
+    LS = []
+    for la,lb,gm in zip(lpA,lpB,gpMr):
+        gm = gm[:,:,np.newaxis]
+        ls = la * gm + lb * (1.0 - gm)
+        LS.append(ls)
+
+    # now reconstruct
+    ls_ = LS[0]
+    for i in range(1,num_levels):
+        ls_ = cv2.pyrUp(ls_)
+        ls_ = cv2.add(ls_, LS[i])
+    return ls_

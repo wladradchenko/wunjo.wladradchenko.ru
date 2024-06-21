@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<body class="bg-dark-background">
+    <header>
+        <nav style="background-color: #161616;border-bottom: 1px solid #4d4d4d;" class="px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)] fixed top-[var(--navbar-top-mobile)] md:top-[var(--navbar-top)] transition-[top] bg-dark-background z-20 w-full font-zen-maru-gothic">
+            <div class="w-full flex items-center border-b border-white border-opacity-10 h-[var(--navbar-height)] gap-5">
+                <div class="notification notification-title cursor-pointer px-1.5 text-3l font-extrabold font-alumni">Wunjo</div>
+                <div class="flex gap-3 items-center max-md:hidden"></div>
+                <ul class="flex flex-row items-center gap-2 text-m-mobile lg:text-m text-white h-full ml-auto">
+                    <div onclick="createModalUpdate();" class="version text-dim-gray" vers="{{ version[:-2] }}">v{{ version }}</div>
+                    <li class="relative px-2">
+                        <button class="group flex h-full items-center gap-2 peer/anchor nav-menu-btn">
+                            <span class="max-md:hidden">{% block nav %}{% endblock %}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" class="opacity-60 group-hover:opacity-100 transition duration-200"><g><path d="M15 8.5L10 13.5L5 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+                        </button>  <!--Name of page and arrow-->
+                        <div class="absolute top-[calc(100%_+_4px)] right-0 shadow-popup min-w-[195px] z-30 nav-dropdown-content hidden">
+                            <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl px-4 py-3 border border-[#2c2623] rounded-t-[10px]">
+                                <p class="access-admin mb-2 text-s">Don't forget to customize settings</p>
+                                <div class="flex flex-col">
+                                    <div class="mt-4 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">Profile</a><div class="text-dim-gray"><i class="fa-solid fa-bolt" style="color: #ababab;"></i> infinity credits</div></div>
+                                    <a class="access-admin hover-underline cursor-pointer mt-4" href="/settings">Settings</a>
+                                    <a class="hover-underline cursor-pointer mt-4" href="/faq">FAQ</a>
+                                </div>
+                            </div>  <!--Current drive space for local? Or Token if web-->
+                            <ul class="flex flex-col p-4 bg-dark-pop-up" style="max-height: 50vh;overflow-y: auto;">
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/face-swap">Face swap</a></li>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/lip-sync">Lip sync</a></li>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/enhancement">Enhancement</a></li>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/remove-object">Remove object</a></li>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/remove-background">Remove background</a></li>
+                                <div class="my-4 h-px w-full bg-light-border"></div>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/separator">Separator</a></li>
+                                <div class="my-4 h-px w-full bg-light-border"></div>
+                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/">Other</a></li>
+                                <li class="mt-4 flex" style="justify-content: space-between;font-size: large;">
+                                    <a href="https://www.youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                        <i title="Tutorials" class="fa-brands fa-youtube opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                    </a>
+                                    <a href="https://t.me/s/wladblog" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                        <i title="News" class="fa-solid fa-newspaper opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                    </a>
+                                    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                        <i title="Report about bug" class="fa-solid fa-bug opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                    </a>
+                                    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                        <i title="Support author" class="fa-solid fa-heart opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                    </a>
+                                </li>
+                            </ul>  <!--Links to modules-->
+                            <div class="bg-[#424242] px-4 py-3 rounded-b-[10px]">
+                                <p class="text-s text-light-secondary">By using Wunjo, you agree to the <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/eula">EULA</a> and <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/privacy-policy">Privacy Policy</a></p>
+                                <p class="text-s text-light-secondary" style="margin-top: 10px;">Made by <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko">wladradchenko</a></p>
+                            </div>  <!--Information about version and author-->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% block menubar %}
+        {% endblock %}
+    </header>
+
+
+    <div class="min-h-screen md:pt-[calc(var(--navbar-height)+var(--navbar-top-mobile))] pt-[calc(var(--navbar-height)+var(--navbar-top))] px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]">
+
+        <div class="mb-[88px] w-full pt-10 flex-1">
+            {% block sections %}
+            {% endblock %}
+        </div>
+
+        <footer class="z-[3] bottom-0 px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]" style="position: fixed;left: 0; right: 0;">
+            <div class="sticky bottom-0 w-full z-10 bg-dark-background max-md:border-t border-t-white border-opacity-[.15] mt-10">
+                <div style="background-color: #161616;border-top: 1px solid #4d4d4d;" class="absolute w-[calc(100vw_-_var(--scrollbar-thickness))] bg-dark-background left-1/2 -translate-x-1/2 top-0 h-full z-[-1]"></div>
+                {% block footer %}
+                    <!--HIDDEN FOOTER...NOT FORGET-->
+                {% endblock %}
+            </div>
+        </footer>
+
+        {% block scripts %}
+        {% endblock %}
+
+        <!--TEMPLATES-->
+        <script async>
+            // Define a function to load scripts sequentially
+            function loadScripts(urls) {
+                return Promise.all(urls.map(url => {
+                    return new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = url;
+                        script.defer = true; // Use defer to load scripts asynchronously
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                }));
+            }
+
+            // Function to fetch and append templates
+            async function fetchAndAppendTemplate(url) {
+                const response = await fetch(url);
+                const html = await response.text();
+                document.body.innerHTML += html;
+            }
+
+            // Load scripts sequentially and then fetch and append templates
+            loadScripts([
+                "/static/basic/js/base.min.js",
+                "/static/basic/js/jszip.min.js",
+                "/static/templates/js/general.min.js",
+                "/static/templates/js/modal.min.js",
+                "/static/templates/js/view.min.js",
+                "/static/templates/js/footer.min.js"
+            ]).then(() => {
+                // All scripts have loaded successfully, now fetch and append templates
+                return Promise.all([
+                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/modal.html') }}"),
+                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/view.html') }}"),
+                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/footer.html') }}")
+                ]);
+            }).then(() => {
+                // After templates are appended, execute additional logic
+                if (typeof initScript === 'function') {
+                    initScript();
+                }
+                if (typeof initSliderBar !== 'function') {
+                    window.location.reload();
+                } else {
+                    initSliderBar();
+                }
+                initNotification();
+                setAccess();
+            }).catch(error => {
+                console.error('Error loading scripts or templates:', error);
+            });
+        </script>
+        <!--TEMPLATES-->
+        <!--PARAMETERS-->
+        <script>
+            const serverVersionData = {{ changelog|tojson|safe }};
+            const currentVersionDiv = document.querySelector(".version");
+        </script>
+    </div>
+</body>
+{% endblock %}

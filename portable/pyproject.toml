@@ -1,38 +1,37 @@
 # This project was generated with Unknown using template: https://github.com/beeware/briefcase-template@v0.3.14
 [tool.briefcase]
-project_name = "Wunjo AI"
-bundle = "wladradchenko.ru"
-version = "1.6.2"
-url = "https://wladradchenko.ru/wunjo"
-license = "MIT license"
+project_name = "Wunjo"
+bundle = "ce.version"  # wunjo ce.version
+version = "2.0.2"
+url = "https://wunjo.online"
+license = "MIT License for Backend and Models. Frontend Commercial Code"
 author = "Wladislav Radchenko"
 author_email = "i@wladradchenko.ru"
 
 [tool.briefcase.app.wunjo]
-formal_name = "Wunjo Wladradchenko AI"
-description = "Neural networks to content creation"
+formal_name = "Wunjo"
+description = "Wunjo: Empowering creativity with neural networks for content creation"
 long_description = """
-From voiceovers to game character voicing, from animate face or lips to entertaining deepfakes by face swap, Wunjo AI empowers creativity, securely and freely on your device.
-Explore the capabilities of neural networks:
-- Animating faces, lips, emotions and craft deepfakes by face swap using one photo.
-- Change video by text prompt
-- Enhance videos with AI retouch tool.
-- Remove object and text from video.
-- Convert text into lifelike speech.
-- Clone voices in real-time or from audio.
-- Multi-language support for voice cloning and synthesis.
-- Speech-to-text transcription.
-- Create dynamic dialogues with distinct voices.
-- Separate audio and speech enhance
+Wunjo is a powerful suite of neural network tools designed to enhance creativity and empower content creators. Wunjo brings advanced AI capabilities securely to your device.
+
+Explore the exciting features of Wunjo:
+- Create expressive animations for faces, lips, and craft face swap with just a single photo.
+- Restyling content based on text prompts, allowing for creative and dynamic video editing.
+- Enhance content using AI-powered tools to achieve professional-quality results.
+- Remove unwanted dinamically objects and text from content seamlessly.
+- Remove background from content.
+- Analysis fake content.
+- Separate audio from speech to enhance audio quality.
+
+For more information and updates, visit offical website [wunjo.online](https://wunjo.online) or [GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 """
-icon = "src/wunjo/static/basic/icon/gray/logo"
+icon = "src/wunjo/static/basic/icon/round/logo"
+
 sources = [
     "src/wunjo",
     "src/backend",
     "src/deepfake",
     "src/speech",
-    "src/train",
-    "src/tacotron2",
     "aifc.py",
     "sunau.py"
 ]
@@ -73,7 +72,9 @@ requires = [
     "denoiser",
     "noisereduce",
     "openunmix",
-    "torchlibrosa"
+    "torchlibrosa",
+    "apscheduler",
+    "cryptography"
 ]
 test_requires = [
 ]
@@ -101,12 +102,10 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "xformers==0.0.19",
-    "transformers==4.19.2",
     "open_clip_torch",
     "torchmetrics==1.2.0"
 ]
 sources = [
-    "src/diffusers",
     "../venv/lib/python3.10/site-packages/insightface",
 ]
 

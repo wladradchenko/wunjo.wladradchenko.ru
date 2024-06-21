@@ -8,14 +8,14 @@ from tqdm import tqdm
 from facexlib.alignment import init_alignment_model, landmark_98_to_68
 from facexlib.detection import init_detection_model
 
-from backend.folders import DEEPFAKE_MODEL_FOLDER
+from backend.folders import ALL_MODEL_FOLDER
 
 
 class KeypointExtractor():
     def __init__(self, device='cuda'):
 
         ### gfpgan/weights
-        root_path = os.path.join(DEEPFAKE_MODEL_FOLDER, 'gfpgan/weights')
+        root_path = os.path.join(ALL_MODEL_FOLDER, 'gfpgan/weights')
 
         self.detector = init_alignment_model('awing_fan', device=device, model_rootpath=root_path)
         self.det_net = init_detection_model('retinaface_resnet50', half=False,device=device, model_rootpath=root_path)

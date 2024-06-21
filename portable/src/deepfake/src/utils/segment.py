@@ -1,16 +1,18 @@
 import os
-import sys
 import cv2
-import random
+import torch
+import base64
+import string
 import numpy as np
 import onnxruntime
 from PIL import Image
+from typing import Dict, Any, Tuple
 
 from deepfake.src.segment_anything import sam_model_registry, SamPredictor
 
 
 class SegmentAnything:
-    def __init__(self, segment_percentage: float = 0.25):
+    def __init__(self, segment_percentage: float = 0.25, inverse_mask: bool = False):
         self.predictor = None
         self.session = None
         # draw frame
@@ -18,6 +20,47 @@ class SegmentAnything:
         self.lower_limit_area = 1 - segment_percentage  # 25% lower
         self.upper_limit_area = 1 + segment_percentage  # 25% upper
         self.generate_num_positive_points = 4
+        self.inverse_mask = inverse_mask
+
+    def preprocess(self, inputs: Dict[str, Any], device: str) -> torch.Tensor:
+        # Convert the bytes to numpy array.
+        image = np.frombuffer(inputs["image"], dtype=np.uint8)
+        image = cv2.imdecode(image, cv2.IMREAD_COLOR)[:, :, ::-1]  # RGB
+
+        # Get the target shape.
+        origin_shape = image.shape[:2]
+        target_shape = self.__get_preprocess_shape(*origin_shape)
+        height, width = target_shape
+
+        # Preprocess.
+        image_fp = cv2.resize(image, dsize=(width, height)).astype(np.float32)
+        image_fp -= np.array([123.675, 116.28, 103.53], dtype=np.float32)  # mean
+        image_fp /= np.array([58.395, 57.12, 57.375], dtype=np.float32)  # std
+        preprocessed = np.zeros((1024, 1024, 3), dtype=np.float32)
+        preprocessed[:height, :width, :] = image_fp
+
+        preprocessed = np.moveaxis(preprocessed, -1, 0)[None, :, :, :]
+        preprocessed = torch.tensor(preprocessed).to(device)
+        return preprocessed
+
+    @staticmethod
+    def postprocess(image_embedding: torch.Tensor) -> Dict[str, Any]:
+        image_embedding_shape = image_embedding.shape
+        image_embedding = base64.b64encode(image_embedding.tobytes()).decode("utf8")
+        return {
+            "image_embedding": image_embedding,
+            "image_embedding_shape": image_embedding_shape,
+        }
+
+    @staticmethod
+    def __get_preprocess_shape(
+            oldh: int, oldw: int, long_side_length: int = 1024
+    ) -> Tuple[int, int]:
+        scale = long_side_length * 1.0 / max(oldh, oldw)
+        newh, neww = oldh * scale, oldw * scale
+        neww = int(neww + 0.5)
+        newh = int(newh + 0.5)
+        return (newh, neww)
 
     def load_models(self, predictor, session):
         self.predictor = predictor
@@ -25,9 +68,14 @@ class SegmentAnything:
 
     @staticmethod
     def init_vit(vit_path, vit_type, device):
+        sam = SegmentAnything.init_sam(vit_path, vit_type, device)
+        return SamPredictor(sam)
+
+    @staticmethod
+    def init_sam(vit_path, vit_type, device):
         sam = sam_model_registry[vit_type](checkpoint=vit_path)
         sam.to(device=device)
-        return SamPredictor(sam)
+        return sam
 
     @staticmethod
     def init_onnx(onnx_path, device):
@@ -50,7 +98,7 @@ class SegmentAnything:
 
 
     @staticmethod
-    def draw_mask(predictor, session, point_list, frame, box=None):
+    def draw_mask(predictor, session, point_list, frame, box=None, inverse_mask=False):
         originalHeight, originalWidth, _ = frame.shape
 
         input_point = []
@@ -72,9 +120,9 @@ class SegmentAnything:
             input_point.append([newX, newY])
 
             # Transfer label to color and append to input_labels
-            if point.get("color") == "lightblue":
+            if point.get("color") == "lightblue" or point.get("color") == 1:
                 input_label.append(1)
-            elif point.get("color") == "red":
+            elif point.get("color") == "red" or point.get("color") == 0:
                 input_label.append(0)
             else:
                 print("Color from point_list is not default")
@@ -110,7 +158,10 @@ class SegmentAnything:
         }
 
         masks, _, _ = session.run(None, ort_inputs)
-        masks = masks > predictor.model.mask_threshold
+        if inverse_mask:
+            masks = masks < predictor.model.mask_threshold
+        else:
+            masks = masks > predictor.model.mask_threshold
         # TODO if it will be very slow, I can optimize by keeping low_res_logits in self for each frame to nor repeat load
         return masks
 
@@ -126,7 +177,7 @@ class SegmentAnything:
         cY_prev = self.draw_obj["cY"]
         prev_area = self.draw_obj["area"]
         prev_box = self.draw_obj["box"]
-        mask = self.draw_mask(predictor=self.predictor, session=self.session, point_list=point_list, frame=frame, box=prev_box)
+        mask = self.draw_mask(predictor=self.predictor, session=self.session, point_list=point_list, frame=frame, box=prev_box, inverse_mask=self.inverse_mask)
         centroid = self.compute_centroid(mask)
         if centroid is None:
             cX = cX_prev
@@ -215,7 +266,7 @@ class SegmentAnything:
         return np.array(max_bbox)
 
     def set_obj(self, point_list, frame):
-        mask = self.draw_mask(predictor=self.predictor, session=self.session, point_list=point_list, frame=frame)
+        mask = self.draw_mask(predictor=self.predictor, session=self.session, point_list=point_list, frame=frame, inverse_mask=self.inverse_mask)
         centroid = self.compute_centroid(mask)
         if centroid is None:
             cX = 0
@@ -369,6 +420,16 @@ class SegmentAnything:
         # Save the combined mask
         pil_image.save(os.path.join(save_path))
 
+    @staticmethod
+    def check_valid_hex(color):
+        # Remove leading '#' if present
+        color = color.lstrip('#')
+
+        # Check if the remaining string is a valid hexadecimal color code
+        if len(color) == 6 and all(c in string.hexdigits for c in color):
+            return '#' + color  # Return valid hex color with leading '#'
+        else:
+            return "transparent"  # Return 'transparent' for invalid hex color
 
     @staticmethod
     def hex_to_rgba(color):

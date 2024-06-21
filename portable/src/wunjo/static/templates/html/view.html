@@ -1,0 +1,556 @@
+<template class="view-filter-template">
+    <div style="flex-direction: row-reverse;" class="view-root flex flex-row w-full gap-4 items-center">
+        <div class="relative group">
+            <button disabled class="rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2.5 gap-2 py-2.5 font-medium !bg-dark-elements-upper hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+        </div>
+        <div class="relative flex-1 overflow-hidden">
+            <div style="flex-direction: row-reverse;border-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.15)) 1;" class="w-full flex overflow-x-scroll scrollbar-hide items-center gap-8 justify-start relative z-0 shadow-floating-button border-1 border-b border-white/20">
+                <div class="w-px h-full shrink-0 -mr-8"></div>
+                <button class="view-filter-all pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-100 border-b">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" xmlns="http://www.w3.org/2000/svg"><path d="M16.0007 18.0118H10.5007H3.00065C2.55863 18.0118 2.13469 17.8362 1.82214 17.5237C1.50959 17.2111 1.33398 16.7872 1.33398 16.3452V5.51184C1.33398 5.06981 1.50959 4.64589 1.82214 4.33333C2.13469 4.02077 2.55863 3.84517 3.00065 3.84517H6.25065C6.52938 3.84244 6.80437 3.90966 7.0504 4.04069C7.29643 4.17172 7.50569 4.36236 7.65898 4.59517L8.33398 5.59517C8.48574 5.82561 8.69234 6.01477 8.93524 6.14568C9.17813 6.27658 9.44973 6.34513 9.72565 6.34517H16.334C16.776 6.34517 17.1999 6.52077 17.5125 6.83333C17.825 7.14589 18.0007 7.56981 18.0007 8.01184V15.8452M15.9999 18C16.5303 18 17.039 17.7893 17.4141 17.4142C17.7892 17.0391 17.9999 16.5304 17.9999 16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <span class="hidden-on-touchscreen">All</span>
+                    </div>
+                </button>
+                <button class="view-filter-video hidden pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-60">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <svg style="scale: 1.2;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16" fill="none" class="opacity-[.85] shrink-0 w-4 h-4"><path d="M12.6667 2H3.33333C2.59695 2 2 2.59695 2 3.33333V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V3.33333C14 2.59695 13.403 2 12.6667 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 5.33333L10 8L6 10.6667V5.33333Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <span class="hidden-on-touchscreen">Video</span>
+                    </div>
+                </button>
+                <button class="view-filter-image hidden pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-60">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <i style="scale: 1.2;" class="fa-regular fa-image"></i>
+                        <span class="hidden-on-touchscreen">Image</span>
+                    </div>
+                </button>
+                <button class="view-filter-images-group hidden pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-60">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <i style="scale: 1.2;" class="fa-solid fa-layer-group"></i>
+                        <span class="hidden-on-touchscreen">Images group</span>
+                    </div>
+                </button>
+                <button class="view-filter-audio hidden pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-60">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <i style="scale: 1.2;" class="fa-solid fa-music"></i>
+                        <span class="hidden-on-touchscreen">Audio</span>
+                    </div>
+                </button>
+                <button class="view-filter-favorites hidden pb-3 mt-1 flex-shrink-0 whitespace-nowrap justify-center items-center text-light-primary font-light transition-opacity transition-border ease-in-out opacity-60">
+                    <div class="items-center lg:text-regular text-regular-mobile flex flex-row gap-2.5 mb-2 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white"><path d="M9.99936 2.45898L12.3169 7.15398L17.4994 7.91148L13.7494 11.564L14.6344 16.724L9.99936 14.2865L5.36436 16.724L6.24936 11.564L2.49936 7.91148L7.68186 7.15398L9.99936 2.45898Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <span class="hidden-on-touchscreen">Favorites</span>
+                    </div>
+                </button>
+                <div class="w-px h-full shrink-0 -ml-8"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="view-video-template">
+    <div class="view-root z-[0] group/card relative flex flex-col gap-2.5 shrink-0 w-full pxy-br">
+            <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+            <div class="relative">
+                <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                    <div class="relative w-full pt-[calc(9/16*100%)]">
+                        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                            <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                <div class="absolute top-1 right-1 flex flex-col gap-1">
+                                    <a class="download relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </a>
+                                    <button class="favorite-button hidden rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity full-opacity-on-touchscreen hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class=""><path d="M9.99936 2.45898L12.3169 7.15398L17.4994 7.91148L13.7494 11.564L14.6344 16.724L9.99936 14.2865L5.36436 16.724L6.24936 11.564L2.49936 7.91148L7.68186 7.15398L9.99936 2.45898Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </button>
+                                    <button class="delete-button relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                <video class="video w-auto h-full object-contain" preload="metadata" poster="" loop="" playsinline="">
+                                    <source src="" type="video/mp4">
+                                </video>
+                                <span class="duration transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-0"></span>
+                                <button class="touchscreen-play hidden absolute left-0 top-0 w-full h-full z-0 block-on-touchscreen">
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-dark-background bg-opacity-40 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6.66697 17.2217C5.55585 17.8637 4.1665 17.0619 4.1665 15.7786V4.22092C4.1665 2.93768 5.55585 2.13583 6.66696 2.7778L16.6688 8.55669C17.7793 9.19828 17.7793 10.8013 16.6688 11.4429L6.66697 17.2217Z" fill="white"></path></svg>
+                                    </div>
+                                </button>
+                                <div class="absolute bottom-1 right-1 flex flex-col gap-2">
+                                    <button class="open-video-modal-button p-1.5 bg-dark-pop-up lg:opacity-0 opacity-60 rounded-md hover:opacity-100 full-opacity-on-touchscreen transition-opacity group-hover:opacity-60">
+                                        <svg style="fill: white" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 410.988 410.988" xml:space="preserve"><g><path d="M149.654,195.495c0-4.142-3.357-7.5-7.5-7.5l-78.262-0.001l12.527-12.528 c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303l-14.143-14.143c-2.93-2.929-7.678-2.929-10.607,0 L2.197,200.191c-2.93,2.929-2.93,7.678,0,10.606l49.473,49.474c1.465,1.464,3.385,2.197,5.305,2.197 c1.918,0,3.838-0.732,5.303-2.197l14.143-14.143c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303 l-12.527-12.527l78.262,0.001c1.99,0,3.896-0.79,5.305-2.197c1.406-1.406,2.195-3.314,2.195-5.303V195.495z"/><path d="M408.791,200.191l-49.473-49.474c-2.93-2.929-7.678-2.929-10.607,0l-14.143,14.143 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l12.527,12.528l-78.262,0.001c-4.143,0-7.5,3.358-7.5,7.5 v20c0,1.989,0.789,3.897,2.195,5.303c1.408,1.407,3.314,2.197,5.305,2.197l78.262-0.001l-12.527,12.527 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l14.143,14.143c1.465,1.464,3.385,2.197,5.303,2.197 c1.92,0,3.84-0.732,5.305-2.197l49.473-49.474C411.721,207.869,411.721,203.12,408.791,200.191z"/> <path d="M164.859,76.42c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l12.527-12.527 v78.262c0,1.99,0.789,3.896,2.195,5.305c1.406,1.406,3.315,2.195,5.305,2.195h20c4.141,0,7.5-3.357,7.5-7.5V63.893l12.527,12.527 c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l14.143-14.143c2.928-2.93,2.928-7.678,0-10.607 L210.797,2.197c-2.928-2.93-7.678-2.93-10.605,0L150.717,51.67c-1.463,1.465-2.195,3.385-2.195,5.305 c0,1.918,0.733,3.838,2.195,5.303L164.859,76.42z"/><path d="M246.129,334.568c-1.406-1.406-3.315-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197 l-12.527,12.527v-78.262c0-4.143-3.359-7.5-7.5-7.5h-20c-1.99,0-3.898,0.789-5.305,2.195c-1.406,1.408-2.195,3.314-2.195,5.305 v78.262l-12.527-12.527c-1.406-1.406-3.314-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197l-14.143,14.143 c-1.463,1.465-2.195,3.385-2.195,5.303c0,1.92,0.733,3.84,2.195,5.305l49.475,49.473c2.928,2.93,7.678,2.93,10.605,0l49.475-49.473 c2.928-2.93,2.928-7.678,0-10.607L246.129,334.568z"/> </g> </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute left-1 top-1 flex gap-1 items-center h-7">
+                        <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="opacity-[.85] shrink-0 w-4 h-4"><path d="M12.6667 2H3.33333C2.59695 2 2 2.59695 2 3.33333V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V3.33333C14 2.59695 13.403 2 12.6667 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 5.33333L10 8L6 10.6667V5.33333Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Video output</span>
+                        </div>
+                        <button class="censure h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                            <i class="fa-solid fa-eye opacity-[.85] shrink-0 w-4 h-4" style="color: #fff;"></i>
+                            <i class="fa-solid fa-eye-slash opacity-[.85] shrink-0 w-4 h-4 hidden" style="color: #fff;"></i>
+                            <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Adult content</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2.5">
+                <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+                    <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                        <button class="rename-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                            <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20px" height="20px"><defs><clipPath id="_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle)"><g><path d=" M 16.667 4.996 L 15.833 4.996 L 15.833 6.663 L 16.667 6.663 L 16.667 13.329 L 15.833 13.329 L 15.833 14.996 L 16.667 14.996 C 17.586 14.996 18.333 14.248 18.333 13.329 L 18.333 6.663 C 18.333 5.744 17.585 4.996 16.667 4.996 Z  M 5 8.329" fill="rgb(255,255,255)"/><path d=" M 14.167 14.996 L 14.167 3.333 L 16.663 3.333 L 16.663 1.667 L 9.996 1.667 L 9.996 3.333 L 12.5 3.333 L 12.5 4.996 L 3.333 4.996 C 2.414 4.996 1.667 5.743 1.667 6.663 L 1.667 13.329 C 1.667 14.248 2.414 14.996 3.333 14.996 L 12.5 14.996 L 12.5 16.667 L 9.996 16.667 L 9.996 18.333 L 16.663 18.333 L 16.663 16.667 L 14.167 16.667 L 14.167 14.996 Z  M 3.333 13.329 L 3.333 6.663 L 12.5 6.663 L 12.5 13.329 L 3.333 13.329 Z " fill="rgb(255,255,255)"/></g></g></svg>
+                            <span>Rename</span>
+                        </button>
+                    </div>
+                    <div class="flex md:gap-3 gap-1.5">
+                        <div class="relative bg-dark-elements rounded-md">
+                            <button class="open-burger-button flex flex-col items-center gap-1 justify-center w-9 h-9 transition-opacity">
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                            </button>
+                            <div class="burger-list hidden min-w-full justify-start items-start absolute right-0 bottom-full -translate-y-2.5 z-10 bg-dark-elements shadow-dark-popup rounded-md flex flex-col flex">
+                                <div class="flex flex-col gap-3">
+                                    <a class="edit-link group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"><path d="M8.33334 1.66669H11.6667M10 11.6667V8.33335M3.33334 10.8334C3.5374 9.21333 4.32889 7.72453 5.55772 6.6493C6.78654 5.57408 8.36724 4.98722 10 5.00002C11.0784 5.00117 12.1404 5.26389 13.0949 5.76565C14.0494 6.26742 14.868 6.99325 15.4804 7.88087C16.0927 8.7685 16.4807 9.79143 16.6108 10.8619C16.741 11.9324 16.6096 13.0185 16.2278 14.027C15.846 15.0355 15.2252 15.9364 14.4188 16.6523C13.6123 17.3682 12.6442 17.8778 11.5976 18.1374C10.5509 18.3969 9.45688 18.3987 8.40937 18.1425C7.36186 17.8864 6.39212 17.38 5.58334 16.6667L3.33334 14.6667M7.50001 14.1667H3.33334V18.3334" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        <span>Edit</span>
+                                    </a>
+                                </div>
+                                <div class="hidden flex flex-col gap-3">
+                                    <button class="suggest-button group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                        <i style="scale: 1.2;width: 20px;" class="fa-regular fa-lightbulb opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                                        <span>Suggest</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-5 items-center justify-between">
+                    <button class="copy-description-button group relative opacity-60 hover:opacity-100 text-start flex flex-1 md:p-2 p-1 lg:text-regular text-regular-mobile">
+                        <p class="description break-all line-clamp-2">Without description</p>
+                        <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="white" fill="white"><g clip-path="url(#clip0_4817_1689)"><path d="M3.33366 13.3333C2.41699 13.3333 1.66699 12.5833 1.66699 11.6666V3.33329C1.66699 2.41663 2.41699 1.66663 3.33366 1.66663H11.667C12.5837 1.66663 13.3337 2.41663 13.3337 3.33329M8.33366 6.66663H16.667C17.5875 6.66663 18.3337 7.41282 18.3337 8.33329V16.6666C18.3337 17.5871 17.5875 18.3333 16.667 18.3333H8.33366C7.41318 18.3333 6.66699 17.5871 6.66699 16.6666V8.33329C6.66699 7.41282 7.41318 6.66663 8.33366 6.66663Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4817_1689"><rect width="20" height="20"></rect></clipPath></defs></svg>
+                            Copy
+                        </div>
+                    </button>
+                    <div class="flex items-center gap-5 pr-1.5">
+                        <button class="repost-button">
+                            <i style="scale: 1.1;" class="fa-solid fa-link opacity-60 hover:opacity-100 transition-opacity"></i>
+                        </button>
+                        <div class="relative h-5">
+                            <button class="open-parameters-view">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class="opacity-60 hover:opacity-100 transition-opacity"><g clip-path="url(#clip0_4909_1400)"><path d="M10.0001 13.3332V9.99984M10.0001 6.6665H10.0084M18.3334 9.99984C18.3334 14.6022 14.6025 18.3332 10.0001 18.3332C5.39771 18.3332 1.66675 14.6022 1.66675 9.99984C1.66675 5.39746 5.39771 1.6665 10.0001 1.6665C14.6025 1.6665 18.3334 5.39746 18.3334 9.99984Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4909_1400"><rect width="20" height="20" stroke="none"></rect></clipPath></defs></svg>
+                            </button>
+                            <div class="parameters absolute z-[3] lg:left-1/2 lg:-translate-x-1/2 max-lg:right-0 bottom-[calc(100%_+_8px)] p-2 rounded-[.625rem] bg-dark-pop-up w-60 shadow-popup hidden">
+                                <div class="flex flex-col gap-2 overflow-auto scrollbar-hide" style="max-height: calc(853.75px - var(--navbar-height) - 40px);">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-extra-thick">Parameters</p>
+                                        <button type="button" class="close-parameters-view opacity-60 hover:opacity-100 transition-opacity">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-col items-stretch gap-3 bg-dark-elements rounded-md p-3">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <p class="datetime-created text-s-mobile lg:text-s text-light-secondary">Consistency with the text</p>
+                                            <p class="text-s-mobile lg:text-s flex gap-2 items-center"><i class="fa-regular fa-clock"></i></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</template>
+
+<template class="view-image-template">
+    <div class="view-root z-[0] group/card relative flex flex-col gap-2.5 shrink-0 w-full pxy-br">
+        <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+        <div class="relative">
+            <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                <div class="relative w-full pt-[calc(9/16*100%)]">
+                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <div class="absolute top-1 right-1 flex flex-col gap-1">
+                                <a class="download relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </a>
+                                <button class="favorite-button hidden rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity full-opacity-on-touchscreen hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class=""><path d="M9.99936 2.45898L12.3169 7.15398L17.4994 7.91148L13.7494 11.564L14.6344 16.724L9.99936 14.2865L5.36436 16.724L6.24936 11.564L2.49936 7.91148L7.68186 7.15398L9.99936 2.45898Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </button>
+                                <button class="delete-button relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <img src="" class="image w-auto h-full object-contain">
+                            <span class="duration transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-0"></span>
+                            <div class="absolute bottom-1 right-1 flex flex-col gap-2">
+                                <button class="open-image-modal-button p-1.5 bg-dark-pop-up lg:opacity-0 opacity-60 rounded-md hover:opacity-100 full-opacity-on-touchscreen transition-opacity group-hover:opacity-60">
+                                    <svg style="fill: white" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 410.988 410.988" xml:space="preserve"><g><path d="M149.654,195.495c0-4.142-3.357-7.5-7.5-7.5l-78.262-0.001l12.527-12.528 c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303l-14.143-14.143c-2.93-2.929-7.678-2.929-10.607,0 L2.197,200.191c-2.93,2.929-2.93,7.678,0,10.606l49.473,49.474c1.465,1.464,3.385,2.197,5.305,2.197 c1.918,0,3.838-0.732,5.303-2.197l14.143-14.143c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303 l-12.527-12.527l78.262,0.001c1.99,0,3.896-0.79,5.305-2.197c1.406-1.406,2.195-3.314,2.195-5.303V195.495z"/><path d="M408.791,200.191l-49.473-49.474c-2.93-2.929-7.678-2.929-10.607,0l-14.143,14.143 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l12.527,12.528l-78.262,0.001c-4.143,0-7.5,3.358-7.5,7.5 v20c0,1.989,0.789,3.897,2.195,5.303c1.408,1.407,3.314,2.197,5.305,2.197l78.262-0.001l-12.527,12.527 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l14.143,14.143c1.465,1.464,3.385,2.197,5.303,2.197 c1.92,0,3.84-0.732,5.305-2.197l49.473-49.474C411.721,207.869,411.721,203.12,408.791,200.191z"/> <path d="M164.859,76.42c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l12.527-12.527 v78.262c0,1.99,0.789,3.896,2.195,5.305c1.406,1.406,3.315,2.195,5.305,2.195h20c4.141,0,7.5-3.357,7.5-7.5V63.893l12.527,12.527 c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l14.143-14.143c2.928-2.93,2.928-7.678,0-10.607 L210.797,2.197c-2.928-2.93-7.678-2.93-10.605,0L150.717,51.67c-1.463,1.465-2.195,3.385-2.195,5.305 c0,1.918,0.733,3.838,2.195,5.303L164.859,76.42z"/><path d="M246.129,334.568c-1.406-1.406-3.315-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197 l-12.527,12.527v-78.262c0-4.143-3.359-7.5-7.5-7.5h-20c-1.99,0-3.898,0.789-5.305,2.195c-1.406,1.408-2.195,3.314-2.195,5.305 v78.262l-12.527-12.527c-1.406-1.406-3.314-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197l-14.143,14.143 c-1.463,1.465-2.195,3.385-2.195,5.303c0,1.92,0.733,3.84,2.195,5.305l49.475,49.473c2.928,2.93,7.678,2.93,10.605,0l49.475-49.473 c2.928-2.93,2.928-7.678,0-10.607L246.129,334.568z"/> </g> </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute left-1 top-1 flex gap-1 items-center h-7">
+                    <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                        <i class="fa-regular fa-image opacity-[.85] shrink-0 w-4 h-4"></i>
+                        <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Image output</span>
+                    </div>
+                    <button class="censure h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                        <i class="fa-solid fa-eye opacity-[.85] shrink-0 w-4 h-4" style="color: #fff;"></i>
+                        <i class="fa-solid fa-eye-slash opacity-[.85] shrink-0 w-4 h-4 hidden" style="color: #fff;"></i>
+                        <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Adult content</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2.5">
+            <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+                <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                    <button class="rename-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20px" height="20px"><defs><clipPath id="_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle)"><g><path d=" M 16.667 4.996 L 15.833 4.996 L 15.833 6.663 L 16.667 6.663 L 16.667 13.329 L 15.833 13.329 L 15.833 14.996 L 16.667 14.996 C 17.586 14.996 18.333 14.248 18.333 13.329 L 18.333 6.663 C 18.333 5.744 17.585 4.996 16.667 4.996 Z  M 5 8.329" fill="rgb(255,255,255)"/><path d=" M 14.167 14.996 L 14.167 3.333 L 16.663 3.333 L 16.663 1.667 L 9.996 1.667 L 9.996 3.333 L 12.5 3.333 L 12.5 4.996 L 3.333 4.996 C 2.414 4.996 1.667 5.743 1.667 6.663 L 1.667 13.329 C 1.667 14.248 2.414 14.996 3.333 14.996 L 12.5 14.996 L 12.5 16.667 L 9.996 16.667 L 9.996 18.333 L 16.663 18.333 L 16.663 16.667 L 14.167 16.667 L 14.167 14.996 Z  M 3.333 13.329 L 3.333 6.663 L 12.5 6.663 L 12.5 13.329 L 3.333 13.329 Z " fill="rgb(255,255,255)"/></g></g></svg>
+                        <span>Rename</span>
+                    </button>
+                </div>
+                <div class="flex md:gap-3 gap-1.5">
+                    <div class="relative bg-dark-elements rounded-md">
+                        <button class="open-burger-button flex flex-col items-center gap-1 justify-center w-9 h-9 transition-opacity">
+                            <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                            <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                            <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                        </button>
+                        <div class="burger-list hidden min-w-full justify-start items-start absolute right-0 bottom-full -translate-y-2.5 z-10 bg-dark-elements shadow-dark-popup rounded-md flex flex-col flex">
+                            <div class="flex flex-col gap-3">
+                                <a class="edit-link group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"><path d="M8.33334 1.66669H11.6667M10 11.6667V8.33335M3.33334 10.8334C3.5374 9.21333 4.32889 7.72453 5.55772 6.6493C6.78654 5.57408 8.36724 4.98722 10 5.00002C11.0784 5.00117 12.1404 5.26389 13.0949 5.76565C14.0494 6.26742 14.868 6.99325 15.4804 7.88087C16.0927 8.7685 16.4807 9.79143 16.6108 10.8619C16.741 11.9324 16.6096 13.0185 16.2278 14.027C15.846 15.0355 15.2252 15.9364 14.4188 16.6523C13.6123 17.3682 12.6442 17.8778 11.5976 18.1374C10.5509 18.3969 9.45688 18.3987 8.40937 18.1425C7.36186 17.8864 6.39212 17.38 5.58334 16.6667L3.33334 14.6667M7.50001 14.1667H3.33334V18.3334" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    <span>Edit</span>
+                                </a>
+                            </div>
+                            <div class="hidden flex flex-col gap-3">
+                                <button class="suggest-button group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                    <i style="scale: 1.2;width: 20px;" class="fa-regular fa-lightbulb opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                                    <span>Suggest</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-5 items-center justify-between">
+                <button class="copy-description-button group relative opacity-60 hover:opacity-100 text-start flex flex-1 md:p-2 p-1 lg:text-regular text-regular-mobile">
+                    <p class="description break-all line-clamp-2">Without description</p>
+                    <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="white" fill="white"><g clip-path="url(#clip0_4817_1689)"><path d="M3.33366 13.3333C2.41699 13.3333 1.66699 12.5833 1.66699 11.6666V3.33329C1.66699 2.41663 2.41699 1.66663 3.33366 1.66663H11.667C12.5837 1.66663 13.3337 2.41663 13.3337 3.33329M8.33366 6.66663H16.667C17.5875 6.66663 18.3337 7.41282 18.3337 8.33329V16.6666C18.3337 17.5871 17.5875 18.3333 16.667 18.3333H8.33366C7.41318 18.3333 6.66699 17.5871 6.66699 16.6666V8.33329C6.66699 7.41282 7.41318 6.66663 8.33366 6.66663Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4817_1689"><rect width="20" height="20"></rect></clipPath></defs></svg>
+                        Copy
+                    </div>
+                </button>
+                <div class="flex items-center gap-5 pr-1.5">
+                    <button class="repost-button">
+                        <i style="scale: 1.1;" class="fa-solid fa-link opacity-60 hover:opacity-100 transition-opacity"></i>
+                    </button>
+                    <div class="relative h-5">
+                        <button class="open-parameters-view">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class="opacity-60 hover:opacity-100 transition-opacity"><g clip-path="url(#clip0_4909_1400)"><path d="M10.0001 13.3332V9.99984M10.0001 6.6665H10.0084M18.3334 9.99984C18.3334 14.6022 14.6025 18.3332 10.0001 18.3332C5.39771 18.3332 1.66675 14.6022 1.66675 9.99984C1.66675 5.39746 5.39771 1.6665 10.0001 1.6665C14.6025 1.6665 18.3334 5.39746 18.3334 9.99984Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4909_1400"><rect width="20" height="20" stroke="none"></rect></clipPath></defs></svg>
+                        </button>
+                        <div class="parameters absolute z-[3] lg:left-1/2 lg:-translate-x-1/2 max-lg:right-0 bottom-[calc(100%_+_8px)] p-2 rounded-[.625rem] bg-dark-pop-up w-60 shadow-popup hidden">
+                            <div class="flex flex-col gap-2 overflow-auto scrollbar-hide" style="max-height: calc(853.75px - var(--navbar-height) - 40px);">
+                                <div class="flex justify-between items-center">
+                                    <p class="font-extra-thick">Parameters</p>
+                                    <button type="button" class="close-parameters-view opacity-60 hover:opacity-100 transition-opacity">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </button>
+                                </div>
+                                <div class="flex flex-col items-stretch gap-3 bg-dark-elements rounded-md p-3">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="datetime-created text-s-mobile lg:text-s text-light-secondary">Consistency with the text</p>
+                                        <p class="text-s-mobile lg:text-s flex gap-2 items-center"><i class="fa-regular fa-clock"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="view-image-group-template">
+    <div class="view-root z-[0] group/card relative flex flex-col gap-2.5 shrink-0 w-full pxy-br">
+            <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+            <div class="relative">
+                <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                    <div class="relative w-full pt-[calc(9/16*100%)]">
+                        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                            <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                <div class="absolute top-1 right-1 flex flex-col gap-1">
+                                    <a class="download-archive relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </a>
+                                    <button class="favorite-button hidden rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity full-opacity-on-touchscreen hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class=""><path d="M9.99936 2.45898L12.3169 7.15398L17.4994 7.91148L13.7494 11.564L14.6344 16.724L9.99936 14.2865L5.36436 16.724L6.24936 11.564L2.49936 7.91148L7.68186 7.15398L9.99936 2.45898Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </button>
+                                    <button class="delete-all-button relative rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                <img src="" class="image w-auto h-full object-contain">
+                                <span class="duration transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-0"></span>
+                                <div class="absolute bottom-1 right-1 flex flex-col gap-2">
+                                    <button class="open-image-modal-button p-1.5 bg-dark-pop-up lg:opacity-0 opacity-60 rounded-md hover:opacity-100 full-opacity-on-touchscreen transition-opacity group-hover:opacity-60">
+                                        <svg style="fill: white" height="20px" width="20px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 410.988 410.988" xml:space="preserve"><g><path d="M149.654,195.495c0-4.142-3.357-7.5-7.5-7.5l-78.262-0.001l12.527-12.528 c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303l-14.143-14.143c-2.93-2.929-7.678-2.929-10.607,0 L2.197,200.191c-2.93,2.929-2.93,7.678,0,10.606l49.473,49.474c1.465,1.464,3.385,2.197,5.305,2.197 c1.918,0,3.838-0.732,5.303-2.197l14.143-14.143c1.406-1.406,2.197-3.314,2.197-5.303c0-1.989-0.791-3.897-2.197-5.303 l-12.527-12.527l78.262,0.001c1.99,0,3.896-0.79,5.305-2.197c1.406-1.406,2.195-3.314,2.195-5.303V195.495z"/><path d="M408.791,200.191l-49.473-49.474c-2.93-2.929-7.678-2.929-10.607,0l-14.143,14.143 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l12.527,12.528l-78.262,0.001c-4.143,0-7.5,3.358-7.5,7.5 v20c0,1.989,0.789,3.897,2.195,5.303c1.408,1.407,3.314,2.197,5.305,2.197l78.262-0.001l-12.527,12.527 c-1.406,1.406-2.197,3.314-2.197,5.303c0,1.989,0.791,3.897,2.197,5.303l14.143,14.143c1.465,1.464,3.385,2.197,5.303,2.197 c1.92,0,3.84-0.732,5.305-2.197l49.473-49.474C411.721,207.869,411.721,203.12,408.791,200.191z"/> <path d="M164.859,76.42c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l12.527-12.527 v78.262c0,1.99,0.789,3.896,2.195,5.305c1.406,1.406,3.315,2.195,5.305,2.195h20c4.141,0,7.5-3.357,7.5-7.5V63.893l12.527,12.527 c1.406,1.406,3.314,2.197,5.305,2.197c1.988,0,3.896-0.791,5.303-2.197l14.143-14.143c2.928-2.93,2.928-7.678,0-10.607 L210.797,2.197c-2.928-2.93-7.678-2.93-10.605,0L150.717,51.67c-1.463,1.465-2.195,3.385-2.195,5.305 c0,1.918,0.733,3.838,2.195,5.303L164.859,76.42z"/><path d="M246.129,334.568c-1.406-1.406-3.315-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197 l-12.527,12.527v-78.262c0-4.143-3.359-7.5-7.5-7.5h-20c-1.99,0-3.898,0.789-5.305,2.195c-1.406,1.408-2.195,3.314-2.195,5.305 v78.262l-12.527-12.527c-1.406-1.406-3.314-2.197-5.303-2.197c-1.99,0-3.898,0.791-5.305,2.197l-14.143,14.143 c-1.463,1.465-2.195,3.385-2.195,5.303c0,1.92,0.733,3.84,2.195,5.305l49.475,49.473c2.928,2.93,7.678,2.93,10.605,0l49.475-49.473 c2.928-2.93,2.928-7.678,0-10.607L246.129,334.568z"/> </g> </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute left-1 top-1 flex gap-1 items-center h-7">
+                        <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Images output</span>
+                        </div>
+                        <button class="censure h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                            <i class="fa-solid fa-eye opacity-[.85] shrink-0 w-4 h-4" style="color: #fff;"></i>
+                            <i class="fa-solid fa-eye-slash opacity-[.85] shrink-0 w-4 h-4 hidden" style="color: #fff;"></i>
+                            <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Adult content</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+                <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                    <button class="touchscreen-back-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <i class="fa-solid fa-angle-left opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                        <span>Previous</span>
+                    </button>
+                    <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
+                    <button class="touchscreen-next-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <span>Next</span>
+                        <i class="fa-solid fa-angle-right opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2.5">
+                <div class="flex gap-5 items-center justify-between">
+                    <button class="copy-description-button group relative opacity-60 hover:opacity-100 text-start flex flex-1 md:p-2 p-1 lg:text-regular text-regular-mobile">
+                        <p class="description break-all line-clamp-2">Without description</p>
+                        <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="white" fill="white"><g clip-path="url(#clip0_4817_1689)"><path d="M3.33366 13.3333C2.41699 13.3333 1.66699 12.5833 1.66699 11.6666V3.33329C1.66699 2.41663 2.41699 1.66663 3.33366 1.66663H11.667C12.5837 1.66663 13.3337 2.41663 13.3337 3.33329M8.33366 6.66663H16.667C17.5875 6.66663 18.3337 7.41282 18.3337 8.33329V16.6666C18.3337 17.5871 17.5875 18.3333 16.667 18.3333H8.33366C7.41318 18.3333 6.66699 17.5871 6.66699 16.6666V8.33329C6.66699 7.41282 7.41318 6.66663 8.33366 6.66663Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4817_1689"><rect width="20" height="20"></rect></clipPath></defs></svg>
+                            Copy
+                        </div>
+                    </button>
+                    <div class="flex items-center gap-5 pr-1.5">
+                        <button class="repost-button">
+                            <i style="scale: 1.1;" class="fa-solid fa-link opacity-60 hover:opacity-100 transition-opacity"></i>
+                        </button>
+                        <div class="relative h-5">
+                            <button class="open-parameters-view">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class="opacity-60 hover:opacity-100 transition-opacity"><g clip-path="url(#clip0_4909_1400)"><path d="M10.0001 13.3332V9.99984M10.0001 6.6665H10.0084M18.3334 9.99984C18.3334 14.6022 14.6025 18.3332 10.0001 18.3332C5.39771 18.3332 1.66675 14.6022 1.66675 9.99984C1.66675 5.39746 5.39771 1.6665 10.0001 1.6665C14.6025 1.6665 18.3334 5.39746 18.3334 9.99984Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4909_1400"><rect width="20" height="20" stroke="none"></rect></clipPath></defs></svg>
+                            </button>
+                            <div class="parameters absolute z-[3] lg:left-1/2 lg:-translate-x-1/2 max-lg:right-0 bottom-[calc(100%_+_8px)] p-2 rounded-[.625rem] bg-dark-pop-up w-60 shadow-popup hidden">
+                                <div class="flex flex-col gap-2 overflow-auto scrollbar-hide" style="max-height: calc(853.75px - var(--navbar-height) - 40px);">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-extra-thick">Parameters</p>
+                                        <button type="button" class="close-parameters-view opacity-60 hover:opacity-100 transition-opacity">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-col items-stretch gap-3 bg-dark-elements rounded-md p-3">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <p class="datetime-created text-s-mobile lg:text-s text-light-secondary">Consistency with the text</p>
+                                            <p class="text-s-mobile lg:text-s flex gap-2 items-center"><i class="fa-regular fa-clock"></i></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</template>
+
+<template class="view-audio-template">
+    <div class="view-root z-[0] group/card relative flex flex-col gap-2.5 shrink-0 w-full justify-between pxy-br">
+        <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+        <div></div>
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center text-s-mobile md:text-m font-normal">
+                <p class="current-time"></p>
+                <p class="duration"></p>
+            </div>
+            <div class="w-full h-10 px-3.5 flex gap-3 items-center bg-dark-elements rounded-[.625rem]">
+                <audio src="" class="audio" hidden=""></audio>
+                <button class="audio-control opacity-60 hover:opacity-100 transition-opacity focus:outline-none" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#fff"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.167 2.5 15.832 10 4.166 17.5v-15Z"></path></svg>
+                    <svg class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#fff"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7.833 3.333H4.5v13.334h3.333V3.333ZM15.5 3.333h-3.333v13.334H15.5V3.333Z"></path></svg>
+                </button>
+                <div class="relative h-full flex-1 flex items-center justify-between py-2.5">
+                    <div class="audio-wave absolute w-full h-full flex items-center justify-between overflow-hidden"></div>
+                    <div class="top-0 left-0 w-full h-full">
+                        <div class="current-time-slider absolute top-0 h-full w-0.5 bg-white" style="left: 0;"></div>
+                    </div>
+                </div>
+                <button class="sound-button opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                    <svg style="scale:1.4;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="h-4 hidden"><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-width="1.5" d="m14.667 6-4 4m0-4 4 4M7.333 3.333 4 6H1.333v4H4l3.333 2.667V3.333Z"></path></svg>
+                    <svg style="scale:1.4;" xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12" fill="none" class="h-4"><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-width="1.5" d="M10.36 3.64a3.333 3.333 0 0 1 0 4.713m2.353-7.066a6.667 6.667 0 0 1 0 9.426m-5.38-9.38L4 4H1.333v4H4l3.333 2.667V1.333Z"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+            <div class="flex flex-col gap-2.5">
+                <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+                    <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                        <button class="rename-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                            <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20px" height="20px"><defs><clipPath id="_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle)"><g><path d=" M 16.667 4.996 L 15.833 4.996 L 15.833 6.663 L 16.667 6.663 L 16.667 13.329 L 15.833 13.329 L 15.833 14.996 L 16.667 14.996 C 17.586 14.996 18.333 14.248 18.333 13.329 L 18.333 6.663 C 18.333 5.744 17.585 4.996 16.667 4.996 Z  M 5 8.329" fill="rgb(255,255,255)"/><path d=" M 14.167 14.996 L 14.167 3.333 L 16.663 3.333 L 16.663 1.667 L 9.996 1.667 L 9.996 3.333 L 12.5 3.333 L 12.5 4.996 L 3.333 4.996 C 2.414 4.996 1.667 5.743 1.667 6.663 L 1.667 13.329 C 1.667 14.248 2.414 14.996 3.333 14.996 L 12.5 14.996 L 12.5 16.667 L 9.996 16.667 L 9.996 18.333 L 16.663 18.333 L 16.663 16.667 L 14.167 16.667 L 14.167 14.996 Z  M 3.333 13.329 L 3.333 6.663 L 12.5 6.663 L 12.5 13.329 L 3.333 13.329 Z " fill="rgb(255,255,255)"/></g></g></svg>
+                            <span>Rename</span>
+                        </button>
+                        <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
+                        <button class="delete-button relative group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"><g><path d="M2.5 4.99996H17.5M15.8333 4.99996V16.6666C15.8333 17.5 15 18.3333 14.1667 18.3333H5.83333C5 18.3333 4.16667 17.5 4.16667 16.6666V4.99996M6.66667 4.99996V3.33329C6.66667 2.49996 7.5 1.66663 8.33333 1.66663H11.6667C12.5 1.66663 13.3333 2.49996 13.3333 3.33329V4.99996M8.33333 9.16663V14.1666M11.6667 9.16663V14.1666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                    <div class="flex md:gap-3 gap-1.5 lg:hidden hidden">
+                        <div class="relative bg-dark-elements rounded-md">
+                            <button class="flex flex-col items-center gap-1 justify-center w-9 h-9 transition-opacity">
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                                <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                            </button>
+                            <div class="absolute md:left-1/2 md:-translate-x-1/2 max-md:right-0 bottom-full -translate-y-2.5 z-10 bg-dark-elements shadow-popup rounded-md p-2 flex flex-col gap-3 hidden">
+                                <div class="flex flex-col gap-3 md:hidden md:hidden">
+                                    <a class="group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                        <i class="fa-regular fa-file opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                                        <span>Option</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex md:gap-3 gap-1.5 ">
+                        <div style="margin-left: 2px;" class="relative bg-accent-primary rounded-md">
+                            <a class="download group rounded-md text-dark-background hover:bg-accent-hover font-normal  relative flex items-center gap-2 py-1.5 px-2 flex-1 justify-center" href="http://127.0.0.1:8000/media/content/127_0_0_1/audio.wav" download="audio.wav">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0D0D0D" class="opacity-100 group-hover:opacity-60 transition-all"><path d="M17.5 12.5V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V12.5M5.83333 8.33333L10 12.5M10 12.5L14.1667 8.33333M10 12.5V2.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-5 items-center justify-between">
+                    <button class="copy-description-button group relative opacity-60 hover:opacity-100 text-start flex flex-1 md:p-2 p-1 lg:text-regular text-regular-mobile">
+                        <p class="description break-all line-clamp-2">Without description</p>
+                        <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="white" fill="white"><g clip-path="url(#clip0_4817_1689)"><path d="M3.33366 13.3333C2.41699 13.3333 1.66699 12.5833 1.66699 11.6666V3.33329C1.66699 2.41663 2.41699 1.66663 3.33366 1.66663H11.667C12.5837 1.66663 13.3337 2.41663 13.3337 3.33329M8.33366 6.66663H16.667C17.5875 6.66663 18.3337 7.41282 18.3337 8.33329V16.6666C18.3337 17.5871 17.5875 18.3333 16.667 18.3333H8.33366C7.41318 18.3333 6.66699 17.5871 6.66699 16.6666V8.33329C6.66699 7.41282 7.41318 6.66663 8.33366 6.66663Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4817_1689"><rect width="20" height="20"></rect></clipPath></defs></svg>
+                            Copy
+                        </div>
+                    </button>
+                    <div class="flex items-center gap-5 pr-1.5">
+                        <button class="repost-button">
+                            <i style="scale: 1.1;" class="fa-solid fa-link opacity-60 hover:opacity-100 transition-opacity"></i>
+                        </button>
+                        <div class="relative h-5">
+                            <button class="open-parameters-view">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class="opacity-60 hover:opacity-100 transition-opacity"><g clip-path="url(#clip0_4909_1400)"><path d="M10.0001 13.3332V9.99984M10.0001 6.6665H10.0084M18.3334 9.99984C18.3334 14.6022 14.6025 18.3332 10.0001 18.3332C5.39771 18.3332 1.66675 14.6022 1.66675 9.99984C1.66675 5.39746 5.39771 1.6665 10.0001 1.6665C14.6025 1.6665 18.3334 5.39746 18.3334 9.99984Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4909_1400"><rect width="20" height="20" stroke="none"></rect></clipPath></defs></svg>
+                            </button>
+                            <div class="parameters absolute z-[3] lg:left-1/2 lg:-translate-x-1/2 max-lg:right-0 bottom-[calc(100%_+_8px)] p-2 rounded-[.625rem] bg-dark-pop-up w-60 shadow-popup hidden">
+                                <div class="flex flex-col gap-2 overflow-auto scrollbar-hide" style="max-height: calc(853.75px - var(--navbar-height) - 40px);">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-extra-thick">Parameters</p>
+                                        <button type="button" class="close-parameters-view opacity-60 hover:opacity-100 transition-opacity">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-col items-stretch gap-3 bg-dark-elements rounded-md p-3">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <p class="datetime-created text-s-mobile lg:text-s text-light-secondary">23:30:01 March 28, 2024</p>
+                                            <p class="text-s-mobile lg:text-s flex gap-2 items-center"><i class="fa-regular fa-clock"></i></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="view-load-template">
+    <div class="view-root view-load z-[0] group/card relative flex flex-col gap-2.5 shrink-0 w-full pxy-br">
+        <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+        <div class="relative">
+            <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                <div class="relative w-full pt-[calc(9/16*100%)]">
+                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <div class="absolute top-0 left-0 w-full h-full overflow-hidden bg-dark-elements z-[2]">
+                                <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                    <div class="relative">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <p class="text-center text-m-mobile xl:text-m text-white text-opacity-60 max-w-[200px]">Your request is generating</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2.5">
+            <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+                <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                    <button class="hidden-button relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <svg class="hidden opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="20px" width="20px" style="scale: 1.1;"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="white" fill-rule="nonzero"><path d="M17.5,11.75 C20.1233526,11.75 22.25,13.8766474 22.25,16.5 C22.25,19.1233526 20.1233526,21.25 17.5,21.25 C15.4019872,21.25 13.6216629,19.8898135 12.9927596,18.0031729 L11.0072404,18.0031729 C10.3783371,19.8898135 8.59801283,21.25 6.5,21.25 C3.87664744,21.25 1.75,19.1233526 1.75,16.5 C1.75,13.8766474 3.87664744,11.75 6.5,11.75 C8.9545808,11.75 10.9743111,13.6118164 11.224028,16.0002862 L12.775972,16.0002862 C13.0256889,13.6118164 15.0454192,11.75 17.5,11.75 Z M6.5,13.75 C4.98121694,13.75 3.75,14.9812169 3.75,16.5 C3.75,18.0187831 4.98121694,19.25 6.5,19.25 C8.01878306,19.25 9.25,18.0187831 9.25,16.5 C9.25,14.9812169 8.01878306,13.75 6.5,13.75 Z M17.5,13.75 C15.9812169,13.75 14.75,14.9812169 14.75,16.5 C14.75,18.0187831 15.9812169,19.25 17.5,19.25 C19.0187831,19.25 20.25,18.0187831 20.25,16.5 C20.25,14.9812169 19.0187831,13.75 17.5,13.75 Z M15.5119387,3 C16.7263613,3 17.7969992,3.79658742 18.145961,4.95979331 L19.1520701,8.31093387 C19.944619,8.44284508 20.7202794,8.59805108 21.4790393,8.77658283 C22.0166428,8.90307776 22.3499121,9.44143588 22.2234172,9.9790393 C22.0969222,10.5166428 21.5585641,10.8499121 21.0209607,10.7234172 C18.2654221,10.0750551 15.258662,9.75 12,9.75 C8.74133802,9.75 5.73457794,10.0750551 2.97903933,10.7234172 C2.44143588,10.8499121 1.90307776,10.5166428 1.77658283,9.9790393 C1.6500879,9.44143588 1.98335721,8.90307776 2.52096067,8.77658283 C3.27940206,8.59812603 4.05472975,8.4429754 4.8469317,8.31110002 L5.85403902,4.95979331 C6.20300079,3.79658742 7.2736387,3 8.4880613,3 L15.5119387,3 Z"></path></g></g></svg>
+                        <svg style="scale: 1.3;" class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="white" stroke-width="1.5" d="M10 15.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm9 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/><path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m10 15 .211-.106a4 4 0 0 1 3.578 0L14 15m3-6-1.65-4.125a1 1 0 0 0-1.245-.577l-1.473.491a2 2 0 0 1-1.264 0L9.894 4.3a1 1 0 0 0-1.245.576L7 9m-4 1c7.5-1 11-1 18 0"/></svg>
+                        <span>Hidden</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex gap-5 items-center justify-between">
+                <button class="copy-description-button group relative opacity-60 hover:opacity-100 text-start flex flex-1 md:p-2 p-1 lg:text-regular text-regular-mobile">
+                    <p class="description break-all line-clamp-2">Without description</p>
+                    <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="white" fill="white"><g clip-path="url(#clip0_4817_1689)"><path d="M3.33366 13.3333C2.41699 13.3333 1.66699 12.5833 1.66699 11.6666V3.33329C1.66699 2.41663 2.41699 1.66663 3.33366 1.66663H11.667C12.5837 1.66663 13.3337 2.41663 13.3337 3.33329M8.33366 6.66663H16.667C17.5875 6.66663 18.3337 7.41282 18.3337 8.33329V16.6666C18.3337 17.5871 17.5875 18.3333 16.667 18.3333H8.33366C7.41318 18.3333 6.66699 17.5871 6.66699 16.6666V8.33329C6.66699 7.41282 7.41318 6.66663 8.33366 6.66663Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4817_1689"><rect width="20" height="20"></rect></clipPath></defs></svg>
+                        Copy
+                    </div>
+                </button>
+                <div class="flex items-center gap-5 pr-1.5">
+                    <button onclick="openNotificationMessageModal()">
+                        <i class="fa-solid fa-code opacity-60 hover:opacity-100 transition-opacity"></i>
+                    </button>
+                    <div class="relative h-5">
+                        <button class="open-parameters-view">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="white" stroke="white" class="opacity-60 hover:opacity-100 transition-opacity"><g clip-path="url(#clip0_4909_1400)"><path d="M10.0001 13.3332V9.99984M10.0001 6.6665H10.0084M18.3334 9.99984C18.3334 14.6022 14.6025 18.3332 10.0001 18.3332C5.39771 18.3332 1.66675 14.6022 1.66675 9.99984C1.66675 5.39746 5.39771 1.6665 10.0001 1.6665C14.6025 1.6665 18.3334 5.39746 18.3334 9.99984Z" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_4909_1400"><rect width="20" height="20" stroke="none"></rect></clipPath></defs></svg>
+                        </button>
+                        <div class="parameters absolute z-[3] lg:left-1/2 lg:-translate-x-1/2 max-lg:right-0 bottom-[calc(100%_+_8px)] p-2 rounded-[.625rem] bg-dark-pop-up w-60 shadow-popup hidden">
+                            <div class="flex flex-col gap-2 overflow-auto scrollbar-hide" style="max-height: calc(853.75px - var(--navbar-height) - 40px);">
+                                <div class="flex justify-between items-center">
+                                    <p class="font-extra-thick">Parameters</p>
+                                    <button type="button" class="close-parameters-view opacity-60 hover:opacity-100 transition-opacity">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </button>
+                                </div>
+                                <div class="flex flex-col items-stretch gap-3 bg-dark-elements rounded-md p-3">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="datetime-created text-s-mobile lg:text-s text-light-secondary">Consistency with the text</p>
+                                        <p class="text-s-mobile lg:text-s flex gap-2 items-center"><i class="fa-regular fa-clock"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

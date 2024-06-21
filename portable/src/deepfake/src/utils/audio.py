@@ -1,12 +1,39 @@
+import os
+import uuid
+import subprocess
 import librosa
 import librosa.filters
 import numpy as np
 # import tensorflow as tf
 from scipy import signal
 from scipy.io import wavfile
+from pydub import AudioSegment
 from src.utils.hparams import hparams as hp
 
+
+def cut_audio(input_audio_path, audio_start, audio_end, output_folder):
+    audio_name = f"{uuid.uuid4()}.wav"
+    # Load the audio file
+    with open(input_audio_path, 'rb') as f:
+        audio = AudioSegment.from_file(f)
+    # Calculate the start and end times in milliseconds
+    start_time_ms = int(float(audio_start) * 1000)
+    end_time_ms = int(float(audio_end) * 1000)
+    # Extract the desired segment
+    audio_segment = audio[start_time_ms:end_time_ms]
+    # Create the output folder if it doesn't exist
+    os.makedirs(output_folder, exist_ok=True)
+    # Define the output file path
+    output_file_path = os.path.join(output_folder, audio_name)
+    # Export the audio segment to the output file
+    with open(output_file_path, 'wb') as f:
+        audio_segment.export(f, format="wav")
+    print(f"Audio segment saved to: {output_file_path}")
+    return output_file_path
+
+
 def load_wav(path, sr):
+    print(path)
     return librosa.core.load(path, sr=sr)[0]
 
 def save_wav(wav, path, sr):

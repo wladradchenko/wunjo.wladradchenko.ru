@@ -1,0 +1,150 @@
+.folder,.file {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 110px;
+    flex-direction: column;
+    padding: 10px;
+    cursor: pointer;
+    margin: 10px;
+    /* overflow: hidden; */
+    border-radius: 10px;
+}
+.folder:hover,.file:hover {
+    --tw-bg-opacity: 0.0;
+    background-color: rgb(200 237 210/var(--tw-bg-opacity));
+}
+
+.item-selected, .item-selected:hover{
+    background-color: rgb(43 43 43);
+    padding: 9px;
+    border: 1px dotted rgb(59 59 59);
+}
+.folder-icon-container {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    flex-wrap: wrap;
+}
+.folder-icon {
+    background-color: rgb(239 239 239); /*Green rgb(200 237 210)*/
+    border-radius: 8px;
+    width: 60px;
+    height: 40px;
+    position: relative;
+    margin-top: 8px;
+}
+.folder:hover .folder-icon::after {
+    content: '';
+    background-color: rgb(183 183 183); /*Dark green rgb(162 224 178)*/
+    border-radius: 5px;
+    margin-left: 3px;
+    width: 60px;
+    height: 35px;
+    position: absolute;
+    transform: skewX(-10deg);
+    margin-top: 5px;
+    opacity: 1;
+}
+.folder-icon::after {
+    content: '';
+    background-color: rgb(229, 231, 235); /*Dark green rgb(162 224 178)*/
+    border-radius: 5px;
+    width: 60px;
+    height: 40px;
+    position: absolute;
+    transform: skewX(0deg);
+    opacity: 0;
+    transition: 0.2s;
+}
+.folder-icon::before {
+    margin-top: -8px;
+    position: absolute;
+    background-color: rgb(229, 231, 235); /*Green rgb(200 237 210)*/
+    border-radius: 5px;
+    border-end-start-radius: 8px;
+    content: "";
+    width: 28px;
+    height: 48px;
+}
+.doc-icon-container {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    flex-wrap: wrap;
+}
+.file:hover .doc-icon::after {
+    border-width: 7px;
+    border-style: solid;
+    border-color: black;
+    border-bottom-color: rgba(10,10,10,0.5);
+    border-left-color: rgba(10,10,10,0.5);
+}
+.item-selected:hover .doc-icon::after, .item-selected .doc-icon::after {
+    border-style: solid;
+    border-color: rgb(43 43 43);
+    border-bottom-color: rgba(10,10,10,0.5);
+    border-left-color: rgba(10,10,10,0.5);
+}
+.doc-icon::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-color: black;
+    border-width: 10px;
+    border-style: solid;
+    border-bottom-color: rgba(10,10,10,0.5);
+    border-left-color: rgba(10,10,10,0.5);
+    right: 0;
+    top: 0;
+    position: absolute;
+    transition-property:border-width;
+    transition-duration: 0.3s;
+}
+.doc-icon {
+    background-color: rgba(var(--icon-color),1);
+    border-radius: 8px;
+    width: 46px;
+    height: 48px;
+    position: relative;
+    color: #f5f5f5;
+    display: flex;
+    text-align: right;
+    align-items: end;
+}
+.doc-icon p {
+    padding: 2px;
+    margin: 0 0 0 4px;
+    text-align: right;
+}
+p.file-name, p.folder-name {
+    margin: 5px 0 0 0;
+    text-align: center;
+
+    white-space: nowrap;
+    width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.file-extension {
+    color: rgb(229, 231, 235); /*Green rgb(200 237 210)*/
+}
+
+p.file-datetime, p.folder-datetime {
+    font-size: xx-small;
+    margin: 5px 0 0 0;
+    text-align: center;
+    white-space: nowrap;
+    width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #a5a5a5;
+}
+
+/* Style the audio player */
+/* Style the audio controls */
+audio::-webkit-media-controls {
+    background-color: #f0f0f0; /* Background color of the controls */
+    border-radius: 7px; /* Rounded corners for the controls */
+}
