@@ -4,7 +4,7 @@ project_name = "Wunjo"
 bundle = "ce.version"  # wunjo ce.version
 version = "2.0.2"
 url = "https://wunjo.online"
-license = "MIT License for Backend and Models. Frontend Commercial Code"
+license = "MIT License"
 author = "Wladislav Radchenko"
 author_email = "i@wladradchenko.ru"
 

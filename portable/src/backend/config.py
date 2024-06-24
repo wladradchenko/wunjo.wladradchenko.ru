@@ -109,7 +109,7 @@ class ConfigurationManager:
 
 
 class Settings:
-    config_manager = ConfigurationManager(os.path.join(SETTING_FOLDER, "init.json"))  # General config
+    config_manager = ConfigurationManager(os.path.join(SETTING_FOLDER, "init_ce.json"))  # General config
 
     ADMIN_ID = "127.0.0.1"  # can be ip or id from db (relate to user_valid() in app.py)
 
