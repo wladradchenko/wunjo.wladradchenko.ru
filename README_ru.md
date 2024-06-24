@@ -445,7 +445,7 @@ Wunjo (Ву́ньо) происходит из древнего руническ
 Wunjo создан на основе замечательных результатов различных проектов с открытым исходным кодом. Каждый интегрированный компонент отражает стремление к улучшению и адаптации существующих технологий в рамках совместной разработки с открытым исходным кодом. В списке ниже представлены проекты, которые были адаптированы и улучшены для включения в Wunjo:
 
 - **Пользовательский интерфейс и упаковка:** Реализация [Flask UI](https://github.com/ClimenteA/flaskwebgui) и [BeeWare](https://beeware.org/project/projects/tools/briefcase/ )
-- **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib)
+- **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib), [Insightface](https://github.com/deepinsight/insightface), который предоставил хорошо сделанную библиотеку и модели.
 - **Улучшение изображений и видео:** Адаптированная версия [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) для улучшения качества видео и изображений
 - **Обработка и сегментация видео:** Адаптации [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) и обновленная реализация [Ebsynth](https://github.com/SingleZombie/ebsynth/tree/02ec8c4e4d4a568057363ae8b8f8bb8f7e4898c2) 
 - **AI Art Generation:** Адаптация [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) для изменения видео текстовыми запросами
