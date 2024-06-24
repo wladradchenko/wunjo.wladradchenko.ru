@@ -35,6 +35,10 @@ TMP_FOLDER = os.path.join(MEDIA_FOLDER, 'tmp')
 if not os.path.exists(TMP_FOLDER):
     os.makedirs(TMP_FOLDER)
 
+# FFMPEG DIR
+if sys.platform == 'win32':
+    os.environ['FFMPEG_TEMP_DIR'] = TMP_FOLDER
+
 # CONTENT FOLDERS
 CONTENT_FOLDER = os.path.join(MEDIA_FOLDER, "content")
 if not os.path.exists(CONTENT_FOLDER):
