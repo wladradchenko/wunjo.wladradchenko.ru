@@ -1,0 +1,545 @@
+{% extends 'app.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}Generation{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<!--TEMPLATE-->
+<template class="modal-visual-textarea-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-2xl">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary font-alumni text-heading-3-mobile md:text-heading-3 uppercase h2-alumni">What is your prompt?</h2>
+                <p class="md:text-s text-s-mobile mb-2"></p>
+                <div class="relative flex items-end gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                    <textarea class="modal-positive-prompt bg-transparent appearance-none outline-none w-full resize-none placeholder:text-light-secondary disabled:cursor-not-allowed text-prompt-mobile lg:text-prompt self-center"  rows="1" style="font-kerning: auto; font-optical-sizing: auto; font-stretch: 100%; height: 150px;"></textarea>
+                </div>
+                <div class="mt-1 mb-1 w-full h-0 border-t border-dashed border-white border-opacity-[.15] hidden-on-touchscreen"></div>
+                <div style="overflow-x: auto;height: 12.825rem">
+                    <div class="flex flex-row justify-between hidden-on-touchscreen">
+                        <div>
+                            <div class="mb-4 mt-1 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Seed</p>
+                            </div>
+                            <div class="group relative">
+                                <div class="flex flex-col gap-2">
+                                    <input class="modal-seed rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background appearance-none" placeholder="e.g. 1234567890" type="number" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                        <div>
+                            <div class="mb-4 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Strength</p>
+                                <input class="modal-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75" min="0.1" max="1" step="0.05">
+                            </div>
+                            <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                <span class="opacity-60">0.1</span>
+                                <input class="modal-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                <span class="opacity-60">1</span>
+                            </div>
+                        </div>
+                        <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                        <div>
+                            <div class="mb-4 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Scale</p>
+                                <input class="modal-scale px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="7.5" min="1" max="15" step="0.5">
+                            </div>
+                            <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                <span class="opacity-60">1</span>
+                                <input class="modal-scale-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="1" max="15" step="0.5" type="range" value="7.5" style="--fill-size: 47%;">
+                                <span class="opacity-60">15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col block-on-touchscreen hidden">
+                        <div>
+                            <div class="mb-4 mt-1 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Seed</p>
+                            </div>
+                            <div class="group relative">
+                                <div class="flex flex-col gap-2">
+                                    <input class="modal-seed rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background appearance-none" placeholder="e.g. 1234567890" type="number" value="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-4">
+                            <div class="mb-4 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Strength</p>
+                                <input class="modal-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75">
+                            </div>
+                            <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                <span class="opacity-60">0.1</span>
+                                <input class="modal-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                <span class="opacity-60">1</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mb-4 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Scale</p>
+                                <input class="modal-scale px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="7.5">
+                            </div>
+                            <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                <span class="opacity-60">1</span>
+                                <input class="modal-scale-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="1" max="15" step="0.5" type="range" value="7.5" style="--fill-size: 47%;">
+                                <span class="opacity-60">15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                    <div class="mb-2 flex gap-3 items-center justify-between"><p class="font-extra-thick">Negative prompt</p></div>
+                    <div class="relative flex items-end gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                        <textarea maxlength="300" name="promptNegativeText" class="modal-negative-prompt bg-transparent my-1 appearance-none font-mono outline-none w-full resize-none placeholder:text-light-secondary flex-1 text-prompt-mobile lg:text-prompt h-6 max-h-[4.5rem] disabled:cursor-not-allowed" placeholder="e.g. ugly, bad, terrible (optional)" rows="1"></textarea>
+                    </div>
+                </div>
+                <div class="mt-1 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15] hidden-on-touchscreen"></div>
+                <button class="submit-text rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 hover:bg-accent-hover text-dark-background bg-accent-primary">Apply</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-visual-generate-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-[390px]">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary text-heading-3-mobile md:text-heading-3 uppercase font-alumni h2-alumni">Generation settings</h2>
+                <p class="text-s">You can either fine-tune the parameters to <text class="text-accent-primary">generate</text> video or take control by manually <text class="text-accent-primary">redraw</text> tweaking the elements within the image before creation. Dive in and make it truly yours.</p>
+
+                <div style="overflow-x: auto;overflow-y: auto;max-height: 60vh;" class="modal-parameters gap-2.5 grid flex-col"> </div>
+
+                <div class="flex flex-col gap-3">
+                    <div class="flex gap-3 items-center">
+                        <button class="modal-redraw-btn w-full rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2.5 gap-2 py-2.5 bg-light-emphasis hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                            Redraw
+                        </button>
+                        <button class="modal-generate-btn w-full rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2.5 gap-2 py-2.5 group !pr-4 font-normal hover:bg-accent-hover text-dark-background bg-accent-primary disabled:border disabled:border-white disabled:border-opacity-[15%]">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-redraw-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-2xl">
+                <button onclick="closeModal(this);" type="button" class="modal-restyle-close-button absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <div class="flex flex-col gap-2.5 mb-5">
+                    <h2 class="text-accent-primary text-heading-3-mobile md:text-heading-3 uppercase">CUSTOMIZING GENERATION</h2>
+                </div>
+                <p class="flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span>Prepare your staff. Select an object and scene, set parameters and properties, and change it by prompt. Additionally, you can regenerate the image again, or replace it with another one.</span>
+                </p>
+                <div class="modal-root-parameters">
+                    <div class="relative">
+                        <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                            <div class="modal-content-display relative w-full pt-[calc(9/16*100%)]">
+                                <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                                    <div class="modal-canvas relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                        <div class="absolute right-0 top-0 z-[2]">
+                                            <div>
+                                                <button class="upload mr-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <!-- Cloud shape (unchanged) -->
+                                                        <path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <!-- Arrow shape (adjusted to point upwards) -->
+                                                        <path d="M8 13L12 9M12 9L16 13M12 9V18" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                                <button class="download rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                            </div>
+                                            <button style="margin-top: .125rem;font-size: .9rem;color:rgb(200 237 210)" class="brush-wheel top-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5  py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover bg-dark-elements" type="button">
+                                                <div style="width: 20px;height: 20px;margin-left: .125rem;margin-top: .125rem;" class="flex items-center justify-center">
+                                                    <i class="fa-solid fa-circle"></i>
+                                                </div>
+                                            </button>
+                                            <button style="margin-top: .125rem;" class="clear-brush top-20 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                                <i style="width: 20px;height: 20px;" class="fa-solid fa-eraser"></i>
+                                            </button>
+                                            <button class="delete-button top-30 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                                <svg width="20px" height="20x" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
+                                        <div class="absolute left-1 top-1 flex gap-1 items-center h-7">
+                                            <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                                                <i class="fa-regular fa-image opacity-[.85] shrink-0 w-4 h-4"></i>
+                                                <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Image input</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div onclick="openNotificationMessageModal();" class="hidden modal-load-element absolute top-0 left-0 w-full h-full overflow-hidden bg-dark-elements z-[2]">
+                                    <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                        <div class="relative">
+                                            <div class="loader"></div>
+                                        </div>
+                                        <p class="text-center text-m-mobile xl:text-m text-white text-opacity-60 max-w-[200px]">Generation... Buttons are locked until finished. Tap on the screen to view details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2 flex gap-3 items-center justify-between"><p class="font-extra-thick">Positive prompt</p></div>
+                    <div class="relative flex items-center gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                        <textarea required maxlength="300" name="promptText" class="modal-positive-prompt bg-transparent my-1 appearance-none font-mono outline-none w-full resize-none placeholder:text-light-secondary flex-1 text-prompt-mobile lg:text-prompt h-6 max-h-[4.5rem] disabled:cursor-not-allowed" placeholder="Describe the change you want to make" rows="1"></textarea>
+                        <div class="flex gap-3 items-center">
+                            <button title="Inspire me" type="button" class="inspire-button flex gap-2 items-center relative opacity-60 hover:opacity-100 transition-opacity py-1.5 px-0 confetti-button">
+                                <svg fill="white" width="30px" height="30px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><g fill-rule="evenodd"> <path d="M47.895 88.097c.001-4.416 3.064-9.837 6.854-12.117l66.257-39.858c3.785-2.277 9.915-2.277 13.707.008l66.28 39.934c3.786 2.28 6.853 7.703 6.852 12.138l-.028 79.603c-.001 4.423-3.069 9.865-6.848 12.154l-66.4 40.205c-3.781 2.29-9.903 2.289-13.69-.01l-66.167-40.185c-3.78-2.295-6.842-7.733-6.84-12.151l.023-79.72zm13.936-6.474l65.834 36.759 62.766-36.278-62.872-36.918L61.83 81.623zM57.585 93.52c0 1.628-1.065 71.86-1.065 71.86-.034 2.206 1.467 4.917 3.367 6.064l61.612 37.182.567-77.413s-64.48-39.322-64.48-37.693zm76.107 114.938l60.912-38.66c2.332-1.48 4.223-4.915 4.223-7.679V93.125l-65.135 37.513v77.82z"/><path d="M77.76 132.287c-4.782 2.762-11.122.735-14.16-4.526-3.037-5.261-1.622-11.765 3.16-14.526 4.783-2.762 11.123-.735 14.16 4.526 3.038 5.261 1.623 11.765-3.16 14.526zm32 21c-4.782 2.762-11.122.735-14.16-4.526-3.037-5.261-1.622-11.765 3.16-14.526 4.783-2.762 11.123-.735 14.16 4.526 3.038 5.261 1.623 11.765-3.16 14.526zm-32 16c-4.782 2.762-11.122.735-14.16-4.526-3.037-5.261-1.622-11.765 3.16-14.526 4.783-2.762 11.123-.735 14.16 4.526 3.038 5.261 1.623 11.765-3.16 14.526zm32 21c-4.782 2.762-11.122.735-14.16-4.526-3.037-5.261-1.622-11.765 3.16-14.526 4.783-2.762 11.123-.735 14.16 4.526 3.038 5.261 1.623 11.765-3.16 14.526zm78.238-78.052c-4.783-2.762-11.122-.735-14.16 4.526-3.037 5.261-1.623 11.765 3.16 14.526 4.783 2.762 11.123.735 14.16-4.526 3.038-5.261 1.623-11.765-3.16-14.526zm-16.238 29c-4.782-2.762-11.122-.735-14.16 4.526-3.037 5.261-1.622 11.765 3.16 14.526 4.783 2.762 11.123.735 14.16-4.526 3.038-5.261 1.623-11.765-3.16-14.526zm-17 28c-4.782-2.762-11.122-.735-14.16 4.526-3.037 5.261-1.622 11.765 3.16 14.526 4.783 2.762 11.123.735 14.16-4.526 3.038-5.261 1.623-11.765-3.16-14.526zM128.5 69c-6.351 0-11.5 4.925-11.5 11s5.149 11 11.5 11S140 86.075 140 80s-5.149-11-11.5-11z"/></g></svg>
+                            </button>
+                            <button style="font-size: 0.8rem;font-weight: bolder;" class="modal-txt2img-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 group hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                                NEW
+                            </button>
+                            <button class="modal-img2img-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 group hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                                <svg style="transform: scaleX(-1);" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#000000" class="fill-dark-background group-disabled:fill-light-tertiary" stroke-width="1.5"><path d="M9.99935 15.8332L4.16602 9.99984M4.16602 9.99984L9.99935 4.1665M4.16602 9.99984H15.8327" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                    <div style="overflow-x: auto;" class="h-[5.625rem]">
+
+                        <div class="flex flex-row justify-between hidden-on-touchscreen">
+                            <div>
+                                <div class="mb-4 mt-1 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Seed</p>
+                                </div>
+                                <div class="group relative">
+                                    <div class="flex flex-col gap-2">
+                                        <input class="modal-seed rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background appearance-none" placeholder="e.g. 1234567890" type="number" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                            <div>
+                                <div class="mb-4 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Strength</p>
+                                    <input class="modal-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75" min="0.1" max="1" step="0.05">
+                                </div>
+                                <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                    <span class="opacity-60">0.1</span>
+                                    <input class="modal-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                    <span class="opacity-60">1</span>
+                                </div>
+                            </div>
+                            <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                            <div>
+                                <div class="mb-4 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Scale</p>
+                                    <input class="modal-scale px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="7.5" min="1" max="15" step="0.5" >
+                                </div>
+                                <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                    <span class="opacity-60">1</span>
+                                    <input class="modal-scale-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="1" max="15" step="0.5" type="range" value="7.5" style="--fill-size: 47%;">
+                                    <span class="opacity-60">15</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col block-on-touchscreen hidden">
+                            <div>
+                                <div class="mb-4 mt-1 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Seed</p>
+                                </div>
+                                <div class="group relative">
+                                    <div class="flex flex-col gap-2">
+                                        <input class="modal-seed rounded-lg h-full bg-dark-elements px-3.5 py-2.5 bg-dark-elements appearance-none outline-none invalid:focus:border-danger-primary placeholder:text-light-secondary text-white disabled:text-opacity-60 disabled:cursor-not-allowed border border-dark-background appearance-none" placeholder="e.g. 1234567890" type="number" value="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 mb-4">
+                                <div class="mb-4 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Strength</p>
+                                    <input class="modal-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75">
+                                </div>
+                                <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                    <span class="opacity-60">0.1</span>
+                                    <input class="modal-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                    <span class="opacity-60">1</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="mb-4 flex gap-3 items-center justify-between">
+                                    <p class="font-extra-thick">Scale</p>
+                                    <input class="modal-scale px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="7.5">
+                                </div>
+                                <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                    <span class="opacity-60">1</span>
+                                    <input class="modal-scale-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="1" max="15" step="0.5" type="range" value="7.5" style="--fill-size: 47%;">
+                                    <span class="opacity-60">15</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                        <div style="overflow-x: auto;overflow-y: hidden;" class="h-[5.625rem]">
+                            <div class="flex flex-row justify-content: space-around; hidden-on-touchscreen">
+                                <div class="w-full mr-4">
+                                    <div class="mb-4 flex gap-3 items-center justify-between">
+                                        <p class="font-extra-thick">Control strength</p>
+                                        <input class="modal-control-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75" min="0.1" max="1" step="0.05">
+                                    </div>
+                                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                        <span class="opacity-60">0.1</span>
+                                        <input class="modal-control-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                        <span class="opacity-60">1</span>
+                                    </div>
+                                </div>
+                                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                                <div class="w-full ml-4">
+                                    <div class="mb-4 flex gap-3 items-center justify-between">
+                                        <p class="font-extra-thick">Blur factor</p>
+                                        <input class="modal-blur-factor px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="10" min="0" max="50" step="1" >
+                                    </div>
+                                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                        <span class="opacity-60">1</span>
+                                        <input class="modal-blur-factor-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0" max="50" step="1" type="range" value="10" style="--fill-size: 20%;">
+                                        <span class="opacity-60">50</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col block-on-touchscreen hidden">
+
+                                <div class="mt-4 mb-4">
+                                    <div class="mb-4 flex gap-3 items-center justify-between">
+                                        <p class="font-extra-thick">Control strength</p>
+                                        <input class="modal-control-strength px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0.75" min="0.1" max="1" step="0.05">
+                                    </div>
+                                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                        <span class="opacity-60">0.1</span>
+                                        <input class="modal-control-strength-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0.1" max="1" step="0.05" type="range" value="0.75" style="--fill-size: 73%;">
+                                        <span class="opacity-60">1</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="mb-4 flex gap-3 items-center justify-between">
+                                        <p class="font-extra-thick">Blur factor</p>
+                                        <input class="modal-blur-factor px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" min="0" max="50" step="1" value="10">
+                                    </div>
+                                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                        <span class="opacity-60">1</span>
+                                        <input class="modal-blur-factor-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0" max="50" step="1" type="range" value="10" style="--fill-size: 20%;">
+                                        <span class="opacity-60">50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                        <div class="mb-2 flex gap-3 items-center justify-between"><p class="font-extra-thick">Negative prompt</p></div>
+                        <div class="relative flex items-end gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                            <textarea maxlength="300" name="promptNegativeText" class="modal-negative-prompt bg-transparent my-1 appearance-none font-mono outline-none w-full resize-none placeholder:text-light-secondary flex-1 text-prompt-mobile lg:text-prompt h-6 max-h-[4.5rem] disabled:cursor-not-allowed" placeholder="e.g. ugly, bad, terrible (optional)" rows="1"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                    <div class="flex gap-3 items-center">
+                        <button class="modal-submit-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 grow hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                            <span class="font-normal">Continue</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-outpaint-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-2xl">
+                <button onclick="closeModal(this);" type="button" class="modal-restyle-close-button absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <div class="flex flex-col gap-2.5 mb-5">
+                    <h2 class="text-accent-primary text-heading-3-mobile md:text-heading-3 uppercase">OUTPAINTING</h2>
+                </div>
+                <p class="flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span>Please note that the model used is version 1.5 with a resolution limit of 1280x1280 for best quality.</span>
+                </p>
+                <div class="modal-root-parameters">
+                    <div class="relative">
+                        <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                            <div class="modal-content-display relative w-full pt-[calc(9/16*100%)]">
+                                <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                                    <div class="modal-canvas relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                        <div class="absolute right-0 top-0 z-[2]">
+                                            <button class="download rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
+                                        <div class="absolute left-1 top-1 flex gap-1 items-center h-7">
+                                            <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                                                <i class="fa-regular fa-image opacity-[.85] shrink-0 w-4 h-4"></i>
+                                                <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">Image input</span>
+                                            </div>
+                                        </div>
+                                        <span class="resolution transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-100"></span>
+                                    </div>
+                                </div>
+                                <div onclick="openNotificationMessageModal();" class="hidden modal-load-element absolute top-0 left-0 w-full h-full overflow-hidden bg-dark-elements z-[2]">
+                                    <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                                        <div class="relative">
+                                            <div class="loader"></div>
+                                        </div>
+                                        <p class="text-center text-m-mobile xl:text-m text-white text-opacity-60 max-w-[200px]">Generation... Buttons are locked until finished. Tap on the screen to view details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2 flex gap-3 items-center justify-between"><p class="font-extra-thick">Prompt</p></div>
+                    <div class="relative flex items-center gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                        <textarea required maxlength="300" name="promptText" class="modal-outpaint-prompt bg-transparent my-1 appearance-none font-mono outline-none w-full resize-none placeholder:text-light-secondary flex-1 text-prompt-mobile lg:text-prompt h-6 max-h-[4.5rem] disabled:cursor-not-allowed" placeholder="(Optional) Describe what should be in the new parts" rows="1"></textarea>
+                        <div class="flex gap-3 items-center">
+                            <button class="modal-outpaint-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 group hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                                <svg style="transform: scaleX(-1);" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#000000" class="fill-dark-background group-disabled:fill-light-tertiary" stroke-width="1.5"><path d="M9.99935 15.8332L4.16602 9.99984M4.16602 9.99984L9.99935 4.1665M4.16602 9.99984H15.8327" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 mb-3 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                    <div style="overflow-x: auto;" class="h-[5.625rem]">
+                        <div>
+                            <div class="mb-4 flex gap-3 items-center justify-between">
+                                <p class="font-extra-thick">Blur factor</p>
+                                <input class="modal-blur-factor px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" min="0" max="50" step="1" value="10">
+                            </div>
+                            <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                                <span class="opacity-60">1</span>
+                                <input class="modal-blur-factor-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" min="0" max="50" step="1" type="range" value="10" style="--fill-size: 20%;">
+                                <span class="opacity-60">50</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 mb-3 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+                    <div class="flex gap-2 flex-wrap aspect-ratio"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-view-video-suggest modal-view-image-suggest">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-[390px]">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary font-rubic-ex-ultra text-heading-3-mobile md:text-heading-3 uppercase">Suggest</h2>
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span><strong>Enhancement:</strong> So, you've created the video. But wait, high-resolution from source content can sometimes reveal a few sneaky flaws. No sweat! Enhancement <a class="underline text-accent-primary" href="/enhancement?attachment=">tools</a> are here to smooth out those rough spots.</span>
+                </p>
+                <div class="flex gap-5 items-center">
+                    <span class="flex-1 h-px bg-light-border"></span>
+                    <p class="text-s-mobile md:text-s">or</p>
+                    <span class="flex-1 h-px bg-light-border"></span>
+                </div>
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span><strong>Face swap:</strong> Lost a face in the content? It can be restored with a <a class="underline text-accent-primary" href="/face-swap?skip=">face swap</a> by one click.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</template>
+<!--In order to see menu like freeze add in class sticky else remove sticky-->
+<div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
+    <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+        <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">Today</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 p-2 text-center"><i class="fa-regular fa-calendar"></i></button>
+    </div>
+</div>
+
+<!--TEMPLATE-->
+
+<div class="view-filter"></div>
+
+<div class="flex flex-col gap-10 pt-10">
+    <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div class="mb-[34px]"></div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<div class="footer-block px-4 pt-4 pb-5 md:border-t border-t-white border-opacity-[.15]"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const userContentId = {{ user_content_id|tojson|safe }};
+    const userFileTree = {{ user_file_tree|tojson|safe }};
+    const pageFileFormats = ["video"];
+    let userFileFormats = pageFileFormats;
+    const moduleName = {{ folder_name|tojson|safe }};
+    const moduleInpaintName = {{ inpaint_method|tojson|safe }};
+    const moduleText2ImgName = {{ txt2img_method|tojson|safe }};
+    const moduleOutpaintName = {{ outpaint_method|tojson|safe }};
+    const maxDurationToShow = null;
+    // Set the maximum file size to read (in bytes)
+    const maxFileSize = {{ max_files_size|tojson|safe }};
+    // Models
+    const sdModels = {{ sd_models|tojson|safe }};
+</script>
+<script>
+    function initScript() {
+        // Import and initialize the content script here
+        const scriptView = document.createElement('script');
+        scriptView.src = "/static/content/js/view.min.js";
+        document.body.appendChild(scriptView);
+        document.querySelector('.view-filter').appendChild(createViewFilter());
+
+        const scriptRestyling = document.createElement('script');
+        scriptRestyling.src = "/static/modules/js/generation.min.js";
+        document.body.appendChild(scriptRestyling);
+
+        getModuleTaskEventWithIntervalImmediately();
+    }
+</script>
+{% endblock %}

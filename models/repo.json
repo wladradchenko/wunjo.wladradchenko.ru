@@ -1,0 +1,6 @@
+{
+  "stable_video_diffusion": "stabilityai/stable-video-diffusion-img2vid-xt",
+  "stable_diffusion": "runwayml/stable-diffusion-v1-5",
+  "controlnet_canny": "lllyasviel/sd-controlnet-canny",
+  "controlnet_tile": "lllyasviel/control_v11f1e_sd15_tile"
+}

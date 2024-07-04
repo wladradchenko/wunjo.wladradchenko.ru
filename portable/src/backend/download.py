@@ -120,6 +120,50 @@ def download_model(download_path: str, download_link: str, retry_count: int = 2,
             time.sleep(retry_delay)
 
 
+def huggingface_repo_files(repo_id: str):
+    # Use the Hugging Face API to get the list of files in the repo
+    api_url = f"https://huggingface.co/api/models/{repo_id}/tree/main"
+    response = requests.get(api_url)
+    response.raise_for_status()
+    files = response.json()
+
+    def traverse_files(file_obj, url):
+        file_type = file_obj.get("type")
+        file_path = file_obj.get("path")
+        if file_type == "directory":
+            api_url = f"{url}/{file_path}"
+            response = requests.get(api_url)
+            response.raise_for_status()
+            sub_files = response.json()
+            for sub_file in sub_files:
+                yield from traverse_files(sub_file, api_url)
+        else:
+            yield file_path
+
+    for file in files:
+        yield from traverse_files(file, f"https://huggingface.co/api/models/{repo_id}/tree/main")
+
+
+def download_huggingface_repo(repo_id: str, download_dir: str, compare_size: bool = False):
+    files = huggingface_repo_files(repo_id)
+
+    base_url = f"https://huggingface.co/{repo_id}/resolve/main/"
+    for file in files:
+        file_url = base_url + file
+        file_path = os.path.join(download_dir, *file.split("/"))
+        if not os.path.exists(file_path):
+            if is_connected(file_path):
+                print("Model not found. Download size model.")
+                # download pre-trained models from url
+                download_model(file_path, file_url)
+            else:
+                raise Exception(f"Not internet connection to download model {file_url} in {file_path}.")
+        else:
+            if compare_size:
+                check_download_size(file_path, file_url)
+
+
+
 def check_download_size(download_path: str, download_link: str) -> bool:
     if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'True':
         # Offline mode

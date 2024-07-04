@@ -9,6 +9,7 @@ from backend.folders import ALL_MODEL_FOLDER, MEDIA_FOLDER, SETTING_FOLDER
 
 # Params
 ALL_MODELS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/models.json"
+HUGGINGFACE_REPO_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/repo.json"
 DYNAMIC_PORT = get_free_port()
 
 
@@ -59,10 +60,11 @@ class ConfigurationManager:
           "CHECK_DOWNLOAD_SIZE_ENHANCEMENT_GFPGAN": True,
           "CHECK_DOWNLOAD_SIZE_LIP_SYNC": True,
           "CHECK_DOWNLOAD_SIZE_DIFFUSER": True,
+          "CHECK_DOWNLOAD_SIZE_VIDEO_DIFFUSER": True,
           "CHECK_DOWNLOAD_SIZE_CONTROLNET_HED": True,
           "CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY": True,
           "CHECK_DOWNLOAD_SIZE_SEPARATOR": True,
-          "CHECK_DOWNLOAD_SIZE_CLONE_VOICE": True,
+          "CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE": True,
 
           "STATIC_PORT": 8000,
           "SECRET_KEY": os.urandom(12).hex()
@@ -109,12 +111,12 @@ class ConfigurationManager:
 
 
 class Settings:
-    config_manager = ConfigurationManager(os.path.join(SETTING_FOLDER, "init_ce.json"))  # General config
+    VERSION = "2.0.3ce"  # Version can be p (professional) and c (community edition)
+    FRONTEND_HOST = "https://wunjo.online"
+
+    config_manager = ConfigurationManager(os.path.join(SETTING_FOLDER, f"init.{VERSION}.json"))  # General config
 
     ADMIN_ID = "127.0.0.1"  # can be ip or id from db (relate to user_valid() in app.py)
-
-    VERSION = "2.0.2ce"  # Version can be p (professional) and c (community edition)
-    FRONTEND_HOST = "https://wunjo.online"
     API_SERVER = ""
     SECRET_KEY = config_manager.get_parameter('SECRET_KEY', os.urandom(12).hex())
 
@@ -153,8 +155,8 @@ class Settings:
     MIN_VRAM_DIFFUSER_GB = config_manager.get_parameter('MIN_VRAM_DIFFUSER_GB', 7)
     MIN_RAM_SEPARATOR_GB = config_manager.get_parameter('MIN_RAM_SEPARATOR_GB', 5)
     MIN_VRAM_SEPARATOR_GB = config_manager.get_parameter('MIN_VRAM_SEPARATOR_GB', 4)
-    MIN_RAM_CLONE_VOICE_GB = config_manager.get_parameter('MIN_RAM_CLONE_VOICE_GB', 4)
-    MIN_VRAM_CLONE_VOICE_GB = config_manager.get_parameter('MIN_VRAM_CLONE_VOICE_GB', 4)
+    MIN_VRAM_VIDEO_DIFFUSER_GB = config_manager.get_parameter('MIN_VRAM_VIDEO_DIFFUSER_GB', 7)
+    MIN_RAM_VIDEO_DIFFUSER_GB = config_manager.get_parameter('MIN_RAM_VIDEO_DIFFUSER_GB', 7)
 
     MAX_FILE_SIZE = config_manager.get_parameter('MAX_FILE_SIZE', 100 * 1024 * 1024)  # 100 MB in bytes
 
@@ -191,8 +193,9 @@ class Settings:
     CHECK_DOWNLOAD_SIZE_ENHANCEMENT_GFPGAN = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_ENHANCEMENT_GFPGAN', True)
     CHECK_DOWNLOAD_SIZE_LIP_SYNC = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_LIP_SYNC', True)
     CHECK_DOWNLOAD_SIZE_SEPARATOR = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_SEPARATOR', True)
-    CHECK_DOWNLOAD_SIZE_CLONE_VOICE = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_CLONE_VOICE', True)
+    CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE', True)
     CHECK_DOWNLOAD_SIZE_DIFFUSER = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_DIFFUSER', True)
+    CHECK_DOWNLOAD_SIZE_VIDEO_DIFFUSER = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_VIDEO_DIFFUSER', True)
     CHECK_DOWNLOAD_SIZE_CONTROLNET_HED = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_CONTROLNET_HED', True)
     CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY = config_manager.get_parameter('CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY', True)
 
@@ -238,6 +241,31 @@ class ModelsConfig:
             self.CONFIG = {}
         else:
             with open(os.path.join(ALL_MODEL_FOLDER, 'all_models.json'), 'r', encoding="utf8") as file:
+                self.CONFIG = json.load(file)
+
+
+class HuggingfaceRepoConfig:
+    CONFIG = {}
+
+    def __call__(self):
+        if len(self.CONFIG.keys()) == 0:
+            print("Model config updated")
+            self.get_config()
+        return self.CONFIG
+
+    def get_config(self):
+        if os.environ.get('WUNJO_OFFLINE_MODE', 'False') == 'False':
+            try:
+                response = requests.get(HUGGINGFACE_REPO_JSON_URL)
+                with open(os.path.join(ALL_MODEL_FOLDER, 'repo.json'), 'wb') as file:
+                    file.write(response.content)
+            except:
+                print("Not internet connection to get actual versions of models")
+
+        if not os.path.isfile(os.path.join(ALL_MODEL_FOLDER, 'repo.json')):
+            self.CONFIG = {}
+        else:
+            with open(os.path.join(ALL_MODEL_FOLDER, 'repo.json'), 'r', encoding="utf8") as file:
                 self.CONFIG = json.load(file)
 
 

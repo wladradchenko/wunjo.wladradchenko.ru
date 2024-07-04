@@ -45,3 +45,6 @@ torchlibrosa
 torchmetrics==1.2.0
 apscheduler
 cryptography
+transformers
+diffusers
+accelerate

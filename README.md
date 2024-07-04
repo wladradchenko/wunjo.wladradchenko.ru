@@ -29,9 +29,13 @@
 </div>
 
 <!-- WUNJO V2 -->
-## Big update Wunjo v2
+## Big update Wunjo v2.0.3
 
-<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement drives me to enhance features, release new versions, for example integrate improved voice cloning, among other exciting advancements.
+### Video generation here!
+
+<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement drives me to enhance features, release new versions, for example integrate improved voice cloning, among other exciting advancements. And <b>video generation</b> from text or image with difference aspect ratio before 4 seconds with 24 FPS (or more duration with low FPS).
+
+Also text to image, inpaint and outpaint image for video generation.
 
 ### Available now
 
@@ -442,7 +446,7 @@ Wunjo is built upon the remarkable work of various open-source projects. Each in
 - **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib), [Insightface](https://github.com/deepinsight/insightface) which provided a well-made library and some models for face.
 - **Image & Video Enhancement:** Adapted [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) for superior quality enhancements
 - **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)
-- **AI Art Generation:** Adaptation of [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) for creative video AI-driven art
+- **Video and Image Generation:** [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5) and [Stable Video Diffusion](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt) for creative image and video AI-driven art.
 
 I extend my deepest gratitude to the original contributors of these technologies. Their groundbreaking work has been instrumental in advancing the capabilities of Wunjo CE. For the persistent storage and versioning of the models I have personally trained, I utilize the [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). If you're interested in contributing to Wunjo CE, especially in the area of voice cloning for new languages, please feel free to propose your models or reach out for collaboration via [GitHub Discussions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) or the [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 

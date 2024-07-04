@@ -24,11 +24,17 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from deepfake.inference import FaceSwap, Enhancement, SAMGetSegment, RemoveBackground, RemoveObject, LipSync, Analyser
 from speech.inference import Separator
 
+try:
+    from generation.inference import VideoGeneration, ImageGeneration
+    DIFFUSERS_AVAILABLE = True
+except ImportError:
+    DIFFUSERS_AVAILABLE = False
+
 from backend.folders import (
     MEDIA_FOLDER, TMP_FOLDER, SETTING_FOLDER, CONTENT_FOLDER, CONTENT_REMOVE_OBJECT_FOLDER_NAME,
     CONTENT_ENHANCEMENT_FOLDER_NAME, CONTENT_FACE_SWAP_FOLDER_NAME, CONTENT_AVATARS_FOLDER_NAME,
     CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_LIP_SYNC_FOLDER_NAME, ALL_MODEL_FOLDER, CONTENT_ANALYSIS_NAME,
-    CONTENT_SEPARATOR_FOLDER_NAME
+    CONTENT_SEPARATOR_FOLDER_NAME, CONTENT_GENERATION_FOLDER_NAME, CONTENT_IMG2IMG_NAME, CONTENT_TXT2IMG_NAME, CONTENT_OUTPAINT_NAME
 )
 from backend.config import Settings, WEBGUI_PATH
 from backend.general_utils import (
@@ -260,6 +266,28 @@ def separator_page():
     max_duration_sec = Settings.MAX_DURATION_SEC_SEPARATOR
     max_files_size = 40 * 1024 * 1024  # 40 Mb
     return render_content_page(CONTENT_SEPARATOR_FOLDER_NAME, "separator.html", max_duration_sec=max_duration_sec, max_files_size=max_files_size)
+
+
+@app.route("/generation", methods=["GET"])
+@cross_origin()
+def generation_page():
+    use_cpu = False if torch.cuda.is_available() and 'cpu' not in os.environ.get('WUNJO_TORCH_DEVICE', 'cpu') else True
+    if use_cpu:
+        return redirect(url_for('index_page', message='Generation requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings.'))
+    if not DIFFUSERS_AVAILABLE:
+        return redirect(url_for('index_page', message='Generation not available on this device.'))
+    total_vram_gb, _, _ = get_vram_gb()
+    total_vram_gb = round(total_vram_gb)
+    if total_vram_gb < 6:
+        return redirect(url_for('index_page', message=f"You only have {str(total_vram_gb)} GB of video memory. A minimum of 6 GB is required to operate."))
+
+    max_files_size = Settings.MAX_FILE_SIZE
+    try:  # if version gpu with diffusers
+        sd_models = VideoGeneration.get_sd_models()
+    except Exception as err:
+        lprint(msg=err, user=user_valid(), level="warn")
+        sd_models = []
+    return render_content_page(CONTENT_GENERATION_FOLDER_NAME, "generation.html", max_files_size=max_files_size, sd_models=sd_models, inpaint_method=CONTENT_IMG2IMG_NAME, txt2img_method=CONTENT_TXT2IMG_NAME, outpaint_method=CONTENT_OUTPAINT_NAME)
 
 
 """FRONTEND METHODS"""
@@ -506,7 +534,7 @@ def submit_cpu_task():
     # Keep datetime to clear old sessions
     queue_data = {user_id: {request_id: {"method": method, "data": data, "completed": False, "busy": None, "filename": filename, "response": {}, "date": datetime.now()}}}
 
-    if method not in [CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_REMOVE_OBJECT_FOLDER_NAME, CONTENT_ANALYSIS_NAME]:
+    if method not in [CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_REMOVE_OBJECT_FOLDER_NAME, CONTENT_ANALYSIS_NAME, CONTENT_OUTPAINT_NAME, CONTENT_TXT2IMG_NAME, CONTENT_IMG2IMG_NAME]:
         return jsonify({"status": 404, "message": "Method not found for CPU task."})
 
     for user in queue_data.keys():
@@ -661,6 +689,185 @@ def get_analysis(user, request_id) -> None:
 
     clear_cache()
 
+
+def get_inpaint(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    # Processing
+    try:
+        send_data = app.config["QUEUE_CPU"][user][request_id]
+        data = send_data.get("data") if send_data.get("data") else None
+        filename = data.get("filename")
+        file_path = os.path.join(TMP_FOLDER, str(filename))
+        inpaint_filename = data.get("canvasFileName")
+        inpaint_file_path = os.path.join(TMP_FOLDER, str(inpaint_filename))
+        sd_model = data.get("sdModel")
+        eta = data.get("eta", 1)
+        diffusion_parameters = data.get("diffusionParameters") if data.get("diffusionParameters") else {}
+
+        if check_tmp_file_uploaded(file_path) and ImageGeneration.is_valid_image(file_path) and check_tmp_file_uploaded(inpaint_file_path) and ImageGeneration.is_valid_image(inpaint_file_path):
+            lprint(msg="Start to inpaint content.", user=user)
+            response = ImageGeneration.inpaint(user_name=user, source_file=file_path, sd_model_name=sd_model, params=diffusion_parameters, inpaint_file=inpaint_file_path, eta=eta)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = response
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = True
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Get inpaint {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": ""}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = None
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg="Error with inpaint because of content is not valid but process busy still.", user=user, level="error")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with inpaint because of content is not valid."}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = None
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg="Error with inpaint on CPU or GPU but process busy still.", user=user, level="error")
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with inpaint on CPU or GPU."}
+
+    clear_cache()
+
+
+def get_txt2img(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    # Processing
+    try:
+        send_data = app.config["QUEUE_CPU"][user][request_id]
+        data = send_data.get("data") if send_data.get("data") else None
+        sd_model = data.get("sdModel")
+        width = data.get("width")
+        height = data.get("height")
+        diffusion_parameters = data.get("diffusionParameters") if data.get("diffusionParameters") else {}
+
+        lprint(msg="Start to generate image content.", user=user)
+        response = ImageGeneration.text_to_image(user_name=user, sd_model_name=sd_model, params=diffusion_parameters, width=width, height=height)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = response
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = True
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg=f"Get generate image {request_id} successfully finished but process busy still.", user=user)
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": ""}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = None
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg="Error with generate image on CPU or GPU but process busy still.", user=user, level="error")
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with generate image on CPU or GPU."}
+
+    clear_cache()
+
+
+def get_outpaint(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    # Processing
+    try:
+        send_data = app.config["QUEUE_CPU"][user][request_id]
+        data = send_data.get("data") if send_data.get("data") else None
+        filename = data.get("filename")
+        file_path = os.path.join(TMP_FOLDER, str(filename))
+        sd_model = data.get("sdModel")
+        width = data.get("width")
+        height = data.get("height")
+        blur_factor = data.get("blurFactor")
+        diffusion_parameters = data.get("diffusionParameters") if data.get("diffusionParameters") else {}
+
+        if check_tmp_file_uploaded(file_path) and ImageGeneration.is_valid_image(file_path):
+            lprint(msg="Start to outpaint image content.", user=user)
+            response = ImageGeneration.outpaint(source_file=file_path, user_name=user, sd_model_name=sd_model, params=diffusion_parameters, width=width, height=height, blur_factor=blur_factor)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = response
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = True
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg=f"Get outpaint image {request_id} successfully finished but process busy still.", user=user)
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": ""}
+        else:
+            lprint(msg=f"This is not right format {request_id}.", level="warn", user=user)
+            if app.config["QUEUE_CPU"][user].get(request_id):
+                app.config["QUEUE_CPU"][user][request_id]["response"] = None
+                app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+                app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+                app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+            # Get status of module task (not cpu task) to real right control status busy
+            is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+            if any(is_busy_list):
+                lprint(msg="Error with outpaint because of content is not valid but process busy still.", user=user, level="error")
+            else:
+                app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with inpaint because of content is not valid."}
+
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_CPU"][user].get(request_id):
+            app.config["QUEUE_CPU"][user][request_id]["response"] = None
+            app.config["QUEUE_CPU"][user][request_id]["busy"] = False
+            app.config["QUEUE_CPU"][user][request_id]["completed"] = "cancel"
+            app.config["QUEUE_CPU"][user][request_id]["completed_date"] = datetime.now()
+        # Get status of module task (not cpu task) to real right control status busy
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg="Error with outpaint image on CPU or GPU but process busy still.", user=user, level="error")
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Error with outpaint image on CPU or GPU."}
+
+    clear_cache()
+
 """CPU TASKS"""
 """GPU TASKS"""
 
@@ -681,7 +888,7 @@ def submit_module_task():
 
     module_methods = [CONTENT_REMOVE_BACKGROUND_FOLDER_NAME, CONTENT_REMOVE_OBJECT_FOLDER_NAME,
                       CONTENT_FACE_SWAP_FOLDER_NAME, CONTENT_ENHANCEMENT_FOLDER_NAME,
-                      CONTENT_LIP_SYNC_FOLDER_NAME, CONTENT_SEPARATOR_FOLDER_NAME]
+                      CONTENT_LIP_SYNC_FOLDER_NAME, CONTENT_SEPARATOR_FOLDER_NAME, CONTENT_GENERATION_FOLDER_NAME]
 
     if method not in module_methods:
         return jsonify({"status": 404, "message": "Method not found for module task."})
@@ -1237,12 +1444,63 @@ def synthesize_separator(user, request_id) -> None:
     clear_cache()
 
 
-# @app.route('/test', methods=["GET"])
-# @cross_origin()
-# def test():
-#     app.config["QUEUE_MODULE"] = {'127.0.0.1': {'103f9a05-9656-4dec-90ed-b3d5a9da6614': {'method': 'enhancement', 'data': {'moduleParameters': {'nameFile': '2055d3cc-1fd2-4f43-aa24-d74c2b544cab', 'model': 'animesgan'}, 'sourceFile': {'nameFile': 'cfa0b4d9-8280-41a8-a41f-640d573d426c.mp4', 'urlFile': None, 'formatFile': 'mp4', 'fileSizeBytes': 872047, 'naturalWidth': 450, 'naturalHeight': 811, 'offsetWidth': None, 'offsetHeight': None, 'startTime': None, 'endTime': None}}, 'completed': False, 'busy': None, 'response': {}, 'date': datetime.now()}}}
-#     background_task_module()
-#     return jsonify({"status": 200})
+def synthesize_video_generation(user, request_id) -> None:
+    # Check ffmpeg
+    is_ffmpeg = is_ffmpeg_installed()
+    if not is_ffmpeg:
+        lprint(msg=f"Not found ffmpeg. Please download this.", user=user, level="error")
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": "Not found ffmpeg. Please download this."}
+        return
+
+    try:
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 100, "message": f"Busy by task {request_id} in {CONTENT_GENERATION_FOLDER_NAME}"}
+
+        user_folder = str(user).replace(".", "_")
+        folder_name = os.path.join(CONTENT_FOLDER, user_folder, CONTENT_GENERATION_FOLDER_NAME)
+        send_data = app.config["QUEUE_MODULE"][user][request_id]
+        data = send_data.get("data")
+
+        module_parameters = data.get("moduleParameters") if isinstance(data, dict) else {}
+        user_save_name = module_parameters.get("nameFile")  # can be none
+        aspect_ratio = module_parameters.get("aspectRatio")
+        fps = module_parameters.get("FPS")
+        sd_model = module_parameters.get("sdModel")
+        positive_prompt = module_parameters.get("positivePrompt")
+        negative_prompt = module_parameters.get("negativePrompt")
+        seed = module_parameters.get("seed")
+        strength = module_parameters.get("strength")
+        scale = module_parameters.get("scale")
+
+        source_file_parameters = data.get("sourceFile") if isinstance(data, dict) else {}
+        source_file_name = source_file_parameters.get("nameFile")
+        source_file_path = os.path.join(TMP_FOLDER, str(source_file_name))
+
+        processor(os.environ.get('WUNJO_TORCH_DEVICE', "cpu"))
+
+        response = VideoGeneration.synthesis(
+            folder_name=folder_name, user_name=user_folder, source_file=source_file_path, sd_model_name=sd_model,
+            positive_prompt=positive_prompt, user_save_name=user_save_name, negative_prompt=negative_prompt,
+            seed=seed, strength=strength, scale=scale, aspect_ratio=aspect_ratio, fps=fps
+        )
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user][request_id]["response"] = response
+            app.config["QUEUE_MODULE"][user][request_id]["busy"] = False
+            app.config["QUEUE_MODULE"][user][request_id]["completed"] = True
+            app.config["QUEUE_MODULE"][user][request_id]["completed_date"] = datetime.now()
+        is_busy_list = [val.get("busy", False) for val in app.config["QUEUE_MODULE"].get(user, {}).values()]
+        if any(is_busy_list):
+            lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
+        else:
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_RESTYLE_FOLDER_NAME}"}
+
+    except Exception as err:
+        lprint(msg=str(err), level="error", user=user)
+        if app.config["QUEUE_MODULE"][user].get(request_id):
+            app.config["QUEUE_MODULE"][user].pop(request_id)
+        app.config['SYNTHESIZE_STATUS'][user] = {"status": 404, "message": f"Error with get params lip sync {request_id}."}
+
+    # Clear cache
+    clear_cache()
 
 """GPU TASKS"""
 """SYSTEM LOGICAL WITH LIMITS"""
@@ -1315,6 +1573,18 @@ def background_task_cpu():
                 if available_ram_gb > Settings.MIN_RAM_CPU_TASK_GB:
                     app.config["QUEUE_CPU"][user][request_id]["busy"] = True
                     get_analysis(user, request_id)
+            elif method == CONTENT_IMG2IMG_NAME:
+                if available_ram_gb > Settings.MIN_RAM_DIFFUSER_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_inpaint(user, request_id)
+            elif method == CONTENT_TXT2IMG_NAME:
+                if available_ram_gb > Settings.MIN_RAM_DIFFUSER_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_txt2img(user, request_id)
+            elif method == CONTENT_OUTPAINT_NAME:
+                if available_ram_gb > Settings.MIN_RAM_DIFFUSER_GB:
+                    app.config["QUEUE_CPU"][user][request_id]["busy"] = True
+                    get_outpaint(user, request_id)
             else:
                 app.config["QUEUE_CPU"][user].pop(request_id)  # Remove task if not found method and enough RAM
 
@@ -1427,6 +1697,12 @@ def background_task_module():
                     if (available_ram_gb > Settings.MIN_RAM_SEPARATOR_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
                         app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
                         synthesize_separator(user, request_id)
+            elif method == CONTENT_GENERATION_FOLDER_NAME:
+                if not use_cpu:  # diffusion only on gpu
+                    memory_threshold = max(Settings.MIN_VRAM_VIDEO_DIFFUSER_GB, getattr(Settings, 'MEMORY', 99))
+                    if (available_ram_gb > Settings.MIN_RAM_VIDEO_DIFFUSER_GB and available_vram_gb > memory_threshold) or max_queue_module_task == 1:
+                        app.config["QUEUE_MODULE"][user][request_id]["busy"] = True
+                        synthesize_video_generation(user, request_id)
             else:
                 app.config["QUEUE_MODULE"][user].pop(request_id)  # Remove task if not found method
 

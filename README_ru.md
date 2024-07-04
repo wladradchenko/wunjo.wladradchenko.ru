@@ -29,9 +29,13 @@
 </div>
 
 <!-- WUNJO V2 -->
-## Большое обновление Wunjo v2
+## Большое обновление Wunjo v2.0.3
 
-<b>Привет!</b> Ваша поддержка имеет решающее значение для ускорения выпуска новых обновлений для Community Edition (CE). Ваше участие вдохновляет меня на улучшение функций, выпуск новых версий, таких как интеграция улучшенного клонирования голосов, биржа публичных ссылок, контролируемый рестайлинг контента и другие возможностей.
+### Генерация видео уже доступна!
+
+<b>Привет!</b> Ваша поддержка имеет решающее значение для ускорения выпуска новых обновлений для Community Edition (CE). Ваше участие вдохновляет меня на улучшение функций, выпуск новых версий, таких как интеграция улучшенного клонирования голосов, биржа публичных ссылок, контролируемый рестайлинг контента и другие возможностей. И <b>генерация видео</b> из текста или изображения с разным соотношением сторон до 4 секунд с частотой 24 кадра в секунду (или больше продолжительности с низким FPS).
+
+Также генерация текста в изображение, изменение изображения и создания новых частей для видео.
 
 ### Уже доступно
 
@@ -448,7 +452,7 @@ Wunjo создан на основе замечательных результа
 - **Анимация и улучшение лица:** Адаптированные версии [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib), [Insightface](https://github.com/deepinsight/insightface), который предоставил хорошо сделанную библиотеку и модели.
 - **Улучшение изображений и видео:** Адаптированная версия [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) для улучшения качества видео и изображений
 - **Обработка и сегментация видео:** Адаптации [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) и обновленная реализация [Ebsynth](https://github.com/SingleZombie/ebsynth/tree/02ec8c4e4d4a568057363ae8b8f8bb8f7e4898c2) 
-- **AI Art Generation:** Адаптация [Stable Diffusion](https://github.com/Stability-AI/stablediffusion) для изменения видео текстовыми запросами
+- **Генерация видео и изображений:** [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5) и [Stable Video Diffusion](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt) для создания изображений и видео.
 
 Я выражаю благодарность первоначальным авторам этих технологий. Их новаторская работа сыграла важную роль в расширении возможностей Wunjo. Для постоянного хранения и управления версиями моделей, которые я лично обучил, используется [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). Если вы заинтересованы в том, чтобы внести свой вклад в Wunjo, особенно в области клонирования голоса для новых языков, не стесняйтесь предлагать свои модели или обращаться к сотрудничеству через [GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) или [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 

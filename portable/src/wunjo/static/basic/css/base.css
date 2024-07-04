@@ -559,6 +559,14 @@ img,video {
     top: 2.5rem
 }
 
+.top-20 {
+    top: 5rem
+}
+
+.top-30 {
+    top: 7.5rem
+}
+
 .top-2 {
     top: .5rem
 }
@@ -827,8 +835,16 @@ img,video {
     margin-right: .75rem
 }
 
+.mr-4 {
+    margin-right: 1rem
+}
+
 .mr-5 {
     margin-right: 1.25rem
+}
+
+.mr-10 {
+    margin-right: 2.5rem
 }
 
 .mr-\[25px\] {
@@ -3589,7 +3605,8 @@ img,video {
     --footer-height: 3.5rem;
     --max-width: 1312px;
     --max-width-marketing: 113.5rem;
-    --scrollbar-thickness: 6px
+    --scrollbar-thickness: 6px;
+    --scrollbar-options-thickness: 12px;
 }
 
 ::-webkit-scrollbar {
@@ -3634,8 +3651,8 @@ body {
     position: relative;
     -webkit-appearance: none;
     appearance: none;
-    width: var(--scrollbar-thickness);
-    height: var(--scrollbar-thickness);
+    width: var(--scrollbar-options-thickness);
+    height: var(--scrollbar-options-thickness);
     border-radius: 10px;
     background: #ffedd2;
     cursor: pointer
@@ -3644,8 +3661,8 @@ body {
 .slider::-moz-range-thumb {
     z-index: 1;
     position: relative;
-    width: var(--scrollbar-thickness);
-    height: var(--scrollbar-thickness);
+    width: var(--scrollbar-options-thickness);
+    height: var(--scrollbar-options-thickness);
     border-radius: 10px;
     background: #ffedd2;
     cursor: pointer
@@ -5504,4 +5521,14 @@ input.timeline-range-left::-moz-range-thumb {
   to {
         opacity: 1; /* Fade in to opacity 1 */
     }
+}
+
+.mouse-indicator {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 10px solid white; /* Border for circle */
+    border-radius: 50%; /* Make it round */
+    pointer-events: none; /* Make sure it doesn't interfere with mouse events on canvas */
+    display: none; /* Initially hide it */
 }

@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo"
 bundle = "ce.version"  # wunjo ce.version
-version = "2.0.2"
+version = "2.0.3"
 url = "https://wunjo.online"
 license = "MIT License"
 author = "Wladislav Radchenko"
@@ -22,6 +22,7 @@ Explore the exciting features of Wunjo:
 - Remove background from content.
 - Analysis fake content.
 - Separate audio from speech to enhance audio quality.
+- Content generation.
 
 For more information and updates, visit offical website [wunjo.online](https://wunjo.online) or [GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 """
@@ -90,7 +91,7 @@ requires = [
     "onnxruntime"
 ]
 sources = [
-    "../venv/lib/python3.10/site-packages/insightface",
+    "../venv/lib/python3.10/site-packages/insightface"
 ]
 
 [tool.briefcase.app.wunjo.linux]
@@ -103,10 +104,14 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "xformers==0.0.19",
-    "open_clip_torch"
+    "transformers",
+    "open_clip_torch",
+    "diffusers",
+    "accelerate"
 ]
 sources = [
     "../venv/lib/python3.10/site-packages/insightface",
+    "src/generation"
 ]
 
 [tool.briefcase.app.wunjo.linux.system.debian]
@@ -150,10 +155,14 @@ requires = [
     "omegaconf",
     "https://huggingface.co/r4ziel/xformers_pre_built/resolve/main/triton-2.0.0-cp310-cp310-win_amd64.whl",
     "xformers==0.0.19",
-    "open_clip_torch"
+    "transformers",
+    "open_clip_torch",
+    "diffusers",
+    "accelerate"
 ]
 sources = [
     "../venv/Lib/site-packages/insightface",
+    "src/generation"
 ]
 
 # Mobile deployments
