@@ -393,7 +393,6 @@ This is an experimental feature that is under development, but you can take a lo
 <summary>List features updates</summary>
 
 - [ ] Public link exchange for online users.
-- [ ] Control restyling video and its components.
 - [ ] Multi language interface.
 - [ ] Improve user profile.
 - [ ] Improve processing content status.
