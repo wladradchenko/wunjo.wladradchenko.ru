@@ -35,7 +35,7 @@
 
 <b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement and stars drives me to enhance features. And now <b>video generation</b> from text or image in CE with difference aspect ratio before 4 seconds with 24 FPS (or more duration with low FPS).
 
-Also text to image, inpaint and outpaint image for video generation. <b>Control restyling?</b> Now you can change objects, gender and nationality of a person not just in one click, but also control the process in advance. And you only need 8 GB VRAM for this. 
+Also text to image, inpaint and outpaint image for video generation. <b>Control restyling?</b> Now you can change objects, gender and nationality of a person not just in one click, but also control the process in advance. And you only need 8 GB VRAM for this. (You can use any Stable Diffusion model v1.5)
 
 ### Available now
 
