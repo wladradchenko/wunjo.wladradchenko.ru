@@ -1491,7 +1491,7 @@ def synthesize_video_generation(user, request_id) -> None:
         if any(is_busy_list):
             lprint(msg=f"Task {request_id} successfully finished but process busy still.", user=user)
         else:
-            app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_RESTYLE_FOLDER_NAME}"}
+            app.config['SYNTHESIZE_STATUS'][user] = {"status": 200, "message": f"Successfully finished by task {request_id} in {CONTENT_GENERATION_FOLDER_NAME}"}
 
     except Exception as err:
         lprint(msg=str(err), level="error", user=user)
