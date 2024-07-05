@@ -1,5 +1,5 @@
 {
-    "version": "2.0.2",
+    "version": "2.0.3",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -100,6 +100,11 @@
           "Added functionality to clone voice in any language from text and audio",
           "Improved audio separator to remove noise before clone voice",
           "Enhanced processing speed"
+        ],
+        "2.0.3": [
+          "Added control restyling (This work with 8 GB VRAM)",
+          "Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image",
+          "Improved quality of restyling"
         ]
     }
 }

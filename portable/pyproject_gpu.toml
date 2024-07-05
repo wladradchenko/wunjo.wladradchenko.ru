@@ -146,9 +146,9 @@ linuxdeploy_plugins = []
 
 [tool.briefcase.app.wunjo.windows]
 requires = [
-    "torch==2.0.0",
-    "torchaudio==2.0.1",
-    "torchvision==0.15.1",
+    "https://download.pytorch.org/whl/cu118/torch-2.0.0%2Bcu118-cp310-cp310-win_amd64.whl",
+    "https://download.pytorch.org/whl/cu118/torchaudio-2.0.1%2Bcu118-cp310-cp310-win_amd64.whl",
+    "https://download.pytorch.org/whl/cu118/torchvision-0.15.1%2Bcu118-cp310-cp310-win_amd64.whl",
     "soundfile==0.10.3.post1",
     "onnxruntime-gpu",
     "pytorch_lightning",
