@@ -643,13 +643,18 @@ class ImageGeneration:
         lprint(msg=f"[{method}] Clear cuda cache.", user=user_name, level="info")
         torch.cuda.empty_cache()  # this also will work if cou version
 
+        if Settings.CHECK_DOWNLOAD_SIZE_DIFFUSER:
+            lprint(msg="Update checker of download size diffuser models.")
+            Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_DIFFUSER": False})
+            Settings.CHECK_DOWNLOAD_SIZE_DIFFUSER = False
+
         if Settings.CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY:
             lprint(msg="Update checker of download size controlnet canny models.")
             Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY": False})
             Settings.CHECK_DOWNLOAD_SIZE_CONTROLNET_CANNY = False
 
         if Settings.CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE:
-            lprint(msg="Update checker of download size controlnet canny models.")
+            lprint(msg="Update checker of download size controlnet tile models.")
             Settings.config_manager.update_config({"CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE": False})
             Settings.CHECK_DOWNLOAD_SIZE_CONTROLNET_TILE = False
 
