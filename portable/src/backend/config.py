@@ -10,9 +10,9 @@ from backend.download import get_nested_url
 
 # Params
 SUB_CUSTOM_VOICE = "(Custom)"  # sub name for custom voice to do uniq
-DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/deepfake.json"
-VOICE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/voice.json"
-RTVC_MODELS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/rtvc.json"
+DEEPFAKE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/v1.6/models/deepfake.json"
+VOICE_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/v1.6/models/voice.json"
+RTVC_MODELS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/v1.6/models/rtvc.json"
 
 
 def get_deepfake_config() -> dict:
