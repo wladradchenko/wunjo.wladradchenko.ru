@@ -162,7 +162,7 @@ def set_settings():
 
 
 def get_utils_config(save_dir: str) -> dict:
-    UTILS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/models/utils.json"
+    UTILS_JSON_URL = "https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/v1.6/models/utils.json"
     try:
         response = requests.get(UTILS_JSON_URL)
         with open(os.path.join(save_dir, 'utils.json'), 'wb') as file:
