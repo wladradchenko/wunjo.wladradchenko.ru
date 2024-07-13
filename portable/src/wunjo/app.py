@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)  # remove msg
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, send_from_directory, url_for, jsonify, redirect, session
+from flask import Flask, render_template, request, Response, send_from_directory, url_for, jsonify, redirect, session
 from flask_cors import CORS, cross_origin
 from flaskwebgui import FlaskUI, kill_port, close_application
 from ipaddress import ip_address
@@ -1978,7 +1978,24 @@ class InvalidVoice(Exception):
 @app.route("/media/<path:filename>", methods=["GET"])
 @cross_origin()
 def media_file(filename):
-    return send_from_directory(MEDIA_FOLDER, filename, as_attachment=False)
+    file_path = os.path.join(MEDIA_FOLDER, filename)
+
+    def generate():
+        with open(file_path, 'rb') as f:
+            while chunk := f.read(4096):
+                yield chunk
+
+    # Determine content type
+    if filename.endswith(('.mp4', '.mov', '.avi')):
+        mimetype = 'video/mp4'
+    elif filename.endswith(('.jpg', '.jpeg', '.png', '.gif')):
+        mimetype = 'image/jpeg'
+    elif filename.endswith(('.mp3', '.wav', '.ogg')):
+        mimetype = 'audio/mpeg'
+    else:
+        mimetype = 'application/octet-stream'  # Default type
+
+    return Response(generate(), mimetype=mimetype)
 
 
 def main():
