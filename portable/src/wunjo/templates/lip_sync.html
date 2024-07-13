@@ -72,7 +72,7 @@
 <script>
     const userContentId = {{ user_content_id|tojson|safe }};
     const userFileTree = {{ user_file_tree|tojson|safe }};
-    const pageFileFormats = ["video"];
+    const pageFileFormats = ["video","image"];
     let userFileFormats = pageFileFormats;
     const moduleName = {{ folder_name|tojson|safe }};
     const analysisModuleName = {{ analysis_method|tojson|safe }};

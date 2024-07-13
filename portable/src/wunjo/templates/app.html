@@ -7,8 +7,13 @@
 {% block body %}
 <body class="bg-dark-background">
     <header>
-        <nav style="background-color: #161616;border-bottom: 1px solid #4d4d4d;" class="px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)] fixed top-[var(--navbar-top-mobile)] md:top-[var(--navbar-top)] transition-[top] bg-dark-background z-20 w-full font-zen-maru-gothic">
-            <div class="w-full flex items-center border-b border-white border-opacity-10 h-[var(--navbar-height)] gap-5">
+        <nav style="background-color: #161616;border-bottom: 1px solid #4d4d4d;" class="fixed top-[var(--navbar-top-mobile)] md:top-[var(--navbar-top)] transition-[top] bg-dark-background z-20 w-full font-zen-maru-gothic">
+            <div class="flex justify-between bg-accent-primary h-7 text-lg px-4 md:px-6 lg:px-14 text-dark-elements font-alumni font-medium items-center">
+                <div></div>
+                <div class="flex flex-row">Loving the Wunjo? <a class="underline ml-1 mr-1" href="https://wunjo.online/pricing" target="_blank" rel="noopener noreferrer">Upgrade</a> to the professional with fully functional!</div>
+                <button onclick="this.parentElement.remove();"><i class="mt-1 fa-solid fa-circle-xmark"></i></button>
+            </div>
+            <div class="px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)] w-full flex items-center border-b border-white border-opacity-10 h-[var(--navbar-height)] gap-5">
                 <div class="notification notification-title cursor-pointer px-1.5 text-3l font-extrabold font-alumni">Wunjo</div>
                 <div class="flex gap-3 items-center max-md:hidden"></div>
                 <ul class="flex flex-row items-center gap-2 text-m-mobile lg:text-m text-white h-full ml-auto">
@@ -22,7 +27,7 @@
                             <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl px-4 py-3 border border-[#2c2623] rounded-t-[10px]">
                                 <p class="access-admin mb-2 text-s">Don't forget to customize settings</p>
                                 <div class="flex flex-col">
-                                    <div class="mt-4 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">Profile</a><div class="text-dim-gray"><i class="fa-solid fa-bolt" style="color: #ababab;"></i> infinity credits</div></div>
+                                    <div class="mt-3 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">Profile</a><button class="text-dim-gray system-processor flex flex-row gap-2 items-center" onclick="setProcessor()" type="button"></button></div>
                                     <a class="access-admin hover-underline cursor-pointer mt-4" href="/settings">Settings</a>
                                     <a class="hover-underline cursor-pointer mt-4" href="/faq">FAQ</a>
                                 </div>
@@ -146,6 +151,58 @@
         <script>
             const serverVersionData = {{ changelog|tojson|safe }};
             const currentVersionDiv = document.querySelector(".version");
+        </script>
+        <script>
+            async function setProcessor() {
+                try {
+                    const response = await fetch('/set-processor', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to set processor');
+                    }
+                    const data = await response.json();
+                    await fetchProcessor();
+                } catch (error) {
+                    console.error('Error setting processor:', error.message);
+                }
+            }
+
+            async function fetchProcessor() {
+                try {
+                    const response = await fetch('/get-processor');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch processor');
+                    }
+                    const data = await response.json();
+                    const upgradeGPU = data.upgrade_gpu;
+                    const currentProcessor = data.current_processor;
+                    const systemProcessor = document.querySelector('.system-processor');
+
+
+                    if (upgradeGPU === true) {
+                        console.log(currentProcessor)
+                        if (currentProcessor === 'cuda'){
+                            systemProcessor.innerHTML = `<div class="flex items-center"><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.15"></path></svg><svg style="margin-left: -5px; margin-right: -5px;" width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.5"></path></svg><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.75"></path></svg></div> GPU`;
+                        } else {
+                            systemProcessor.innerHTML = `<div class="flex items-center"><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.75"></path></svg></div> CPU`;
+                        };
+                    } else {
+                        systemProcessor.remove();
+                    }
+                } catch (error) {
+                    console.error('Error fetching processor:', error.message);
+                }
+            }
+
+            fetchProcessor().then(() => {
+                console.log('System internet mode fetched successfully.');
+            }).catch((error) => {
+                console.error('Error fetching system resources:', error.message);
+            });
         </script>
     </div>
 </body>
