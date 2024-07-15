@@ -2,6 +2,7 @@ import os
 import sys
 import cv2
 import uuid
+import math
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -124,6 +125,23 @@ class FaceSwapDeepfake:
             boxes[i] = np.mean(window, axis=0)
         return boxes
 
+    def get_min_distance(self, image, threshold=0.2):
+        # real size
+        originalHeight, originalWidth, _ = image.shape
+        # Calculate the diagonal of the image
+        diagonal = math.sqrt(originalHeight**2 + originalWidth**2)
+        # Return the threshold percentage of the diagonal
+        return diagonal * threshold
+
+    @staticmethod
+    def get_center(face):
+        x1, y1, x2, y2 = face.bbox
+        return int((x1 + x2) / 2), int((y1 + y2) / 2)
+
+    @staticmethod
+    def euclidean_distance(point1, point2):
+        return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
     def face_detect_with_alignment_crop(self, image_files, face_fields):
         """
         Detect faces to swap if face_fields
@@ -138,8 +156,9 @@ class FaceSwapDeepfake:
         # Read the first image to get the center
         first_image = cv2.imread(image_files[0])
         x_center, y_center = self.get_real_crop_box(first_image, face_fields)
+        min_distance = self.get_min_distance(first_image)
 
-        for image_file in tqdm(image_files):
+        for n, image_file in enumerate(tqdm(image_files)):
             image = cv2.imread(image_file)
             dets = self.face_recognition.get_faces(image)
             if not dets:
@@ -164,6 +183,22 @@ class FaceSwapDeepfake:
                         x_center = int((x1 + x2) / 2)  # set new center
                         y_center = int((y1 + y2) / 2)  # set new center
                         break
+                else:
+                    if n == 0:
+                        closest_face = None
+                        for face in dets:
+                            face_center = self.get_center(face)
+                            distance = self.euclidean_distance((x_center, y_center), face_center)
+                            if distance < min_distance:
+                                min_distance = distance
+                                closest_face = face
+                        if closest_face:
+                            face_gender = closest_face.gender  # face gender
+                            predictions.append([closest_face])  # prediction
+                            face_embedding_list += [closest_face.normed_embedding]
+                            x1, y1, x2, y2 = closest_face.bbox
+                            x_center = int((x1 + x2) / 2)  # set new center
+                            y_center = int((y1 + y2) / 2)  # set new center
             else:  # here is already recognition
                 local_face_param = []
                 for i, face in enumerate(dets):
