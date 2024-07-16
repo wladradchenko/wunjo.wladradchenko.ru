@@ -57,18 +57,18 @@ class GenerateWave2Lip:
             # real size
             originalHeight, originalWidth, _ = image.shape
 
-            canvasWidth = int(squareFace["canvasWidth"])
-            canvasHeight = int(squareFace["canvasHeight"])
+            canvasWidth = float(squareFace["canvasWidth"])
+            canvasHeight = float(squareFace["canvasHeight"])
             # Calculate the scale factor
             scaleFactorX = originalWidth / canvasWidth
             scaleFactorY = originalHeight / canvasHeight
 
             # Calculate the new position and size of the square face on the original image
             # Convert canvas square face coordinates to original image coordinates
-            newX1 = int(squareFace['x']) * scaleFactorX
-            newX2 = (int(squareFace['x']) + 1) * scaleFactorX
-            newY1 = int(squareFace['y']) * scaleFactorY
-            newY2 = (int(squareFace['y']) + 1) * scaleFactorY
+            newX1 = float(squareFace['x']) * scaleFactorX
+            newX2 = (float(squareFace['x']) + 1) * scaleFactorX
+            newY1 = float(squareFace['y']) * scaleFactorY
+            newY2 = (float(squareFace['y']) + 1) * scaleFactorY
 
             # Calculate center point
             center_x = (newX1 + newX2) / 2
@@ -77,7 +77,7 @@ class GenerateWave2Lip:
             return int(center_x), int(center_y)
         return None, None
 
-    def get_min_distance(self, image, threshold=0.2):
+    def get_min_distance(self, image, threshold=0.35):
         # real size
         originalHeight, originalWidth, _ = image.shape
         # Calculate the diagonal of the image

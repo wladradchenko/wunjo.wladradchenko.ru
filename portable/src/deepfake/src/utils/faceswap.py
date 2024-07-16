@@ -125,7 +125,7 @@ class FaceSwapDeepfake:
             boxes[i] = np.mean(window, axis=0)
         return boxes
 
-    def get_min_distance(self, image, threshold=0.2):
+    def get_min_distance(self, image, threshold=0.35):
         # real size
         originalHeight, originalWidth, _ = image.shape
         # Calculate the diagonal of the image
