@@ -322,9 +322,7 @@ class VideoManipulation:
         return fps, output_dir
 
     @staticmethod
-    def encrypted(video_path: str, save_dir: str, fn: int = 0):
-        name = str(os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        name = name[-4:] if len(name) > 4 else name
+    def encrypted(video_path: str, save_dir: str, fn: int = 0, name: str = "fake"):
         media_type = VideoManipulation.check_media_type(video_path)
         # Define the size of the bounding box
         box_size = 256
@@ -442,9 +440,7 @@ class VideoManipulation:
         return file_name
 
     @staticmethod
-    def decrypted(video_path: str) -> bool:
-        name = str(os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        name = name[-4:] if len(name) > 4 else name
+    def decrypted(video_path: str, name: str = "fake") -> bool:
         media_type = VideoManipulation.check_media_type(video_path)
         # Define the size of the bounding box
         box_size = 256
