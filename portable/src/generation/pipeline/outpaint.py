@@ -139,6 +139,10 @@ class Outpaint:
     def decode_image(self, img_path, max_height=576, max_width=1024, inpaint_mask_color=50, padding=20):
         original = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
 
+        if original.shape[2] == 4:
+            # Image has an alpha channel; remove it or process it
+            original = original[:, :, :3]  # Remove alpha channel
+
         if original.shape[0] == max_height and original.shape[1] == max_width:
             return original, np.zeros((max_height, max_width), dtype=np.uint8)
 
