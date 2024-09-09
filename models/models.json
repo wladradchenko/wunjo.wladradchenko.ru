@@ -59,5 +59,13 @@
     "MDX_Inst_HQ_3.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_Inst_HQ_3.onnx?download=true",
     "MDX_Inst_Main.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_Inst_Main.onnx?download=true",
     "MDX_KARA_2.onnx": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/separator/mdx/MDX_KARA_2.onnx?download=true"
+  },
+  "portrait": {
+    "landmark.onnx": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/landmark.onnx",
+    "appearance_feature_extractor.pth": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/base_models/appearance_feature_extractor.pth",
+    "motion_extractor.pth": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/base_models/motion_extractor.pth",
+    "spade_generator.pth": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/base_models/spade_generator.pth",
+    "warping_module.pth": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/base_models/warping_module.pth",
+    "stitching_retargeting_module.pth": "https://huggingface.co/KwaiVGI/LivePortrait/blob/main/liveportrait/retargeting_models/stitching_retargeting_module.pth"
   }
 }
