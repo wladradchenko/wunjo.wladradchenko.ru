@@ -107,7 +107,7 @@ Step into the future of AI-powered creativity with Wunjo.
 <!-- FEATURES -->
 ## Setup
 
-Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html).
+Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html). For GPU it is necessary to install CUDA on Nvidia processors.
 
 For detailed instructions about setup Wunjo CE from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
 
@@ -123,7 +123,24 @@ For detailed instructions about setup Wunjo CE from GitHub, refer to the [Launch
 </div>
 
 <!-- DOWNLOAD -->
-You will find on [wunjo.onnline](https://wunjo.online) official installers on Wundows/Ubuntu.
+You will find on [wunjo.online](https://wunjo.online) official installers on Wundows/Ubuntu.
+
+<details>
+<summary><b>⚠️ Setup GPU on AMD ⚠️</b></summary>
+
+You can use the GPU processor on AMD too, if you managed to install [ZLUDA](https://github.com/vosen/ZLUDA). 
+
+```
+python -m pip install -r requirements_zluda.txt
+python -m pip install -U torch torchaudio torchvision --extra-index-url https://download.pytorch.org/whl/rocm6.1
+python -m pip install -U xformers --extra-index-url https://download.pytorch.org/whl/rocm6.1
+cd portable
+briefcase dev
+```
+
+More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/65) and its continuation [Issue 68](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/68).
+
+</details>
 
 <!-- UPDATE -->
 
