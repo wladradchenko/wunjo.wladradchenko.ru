@@ -126,7 +126,7 @@ For detailed instructions about setup Wunjo CE from GitHub, refer to the [Launch
 You will find on [wunjo.online](https://wunjo.online) official installers on Wundows/Ubuntu.
 
 <details>
-<summary><b>⚠️ Setup GPU on AMD ⚠️</b></summary>
+<summary><b>⚠️ Run GPU on AMD ⚠️</b></summary>
 
 You can use the GPU processor on AMD too, if you managed to install [ZLUDA](https://github.com/vosen/ZLUDA). 
 
