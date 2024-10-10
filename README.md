@@ -29,7 +29,19 @@
 </div>
 
 <!-- WUNJO V2 -->
-## Big update Wunjo v2.0.3
+## 🚀 New November Update v2.0.4 of Wunjo Pro! 🚀
+
+Exciting news—Animate Portrait Mode and Retarget Portrait will be available on November! 🎉 With this feature, you can easily copy head movements and facial expressions from a video or image and apply them to your content. Whether it's controlling how the mouth moves, how the eyes blink, or even turning the head, you now have full control over your deepfake creation! Want more realism? You can manually add blinks, head turns, or any emotion to your videos or images after face replacement. Plus, it tracks the selected person even if they temporarily leave the frame!
+
+🌟 Exclusive in Wunjo Pro 🌟
+
+But here's the dream: Once we reach 4,096 stars on GitHub, I will release Wunjo Pro as an update to Wunjo Community Edition—completely open-source and fully functional offline! ✨
+
+Wunjo is installed locally on your computer, so you can access it from any device by creating a temporary link.
+
+Your support means everything! ⭐ Give the project a star on GitHub to help make this dream a reality!
+
+## Big update Wunjo CE v2.0.3
 
 ### Video generation here!
 
