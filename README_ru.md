@@ -125,6 +125,32 @@ Wunjo использует возможности нейронных сетей 
 <!-- DOWNLOAD -->
 Вы найдете на [сайте](https://wunjo.online) официальные установщики на Windows/Ubuntu или портативные версии.
 
+<details>
+<summary><b>⚠️ Запуск GPU на AMD ⚠️</b></summary>
+
+Вы можете использовать GPU на AMD, при помощи [ZLUDA](https://github.com/vosen/ZLUDA). Дополнительно потребуется установить `firmware-linux-nonfree` пакет, чтобы GPU стало доступным [Issue 72](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/72).
+
+```
+sudo apt update
+sudo apt install firmware-linux-nonfree
+
+cd wunjo.wladradchenko.ru
+
+python3.10 -m venv venv
+source venv/bin/activate
+
+python -m pip install -r requirements_zluda.txt
+python -m pip install -U torch torchaudio torchvision --extra-index-url https://download.pytorch.org/whl/rocm6.1
+python -m pip install -U xformers --extra-index-url https://download.pytorch.org/whl/rocm6.1
+
+cd portable
+briefcase dev
+```
+
+Больше информации в [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/65) и [Issue 68](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/68). 
+
+</details>
+
 <!-- UPDATE -->
 
 ## Обновления

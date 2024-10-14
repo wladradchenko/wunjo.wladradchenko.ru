@@ -140,17 +140,26 @@ You will find on [wunjo.online](https://wunjo.online) official installers on Wun
 <details>
 <summary><b>⚠️ Run GPU on AMD ⚠️</b></summary>
 
-You can use the GPU processor on AMD too, if you managed to install [ZLUDA](https://github.com/vosen/ZLUDA). 
+You can use the GPU processor on AMD too, if you managed to install [ZLUDA](https://github.com/vosen/ZLUDA). You also need to install `firmware-linux-nonfree` package to GPU became available [Issue 72](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/72).
 
 ```
+sudo apt update
+sudo apt install firmware-linux-nonfree
+
+cd wunjo.wladradchenko.ru
+
+python3.10 -m venv venv
+source venv/bin/activate
+
 python -m pip install -r requirements_zluda.txt
 python -m pip install -U torch torchaudio torchvision --extra-index-url https://download.pytorch.org/whl/rocm6.1
 python -m pip install -U xformers --extra-index-url https://download.pytorch.org/whl/rocm6.1
+
 cd portable
 briefcase dev
 ```
 
-More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/65) and its continuation [Issue 68](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/68).
+More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/65) and its continuation [Issue 68](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/68). 
 
 </details>
 
