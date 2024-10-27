@@ -2,5 +2,6 @@
   "stable_video_diffusion": "stabilityai/stable-video-diffusion-img2vid-xt",
   "stable_diffusion": "botp/stable-diffusion-v1-5",
   "controlnet_canny": "lllyasviel/sd-controlnet-canny",
-  "controlnet_tile": "lllyasviel/control_v11f1e_sd15_tile"
+  "controlnet_tile": "lllyasviel/control_v11f1e_sd15_tile",
+  "pyramid_flow_sd3": "rain1011/pyramid-flow-sd3"
 }
