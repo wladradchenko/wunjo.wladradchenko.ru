@@ -1,5 +1,5 @@
 {
-    "version": "2.0.3",
+    "version": "2.0.4",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -105,6 +105,20 @@
           "Added control restyling (This work with 8 GB VRAM)",
           "Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image",
           "Improved quality of restyling"
+        ],
+        "2.0.4": [
+          "Speed boost 1.5x",
+          "Manual and automatic portrait animation",
+          "Retarget face",
+          "Enhanced video generation",
+          "Transformation in portable version",
+          "Anonymous login",
+          "Clearer model settings",
+          "Face detection fix",
+          "Faster small model loading",
+          "Unlimited file uploads",
+          "Automatic face interface detection",
+          "Progress bar about status"
         ]
     }
 }
