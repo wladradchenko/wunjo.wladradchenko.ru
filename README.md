@@ -3,8 +3,7 @@
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 [![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 <br>
-[![Dev.to Articles](https://img.shields.io/badge/Dev.to-Articles-lightgrey)](https://dev.to/wladradchenko/series/24089)
-[![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
+[![YouTube Tutorials](https://img.shields.io/badge/YouTube-Tutorials-red?style=flat&logo=youtube&logoColor=red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 [![Patreon Support](https://img.shields.io/badge/Patreon-Support-white?style=flat&logo=patreon&logoColor=white)](https://patreon.com/wladradchenko)
 [![Boosty Support](https://img.shields.io/badge/Boosty-Support-orange?style=flat&logo=boosty&logoColor=orange)](https://boosty.to/wunjo)
