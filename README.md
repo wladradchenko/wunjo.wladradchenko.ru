@@ -29,9 +29,11 @@
 </div>
 
 <!-- WUNJO V2 -->
-## 🚀 New November Update v2.0.4 of Wunjo Pro! 🚀
+## 🚀 New November and December Update v2.0.4-v2.0.5 of Wunjo Pro! 🚀
 
 Exciting news—Animate Portrait Mode and Retarget Portrait will be available on November! 🎉 With this feature, you can easily copy head movements and facial expressions from a video or image and apply them to your content. Whether it's controlling how the mouth moves, how the eyes blink, or even turning the head, you now have full control over your deepfake creation! Want more realism? You can manually add blinks, head turns, or any emotion to your videos or images after face replacement. Plus, it tracks the selected person even if they temporarily leave the frame!
+
+Wunjo is now easier to use than ever! Community Edition and Pro versions are united in version 2.0.5 of **December Update** in early access on [Boosty](https://boosty.to/wunjo/posts/41688b72-2a30-4e54-9081-e1b314d4b011?share=post_link) and [Patreon](https://www.patreon.com/posts/early-access-to-117090110?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link). Plus, there’s now Smart Search and Quick Tips to guide you in achieving exactly what you want with your content in Wunjo.
 
 🌟 Exclusive in Wunjo Pro 🌟
 
@@ -211,16 +213,6 @@ More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.
 - [x] Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image.
 - [x] Improved quality of restyling.
 
-</details>
-
-<details>
-<summary>List features updates</summary>
-
-- [ ] Public link exchange for online users.
-- [ ] Multi language interface.
-- [ ] Improve user profile.
-- [ ] Improve processing content status.
-- [ ] Sound generation for video or from text.
 </details>
 
 <!-- DONAT -->
