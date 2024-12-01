@@ -31,7 +31,7 @@
 </div>
 
 <!-- WUNJO V2 -->
-## 🚀 New November and December Update v2.0.4-v2.0.5 of Wunjo Pro! 🚀
+## 🚀 Update v2.0.4 and v2.0.5 of Wunjo Pro! 🚀
 
 Exciting news—Animate Portrait Mode and Retarget Portrait will be available on November! 🎉 With this feature, you can easily copy head movements and facial expressions from a video or image and apply them to your content. Whether it's controlling how the mouth moves, how the eyes blink, or even turning the head, you now have full control over your deepfake creation! Want more realism? You can manually add blinks, head turns, or any emotion to your videos or images after face replacement. Plus, it tracks the selected person even if they temporarily leave the frame!
 
