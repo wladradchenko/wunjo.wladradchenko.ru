@@ -5,6 +5,8 @@
 [![Dev.to Articles](https://img.shields.io/badge/dev.to-Articles-lightgrey)](https://dev.to/wladradchenko/series/24089)
 [![YouTube Chanel](https://img.shields.io/badge/YouTube-Chanel-red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
+[![Patreon Support](https://img.shields.io/badge/Patreon-Support-black?style=flat&logo=patreon&logoColor=white)](https://patreon.com/wladradchenko)
+[![Boosty Support](https://img.shields.io/badge/Boosty-Support-orange?style=flat&logo=boosty&logoColor=black)](https://boosty.to/wunjo)
 
 <p align="right">[<a href="README_ru.md">RU v2.0</a>]</p>
 <div id="top"></div>
@@ -244,6 +246,8 @@ I extend heartfelt gratitude to the following individuals who have generously su
 - Several contributors who have chosen to remain anonymous or opted not to be listed publicly. Your support is immensely appreciated.
 
 I sincerely appreciate the generosity of all project supporters. Your contributions enable me to continue improving and maintaining this project.
+
+You can support the project by making a donation or subscribing for updates, news, voting, and early access to Wunjo Community Edition on [Boosty](https://boosty.to/wunjo) or [Patreon](patreon.com/wladradchenko). 
 
 <!-- CONTACT -->
 ## Contact
