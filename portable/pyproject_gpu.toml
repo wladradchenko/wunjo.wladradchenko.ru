@@ -153,7 +153,7 @@ requires = [
     "onnxruntime-gpu",
     "pytorch_lightning",
     "omegaconf",
-    "https://huggingface.co/r4ziel/xformers_pre_built/resolve/main/triton-2.0.0-cp310-cp310-win_amd64.whl",
+    "https://github.com/bycloud-AI/DiffBIR-Windows/blob/main/triton-2.0.0-cp310-cp310-win_amd64.whl",
     "xformers==0.0.19",
     "transformers",
     "open_clip_torch",
