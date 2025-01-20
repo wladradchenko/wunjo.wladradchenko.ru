@@ -51,9 +51,9 @@ Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update 
 Wunjo Pro is now easier and more powerful than ever! 
 
 ### How You Can Help:
-🌟 **Star the project on GitHub** to help make Wunjo Pro open-source!  
-📣 **Spread the word**: Share Wunjo with your friends and invite them to support the project on GitHub!
-🎥 **Video Reviews on YouTube**: Leave a video review of Wunjo, share with video link on support@unjo.online, and I'll give you **free access to the latest version's full functionality**!
+- 🌟 **Star the project on GitHub** to help make Wunjo Pro open-source!  
+- 📣 **Spread the word**: Share Wunjo with your friends and invite them to support the project on GitHub!
+- 🎥 **Video Reviews on YouTube**: Leave a video review of Wunjo, share with video link on support@unjo.online, and I'll give you **free access to the latest version's full functionality**!
 
 ## Big update Wunjo CE v2.0.3
 
