@@ -31,19 +31,29 @@
 </div>
 
 <!-- WUNJO V2 -->
-## 🚀 Update v2.0.4 and v2.0.5 of Wunjo Pro! 🚀
+## 🌟 Goal: 4,096 Stars on GitHub! 🌟
 
-Exciting news—Animate Portrait Mode and Retarget Portrait will be available on November! 🎉 With this feature, you can easily copy head movements and facial expressions from a video or image and apply them to your content. Whether it's controlling how the mouth moves, how the eyes blink, or even turning the head, you now have full control over your deepfake creation! Want more realism? You can manually add blinks, head turns, or any emotion to your videos or images after face replacement. Plus, it tracks the selected person even if they temporarily leave the frame!
+Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update with the latest version changes!
 
-Wunjo is now easier to use than ever! Community Edition and Pro versions are united in version 2.0.6 of **February Update** in early access on [Boosty](https://boosty.to/wunjo/posts/41688b72-2a30-4e54-9081-e1b314d4b011?share=post_link) and [Patreon](https://www.patreon.com/posts/early-access-to-117090110?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link). Plus, there’s now Smart Search and Quick Tips to guide you in achieving exactly what you want with your content in Wunjo. In new version 2.0.6 you will find API for developers and interface on English, Spanish, Russian, Chinese, Korean.
+### What's New in Wunjo 2.0.4 & 2.0.5 🎉
+- **Animate Portrait Mode & Retarget Portrait**: Copy head movements and facial expressions from any video or image to your content.
+- **Manual Control & Quick Templates**: Add blinks, head turns, and emotions for more realistic animations.
+- **Offline & Portable**: Works without an internet connection and is available as a portable version.
+- **Smart Search & Quick Tips**: Find exactly what you need faster!
+- **Free**: Wunjo in wunjo.online is now free, with some Pro functionality available through partial payment.
+- **Loading**: You always know what is happening and how much time is left until the task is completed.
 
-🌟 Exclusive in Wunjo Pro 🌟
+### Upcoming in Wunjo 2.0.6 
+- **API for Developers**: Integrate Wunjo into your projects.
+- **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
+- **Zoom**: Zoom into images to better control changes.
 
-But here's the dream: Once we reach 4,096 stars on GitHub, I will release Wunjo Pro as an update to Wunjo Community Edition—completely open-source and fully functional offline! ✨
+Wunjo Pro is now easier and more powerful than ever! 
 
-Wunjo is installed locally on your computer, so you can access it from any device by creating a temporary link.
-
-Your support means everything! ⭐ Give the project a star on GitHub to help make this dream a reality!
+### How You Can Help:
+🌟 **Star the project on GitHub** to help make Wunjo Pro open-source!  
+📣 **Spread the word**: Share Wunjo with your friends and invite them to support the project on GitHub!
+🎥 **Video Reviews on YouTube**: Leave a video review of Wunjo, and I'll give you **free access to the latest version's full functionality**!
 
 ## Big update Wunjo CE v2.0.3
 
