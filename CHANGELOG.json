@@ -1,5 +1,5 @@
 {
-    "version": "2.0.5",
+    "version": "2.0.6",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -121,13 +121,20 @@
           "Progress bar about status"
         ],
         "2.0.5": [
-          "Russian special edition version on Boosty",
           "Quick tips",
           "Smart search",
           "Revamped interface",
           "Unified login system",
           "Bug fixes",
           "Translation tooltip for multilanguage"
+        ],
+        "2.0.6": [
+          "Find early access on Boosty or Patreon",
+          "Multi-language interface: English, Russian, Spanish, Chinese, Korean",
+          "Multi-GPU support",
+          "API for developers",
+          "Zoom for images",
+          "Fast start"
         ]
     }
 }
