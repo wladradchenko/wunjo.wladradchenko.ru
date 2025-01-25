@@ -5,5 +5,6 @@
   "controlnet_tile": "lllyasviel/control_v11f1e_sd15_tile",
   "pyramid_flow_sd3": "rain1011/pyramid-flow-sd3",
   "sd-vae-ft-mse": "stabilityai/sd-vae-ft-mse",
-  "latent_sync": "chunyu-li/LatentSync"
+  "latent_sync": "chunyu-li/LatentSync",
+  "omnigen": "Shitao/OmniGen-v1"
 }
