@@ -47,6 +47,7 @@ Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update 
 - **API for Developers**: Integrate Wunjo into your projects.
 - **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
 - **Zoom**: Zoom into images to better control changes.
+- **Identity-Preserving Generation**: Generate images and videos from multiple images, integrated into the prompt
 
 Wunjo Pro is now easier and more powerful than ever! 
 
