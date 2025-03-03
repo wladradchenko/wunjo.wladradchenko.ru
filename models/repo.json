@@ -6,5 +6,7 @@
   "pyramid_flow_sd3": "rain1011/pyramid-flow-sd3",
   "sd-vae-ft-mse": "stabilityai/sd-vae-ft-mse",
   "latent_sync": "chunyu-li/LatentSync",
-  "omnigen": "Shitao/OmniGen-v1"
+  "omnigen": "Shitao/OmniGen-v1",
+  "FastHunyuan-diffusers": "FastVideo/FastHunyuan-diffusers",
+  "Wan2.1-T2V-1.3B": "Wan-AI/Wan2.1-T2V-1.3B"
 }
