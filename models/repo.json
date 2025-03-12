@@ -8,5 +8,6 @@
   "latent_sync": "chunyu-li/LatentSync",
   "omnigen": "Shitao/OmniGen-v1",
   "FastHunyuan-diffusers": "FastVideo/FastHunyuan-diffusers",
+  "HunyuanVideo-I2V": "hunyuanvideo-community/HunyuanVideo-I2V",
   "Wan2.1-T2V-1.3B": "Wan-AI/Wan2.1-T2V-1.3B"
 }
