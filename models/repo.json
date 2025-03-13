@@ -9,5 +9,7 @@
   "omnigen": "Shitao/OmniGen-v1",
   "FastHunyuan-diffusers": "FastVideo/FastHunyuan-diffusers",
   "HunyuanVideo-I2V": "hunyuanvideo-community/HunyuanVideo-I2V",
-  "Wan2.1-T2V-1.3B": "Wan-AI/Wan2.1-T2V-1.3B"
+  "Wan2.1-T2V-1.3B": "Wan-AI/Wan2.1-T2V-1.3B",
+  "SmolVLM2-2.2B": "HuggingFaceTB/SmolVLM2-2.2B-Instruct",
+  "SmolVLM2-500M": "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"
 }
