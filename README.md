@@ -35,7 +35,7 @@
 
 Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update with the latest version changes!
 
-### What's New in Wunjo 2.0.4 & 2.0.5 🎉
+### What's New in Wunjo 2.0.4 & 2.0.5  🎉
 - **Animate Portrait Mode & Retarget Portrait**: Copy head movements and facial expressions from any video or image to your content.
 - **Manual Control & Quick Templates**: Add blinks, head turns, and emotions for more realistic animations.
 - **Offline & Portable**: Works without an internet connection and is available as a portable version.
@@ -43,7 +43,8 @@ Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update 
 - **Free**: Wunjo in wunjo.online is now free, with some Pro functionality available through partial payment.
 - **Loading**: You always know what is happening and how much time is left until the task is completed.
 
-### Upcoming in Wunjo 2.0.6 
+### Wunjo 2.0.6 & 2.0.7
+- **Highlights Video**: One of the coolest new features is the neural network that can automatically review long videos and create a shorter version with the best moments! It’ll even answer questions about the video—like what music fits, or what the video is about. Basically, it can help with anything you need related to the content.
 - **API for Developers**: Integrate Wunjo into your projects.
 - **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
 - **Zoom**: Zoom into images to better control changes.

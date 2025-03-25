@@ -1,5 +1,5 @@
 {
-    "version": "2.0.6",
+    "version": "2.0.7",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -135,6 +135,13 @@
           "API for developers",
           "Zoom for images",
           "Fast start"
+        ],
+        "2.0.7": [
+          "Early access on Patreon and Boosty now",
+          "Highlights Video",
+          "New Video Generators",
+          "More Generators Parameters",
+          "Metadata"
         ]
     }
 }
