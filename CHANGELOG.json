@@ -137,10 +137,10 @@
           "Fast start"
         ],
         "2.0.7": [
-          "Early access on Patreon and Boosty now",
-          "Highlights Video",
-          "New Video Generators",
-          "More Generators Parameters",
+          "History day tasks",
+          "Automatic video editing based on visual content and speech (e.g. for podcasts or long videos)",
+          "New video generator methods (only for flash-attn version)",
+          "More generators parameters",
           "Metadata"
         ]
     }
