@@ -49,5 +49,8 @@ RUN cd /wunjo/portable && . ../venv/bin/activate && briefcase dev
 ENTRYPOINT ["briefcase", "dev"]
 
 # RUN
-# docker build -t wunjo-run --build-arg MODE=run . -f docker/linux-cuda-12.4.run.dockerfile .
+# docker build -t wunjo-run -f docker/linux-cuda-12.4.run.dockerfile .
 # docker run --gpus all -p 8000:8000 wunjo-run
+
+# DOCKER_BUILDKIT=1 docker build --gpus all -t wunjo-run -f docker/linux-cuda-12.4.run.dockerfile .
+# docker run -d --gpus all -p 8000:8000 --restart unless-stopped --name wunjo-container wunjo-run
