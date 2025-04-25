@@ -1,5 +1,191 @@
-# Voice AI Release Notes
+# Wunjo Release Notes
+
+## 2.0.7 (Latest) (20 Apr 2025)
+* History day tasks
+* Automatic video editing based on visual content and speech (e.g. for podcasts or long videos)
+* New video generator methods (only for flash-attn version)
+* More generators parameters
+* Metadata
+
+## 2.0.6 (1 Feb 2025)
+* Identity-preserving generation
+* Multi-language interface: English, Russian, Spanish, Chinese, Korean
+* Multi-GPU support
+* API for developers
+* Zoom for images
+* Fast start
+
+## 2.0.5 (6 Jan 2025)
+* Quick tips
+* Smart search
+* Revamped interface
+* Unified login system
+* Bug fixes
+* Translation tooltip for multilanguage
+
+## 2.0.4 (26 Nov 2024)
+* Speed boost 1.5x
+* Manual and automatic portrait animation
+* Retarget face
+* Enhanced video generation
+* Transformation in portable version
+* Anonymous login
+* Clearer model settings
+* Face detection fix
+* Faster small model loading
+* Unlimited file uploads
+* Automatic face interface detection
+* Progress bar about status
+
+## 2.0.3 (5 Jul 2024)
+* Added control restyling (This work with 8 GB VRAM)
+* Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image
+* Improved quality of restyling
+
+## 2.0.2 (19 Jun 2024)
+* Added functionality to clone voice in any language from text and audio
+* Improved audio separator to remove noise before clone voice
+* Enhanced processing speed
+
+## 2.0.1 (17 Jun 2024)
+* Fix bugs
+
+## 2.0.0 (Major Update) (24 May 2024)
+* New generation of Wunjo v2
+* [Big update features](https://youtu.be/-MGow5zCZUQ)
+* Completely redesigned interface for desktop and mobile devices
+* Enhanced performance with simultaneous task handling, stability, and faster processing
+* Improved face swap functionality now supports multiple face swap at different timings via API
+* Introducing generator of non-existent people face
+* Deepfake analyzer added to discern authentic content from manipulated media
+* Enhanced lip sync for smoother animations and elimination of chin defects
+* Real-time mask selection for seamless editing experience
+* Added select area to remove text
+* Now you can create chroma key video
+* Custom file manager introduced for efficient file management within the application
+* Improved interaction with neural network models, including seamless downloading from the internet
+* Easy switch from client to server application and back
+* Multi-user support with customizable limits on simultaneous tasks and memory usage
+* Internal tips provided for optimizing content quality
+* Smart generator of prompts for video and object restyling
+
+## 1.6.2 (18 Dec 2023)
+* Custom browser for WebGUI to solve trouble with opening additional tabs
+* Added select browser to run
+* Added check between offline and online mode
+* Added a message for the user about missing models and how to download manually
+
+## 1.6.1 (15 Nov 2023)
+* Resolved issues with the enhancer and upgraded its capabilities for videos and drawings
+* Refined vocoder performance for voice cloning
+* Introduced variable speech cloning speeds
+* Added models for isolating background sound in deepfakes and purifying voice tracks
+* Incorporated a feature to extract background noise from media
+* Enhanced the encoder for more accurate voice cloning
+* Improved overall voice cloning fidelity
+* Implemented multilingual speech synthesis from a single text input
+* Added a new interactive tool for user-defined mask creation that tracks and moves with segmented objects
+* Launched a music generation feature
+
+## 1.6.0 (17 Oct 2023)
+* Advanced the object removal tool for images and videos
+* Enhanced video editing capabilities
+* Implemented automatic segmentation mask saving
+* Introduced Video2Video and InpaintVideoMask2Video with ControlNet via text prompts
+* Optimized memory usage for face swapping and object removal in lengthy videos
+
+## 1.5.5 (22 Sep 2023)
+* Enabled voice cloning in Russian
+* Optimized facial animation and improved error handling for GIF processing
+* Improved log display within the console
+* Added a disk space indicator for output from speech synthesis and deepfakes
+
+## 1.5.4 (14 Sep 2023)
+* Corrected the Russian voice model training from checkpoint issue
+* Introduced a similarity coefficient parameter for Face Swapping and Mouth Animation
+* Enhanced English voice cloning for extended phrases
+
+## 1.5.3 (12 Sep 2023)
+* Automated ffmpeg installation for Windows
+
+## 1.5.2 (12 Sep 2023)
+* Resolved the model auto-loading issue on Windows
+* Accelerated application startup
+* Enhanced performance of speech synthesis and deepfakes on CPU
+* Fixed GIF processing errors in face replacement and retouching
+* Corrected the frame-audio merging issue
+
+## 1.5.1 (6 Sep 2023)
+* Added voice translation features with encoder and vocoder support for English and Russian
+* Implemented voice cloning synthesis from text
+* Established a centralized hub for voice cloning language models
+* Introduced face and background enchantment for photos and videos without deepfake technology
+* Released a comprehensive version including all extensions
+* Enhanced real-time progress indication and translation
+* Integrated a debug module with Python console
+* Transitioned to native language translation for real-time updates
+* Improved GPU availability notifications for users
+* Launched a deepfake emotion module for experimental research
+* Updated the application guide
+* Implemented AI-powered retouching of video frames
+* Enhanced Chinese language support for voice cloning
+* Addressed Windows-specific bugs in Wunjo AI
+
+## 1.4.0 (15 Aug 2023)
+* Introduced deepfake synchronization with source video for lip movements
+* Implemented video segment selection for deepfake based on audio track length
+* Enabled customization of .wunjo cache directory
+* Added multi-language support for application interface
+* Trained and integrated TTS models for English
+* Implemented model language identification in the user interface
+* Enabled cross-language speech synthesis for Russian and English TTS models
+* Included update notifications within the application
+* Integrated training videos and wiki page links
+
+## 1.3.2 (8 Aug 2023)
+* Fixed face_alignment bug
+* Added extension support framework
+* Platform-specific packages:
+  - Ubuntu/Debian: `.deb` installer (requires ffmpeg)
+  - macOS: `.zip` archive (requires homebrew ffmpeg)
+  - Windows: `.msi` installer (requires PATH setup for ffmpeg)
+* Note: First run downloads ~5GB models to `~/.wunjo`
+
+## 1.3 (16 May 2023)
+* Major architecture change:
+  - Plugin system for third-party extensions
+  - Reduced base installation size
+* New animation controls:
+  - XYZ head rotation adjustment
+  - Advanced facial expression controls
+  - Background enhancement
+* Improved Safari compatibility
+
+## 1.2 (14 May 2023)
+* Reduced installation size from 10GB → 1.7GB
+* Added professional animation tools:
+  - 3-axis head rotation control (XY/ZX/YZ)
+  - Speech articulation adjustment
+  - Background quality improvement
+* First native installers:
+  - `.deb` for Linux
+  - `.msi` for Windows
+  - `.app` for macOS
+
+## 1.1.1 (12 May 2023)
+* Fix bugs
+
+## 1.1.0 (8 May 2023)
+* Initial multi-platform release (Windows/macOS/Linux)
+* Basic video synthesis pipeline
+* Required manual permissions for model folders
+* First-time setup downloads neural networks
+* Required ffmpeg installation
+
+## 1.0-alpha (26 Apr 2023)
+* Initial Ubuntu/Debian build
+* Required manual compilation for other platforms
+* Proof-of-concept release
 
 ## 0.0.1 (24 Apr 2023)
-
 * Initial release
