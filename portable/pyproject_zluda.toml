@@ -163,8 +163,6 @@ sources = [
     "../venv/Lib/site-packages/insightface",
     "src/generation"
 ]
-
-[tool.briefcase.app.wunjo.windows.msi]
 cleanup_paths = [
     "**/app_packages/torch",
     "**/app_packages/torchvision",

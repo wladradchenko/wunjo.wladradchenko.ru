@@ -39,12 +39,6 @@ sources = [
 test_sources = [
 ]
 
-cleanup_paths = [
-    "**/app_packages/torch",
-    "**/app_packages/torchvision",
-    "**/app_packages/torchaudio"
-]
-
 requires = [
     "tensorboard==1.15.0",
     "Flask",
@@ -169,8 +163,6 @@ sources = [
     "../venv/Lib/site-packages/insightface",
     "src/generation"
 ]
-
-[tool.briefcase.app.wunjo.windows.msi]
 cleanup_paths = [
     "**/app_packages/torch",
     "**/app_packages/torchvision",

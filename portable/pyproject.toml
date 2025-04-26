@@ -155,8 +155,6 @@ requires = [
 sources = [
     "../venv/Lib/site-packages/insightface",
 ]
-
-[tool.briefcase.app.wunjo.windows.msi]
 cleanup_paths = [
     "**/app_packages/torch",
     "**/app_packages/torchvision",

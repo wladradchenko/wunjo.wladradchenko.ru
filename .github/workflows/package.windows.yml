@@ -15,6 +15,7 @@ on:
 env:
   FORCE_COLOR: "1"
   SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_POST: ${{ secrets.SSH_PORT || 22 }}
   SSH_USER: ${{ secrets.SSH_USER }}
   SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
@@ -111,7 +112,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via SSH
-        if: env.SSH_PRIVATE_KEY != '' && env.SSH_USER != '' && env.SSH_HOST != ''
+        if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
         working-directory: portable
         run: |
-          scp -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -P {{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
