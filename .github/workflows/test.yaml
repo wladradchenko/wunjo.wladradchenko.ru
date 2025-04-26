@@ -21,17 +21,15 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        target: [linux]
+        target: [windows]
         include:
-          - target: "linux"
-            platform: "Linux"
-            output-format: "deb"
+          - target: "windows"
+            output-format: "msi"
             pre-command: |
-              sudo apt -y install socat openssh-client build-essential gcc make wget
-              sudo rm -rf /usr/share/dotnet
-              sudo rm -rf /usr/local/lib/android
-              sudo rm -rf /opt/ghc
-            runs-on: "ubuntu-22.04"
+              choco install visualstudio2022buildtools --confirm
+              choco install visualstudio2022-workload-vctools --confirm
+              choco install wixtoolset --version 4.0.5 --confirm
+            runs-on: "windows-latest"
             python-version: "3.10"
 
     steps:
@@ -39,6 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test file
+        shell: bash
         run: |
           mkdir -p portable/dist
           cd portable/dist
