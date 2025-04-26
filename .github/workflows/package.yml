@@ -22,11 +22,6 @@ jobs:
       matrix:
         target: [linux]
         include:
-          - target: "windows"
-            output-format: "msi"
-            runs-on: "windows-latest"
-            python-version: "3.10"
-
           - target: "linux"
             platform: "Linux"
             output-format: "deb"
