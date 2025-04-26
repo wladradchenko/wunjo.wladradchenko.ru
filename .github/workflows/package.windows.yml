@@ -48,6 +48,8 @@ jobs:
       - name: Check WiX installation
         shell: pwsh
         run: |
+          $env:PATH += ";C:\Program Files (x86)\WiX Toolset v4.0\bin"
+          wixtoolset --version || echo "WiX Toolset version not found!"
           where.exe light.exe || echo "WiX Toolset not found!"
 
       - name: Select processor configuration
