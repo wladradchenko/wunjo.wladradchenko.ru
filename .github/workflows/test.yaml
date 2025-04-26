@@ -45,12 +45,19 @@ jobs:
 
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh"
+          $env:SSH_PRIVATE_KEY | Out-File -FilePath "$env:USERPROFILE\.ssh\id_rsa" -Encoding ASCII
+
+          icacls "$env:USERPROFILE\.ssh\id_rsa" /inheritance:r
+          icacls "$env:USERPROFILE\.ssh\id_rsa" /grant:r "$env:USERNAME:(R)"
+
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> "$env:USERPROFILE\.ssh\known_hosts"
 
       - name: Deploy via SSH
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
+        shell: pwsh
         working-directory: portable
         run: |
-          scp -v -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -v -P ${{ secrets.SSH_PORT }} -i "$env:USERPROFILE\.ssh\id_rsa" -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~
