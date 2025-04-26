@@ -55,7 +55,7 @@ jobs:
           python -m venv venv --copies
           source venv/Scripts/activate  # For Windows
 
-          pip install -U pip setuptools wheel
+          pip install -U setuptools wheel
           pip install briefcase insightface
 
       - name: Build application
