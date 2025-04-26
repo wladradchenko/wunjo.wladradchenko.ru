@@ -25,8 +25,8 @@ jobs:
           - target: "linux"
             platform: "Linux"
             output-format: "deb"
-            pre-command: "sudo apt -y install socat openssh-client python3.10-dev python3.10-config python3.10-venv python3.10-distutils libpython3.10-dev build-essential gcc make "
-            runs-on: "ubuntu-latest"
+            pre-command: "sudo apt -y install socat openssh-client build-essential gcc make"
+            runs-on: "ubuntu-22.04"
             python-version: "3.10"
 
     steps:
@@ -41,45 +41,12 @@ jobs:
       - name: Configure system Python
         run: |
           # Make sure python3 points to Python 3.10
-          if [[ "${{ matrix.target }}" == linux* ]]; then
-            PYTHON_PATH=$(which python)
-            sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
-            sudo update-alternatives --set python3 $PYTHON_PATH
-            python3 --version
-            
-            echo "Searching for python3.10-config..."
-            CONFIG_PATHS=$(find /usr -name python3.10-config 2>/dev/null || true)
-            
-            if [ -z "$CONFIG_PATHS" ]; then
-              echo "python3.10-config not found, installing python3.10-dev..."
-              sudo apt-get install -y python3.10-dev
-              CONFIG_PATHS=$(find /usr -name python3.10-config 2>/dev/null)
-            fi
-            
-            if [ -z "$CONFIG_PATHS" ]; then
-              echo "python3.10-config still not found, trying alternative locations..."
-              CONFIG_PATHS=$(find /opt -name python3.10-config 2>/dev/null)
-            fi
-            
-            if [ -n "$CONFIG_PATHS" ]; then
-              CONFIG_PATH=$(echo "$CONFIG_PATHS" | head -1)
-              echo "Found python3.10-config at: $CONFIG_PATH"
-              sudo ln -sf "$CONFIG_PATH" /usr/bin/python3-config
-              sudo ln -sf "$CONFIG_PATH" /usr/bin/python3.10-config
-            else
-              echo "Warning: python3.10-config not found in system!"
-              echo '#!/bin/sh
-              INCLUDES="-I/usr/include/python3.10"
-              LIBS="-lpython3.10"
-              echo "$INCLUDES $LIBS"' | sudo tee /usr/bin/python3.10-config
-              sudo chmod +x /usr/bin/python3.10-config
-              sudo ln -sf /usr/bin/python3.10-config /usr/bin/python3-config
-            fi
-            
-            ls -la /usr/bin/python3*
-            /usr/bin/python3-config --includes
-            find /usr -name "Python.h" | head -5
-          fi
+          #if [[ "${{ matrix.target }}" == linux* ]]; then
+          #  PYTHON_PATH=$(which python)
+          #  sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
+          #  sudo update-alternatives --set python3 $PYTHON_PATH
+          #  python3 --version
+          #fi
 
       - name: Select processor configuration
         working-directory: portable
