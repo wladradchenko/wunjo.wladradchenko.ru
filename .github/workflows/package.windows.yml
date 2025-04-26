@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           python -m venv venv --copies
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\activate  # For Windows
 
           pip install -U pip setuptools wheel
           pip install briefcase insightface
@@ -61,7 +61,7 @@ jobs:
       - name: Build application
         shell: bash
         run: |
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\activate  # For Windows
           
           cd portable
           python -m briefcase build ${{ matrix.target }}
@@ -69,7 +69,7 @@ jobs:
       - name: Package application
         shell: bash
         run: |
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\activate  # For Windows
           
           cd portable
           python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
