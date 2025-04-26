@@ -37,11 +37,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test file
-        shell: bash
+        shell: pwsh  # PowerShell для Windows
         run: |
-          mkdir -p portable/dist
-          cd portable/dist
-          wget https://wunjo.online/media/dist/v2-0-7/wunjo_2-0-7b1pro_win.msi
+          New-Item -ItemType Directory -Force -Path portable/dist
+          Set-Location -Path portable/dist
+          Invoke-WebRequest -Uri "https://wunjo.online/media/dist/v2-0-7/wunjo_2-0-7b1pro_win.msi" -OutFile "wunjo_2-0-7b1pro_win.msi"
 
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
