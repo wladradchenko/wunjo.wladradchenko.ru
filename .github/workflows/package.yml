@@ -30,6 +30,7 @@ jobs:
             output-format: "msi"
             runs-on: "windows-latest"
             python-version: "3.10"
+            condition: ${{ github.event.inputs.target == 'windows' }}
 
           - target: "linux"
             platform: "Linux"
@@ -37,8 +38,8 @@ jobs:
             pre-command: "sudo apt -y install socat openssh-client"
             runs-on: "ubuntu-latest"
             python-version: "3.10"
+            condition: ${{ github.event.inputs.target == 'linux' }}
 
-    if: matrix.target == github.event.inputs.target
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
