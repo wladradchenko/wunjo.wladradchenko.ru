@@ -105,14 +105,13 @@ jobs:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
 
-      - name: Setup SSH
-        if: env.SSH_PRIVATE_KEY != ''
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy via SSH
+      - name: Deploy via scp
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
+        shell: bash
         working-directory: portable
         run: |
-          scp -v -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/

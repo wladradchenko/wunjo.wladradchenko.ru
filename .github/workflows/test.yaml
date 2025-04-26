@@ -52,4 +52,4 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          scp -v -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
