@@ -50,6 +50,7 @@ jobs:
           Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
       - name: Set up Python environment
+        shell: bash
         run: |
           python -m venv venv --copies
 
@@ -63,6 +64,7 @@ jobs:
           pip install briefcase insightface
 
       - name: Build application
+        shell: bash
         run: |
           if [[ "${{ matrix.target }}" == windows* ]]; then
             .\venv\Scripts\activate  # For Windows
@@ -74,6 +76,7 @@ jobs:
           python -m briefcase build ${{ matrix.target }}
 
       - name: Package application
+        shell: bash
         run: |
           if [[ "${{ matrix.target }}" == windows* ]]; then
             .\venv\Scripts\activate  # For Windows
