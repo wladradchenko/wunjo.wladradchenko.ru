@@ -50,27 +50,35 @@ jobs:
           Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
       - name: Set up Python environment
+        shell: pwsh
         run: |
           python -m venv venv --copies
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\Activate.ps1  # For Windows
 
           pip install -U pip setuptools wheel
           pip install briefcase insightface
 
       - name: Build application
+        shell: pwsh
         run: |
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\Activate.ps1  # For Windows
           
           cd portable
-          python -m briefcase build ${{ matrix.target }}
+          python -m briefcase build $env:TARGET
+          
+          Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
       - name: Package application
+        shell: pwsh
         run: |
-          .\venv\Scripts\activate.bat  # For Windows
+          .\venv\Scripts\Activate.ps1  # For Windows
           
           cd portable
-          python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
-          ls -la dist/
+          python -m briefcase package $env:TARGET --update --adhoc-sign --no-input --log
+          
+          $distFiles = Get-ChildItem -Path .\dist
+          Write-Host "Created package files:"
+          $distFiles | ForEach-Object { Write-Host $_.FullName }
 
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
@@ -81,5 +89,6 @@ jobs:
       - name: Deploy via SSH
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_USER != '' && env.SSH_HOST != ''
         working-directory: portable
+        shell: pwsh
         run: |
           scp -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
