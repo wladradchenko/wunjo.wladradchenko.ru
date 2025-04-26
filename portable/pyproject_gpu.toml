@@ -39,6 +39,12 @@ sources = [
 test_sources = [
 ]
 
+cleanup_paths = [
+    "**/app_packages/torch",
+    "**/app_packages/torchvision",
+    "**/app_packages/torchaudio"
+]
+
 requires = [
     "tensorboard==1.15.0",
     "Flask",

@@ -71,6 +71,13 @@ jobs:
           python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
           ls -la dist/
 
+      - name: Upload Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Log-Failure-${{ matrix.target }}
+          path: logs/*
+
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
         uses: webfactory/ssh-agent@v0.7.0

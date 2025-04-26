@@ -97,6 +97,13 @@ jobs:
           Write-Host "Created package files:"
           $distFiles | ForEach-Object { Write-Host $_.FullName }
 
+      - name: Upload Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Log-Failure-${{ matrix.target }}
+          path: logs/*
+
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
         uses: webfactory/ssh-agent@v0.7.0
