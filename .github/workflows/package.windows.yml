@@ -7,6 +7,10 @@ on:
         description: 'Choose the processor type (gpu, cpu, zluda)'
         required: false
         default: 'gpu'
+      output-format:
+        description: 'Choose the output format (msi or zip)'
+        required: true
+        default: 'msi'
 
 env:
   FORCE_COLOR: "1"
@@ -14,6 +18,7 @@ env:
   SSH_USER: ${{ secrets.SSH_USER }}
   SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
+  OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
 
 jobs:
   build-and-deploy:
@@ -85,7 +90,7 @@ jobs:
           .\venv\Scripts\Activate.ps1
           cd portable
 
-          python -m briefcase package $env:TARGET --adhoc-sign
+          python -m briefcase package $env:TARGET -p $env:OUTPUT_FORMAT --adhoc-sign --log
 
           $distFiles = Get-ChildItem -Path .\dist
           Write-Host "Created package files:"
