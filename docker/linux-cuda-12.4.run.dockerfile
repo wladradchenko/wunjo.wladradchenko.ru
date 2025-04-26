@@ -20,14 +20,17 @@ RUN apt-get update && \
     python3 -m pip install --upgrade pip wheel setuptools
 
 # Installing dependencies and creating a virtual environment
-RUN cd /wunjo && python3 -m venv venv
-RUN cd /wunjo && . venv/bin/activate && python3 -m pip install --upgrade pip wheel setuptools
-RUN cd /wunjo && . venv/bin/activate && python3 -m pip install -r requirements_gpu.txt
-# CUDA 12.4
-# RUN cd /wunjo && . venv/bin/activate && python3 -m pip install --no-cache-dir xformers==0.0.27post2 --extra-index-url https://download.pytorch.org/whl/cu124
-# CUDA 11.8
-RUN cd /wunjo && . venv/bin/activate && python3 -m pip install --no-cache-dir xformers==0.0.19 --extra-index-url https://download.pytorch.org/whl/cu118
-RUN cd /wunjo && . venv/bin/activate && MAX_JOBS=4 python3 -m pip install --no-cache-dir flash-attn<=2.6.3
+RUN cd /wunjo && \
+    python3 -m venv venv && \
+    . venv/bin/activate && \
+    python3 -m pip install --upgrade pip wheel setuptools && \
+    python3 -m pip install -r requirements_gpu.txt && \
+    # CUDA 12.4
+    # python3 -m pip install --no-cache-dir xformers==0.0.27post2 --extra-index-url https://download.pytorch.org/whl/cu124 && \
+    # CUDA 11.8
+    python3 -m pip install --no-cache-dir xformers==0.0.19 --extra-index-url https://download.pytorch.org/whl/cu118 && \
+    MAX_JOBS=4 python3 -m pip install --no-cache-dir flash-attn<=2.6.3 && \
+    rm -rf ~/.cache/pip
 
 # Setting environment variables
 ENV DEBUG=False

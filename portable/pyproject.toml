@@ -41,7 +41,6 @@ test_sources = [
 
 requires = [
     "tensorboard==1.15.0",
-    "albumentations==1.3.1",
     "Flask",
     "Flask-Cors",
     "pyyaml",
@@ -155,6 +154,13 @@ requires = [
 ]
 sources = [
     "../venv/Lib/site-packages/insightface",
+]
+
+[tool.briefcase.app.wunjo.windows.msi]
+cleanup_paths = [
+    "**/app_packages/torch",
+    "**/app_packages/torchvision",
+    "**/app_packages/torchaudio"
 ]
 
 # Mobile deployments

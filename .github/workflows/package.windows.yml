@@ -1,4 +1,4 @@
-name: CI/CD Pipeline Package Windows
+name: CI/CD Pipeline Package Linux
 
 on:
   workflow_dispatch:
@@ -24,6 +24,9 @@ jobs:
         include:
           - target: "windows"
             output-format: "msi"
+            pre-command: |
+              choco install visualstudio2022buildtools --confirm
+              choco install visualstudio2022-workload-vctools --confirm
             runs-on: "windows-latest"
             python-version: "3.10"
 
@@ -35,16 +38,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-
-      - name: Configure system Python
-        run: |
-          # Make sure python3 points to Python 3.10
-          if [[ "${{ matrix.target }}" == linux* ]]; then
-            PYTHON_PATH=$(which python)
-            sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
-            sudo update-alternatives --set python3 $PYTHON_PATH
-            python3 --version
-          fi
 
       - name: Select processor configuration
         working-directory: portable

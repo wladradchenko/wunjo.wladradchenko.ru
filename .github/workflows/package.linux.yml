@@ -25,18 +25,15 @@ jobs:
           - target: "linux"
             platform: "Linux"
             output-format: "deb"
-            pre-command: "sudo apt -y install socat openssh-client build-essential gcc make"
+            pre-command: |
+              sudo apt -y install socat openssh-client build-essential gcc make
+              sudo rm -rf /usr/share/dotnet
+              sudo rm -rf /usr/local/lib/android
+              sudo rm -rf /opt/ghc
             runs-on: "ubuntu-22.04"
             python-version: "3.10"
 
     steps:
-      - name: Clean up disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          df -h
-
       - name: Checkout code
         uses: actions/checkout@v4
 
