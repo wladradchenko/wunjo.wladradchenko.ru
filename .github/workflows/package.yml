@@ -1,0 +1,86 @@
+name: CI/CD Pipeline Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      processor:
+        description: 'Choose the processor type (gpu, cpu, zluda)'
+        required: false
+        default: 'gpu'
+
+env:
+  FORCE_COLOR: "1"
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_USER: ${{ secrets.SSH_USER }}
+  SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
+
+jobs:
+  build-and-deploy:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        target: [windows, linux]
+        include:
+          - target: "windows"
+            output-format: "msi"
+            runs-on: "windows-latest"
+            python-version: "3.10"
+
+          - target: "linux"
+            platform: "Linux"
+            output-format: "deb"
+            pre-command: "sudo apt -y install socat openssh-client"
+            runs-on: "ubuntu-latest"
+            python-version: "3.10"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Select processor configuration
+        run: |
+          echo "Using processor: $PROCESSOR"
+          cp pyproject_$PROCESSOR.toml pyproject.toml
+
+      - name: Set up Python environment
+        run: |
+          python -m venv venv
+
+          if [[ "${{ matrix.target }}" == windows* ]]; then
+            .\venv\Scripts\activate  # For Windows
+          elif [[ "${{ matrix.target }}" == "linux" ]]; then
+            source venv/bin/activate  # For Linux/MacOS
+          fi
+
+          pip install -U pip setuptools wheel
+          pip install briefcase insightface
+    
+
+      - name: Build application
+        working-directory: portable
+        run: |
+          briefcase build ${{ matrix.target }}
+
+      - name: Package application
+        working-directory: portable
+        run: |
+          briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
+          ls -la dist/
+
+      - name: Setup SSH
+        if: env.SSH_PRIVATE_KEY != ''
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SSH
+        if: env.SSH_PRIVATE_KEY != '' && env.SSH_USER != '' && env.SSH_HOST != ''
+        working-directory: portable
+        run: |
+          scp -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
