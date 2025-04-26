@@ -56,16 +56,31 @@ jobs:
 
           pip install -U pip setuptools wheel
           pip install briefcase insightface
-    
 
       - name: Build application
-        working-directory: portable
         run: |
+          python -m venv venv
+
+          if [[ "${{ matrix.target }}" == windows* ]]; then
+            .\venv\Scripts\activate  # For Windows
+          elif [[ "${{ matrix.target }}" == "linux" ]]; then
+            source venv/bin/activate  # For Linux/MacOS
+          fi
+          
+          cd portable
           briefcase build ${{ matrix.target }}
 
       - name: Package application
-        working-directory: portable
         run: |
+          python -m venv venv
+
+          if [[ "${{ matrix.target }}" == windows* ]]; then
+            .\venv\Scripts\activate  # For Windows
+          elif [[ "${{ matrix.target }}" == "linux" ]]; then
+            source venv/bin/activate  # For Linux/MacOS
+          fi
+          
+          cd portable
           briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
           ls -la dist/
 
