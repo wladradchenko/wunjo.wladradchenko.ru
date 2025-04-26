@@ -42,10 +42,9 @@ jobs:
         run: |
           # Make sure python3 points to Python 3.10
           if [[ "${{ matrix.target }}" == linux* ]]; then
-            sudo apt-get update
-            sudo apt-get install -y python3.10
-            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
-            sudo update-alternatives --set python3 /usr/bin/python3.10
+            PYTHON_PATH=$(which python)
+            sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
+            sudo update-alternatives --set python3 $PYTHON_PATH
             python3 --version
           fi
 
