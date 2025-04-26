@@ -41,9 +41,13 @@ jobs:
 
       - name: Select processor configuration
         working-directory: portable
+        shell: pwsh
         run: |
-          echo "Using processor: $PROCESSOR"
-          cp pyproject_$PROCESSOR.toml pyproject.toml
+          Write-Host "Using processor: $env:PROCESSOR"
+          if (-not (Test-Path "pyproject_$env:PROCESSOR.toml")) {
+            throw "File pyproject_$env:PROCESSOR.toml not found!"
+          }
+          Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
       - name: Set up Python environment
         run: |
