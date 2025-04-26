@@ -30,6 +30,13 @@ jobs:
             python-version: "3.10"
 
     steps:
+      - name: Clean up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          df -h
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -37,17 +44,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-
-      - name: Configure system Python
-        run: |
-          # Make sure python3 points to Python 3.10
-          echo "Skip configure system Python"
-          #if [[ "${{ matrix.target }}" == linux* ]]; then
-          #  PYTHON_PATH=$(which python)
-          #  sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
-          #  sudo update-alternatives --set python3 $PYTHON_PATH
-          #  python3 --version
-          #fi
 
       - name: Select processor configuration
         working-directory: portable
