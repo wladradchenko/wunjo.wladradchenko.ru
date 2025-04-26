@@ -51,13 +51,18 @@ jobs:
           $env:SSH_PRIVATE_KEY | Out-File -FilePath "$env:USERPROFILE\.ssh\id_rsa" -Encoding ASCII
 
           icacls "$env:USERPROFILE\.ssh\id_rsa" /inheritance:r
-          icacls "$env:USERPROFILE\.ssh\id_rsa" /grant:r "$env:USERNAME:(R)"
-
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> "$env:USERPROFILE\.ssh\known_hosts"
+          icacls "$env:USERPROFILE\.ssh\id_rsa" /grant:r "$env:USERNAME`:R"
+          
+          ssh-keyscan -t ed25519 -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> "$env:USERPROFILE\.ssh\known_hosts"
 
       - name: Deploy via SSH
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
         shell: pwsh
         working-directory: portable
         run: |
+          $env:SESSION = @"
+          KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+          HostKeyAlgorithms ssh-ed25519,ssh-rsa
+          "@ | Out-File -FilePath "$env:USERPROFILE\.ssh\config" -Encoding ASCII
+          
           scp -v -P ${{ secrets.SSH_PORT }} -i "$env:USERPROFILE\.ssh\id_rsa" -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~
