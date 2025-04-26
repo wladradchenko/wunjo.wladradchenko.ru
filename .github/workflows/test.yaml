@@ -29,13 +29,17 @@ jobs:
               choco install visualstudio2022buildtools --confirm
               choco install visualstudio2022-workload-vctools --confirm
               choco install wixtoolset --version 4.0.5 --confirm
-              choco install rsync --confirm
             runs-on: "windows-latest"
             python-version: "3.10"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install rsync
+        shell: pwsh
+        run: |
+          choco install rsync --confirm
 
       - name: Test file
         shell: pwsh  # PowerShell для Windows
