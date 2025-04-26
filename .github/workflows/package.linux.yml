@@ -51,35 +51,22 @@ jobs:
       - name: Set up Python environment
         run: |
           python -m venv venv --copies
-
-          if [[ "${{ matrix.target }}" == windows* ]]; then
-            .\venv\Scripts\activate  # For Windows
-          elif [[ "${{ matrix.target }}" == "linux" ]]; then
-            source venv/bin/activate  # For Linux/MacOS
-          fi
+          source venv/bin/activate  # For Linux/MacOS
 
           pip install -U pip setuptools wheel
           pip install briefcase insightface
 
       - name: Build application
         run: |
-          if [[ "${{ matrix.target }}" == windows* ]]; then
-            .\venv\Scripts\activate  # For Windows
-          elif [[ "${{ matrix.target }}" == "linux" ]]; then
-            source venv/bin/activate  # For Linux/MacOS
-          fi
-          
+          source venv/bin/activate  # For Linux/MacOS
+
           cd portable
           python -m briefcase build ${{ matrix.target }}
 
       - name: Package application
         run: |
-          if [[ "${{ matrix.target }}" == windows* ]]; then
-            .\venv\Scripts\activate  # For Windows
-          elif [[ "${{ matrix.target }}" == "linux" ]]; then
-            source venv/bin/activate  # For Linux/MacOS
-          fi
-          
+          source venv/bin/activate  # For Linux/MacOS
+
           cd portable
           python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
           ls -la dist/
