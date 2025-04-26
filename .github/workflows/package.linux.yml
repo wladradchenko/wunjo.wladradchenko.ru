@@ -47,10 +47,15 @@ jobs:
             sudo update-alternatives --set python3 $PYTHON_PATH
             python3 --version
             
-            ls -l /usr/bin/python3-config
+            ls -l /usr/bin/python3-config || echo "There is no symlink"
+            TARGET=$(readlink -f /usr/bin/python3-config || echo "none")
 
-            sudo ln -s $(find /usr -name "python3.10-config" | head -1) /usr/bin/python3.10-config
-            sudo ln -s /usr/bin/python3.10-config /usr/bin/python3-config
+            if [[ "$TARGET" != *"python3.10-config" ]]; then
+              CONFIG_PATH=$(find /usr -name python3.10-config | head -1)
+              sudo ln -sf "$CONFIG_PATH" /usr/bin/python3-config
+            fi
+          
+            /usr/bin/python3-config --includes
             find /usr -name "Python.h" | head -5
           fi
 
