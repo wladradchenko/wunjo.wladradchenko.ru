@@ -50,28 +50,40 @@ jobs:
           Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
       - name: Set up Python environment
-        shell: cmd
+        shell: pwsh
         run: |
           python -m venv venv --copies
-          call venv/Scripts/activate  # For Windows
-          pip install -U --force-reinstall pip
-          pip install -U setuptools wheel
-          pip install briefcase insightface
+
+          .\venv\Scripts\Activate.ps1
+          
+          python pip install -U --force-reinstall pip
+          python -m pip install -U setuptools wheel
+          python -m pip install briefcase insightface
+
+          python --version
+          pip --version
 
       - name: Build application
-        shell: cmd
+        shell: pwsh
         run: |
-          call venv/Scripts/activate  # For Windows
+          .\venv\Scripts\Activate.ps1
+
           cd portable
-          python -m briefcase build ${{ matrix.target }}
+          python -m briefcase build $env:TARGET
+
+          Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
       - name: Package application
-        shell: cmd
+        shell: pwsh
         run: |
-          call venv/Scripts/activate  # For Windows
+          .\venv\Scripts\Activate.ps1
           cd portable
-          python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
-          ls -la dist/
+
+          python -m briefcase package $env:TARGET --update --adhoc-sign --no-input --log
+
+          $distFiles = Get-ChildItem -Path .\dist
+          Write-Host "Created package files:"
+          $distFiles | ForEach-Object { Write-Host $_.FullName }
 
       - name: Setup SSH
         if: env.SSH_PRIVATE_KEY != ''
