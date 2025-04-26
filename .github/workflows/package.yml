@@ -46,7 +46,7 @@ jobs:
 
       - name: Set up Python environment
         run: |
-          python -m venv venv
+          python -m venv venv --copies
 
           if [[ "${{ matrix.target }}" == windows* ]]; then
             .\venv\Scripts\activate  # For Windows
@@ -59,8 +59,6 @@ jobs:
 
       - name: Build application
         run: |
-          python -m venv venv
-
           if [[ "${{ matrix.target }}" == windows* ]]; then
             .\venv\Scripts\activate  # For Windows
           elif [[ "${{ matrix.target }}" == "linux" ]]; then
@@ -72,8 +70,6 @@ jobs:
 
       - name: Package application
         run: |
-          python -m venv venv
-
           if [[ "${{ matrix.target }}" == windows* ]]; then
             .\venv\Scripts\activate  # For Windows
           elif [[ "${{ matrix.target }}" == "linux" ]]; then
