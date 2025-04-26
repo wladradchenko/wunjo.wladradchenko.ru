@@ -115,4 +115,4 @@ jobs:
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
         working-directory: portable
         run: |
-          scp -P {{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -r -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
