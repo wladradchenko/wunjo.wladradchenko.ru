@@ -50,27 +50,24 @@ jobs:
           Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
       - name: Set up Python environment
-        shell: bash
+        shell: cmd
         run: |
           python -m venv venv --copies
-          source venv/Scripts/activate  # For Windows
-
+          call venv/Scripts/activate  # For Windows
           pip install -U setuptools wheel
           pip install briefcase insightface
 
       - name: Build application
-        shell: bash
+        shell: cmd
         run: |
-          source venv/Scripts/activate  # For Windows
-          
+          call venv/Scripts/activate  # For Windows
           cd portable
           python -m briefcase build ${{ matrix.target }}
 
       - name: Package application
-        shell: bash
+        shell: cmd
         run: |
-          source venv/Scripts/activate  # For Windows
-          
+          call venv/Scripts/activate  # For Windows
           cd portable
           python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
           ls -la dist/
