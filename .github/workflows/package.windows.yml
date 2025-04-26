@@ -56,12 +56,12 @@ jobs:
 
           .\venv\Scripts\Activate.ps1
           
-          python pip install -U --force-reinstall pip
+          python -m pip install -U --force-reinstall pip
           python -m pip install -U setuptools wheel
           python -m pip install briefcase insightface
 
           python --version
-          pip --version
+          python -m pip --version
 
       - name: Build application
         shell: pwsh
