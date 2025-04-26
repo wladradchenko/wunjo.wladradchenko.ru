@@ -25,7 +25,7 @@ jobs:
           - target: "linux"
             platform: "Linux"
             output-format: "deb"
-            pre-command: "sudo apt -y install socat openssh-client python3.10-dev python3.10-venv build-essential libpython3.10-dev gcc make pkg-config libssl-dev"
+            pre-command: "sudo apt -y install socat openssh-client python3.10-dev python3.10-config python3.10-venv python3.10-distutils libpython3.10-dev build-essential gcc make "
             runs-on: "ubuntu-latest"
             python-version: "3.10"
 
@@ -65,7 +65,6 @@ jobs:
           fi
 
           pip install -U pip setuptools wheel
-          pip install numpy==1.23.5
           pip install briefcase insightface
 
       - name: Build application
