@@ -15,7 +15,7 @@ on:
 env:
   FORCE_COLOR: "1"
   SSH_HOST: ${{ secrets.SSH_HOST }}
-  SSH_POST: ${{ secrets.SSH_PORT || 22 }}
+  SSH_PORT: ${{ secrets.SSH_PORT || 22 }}
   SSH_USER: ${{ secrets.SSH_USER }}
   SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
