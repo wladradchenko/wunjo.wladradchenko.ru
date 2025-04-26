@@ -41,6 +41,7 @@ jobs:
       - name: Configure system Python
         run: |
           # Make sure python3 points to Python 3.10
+          echo "Skip configure system Python"
           #if [[ "${{ matrix.target }}" == linux* ]]; then
           #  PYTHON_PATH=$(which python)
           #  sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
