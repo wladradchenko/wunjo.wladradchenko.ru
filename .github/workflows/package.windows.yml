@@ -54,6 +54,7 @@ jobs:
         run: |
           python -m venv venv --copies
           call venv/Scripts/activate  # For Windows
+          pip install -U --force-reinstall pip
           pip install -U setuptools wheel
           pip install briefcase insightface
 
