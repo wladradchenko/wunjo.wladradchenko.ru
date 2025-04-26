@@ -79,7 +79,7 @@ jobs:
           .\venv\Scripts\Activate.ps1
           cd portable
 
-          python -m briefcase package $env:TARGET --update --adhoc-sign --no-input --log
+          python -m briefcase package $env:TARGET --adhoc-sign
 
           $distFiles = Get-ChildItem -Path .\dist
           Write-Host "Created package files:"
