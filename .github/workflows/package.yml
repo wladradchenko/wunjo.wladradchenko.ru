@@ -7,6 +7,10 @@ on:
         description: 'Choose the processor type (gpu, cpu, zluda)'
         required: false
         default: 'gpu'
+      target:
+        description: 'Choose target platform (linux or windows)'
+        required: true
+        default: 'linux'
 
 env:
   FORCE_COLOR: "1"
@@ -34,6 +38,7 @@ jobs:
             runs-on: "ubuntu-latest"
             python-version: "3.10"
 
+    if: matrix.target == github.event.inputs.target
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +49,7 @@ jobs:
           python-version: "3.10"
 
       - name: Select processor configuration
+        working-directory: portable
         run: |
           echo "Using processor: $PROCESSOR"
           cp pyproject_$PROCESSOR.toml pyproject.toml
