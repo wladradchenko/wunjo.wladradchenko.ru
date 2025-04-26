@@ -32,7 +32,7 @@ jobs:
             pre-command: |
               choco install visualstudio2022buildtools --confirm
               choco install visualstudio2022-workload-vctools --confirm
-              choco install wixtoolset --confirm
+              choco install wixtoolset --version 4.0.5 --confirm
             runs-on: "windows-latest"
             python-version: "3.10"
 
