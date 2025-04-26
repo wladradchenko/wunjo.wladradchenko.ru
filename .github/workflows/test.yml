@@ -20,13 +20,11 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        target: [linux]
+        target: [windows]
         include:
-          - target: "linux"
-            platform: "Linux"
-            output-format: "deb"
-            pre-command: "sudo apt -y install socat openssh-client python3.10-dev build-essential"
-            runs-on: "ubuntu-latest"
+          - target: "windows"
+            output-format: "msi"
+            runs-on: "windows-latest"
             python-version: "3.10"
 
     steps:
