@@ -1,4 +1,4 @@
-name: CI/CD Pipeline Package Linux
+name: CI/CD Pipeline Package TEST
 
 on:
   workflow_dispatch:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Test file
         run: |
-          mdkir -p portable/dist
+          mkdir -p portable/dist
           cd portable/dist
           wget https://wunjo.online/media/dist/v2-0-7/wunjo_2-0-7b1pro_win.msi
 
