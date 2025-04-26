@@ -46,6 +46,10 @@ jobs:
             sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON_PATH 1
             sudo update-alternatives --set python3 $PYTHON_PATH
             python3 --version
+          
+            sudo ln -s $(find /usr -name "python3.10-config" | head -1) /usr/bin/python3.10-config
+            sudo ln -s /usr/bin/python3.10-config /usr/bin/python3-config
+            find /usr -name "Python.h" | head -5
           fi
 
       - name: Select processor configuration
