@@ -36,11 +36,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install rsync
-        shell: pwsh
-        run: |
-          choco install rsync --confirm
-
       - name: Test file
         shell: pwsh  # PowerShell для Windows
         run: |
@@ -48,7 +43,7 @@ jobs:
           Set-Location -Path portable/dist
           Invoke-WebRequest -Uri "https://wunjo.online/media/dist/v2-0-7/wunjo_2-0-7b1pro_win.msi" -OutFile "wunjo_2-0-7b1pro_win.msi"
 
-      - name: Deploy via rsync
+      - name: Deploy via scp
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
         shell: bash
         working-directory: portable
@@ -57,4 +52,4 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          rsync -avz -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
