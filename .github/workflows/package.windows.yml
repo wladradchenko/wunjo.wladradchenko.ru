@@ -1,4 +1,4 @@
-name: CI/CD Pipeline Package Linux
+name: CI/CD Pipeline Package Windows
 
 on:
   workflow_dispatch:
