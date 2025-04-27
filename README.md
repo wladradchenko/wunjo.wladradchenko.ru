@@ -236,6 +236,8 @@ More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.
 
 </details>
 
+All information about changes and new features for Wunjo Pro can be found at [CHANGELOG](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/portable/CHANGELOG).
+
 <!-- DONAT -->
 ## Support the Project
 
