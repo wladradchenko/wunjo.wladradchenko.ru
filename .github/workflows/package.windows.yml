@@ -33,6 +33,7 @@ jobs:
             pre-command: |
               choco install visualstudio2022buildtools --confirm
               choco install visualstudio2022-workload-vctools --confirm
+              choco install wixtoolset --version 4.0.5 --confirm
             runs-on: "windows-latest"
             python-version: "3.10"
 
@@ -48,9 +49,8 @@ jobs:
       - name: Set WIX_HOME and update PATH
         shell: pwsh
         run: |
-          choco install wixtoolset --version 6.0.0 --confirm
-          echo "WIX_HOME=C:\Program Files\WiX Toolset v6.0" >> $env:GITHUB_ENV
-          echo "PATH=C:\Program Files\WiX Toolset v6.0\bin;$env:PATH" >> $env:GITHUB_ENV
+           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
+           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: Select processor configuration
         working-directory: portable
