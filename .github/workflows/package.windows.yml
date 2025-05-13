@@ -144,6 +144,9 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
+          Install-Module -Name SignPath
+          Write-Host "SignPath installed"
+          
           cd portable/dist
 
           # Get path to MSI or ZIP file (dynamically)
@@ -159,22 +162,22 @@ jobs:
           $signedPath = "$($artifact.DirectoryName)\signed_$($artifact.Name)"
 
           try {
-              Submit-SigningRequest `
-                -InputArtifactPath $artifact.FullName `
-                -ApiToken "***" `
-                -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-                -ProjectSlug "wunjo.wladradchenko.ru" `
-                -SigningPolicySlug "test-signing" `
-                -OutputArtifactPath "$signedPath" `
-                -WaitForCompletion
+            Submit-SigningRequest `
+              -InputArtifactPath $artifact.FullName `
+              -ApiToken "***" `
+              -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+              -ProjectSlug "wunjo.wladradchenko.ru" `
+              -SigningPolicySlug "test-signing" `
+              -OutputArtifactPath "$signedPath" `
+              -WaitForCompletion
+          
+            Remove-Item -Path $artifact.FullName
+            Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
+            Write-Host "The file has been signed and replaced."
           } catch {
-              Write-Error "Signing failed: $_"
-              exit 1
+            Write-Error "Signing failed: $_"
+            exit 1
           }
-
-          Remove-Item -Path $artifact.FullName
-          Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
-          Write-Host "The file has been signed and replaced."
 
       - name: Upload Log
         if: failure()
