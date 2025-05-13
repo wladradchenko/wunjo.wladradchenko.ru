@@ -144,8 +144,13 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          Install-Module -Name SignPath
-          Write-Host "SignPath installed"
+          if (-not (Get-Module -ListAvailable -Name SignPath)) {
+              Install-Module -Name SignPath -Force -Scope CurrentUser
+              Write-Host "SignPath module installed"
+          }
+          
+          Import-Module SignPath -Force
+          Write-Host "SignPath module imported"
           
           cd portable/dist
 
