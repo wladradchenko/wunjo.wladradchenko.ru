@@ -158,18 +158,23 @@ jobs:
 
           $signedPath = "$($artifact.DirectoryName)\signed_$($artifact.Name)"
 
-          Submit-SigningRequest `
-            -InputArtifactPath $artifact.FullName `
-            -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
-            -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-            -ProjectSlug "wunjo.wladradchenko.ru" `
-            -SigningPolicySlug "test-signing" `
-            -OutputArtifactPath "$signedPath" `
-            -WaitForCompletion
+          try {
+              Submit-SigningRequest `
+                -InputArtifactPath $artifact.FullName `
+                -ApiToken "***" `
+                -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                -ProjectSlug "wunjo.wladradchenko.ru" `
+                -SigningPolicySlug "test-signing" `
+                -OutputArtifactPath "$signedPath" `
+                -WaitForCompletion
+          } catch {
+              Write-Error "Signing failed: $_"
+              exit 1
+          }
 
-            Remove-Item -Path $artifact.FullName
-            Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
-            Write-Host "The file has been signed and replaced."
+          Remove-Item -Path $artifact.FullName
+          Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
+          Write-Host "The file has been signed and replaced."
 
       - name: Upload Log
         if: failure()
