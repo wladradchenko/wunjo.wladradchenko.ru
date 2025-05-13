@@ -169,7 +169,7 @@ jobs:
           try {
             Submit-SigningRequest `
               -InputArtifactPath $artifact.FullName `
-              -ApiToken "***" `
+              -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
               -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
               -ProjectSlug "wunjo.wladradchenko.ru" `
               -SigningPolicySlug "test-signing" `
