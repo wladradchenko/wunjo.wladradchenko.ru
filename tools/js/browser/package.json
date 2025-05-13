@@ -1,0 +1,43 @@
+{
+  "name": "webgui",
+  "version": "2.0.0",
+  "description": "WebGUI for web app to not use default browsers of user",
+  "main": "main.js",
+  "homepage": "https://github.com/wladradchenko/webgui.wladradchenko.ru",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [],
+  "author": "Wladislav Radchenko <i@wladradchenko.ru> (https://github.com/wladradchenko/webgui.wladradchenko.ru)",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "webgui.wladradchenko.ru",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "32x32.icns"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "256x256.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "256x256.png",
+      "category": "Network"
+    }
+  },
+  "dependencies": {
+    "electron-log": "^5.1.5",
+    "electron-updater": "^6.3.9",
+    "node-notifier": "^10.0.1"
+  }
+}
