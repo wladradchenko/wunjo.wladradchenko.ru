@@ -144,44 +144,52 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (-not (Get-Module -ListAvailable -Name SignPath)) {
-              Install-Module -Name SignPath -Force -Scope CurrentUser
-              Write-Host "SignPath module installed"
-          }
+          if (${{ github.event.inputs.sign-file }} -eq 'true') {
           
-          Import-Module SignPath -Force
-          Write-Host "SignPath module imported"
-          
-          cd portable/dist
-
-          # Get path to MSI or ZIP file (dynamically)
-          $artifact = Get-ChildItem -File | Where-Object { $_.Extension -in ".msi", ".zip" } | Select-Object -First 1
-
-          if (-not $artifact) {
-              Write-Error "MSI or ZIP file not found in dist folder!"
+            if (-not (Get-Module -ListAvailable -Name SignPath)) {
+                Install-Module -Name SignPath -Force -Scope CurrentUser
+                Write-Host "SignPath module installed"
+            }
+            
+            Import-Module SignPath -Force
+            Write-Host "SignPath module imported"
+            
+            cd portable/dist
+  
+            # Get path to MSI or ZIP file (dynamically)
+            $artifact = Get-ChildItem -File | Where-Object { $_.Extension -in ".msi", ".zip" } | Select-Object -First 1
+  
+            if (-not $artifact) {
+                Write-Error "MSI or ZIP file not found in dist folder!"
+                exit 1
+            }
+  
+            Write-Host "File for signature: $($artifact.FullName)"
+  
+            $signedPath = "$($artifact.DirectoryName)\signed_$($artifact.Name)"
+  
+            try {
+              Submit-SigningRequest `
+                -InputArtifactPath $artifact.FullName `
+                -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                -ProjectSlug "wunjo.wladradchenko.ru" `
+                -SigningPolicySlug "test-signing" `
+                -OutputArtifactPath "$signedPath" `
+                -WaitForCompletion
+            
+              if (Test-Path $signedPath) {
+                Remove-Item -Path $artifact.FullName
+                Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
+                Write-Host "The file has been signed and replaced."
+              } else {
+                Write-Error "Signature Error! The signed file was not created."
+                exit 1
+              }
+            } catch {
+              Write-Error "Signing failed: $_"
               exit 1
-          }
-
-          Write-Host "File for signature: $($artifact.FullName)"
-
-          $signedPath = "$($artifact.DirectoryName)\signed_$($artifact.Name)"
-
-          try {
-            Submit-SigningRequest `
-              -InputArtifactPath $artifact.FullName `
-              -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
-              -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-              -ProjectSlug "wunjo.wladradchenko.ru" `
-              -SigningPolicySlug "test-signing" `
-              -OutputArtifactPath "$signedPath" `
-              -WaitForCompletion
-          
-            Remove-Item -Path $artifact.FullName
-            Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
-            Write-Host "The file has been signed and replaced."
-          } catch {
-            Write-Error "Signing failed: $_"
-            exit 1
+            }
           }
 
       - name: Upload Log

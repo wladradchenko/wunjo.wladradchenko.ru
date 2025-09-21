@@ -12,5 +12,6 @@
   "Wan2.1-T2V-1.3B": "Wan-AI/Wan2.1-T2V-1.3B",
   "SmolVLM2-2.2B": "HuggingFaceTB/SmolVLM2-2.2B-Instruct",
   "SmolVLM2-500M": "HuggingFaceTB/SmolVLM2-500M-Video-Instruct",
-  "whisper": "openai/whisper-large-v3-turbo"
+  "whisper": "openai/whisper-large-v3-turbo",
+  "kosmos-2": "microsoft/kosmos-2-patch14-224"
 }
