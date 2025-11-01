@@ -141,49 +141,10 @@ jobs:
           Write-Host "Created package files:"
           $distFiles | ForEach-Object { Write-Host $_.FullName }
 
-#      - name: SignPath installer
-#        shell: pwsh
-#        run: |
-#          cd portable/dist
-#
-#          # Get path to MSI or ZIP file (dynamically)
-#          $artifact = Get-ChildItem -File | Where-Object { $_.Extension -in ".msi", ".zip" } | Select-Object -First 1
-#
-#          if (-not $artifact) {
-#              Write-Error "MSI or ZIP file not found in dist folder!"
-#              exit 1
-#          }
-#
-#          Write-Host "File for signature: $($artifact.FullName)"
-#
-#          try {
-#            $signedPath = "$($artifact.DirectoryName)\signed_$($artifact.Name)"
-#
-#            Submit-SigningRequest `
-#              -InputArtifactPath $artifact.FullName `
-#              -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
-#              -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-#              -ProjectSlug "wunjo.wladradchenko.ru" `
-#              -SigningPolicySlug "test-signing" `
-#              -OutputArtifactPath "$signedPath" `
-#              -WaitForCompletion
-#
-#            # Let's replace the original file with a signed one
-#            if (Test-Path $signedPath) {
-#              Remove-Item -Path $artifact.FullName
-#              Rename-Item -Path "$($artifact.DirectoryName)\signed_$($artifact.Name)" -NewName $artifact.Name
-#              Write-Host "The file has been signed and replaced."
-#            } else {
-#                Write-Error "Signature Error! The signed file was not created."
-#            }
-#          } catch {
-#              Write-Warning "Signature error! Unsigned file will be used."
-#          }
-
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'true') {
+          if (${{ github.event.inputs.sign-file }} -eq $true) {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
                 Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -238,13 +199,20 @@ jobs:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
 
+      - name: Install OpenSSH
+        shell: pwsh
+        run: |
+          Add-WindowsFeature -Name OpenSSH-Client
+          Install-WindowsFeature -Name OpenSSH-Server
+          ssh -V
+
       - name: Deploy via scp
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
-        shell: bash
+        shell: pwsh
         working-directory: portable
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          $env:SSH_PRIVATE_KEY | Set-Content -Path ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -i ~/.ssh/id_rsa -P $env:SSH_PORT -o StrictHostKeyChecking=no -r dist/* $env:SSH_USER@$env:SSH_HOST:~/
