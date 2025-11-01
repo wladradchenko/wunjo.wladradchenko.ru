@@ -144,13 +144,13 @@ jobs:
         
             # Указываем файлы для подписи
             $filesToSign = @(
-              "portable/build/wunjo/windows/src/libcrypto-1_1.dll",
-              "portable/build/wunjo/windows/src/libssl-1_1.dll",
-              "portable/build/wunjo/windows/src/libffi-7.dll",
-              "portable/build/wunjo/windows/src/vcruntime140.dll",
-              "portable/build/wunjo/windows/src/vcruntime140_1.dll",
-              "portable/build/wunjo/windows/src/Wunjo.exe",
-              "portable/build/wunjo/windows/src/app/win/webgui.exe"
+              "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
+              "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
+              "portable/build/wunjo/windows/app/src/libffi-7.dll",
+              "portable/build/wunjo/windows/app/src/vcruntime140.dll",
+              "portable/build/wunjo/windows/app/src/vcruntime140_1.dll",
+              "portable/build/wunjo/windows/app/src/Wunjo.exe",
+              "portable/build/wunjo/windows/app/src/app/win/webgui.exe"
             )
         
             foreach ($file in $filesToSign) {
