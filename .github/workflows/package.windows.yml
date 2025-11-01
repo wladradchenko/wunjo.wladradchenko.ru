@@ -56,6 +56,45 @@ jobs:
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
+      - name: Build electron browser
+        working-directory: tools/js/browser
+        shell: pwsh
+        run: |
+          npm install
+          npx electron-builder --$env:TARGET portable
+
+      - name: Copy browser files
+        shell: pwsh
+        run: |
+          $sourceDir = "tools/js/browser/dist"
+          $destDir = "portable/src/win"
+
+          # Create the target directory if it doesn't exist
+          if (-not (Test-Path $destDir)) {
+            New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+          }
+
+          $exeFile = Get-ChildItem -Path $sourceDir -Filter *.exe -File | Select-Object -First 1
+
+          if ($exeFile) {
+            Write-Host "Found EXE: $($exeFile.Name), copying it"
+            Copy-Item -Path $exeFile.FullName -Destination (Join-Path $destDir "webgui.exe") -Force
+          }
+          elseif (Test-Path "$sourceDir/win-unpacked") {
+            Write-Host "No single EXE found, copying win-unpacked contents"
+            Get-ChildItem -Path "$sourceDir/win-unpacked" | ForEach-Object {
+              Copy-Item -Path $_.FullName -Destination $destDir -Recurse -Force
+            }
+          }
+          else {
+            Write-Host "::error::No built files found in $sourceDir"
+            exit 1
+          }
+
+          # Display a list of copied files for verification
+          Write-Host "Copied files:"
+          Get-ChildItem -Path $destDir | Select-Object Name
+
       - name: Select processor configuration
         working-directory: portable
         shell: pwsh
