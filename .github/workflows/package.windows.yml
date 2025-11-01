@@ -12,7 +12,7 @@ on:
         required: true
         default: 'msi'
       sign-file:
-        description: 'Sign the file (true or false)'
+        description: "Sign the file ('true' or 'false')"
         required: false
         default: 'false'
 
@@ -144,7 +144,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq $true) {
+          if (${{ github.event.inputs.sign-file }} -eq 'true') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
                 Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -198,13 +198,6 @@ jobs:
         with:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
-
-      - name: Install OpenSSH
-        shell: pwsh
-        run: |
-          Add-WindowsFeature -Name OpenSSH-Client
-          Install-WindowsFeature -Name OpenSSH-Server
-          ssh -V
 
       - name: Deploy via scp
         if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
