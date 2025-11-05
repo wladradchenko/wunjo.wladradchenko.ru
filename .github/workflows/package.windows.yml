@@ -60,9 +60,9 @@ jobs:
         run: |
           $artifactPath = "portable/dist"
           if (-Not (Test-Path $artifactPath)) {
-            New-Item -ItemType Directory -Path $artifactPath -Force | Out-Null
+          New-Item -ItemType Directory -Path $artifactPath -Force | Out-Null
           }
-
+          
           $filePath = Join-Path $artifactPath "testfile.bin"
           $fs = [System.IO.File]::Create($filePath)
           $fs.SetLength(10MB)
@@ -71,9 +71,56 @@ jobs:
           
           $filePath = Join-Path $artifactPath "testfile.msi"
           $fs = [System.IO.File]::Create($filePath)
-          $fs.SetLength(50MB)
+          $fs.SetLength(15MB)
           $fs.Close()
           Write-Host "Created test artifact: $filePath"
+
+      - name: SignPath installer
+        shell: pwsh
+        run: |
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+
+            if (-not (Get-Module -ListAvailable -Name SignPath)) {
+              Install-Module -Name SignPath -Force -Scope CurrentUser
+              Write-Host "SignPath module installed"
+            }
+
+            Import-Module SignPath -Force
+            Write-Host "SignPath module imported"
+
+            $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
+
+            foreach ($file in $filesToSign) {
+              if (Test-Path $file) {
+                Write-Host "File for signature: $file"
+                $dir = Split-Path $file -Parent
+                $name = Split-Path $file -Leaf
+                $signedPath = Join-Path $dir ("signed_" + $name)
+
+                try {
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                    -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                    -ProjectSlug "wunjo.wladradchenko.ru" `
+                    -SigningPolicySlug "test-signing" `
+                    -OutputArtifactPath $signedPath -WaitForCompletion
+
+                  if (Test-Path $signedPath) {
+                    Remove-Item -Path $file
+                    Rename-Item -Path $signedPath -NewName $name
+                    Write-Host "The file '$file' has been signed and replaced."
+                  } else {
+                    Write-Error "Signing Error! The signed file '$file' was not created."
+                    exit 1
+                  }
+                } catch {
+                  Write-Error "Signing failed for '$file': $_"
+                  exit 1
+                }
+              } else {
+                Write-Error "File '$file' not found!"
+              }
+            }
+          }
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v5
@@ -188,7 +235,7 @@ jobs:
 
           Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
-      - name: SignPath installer
+      - name: SignPath files
         shell: pwsh
         run: |
           if (${{ github.event.inputs.sign-file }} -eq 'true') {
@@ -255,6 +302,53 @@ jobs:
           Write-Host "Created package files:"
           $distFiles | ForEach-Object { Write-Host $_.FullName }
 
+      - name: SignPath installer
+        shell: pwsh
+        run: |
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+
+            if (-not (Get-Module -ListAvailable -Name SignPath)) {
+              Install-Module -Name SignPath -Force -Scope CurrentUser
+              Write-Host "SignPath module installed"
+            }
+
+            Import-Module SignPath -Force
+            Write-Host "SignPath module imported"
+
+            $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
+
+            foreach ($file in $filesToSign) {
+              if (Test-Path $file) {
+                Write-Host "File for signature: $file"
+                $dir = Split-Path $file -Parent
+                $name = Split-Path $file -Leaf
+                $signedPath = Join-Path $dir ("signed_" + $name)
+
+                try {
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                    -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                    -ProjectSlug "wunjo.wladradchenko.ru" `
+                    -SigningPolicySlug "test-signing" `
+                    -OutputArtifactPath $signedPath -WaitForCompletion
+
+                  if (Test-Path $signedPath) {
+                    Remove-Item -Path $file
+                    Rename-Item -Path $signedPath -NewName $name
+                    Write-Host "The file '$file' has been signed and replaced."
+                  } else {
+                    Write-Error "Signing Error! The signed file '$file' was not created."
+                    exit 1
+                  }
+                } catch {
+                  Write-Error "Signing failed for '$file': $_"
+                  exit 1
+                }
+              } else {
+                Write-Error "File '$file' not found!"
+              }
+            }
+          }
+
       - name: Upload Log
         if: failure()
         uses: actions/upload-artifact@v5
@@ -262,29 +356,8 @@ jobs:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
 
-      - name: Check artifact size
-        id: check_size
-        shell: pwsh
-        run: |
-          $artifactPath = "portable/dist"
-          $sizeGB = (Get-ChildItem $artifactPath -Recurse | Measure-Object Length -Sum).Sum / 1GB
-          echo "SizeGB=$sizeGB"
-          if ($sizeGB -gt 1) { echo "size_gt_1gb=true" >> $GITHUB_OUTPUT }
-          else { echo "size_gt_1gb=false" >> $GITHUB_OUTPUT }
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy via SCP
-        if: steps.check_size.outputs.size_gt_1gb == 'false'
-        run: |
-          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
-
       - name: Upload Artifact
-        if: steps.check_size.outputs.size_gt_1gb == 'true'
         uses: actions/upload-artifact@v5
         with:
           name: portable-dist
-          path: portable/dist
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
