@@ -69,40 +69,14 @@ jobs:
           $fs.Close()
           Write-Host "Created test artifact: $filePath"
 
-      - name: Check artifact size
-        id: check_size_test
-        shell: pwsh
-        run: |
-          $artifactPath = "portable/dist"
-          $sizeGB = (Get-ChildItem $artifactPath -Recurse | Measure-Object Length -Sum).Sum / 1GB
-          echo "SizeGB=$sizeGB"
-          if ($sizeGB -gt 1) { 
-            echo "size_gt_1gb=true" >> $GITHUB_ENV
-          }
-          else { 
-            echo "size_gt_1gb=false" >> $GITHUB_ENV
-          }
-
-      - name: Debug size output
-        run: |
-          echo "Size in GB: ${{ env.size_gt_1gb }}"
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via SCP
-        if: ${{ env.size_gt_1gb }} == 'false'
         run: |
           scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
-
-      - name: Upload Artifact
-        if: ${{ env.size_gt_1gb }} == 'true'
-        uses: actions/upload-artifact@v5
-        with:
-          name: portable-dist
-          path: portable/dist
 
       - name: Exit 1
         run: |
