@@ -68,12 +68,18 @@ jobs:
           $fs.SetLength(10MB)
           $fs.Close()
           Write-Host "Created test artifact: $filePath"
+          
+          $filePath = Join-Path $artifactPath "testfile.msi"
+          $fs = [System.IO.File]::Create($filePath)
+          $fs.SetLength(50MB)
+          $fs.Close()
+          Write-Host "Created test artifact: $filePath"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v5
         with:
           name: portable-dist
-          path: portable/dist
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
       - name: Exit 1
         run: |
