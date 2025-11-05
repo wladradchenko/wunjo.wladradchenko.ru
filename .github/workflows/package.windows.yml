@@ -85,8 +85,6 @@ jobs:
 
           Write-Host "Portable folder updated from repo"
           Get-Content "portable/pyproject_$env:PROCESSOR.toml"
-    
-          exit 1
 
       - name: Build electron browser
         working-directory: tools/js/browser
