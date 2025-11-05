@@ -62,7 +62,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug == 'true' }}
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -71,8 +71,8 @@ jobs:
           sparse-checkout: portable
           ref: main
 
-      - name: Move portable folder
-        if: ${{ github.event.inputs.debug == 'true' }}
+      - name: (DEBUG) Move portable folder
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         shell: pwsh
         run: |
           if (Test-Path "portable") {
