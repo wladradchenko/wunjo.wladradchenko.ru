@@ -15,15 +15,21 @@ on:
         description: "Sign the file ('true' or 'false')"
         required: false
         default: 'false'
+      debug:
+        description: "Debug ('true' or 'false')"
+        required: false
+        default: 'false'
 
 env:
   FORCE_COLOR: "1"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   SSH_HOST: ${{ secrets.SSH_HOST }}
   SSH_PORT: ${{ secrets.SSH_PORT || 22 }}
   SSH_USER: ${{ secrets.SSH_USER }}
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
   OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
+  DEBUG: ${{ github.event.inputs.debug || 'false' }}
 
 jobs:
   build-and-deploy:
@@ -55,6 +61,40 @@ jobs:
         run: |
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
+
+      - name: (DEBUG) Update files
+        shell: pwsh
+        run: |
+          if ($env:DEBUG -eq 'true') {
+          
+            if (-not $env:GITHUB_TOKEN) {
+              Write-Error "GITHUB_TOKEN is not set or empty. Cannot clone private repo."
+              exit 1
+            }
+    
+            if (Test-Path "portable") {
+              Remove-Item -Recurse -Force "portable"
+            }
+          
+            git init portable-repo
+            Set-Location portable-repo
+          
+            git remote add origin https://$env:GITHUB_TOKEN@github.com/wladradchenko/pro.wunjo.wladradchenko.ru.git
+            git config core.sparseCheckout true
+          
+            Add-Content .git/info/sparse-checkout "portable/*"
+          
+            git pull origin main
+          
+            Move-Item -Path "portable" -Destination "..\portable" -Force
+
+            Set-Location ..
+            Remove-Item -Recurse -Force "portable-repo"
+    
+            Write-Host "Portable folder updated from repo"
+          
+            exit 0
+          }
 
       - name: Build electron browser
         working-directory: tools/js/browser
