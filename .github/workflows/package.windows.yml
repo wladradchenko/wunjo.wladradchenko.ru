@@ -55,6 +55,20 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Prepare test artifact
+        shell: pwsh
+        run: |
+          $artifactPath = "portable/dist"
+          if (-Not (Test-Path $artifactPath)) {
+            New-Item -ItemType Directory -Path $artifactPath -Force | Out-Null
+          }
+
+          $filePath = Join-Path $artifactPath "testfile.bin"
+          $fs = [System.IO.File]::Create($filePath)
+          $fs.SetLength(10MB)
+          $fs.Close()
+          Write-Host "Created test artifact: $filePath"
+
       - name: Check artifact size
         id: check_size_test
         shell: pwsh
