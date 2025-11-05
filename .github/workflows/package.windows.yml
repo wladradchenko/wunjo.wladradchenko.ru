@@ -68,7 +68,7 @@ jobs:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
           ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
           ssh-strict: true
-          path: portable-repo
+          path: temp/portable-repo
           sparse-checkout: portable
           ref: main
 
@@ -80,11 +80,10 @@ jobs:
               Remove-Item -Recurse -Force "portable"
           }
 
-          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
-          Remove-Item -Recurse -Force "portable-repo"
+          Move-Item -Path "temp/portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "temp"
 
           Write-Host "Portable folder updated from repo"
-          Get-Content "portable/pyproject_$env:PROCESSOR.toml"
 
       - name: Build electron browser
         working-directory: tools/js/browser
