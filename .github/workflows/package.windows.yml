@@ -12,11 +12,11 @@ on:
         required: true
         default: 'msi'
       sign-file:
-        description: "Sign the file ('yes' or 'no')"
+        description: "Sign the file (yes or no)"
         required: false
         default: 'no'
       debug:
-        description: "Debug ('yes' or 'no')"
+        description: "Debug (yes or no)"
         required: false
         default: 'no'
 
