@@ -61,39 +61,31 @@ jobs:
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
-      - name: (DEBUG) Update files
+      - name: (DEBUG) Checkout portable only
+        if: ${{ github.event.inputs.debug == 'true' }}
+        uses: actions/checkout@v4
+        with:
+          repository: wladradchenko/pro.wunjo.wladradchenko.ru
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: portable-repo
+          sparse-checkout: portable
+          ref: main
+
+      - name: Move portable folder
+        if: ${{ github.event.inputs.debug == 'true' }}
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.debug }} -eq 'true') {
-          
-            if (-not $env:GITHUB_TOKEN) {
-              Write-Error "GITHUB_TOKEN is not set or empty. Cannot clone private repo."
-              exit 1
-            }
-    
-            if (Test-Path "portable") {
+          if (Test-Path "portable") {
               Remove-Item -Recurse -Force "portable"
-            }
-          
-            git init portable-repo
-            Set-Location portable-repo
-          
-            git remote add origin https://$env:GITHUB_TOKEN@github.com/wladradchenko/pro.wunjo.wladradchenko.ru.git
-            git config core.sparseCheckout true
-          
-            Add-Content .git/info/sparse-checkout "portable/*"
-          
-            git pull origin main
-          
-            Move-Item -Path "portable" -Destination "..\portable" -Force
-
-            Set-Location ..
-            Remove-Item -Recurse -Force "portable-repo"
-    
-            Write-Host "Portable folder updated from repo"
-          
-            exit 1
           }
+
+          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "portable-repo"
+
+          Write-Host "Portable folder updated from repo"
+          Get-Content "portable/pyproject_gpu.toml"
+    
+          exit 1
 
       - name: Build electron browser
         working-directory: tools/js/browser
