@@ -12,13 +12,13 @@ on:
         required: true
         default: 'msi'
       sign-file:
-        description: "Sign the file (yes or no)"
+        description: "Sign the file (true or false)"
         required: false
-        default: 'no'
+        default: 'false'
       debug:
-        description: "Debug (yes or no)"
+        description: "Debug (true or false)"
         required: false
-        default: 'no'
+        default: 'false'
 
 env:
   FORCE_COLOR: "1"
@@ -29,6 +29,8 @@ env:
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
   OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
+  SIGN_FILE: ${{ github.event.inputs.sign-file || 'false' }}
+  DEBUG: ${{ github.event.inputs.debug || 'false' }}
 
 jobs:
   build-and-deploy:
@@ -78,7 +80,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'yes' -and ${{ github.event.inputs.debug }} -eq 'yes' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if ($env:SIGN_FILE -eq 'true' -and $env:DEBUG -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -139,7 +141,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -150,7 +152,7 @@ jobs:
           ref: main
 
       - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         shell: pwsh
         run: |
           if (Test-Path "portable") {
@@ -238,7 +240,7 @@ jobs:
       - name: SignPath files
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'yes') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -305,7 +307,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'yes' -and ${{ github.event.inputs.debug }} -eq 'yes' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
