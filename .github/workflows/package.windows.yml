@@ -55,6 +55,37 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Check artifact size
+        id: check_size
+        shell: pwsh
+        run: |
+          $artifactPath = "portable/dist"
+          $sizeGB = (Get-ChildItem $artifactPath -Recurse | Measure-Object Length -Sum).Sum / 1GB
+          echo "SizeGB=$sizeGB"
+          if ($sizeGB -gt 1) { echo "size_gt_1gb=true" >> $GITHUB_OUTPUT }
+          else { echo "size_gt_1gb=false" >> $GITHUB_OUTPUT }
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SCP
+        if: steps.check_size.outputs.size_gt_1gb == 'false'
+        run: |
+          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
+
+      - name: Upload Artifact
+        if: steps.check_size.outputs.size_gt_1gb == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: portable-dist
+          path: portable/dist
+
+      - name: Exit 1
+        run: |
+          exit 1
+
       - name: Set WIX_HOME and update PATH
         shell: pwsh
         run: |
@@ -66,7 +97,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
-          ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
+          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
           ssh-strict: true
           path: portable-repo
           sparse-checkout: portable
@@ -232,13 +263,29 @@ jobs:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
 
-      - name: Deploy via scp
-        if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
+      - name: Check artifact size
+        id: check_size
         shell: pwsh
-        working-directory: portable
         run: |
-          mkdir -p ~/.ssh
-          $env:SSH_PRIVATE_KEY | Set-Content -Path ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          $artifactPath = "portable/dist"
+          $sizeGB = (Get-ChildItem $artifactPath -Recurse | Measure-Object Length -Sum).Sum / 1GB
+          echo "SizeGB=$sizeGB"
+          if ($sizeGB -gt 1) { echo "size_gt_1gb=true" >> $GITHUB_OUTPUT }
+          else { echo "size_gt_1gb=false" >> $GITHUB_OUTPUT }
 
-          scp -i ~/.ssh/id_rsa -P $env:SSH_PORT -o StrictHostKeyChecking=no -r dist/* $env:SSH_USER@$env:SSH_HOST:~/
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SCP
+        if: steps.check_size.outputs.size_gt_1gb == 'false'
+        run: |
+          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
+
+      - name: Upload Artifact
+        if: steps.check_size.outputs.size_gt_1gb == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: portable-dist
+          path: portable/dist
