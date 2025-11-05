@@ -56,7 +56,7 @@ jobs:
           python-version: "3.10"
 
       - name: Check artifact size
-        id: check_size
+        id: check_size_test
         shell: pwsh
         run: |
           $artifactPath = "portable/dist"
@@ -71,12 +71,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via SCP
-        if: steps.check_size.outputs.size_gt_1gb == 'false'
+        if: steps.check_size_test.outputs.size_gt_1gb == 'false'
         run: |
           scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
 
       - name: Upload Artifact
-        if: steps.check_size.outputs.size_gt_1gb == 'true'
+        if: steps.check_size_test.outputs.size_gt_1gb == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: portable-dist
