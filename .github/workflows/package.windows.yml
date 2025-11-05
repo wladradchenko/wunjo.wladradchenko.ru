@@ -123,7 +123,7 @@ jobs:
           }
 
       - name: (DEBUG) Checkout portable only
-        if: '${{ github.event.inputs.debug }}' -eq 'true'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -132,6 +132,19 @@ jobs:
           path: portable-repo
           sparse-checkout: portable
           ref: main
+
+      - name: (DEBUG) Move portable folder
+        if: '${{ github.event.inputs.debug }}' -eq 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path "portable") {
+              Remove-Item -Recurse -Force "portable"
+          }
+
+          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "portable-repo"
+
+          Write-Host "Portable folder updated from repo"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v5
@@ -150,7 +163,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: '${{ github.event.inputs.debug }}' -eq 'true'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
