@@ -61,36 +61,12 @@ jobs:
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
-      - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: wladradchenko/pro.wunjo.wladradchenko.ru
-          ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
-          ssh-strict: true
-          path: portable-repo
-          sparse-checkout: portable
-          ref: main
-
-      - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'true'
-        shell: pwsh
-        run: |
-          if (Test-Path "portable") {
-              Remove-Item -Recurse -Force "portable"
-          }
-
-          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
-          Remove-Item -Recurse -Force "portable-repo"
-
-          Write-Host "Portable folder updated from repo"
-
       - name: Build electron browser
         working-directory: tools/js/browser
         shell: pwsh
         run: |
           npm install
-          npx electron-builder --$env:TARGET portable --publish never
+          npx electron-builder --$env:TARGET portable
 
       - name: Copy browser files
         shell: pwsh
@@ -123,6 +99,30 @@ jobs:
           # Display a list of copied files for verification
           Write-Host "Copied files:"
           Get-ChildItem -Path $destDir | Select-Object Name
+
+      - name: (DEBUG) Checkout portable only
+        if: ${{ github.event.inputs.debug }} -eq 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: wladradchenko/pro.wunjo.wladradchenko.ru
+          ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
+          ssh-strict: true
+          path: portable-repo
+          sparse-checkout: portable
+          ref: main
+
+      - name: (DEBUG) Move portable folder
+        if: ${{ github.event.inputs.debug }} -eq 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path "portable") {
+              Remove-Item -Recurse -Force "portable"
+          }
+
+          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "portable-repo"
+
+          Write-Host "Portable folder updated from repo"
 
       - name: Select processor configuration
         working-directory: portable
