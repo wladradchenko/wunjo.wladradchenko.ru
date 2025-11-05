@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload Artifact
         if: steps.check_size_test.outputs.size_gt_1gb == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: portable-dist
           path: portable/dist
@@ -258,7 +258,7 @@ jobs:
 
       - name: Upload Log
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
@@ -285,7 +285,7 @@ jobs:
 
       - name: Upload Artifact
         if: steps.check_size.outputs.size_gt_1gb == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: portable-dist
           path: portable/dist
