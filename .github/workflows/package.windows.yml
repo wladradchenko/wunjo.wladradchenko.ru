@@ -77,15 +77,15 @@ jobs:
           $sizeGB = (Get-ChildItem $artifactPath -Recurse | Measure-Object Length -Sum).Sum / 1GB
           echo "SizeGB=$sizeGB"
           if ($sizeGB -gt 1) { 
-            echo "size_gt_1gb='true'" >> "$GITHUB_OUTPUT"
+            echo "size_gt_1gb=true" >> $GITHUB_ENV
           }
           else { 
-            echo "size_gt_1gb='false'" >> "$GITHUB_OUTPUT"
+            echo "size_gt_1gb=false" >> $GITHUB_ENV
           }
 
       - name: Debug size output
         run: |
-          echo "Size in GB: ${{ steps.check_size_test.outputs.size_gt }}"
+          echo "Size in GB: ${{ env.size_gt_1gb }}"
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.1
@@ -93,12 +93,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via SCP
-        if: steps.check_size_test.outputs.size_gt_1gb == 'false'
+        if: ${{ env.size_gt_1gb }} == 'false'
         run: |
           scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
 
       - name: Upload Artifact
-        if: steps.check_size_test.outputs.size_gt_1gb == 'true'
+        if: ${{ env.size_gt_1gb }} == 'true'
         uses: actions/upload-artifact@v5
         with:
           name: portable-dist
