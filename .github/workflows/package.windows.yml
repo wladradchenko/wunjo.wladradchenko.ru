@@ -79,18 +79,22 @@ jobs:
           if ($sizeGB -gt 1) { echo "size_gt_1gb=true" >> $GITHUB_OUTPUT }
           else { echo "size_gt_1gb=false" >> $GITHUB_OUTPUT }
 
+      - name: Debug size output
+        run: |
+          echo "Size in GB: ${{ steps.check_size_test.outputs.size_gt_1gb }}"
+
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via SCP
-        if: steps.check_size_test.outputs.size_gt_1gb -eq 'false'
+        if: steps.check_size_test.outputs.size_gt_1gb == 'false'
         run: |
           scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
 
       - name: Upload Artifact
-        if: steps.check_size_test.outputs.size_gt_1gb -eq 'true'
+        if: steps.check_size_test.outputs.size_gt_1gb == 'true'
         uses: actions/upload-artifact@v5
         with:
           name: portable-dist
