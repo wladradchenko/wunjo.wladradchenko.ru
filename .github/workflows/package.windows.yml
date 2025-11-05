@@ -142,7 +142,6 @@ jobs:
             Import-Module SignPath -Force
             Write-Host "SignPath module imported"
         
-            # Указываем файлы для подписи
             $filesToSign = @(
               "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
               "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
@@ -156,14 +155,14 @@ jobs:
             foreach ($file in $filesToSign) {
               if (Test-Path $file) {
                 Write-Host "File for signature: $file"
-                $signedPath = "$($file.DirectoryName)\signed_$($file.Name)"
+                $signedPath = Join-Path $file.DirectoryName ("signed_" + $file.Name)
         
                 try {
                   Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
-                    -OutputArtifactPath "$signedPath" -WaitForCompletion
+                    -OutputArtifactPath $signedPath -WaitForCompletion
         
                   if (Test-Path $signedPath) {
                     Remove-Item -Path $file
