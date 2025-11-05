@@ -76,7 +76,8 @@ jobs:
 
       - name: Deploy via SCP
         run: |
-          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r portable/dist/* $env:SSH_USER@$env:SSH_HOST:~/
+          $artifactPath = "portable\\dist\\*"
+          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r $artifactPath $env:SSH_USER@$env:SSH_HOST:~/
 
       - name: Exit 1
         run: |
