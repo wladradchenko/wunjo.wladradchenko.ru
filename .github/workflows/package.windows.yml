@@ -129,7 +129,7 @@ jobs:
           path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
       - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug == 'yes' }}
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -140,7 +140,7 @@ jobs:
           ref: main
 
       - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug == 'yes' }}
         shell: pwsh
         run: |
           if (Test-Path "portable") {
@@ -163,7 +163,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug == 'yes' }}
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -174,7 +174,7 @@ jobs:
           ref: main
 
       - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'yes'
+        if: ${{ github.event.inputs.debug == 'yes' }}
         shell: pwsh
         run: |
           if (Test-Path "portable") {
