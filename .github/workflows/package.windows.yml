@@ -83,7 +83,7 @@ jobs:
           Remove-Item -Recurse -Force "portable-repo"
 
           Write-Host "Portable folder updated from repo"
-          Get-Content "portable/pyproject_gpu.toml"
+          Get-Content "portable/pyproject_$env:PROCESSOR.toml"
     
           exit 1
 
