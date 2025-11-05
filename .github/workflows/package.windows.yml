@@ -69,15 +69,11 @@ jobs:
           $fs.Close()
           Write-Host "Created test artifact: $filePath"
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.1
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v5
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy via SCP
-        run: |
-          $artifactPath = "portable\\dist\\*"
-          scp -P $env:SSH_PORT -o StrictHostKeyChecking=no -r $artifactPath $env:SSH_USER@$env:SSH_HOST:~/
+          name: portable-dist
+          path: portable/dist
 
       - name: Exit 1
         run: |
