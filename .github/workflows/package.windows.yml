@@ -79,10 +79,6 @@ jobs:
           if ($sizeGB -gt 1) { echo "size_gt_1gb=true" >> $GITHUB_OUTPUT }
           else { echo "size_gt_1gb=false" >> $GITHUB_OUTPUT }
 
-      - name: Debug size output
-        run: |
-          echo "Size in GB: ${{ steps.check_size_test.outputs.size_gt_1gb }}"
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.1
         with:
