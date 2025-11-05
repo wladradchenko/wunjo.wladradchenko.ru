@@ -29,8 +29,6 @@ env:
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
   OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
-  SIGN_FILE: ${{ github.event.inputs.sign-file || 'false' }}
-  DEBUG: ${{ github.event.inputs.debug || 'false' }}
 
 jobs:
   build-and-deploy:
@@ -57,6 +55,83 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Prepare test artifact
+        shell: pwsh
+        run: |
+          $artifactPath = "portable/dist"
+          if (-Not (Test-Path $artifactPath)) {
+          New-Item -ItemType Directory -Path $artifactPath -Force | Out-Null
+          }
+          
+          $filePath = Join-Path $artifactPath "testfile.bin"
+          $fs = [System.IO.File]::Create($filePath)
+          $fs.SetLength(10MB)
+          $fs.Close()
+          Write-Host "Created test artifact: $filePath"
+          
+          $filePath = Join-Path $artifactPath "testfile.msi"
+          $fs = [System.IO.File]::Create($filePath)
+          $fs.SetLength(5MB)
+          $fs.Close()
+          Write-Host "Created test artifact: $filePath"
+
+      - name: SignPath installer
+        shell: pwsh
+        run: |
+          if ('${{ github.event.inputs.sign-file }}' -eq 'true' -and '${{ github.event.inputs.debug }}' -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+
+            if (-not (Get-Module -ListAvailable -Name SignPath)) {
+              Install-Module -Name SignPath -Force -Scope CurrentUser
+              Write-Host "SignPath module installed"
+            }
+
+            Import-Module SignPath -Force
+            Write-Host "SignPath module imported"
+
+            $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
+
+            foreach ($file in $filesToSign) {
+              if (Test-Path $file) {
+                Write-Host "File for signature: $file"
+                $dir = Split-Path $file -Parent
+                $name = Split-Path $file -Leaf
+                $signedPath = Join-Path $dir ("signed_" + $name)
+
+                try {
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                    -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                    -ProjectSlug "wunjo.wladradchenko.ru" `
+                    -SigningPolicySlug "test-signing" `
+                    -OutputArtifactPath $signedPath -WaitForCompletion
+
+                  if (Test-Path $signedPath) {
+                    Remove-Item -Path $file
+                    Rename-Item -Path $signedPath -NewName $name
+                    Write-Host "The file '$file' has been signed and replaced."
+                  } else {
+                    Write-Error "Signing Error! The signed file '$file' was not created."
+                    exit 1
+                  }
+                } catch {
+                  Write-Error "Signing failed for '$file': $_"
+                  exit 1
+                }
+              } else {
+                Write-Error "File '$file' not found!"
+              }
+            }
+          }
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: portable-dist
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
+
+      - name: Exit 1
+        run: |
+          exit 1
+
       - name: Set WIX_HOME and update PATH
         shell: pwsh
         run: |
@@ -64,7 +139,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: $env:DEBUG -eq 'true'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -75,7 +150,7 @@ jobs:
           ref: main
 
       - name: (DEBUG) Move portable folder
-        if: $env:DEBUG -eq 'true'
+        if: ${{ github.event.inputs.debug }} -eq 'true'
         shell: pwsh
         run: |
           if (Test-Path "portable") {
@@ -163,7 +238,7 @@ jobs:
       - name: SignPath files
         shell: pwsh
         run: |
-          if ($env:SIGN_FILE -eq 'true') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -230,7 +305,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if ($env:SIGN_FILE -eq 'true' -and $env:DEBUG -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
