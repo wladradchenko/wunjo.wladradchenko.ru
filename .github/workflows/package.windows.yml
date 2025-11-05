@@ -49,6 +49,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -67,6 +69,30 @@ jobs:
         run: |
           npm install
           npx electron-builder --$env:TARGET portable
+
+      - name: (DEBUG) Checkout portable only
+        if: ${{ github.event.inputs.debug }} -eq 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: wladradchenko/pro.wunjo.wladradchenko.ru
+          ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
+          ssh-strict: true
+          path: portable-repo
+          sparse-checkout: portable
+          ref: main
+
+      - name: (DEBUG) Move portable folder
+        if: ${{ github.event.inputs.debug }} -eq 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path "portable") {
+              Remove-Item -Recurse -Force "portable"
+          }
+
+          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "portable-repo"
+
+          Write-Host "Portable folder updated from repo"
 
       - name: Copy browser files
         shell: pwsh
@@ -99,30 +125,6 @@ jobs:
           # Display a list of copied files for verification
           Write-Host "Copied files:"
           Get-ChildItem -Path $destDir | Select-Object Name
-
-      - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: wladradchenko/pro.wunjo.wladradchenko.ru
-          ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
-          ssh-strict: true
-          path: portable-repo
-          sparse-checkout: portable
-          ref: main
-
-      - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'true'
-        shell: pwsh
-        run: |
-          if (Test-Path "portable") {
-              Remove-Item -Recurse -Force "portable"
-          }
-
-          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
-          Remove-Item -Recurse -Force "portable-repo"
-
-          Write-Host "Portable folder updated from repo"
 
       - name: Select processor configuration
         working-directory: portable
