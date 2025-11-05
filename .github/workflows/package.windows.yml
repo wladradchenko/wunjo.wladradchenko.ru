@@ -141,7 +141,7 @@ jobs:
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
       - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug }} -eq 'true'
+        if: $env:DEBUG -eq 'true'
         uses: actions/checkout@v4
         with:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
@@ -152,7 +152,7 @@ jobs:
           ref: main
 
       - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug }} -eq 'true'
+        if: $env:DEBUG -eq 'true'
         shell: pwsh
         run: |
           if (Test-Path "portable") {
@@ -240,7 +240,7 @@ jobs:
       - name: SignPath files
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'true') {
+          if ($env:SIGN_FILE -eq 'true') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -307,7 +307,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if ($env:SIGN_FILE -eq 'true' -and $env:DEBUG -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
