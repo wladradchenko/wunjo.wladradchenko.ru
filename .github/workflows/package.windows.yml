@@ -61,6 +61,16 @@ jobs:
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
+      - name: (DEBUG) Backup .git folder
+        if: ${{ github.event.inputs.debug }} -eq 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path ".git") {
+            New-Item -ItemType Directory -Force -Path "temp" | Out-Null
+            Move-Item -Path ".git" -Destination "temp/.git_backup" -Force
+            Write-Host ".git moved to temp/.git_backup"
+          }
+
       - name: (DEBUG) Checkout portable only
         if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
@@ -68,7 +78,7 @@ jobs:
           repository: wladradchenko/pro.wunjo.wladradchenko.ru
           ssh-key: ${{ secrets.SSG_DEPLOY_KEY }}
           ssh-strict: true
-          path: temp/portable-repo
+          path: portable-repo
           sparse-checkout: portable
           ref: main
 
@@ -80,7 +90,13 @@ jobs:
               Remove-Item -Recurse -Force "portable"
           }
 
-          Move-Item -Path "temp/portable-repo/portable" -Destination "portable" -Force
+          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
+          Remove-Item -Recurse -Force "portable-repo"
+          
+          if (Test-Path "temp/.git_backup") {
+            Move-Item -Path "temp/.git_backup" -Destination ".git" -Force
+            Write-Host "Restored original .git directory"
+          }
           Remove-Item -Recurse -Force "temp"
 
           Write-Host "Portable folder updated from repo"
@@ -209,7 +225,6 @@ jobs:
                 }
               } else {
                 Write-Error "File '$file' not found!"
-                exit 1
               }
             }
           }
