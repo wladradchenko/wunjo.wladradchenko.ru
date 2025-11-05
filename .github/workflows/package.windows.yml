@@ -78,7 +78,7 @@ jobs:
         run: |
           if (Test-Path "portable") {
               Remove-Item -Recurse -Force "portable"
-          }
+          } 
 
           Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
           Remove-Item -Recurse -Force "portable-repo"
