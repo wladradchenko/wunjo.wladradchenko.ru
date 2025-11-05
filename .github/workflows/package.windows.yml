@@ -12,11 +12,11 @@ on:
         required: true
         default: 'msi'
       sign-file:
-        description: "Sign the file (true or false)"
+        description: "Sign the file ('true' or 'false')"
         required: false
         default: 'false'
       debug:
-        description: "Debug (true or false)"
+        description: "Debug ('true' or 'false')"
         required: false
         default: 'false'
 
@@ -78,7 +78,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if ('${{ github.event.inputs.sign-file }}' -eq 'true' -and '${{ github.event.inputs.debug }}' -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -122,6 +122,12 @@ jobs:
             }
           }
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: portable-dist
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
+
       - name: (DEBUG) Checkout portable only
         if: ${{ github.event.inputs.debug }} -eq 'true'
         uses: actions/checkout@v4
@@ -145,12 +151,6 @@ jobs:
           Remove-Item -Recurse -Force "portable-repo"
 
           Write-Host "Portable folder updated from repo"
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: portable-dist
-          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
       - name: Exit 1
         run: |
@@ -262,7 +262,7 @@ jobs:
       - name: SignPath files
         shell: pwsh
         run: |
-          if ('${{ github.event.inputs.sign-file }}' -eq 'true') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
@@ -329,7 +329,7 @@ jobs:
       - name: SignPath installer
         shell: pwsh
         run: |
-          if ('${{ github.event.inputs.sign-file }}' -eq 'true' -and '${{ github.event.inputs.debug }}' -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
+          if (${{ github.event.inputs.sign-file }} -eq 'true' -and ${{ github.event.inputs.debug }} -eq 'true' -and $env:OUTPUT_FORMAT -eq 'msi') {
 
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
               Install-Module -Name SignPath -Force -Scope CurrentUser
