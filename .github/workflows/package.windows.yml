@@ -29,7 +29,6 @@ env:
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
   OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
-  DEBUG: ${{ github.event.inputs.debug || 'false' }}
 
 jobs:
   build-and-deploy:
@@ -65,7 +64,7 @@ jobs:
       - name: (DEBUG) Update files
         shell: pwsh
         run: |
-          if ($env:DEBUG -eq 'true') {
+          if (${{ github.event.inputs.debug }} -eq 'true') {
           
             if (-not $env:GITHUB_TOKEN) {
               Write-Error "GITHUB_TOKEN is not set or empty. Cannot clone private repo."
