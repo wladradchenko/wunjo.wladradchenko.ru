@@ -39,5 +39,9 @@
     "electron-log": "^5.1.5",
     "electron-updater": "^6.3.9",
     "node-notifier": "^10.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wladradchenko/wunjo.wladradchenko.ru.git"
   }
 }

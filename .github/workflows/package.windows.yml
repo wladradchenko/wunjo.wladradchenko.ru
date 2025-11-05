@@ -49,8 +49,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -62,13 +60,6 @@ jobs:
         run: |
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
-
-      - name: Build electron browser
-        working-directory: tools/js/browser
-        shell: pwsh
-        run: |
-          npm install
-          npx electron-builder --$env:TARGET portable
 
       - name: (DEBUG) Checkout portable only
         if: ${{ github.event.inputs.debug }} -eq 'true'
@@ -93,6 +84,13 @@ jobs:
           Remove-Item -Recurse -Force "portable-repo"
 
           Write-Host "Portable folder updated from repo"
+
+      - name: Build electron browser
+        working-directory: tools/js/browser
+        shell: pwsh
+        run: |
+          npm install
+          npx electron-builder --$env:TARGET portable
 
       - name: Copy browser files
         shell: pwsh
