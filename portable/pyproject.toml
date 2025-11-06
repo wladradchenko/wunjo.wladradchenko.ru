@@ -50,7 +50,7 @@ requires = [
     "Unidecode",
     "inflect",
     "librosa==0.9.2",
-    "flaskwebgui",
+    "flaskwebgui==1.1.6",
     "waitress",
     "opencv-python",
     "Pillow",
@@ -103,10 +103,10 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "xformers==0.0.19",
-    "transformers",
+    "transformers==4.56.1",
     "open_clip_torch",
     "torchmetrics==1.2.0",
-    "diffusers",
+    "diffusers==0.35.1",
     "accelerate"
 ]
 sources = [

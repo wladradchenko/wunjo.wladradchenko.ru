@@ -183,6 +183,10 @@ jobs:
         
             foreach ($file in $filesToSign) {
               if (Test-Path $file) {
+                $fileInfo = Get-Item $file
+                $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
+                Write-Host "File for signature: $file (Size: $sizeMB MB)"
+          
                 Write-Host "File for signature: $file"
                 $dir = Split-Path $file -Parent
                 $name = Split-Path $file -Leaf
@@ -242,6 +246,10 @@ jobs:
 
             foreach ($file in $filesToSign) {
               if (Test-Path $file) {
+                $fileInfo = Get-Item $file
+                $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
+                Write-Host "File for signature: $file (Size: $sizeMB MB)"
+                                          
                 Write-Host "File for signature: $file"
                 $dir = Split-Path $file -Parent
                 $name = Split-Path $file -Leaf
