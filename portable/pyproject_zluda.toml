@@ -104,9 +104,9 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "xformers==0.0.19",
-    "transformers==4.56.1",
+    "transformers==4.42.3",
     "open_clip_torch",
-    "diffusers==0.35.1",
+    "diffusers==0.29.2",
     "accelerate",
     "soxr"
 ]
@@ -155,9 +155,9 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "https://download.pytorch.org/whl/rocm6.1/xformers-0.0.28-cp310-cp310-manylinux_2_28_x86_64.whl",
-    "transformers==4.56.1",
+    "transformers==4.42.3",
     "open_clip_torch",
-    "diffusers==0.35.1",
+    "diffusers==0.29.2",
     "accelerate",
     "soxr"
 ]

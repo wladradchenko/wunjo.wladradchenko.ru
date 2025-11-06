@@ -103,10 +103,10 @@ requires = [
     "pytorch_lightning",
     "omegaconf",
     "xformers==0.0.19",
-    "transformers==4.56.1",
+    "transformers==4.42.3",
     "open_clip_torch",
     "torchmetrics==1.2.0",
-    "diffusers==0.35.1",
+    "diffusers==0.29.2",
     "accelerate"
 ]
 sources = [
