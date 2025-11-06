@@ -195,6 +195,7 @@ jobs:
                 try {
                   Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                    -ArtifactConfigurationSlug "initial" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
                     -OutputArtifactPath $signedPath -WaitForCompletion
@@ -258,6 +259,7 @@ jobs:
                 try {
                   Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
+                    -ArtifactConfigurationSlug "initial_msi" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
                     -OutputArtifactPath $signedPath -WaitForCompletion
