@@ -107,7 +107,8 @@ requires = [
     "transformers==4.56.1",
     "open_clip_torch",
     "diffusers==0.35.1",
-    "accelerate"
+    "accelerate",
+    "soxr"
 ]
 sources = [
     "../venv/lib/python3.10/site-packages/insightface",
@@ -157,7 +158,8 @@ requires = [
     "transformers==4.56.1",
     "open_clip_torch",
     "diffusers==0.35.1",
-    "accelerate"
+    "accelerate",
+    "soxr"
 ]
 sources = [
     "../venv/Lib/site-packages/insightface",

@@ -48,3 +48,4 @@ cryptography
 transformers==4.56.1
 diffusers==0.35.1
 accelerate
+soxr
