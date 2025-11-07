@@ -37,9 +37,11 @@
 <!-- WUNJO V2 -->
 ## 🌟 Goal: 4,096 Stars on GitHub! 🌟
 
-Once we reach this milestone, Wunjo CE's open-source code of v2.0.8 will update with the latest version changes!
+Once we reach this milestone, Wunjo CE's open-source code of v2.0.8 will update with the latest version changes! 
 
 Wunjo Pro is now easier and more powerful than ever! 
+
+**Available languages:** English, Spanish, Chinese, Korean, Russian.
 
 ### How You Can Help:
 - 🌟 **Star the project on GitHub** to help make Wunjo Pro open-source!  
