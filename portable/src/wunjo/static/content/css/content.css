@@ -10,10 +10,11 @@
     margin: 10px;
     /* overflow: hidden; */
     border-radius: 10px;
+    background: #353535a1;
 }
 .folder:hover,.file:hover {
     --tw-bg-opacity: 0.0;
-    background-color: rgb(200 237 210/var(--tw-bg-opacity));
+    background: #3535355c;
 }
 
 .item-selected, .item-selected:hover{
@@ -120,7 +121,7 @@
 }
 p.file-name, p.folder-name {
     margin: 5px 0 0 0;
-    text-align: center;
+    text-align: start;
 
     white-space: nowrap;
     width: 70px;
@@ -139,7 +140,7 @@ p.file-datetime, p.folder-datetime {
     width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #a5a5a5;
+    color: #e1e1e1;
 }
 
 /* Style the audio player */

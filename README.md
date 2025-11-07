@@ -37,22 +37,7 @@
 <!-- WUNJO V2 -->
 ## 🌟 Goal: 4,096 Stars on GitHub! 🌟
 
-Once we reach this milestone, Wunjo CE's open-source code of v2.0.3 will update with the latest version changes!
-
-### What's New in Wunjo 2.0.4 & 2.0.5  🎉
-- **Animate Portrait Mode & Retarget Portrait**: Copy head movements and facial expressions from any video or image to your content.
-- **Manual Control & Quick Templates**: Add blinks, head turns, and emotions for more realistic animations.
-- **Offline & Portable**: Works without an internet connection and is available as a portable version.
-- **Smart Search & Quick Tips**: Find exactly what you need faster!
-- **Free**: Wunjo in wunjo.online is now free, with some Pro functionality available through partial payment.
-- **Loading**: You always know what is happening and how much time is left until the task is completed.
-
-### Wunjo 2.0.6 & 2.0.7
-- **Highlights Video**: One of the coolest new features is the neural network that can automatically review long videos and create a shorter version with the best moments! It’ll even answer questions about the video—like what music fits, or what the video is about. Basically, it can help with anything you need related to the content.
-- **API for Developers**: Integrate Wunjo into your projects.
-- **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
-- **Zoom**: Zoom into images to better control changes.
-- **Identity-Preserving Generation**: Generate images and videos from multiple images, integrated into the prompt
+Once we reach this milestone, Wunjo CE's open-source code of v2.0.8 will update with the latest version changes!
 
 Wunjo Pro is now easier and more powerful than ever! 
 
@@ -61,13 +46,13 @@ Wunjo Pro is now easier and more powerful than ever!
 - 📣 **Spread the word**: Share Wunjo with your friends and invite them to support the project on GitHub!
 - 🎥 **Video Reviews on YouTube**: Leave a video review of Wunjo with an open-source mention on GitHub, share the video link with support@wunjo.online, and I'll give you **free access to the latest version's full functionality for a year**!
 
-## Big update Wunjo CE v2.0.3
+## Big update Wunjo CE v2.0.8
 
-### Video generation here!
+### Smart Crop and Cut for Video!
 
-<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement and stars drives me to enhance features. And now <b>video generation</b> from text or image in CE with difference aspect ratio before 4 seconds with 24 FPS (or more duration with low FPS).
+<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement and stars drives me to enhance features. And now <b>video edit</b> with text and smart cropping for any format where neural network select the most interest frame, allowing you to easily transform vertical videos into horizontal ones and vice versa. Smart crop is only available in the Pro version.
 
-Also text to image, inpaint and outpaint image for video generation. <b>Control restyling?</b> Now you can change objects, gender and nationality of a person not just in one click, but also control the process in advance. And you only need 8 GB VRAM for this. (You can use any Stable Diffusion model v1.5, see GitHub Wiki)
+Also available API now in CE version. 
 
 ### Available now
 
@@ -99,7 +84,7 @@ Also text to image, inpaint and outpaint image for video generation. <b>Control 
 <!-- ABOUT THE PROJECT -->
 ## About
 
-Wunjo harnesses the power of neural networks to provide cutting-edge solutions in speech synthesis, voice cloning, content restyling, and deepfake animations. Official website <a href="https://wunjo.online">wunjo.online</a>.
+Wunjo harnesses the power of advanced neural networks to transform video, image, and audio content in unprecedented ways. It allows you to seamlessly replace faces, control facial motion, and enhance lip-sync animation, while also generating videos from text, photos, or multiple images. Intelligent video editing automates cropping to any aspect ratio, selects the most interesting moments, and enables text-based montage. Wunjo can remove objects, improve video quality, restyle images and videos, clone speech, and even separate music from spoken words, giving you full creative control over every element of your media. Official website <a href="https://wunjo.online">wunjo.online</a>.
 
 <div align="center">
   <table>
@@ -233,6 +218,31 @@ More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.
 - [x] Added control restyling (This work with 8 GB VRAM).
 - [x] Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image.
 - [x] Improved quality of restyling.
+
+</details>
+
+<details>
+
+<summary>Update 2.0.4 & 2.0.5</summary>
+
+- [x] **Animate Portrait Mode & Retarget Portrait** (Pro): Copy head movements and facial expressions from any video or image to your content.
+- [x] **Manual Control & Quick Templates**: Add blinks, head turns, and emotions for more realistic animations.
+- [x] **Offline & Portable**: Works without an internet connection and is available as a portable version.
+- [x] **Smart Search & Quick Tips**: Find exactly what you need faster!
+- [x] **Free**: Wunjo in wunjo.online is now free, with some Pro functionality available through partial payment.
+- [x] **Loading**: You always know what is happening and how much time is left until the task is completed.
+
+</details>
+
+<details>
+
+<summary>Update 2.0.6 & 2.0.7</summary>
+
+- [x] **Highlights Video**: One of the coolest new features is the neural network that can automatically review long videos and create a shorter version with the best moments! It’ll even answer questions about the video—like what music fits, or what the video is about. Basically, it can help with anything you need related to the content.
+- [x] **API for Developers**: Integrate Wunjo into your projects.
+- [x] **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
+- [x] **Zoom**: Zoom into images to better control changes.
+- [x] **Identity-Preserving Generation**: Generate images and videos from multiple images, integrated into the prompt
 
 </details>
 

@@ -1,16 +1,15 @@
 {% extends 'app.html' %}
-{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Wunjo{% endblock %}
 
-{% block nav %}Face swap{% endblock %}
+{% block nav %}{{ _('Face swap') }}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
-<!--crop-->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/cropper.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/cropper.css') }}">
-<script type="text/javascript" src="/static/basic/js/cropper.min.js"></script>
+<!-- onnxruntime-web -->
+<script src="{{ url_for('static', filename='modules/js/ort/ort.min.js') }}" ></script>
+<!--mnet-->
+<script src="{{ url_for('static', filename='modules/js/mnet/init.min.js') }}" type="module"></script>
 {% endblock %}
 
 {% block menubar %}
@@ -19,10 +18,10 @@
 {% block sections %}
 <!--In order to see menu like freeze add in class sticky else remove sticky-->
 <div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
-    <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+    <div data-tour="module" data-position="bottom" data-title="{{ _('Calendar') }}" data-intro="{{ _('You can select specific dates or date ranges to filter the content you have previously created.') }}" data-step="2" class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
         <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
-        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">Today</div>
-        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 p-2 text-center"><i class="fa-regular fa-calendar"></i></button>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">{{ _('Today') }}</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 text-center"><i class="fa-regular fa-calendar"></i></button>
     </div>
 </div>
 
@@ -34,19 +33,19 @@
                 <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                 </button>
-                <h2 class="text-accent-primary font-rubic-ex-ultra text-heading-3-mobile md:text-heading-3 uppercase">Suggest</h2>
+                <h2 class="text-accent-primary font-rubic-ex-ultra text-heading-3-mobile md:text-heading-3 uppercase">{{ _('Suggest') }}</h2>
                 <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
-                    <span><strong>Lip sync:</strong> Ready to give those lips some life? After swapping faces, it's time to sync those pouts with the audio. Lip animation should always follow the face swap for maximum lip-syncing magic. Get ready to make those lips sing—right <a class="underline text-accent-primary" href="/lip-sync?attachment=">here</a>.</span>
+                    <span><strong>{{ _('Lip sync') }}:</strong> {{ _('Ready to give those lips some life? After swapping faces, it’s time to sync those pouts with the audio. Lip animation should always follow the face swap for maximum lip-syncing magic. Get ready to make those lips sing—right') }} <a class="underline text-accent-primary" href="/lip-sync?attachment=">{{ _('here') }}</a>.</span>
                 </p>
                 <div class="flex gap-5 items-center">
                     <span class="flex-1 h-px bg-light-border"></span>
-                    <p class="text-s-mobile md:text-s">or</p>
+                    <p class="text-s-mobile md:text-s">{{ _('or') }}</p>
                     <span class="flex-1 h-px bg-light-border"></span>
                 </div>
                 <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
-                    <span><strong>Enhancement:</strong> Got a few facial quirks to iron out? No worries! If there are any imperfections, you've got the tools to smooth them out.  Remember, a big gap in resolution between avatar face and target content can throw off the vibe. For optimal outcomes, ensure consistency in resolution, or utilize the facial enhancement tools available in this <a class="underline text-accent-primary" href="/enhancement?attachment=">module</a>.</span>
+                    <span><strong>{{ _('Enhancement') }}:</strong> {{ _('Got a few facial quirks to iron out? No worries! If there are any imperfections, you’ve got the tools to smooth them out.  Remember, a big gap in resolution between avatar face and target content can throw off the vibe. For optimal outcomes, ensure consistency in resolution, or utilize the facial enhancement tools available in this') }} <a class="underline text-accent-primary" href="/enhancement?attachment=">{{ _('module') }}</a>.</span>
                 </p>
             </div>
         </div>
@@ -54,7 +53,7 @@
 </template>
 <!--MODAL VIEW-->
 
-<div class="view-filter"></div>
+<div data-tour="module" data-position="bottom-right" data-title="{{ _('Filter') }}" data-intro="{{ _('You can display specific types of content such as images, videos, audio, groups of images, or all content together.') }}" data-step="2" class="view-filter"></div>
 
 <div class="flex flex-col gap-10 pt-10">
     <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
@@ -75,6 +74,7 @@
     const pageFileFormats = ["video", "image"];
     let userFileFormats = pageFileFormats;
     const moduleName = {{ folder_name|tojson|safe }};
+    const modelMNET = `{{ url_for('static', filename='modules/models/mnet/mnet.25_v2.simplify.onnx') }}`;
     const analysisModuleName = {{ analysis_method|tojson|safe }};
     const maxDurationToShow = {{ max_duration_sec|tojson|safe }};
     // Set the maximum file size to read (in bytes)
@@ -84,15 +84,29 @@
     function initScript() {
         // Import and initialize the content script here
         const scriptView = document.createElement('script');
-        scriptView.src = "/static/content/js/view.min.js";
+        scriptView.src = "{{ url_for('static', filename='content/js/view.min.js') }}";
         document.body.appendChild(scriptView);
         document.querySelector('.view-filter').appendChild(createViewFilter());
 
         const scriptFaceSwap = document.createElement('script');
-        scriptFaceSwap.src = "/static/modules/js/face.swap.min.js";
+        scriptFaceSwap.src = "{{ url_for('static', filename='modules/js/face.swap.min.js') }}";
         document.body.appendChild(scriptFaceSwap);
 
         getModuleTaskEventWithIntervalImmediately();
+
+        // Tour for new users
+        const tour = {{ tour|tojson|safe }};
+        if (tour === true) {
+            setTimeout(() => {
+                const footer = document.querySelector('footer');
+                footer.setAttribute("data-tour", "module");
+                footer.setAttribute("data-position", "bottom-right");
+                footer.setAttribute("data-title", `{{ _('Upload file') }}`);
+                footer.setAttribute("data-step", "1");
+                footer.setAttribute("data-intro", `{{ _('Drag and drop a file or select one. You can upload either a video or an image. For instructions on how to use the Face Swap module, check out this') }} <a target="_blank" rel="noopener noreferrer" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background" href="https://youtu.be/-MGow5zCZUQ?feature=shared&t=173">{{ _('tutorial') }}</a>.<br><br><text class="text-accent-primary">{{ _('Briefly') }}:</text> {{ _('All red blocks should turn green, and then press the') }} <button class="p-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background"><svg class="paper" width="14px" height="14px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M231.626,128a16.015,16.015,0,0,1-8.18262,13.96094L54.53027,236.55273a15.87654,15.87654,0,0,1-18.14648-1.74023,15.87132,15.87132,0,0,1-4.74024-17.60156L60.64746,136H136a8,8,0,0,0,0-16H60.64746L31.64355,38.78906A16.00042,16.00042,0,0,1,54.5293,19.44727l168.915,94.59179A16.01613,16.01613,0,0,1,231.626,128Z"></path></svg></button>.`);
+                startDataTour('module', true);
+            }, 100);
+        };
     }
 </script>
 {% endblock %}

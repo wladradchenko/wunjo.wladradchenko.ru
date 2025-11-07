@@ -1,0 +1,1487 @@
+# JS Code
+msgid "Processing"
+msgstr ""
+
+msgid "Check Warning"
+msgstr ""
+
+msgid "View Error"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Ready to manually retargeting face? Feel like a real puppeteer. Let’s go!"
+msgstr ""
+
+# index.js
+msgid "video"
+msgstr ""
+
+msgid "image"
+msgstr ""
+
+msgid "audio"
+msgstr ""
+
+msgid "text"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Bring your portraits to life<br> with update a spark of emotion to any"
+msgstr ""
+
+msgid "content"
+msgstr ""
+
+msgid "Learn how to seamlessly perform<br> a face swap using just one photo"
+msgstr ""
+
+msgid "Learn how to seamlessly <br> animate mouth movements using audio"
+msgstr ""
+
+msgid "Upgrade"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "and even give faces a digital makeover."
+msgstr ""
+
+msgid "low-res content"
+msgstr ""
+
+msgid "secrets"
+msgstr ""
+
+msgid "Unlock <br> object removal"
+msgstr ""
+
+msgid "and <br> get chroma key."
+msgstr ""
+
+msgid "removal"
+msgstr ""
+
+msgid "Master background"
+msgstr ""
+
+msgid "from text or images. <br>No more effort for beautiful content."
+msgstr ""
+
+msgid "video life"
+msgstr ""
+
+msgid "Bring your content to"
+msgstr ""
+
+msgid "Discover how to change full <br> content or object inside by text prompts in"
+msgstr ""
+
+msgid "Learn how to seamlessly perform<br> clone voice of your neighbors in"
+msgstr ""
+
+msgid "Separate"
+msgstr ""
+
+msgid "vocals from background <br> music effortlessly."
+msgstr ""
+
+msgid "Manipulate and animate faces with ease. Move the head, add emotions, or create blinks — manually or automatically. Ideal for bringing static photos to life!"
+msgstr ""
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr ""
+
+msgid "Replace faces in specific time intervals with precision. If inconsistencies appear, try replacing all faces for improved quality."
+msgstr ""
+
+msgid "Add realism to swapped faces by reintroducing natural blinks manually."
+msgstr ""
+
+msgid "Improve the quality of the swapped face for a seamless result. Experiment by alternating between Enhancement and Live Portrait for better outcomes."
+msgstr ""
+
+msgid "For better video, use the «silence» mode in manually retargeting live portrait to pre-process the mouth to a closed state before applying lip sync."
+msgstr ""
+
+msgid "Animate lips in photos and videos with realistic movements. Remove double chins if needed for a refined look (note: this may take extra time)."
+msgstr ""
+
+msgid "Further enhance the face’s quality for sharper and clearer animations."
+msgstr ""
+
+msgid "Refine face or content quality, eliminating blurry areas for a sharper overall result."
+msgstr ""
+
+msgid "Remove unwanted text or objects from videos effortlessly. Even moving objects can be removed automatically by the neural network."
+msgstr ""
+
+msgid "Restore resolution and improve content quality if it diminishes after object removal."
+msgstr ""
+
+msgid "Remove the background from photos or videos. Photos can have transparent backgrounds, while videos will use chromakey."
+msgstr ""
+
+msgid "Generate videos from text (any language) and images. Control content with brushes and prompts. Create images from text, customize details, and bring your imagination to life."
+msgstr ""
+
+msgid "Transform using text (any language) your videos or photos into unique styles. For example, dancing in the ocean or sipping coffee in space. Control manually or auto elements such as skin tones."
+msgstr ""
+
+msgid "If limited video memory causes low resolution, enhance content quality and upscale it effortlessly."
+msgstr ""
+
+msgid "Clone speech from text. Choose a text generation (before this select language) or convert your voice to match a cloned tone."
+msgstr ""
+
+msgid "Separate vocals and instrumentals from music with just one click."
+msgstr ""
+
+msgid "Customize object colors or experiment with unique styles — turn your face into an alien, for example, with text-driven (any language) transformations."
+msgstr ""
+
+msgid "Replace deformed or inconsistent faces in frames. Use the first frame of your video to maintain consistent facial features."
+msgstr ""
+
+msgid "Finalize your project by improving the face or overall content quality."
+msgstr ""
+
+msgid "Isolate vocals and instrumentals from a song. This will prepare them for editing and further transformations."
+msgstr ""
+
+msgid "Record a new vocal segment and clone its sound to match the original song. Then reassemble the vocals and instrumentals for a seamless edit."
+msgstr ""
+
+msgid "Need a speaking character in your video? Start by finding a similar face or generating one via avatar creation. Perfect for when you lack real footage."
+msgstr ""
+
+msgid "Add voice to the video by cloning from a preferred voice tone. Write the script, choose a language, and let the neural network handle the rest."
+msgstr ""
+
+msgid "Synchronize lips with the generated voiceover for added realism. Enhance the face quality for a polished result."
+msgstr ""
+
+msgid "Manipulate the head, add emotions, or create blinks — manually or automatically."
+msgstr ""
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr ""
+
+msgid "If you need to analyze photos, videos and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr ""
+
+msgid "If you need to analyze audio and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr ""
+
+# tooltip.js
+msgid "Translator"
+msgstr ""
+
+msgid "Hello, welcome to the tour"
+msgstr ""
+
+msgid "In begin, we’ll take a look at the translator. If you come across any text that’s not clear, you can easily translate it into your language. Just select the text, and it will appear in the translator. To open it, click on the element. You can also move the translator to any convenient place on your screen by"
+msgstr ""
+
+msgid "(dragging it)."
+msgstr ""
+
+msgid "Try it: After click"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid ", open the translator, and select the text you want to translate."
+msgstr ""
+
+msgid "You can"
+msgstr ""
+
+msgid "disable"
+msgstr ""
+
+msgid "the translator display or change your preferences in the settings."
+msgstr ""
+
+# general.js
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+# model.js
+msgid "Jan"
+msgstr ""
+
+msgid "Feb"
+msgstr ""
+
+msgid "Mar"
+msgstr ""
+
+msgid "Apr"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "Jun"
+msgstr ""
+
+msgid "Jul"
+msgstr ""
+
+msgid "Aug"
+msgstr ""
+
+msgid "Sep"
+msgstr ""
+
+msgid "Oct"
+msgstr ""
+
+msgid "Nov"
+msgstr ""
+
+msgid "Dec"
+msgstr ""
+
+msgid "Oops! Something went wrong. Please try again."
+msgstr ""
+
+msgid "Heads up: This content is not a deepfake from Wunjo, but it could be a deepfake from another program or even original content. You know, I don’t know what I don’t know!"
+msgstr ""
+
+msgid "Yeah! This content appears to be a deepfake created by Wunjo."
+msgstr ""
+
+msgid "Oops! An unexpected error occurred. Please try again."
+msgstr ""
+
+msgid "How many users are there?"
+msgstr ""
+
+msgid "Pick your user squad! This sets how many tasks can strut their stuff simultaneously for everyone."
+msgstr ""
+
+msgid "What is resolution?"
+msgstr ""
+
+msgid "Dial in the max length of your content’s long side. Bigger isn’t always better, but it sure does look good!"
+msgstr ""
+
+msgid "Power usage?"
+msgstr ""
+
+msgid "Choose your RAM and VRAM power levels. Go big for multitasking magic or play it safe with minimal memory usage."
+msgstr ""
+
+msgid "What is the duration? (in minutes)"
+msgstr ""
+
+msgid "What is the text length? (characters)"
+msgstr ""
+
+msgid "Set the limit for your content duration. Anything longer gets the chop—no one likes an endless show!"
+msgstr ""
+
+msgid "Define the max character count for your text."
+msgstr ""
+
+msgid "Transferring models may take some time. Do not close the software."
+msgstr ""
+
+msgid "Bring all!"
+msgstr ""
+
+msgid "A small group"
+msgstr ""
+
+msgid "Just me!"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+# view.js
+msgid "An error occurred while checking the processor. Please try again later."
+msgstr ""
+
+msgid "requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings."
+msgstr ""
+
+# settings.js
+msgid "What models are available?"
+msgstr ""
+
+msgid "Which models can I access?"
+msgstr ""
+
+msgid "What options do I have in terms of models?"
+msgstr ""
+
+msgid "What kinds of models are at my disposal?"
+msgstr ""
+
+msgid "Which models are within my reach?"
+msgstr ""
+
+msgid "What’s in the repertoire of available models?"
+msgstr ""
+
+msgid "What choices do I have among the models?"
+msgstr ""
+
+msgid "Which models are up for grabs?"
+msgstr ""
+
+msgid "What’s on the menu in terms of models?"
+msgstr ""
+
+msgid "What’s in the lineup of available models?"
+msgstr ""
+
+msgid "For manual model utilization"
+msgstr ""
+
+msgid "In manually leveraging the model"
+msgstr ""
+
+msgid "When employing the model manually"
+msgstr ""
+
+msgid "Utilizing the model manually involves"
+msgstr ""
+
+msgid "When integrating the model manually"
+msgstr ""
+
+msgid "In the manual application of the model"
+msgstr ""
+
+msgid "For hands-on model utilization"
+msgstr ""
+
+msgid "When using the model manually"
+msgstr ""
+
+msgid "In manual model integration"
+msgstr ""
+
+msgid "For direct model application"
+msgstr ""
+
+msgid "During manual model utilization"
+msgstr ""
+
+msgid "Incorporating the model manually requires"
+msgstr ""
+
+msgid "When applying the model manually"
+msgstr ""
+
+msgid "Using the model manually necessitates"
+msgstr ""
+
+msgid "In the hands-on utilization of the model"
+msgstr ""
+
+msgid "When integrating the model manually"
+msgstr ""
+
+msgid "For direct model utilization"
+msgstr ""
+
+msgid "In manual model application"
+msgstr ""
+
+msgid "During hands-on model integration"
+msgstr ""
+
+msgid "Utilizing the model manually entails"
+msgstr ""
+
+msgid "You will able to find model in"
+msgstr ""
+
+msgid "first"
+msgstr ""
+
+msgid "download the"
+msgstr ""
+
+msgid "file. Once downloaded, extract its contents and place them in the following directory"
+msgstr ""
+
+msgid "file. Move it into the"
+msgstr ""
+
+msgid "renaming it as"
+msgstr ""
+
+msgid "Your system resources:"
+msgstr ""
+
+msgid "Total size of content"
+msgstr ""
+
+msgid "Total size of models"
+msgstr ""
+
+msgid "Total RAM"
+msgstr ""
+
+msgid "Available RAM"
+msgstr ""
+
+msgid "Total VRAM"
+msgstr ""
+
+msgid "Available VRAM"
+msgstr ""
+
+msgid "in folder"
+msgstr ""
+
+msgid "In GPU mode"
+msgstr ""
+
+msgid "Currently, models from various"
+msgstr ""
+
+msgid "On this machine, models are limited to CPU processing only. To utilize the GPU, please refer to the FAQ section or check the log for more information."
+msgstr ""
+
+msgid "models are executed using the GPU"
+msgstr ""
+
+msgid "modules are running on the CPU"
+msgstr ""
+
+msgid "for enhanced performance. If you wish to give the machine a break, you can transfer the models back to the CPU by clicking"
+msgstr ""
+
+msgid "To switch to GPU processing, simply click"
+msgstr ""
+
+msgid "Remember, you can only switch processors when there is no active processing."
+msgstr ""
+
+msgid "and please note that you can only transfer processing to the GPU if there is no ongoing computation."
+msgstr ""
+
+msgid "A new port has been installed. For the changes to take effect"
+msgstr ""
+
+msgid "restart the application."
+msgstr ""
+
+msgid "Your new port"
+msgstr ""
+
+msgid "But, if you need to switch port again. Just let click"
+msgstr ""
+
+msgid "Application run on port"
+msgstr ""
+
+msgid "You can get access to application by"
+msgstr ""
+
+msgid "Your static port"
+msgstr ""
+
+msgid "which you can change in input."
+msgstr ""
+
+msgid "static port in local network."
+msgstr ""
+
+msgid "If you need to apply switch port, I’ll handle it smoothly. Just let click"
+msgstr ""
+
+msgid "Your share link"
+msgstr ""
+
+msgid "If you want to turn on share mode by"
+msgstr ""
+
+msgid "public link, click"
+msgstr ""
+
+msgid "If you wanna turn off share mode, click"
+msgstr ""
+
+msgid "After updating the settings"
+msgstr ""
+
+msgid "you need to restart"
+msgstr ""
+
+msgid "the application for the"
+msgstr ""
+
+msgid "changes to take effect."
+msgstr ""
+
+msgid "Max CPU tasks running for all users at once"
+msgstr ""
+
+msgid "Max module tasks running for all users at once"
+msgstr ""
+
+msgid "Max CPU tasks running for one user at once"
+msgstr ""
+
+msgid "Max module tasks running for one user at once"
+msgstr ""
+
+msgid "Time to remove old CPU tasks (minutes)"
+msgstr ""
+
+msgid "Time to remove old module tasks (minutes)"
+msgstr ""
+
+msgid "Delay between CPU tasks to calculate memory (seconds)"
+msgstr ""
+
+msgid "Delay between module tasks to calculate memory (seconds)"
+msgstr ""
+
+msgid "Minimum RAM for CPU tasks (GB)"
+msgstr ""
+
+msgid "Minimum RAM for removing background (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for removing background on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for removing objects (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for removing objects on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for face swap tasks (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for face swap tasks on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for enhancement tasks (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for enhancement tasks on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for lip sync tasks (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for lip sync tasks on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for restyling on GPU (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for restyling on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for video generation on GPU (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for video generation on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for control restyling on GPU (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for control restyling on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for separator tasks (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for separator tasks on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for cloning voice (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for cloning voice on GPU (GB)"
+msgstr ""
+
+msgid "Minimum RAM for live portrait tasks (GB)"
+msgstr ""
+
+msgid "Minimum VRAM for live portrait tasks on GPU (GB)"
+msgstr ""
+
+msgid "Max file size for upload (bytes)"
+msgstr ""
+
+msgid "Max resolution for removing background"
+msgstr ""
+
+msgid "Max resolution for removing objects"
+msgstr ""
+
+msgid "Max resolution for face swap"
+msgstr ""
+
+msgid "Max resolution for enhancement"
+msgstr ""
+
+msgid "Max resolution for lip sync"
+msgstr ""
+
+msgid "Max resolution for restyling"
+msgstr ""
+
+msgid "Max resolution for live portrait"
+msgstr ""
+
+msgid "Max duration for background removal (seconds)"
+msgstr ""
+
+msgid "Max duration for object removal (seconds)"
+msgstr ""
+
+msgid "Max duration for face swap (seconds)"
+msgstr ""
+
+msgid "Max duration for enhancement (seconds)"
+msgstr ""
+
+msgid "Max duration for lip sync (seconds)"
+msgstr ""
+
+msgid "Max duration for restyling (seconds)"
+msgstr ""
+
+msgid "Max duration for separator tasks (seconds)"
+msgstr ""
+
+msgid "Max duration for cloning voice (seconds)"
+msgstr ""
+
+msgid "Max duration for live portrait (seconds)"
+msgstr ""
+
+msgid "Max symbols for voice cloning"
+msgstr ""
+
+msgid "Static port in local network"
+msgstr ""
+
+msgid "New value"
+msgstr ""
+
+msgid "To apply the changes, click"
+msgstr ""
+
+msgid "Remember that the changes will take effect after manually restarting the program."
+msgstr ""
+
+msgid "The tour is currently disabled, but you can enable it by clicking"
+msgstr ""
+
+msgid "The tour is enabled to start automatically. To disable it, click"
+msgstr ""
+
+msgid "The translation tool is currently active and ready for use. Click"
+msgstr ""
+
+msgid "The translation tool is currently disabled. Click"
+msgstr ""
+
+msgid "to disable it."
+msgstr ""
+
+msgid "enable it."
+msgstr ""
+
+# footer.js
+msgid "Wow, that’s a large file! Please upload a file that’s less than"
+msgstr ""
+
+msgid "bytes or change settings limit."
+msgstr ""
+
+msgid "Wow, that’s a lengthy video! Please upload a video that’s less than"
+msgstr ""
+
+msgid "seconds long or change settings limit."
+msgstr ""
+
+msgid "Wow, that’s a lengthy audio! Please upload an audio that’s less than"
+msgstr ""
+
+msgid "seconds long. Let’s keep it short!"
+msgstr ""
+
+msgid "Error reading file. Please try again."
+msgstr ""
+
+# clone_voice.js
+msgid "Yikes! Looks like you not uploaded or recorded speech or sample."
+msgstr ""
+
+msgid "Yikes! Looks like you not wrote text to create speech."
+msgstr ""
+
+msgid "Yikes! Looks like an alien format. Stick to audio for now."
+msgstr ""
+
+msgid "Imitate accent"
+msgstr ""
+
+msgid "Activate manual audio creation. Record yourself with any accent or speed, and watch your voice transform into a cloned!"
+msgstr ""
+
+msgid "Filename"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Fake detector"
+msgstr ""
+
+msgid "Got a sneaky suspicion about some audio? Ready to sniff out those clone voice? Just hit that button."
+msgstr ""
+
+msgid "Analysis"
+msgstr ""
+
+msgid "Set text explain"
+msgstr ""
+
+msgid "Ready to have some fun? Click here to type your text to watch after submit as it turns into a cloned voice masterpiece!"
+msgstr ""
+
+msgid "Set text"
+msgstr ""
+
+msgid "Load audio explain"
+msgstr ""
+
+msgid "This audio extracts the base speaker tone. A short audio clip is usually enough, but longer clips improve quality."
+msgstr ""
+
+msgid "Create sample"
+msgstr ""
+
+msgid "This audio will be used to extract the base speaker tone color embedding. Typically a very short audio should be sufficient, but increasing the audio length will also improve the output audio quality."
+msgstr ""
+
+msgid "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents."
+msgstr ""
+
+msgid "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness."
+msgstr ""
+
+msgid "The quick brown fox jumps over the lazy dog. This sentence is famous because it includes every letter in the English alphabet, making it a great tool for typing practice."
+msgstr ""
+
+msgid "A journey of a thousand miles begins with a single step. This ancient Chinese proverb reminds us that great things start from humble beginnings."
+msgstr ""
+
+msgid "To be, or not to be, that is the question: Whether ’tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles and by opposing end them."
+msgstr ""
+
+msgid "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. It revolutionized the understanding of space, time, and gravity."
+msgstr ""
+
+msgid "The mitochondrion is often referred to as the powerhouse of the cell. These organelles are responsible for generating most of the cell’s supply of adenosine triphosphate (ATP), used as a source of chemical energy."
+msgstr ""
+
+msgid "The only thing we have to fear is fear itself. This famous quote by Franklin D. Roosevelt during his inaugural address aims to inspire courage and confidence in the face of challenges."
+msgstr ""
+
+msgid "In three words I can sum up everything I’ve learned about life: it goes on. This quote by Robert Frost succinctly captures the essence of resilience and the passage of time."
+msgstr ""
+
+msgid "The cat sat on the mat. This simple sentence is often used to teach basic sentence structure in English grammar."
+msgstr ""
+
+msgid "E=mc². This famous equation by Albert Einstein establishes the relationship between mass (m) and energy (E), with c representing the speed of light in a vacuum."
+msgstr ""
+
+msgid "The Great Wall of China is one of the greatest wonders of the world. It was built to protect Chinese states and empires against the raids and invasions of the nomadic groups of the Eurasian Steppe."
+msgstr ""
+
+msgid "Curiosity killed the cat, but satisfaction brought it back. This proverb warns of the dangers of unnecessary investigation or experimentation, but also highlights the rewarding nature of discovery."
+msgstr ""
+
+msgid "The universe is under no obligation to make sense to you. This quote by Neil deGrasse Tyson underscores the complexity and mystery of the cosmos."
+msgstr ""
+
+msgid "In the end, we will remember not the words of our enemies, but the silence of our friends. This quote by Martin Luther King Jr. highlights the importance of support and solidarity."
+msgstr ""
+
+msgid "Success is not final, failure is not fatal: It is the courage to continue that counts. This quote by Winston Churchill emphasizes perseverance and resilience."
+msgstr ""
+
+msgid "The only limit to our realization of tomorrow is our doubts of today. This quote by Franklin D. Roosevelt encourages overcoming self-doubt to achieve future goals."
+msgstr ""
+
+msgid "To infinity and beyond! This catchphrase from Buzz Lightyear in Toy Story inspires boundless exploration and adventure."
+msgstr ""
+
+msgid "The only way to do great work is to love what you do. This quote by Steve Jobs underscores the importance of passion in achieving excellence."
+msgstr ""
+
+msgid "The greatest glory in living lies not in never falling, but in rising every time we fall. This quote by Nelson Mandela celebrates resilience and persistence."
+msgstr ""
+
+msgid "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world. This quote by Albert Einstein highlights the power of creativity."
+msgstr ""
+
+msgid "Life is what happens when you’re busy making other plans. This quote by John Lennon reminds us to appreciate the present moment."
+msgstr ""
+
+msgid "The best way to predict the future is to invent it. This quote by Alan Kay encourages proactive innovation."
+msgstr ""
+
+msgid "Do or do not, there is no try. This quote by Yoda from Star Wars emphasizes commitment and determination."
+msgstr ""
+
+msgid "The more that you read, the more things you will know. The more that you learn, the more places you’ll go. This quote by Dr. Seuss promotes the value of education."
+msgstr ""
+
+msgid "The purpose of our lives is to be happy. This simple yet profound quote by Dalai Lama emphasizes the importance of happiness."
+msgstr ""
+
+msgid "It always seems impossible until it’s done. This quote by Nelson Mandela inspires perseverance in the face of challenges."
+msgstr ""
+
+msgid "I have not failed. I’ve just found 10,000 ways that won’t work. This quote by Thomas Edison celebrates the process of learning through experimentation."
+msgstr ""
+
+msgid "If you want to go fast, go alone. If you want to go far, go together. This African proverb highlights the value of collaboration."
+msgstr ""
+
+msgid "The only thing standing between you and your goal is the story you keep telling yourself. This quote by Jordan Belfort encourages self-belief."
+msgstr ""
+
+msgid "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change. This quote by Charles Darwin emphasizes adaptability."
+msgstr ""
+
+msgid "Don’t watch the clock; do what it does. Keep going. This motivational quote by Sam Levenson encourages persistence."
+msgstr ""
+
+msgid "The greatest wealth is to live content with little. This quote by Plato reminds us that true wealth lies in contentment."
+msgstr ""
+
+msgid "You must be the change you wish to see in the world. This quote by Mahatma Gandhi encourages proactive personal responsibility."
+msgstr ""
+
+msgid "The way to get started is to quit talking and begin doing. This quote by Walt Disney inspires action."
+msgstr ""
+
+msgid "The best and most beautiful things in the world cannot be seen or even touched—they must be felt with the heart. This quote by Helen Keller emphasizes the importance of emotional experiences."
+msgstr ""
+
+msgid "Read this text or any text during 15-60 seconds"
+msgstr ""
+
+msgid "sample speech"
+msgstr ""
+
+msgid "Add the audio you want to change. You can simulate any accent and speed. For best results, use audio without noise."
+msgstr ""
+
+msgid "Attach speech"
+msgstr ""
+
+msgid "changeable speech"
+msgstr ""
+
+msgid "Enter text for voice cloning. Use one language for words and phrases; transliterate words from other languages. (Maximal numbers of symbols is"
+msgstr ""
+
+msgid "but you can increase in settings"
+msgstr ""
+
+msgid "clone voice"
+msgstr ""
+
+msgid "Record yourself or upload an audio clip to transform speech style into a cloned version. Make sure the recorded and sample voices match in style and language. Enhance your results by using noise reduction tools."
+msgstr ""
+
+# enhancement.js
+msgid "Yikes! Looks like an alien format. Stick to images or videos for now."
+msgstr ""
+
+msgid "enhancement"
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
+msgid "Resized to"
+msgstr ""
+
+msgid "Enhance faces and details with Gfpgan. This powerful tool refines facial features and improves overall video quality. It adds realism and sharpness, making your videos stand out with vivid detail and lifelike appearance."
+msgstr ""
+
+msgid "Face boost"
+msgstr ""
+
+msgid "Anime enhance"
+msgstr ""
+
+msgid "Activate Animesgan to enhance anime-like videos. This innovative feature clarifies lines and colors, bringing out the artistic essence of your videos. It smooths transitions and enhances visual clarity, ensuring your anime-style content looks its best."
+msgstr ""
+
+msgid "Real video"
+msgstr ""
+
+msgid "Enable Realesrgan for real-life video enhancement. This advanced tool smoothens and clarifies videos, removing noise and enhancing overall quality. It’s perfect for video and improving visual appeal with crisp details and smooth playback."
+msgstr ""
+
+# face_swap.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to swap. Click on the «Find face» button and set box on person face, please!"
+msgstr ""
+
+msgid "Param Pam Pam! It seems like your avatar’s face is feeling a bit missed!  Give that «Upload avatar» button a click and upload a face with some personality!"
+msgstr ""
+
+msgid "Uh-oh! The width looks wonky. Double-check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr ""
+
+msgid "Pick face to swap. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr ""
+
+msgid "Upload photo, craft avatar, choose face to swap. You’re a sculptor of non-existent personas. Done!"
+msgstr ""
+
+msgid "Got a sneaky suspicion about some content? Ready to sniff out those deepfakes? Just hit that button."
+msgstr ""
+
+msgid "Gemini faces detection"
+msgstr ""
+
+msgid "Replace all detected faces"
+msgstr ""
+
+msgid "Find face"
+msgstr ""
+
+msgid "Upload avatar"
+msgstr ""
+
+msgid "face swap"
+msgstr ""
+
+# generation.js
+msgid "Aspect ratio"
+msgstr ""
+
+msgid "Frames per second"
+msgstr ""
+
+msgid "Reduce control strength to less depend to frames."
+msgstr ""
+
+msgid "Increase control strength to up depend to frames."
+msgstr ""
+
+msgid "Describe the change you want to make"
+msgstr ""
+
+msgid "A stuffed animal donkey grazing in a valley"
+msgstr ""
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr ""
+
+msgid "A cow grazing in a valley during the day, a UFO approaches in the distance"
+msgstr ""
+
+msgid "A flower blooming in slow motion"
+msgstr ""
+
+msgid "3D render, a raccoon holding a mini ice cream cone"
+msgstr ""
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr ""
+
+msgid "2 cats in love eating a candlelit dinner of fresh fish"
+msgstr ""
+
+msgid "Cinematic, a dog in a car window"
+msgstr ""
+
+msgid "Moody, filmic, 35mm, a doctor walking into the hospital"
+msgstr ""
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr ""
+
+msgid "3D render, goldfish swimming in a glass container"
+msgstr ""
+
+msgid "Nature documentary, jellyfish swimming in the ocean"
+msgstr ""
+
+msgid "Cinematic, a Tibetan monk sitting in a temple on a mountain, facing camera."
+msgstr ""
+
+msgid "Nature documentary, natural lighting, flamingo walking in a beautiful beach, head turning"
+msgstr ""
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr ""
+
+msgid "A secret garden with a rainbow waterfall"
+msgstr ""
+
+msgid "Cinematic, a cowboy riding a horse on mirror-like lake, moving clouds"
+msgstr ""
+
+msgid "Cinematic, long tracking shot of the cliffs of Dover"
+msgstr ""
+
+msgid "1950s film style, a seagull on a boat"
+msgstr ""
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr ""
+
+msgid "A woman smiling while watching fireworks"
+msgstr ""
+
+msgid "Beautiful sunset at the beach, silhouette of a couple walking by the seashore against sunset, beautiful scenery"
+msgstr ""
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr ""
+
+msgid "Anime, a boy and a girl sitting on the grass under the starry sky"
+msgstr ""
+
+msgid "Nature documentary, close up of a lizard in a desert"
+msgstr ""
+
+msgid "1940s newsreel footage, a soldier stands watch on a rocky hill, facing camera"
+msgstr ""
+
+msgid "Anime, a woman walking home with groceries, wide angle"
+msgstr ""
+
+msgid "Watercolor style of a baby elephant drinking water from a lake in the desert"
+msgstr ""
+
+msgid "Futuristic film of a man walking on a street in Paris, cinematic, symmetric composition"
+msgstr ""
+
+msgid "Claymation, stop motion, a rat sitting on a huge block of cheese"
+msgstr ""
+
+msgid "Prompt"
+msgstr ""
+
+msgid "It’s like describe a genie your wishes so they can conjure up just what you need!"
+msgstr ""
+
+msgid "(Optional) Describe your prompt for generation, or leave it blank for a random request. You can use (word) to emphasize specific requests and word:non-integers number from 0 to 1 for request intensity. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr ""
+
+msgid "Generation... Buttons are locked until finished. Tap on the screen to view details."
+msgstr ""
+
+msgid "Ready to have some fun? Complete the image and add new elements."
+msgstr ""
+
+msgid "Something wrong...During create task. Tap on the screen to view details."
+msgstr ""
+
+msgid "Authorization failed. Access is available only with a subscription. Please review available plans and any discounts."
+msgstr ""
+
+msgid "Is not valid format."
+msgstr ""
+
+msgid "Image will be generate."
+msgstr ""
+
+msgid "Oops! Something went wrong. Please click submit again after some time. Tap on the screen to view details."
+msgstr ""
+
+msgid "Oops! An unexpected error occurred. Tap on the screen to view details."
+msgstr ""
+
+msgid "generation"
+msgstr ""
+
+# lip_sync.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to animate. Click on the «Find face» button and set box on person face, please!"
+msgstr ""
+
+msgid "Hmm... The height seems fishy. Verify it’s a number and not empty. Check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr ""
+
+msgid "Overlay audio"
+msgstr ""
+
+msgid "Smooth defects"
+msgstr ""
+
+msgid "Pick face to animate. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr ""
+
+msgid "For best results, use in Lip Sync a high-quality audio without noise."
+msgstr ""
+
+msgid "lip sync"
+msgstr ""
+
+# live_portrait.js
+msgid "Expression"
+msgstr ""
+
+msgid "Head pose"
+msgstr ""
+
+msgid "Lip"
+msgstr ""
+
+msgid "Eyes"
+msgstr ""
+
+msgid "Animate"
+msgstr ""
+
+msgid "Pick face to live. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr ""
+
+msgid "Upload avatar video to repeat movement. You’re a sculptor of non-existent personas. Done!"
+msgstr ""
+
+msgid "Manually retargeting"
+msgstr ""
+
+msgid "Wow! Somthing went wrong. Because of scenes can not be empty. Please try another file."
+msgstr ""
+
+msgid "Scanning..."
+msgstr ""
+
+msgid "Retargeting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr ""
+
+msgid "Blinking"
+msgstr ""
+
+msgid "Silent"
+msgstr ""
+
+msgid "Nodding"
+msgstr ""
+
+msgid "Shaking"
+msgstr ""
+
+msgid "Flirt"
+msgstr ""
+
+msgid "Yikes! Looks like an alien format. Stick to videos or image for now."
+msgstr ""
+
+msgid "Something wrong."
+msgstr ""
+
+msgid "live portrait"
+msgstr ""
+
+# tour.min.js
+msgid "Don’t show tips on startup"
+msgstr ""
+
+# remove_background.js
+msgid "Oopsie! Seems like you didn’t pick an object in your content. Click on the «Select object» button and choose any object from the media, please!"
+msgstr ""
+
+msgid "Background color"
+msgstr ""
+
+msgid "Reverse select"
+msgstr ""
+
+msgid "Let the neural network handle it, then click to include with the right, exclude with the left. Don’t forget to switch brushes."
+msgstr ""
+
+msgid "Select object"
+msgstr ""
+
+msgid "remove background"
+msgstr ""
+
+# remove_object.js
+msgid "remove object"
+msgstr ""
+
+msgid "Enable text indication to highlight selected areas while removing text instead of objects from your chosen field."
+msgstr ""
+
+msgid "Indicate text"
+msgstr ""
+
+msgid "Improved level"
+msgstr ""
+
+msgid "Text bothering you? Just draw a box around it. But the text outside the frame will remain. Easy as pie!"
+msgstr ""
+
+msgid "Select text"
+msgstr ""
+
+# restyle.js
+msgid "Looks like you forgot to pick an object to restyle, or hey, why not go all out and change everything? Give it another shot!"
+msgstr ""
+
+msgid "Uh-oh! This is strange magic, but the object is not selected. Try selecting objects again."
+msgstr ""
+
+msgid "Diffusion parameters is empty."
+msgstr ""
+
+msgid "Oops. Something wrong... Try another file."
+msgstr ""
+
+msgid "Oops. Something wrong... Try another layer file."
+msgstr ""
+
+msgid "Activate the restyle background option to refresh the entire frame. This setting ensures that all elements are redrawn with the neural network, providing a seamless."
+msgstr ""
+
+msgid "Restyle background"
+msgstr ""
+
+msgid "Interval generation"
+msgstr ""
+
+msgid "Alright, listen up! The generation interval is like setting the tempo for your video’s style dance-off. Got a video with dynamic moves? Drop that value to crank up the tempo. It’s like your video’s heartbeat - more transitions mean a faster beat, so you’ll want a lower value. Nail that interval, and watch your video steal the spotlight in style!"
+msgstr ""
+
+msgid "Threshold scene"
+msgstr ""
+
+msgid "Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!"
+msgstr ""
+
+msgid "Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!"
+msgstr ""
+
+msgid "Control strength"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "Add a new custom Stable Diffusion 1.5 model to the configuration file located at"
+msgstr ""
+
+msgid "Modify specific objects or entire scenes with simple text prompts. Experience advanced visual manipulation!"
+msgstr ""
+
+msgid "Control restyle"
+msgstr ""
+
+msgid "Scene transitions with frames interval"
+msgstr ""
+
+msgid "and the first and last frame will be received."
+msgstr ""
+
+msgid "Something wrong...During create task."
+msgstr ""
+
+msgid "Inpainting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr ""
+
+msgid "diffuser"
+msgstr ""
+
+# separator.js
+msgid "separator"
+msgstr ""
+
+# login.js
+msgid "Sign in"
+msgstr ""
+
+msgid "Token"
+msgstr ""
+
+msgid "Don’t have an account for Wunjo Pro?"
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "This feature is premium and available after login. New users get a"
+msgstr ""
+
+msgid "free tokens"
+msgstr ""
+
+msgid "to explore all features."
+msgstr ""
+
+msgid "Turn on the internet and reload"
+msgstr ""
+
+msgid "Invalid login credentials"
+msgstr ""
+
+msgid "An unexpected error has occurred. Please contact support@wunjo.online"
+msgstr ""
+
+msgid "Subscription expired. Renew your license key in wunjo.online."
+msgstr ""
+
+msgid "The license key is not valid"
+msgstr ""
+
+# Generation image composition
+msgid "Generate image composition"
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+msgid "Image composition"
+msgstr ""
+
+msgid "Generate an image composition by prompt and images"
+msgstr ""
+
+msgid "Create photos from images and a prompt. Modify age, environment, and characters while preserving identity with realism."
+msgstr ""
+
+msgid "Use the prompt field to describe your composition. Click on an image to insert its placeholder into the text automatically. You can add as many images as you like. Example placeholder format: A man image_1 in t-short image_2. Also you can use coefficient. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr ""
+
+msgid "sec"
+msgstr ""
+
+msgid "Chat"
+msgstr ""
+
+msgid "automatically edits videos <br> and answers questions."
+msgstr ""
+
+msgid "The neural network now edits a long video into a short one with highlights and answers questions about them, as well as recommends music."
+msgstr ""
+
+msgid "Edit a long video into a short one with highlights"
+msgstr ""
+
+msgid "Ready to analyze the video and answer all the questions!"
+msgstr ""
+
+msgid "If you want to slow things down a bit, choose a longer segment length. That'll give you fewer, longer chunks, which means less rush, more moments to shine, but a bit less of that fast-paced flow. It's all about balancing energy and detail, so pick what suits your video vibe best!"
+msgstr ""
+
+msgid "Alright, time to set the pace! The segment length is like choosing the perfect stride for your video’s rhythm. Go with a shorter segment length, and you'll get quick, snappy video chunks — more dynamic, more action, keeping the energy high."
+msgstr ""
+
+msgid "Segment length"
+msgstr ""
+
+msgid "You are a highlight editor. List archetypal dramatic moments that would make compelling highlights if they appear in the video. Each moment should be specific enough to be recognizable but generic enough to potentially exist in other videos of this type."
+msgstr ""
+
+msgid "You are a helpful visual-language assistant that can understand videos and edit. You are tasked helping the user to create highlight reels for videos. Highlights should be rare and important events in the video in question."
+msgstr ""
+
+msgid "(Optional) Describe how to edit a video"
+msgstr ""
+
+msgid "Yikes! Where is video? Attach its and continue."
+msgstr ""
+
+msgid "Assistant"
+msgstr ""
+
+msgid "Ready to transcribe or to analyze the content and answer all the questions!"
+msgstr ""
+
+msgid "Maximum duration (min)"
+msgstr ""
+
+msgid "Click any banner to start progress"
+msgstr ""
+
+msgid "Waiting"
+msgstr ""
+
+msgid "Subscribe to unlock"
+msgstr ""
+
+msgid "free"
+msgstr ""
+
+msgid "day"
+msgstr ""
+
+msgid "Watch ad"
+msgstr ""
+
+msgid "Monthly limit reached"
+msgstr ""
+
+msgid "Smart crop"
+msgstr ""
+
+msgid "Enable smart crop to create videos for YouTube, Tik Tok, Instagram, etc. Allows you to change any aspect ratio for your video using artificial intelligence and focus on interest objects and speakers."
+msgstr ""

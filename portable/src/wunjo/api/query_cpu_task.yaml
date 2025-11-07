@@ -1,0 +1,86 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /query-cpu-task/{request_id}:
+#    get:
+summary: Query the status of a CPU task
+description: Retrieve the status, progress, and response of a CPU task based on the request ID.
+tags:
+  - CPU Task
+parameters:
+  - in: path
+    name: request_id
+    required: true
+    schema:
+      type: string
+      description: The unique ID of the task to query.
+responses:
+  200:
+    description: Task successfully queried and completed
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully!"
+            response:
+              type: object
+              example: {}  # Add an example response structure if needed
+  100:
+    description: Task is still in progress
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 100
+            message:
+              type: string
+              example: "Busy."
+            progress:
+              type: integer
+              example: 50
+            progress_message:
+              type: string
+              example: "Preparing..."
+  404:
+    description: Task is canceled or not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Task is canceled."
+            response:
+              type: object
+              example: null
+  300:
+    description: Task not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 300
+            message:
+              type: string
+              example: "Not found task."
+            response:
+              type: object
+              example: null

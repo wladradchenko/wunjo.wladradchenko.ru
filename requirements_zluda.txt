@@ -1,3 +1,11 @@
+# CUDA
+--extra-index-url https://download.pytorch.org/whl/rocm6.2
+torch==2.4.0
+torchaudio==2.4.0
+torchvision==0.19.0
+xformers==0.0.27post2
+
+# Libs
 Flask
 Flask-Cors
 pyyaml
@@ -7,8 +15,6 @@ nltk
 Unidecode
 inflect
 librosa==0.9.2
-torch --extra-index-url https://download.pytorch.org/whl/rocm6.1
-torchaudio --extra-index-url https://download.pytorch.org/whl/rocm6.1
 soundfile==0.10.3.post1
 flaskwebgui==1.1.6
 waitress
@@ -17,9 +23,7 @@ opencv-python
 Pillow
 scikit-image
 kornia
-face_alignment==1.3.5
 yacs
-torchvision --extra-index-url https://download.pytorch.org/whl/rocm6.1
 pydub
 gfpgan
 cog
@@ -35,17 +39,35 @@ pypinyin
 einops
 pytorch_lightning
 omegaconf
-xformers --extra-index-url https://download.pytorch.org/whl/rocm6.1
+transformers==4.56.1
 open_clip_torch
 praat-parselmouth
 denoiser
 noisereduce
 openunmix
 torchlibrosa
-torchmetrics==1.2.0
 apscheduler
+httpx
 cryptography
-transformers==4.42.3
-diffusers==0.29.2
+anyio==3.7.1
+torchmetrics==1.2.0
+faster-whisper
+whisper-timestamped
+gTTS
+scenedetect[opencv]
+diffusers==0.35.1
 accelerate
+pykalman==0.9.7
+sentencepiece
+decord
+flask-babel
+flasgger
+peft
+easydict
+ftfy
+packaging
+skbase
+bitsandbytes==0.45.5
+num2words
+python_speech_features
 soxr

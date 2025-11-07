@@ -24,6 +24,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='basic/icon/square/green/logo.ico') }}" id="icon">
     <link rel="apple-touch-icon" type="image/png" href="{{ url_for('static', filename='basic/icon/square/green/logo.png') }}">
     <link rel="mask-icon" type="image/svg+xml" href="{{ url_for('static', filename='basic/icon/square/green/logo.svg') }}" color="#111">
+    <link rel="stylesheet" href="{{ url_for('static', filename='basic/css/tourjs.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/awesomplete.min.css') }}">
 
     <!--Change green icon on white for mobile device-->
     <script>
@@ -39,6 +41,9 @@
             // document.querySelector('link[rel="mask-icon"]').href = "{{ url_for('static', filename='basic/icon/square/white/logo.svg') }}";
         }
     </script>
+    <script src="{{ url_for('static', filename='components/js/element.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='basic/js/zooming.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='basic/js/js-yaml.min.js') }}"></script>
 
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
@@ -46,5 +51,27 @@
     {% block head %}{% endblock %}
 </head>
 
+<script async>
+    // Get general translation
+    let translationsBabel = {};
+    async function loadTranslationsBabel() {
+        const cacheKey = `translations`;
+        const cached = localStorage.getItem(cacheKey);
+
+        if (cached) {
+            translationsBabel = JSON.parse(cached);
+            console.log("Loaded translations from cache");
+        } else {
+            const response = await fetch(`/translations.json`);
+            translationsBabel = await response.json();
+            localStorage.setItem(cacheKey, JSON.stringify(translationsBabel));
+            console.log("Fetched translations from server");
+        }
+    }
+    function getTranslationBabel(text) {
+        return translationsBabel[text] || text;
+    };
+    document.addEventListener("DOMContentLoaded", loadTranslationsBabel);
+</script>
 {% block body %}{% endblock %}
 </html>

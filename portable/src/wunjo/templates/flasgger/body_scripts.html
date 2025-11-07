@@ -1,0 +1,133 @@
+<script src="{{ swagger_ui_bundle_js }}"></script>
+<script src="{{ swagger_ui_standalone_preset_js }}"></script>
+<script src="{{ jquery_js }}" type='text/javascript'></script>
+<script src="{{ url_for('static', filename='basic/js/tour.min.js') }}" type='text/javascript'></script>
+
+<script async>
+    document.body.addEventListener('click', async function(event) {
+        // Check if the clicked element is an <a> with href containing '#'
+        if (event.target.tagName.toLowerCase() === 'a' && event.target.href.includes('#')) {
+            event.preventDefault();  // Prevent the default behavior (e.g., page scroll or anchor link);
+            window.location.href = event.target.href;  // Reload the page
+
+            // Get the URL fragment after the '#'
+            const urlFragment = event.target.href.split('#')[1];
+            const newId = `operations${urlFragment.replace(/\//g, '-').replace(/%20/g, '_')}`;
+            console.log(newId);
+
+            const operationsNewElement = document.querySelector(`#${newId}`);
+            if (operationsNewElement) {
+                const operationsNewSummary = operationsNewElement.querySelector('.opblock-summary');
+                operationsNewSummary.click();
+                operationsNewSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    function initSliderBar() {
+        const toggleBtns = document.querySelectorAll(".nav-menu-btn");
+        const dropdownContents = document.querySelectorAll(".nav-dropdown-content");
+
+        toggleBtns.forEach(function(toggleBtn) {
+            toggleBtn.addEventListener("click", function() {
+                const dropdownContent = this.nextElementSibling;
+                dropdownContent.classList.toggle("hidden");
+                const icon = this.querySelector("svg");
+                icon.classList.toggle("rotate-180");
+            });
+        });
+
+        // Close dropdowns when clicking outside of them
+        window.addEventListener("click", function(event) {
+            toggleBtns.forEach(function(toggleBtn) {
+                const dropdownContent = toggleBtn.nextElementSibling;
+                if (!toggleBtn.contains(event.target) && !dropdownContent.contains(event.target)) {
+                    dropdownContent.classList.add("hidden");
+                    const icon = toggleBtn.querySelector("svg");
+                    icon.classList.remove("rotate-180");
+                }
+            });
+        });
+    };
+
+    initSliderBar();
+</script>
+
+<script>
+    // Get general translation
+    let translationsBabel = {};
+    async function loadTranslationsBabel() {
+        const response = await fetch(`/translations.json`);
+        translationsBabel = await response.json();
+    }
+    document.addEventListener("DOMContentLoaded", async () => {
+        await loadTranslationsBabel();
+    });
+    function getTranslationBabel(text) {
+        return translationsBabel[text] || text;
+    };
+
+    // Tour for new users
+    const tour = {{ flasgger_config.tour|tojson|safe }};
+    if (tour === true) {
+        setTimeout(() => {
+            // Authorization
+            const operationsAuthorization = document.querySelector('#operations-Authorization-post_authorization_api');
+            operationsAuthorization.setAttribute("data-tour", "api");
+            operationsAuthorization.setAttribute("data-position", "bottom-right");
+            operationsAuthorization.setAttribute("data-title", `{{ _('Authorization') }}`);
+            operationsAuthorization.setAttribute("data-step", "1");
+            operationsAuthorization.setAttribute("data-intro", `{{ _('Obtain a token through a POST request using your email and password from wunjo.online. This token is available only to Wunjo Pro subscribers. Use the token for the') }} <text class="text-accent-primary">/submit-module-task</text> {{ _('and') }} <text class="text-accent-primary">/submit-cpu-task</text>.`);
+
+            // File upload
+            const operationsFileUpload = document.querySelector('#operations-File_Upload-post_upload_tmp');
+            operationsFileUpload.setAttribute("data-tour", "api");
+            operationsFileUpload.setAttribute("data-position", "bottom-right");
+            operationsFileUpload.setAttribute("data-title", `{{ _('File upload') }}`);
+            operationsFileUpload.setAttribute("data-step", "2");
+            operationsFileUpload.setAttribute("data-intro", `{{ _('Before using a module that requires a file, upload it via File upload and then use the file’s name. Files are uploaded to') }} <text class="text-accent-primary">.cache/wunjo/tmp</text>, {{ _('so ensure file names are unique. Test files like image.jpg, video.mp4, and audio.wav can be found at') }} <a target="_blank" rel="noopener noreferrer" class="text-accent-primary underline" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/main/example/test">GitHub</a>. {{ _('Example requests are configured to work with these files for testing and customization.') }}`);
+
+            // Submit module task
+            const operationsSubmitModuleTask = document.querySelector('#operations-Module_Task-post_submit_module_task');
+            operationsSubmitModuleTask.setAttribute("data-tour", "api");
+            operationsSubmitModuleTask.setAttribute("data-position", "bottom-right");
+            operationsSubmitModuleTask.setAttribute("data-title", `{{ _('Submit module task') }}`);
+            operationsSubmitModuleTask.setAttribute("data-step", "3");
+            operationsSubmitModuleTask.setAttribute("data-intro", `{{ _('Use the main modules in Wunjo via POST requests. Refer to Example for ready-to-use setups. Check Schema for detailed descriptions of each parameter, including accepted values and limits. Note that tasks are linked to your IP address. For localhost, it’s 127.0.0.1. On remote connections, tasks and files are IP-specific. You’ll receive a unique request_id for your task.') }}`);
+
+            // Query module task
+            const operationsQueryModuleTask = document.querySelector('#operations-Module_Task-get_query_module_task__method_');
+            operationsQueryModuleTask.setAttribute("data-tour", "api");
+            operationsQueryModuleTask.setAttribute("data-position", "bottom-right");
+            operationsQueryModuleTask.setAttribute("data-title", `{{ _('Query module task') }}`);
+            operationsQueryModuleTask.setAttribute("data-step", "4");
+            operationsQueryModuleTask.setAttribute("data-intro", `{{ _('Track the status of your module task with a GET request by using the unique method name. The task status and response will be returned once with a 201 status, identifiable by the previously issued request_id. After retrieval, the task will be marked as not found. The response includes the media file path.') }}`);
+
+            // Submit CPU task
+            const operationsSubmitCPUTask = document.querySelector('#operations-CPU_Task-post_submit_cpu_task');
+            operationsSubmitCPUTask.setAttribute("data-tour", "api");
+            operationsSubmitCPUTask.setAttribute("data-position", "bottom-right");
+            operationsSubmitCPUTask.setAttribute("data-title", `{{ _('Submit CPU task') }}`);
+            operationsSubmitCPUTask.setAttribute("data-step", "5");
+            operationsSubmitCPUTask.setAttribute("data-intro", `{{ _('Similar to /submit-module-task, this POST request provides a request_id. More details on parameters can be found in Schema.') }}`);
+
+            // Query CPU task
+            const operationsQueryCPUTask = document.querySelector('#operations-CPU_Task-get_query_cpu_task__request_id_');
+            operationsQueryCPUTask.setAttribute("data-tour", "api");
+            operationsQueryCPUTask.setAttribute("data-position", "bottom-right");
+            operationsQueryCPUTask.setAttribute("data-title", `{{ _('Query CPU task') }}`);
+            operationsQueryCPUTask.setAttribute("data-step", "6");
+            operationsQueryCPUTask.setAttribute("data-intro", `{{ _('Check task readiness with a GET request using the request_id. The task response is returned once with a 201 status, and then the task is marked as not found. The response includes the media file path or data.') }}`);
+
+            // Console log
+            const operationsConsoleLog = document.querySelector('#operations-General-get_console_log');
+            operationsConsoleLog.setAttribute("data-tour", "api");
+            operationsConsoleLog.setAttribute("data-position", "bottom-right");
+            operationsConsoleLog.setAttribute("data-title", `{{ _('Console log') }}`);
+            operationsConsoleLog.setAttribute("data-step", "7");
+            operationsConsoleLog.setAttribute("data-intro", `{{ _('Use a GET request to view processing progress, steps completed, error statuses, and success messages. All data is logged. For further questions, contact support@wunjo.online or join on') }} <a target="_blank" rel="noopener noreferrer" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions" class="text-accent-primary underline">GitHub</a>.`);
+
+            startDataTour('api', true);
+        }, 1000);
+    };
+</script>

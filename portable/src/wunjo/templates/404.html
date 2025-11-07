@@ -80,16 +80,16 @@
         </div>
     </div>
     <div class="group">
-        <h1 class=" opacity-60 group-hover:opacity-100 mt-5 text-heading-2-mobile lg:text-heading-1 uppercase font-rubic-ex-ultra text-dim-gray">Page not found</h1>
-        <a class="hidden mt-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 hover:bg-accent-hover text-dark-background bg-accent-primary" purpose="link" href="/">Go to the App</a></div>
+        <h1 class=" opacity-60 group-hover:opacity-100 mt-5 text-heading-2-mobile lg:text-heading-1 uppercase font-rubic-ex-ultra text-dim-gray">{{ _('Page not found') }}</h1>
+        <a class="hidden mt-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 hover:bg-accent-hover text-dark-background bg-accent-primary">{{ _('Go to the App') }}</a></div>
     </div>
 </div>
 
 {% endblock %}
 
 {% block footer %}
-<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-19 flex items-center justify-center"></p>
 <script>
-    document.querySelector('#author').innerHTML = `<a href="https://github.com/wladradchenko">By wladradchenko</a> © ${new Date().getFullYear()}. All rights reserved`;
+    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. {{ _('All rights reserved') }}</a>`;
 </script>
 {% endblock %}

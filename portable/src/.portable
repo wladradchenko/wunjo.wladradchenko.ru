@@ -1,0 +1,7 @@
+# This file activates the portable mode.
+# Features of the mode:
+# - All program files (models, settings, cache) are stored inside the application folder.
+# - Does not require administrator rights to operate.
+# - Does not leave traces in system folders (AppData/Library, etc.).
+#
+# To disable the portable mode, delete this file.

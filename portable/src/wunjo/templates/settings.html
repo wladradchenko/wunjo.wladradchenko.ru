@@ -1,9 +1,8 @@
 {% extends 'app.html' %}
-{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Wunjo{% endblock %}
 
-{% block nav %}Settings{% endblock %}
+{% block nav %}{{ _('Settings') }}{% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -14,23 +13,27 @@
 {% block sections %}
 <div class="flex-1 text-white flex flex-col justify-center w-full lg:py-16 py-8">
     <div class="relative flex max-lg:flex-col w-full items-start gap-10 lg:gap-0 mx-auto" id="settings-page">
-        <ul class="chapters lg:text-regular text-regular-mobile list-none overflow-auto whitespace-nowrap sticky top-[var(--navbar-height)] max-lg:p-5 bg-dark-background max-lg:w-full max-lg:justify-center lg:top-[calc(var(--navbar-height)+4rem)] lg:basis-1/4 lg:flex lg:flex-col gap-5 lg:items-start max-lg:mx-auto scrollbar-hide">
+        <ul class="mr-10 ml-5 max-md:ml-0 rounded-xl view-dark-background pxy-br chapters lg:text-regular text-regular-mobile list-none overflow-auto whitespace-nowrap sticky top-[var(--navbar-height)] max-lg:p-5 bg-dark-background max-lg:w-full max-lg:justify-center lg:top-[calc(var(--navbar-height)+4rem)] lg:basis-1/4 lg:flex lg:flex-col gap-5 lg:items-start max-lg:mx-auto scrollbar-hide">
             <li class="min-h-0 inline-block mr-5 last:mr-0 relative text-accent-primary">
-                <button onclick="scrollToHeader(this, 'General')">General</button>
+                <button onclick="scrollToHeader(this, `{{ _('General') }}`)">{{ _('General') }}</button>
+                <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
+            </li>
+            <li class="min-h-0 inline-block mr-5 last:mr-0">
+                <button onclick="scrollToHeader(this, `{{ _('API') }}`)">{{ _('API') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
         </ul>
-        <div class="max-w-[720px] max-lg:mx-auto">
-            <h1 class="text-heading-1-mobile lg:text-heading-1 font-black text-accent-primary uppercase mb-9 font-alumni">Settings</h1>
+        <div class="p-5 max-w-[720px] max-lg:mx-auto">
+            <h1 class="text-heading-1-mobile lg:text-heading-1 font-black text-accent-primary uppercase mb-9 font-alumni">{{ _('Settings') }}</h1>
             <main class="notion light-mode notion-page text-dim-gray text-m-mobile lg:text-m">
                 <div class="notion-viewport"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="General">
+                        <a class="notion-hash-link" title="{{ _('General') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">General</span>
+                        <span class="notion-h-title">{{ _('General') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -38,7 +41,7 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Which processor should I use?</span>
+                                <span class="notion-h-title">{{ _('Which processor should I use?') }}</span>
                             </span>
                         </h3>
                     </summary>
@@ -51,7 +54,22 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">What is port using?</span>
+                                <span class="notion-h-title">{{ _('Can I change cache folder?') }}</span>
+                            </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="cache-folder">
+                            <p>{{ _('Yes! You can change the location of the cache, including placing it in the') }} <button onclick="fetch('/open-cache/home').then(response => { if (response.ok) return response.json(); else throw new Error('Failed to open folder'); }).then(data => console.log(data)).catch(error => console.error('Error:', error));" type="button" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background">{{ _('software directory') }}</button> {{ _('or on another drive. However, please ensure that the new folder has the necessary permissions for processing and you have permissions to use folder. Just') }} <button onclick="createModalCacheFolderSetting()" type="button" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background"><i class="fa-solid fa-check"></i>{{ _('click here') }}</button> {{ _('to proceed.') }}</p>
+                        </div>
+                    </div>
+                </details>
+                <details class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">{{ _('What is port using?') }}</span>
                             </span>
                         </h3>
                     </summary>
@@ -64,19 +82,32 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can I get public link?</span>
+                                <span class="notion-h-title">{{ _('Want to go through the software tour once more?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text" id="system-public-share"></div>
+                        <div class="notion-text" id="show-tour"></div>
+                    </div>
+                </details>
+                <details style="{% if get_locale() == 'en' %}{% else %}display:none!important;{% endif %}" class="notion-toggle">
+                    <summary>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">{{ _('Show translation tool?') }}</span>
+                            </span>
+                        </h3>
+                    </summary>
+                    <div>
+                        <div class="notion-text" id="show-translator"></div>
                     </div>
                 </details>
                 <details class="notion-toggle">
                     <summary>
                         <h3 class="notion-h notion-h2 notion-h-indent-0"><span>
                             <div class="notion-header-anchor"></div>
-                            <span class="notion-h-title">What system resources?</span>
+                            <span class="notion-h-title">{{ _('What system resources?') }}</span>
                         </span>
                         </h3>
                     </summary>
@@ -84,19 +115,42 @@
                         <div class="notion-text" id="system-resources"></div>
                     </div>
                 </details>
+
+                <div class="notion-blank mb-4"></div>
+                <h4 class="notion-h notion-h3 notion-h-indent-0">
+                    <span>
+                        <div class="notion-header-anchor"></div>
+                        <a class="notion-hash-link" title="{{ _('API') }}">
+                            <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
+                        </a>
+                        <span class="notion-h-title">{{ _('API') }}</span>
+                    </span>
+                </h4>
                 <details class="notion-toggle">
                     <summary>
-                        <h3 class="notion-h notion-h2 notion-h-indent-0"><span>
-                            <div class="notion-header-anchor"></div>
-                            <span class="notion-h-title">Which application parameters?</span>
-                        </span>
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <span>
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">{{ _('Overview') }}</span>
+                            </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text" id="system-init-parameters"></div>
+                        <div class="notion-text">
+                            {{ _('This is built using OpenAPI 3.0.0. In the API documentation, you can find examples of requests to various modules and a tutorial on how to use them. The schema section provides detailed descriptions of each parameter and their accepted values. Access to the API is token-based, with tokens available to Wunjo Pro subscribers at wunjo.online. The application can also run on localhost or a public link and be used as an API for your projects. This is a Beta API, introduced in the latest version. For any questions, contact support@wunjo.online.') }}
+                        </div>
                     </div>
                 </details>
-                <div class="notion-blank">&nbsp;</div>
+                <details class="notion-toggle">
+                    <summary class="summary-url">
+                        <h3 class="notion-h notion-h2 notion-h-indent-0">
+                            <a href="/apidocs" class="hover-underline">
+                                <div class="notion-header-anchor"></div>
+                                <span class="notion-h-title">{{ _('Developer Docs') }}</span>
+                            </a>
+                        </h3>
+                    </summary>
+                </details>
             </main>
         </div>
     </div>
@@ -104,13 +158,24 @@
 
 <script>
     const models = {{ models|tojson|safe }};
+    const tour = {{ tour|tojson|safe }};
+
+    function initScript() {
+        const systemProcessor = document.querySelector('.system-processor') || null;
+        if (systemProcessor){
+            systemProcessor.remove();
+        }
+
+        const scriptSettings = document.createElement('script');
+        scriptSettings.src = "{{ url_for('static', filename='settings/js/settings.min.js') }}";
+        document.body.appendChild(scriptSettings);
+    };
 </script>
-<script type="text/javascript" src="/static/settings/js/settings.min.js"></script>
 {% endblock %}
 
 {% block footer %}
-<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-19 flex items-center justify-center"></p>
 <script>
-    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. All rights reserved</a>`;
+    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. {{ _('All rights reserved') }}</a>`;
 </script>
 {% endblock %}

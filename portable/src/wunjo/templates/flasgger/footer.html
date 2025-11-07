@@ -1,0 +1,11 @@
+<div class='swagger-ui'>
+    <div class="wrapper">
+        <section class="clear">
+            {{flasgger_config.footer_text | safe}}
+            <p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-19 flex items-center justify-center"></p>
+            <script>
+                document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. {{ _('All rights reserved') }}</a>`;
+            </script>
+        </section>
+    </div>
+</div>

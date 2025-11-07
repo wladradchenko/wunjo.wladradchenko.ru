@@ -1,0 +1,3850 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-10 18:04+0300\n"
+"PO-Revision-Date: 2025-01-17 19:27+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+# loading.html
+msgid "System is preparing"
+msgstr "El sistema se está preparando"
+
+msgid "NOTE"
+msgstr "NOTA"
+
+msgid "To ensure proper startup, run the application as"
+msgstr "Para asegurar un inicio correcto, ejecute la aplicación como"
+
+msgid "Loading the necessary modules may take a few moments. Please wait while everything is being set up."
+msgstr "La carga de los módulos necesarios puede tomar unos momentos. Por favor, espere mientras se configura todo."
+
+#: templates/404.html:83
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+#: templates/404.html:84
+msgid "Go to the App"
+msgstr "Ir a la aplicación"
+
+#: templates/404.html:93 templates/faq.html:379 templates/profile.html:283
+#: templates/settings.html:165
+msgid "All rights reserved"
+msgstr "Todos los derechos reservados"
+
+#: templates/app.html:10
+msgid "Navigation"
+msgstr "Navegación"
+
+#: templates/app.html:10
+msgid ""
+"In this section, you can check the current version status or any update "
+"indications. Access the «Workspace» by clicking on it, where you’ll find "
+"various modules, settings, your profile, along with tutorials, contact "
+"information for the author, and news updates. Alternatively, clicking on "
+"«Wunjo» will display information about the ongoing processing tasks, "
+"known as the log."
+msgstr ""
+"En esta sección, puede verificar el estado actual de la versión o cualquier "
+"indicación de actualización. Acceda al «Espacio de trabajo» haciendo clic en él, "
+"donde encontrará varios módulos, configuraciones, su perfil, junto con tutoriales, "
+"información de contacto del autor y actualizaciones de noticias. Alternativamente, "
+"haciendo clic en «Wunjo» se mostrará información sobre las tareas de procesamiento en curso, "
+"conocidas como el registro."
+
+#: templates/app.html:17
+msgid "Lite settings"
+msgstr "Configuración simplificada"
+
+#: templates/app.html:17
+msgid ""
+"Open settings. Customize the module to suit your needs. You can adjust "
+"the cache directory, switch processors, select the number of users and "
+"tasks, and much more. Be sure to review all the settings."
+msgstr ""
+"Abrir configuraciones. Personalice el módulo según sus necesidades. "
+"Puede ajustar el directorio de caché, cambiar procesadores, seleccionar la cantidad "
+"de usuarios y tareas, y mucho más. Asegúrese de revisar todas las configuraciones."
+
+#: templates/app.html:24
+msgid "The cache folder"
+msgstr "La carpeta de caché"
+
+msgid "size in settings. Downloaded models can occupy large amounts of disk space."
+msgstr "tamaño disponible en la configuración. Los modelos descargados pueden ocupar una gran cantidad de espacio en disco."
+
+#: templates/app.html:24 templates/components/modal.html:1767
+#: templates/components/modal.html:1768 templates/components/modal.html:1769
+msgid "GB"
+msgstr "GB"
+
+#: templates/app.html:24
+msgid "click"
+msgstr "haga clic"
+
+#: templates/app.html:26 templates/profile.html:5 templates/profile.html:30
+msgid "Profile"
+msgstr "Perfil"
+
+#: templates/app.html:27 templates/components/modal.html:1699
+#: templates/settings.html:5 templates/settings.html:24
+msgid "Settings"
+msgstr "Configuraciones"
+
+#: templates/app.html:28 templates/faq.html:5
+msgid "FAQ"
+msgstr "Preguntas Frecuentes"
+
+#: templates/app.html:32 templates/index.html:42 templates/lip_sync.html:73
+#: templates/live_portrait.html:5
+msgid "Live portrait"
+msgstr "Retrato en vivo"
+
+#: templates/app.html:33 templates/face_swap.html:5
+#: templates/generation.html:484 templates/index.html:43
+msgid "Face swap"
+msgstr "Intercambio de rostros"
+
+#: templates/app.html:34 templates/face_swap.html:39 templates/index.html:44
+#: templates/lip_sync.html:5 templates/live_portrait.html:618
+msgid "Lip sync"
+msgstr "Sincronización labial"
+
+#: templates/app.html:35 templates/enhancement.html:5
+#: templates/face_swap.html:48 templates/generation.html:475
+#: templates/index.html:45 templates/live_portrait.html:627
+#: templates/remove_object.html:45
+msgid "Enhancement"
+msgstr "Mejora"
+
+#: templates/app.html:36 templates/index.html:46 templates/remove_object.html:5
+msgid "Remove object"
+msgstr "Eliminar objeto"
+
+#: templates/app.html:37 templates/index.html:47
+#: templates/remove_background.html:5
+msgid "Remove background"
+msgstr "Eliminar fondo"
+
+#: templates/app.html:39 templates/generation.html:5
+msgid "Generation"
+msgstr "Generación"
+
+#: templates/app.html:40 templates/components/modal.html:1767
+#: templates/restyling.html:5
+msgid "Restyling"
+msgstr "Restilización"
+
+#: templates/app.html:42 templates/clone_voice.html:5 templates/index.html:50
+msgid "Clone voice"
+msgstr "Clonar voz"
+
+#: templates/app.html:43 templates/lip_sync.html:82 templates/separator.html:5
+msgid "Separator"
+msgstr "Separador"
+
+#: templates/app.html:45 templates/content.html:5 templates/index.html:5
+msgid "Workspace"
+msgstr "Espacio de trabajo"
+
+#: templates/app.html:62
+msgid "By using Wunjo, you agree to the"
+msgstr "Al usar Wunjo, usted acepta el"
+
+#: templates/app.html:62
+msgid "EULA"
+msgstr "Acuerdo de Licencia"
+
+#: templates/app.html:62 templates/login.html:59 templates/preload.html:141
+msgid "and"
+msgstr "y"
+
+#: templates/app.html:62 templates/login.html:60 templates/preload.html:142
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
+
+#: templates/app.html:63
+msgid "Made by"
+msgstr "Creado por"
+
+#: templates/clone_voice.html:22
+msgid "What text should be read?"
+msgstr "¿Qué texto se debe leer?"
+
+#: templates/clone_voice.html:23
+msgid ""
+"The text might look a little lost in translation without a language "
+"chosen in the Parameters by Footer. Just sayin’. Now is set"
+msgstr ""
+"El texto podría perderse un poco en la traducción sin un idioma "
+"seleccionado en los Parámetros por Pie de página. Solo digo. Ahora está configurado"
+
+#: templates/clone_voice.html:27 templates/generation.html:112
+msgid "Apply"
+msgstr "Aplicar"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid "Calendar"
+msgstr "Calendario"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid ""
+"You can select specific dates or date ranges to filter the content you "
+"have previously created."
+msgstr ""
+"Puede seleccionar fechas específicas o rangos de fechas para filtrar el contenido "
+"que ha creado previamente."
+
+#: templates/clone_voice.html:37 templates/components/modal.html:579
+#: templates/enhancement.html:19 templates/face_swap.html:23
+#: templates/generation.html:494 templates/lip_sync.html:23
+#: templates/live_portrait.html:23 templates/remove_background.html:25
+#: templates/remove_object.html:29 templates/restyling.html:25
+#: templates/separator.html:19
+msgid "Today"
+msgstr "Hoy"
+
+#: templates/clone_voice.html:91 templates/enhancement.html:70
+#: templates/face_swap.html:104 templates/lip_sync.html:139
+#: templates/live_portrait.html:685 templates/remove_background.html:76
+#: templates/remove_object.html:99 templates/restyling.html:471
+#: templates/separator.html:70
+msgid "Upload file"
+msgstr "Subir archivo"
+
+#: templates/clone_voice.html:93
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. About module"
+" Clone Voice, look this"
+msgstr ""
+"Arrastre y suelte un archivo o seleccione uno. Puede subir un archivo de audio. "
+"Sobre el módulo Clonar Voz, mire esto"
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "tutorial"
+msgstr "tutorial"
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "Briefly"
+msgstr "Brevemente"
+
+#: templates/clone_voice.html:93
+msgid ""
+"All red blocks should turn green. Also, use the toggle and make sure to "
+"select the right clone language before pressing"
+msgstr ""
+"Todos los bloques rojos deben volverse verdes. Además, use el interruptor "
+"y asegúrese de seleccionar el idioma de clonación correcto antes de presionar"
+
+#: templates/content.html:49
+msgid "Date Created"
+msgstr "Fecha de creación"
+
+#: templates/content.html:57
+msgid "Control panel"
+msgstr "Panel de control"
+
+#: templates/content.html:57
+msgid ""
+"In the file manager, you have the ability to delete, open, and rename "
+"content. Additionally, you can utilize features such as redo, undo, "
+"refresh, and return to the home directory for efficient management of "
+"your files."
+msgstr ""
+"En el administrador de archivos, tiene la capacidad de eliminar, abrir y "
+"renombrar contenido. Además, puede utilizar funciones como rehacer, deshacer, "
+"actualizar y volver al directorio principal para una gestión eficiente de "
+"sus archivos."
+
+#: templates/content.html:62 templates/index.html:21
+msgid "Explore"
+msgstr "Explorar"
+
+#: templates/content.html:63 templates/index.html:22
+msgid "Content"
+msgstr "Contenido"
+
+#: templates/content.html:72
+msgid "Open"
+msgstr "Abrir"
+
+#: templates/components/modal.html:118 templates/components/modal.html:381
+#: templates/components/modal.html:497 templates/components/view.html:107
+#: templates/components/view.html:220 templates/components/view.html:415
+#: templates/content.html:77
+msgid "Rename"
+msgstr "Renombrar"
+
+#: templates/components/modal.html:123 templates/components/modal.html:386
+#: templates/components/modal.html:502 templates/components/view.html:420
+#: templates/content.html:82
+msgid "Delete"
+msgstr "Eliminar"
+
+#: templates/components/modal.html:142 templates/components/modal.html:405
+#: templates/components/modal.html:521 templates/components/view.html:439
+#: templates/content.html:96
+msgid "Option"
+msgstr "Opción"
+
+#: templates/content.html:125
+msgid "Manager view"
+msgstr "Vista del administrador"
+
+#: templates/content.html:125
+msgid ""
+"In desktop mode, simply double-click on a folder or file to open it. In "
+"mobile mode, tap on the open button to access your folders and files. "
+"Let’s open some file in folder to display content."
+msgstr ""
+"En modo escritorio, simplemente haga doble clic en una carpeta o archivo para abrirlo. "
+"En modo móvil, toque el botón abrir para acceder a sus carpetas y archivos. "
+"Vamos a abrir algún archivo en la carpeta para mostrar el contenido."
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid "Filter"
+msgstr "Filtro"
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid ""
+"You can display specific types of content such as images, videos, audio, "
+"groups of images, or all content together."
+msgstr ""
+"Puede mostrar tipos específicos de contenido, como imágenes, videos, audio, "
+"grupos de imágenes o todo el contenido junto."
+
+#: templates/enhancement.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Enhancement module, check out "
+"this"
+msgstr ""
+"Arrastre y suelte un archivo o seleccione uno. Puede cargar un video o una imagen. "
+"Para obtener instrucciones sobre cómo utilizar el módulo de mejora, consulte este"
+
+#: templates/enhancement.html:72
+msgid "Upload file, and then press the"
+msgstr "Cargar archivo, y luego presione el"
+
+#: templates/components/view.html:127 templates/components/view.html:240
+#: templates/face_swap.html:36 templates/generation.html:472
+#: templates/lip_sync.html:70 templates/live_portrait.html:615
+#: templates/remove_object.html:42
+msgid "Suggest"
+msgstr "Sugerir"
+
+#: templates/face_swap.html:39 templates/live_portrait.html:618
+msgid ""
+"Ready to give those lips some life? After swapping faces, it’s time to "
+"sync those pouts with the audio. Lip animation should always follow the "
+"face swap for maximum lip-syncing magic. Get ready to make those lips "
+"sing—right"
+msgstr ""
+"¿Listo para darle vida a esos labios? Después de intercambiar rostros, es hora de "
+"sincronizar esos labios con el audio. La animación de labios siempre debe seguir "
+"al intercambio de rostros para lograr la máxima magia de sincronización labial. Prepárese para hacer que esos labios canten—"
+
+#: templates/face_swap.html:39 templates/lip_sync.html:82
+#: templates/live_portrait.html:618 templates/remove_object.html:45
+msgid "here"
+msgstr "aquí"
+
+#: templates/components/modal.html:1491 templates/components/modal.html:1498
+#: templates/components/modal.html:1728 templates/face_swap.html:43
+#: templates/generation.html:479 templates/index.html:30
+#: templates/lip_sync.html:47 templates/lip_sync.html:77
+#: templates/live_portrait.html:622
+msgid "or"
+msgstr "o"
+
+#: templates/face_swap.html:48 templates/live_portrait.html:627
+msgid ""
+"Got a few facial quirks to iron out? No worries! If there are any "
+"imperfections, you’ve got the tools to smooth them out.  Remember, a big "
+"gap in resolution between avatar face and target content can throw off "
+"the vibe. For optimal outcomes, ensure consistency in resolution, or "
+"utilize the facial enhancement tools available in this"
+msgstr ""
+"¿Tiene algunos rasgos faciales que necesita suavizar? ¡No se preocupe! Si hay imperfecciones, tiene las herramientas para suavizarlas. Recuerde, una gran diferencia en resolución entre la cara del avatar y el contenido objetivo puede afectar el ambiente. Para obtener resultados óptimos, asegúrese de la consistencia en la resolución o utilice las herramientas de mejora facial disponibles en este"
+
+#: templates/face_swap.html:48 templates/lip_sync.html:73
+#: templates/live_portrait.html:627
+msgid "module"
+msgstr "módulo"
+
+#: templates/face_swap.html:106
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Face Swap module, check out "
+"this"
+msgstr ""
+"Arrastre y suelte un archivo o seleccione uno. Puede cargar un video o una imagen. Para obtener instrucciones sobre cómo utilizar el módulo de intercambio de rostros, consulte este"
+
+#: templates/face_swap.html:106 templates/lip_sync.html:141
+#: templates/live_portrait.html:687 templates/remove_background.html:78
+msgid "All red blocks should turn green, and then press the"
+msgstr "Todos los bloques rojos deben volverse verdes, y luego presione el"
+
+#: templates/faq.html:18 templates/faq.html:45 templates/faq.html:48
+msgid "About"
+msgstr "Acerca de"
+
+#: templates/faq.html:22 templates/faq.html:108 templates/faq.html:111
+msgid "Your Content"
+msgstr "Tu contenido"
+
+#: templates/faq.html:26 templates/faq.html:144 templates/faq.html:147
+msgid "Creating & Editing"
+msgstr "Creación y edición"
+
+#: templates/faq.html:30 templates/faq.html:223 templates/faq.html:226
+msgid "Subscriptions & Billing"
+msgstr "Suscripciones y facturación"
+
+#: templates/faq.html:34 templates/faq.html:319 templates/faq.html:322
+msgid "Tech Issues"
+msgstr "Problemas técnicos"
+
+#: templates/faq.html:39
+msgid "FREQUENTLY ASKED QUESTIONS"
+msgstr "PREGUNTAS FRECUENTES"
+
+#: templates/faq.html:56
+msgid "What is Wunjo?"
+msgstr "¿Qué es Wunjo?"
+
+#: templates/faq.html:61
+msgid ""
+"Wunjo is an idea-to-content platform that utilizes combinations of AI. "
+"There’s a lot of technical stuff involved, but basically, you "
+"reincarnation your content."
+msgstr ""
+"Wunjo es una plataforma de idea a contenido que utiliza combinaciones de IA. "
+"Hay muchas cosas técnicas involucradas, pero básicamente, reencarnas tu contenido."
+
+#: templates/faq.html:69
+msgid "How does Wunjo work?"
+msgstr "¿Cómo funciona Wunjo?"
+
+#: templates/faq.html:74
+msgid ""
+"I could tell you, but … you can find out this in open source code. "
+"Basically, this is magic. And this is uniq project! It doesn’t exist "
+"anywhere else on the market! I’m pretty darn excited about it!"
+msgstr ""
+"Podría contártelo, pero ... puedes descubrirlo en el código abierto. Básicamente, esto es magia. ¡Y este es un proyecto único! ¡No existe en ningún otro lugar del mercado! ¡Estoy muy emocionado al respecto!"
+
+#: templates/faq.html:82
+msgid "Do you have a publicly accessible API?"
+msgstr "¿Tiene una API accesible públicamente?"
+
+#: templates/faq.html:87
+msgid ""
+"Yes. You can use the application in API mode and connect it to your "
+"services."
+msgstr ""
+"Sí. Puedes usar la aplicación en modo API y conectarla a tus servicios."
+
+#: templates/faq.html:94
+msgid "It’s free?"
+msgstr "¿Es gratis?"
+
+#: templates/faq.html:100
+msgid ""
+"Yes. The community edition version is absolutely free and you will able "
+"to find open source code. However, the professional version is available "
+"by subscription. This is a kind of reward to the author that he continues"
+" to develop the project, and gives you access so that you can use it in "
+"your projects and even freely earn money from the project, for example, "
+"using API or temporary links. The project is designed so that you can "
+"have your service in your pocket with minimal effort and without "
+"technical skills."
+msgstr ""
+"Sí. La versión de la edición comunitaria es absolutamente gratuita y "
+"puedes encontrar el código abierto. Sin embargo, la versión profesional "
+"está disponible por suscripción. Esto es una especie de recompensa al "
+"autor para que continúe desarrollando el proyecto y te da acceso para "
+"que puedas usarlo en tus proyectos e incluso ganar dinero con él, por "
+"ejemplo, usando la API o enlaces temporales. El proyecto está diseñado "
+"para que puedas tener tu servicio en tu bolsillo con un mínimo esfuerzo "
+"y sin habilidades técnicas."
+
+#: templates/faq.html:119
+msgid "Can I use the content I made in Wunjo for commercial purposes?"
+msgstr ""
+"¿Puedo usar el contenido que creé en Wunjo con fines comerciales?"
+
+#: templates/faq.html:124
+msgid ""
+"It doesn’t matter if your content is created in a community edition "
+"version or a professional subscription. If it has nothing prohibited or "
+"is not intended to discredit anyone then, whatever you create using Wunjo"
+" can be used commercially, or non-commercially."
+msgstr ""
+"No importa si tu contenido se crea en una versión de edición comunitaria "
+"o una suscripción profesional. Si no tiene nada prohibido o no está "
+"destinado a desacreditar a nadie, entonces, cualquier cosa que crees con "
+"Wunjo puede ser utilizada comercial o no comercialmente."
+
+#: templates/faq.html:132
+msgid "Are the content I created in Wunjo private?"
+msgstr "¿El contenido que creo en Wunjo es privado?"
+
+#: templates/faq.html:137
+msgid ""
+"Yes. The content you create is completely private and stored on your "
+"device. Only you have access and you are responsible for the content you "
+"create."
+msgstr ""
+"Sí. El contenido que creas es completamente privado y se almacena en tu "
+"dispositivo. Solo tú tienes acceso y eres responsable del contenido que "
+"creas."
+
+#: templates/faq.html:155
+msgid "What is the resolution of the content?"
+msgstr "¿Cuál es la resolución del contenido?"
+
+#: templates/faq.html:160
+msgid ""
+"Baseline content output is Full HD and HD resolution. However, you "
+"customize the application yourself and can increase or decrease the "
+"resolution."
+msgstr ""
+"La salida de contenido base es en resolución Full HD y HD. Sin embargo, "
+"puedes personalizar la aplicación tú mismo y aumentar o disminuir la "
+"resolución."
+
+#: templates/faq.html:168
+msgid "How do I improve quality of output content?"
+msgstr "¿Cómo puedo mejorar la calidad del contenido de salida?"
+
+#: templates/faq.html:173
+msgid ""
+"Pay attention to the suggest option. When clicked, there will be a list "
+"of possible actions to improve the quality of the content received."
+msgstr ""
+"Presta atención a la opción de sugerencia. Al hacer clic, aparecerá una "
+"lista de posibles acciones para mejorar la calidad del contenido "
+"recibido."
+
+#: templates/faq.html:181
+msgid "Can I increase videos or audio duration?"
+msgstr "¿Puedo aumentar la duración de los videos o audios?"
+
+#: templates/faq.html:186
+msgid ""
+"Yes. You can freely change the basic settings, including the duration of "
+"the received content."
+msgstr ""
+"Sí. Puedes cambiar libremente las configuraciones básicas, incluida la "
+"duración del contenido recibido."
+
+#: templates/faq.html:194
+msgid "Can I improve application performance?"
+msgstr "¿Puedo mejorar el rendimiento de la aplicación?"
+
+#: templates/faq.html:200
+msgid ""
+"Yes. In the settings, pay attention to the parameters for video memory, "
+"RAM, and the number of simultaneously running tasks. You determine the "
+"performance of the application for yourself based on your needs and your "
+"device. You can tighten the settings so you can do other things on your "
+"device at the same time, or loosen them so the app uses more of your "
+"device’s resources."
+msgstr ""
+"Sí. En la configuración, presta atención a los parámetros de memoria "
+"de video, RAM y el número de tareas que se ejecutan simultáneamente. Tú "
+"determinas el rendimiento de la aplicación según tus necesidades y tu "
+"dispositivo. Puedes ajustar la configuración para hacer otras cosas en "
+"tu dispositivo al mismo tiempo o aflojarlas para que la aplicación use "
+"más recursos de tu dispositivo."
+
+#: templates/faq.html:209
+msgid "Can I turn off my internet connection?"
+msgstr "¿Puedo desconectar mi conexión a internet?"
+
+#: templates/faq.html:215
+msgid ""
+"Yes. You can disable your internet connection, but you will need to make "
+"sure that all the required models for your module are downloaded and the "
+"page code is loaded into the cache. You can do this in the settings, as "
+"well as following the instructions for manually downloading models. When "
+"first run, the models are downloaded automatically, and if the generation"
+" is successful, then the model update is no longer checked. However, in "
+"the settings you can choose to check for model updates. Anyway, please "
+"note that the Internet is required to verify the license and obtain the "
+"closed part of the code, which is licensed under a license other than the "
+"public one and after verified you can turn off internet connection."
+msgstr ""
+"Sí. Puedes desactivar tu conexión a Internet, pero debes asegurarte de que todos los modelos requeridos para tu módulo estén descargados y que el código de la página esté cargado en la caché. Puedes hacerlo en la configuración, así como siguiendo las instrucciones para descargar los modelos manualmente. Al primer inicio, los modelos se descargan automáticamente, y si la generación es exitosa, ya no se verifica la actualización del modelo. Sin embargo, en la configuración puedes optar por verificar las actualizaciones de los modelos. De todos modos, ten en cuenta que se requiere Internet para verificar la licencia y obtener la parte cerrada del código, que está bajo una licencia distinta a la pública, y después de la verificación, puedes desactivar la conexión a Internet."
+
+#: templates/faq.html:234
+msgid "How long does the subscription last?"
+msgstr "¿Cuánto dura la suscripción?"
+
+#: templates/faq.html:239
+msgid ""
+"Depending on the plan you choose. The subscription is counted from the "
+"time of purchase. And when it stops, you will receive a notification."
+msgstr ""
+"Depende del plan que elijas. La suscripción se cuenta desde el momento de la compra. Y cuando termine, recibirás una notificación."
+
+#: templates/faq.html:247
+msgid "How do I cancel my subscription?"
+msgstr "¿Cómo cancelo mi suscripción?"
+
+#: templates/faq.html:252
+msgid ""
+"Email us at support@wunjo.online if you really want to say goodbye to "
+"your subsription. Please note that if you have an active subscription, "
+"and you take this step, your subscription will be invalidated, and no "
+"refund will be provided."
+msgstr ""
+"Envíanos un correo a support@wunjo.online si realmente deseas cancelar tu suscripción. Ten en cuenta que si tienes una suscripción activa y das este paso, tu suscripción será anulada y no se proporcionará un reembolso."
+
+#: templates/faq.html:260
+msgid "Can my subscription be blocked?"
+msgstr "¿Puede bloquearse mi suscripción?"
+
+#: templates/faq.html:265
+msgid ""
+"No. However, if your unique address is noticed to change frequently, with"
+" each suspicious activity, you will be asked to confirm that it is you to"
+" continue the session and gain access to the professional subscription, "
+"otherwise the community edition version will open."
+msgstr ""
+"No. Sin embargo, si se observa que tu dirección única cambia con frecuencia con cada actividad sospechosa, se te pedirá que confirmes que eres tú para continuar la sesión y acceder a la suscripción profesional, de lo contrario, se abrirá la versión de la edición comunitaria."
+
+#: templates/faq.html:273
+msgid ""
+"If I start a subscription, is it just for during period, or will it renew"
+" automatically?"
+msgstr ""
+"Si inicio una suscripción, ¿es solo por un período determinado o se renovará automáticamente?"
+
+#: templates/faq.html:278
+msgid ""
+"Not. This will not be automatically renew every period, so you don’t have"
+" to worry about anything. You only receive a notification that your "
+"subscription has ended."
+msgstr "No. Esta no se renovará automáticamente cada período, por lo que no tienes que preocuparte por nada. Solo recibirás una notificación de que tu suscripción ha terminado."
+
+#: templates/faq.html:286
+msgid "What is the difference between Professional and Community Edition?"
+msgstr "¿Cuál es la diferencia entre la edición profesional y la edición comunitaria?"
+
+#: templates/faq.html:292
+msgid "You can find out more at"
+msgstr "Puedes obtener más información en"
+
+#: templates/faq.html:301
+msgid "Why do you charge money?"
+msgstr "¿Por qué cobran dinero?"
+
+#: templates/faq.html:307
+msgid ""
+"Believe it or not, each time you click generate, it’s the result of "
+"countless sleepless nights and hours of dedicated development. "
+"Subscribing to the professional version is a way to support the author’s "
+"hard work and motivate ongoing project development, including the "
+"addition of new features and enhancements to existing ones."
+msgstr ""
+"Créelo o no, cada vez que haces clic en generar, es el resultado de innumerables noches de insomnio y horas de desarrollo dedicado. Suscribirse a la versión profesional es una manera de apoyar el arduo trabajo del autor y motivar el desarrollo continuo del proyecto, incluyendo la adición de nuevas funciones y mejoras a las existentes."
+
+#: templates/faq.html:309
+msgid ""
+"Moreover, the author has designed the application not only for your "
+"personal use but also to enable you to share access with friends or "
+"integrate the API into your projects. This means you can leverage all the"
+" application’s features freely, even for commercial purposes."
+msgstr ""
+"Además, el autor ha diseñado la aplicación no solo para tu uso personal, sino también para que puedas compartir el acceso con amigos o integrar el API en tus proyectos. Esto significa que puedes aprovechar todas las funciones de la aplicación libremente, incluso para fines comerciales."
+
+#: templates/faq.html:311
+msgid ""
+"Your subscription directly contributes to the continued improvement and "
+"sustainability of the project, ensuring you receive the best possible "
+"experience. Thank you for supporting this work!"
+msgstr ""
+"Tu suscripción contribuye directamente a la mejora continua y la sostenibilidad del proyecto, asegurando que recibas la mejor experiencia posible. ¡Gracias por apoyar este trabajo!"
+
+#: templates/faq.html:330
+msgid "What if I have questions that aren’t answered here?"
+msgstr "¿Qué hacer si tengo preguntas que no se responden aquí?"
+
+#: templates/faq.html:336
+msgid "Head over to the support channel on"
+msgstr "Dirígete al canal de soporte en"
+
+#: templates/faq.html:336
+msgid ""
+"and say hi to the community while you’re there! There’s also a really "
+"robust FAQ section there that may have exactly the answer you need. If "
+"you have any questions, you can contact the author or"
+msgstr ""
+"y saluda a la comunidad mientras estés allí. También hay una sección de "
+"preguntas frecuentes muy completa que puede tener exactamente la respuesta "
+"que necesitas. Si tienes alguna pregunta, puedes contactar al autor o"
+" escribir a"
+
+#: templates/generation.html:23
+msgid "What is your prompt?"
+msgstr "¿Cuál es tu solicitud?"
+
+#: templates/generation.html:33 templates/generation.html:70
+#: templates/generation.html:235 templates/generation.html:272
+#: templates/restyling.html:61 templates/restyling.html:98
+#: templates/restyling.html:247 templates/restyling.html:284
+msgid "Seed"
+msgstr "Semilla"
+
+#: templates/generation.html:37 templates/generation.html:74
+msgid "e.g."
+msgstr "p.ej."
+
+#: templates/generation.html:44 templates/generation.html:81
+#: templates/generation.html:246 templates/generation.html:283
+#: templates/restyling.html:72 templates/restyling.html:109
+#: templates/restyling.html:258 templates/restyling.html:295
+msgid "Strength"
+msgstr "Fuerza"
+
+#: templates/generation.html:56 templates/generation.html:93
+#: templates/generation.html:258 templates/generation.html:295
+#: templates/restyling.html:84 templates/restyling.html:121
+#: templates/restyling.html:270 templates/restyling.html:307
+msgid "Scale"
+msgstr "Escala"
+
+#: templates/generation.html:106 templates/generation.html:365
+#: templates/restyling.html:134 templates/restyling.html:377
+msgid "Negative prompt"
+msgstr "Solicitud negativa"
+
+#: templates/generation.html:108 templates/generation.html:367
+#: templates/restyling.html:136 templates/restyling.html:379
+msgid "e.g. ugly, bad, terrible (optional)"
+msgstr "p.ej., feo, malo, terrible (opcional)"
+
+#: templates/generation.html:125
+msgid "Generation settings"
+msgstr "Configuraciones de generación"
+
+#: templates/generation.html:126
+msgid "You can either fine-tune the parameters to"
+msgstr "Puedes ajustar los parámetros para"
+
+#: templates/generation.html:126
+msgid "generate"
+msgstr "generar"
+
+#: templates/generation.html:126
+msgid "video or take control by manually"
+msgstr "video o tomar el control manualmente"
+
+#: templates/generation.html:126 templates/generation.html:127
+msgid "redraw"
+msgstr "redibujar"
+
+#: templates/generation.html:126
+msgid ""
+"tweaking the elements within the image before creation. Dive in and make "
+"it truly yours."
+msgstr ""
+"ajustando los elementos dentro de la imagen antes de la creación. Sumérgete y hazlo verdaderamente tuyo."
+
+#: templates/generation.html:127
+msgid "You can manually"
+msgstr "Puedes manualmente"
+
+#: templates/generation.html:127
+msgid "tweaking the elements within the image. Dive in and make it truly yours."
+msgstr ""
+"ajustar los elementos dentro de la imagen. Sumérgete y hazlo verdaderamente tuyo."
+
+#: templates/generation.html:134
+msgid "Redraw"
+msgstr "Redibujar"
+
+#: templates/components/modal.html:1295 templates/generation.html:137
+msgid "Generate"
+msgstr "Generar"
+
+#: templates/generation.html:154
+msgid "CUSTOMIZING GENERATION"
+msgstr "MODIFICACIÓN DE LA GENERACIÓN"
+
+#: templates/generation.html:158
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. Additionally, you can regenerate the"
+" image again, or replace it with another one."
+msgstr ""
+"Seleccione un objeto y escena, configure parámetros y propiedades, y cámbielos con una instrucción. Además, puede regenerar la imagen o reemplazarla por otra."
+
+#: templates/components/modal.html:703 templates/components/modal.html:882
+#: templates/components/modal.html:1051 templates/components/modal.html:1211
+#: templates/generation.html:195 templates/generation.html:412
+#: templates/live_portrait.html:135 templates/restyling.html:209
+msgid "Image input"
+msgstr "Entrada de imagen"
+
+#: templates/generation.html:205 templates/generation.html:423
+msgid ""
+"Generation... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Generación... Los botones están bloqueados hasta que termine. Toque la pantalla para ver los detalles."
+
+#: templates/generation.html:212 templates/restyling.html:44
+#: templates/restyling.html:227
+msgid "Positive prompt"
+msgstr "Instrucción positiva"
+
+#: templates/generation.html:214 templates/restyling.html:46
+#: templates/restyling.html:229
+msgid "Describe the change you want to make"
+msgstr "Describa el cambio que desea realizar"
+
+#: templates/generation.html:216
+msgid "Inspire me"
+msgstr "Inspírame"
+
+#: templates/generation.html:220
+msgid "NEW"
+msgstr "NUEVO"
+
+#: templates/generation.html:312 templates/generation.html:339
+#: templates/restyling.html:324 templates/restyling.html:351
+msgid "Control strength"
+msgstr "Fuerza de control"
+
+#: templates/generation.html:324 templates/generation.html:351
+#: templates/generation.html:445 templates/restyling.html:336
+#: templates/restyling.html:363
+msgid "Blur factor"
+msgstr "Factor de desenfoque"
+
+#: templates/generation.html:375 templates/live_portrait.html:599
+#: templates/restyling.html:148 templates/restyling.html:391
+msgid "Continue"
+msgstr "Continuar"
+
+#: templates/generation.html:392
+msgid "OUTPAINTING"
+msgstr "OUTPAINTING"
+
+#: templates/generation.html:396
+msgid ""
+"Please note that the model used is version 1.5 with a resolution limit of"
+" 1280x1280 for best quality."
+msgstr ""
+"Tenga en cuenta que el modelo utilizado es la versión 1.5 con un límite de resolución de 1280x1280 para obtener la mejor calidad."
+
+#: templates/generation.html:430
+msgid "Prompt"
+msgstr "Instrucción"
+
+#: templates/generation.html:432
+msgid "(Optional) Describe what should be in the new parts"
+msgstr "(Opcional) Describa lo que debería estar en las nuevas partes"
+
+#: templates/generation.html:475
+msgid ""
+"So, you’ve created the video. But wait, high-resolution from source "
+"content can sometimes reveal a few sneaky flaws. No sweat! Enhancement"
+msgstr ""
+"Entonces, ha creado el video. Pero espere, el contenido de alta resolución a veces puede revelar algunos defectos ocultos. ¡No se preocupe! La mejora..."
+
+#: templates/generation.html:475
+msgid "tools"
+msgstr "herramientas"
+
+#: templates/generation.html:475
+msgid "are here to smooth out those rough spots."
+msgstr "están aquí para suavizar esas asperezas."
+
+#: templates/generation.html:484
+msgid "Lost a face in the content? It can be restored with a"
+msgstr "¿Perdió una cara en el contenido? Se puede restaurar con un"
+
+#: templates/generation.html:484
+msgid "face swap"
+msgstr "intercambio de caras"
+
+#: templates/generation.html:484
+msgid "by one click."
+msgstr "con un solo clic."
+
+#: templates/generation.html:552
+msgid "Upload file or input text"
+msgstr "Sube un archivo o introduce texto"
+
+#: templates/generation.html:554
+msgid ""
+"Drag and drop a file or select one. You can upload an image or use input "
+"for a text. For instructions on how to use the Generation module, check "
+"out this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes subir una imagen o "
+"utilizar la entrada para texto. Para instrucciones sobre cómo usar el "
+"módulo de generación, consulta este"
+
+#: templates/generation.html:554
+msgid "Use an image or a text, and then press the"
+msgstr "Utiliza una imagen o un texto, y luego presiona el botón"
+
+#: templates/index.html:19
+msgid "Switch view"
+msgstr "Cambiar vista"
+
+#: templates/index.html:19
+msgid ""
+"Switch to content to view your data. Each user can see the content they "
+"previously created based on their IP address."
+msgstr ""
+"Cambia a contenido para ver tus datos. Cada usuario puede ver el contenido "
+"que creó anteriormente basado en su dirección IP."
+
+#: templates/index.html:30
+msgid "Smart search"
+msgstr "Búsqueda inteligente"
+
+#: templates/index.html:30
+msgid ""
+"For advanced tasks, utilize the smart search feature. Discover "
+"recommendations like"
+msgstr ""
+"Para tareas avanzadas, utiliza la función de búsqueda inteligente. Descubre "
+"recomendaciones como"
+
+#: templates/index.html:30
+msgid "record a song fragment with a cloned voice"
+msgstr "grabar un fragmento de canción con una voz clonada"
+
+#: templates/index.html:30
+msgid "analysis content"
+msgstr "análisis de contenido"
+
+#: templates/index.html:30
+msgid "create a talking person from scratch"
+msgstr "crear una persona que hable desde cero"
+
+#: templates/index.html:30
+msgid ""
+"and etc. If you don’t find the help you need, contact to at "
+"support@wunjo.online."
+msgstr ""
+"y más. Si no encuentras la ayuda que necesitas, contáctanos en "
+"support@wunjo.online."
+
+#: templates/index.html:30
+msgid "Additionally, explore"
+msgstr "Además, explora"
+
+#: templates/index.html:30
+msgid "for exclusive video tutorials to master advanced features."
+msgstr "para tutoriales en video exclusivos para dominar funciones avanzadas."
+
+#: templates/index.html:35
+msgid "What can I help with? (Any language)"
+msgstr "¿En qué puedo ayudar? (En cualquier idioma)"
+
+#: templates/index.html:38
+msgid "Quick tips for best results"
+msgstr "Consejos rápidos para mejores resultados"
+
+#: templates/index.html:38
+msgid ""
+"Each module includes easy-to-follow tips to help you achieve the best "
+"quality outcomes. Start here for straightforward guidance tailored to "
+"your needs."
+msgstr ""
+"Cada módulo incluye consejos fáciles de seguir para ayudarte a lograr los "
+"mejores resultados de calidad. Comienza aquí para obtener orientación "
+"sencilla adaptada a tus necesidades."
+
+#: templates/index.html:48
+msgid "Generation content"
+msgstr "Contenido de generación"
+
+#: templates/index.html:49
+msgid "Restyling visual"
+msgstr "Restyling visual"
+
+#: templates/index.html:51
+msgid "Audio separator"
+msgstr "Separador de audio"
+
+#: templates/lip_sync.html:37
+msgid "Model select"
+msgstr "Selección de modelo"
+
+#: templates/lip_sync.html:39
+msgid "Fast Method"
+msgstr "Método rápido"
+
+#: templates/lip_sync.html:39
+msgid ""
+"This method is quicker, but the lips might appear inaccurate and blurred."
+" You can enhance the quality using the Enhancement module."
+msgstr ""
+"Este método es más rápido, pero los labios pueden aparecer inexactos y borrosos. "
+"Puedes mejorar la calidad utilizando el módulo de mejora."
+
+#: templates/lip_sync.html:43
+msgid "Fast"
+msgstr "Rápido"
+
+#: templates/lip_sync.html:49
+msgid "Latent Diffusion Method"
+msgstr "Método de difusión latente"
+
+#: templates/lip_sync.html:49
+msgid ""
+"This provides more accurate results and visually appealing lip "
+"animations, though the face might occasionally twitch and the mouth may "
+"not fully close."
+msgstr ""
+"Este método proporciona resultados más precisos y animaciones de labios "
+"visualmente atractivas, aunque el rostro puede moverse ocasionalmente y "
+"la boca puede no cerrarse completamente."
+
+#: templates/lip_sync.html:54
+msgid "Best"
+msgstr "Mejor"
+
+#: templates/lip_sync.html:73
+msgid ""
+"So, you’ve animated those lips. But you think the animation of the lips "
+"is not natural? Try, if the original video, processing it in live "
+"portrait mode silence, to make the mouth closed in"
+msgstr ""
+"Entonces, has animado esos labios. ¿Pero crees que la animación de los labios "
+"no es natural? Intenta procesar el video original en modo retrato en vivo con silencio, "
+"para cerrar la boca en"
+
+#: templates/lip_sync.html:73
+msgid "and came back to lip sync after."
+msgstr "y luego vuelve a la sincronización de labios después."
+
+#: templates/lip_sync.html:82
+msgid ""
+"Got some extra lip action going on? Say goodbye to noisy audio and hello "
+"to separate vocals and music accompaniment in"
+msgstr ""
+"¿Tienes algunos movimientos extra de labios? Despídete del audio ruidoso y di hola "
+"a las voces separadas y el acompañamiento musical en"
+
+#: templates/lip_sync.html:82
+msgid "It’s like magic to improve your lip sync!"
+msgstr "¡Es como magia para mejorar tu sincronización de labios!"
+
+#: templates/lip_sync.html:141
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Lip Sync module, check out this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video o una imagen. "
+"Para instrucciones sobre cómo usar el módulo de sincronización de labios, consulta esto"
+
+#: templates/lip_sync.html:141
+msgid "For better video, use the «silence» mode in"
+msgstr "Para un mejor video, utiliza el modo «silencio» en"
+
+#: templates/lip_sync.html:141
+msgid "manually retargeting live portrait"
+msgstr "redireccionamiento manual de retrato en vivo"
+
+#: templates/lip_sync.html:141
+msgid "to pre-process the mouth to a closed state before applying lip sync."
+msgstr ""
+"para preprocesar la boca a un estado cerrado antes de aplicar la sincronización de labios."
+
+#: templates/live_portrait.html:37
+msgid ""
+"Choose how often the effect is applied to the frames: a higher number "
+"applies it less frequently, while a lower number applies it more often."
+msgstr ""
+"Elige con qué frecuencia se aplica el efecto a los cuadros: un número más alto "
+"lo aplica con menos frecuencia, mientras que un número más bajo lo aplica con más frecuencia."
+
+#: templates/live_portrait.html:41
+msgid "Frequency"
+msgstr "Frecuencia"
+
+#: templates/live_portrait.html:53
+msgid ""
+"Set the lower and upper thresholds for actions. Adjust values to achieve "
+"the desired accuracy."
+msgstr ""
+"Establece los umbrales inferior y superior para las acciones. Ajusta los valores para "
+"lograr la precisión deseada."
+
+#: templates/live_portrait.html:58
+msgid "Range"
+msgstr "Rango"
+
+#: templates/live_portrait.html:75
+msgid "Smooth action on all frames"
+msgstr "Acción suave en todos los cuadros"
+
+#: templates/components/modal.html:1704 templates/components/modal.html:1746
+#: templates/live_portrait.html:81
+msgid "Submit"
+msgstr "Enviar"
+
+#: templates/live_portrait.html:98 templates/restyling.html:405
+msgid "CUSTOMIZING FRAMES"
+msgstr "PERSONALIZANDO CUADROS"
+
+#: templates/live_portrait.html:102
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change face movement. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"Prepara tu contenido. Selecciona un objeto y una escena, configura los parámetros y "
+"propiedades, y cambia el movimiento de la cara. Cuando estés satisfecho con el "
+"resultado, pasa al siguiente cuadro."
+
+#: templates/live_portrait.html:142
+msgid "Qick"
+msgstr "Rápido"
+
+#: templates/live_portrait.html:152
+msgid ""
+"Retargeting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Reorientando... Los botones están bloqueados hasta que se termine. Toca en la pantalla para "
+"ver los detalles."
+
+#: templates/live_portrait.html:164 templates/live_portrait.html:190
+msgid "Eye ratio"
+msgstr "Proporción de ojos"
+
+#: templates/live_portrait.html:176 templates/live_portrait.html:202
+msgid "Lip ratio"
+msgstr "Proporción de labios"
+
+#: templates/live_portrait.html:218 templates/live_portrait.html:256
+msgid "Pitch"
+msgstr "Inclinación"
+
+#: templates/live_portrait.html:230 templates/live_portrait.html:268
+msgid "Yaw"
+msgstr "Giro"
+
+#: templates/live_portrait.html:242 templates/live_portrait.html:280
+msgid "Roll"
+msgstr "Rolido"
+
+#: templates/live_portrait.html:296 templates/live_portrait.html:322
+msgid "Eyeball X"
+msgstr "Ojo X"
+
+#: templates/live_portrait.html:308 templates/live_portrait.html:334
+msgid "Eyeball Y"
+msgstr "Ojo Y"
+
+#: templates/live_portrait.html:350 templates/live_portrait.html:388
+msgid "Head X"
+msgstr "Cabeza X"
+
+#: templates/live_portrait.html:362 templates/live_portrait.html:400
+msgid "Head Y"
+msgstr "Cabeza Y"
+
+#: templates/live_portrait.html:374 templates/live_portrait.html:412
+msgid "Head Z"
+msgstr "Cabeza Z"
+
+#: templates/live_portrait.html:428 templates/live_portrait.html:466
+msgid "Smile"
+msgstr "Sonrisa"
+
+#: templates/live_portrait.html:440 templates/live_portrait.html:478
+msgid "Wink"
+msgstr "Guiño"
+
+#: templates/live_portrait.html:452 templates/live_portrait.html:490
+msgid "Eyebrow"
+msgstr "Cejas"
+
+#: templates/live_portrait.html:506 templates/live_portrait.html:544
+msgid "Grin"
+msgstr "Sonrisa burlona"
+
+#: templates/live_portrait.html:518 templates/live_portrait.html:556
+msgid "Pursing"
+msgstr "Fruncir labios"
+
+#: templates/live_portrait.html:530 templates/live_portrait.html:568
+msgid "Pouting"
+msgstr "Hacer morros"
+
+#: templates/live_portrait.html:580
+msgid "Lip expression"
+msgstr "Expresión de labios"
+
+#: templates/components/modal.html:1558 templates/live_portrait.html:596
+#: templates/profile.html:25 templates/restyling.html:145
+#: templates/restyling.html:388
+msgid "Back"
+msgstr "Atrás"
+
+#: templates/live_portrait.html:687
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Live Portrait module, check out"
+" this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video o una "
+"imagen. Para instrucciones sobre cómo usar el módulo de Retrato Vivo, consulta"
+" esto"
+
+#: templates/login.html:30 templates/preload.html:112
+msgid "New features alert! Soon!"
+msgstr "¡Nuevas funciones pronto!"
+
+#: templates/login.html:33 templates/preload.html:115
+msgid "To learn more project, check out"
+msgstr "Para saber más sobre el proyecto, consulta"
+
+#: templates/login.html:34 templates/preload.html:116
+msgid "YouTube channel"
+msgstr "Canal de YouTube"
+
+#: templates/login.html:35 templates/preload.html:117
+msgid "We’re"
+msgstr "Estamos"
+
+#: templates/login.html:36 templates/preload.html:118
+msgid "looking"
+msgstr "buscando"
+
+#: templates/login.html:37 templates/preload.html:119
+msgid "for different support!"
+msgstr "¡todo tipo de soporte!"
+
+#: templates/login.html:48 templates/preload.html:130
+msgid "Ready to use Wunjo v2?"
+msgstr "¿Listo para usar Wunjo v2?"
+
+#: templates/login.html:53
+msgid "Let’s Go!"
+msgstr "¡Vamos!"
+
+#: templates/login.html:57 templates/preload.html:139
+msgid "By signing in, you are agreeing to the"
+msgstr "Al iniciar sesión, aceptas los"
+
+#: templates/login.html:58 templates/preload.html:140
+msgid "End-User License Agreement"
+msgstr "Acuerdo de licencia de usuario final"
+
+#: templates/login.html:68 templates/preload.html:150
+msgid "Author"
+msgstr "Autor"
+
+#: templates/components/modal.html:1719 templates/components/modal.html:1764
+#: templates/preload.html:14 templates/preload.html:77
+msgid "Attention"
+msgstr "Atención"
+
+#: templates/preload.html:17 templates/preload.html:175
+msgid "IMPORTANT"
+msgstr "IMPORTANTE"
+
+#: templates/preload.html:17
+msgid ""
+"The CUDA driver is not detected. If you proceed with the installation, "
+"the program will run on the CPU, resulting in"
+msgstr ""
+"No se detectó el controlador CUDA. Si continúas con la instalación, "
+"el programa se ejecutará en la CPU, lo que resultará en"
+
+#: templates/preload.html:17
+msgid "significantly slower performance"
+msgstr "un rendimiento significativamente más lento"
+
+#: templates/preload.html:17
+msgid ""
+"for some functions, and others may not work at all. To enable GPU "
+"acceleration,"
+msgstr ""
+"para algunas funciones, y otras pueden no funcionar en absoluto. Para habilitar "
+"la aceleración de GPU,"
+
+#: templates/preload.html:17
+msgid "please install"
+msgstr "por favor, instala"
+
+#: templates/preload.html:17
+msgid "the necessary"
+msgstr "los controladores necesarios"
+
+#: templates/preload.html:17
+msgid "drivers and restart Wunjo."
+msgstr "y reinicia Wunjo."
+
+#: templates/components/modal.html:641 templates/components/modal.html:1739
+#: templates/preload.html:23 templates/preload.html:58
+#: templates/preload.html:83 templates/preload.html:223
+msgid "Loading"
+msgstr "Cargando"
+
+#: templates/preload.html:29
+msgid "Anyway install"
+msgstr "Instalar de todos modos"
+
+#: templates/preload.html:44
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: templates/preload.html:45
+msgid ""
+"Welcome to Wunjo! To get started, essential drivers will need to be "
+"installed. Click"
+msgstr "¡Bienvenido a Wunjo! Para comenzar, se deben instalar los controladores esenciales. Haz clic"
+
+#: templates/preload.html:45 templates/preload.html:65
+msgid "Installation"
+msgstr "Instalar"
+
+#: templates/preload.html:45 templates/settings.html:60
+msgid "to proceed."
+msgstr ", para continuar."
+
+#: templates/preload.html:78
+msgid ""
+"It appears that you have CUDA installed, but it’s an outdated version. "
+"Please update CUDA to version 12.4 or higher and install cuDNN 9.x to "
+"take advantage of GPU acceleration."
+msgstr ""
+"Parece que tienes CUDA instalado, pero es una versión desactualizada. "
+"Por favor, actualiza CUDA a la versión 12.4 o superior e instala cuDNN 9.x "
+"para aprovechar la aceleración por GPU."
+
+#: templates/preload.html:131
+msgid "Not found large packages"
+msgstr "No se encontraron paquetes grandes"
+
+#: templates/preload.html:136
+msgid "Preload"
+msgstr "Precarga"
+
+#: templates/preload.html:175
+msgid ""
+"Make sure Wunjo has the necessary permissions for installation. If "
+"needed, try running it as"
+msgstr ""
+"Asegúrate de que Wunjo tenga los permisos necesarios para la instalación. Si "
+"es necesario, intenta ejecutarlo como"
+
+#: templates/preload.html:175
+msgid "Administrator"
+msgstr "Administrador"
+
+#: templates/preload.html:306
+msgid "Great. You need to restart Wunjo"
+msgstr "Genial. Necesitas reiniciar Wunjo"
+
+#: templates/preload.html:315
+msgid ""
+"Before you proceed, manually remove any previous versions of torch, "
+"torchaudio, and torchvision. First, close Wunjo software, delete those "
+"folders from"
+msgstr ""
+"Antes de continuar, elimina manualmente cualquier versión anterior de torch, "
+"torchaudio y torchvision. Primero, cierra el software Wunjo, elimina esas "
+"carpetas de"
+
+#: templates/components/modal.html:1720 templates/preload.html:315
+#: templates/settings.html:60
+msgid "software directory"
+msgstr "directorio del software"
+
+#: templates/preload.html:315
+msgid "and then run Wunjo with admin root privileges."
+msgstr "y luego ejecuta Wunjo con privilegios de administrador."
+
+#: templates/preload.html:321
+msgid "Close"
+msgstr "Cerrar"
+
+#: templates/preload.html:332
+msgid "Error. Not found permission"
+msgstr "Error. No se encontró permiso"
+
+#: templates/preload.html:343
+msgid "Error fetching. Try again"
+msgstr "Error de descarga. Intenta nuevamente"
+
+#: templates/preload.html:384
+msgid "Before you need to install"
+msgstr "Antes de eso, debes instalar"
+
+#: templates/preload.html:384
+msgid "from official website."
+msgstr "desde el sitio web oficial."
+
+#: templates/profile.html:42
+msgid "User ID"
+msgstr "ID de usuario"
+
+#: templates/profile.html:46
+msgid "Public link"
+msgstr "Enlace público"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Your password from wunjo.online"
+msgstr "Tu contraseña de wunjo.online"
+
+#: templates/profile.html:50
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: templates/profile.html:59
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+#: templates/profile.html:63
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+#: templates/profile.html:67
+msgid "Exit"
+msgstr "Salir"
+
+#: templates/profile.html:74
+msgid "Subscription"
+msgstr "Suscripción"
+
+#: templates/profile.html:77 templates/profile.html:144
+msgid "Plan"
+msgstr "Plan"
+
+#: templates/profile.html:82
+msgid "Community Edition"
+msgstr "Community Edition"
+
+#: templates/profile.html:83
+msgid "Free"
+msgstr "Gratis"
+
+#: templates/profile.html:90 templates/profile.html:159
+msgid "infinity"
+msgstr "infinito"
+
+#: templates/profile.html:94 templates/profile.html:119
+#: templates/profile.html:163 templates/profile.html:186
+msgid "credits"
+msgstr "créditos"
+
+#: templates/profile.html:101
+msgid "Upgrade"
+msgstr "Mejorar"
+
+#: templates/profile.html:106
+msgid "Unleash the Speed"
+msgstr "Desata la velocidad"
+
+#: templates/profile.html:107
+msgid "Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power"
+msgstr ""
+"Actualiza a la versión con soporte para GPU para obtener una velocidad "
+"fulgurante y potencia incomparable"
+
+#: templates/profile.html:129 templates/profile.html:137
+msgid "Upgrade to Professional"
+msgstr "Actualiza a Professional"
+
+msgid "Public links provide access to the program from mobile devices and tablets"
+msgstr "Los enlaces públicos proporcionan acceso al programa desde dispositivos móviles y tabletas"
+
+#: templates/profile.html:149
+msgid "Professional"
+msgstr "Professional"
+
+#: templates/profile.html:150
+msgid "Activated"
+msgstr "Activado"
+
+#: templates/profile.html:170
+msgid "Expiration date"
+msgstr "Fecha de expiración"
+
+#: templates/profile.html:175
+msgid "Unleashed the Speed"
+msgstr "Velocidad desatada"
+
+#: templates/profile.html:176 templates/profile.html:270
+msgid "No restrictions on features until"
+msgstr "Sin restricciones en las funciones hasta"
+
+#: templates/remove_background.html:78
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Background module, check"
+" out this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video o "
+"una imagen. Para instrucciones sobre cómo usar el módulo de eliminación de fondo, consulta este"
+
+#: templates/remove_object.html:45
+msgid ""
+"So, you’ve nixed an object from your content, nice move! But hey, "
+"sometimes where one thing leaves, a little confusion might creep in "
+"because of the neural network does not know what could be in the place of"
+" a distant object, it just invents it. Noticed some weird glares or "
+"streaks in the now-empty spot? That’s where a video enhancement feature "
+"swoops in to save the day. Take your pick: transform your video into an "
+"anime-style gem, a classic cartoon, or simply give it a polished boost. "
+"The module’s right"
+msgstr ""
+"¡Así que has eliminado un objeto de tu contenido, buen movimiento! Pero a veces, "
+"cuando algo desaparece, puede aparecer algo de confusión porque la red neuronal "
+"no sabe qué podría haber en el lugar de un objeto distante, solo lo inventa. ¿Notaste "
+"algunos reflejos extraños o rayas en el lugar ahora vacío? Ahí es donde una función "
+"de mejora de video entra en acción para salvar el día. Elige lo que prefieras: transforma tu "
+"video en una joya de estilo anime, un dibujo animado clásico o simplemente dale un toque "
+"pulido."
+
+#: templates/remove_object.html:45
+msgid ", waiting to sprinkle its magic on your creation."
+msgstr ", esperando esparcir su magia sobre tu creación."
+
+#: templates/remove_object.html:101
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Object module, check out"
+" this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video o "
+"una imagen. Para instrucciones sobre cómo usar el módulo de eliminación de objetos, consulta este"
+
+#: templates/remove_object.html:101
+msgid ""
+"All red blocks should turn green, use toggle if you need to remove text, "
+"and then press on the button"
+msgstr ""
+"Todos los bloques rojos deben volverse verdes, usa el interruptor si necesitas eliminar el texto, "
+"y luego presiona el botón"
+
+#: templates/restyling.html:162
+msgid "CUSTOMIZING PROMPTS"
+msgstr "Personalización de solicitudes"
+
+#: templates/restyling.html:220
+msgid ""
+"Inpainting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Inpainting... Los botones están bloqueados hasta que se termine. Toca en la pantalla para "
+"ver detalles."
+
+#: templates/restyling.html:409
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"Prepara tu personal. Selecciona un objeto y una escena, ajusta los parámetros y "
+"propiedades, y cámbialo según la solicitud. Cuando estés satisfecho con el "
+"resultado, pasa al siguiente cuadro."
+
+#: templates/restyling.html:473
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Restyling module, check out "
+"this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video o "
+"una imagen. Para instrucciones sobre cómo usar el módulo de restyling, consulta este"
+
+#: templates/restyling.html:473
+msgid ""
+"All red blocks should turn green or use toggle to fully restyle, and then"
+" press the"
+msgstr ""
+"Todos los bloques rojos deben volverse verdes o usa el interruptor para"
+" realizar un restyling completo, y luego presiona el botón"
+
+#: templates/separator.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. For "
+"instructions on how to use the Separator module, check out this"
+msgstr ""
+"Arrastra y suelta un archivo o selecciona uno. Puedes cargar un archivo de audio. Para"
+" obtener instrucciones sobre cómo usar el módulo Separador, consulta este"
+
+#: templates/separator.html:72
+msgid "Upload an audio, and then press the"
+msgstr "Carga un archivo de audio, y luego presiona el botón"
+
+#: templates/settings.html:19 templates/settings.html:30
+#: templates/settings.html:33
+msgid "General"
+msgstr "General"
+
+#: templates/settings.html:41
+msgid "Which processor should I use?"
+msgstr "¿Qué procesador debo usar?"
+
+#: templates/settings.html:54
+msgid "Can I change cache folder?"
+msgstr "¿Puedo cambiar la carpeta de caché?"
+
+#: templates/settings.html:60
+msgid "Yes! You can change the location of the cache, including placing it in the"
+msgstr "¡Sí! Puedes cambiar la ubicación de la caché, incluyendo colocarla en"
+
+#: templates/settings.html:60
+msgid ""
+"or on another drive. However, please ensure that the new folder has the "
+"necessary permissions for processing and you have permissions to use "
+"folder. Just"
+msgstr ""
+"o en otro disco. Sin embargo, asegúrate de que la nueva carpeta tenga los"
+" permisos necesarios para el procesamiento y tengas permisos para usar "
+"la carpeta. Solo"
+
+#: templates/settings.html:60
+msgid "click here"
+msgstr "haz clic aquí"
+
+#: templates/settings.html:69
+msgid "What is port using?"
+msgstr "¿Qué puerto se está usando?"
+
+#: templates/settings.html:82
+msgid "Can I get public link?"
+msgstr "¿Puedo obtener un enlace público?"
+
+#: templates/settings.html:95
+msgid "Want to go through the software tour once more?"
+msgstr "¿Quieres repasar el recorrido del software una vez más?"
+
+#: templates/settings.html:108
+msgid "Show translation tool?"
+msgstr "¿Mostrar la herramienta de traducción?"
+
+#: templates/settings.html:120
+msgid "What system resources?"
+msgstr "¿Qué recursos del sistema?"
+
+#: templates/settings.html:132
+msgid "Update application parameters?"
+msgstr "¿Actualizar los parámetros de la aplicación?"
+
+#: templates/components/modal.html:8 templates/components/modal.html:39
+#: templates/components/modal.html:57
+msgid "Hold up"
+msgstr "Espera un momento"
+
+#: templates/components/modal.html:14
+msgid "What happens"
+msgstr "¿Qué sucede?"
+
+#: templates/components/modal.html:14
+msgid "Click to see"
+msgstr "Haz clic para ver"
+
+#: templates/components/modal.html:25
+msgid "Grab the Log"
+msgstr "Descargar el registro"
+
+#: templates/components/modal.html:40
+msgid "Are you absolutely sure you want to delete"
+msgstr "¿Estás absolutamente seguro de que deseas eliminar"
+
+#: templates/components/modal.html:40
+msgid "Once it’s gone, it’s gone!"
+msgstr "¡Una vez que se vaya, se irá!"
+
+#: templates/components/modal.html:43
+msgid "Sure"
+msgstr "Sí"
+
+#: templates/components/modal.html:58
+msgid "Are you ready to replace"
+msgstr "¿Estás listo para reemplazar?"
+
+#: templates/components/modal.html:58
+msgid "Remember, this action cannot be undone! Only if you don’t rename it again."
+msgstr ""
+"Recuerda, ¡esta acción no se puede deshacer! Solo si no lo renombras de nuevo."
+
+#: templates/components/modal.html:62
+msgid "Let’s Do It!"
+msgstr "¡Hagámoslo!"
+
+#: templates/components/modal.html:82 templates/components/modal.html:198
+#: templates/components/modal.html:336 templates/components/modal.html:466
+msgid "Display content"
+msgstr "Mostrar contenido"
+
+#: templates/components/modal.html:101 templates/components/modal.html:220
+#: templates/components/view.html:205
+msgid "Image output"
+msgstr "Salida de imagen"
+
+#: templates/components/modal.html:128 templates/components/modal.html:391
+#: templates/components/modal.html:507 templates/components/view.html:121
+#: templates/components/view.html:234 templates/components/view.html:425
+msgid "Edit"
+msgstr "Editar"
+
+#: templates/components/modal.html:150 templates/components/modal.html:288
+#: templates/components/modal.html:413 templates/components/modal.html:536
+#: templates/components/view.html:136 templates/components/view.html:249
+#: templates/components/view.html:344 templates/components/view.html:527
+msgid "Without description"
+msgstr "Sin descripción"
+
+#: templates/components/modal.html:162 templates/components/modal.html:300
+#: templates/components/modal.html:425 templates/components/modal.html:548
+#: templates/components/view.html:153 templates/components/view.html:266
+#: templates/components/view.html:361 templates/components/view.html:472
+#: templates/components/view.html:544
+msgid "Parameters"
+msgstr "Parámetros"
+
+#: templates/components/modal.html:169 templates/components/modal.html:307
+#: templates/components/modal.html:438 templates/components/modal.html:555
+#: templates/components/view.html:160 templates/components/view.html:273
+#: templates/components/view.html:368 templates/components/view.html:551
+msgid "Consistency with the text"
+msgstr "Consistencia con el texto"
+
+#: templates/components/modal.html:253 templates/components/modal.html:278
+msgid "Download All"
+msgstr "Descargar todo"
+
+#: templates/components/modal.html:257 templates/components/view.html:332
+msgid "Previous"
+msgstr "Anterior"
+
+#: templates/components/modal.html:262 templates/components/modal.html:281
+msgid "Delete All"
+msgstr "Eliminar todo"
+
+#: templates/components/modal.html:265 templates/components/view.html:336
+msgid "Next"
+msgstr "Siguiente"
+
+#: templates/components/modal.html:364 templates/components/view.html:92
+msgid "Video output"
+msgstr "Salida de video"
+
+#: templates/components/modal.html:433
+msgid "FPS"
+msgstr "FPS"
+
+#: templates/components/modal.html:582
+msgid "Yesterday"
+msgstr "Ayer"
+
+#: templates/components/modal.html:600
+msgid "Sun"
+msgstr "Dom"
+
+#: templates/components/modal.html:601
+msgid "Mon"
+msgstr "Lun"
+
+#: templates/components/modal.html:602
+msgid "Tue"
+msgstr "Mar"
+
+#: templates/components/modal.html:603
+msgid "Wed"
+msgstr "Mié"
+
+#: templates/components/modal.html:604
+msgid "Thu"
+msgstr "Jue"
+
+#: templates/components/modal.html:605
+msgid "Fri"
+msgstr "Vie"
+
+#: templates/components/modal.html:606
+msgid "Sat"
+msgstr "Sáb"
+
+#: templates/components/modal.html:616
+msgid "Oh, ya!"
+msgstr "¡Oh, ya!"
+
+#: templates/components/modal.html:635
+msgid "Just a second"
+msgstr "Un momento"
+
+#: templates/components/modal.html:636
+msgid "Please wait while the model is loading into your browser’s memory"
+msgstr "Por favor, espere mientras el modelo se carga en la memoria de su navegador"
+
+#: templates/components/modal.html:659 templates/components/modal.html:730
+msgid "CLICK ON OBJECT"
+msgstr "HAGA CLIC EN EL OBJETO"
+
+#: templates/components/modal.html:678 templates/components/modal.html:749
+msgid "Brush"
+msgstr "Pincel"
+
+#: templates/components/modal.html:685 templates/components/modal.html:760
+msgid "Clear"
+msgstr "Borrar"
+
+#: templates/components/modal.html:696 templates/components/modal.html:780
+msgid ""
+"Embedding... Right-click to select objects, left-click to exclude. Tap "
+"the screen to view details."
+msgstr ""
+"Incrustando... Haga clic derecho para seleccionar objetos, clic izquierdo para excluir. Toque "
+"la pantalla para ver detalles."
+
+#: templates/components/modal.html:756 templates/components/modal.html:932
+#: templates/components/modal.html:1093 templates/components/modal.html:1335
+msgid "Watch"
+msgstr "Ver"
+
+#: templates/components/modal.html:787 templates/components/modal.html:956
+#: templates/components/modal.html:1109 templates/components/modal.html:1359
+msgid "Video input"
+msgstr "Entrada de video"
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Not accessible."
+msgstr "No accesible."
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+msgid "Unlock controls by click on watch button."
+msgstr "Desbloquee los controles haciendo clic en el botón de ver."
+
+#: templates/components/modal.html:846 templates/components/modal.html:1015
+#: templates/components/modal.html:1168 templates/components/modal.html:1465
+msgid "Reset"
+msgstr "Restablecer"
+
+#: templates/components/modal.html:866 templates/components/modal.html:917
+#: templates/components/modal.html:1035 templates/components/modal.html:1078
+msgid "SELECT AREA"
+msgstr "SELECCIONAR ÁREA"
+
+#: templates/components/modal.html:891
+msgid "Detection face! Tap on display to see more information."
+msgstr "¡Detección de rostro! Toque en la pantalla para ver más información."
+
+#: templates/components/modal.html:949
+msgid "Detection face!"
+msgstr "¡Detección de rostro!"
+
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Upload media before."
+msgstr "Sube el medio antes."
+
+#: templates/components/modal.html:1187 templates/components/modal.html:1320
+msgid "UPLOAD AVATAR"
+msgstr "SUBIR AVATAR"
+
+#: templates/components/modal.html:1222
+msgid "Male"
+msgstr "Hombre"
+
+#: templates/components/modal.html:1226
+msgid "Female"
+msgstr "Mujer"
+
+#: templates/components/modal.html:1234 templates/components/modal.html:1247
+#: templates/components/modal.html:1264 templates/components/view.html:14
+msgid "All"
+msgstr "Todo"
+
+#: templates/components/modal.html:1245 templates/components/modal.html:1262
+msgid "Ethnic"
+msgstr "Étnico"
+
+#: templates/components/modal.html:1248 templates/components/modal.html:1265
+msgid "Asian"
+msgstr "Asiático"
+
+#: templates/components/modal.html:1249 templates/components/modal.html:1266
+msgid "Black"
+msgstr "Negro"
+
+#: templates/components/modal.html:1250 templates/components/modal.html:1267
+msgid "White"
+msgstr "Blanco"
+
+#: templates/components/modal.html:1251 templates/components/modal.html:1268
+msgid "Indian"
+msgstr "Indio"
+
+#: templates/components/modal.html:1252 templates/components/modal.html:1269
+msgid "Arab"
+msgstr "Árabe"
+
+#: templates/components/modal.html:1253 templates/components/modal.html:1270
+msgid "Latino"
+msgstr "Latino"
+
+#: templates/components/modal.html:1286 templates/components/modal.html:1374
+msgid "Upload"
+msgstr "Subir"
+
+#: templates/components/modal.html:1352
+msgid "Upload a video (with a face, of course) and let’s get started!"
+msgstr "Sube un video (con rostro, por supuesto) y comencemos!"
+
+#: templates/components/modal.html:1483 templates/components/modal.html:1526
+msgid "audio"
+msgstr "audio"
+
+#: templates/components/modal.html:1486
+msgid "Upload your audio"
+msgstr "Sube tu audio"
+
+#: templates/components/modal.html:1491
+msgid "Drag and drop audio"
+msgstr "Arrastra y suelta el audio"
+
+#: templates/components/modal.html:1492
+msgid "upload a file."
+msgstr "sube un archivo."
+
+#: templates/components/modal.html:1505
+msgid "Record voice"
+msgstr "Grabar voz"
+
+#: templates/components/modal.html:1511
+msgid "Something went wrong. Please, try again."
+msgstr "Algo salió mal. Por favor, inténtalo de nuevo."
+
+#: templates/components/modal.html:1526
+msgid "Trim"
+msgstr "Recortar"
+
+#: templates/components/modal.html:1527
+msgid ""
+"Use the timeline selector to trim your audio. Anything longer than your "
+"video will be automatically cut off."
+msgstr ""
+"Usa el selector de la línea de tiempo para recortar tu audio. Cualquier cosa más larga que tu video será automáticamente recortada."
+
+#: templates/components/modal.html:1531
+msgid "Your audio is longer than"
+msgstr "Tu audio es más largo que"
+
+#: templates/components/modal.html:1531
+msgid "Trim or redo for best results."
+msgstr "Recorta o rehace para obtener los mejores resultados."
+
+#: templates/components/modal.html:1562
+msgid "Attach and continue"
+msgstr "Adjuntar y continuar"
+
+#: templates/components/modal.html:1578
+msgid "Analysis content"
+msgstr "Análisis de contenido"
+
+#: templates/components/modal.html:1579
+msgid ""
+"Utilize content analysis to determine whether the content originates from"
+" a deepfake created by Wunjo."
+msgstr ""
+"Utiliza el análisis de contenido para determinar si el contenido proviene de un deepfake creado por Wunjo."
+
+#: templates/components/modal.html:1582
+msgid ""
+"Gain insights and enhance confidence in the originality of content with "
+"this feature."
+msgstr "Obtén información y aumenta la confianza en la originalidad del contenido con esta función."
+
+#: templates/components/modal.html:1588 templates/components/modal.html:1675
+msgid "Scan"
+msgstr "Escanear"
+
+#: templates/components/modal.html:1605
+msgid "What is new?"
+msgstr "¿Qué hay de nuevo?"
+
+#: templates/components/modal.html:1606
+msgid "Try Now"
+msgstr "Prueba ahora"
+
+#: templates/components/modal.html:1620
+msgid "What a twist!"
+msgstr "¡Vaya giro!"
+
+#: templates/components/modal.html:1624
+msgid "Okay"
+msgstr "Está bien"
+
+#: templates/components/modal.html:1636
+msgid "The cache folder directory"
+msgstr "El directorio de la carpeta de caché"
+
+#: templates/components/modal.html:1636
+msgid "contains invalid characters, such as Cyrillic, ideograms or space. Please ensure that the folder path contains only Latin letters, numbers, and allowed symbols, otherwise the program may not work correctly."
+msgstr "contiene caracteres no válidos, como cirílico, ideogramas o espacios. Por favor, asegúrate de que la ruta de la carpeta contenga solo letras latinas, números y símbolos permitidos, de lo contrario el programa puede no funcionar correctamente."
+
+#: templates/components/modal.html:1639
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Enter new path of cache folder"
+msgstr "Introduce la nueva ruta de la carpeta de caché"
+
+#: templates/components/modal.html:1640
+msgid "Scene detect"
+msgstr "Detección de escena"
+
+#: templates/components/modal.html:1641
+msgid ""
+"Transition detection also known as scene cut detection is an important "
+"video processing task that aims at finding interjoined scenes."
+msgstr ""
+"La detección de transiciones, también conocida como detección de cortes de escena, "
+"es una tarea importante en el procesamiento de video que tiene como objetivo encontrar "
+"escenas interconectadas."
+
+#: templates/components/modal.html:1645
+msgid "Threshold"
+msgstr "Umbral"
+
+#: templates/components/modal.html:1657
+msgid "Scene transitions"
+msgstr "Transiciones de escena"
+
+#: templates/components/modal.html:1669
+msgid "Scene transitions and the first and last frame will be received."
+msgstr "Se recibirán las transiciones de escena, así como el primer y último fotograma."
+
+#: templates/components/modal.html:1692
+msgid "Lite setup"
+msgstr "Configuración simplificada"
+
+#: templates/components/modal.html:1693
+msgid "Tailor the"
+msgstr "Personaliza el"
+
+#: templates/components/modal.html:1693
+msgid "module to perfectly match your needs."
+msgstr "módulo para adaptarlo perfectamente a tus necesidades."
+
+#: templates/components/modal.html:1720
+msgid ""
+"The cache directory stores configuration settings, neural network models,"
+" temporary files, and user-generated content. This directory requires a "
+"significant amount of hard disk space. You can change the location of the"
+" cache, including placing it in the"
+msgstr ""
+"El directorio de caché almacena configuraciones, modelos de redes neuronales, "
+"archivos temporales y contenido generado por el usuario. Este directorio requiere "
+"una cantidad significativa de espacio en el disco duro. Puedes cambiar la ubicación del "
+"caché, incluyendo colocarlo en"
+
+#: templates/components/modal.html:1720
+msgid "or on another drive."
+msgstr "o en otro disco."
+
+#: templates/components/modal.html:1723
+msgid ""
+"Please ensure that the new folder has the necessary permissions for "
+"processing and you have permissions to use folder. Avoid using non-Latin "
+"characters in folder names."
+msgstr ""
+"Asegúrate de que la nueva carpeta tenga los permisos necesarios para "
+"el procesamiento y que tengas permisos para usar la carpeta. Evita usar "
+"caracteres no latinos en los nombres de carpeta."
+
+#: templates/components/modal.html:1726
+msgid "Example directories"
+msgstr "Directorios de ejemplo"
+
+#: templates/components/modal.html:1765
+msgid ""
+"You are about to download a substantial amount of data for your project. "
+"Please note the following sizes"
+msgstr ""
+"Estás a punto de descargar una cantidad significativa de datos para tu proyecto. "
+"Por favor, toma nota de los siguientes tamaños"
+
+#: templates/components/modal.html:1768
+msgid "Video Generation"
+msgstr "Generación de video"
+
+#: templates/components/modal.html:1769
+msgid "General Models"
+msgstr "Modelos generales"
+
+#: templates/components/modal.html:1771
+msgid ""
+"The download process may take some time, so please be patient. All "
+"downloaded models will be stored in the"
+msgstr ""
+"El proceso de descarga puede llevar algún tiempo, así que por favor, "
+"ten paciencia. Todos los modelos descargados se almacenarán en"
+
+#: templates/components/modal.html:1771
+msgid "folder. If necessary, you can delete these files separately at any time."
+msgstr ""
+"la carpeta. Si es necesario, puedes eliminar estos archivos por separado en cualquier "
+"momento."
+
+#: templates/components/modal.html:1774
+msgid "Understand"
+msgstr "Entendido"
+
+#: templates/components/tooltip.html:6
+msgid "Translation on"
+msgstr "Traducción activada"
+
+#: templates/components/view.html:20
+msgid "Video"
+msgstr "Video"
+
+#: templates/components/view.html:26
+msgid "Image"
+msgstr "Imagen"
+
+#: templates/components/view.html:32
+msgid "Images group"
+msgstr "Grupo de imágenes"
+
+#: templates/components/view.html:38
+msgid "Audio"
+msgstr "Audio"
+
+#: templates/components/view.html:44
+msgid "Favorites"
+msgstr "Favoritos"
+
+#: templates/components/view.html:97 templates/components/view.html:210
+#: templates/components/view.html:323
+msgid "Adult content"
+msgstr "Contenido para adultos"
+
+#: templates/components/view.html:139 templates/components/view.html:252
+#: templates/components/view.html:347 templates/components/view.html:458
+#: templates/components/view.html:530
+msgid "Copy"
+msgstr "Copiar"
+
+#: templates/components/view.html:318
+msgid "Images output"
+msgstr "Salida de imágenes"
+
+#: templates/components/view.html:521
+msgid "Hidden"
+msgstr "Ocultar"
+
+msgid "Save options"
+msgstr "Opciones de guardado"
+
+msgid "Motion control"
+msgstr "Control de movimiento"
+
+# flasgger
+# settings.html
+msgid "Overview"
+msgstr "Visión general"
+
+msgid "Developer Docs"
+msgstr "Documentación para desarrolladores"
+
+msgid "This is built using OpenAPI 3.0.0. In the API documentation, you can find examples of requests to various modules and a tutorial on how to use them. The schema section provides detailed descriptions of each parameter and their accepted values. Access to the API is token-based, with tokens available to Wunjo Pro subscribers at wunjo.online. The application can also run on localhost or a public link and be used as an API for your projects. This is a Beta API, introduced in the latest version. For any questions, contact support@wunjo.online."
+msgstr "Está construido utilizando OpenAPI 3.0.0. En la documentación de la API, puedes encontrar ejemplos de solicitudes a varios módulos y un tutorial sobre cómo usarlos. La sección de esquema proporciona descripciones detalladas de cada parámetro y sus valores aceptados. El acceso a la API se basa en tokens, que están disponibles para suscriptores de Wunjo Pro en wunjo.online. La aplicación también puede ejecutarse en localhost o mediante un enlace público y usarse como una API para tus proyectos. Esta es una API Beta, introducida en la última versión. Para cualquier pregunta, contacta a support@wunjo.online."
+
+# flasgger/body_script.html
+msgid "Authorization"
+msgstr "Autorización"
+
+msgid "Obtain a token through a POST request using your email and password from wunjo.online. This token is available only to Wunjo Pro subscribers. Use the token for the"
+msgstr "Obtén un token mediante una solicitud POST utilizando tu correo electrónico y contraseña de wunjo.online. Este token está disponible solo para suscriptores de Wunjo Pro. Usa el token para"
+
+msgid "Submit module task"
+msgstr "Enviar tarea del módulo"
+
+msgid "Submit CPU task"
+msgstr "Enviar tarea de CPU"
+
+msgid "File upload"
+msgstr "Subida de archivos"
+
+msgid "Before using a module that requires a file, upload it via File upload and then use the file’s name. Files are uploaded to"
+msgstr "Antes de usar un módulo que requiera un archivo, súbelo mediante Subida de archivos y luego usa el nombre del archivo. Los archivos se suben a"
+
+msgid "so ensure file names are unique. Test files like image.jpg, video.mp4, and audio.wav can be found at"
+msgstr "asegúrate de que los nombres de los archivos sean únicos. Los archivos de prueba como image.jpg, video.mp4 y audio.wav se pueden encontrar en"
+
+msgid "Example requests are configured to work with these files for testing and customization."
+msgstr "Las solicitudes de ejemplo están configuradas para trabajar con estos archivos para pruebas y personalización."
+
+msgid "Use the main modules in Wunjo via POST requests. Refer to Example for ready-to-use setups. Check Schema for detailed descriptions of each parameter, including accepted values and limits. Note that tasks are linked to your IP address. For localhost, it’s 127.0.0.1. On remote connections, tasks and files are IP-specific. You’ll receive a unique request_id for your task."
+msgstr "Usa los módulos principales de Wunjo a través de solicitudes POST. Consulta Example para configuraciones listas para usar. Revisa Schema para descripciones detalladas de cada parámetro, incluidos los valores aceptados y los límites. Ten en cuenta que las tareas están vinculadas a tu dirección IP. Para localhost, es 127.0.0.1. En conexiones remotas, las tareas y los archivos son específicos de la IP. Recibirás un request_id único para tu tarea."
+
+msgid "Track the status of your module task with a GET request by using the unique method name. The task status and response will be returned once with a 201 status, identifiable by the previously issued request_id. After retrieval, the task will be marked as not found. The response includes the media file path."
+msgstr "Rastrea el estado de tu tarea del módulo con una solicitud GET usando el nombre único del método. El estado de la tarea y la respuesta se devolverán una vez con un estado 201, identificable por el request_id emitido previamente. Después de la recuperación, la tarea se marcará como no encontrada. La respuesta incluye la ruta del archivo de medios."
+
+msgid "Similar to /submit-module-task, this POST request provides a request_id. More details on parameters can be found in Schema."
+msgstr "Similar a /submit-module-task, esta solicitud POST proporciona un request_id. Más detalles sobre los parámetros se pueden encontrar en Schema."
+
+msgid "Check task readiness with a GET request using the request_id. The task response is returned once with a 201 status, and then the task is marked as not found. The response includes the media file path or data."
+msgstr "Verifica la preparación de la tarea con una solicitud GET usando el request_id. La respuesta de la tarea se devuelve una vez con un estado 201, luego la tarea se marcará como no encontrada. La respuesta incluye la ruta del archivo de medios o los datos."
+
+msgid "Use a GET request to view processing progress, steps completed, error statuses, and success messages. All data is logged. For further questions, contact support@wunjo.online or join on"
+msgstr "Usa una solicitud GET para ver el progreso del procesamiento, los pasos completados, los estados de error y los mensajes de éxito. Todos los datos se registran. Para más preguntas, contacta a support@wunjo.online o únete en"
+
+msgid "Console log"
+msgstr "Registro de consola"
+
+msgid "Query CPU task"
+msgstr "Consultar tarea de CPU"
+
+msgid "Query module task"
+msgstr "Consultar tarea del módulo"
+
+# flasgger/index.html
+msgid "Remember about settings! To work with API, place files in the"
+msgstr "¡Recuerda las configuraciones! Para trabajar con la API, coloca los archivos en la"
+
+msgid "tmp folder"
+msgstr "carpeta tmp"
+
+msgid "of the cache directory."
+msgstr "del directorio de caché."
+
+# JS Code
+msgid "Processing"
+msgstr "Procesando"
+
+msgid "Check Warning"
+msgstr "Ver advertencia"
+
+msgid "View Error"
+msgstr "Ver error"
+
+msgid "Ready to manually retargeting face? Feel like a real puppeteer. Let’s go!"
+msgstr "¿Listo para cambiar manualmente la cara? Siéntete como un verdadero titiritero. ¡Vamos!"
+
+msgid "video"
+msgstr "video"
+
+msgid "image"
+msgstr "imagen"
+
+msgid "audio"
+msgstr "audio"
+
+msgid "text"
+msgstr "texto"
+
+msgid "Bring your portraits to life<br> with update a spark of emotion to any"
+msgstr "Da vida a tus retratos<br> actualiza una chispa de emoción a cualquier"
+
+msgid "content"
+msgstr "contenido"
+
+msgid "Learn how to seamlessly perform<br> a face swap using just one photo"
+msgstr "Aprende a realizar sin problemas<br> un cambio de cara usando solo una foto"
+
+msgid "Learn how to seamlessly <br> animate mouth movements using audio"
+msgstr "Aprende a animar sin problemas <br> los movimientos de la boca usando audio"
+
+msgid "Upgrade"
+msgstr "Mejorar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "and even give faces a digital makeover."
+msgstr "y incluso darle a las caras un cambio digital."
+
+msgid "low-res content"
+msgstr "contenido de baja resolución"
+
+msgid "secrets"
+msgstr "aquí"
+
+msgid "Unlock <br> object removal"
+msgstr "Desbloquea <br> la eliminación de objetos"
+
+msgid "and <br> get chroma key."
+msgstr "fondo y <br> obtener la clave cromática."
+
+msgid "removal"
+msgstr "eliminación"
+
+msgid "Master background"
+msgstr "Domina el fondo"
+
+msgid "from text or images. <br>No more effort for beautiful content."
+msgstr "de texto o imágenes. <br>Sin más esfuerzo para un contenido hermoso."
+
+msgid "video life"
+msgstr "aquí"
+
+msgid "Bring your content to"
+msgstr "Haz que tu contenido cobre vida"
+
+msgid "Discover how to change full <br> content or object inside by text prompts in"
+msgstr "Descubre cómo cambiar todo el <br> contenido o el objeto dentro mediante comandos de texto en"
+
+msgid "Learn how to seamlessly perform<br> clone voice of your neighbors in"
+msgstr "Aprende cómo realizar sin esfuerzo<br> la clonación de voz de tus vecinos en"
+
+msgid "Separate"
+msgstr "Separa"
+
+msgid "vocals from background <br> music effortlessly."
+msgstr "la voz de la música de fondo <br> sin esfuerzo."
+
+msgid "Manipulate and animate faces with ease. Move the head, add emotions, or create blinks — manually or automatically. Ideal for bringing static photos to life!"
+msgstr "Manipula y anima las caras con facilidad. Mueve la cabeza, añade emociones o crea parpadeos, ya sea manualmente o automáticamente. ¡Ideal para dar vida a fotos estáticas!"
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Mejora los detalles faciales para corregir imperfecciones y lograr un aspecto pulido."
+
+msgid "Replace faces in specific time intervals with precision. If inconsistencies appear, try replacing all faces for improved quality."
+msgstr "Reemplaza las caras en intervalos de tiempo específicos con precisión. Si aparecen inconsistencias, prueba reemplazar todas las caras para mejorar la calidad."
+
+msgid "Add realism to swapped faces by reintroducing natural blinks manually."
+msgstr "Añade realismo a las caras intercambiadas reintroduciendo parpadeos naturales manualmente."
+
+msgid "Improve the quality of the swapped face for a seamless result. Experiment by alternating between Enhancement and Live Portrait for better outcomes."
+msgstr "Mejora la calidad de la cara intercambiada para obtener un resultado sin costuras. Experimenta alternando entre Mejora y Retrato Vivo para obtener mejores resultados."
+
+msgid "For better video, use the «silence» mode in manually retargeting live portrait to pre-process the mouth to a closed state before applying lip sync."
+msgstr "Para obtener mejor video, utiliza el modo «silencio» al redirigir manualmente el retrato vivo para preprocesar la boca hasta un estado cerrado antes de aplicar la sincronización labial."
+
+msgid "Animate lips in photos and videos with realistic movements. Remove double chins if needed for a refined look (note: this may take extra time)."
+msgstr "Anima los labios en fotos y videos con movimientos realistas. Elimina los doble mentón si es necesario para un aspecto más refinado (nota: esto puede tomar tiempo adicional)."
+
+msgid "Further enhance the face’s quality for sharper and clearer animations."
+msgstr "Mejora aún más la calidad de la cara para animaciones más nítidas y claras."
+
+msgid "Refine face or content quality, eliminating blurry areas for a sharper overall result."
+msgstr "Refina la calidad de la cara o el contenido, eliminando áreas borrosas para un resultado más nítido en general."
+
+msgid "Remove unwanted text or objects from videos effortlessly. Even moving objects can be removed automatically by the neural network."
+msgstr "Elimina texto u objetos no deseados de los videos sin esfuerzo. Incluso los objetos en movimiento pueden ser eliminados automáticamente por la red neuronal."
+
+msgid "Restore resolution and improve content quality if it diminishes after object removal."
+msgstr "Restaura la resolución y mejora la calidad del contenido si disminuye después de la eliminación de objetos."
+
+msgid "Remove the background from photos or videos. Photos can have transparent backgrounds, while videos will use chromakey."
+msgstr "Elimina el fondo de fotos o videos. Las fotos pueden tener fondos transparentes, mientras que los videos usarán la clave cromática."
+
+msgid "Generate videos from text (any language) and images. Control content with brushes and prompts. Create images from text, customize details, and bring your imagination to life."
+msgstr "Genera videos a partir de texto (cualquier idioma) e imágenes. Controla el contenido con pinceles y comandos. Crea imágenes a partir de texto, personaliza detalles y da vida a tu imaginación."
+
+msgid "Transform using text (any language) your videos or photos into unique styles. For example, dancing in the ocean or sipping coffee in space. Control manually or auto elements such as skin tones."
+msgstr "Transforma tus videos o fotos usando texto (cualquier idioma) en estilos únicos. Por ejemplo, bailar en el océano o tomar café en el espacio. Controla manualmente o automáticamente elementos como los tonos de piel."
+
+msgid "If limited video memory causes low resolution, enhance content quality and upscale it effortlessly."
+msgstr "Si la memoria de video limitada causa baja resolución, mejora la calidad del contenido y amplíalo sin esfuerzo."
+
+msgid "Clone speech from text. Choose a text generation (before this select language) or convert your voice to match a cloned tone."
+msgstr "Clona el habla a partir de texto. Elige una generación de texto (antes selecciona el idioma) o convierte tu voz para que coincida con un tono clonado."
+
+msgid "Separate vocals and instrumentals from music with just one click."
+msgstr "Separa la voz y los instrumentos de la música con un solo clic."
+
+msgid "Customize object colors or experiment with unique styles — turn your face into an alien, for example, with text-driven (any language) transformations."
+msgstr "Personaliza los colores de los objetos o experimenta con estilos únicos: convierte tu cara en un extraterrestre, por ejemplo, con transformaciones impulsadas por texto (cualquier idioma)."
+
+msgid "Replace deformed or inconsistent faces in frames. Use the first frame of your video to maintain consistent facial features."
+msgstr "Reemplaza caras deformadas o inconsistentes en los fotogramas. Usa el primer fotograma de tu video para mantener características faciales consistentes."
+
+msgid "Finalize your project by improving the face or overall content quality."
+msgstr "Finaliza tu proyecto mejorando la calidad de la cara o del contenido en general."
+
+msgid "Isolate vocals and instrumentals from a song. This will prepare them for editing and further transformations."
+msgstr "Aísla las voces y los instrumentos de una canción. Esto los preparará para su edición y transformaciones posteriores."
+
+msgid "Record a new vocal segment and clone its sound to match the original song. Then reassemble the vocals and instrumentals for a seamless edit."
+msgstr "Graba un nuevo segmento vocal y clona su sonido para que coincida con la canción original. Luego vuelve a ensamblar las voces y los instrumentos para una edición perfecta."
+
+msgid "Need a speaking character in your video? Start by finding a similar face or generating one via avatar creation. Perfect for when you lack real footage."
+msgstr "¿Necesitas un personaje que hable en tu video? Comienza encontrando un rostro similar o generando uno mediante la creación de un avatar. Perfecto cuando te falta material real."
+
+msgid "Add voice to the video by cloning from a preferred voice tone. Write the script, choose a language, and let the neural network handle the rest."
+msgstr "Agrega voz al video clonando desde un tono de voz preferido. Escribe el guion, elige un idioma y deja que la red neuronal haga el resto."
+
+msgid "Synchronize lips with the generated voiceover for added realism. Enhance the face quality for a polished result."
+msgstr "Sincroniza los labios con la voz generada para agregar realismo. Mejora la calidad de la cara para un resultado impecable."
+
+msgid "Manipulate the head, add emotions, or create blinks — manually or automatically."
+msgstr "Manipula la cabeza, agrega emociones o crea parpadeos, manualmente o automáticamente."
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Mejora los detalles faciales para corregir imperfecciones y lograr una apariencia pulida."
+
+msgid "If you need to analyze photos, videos and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Si necesitas analizar fotos, videos y determinar si el contenido fue creado artificialmente en Wunjo, puedes hacerlo utilizando el análisis."
+
+msgid "If you need to analyze audio and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Si necesitas analizar audio y determinar si el contenido fue creado artificialmente en Wunjo, puedes hacerlo utilizando el análisis."
+
+# tooltip.js
+msgid "Translator"
+msgstr "Traductor"
+
+msgid "Hello, welcome to the tour"
+msgstr "Hola, bienvenido al recorrido"
+
+msgid "In begin, we’ll take a look at the translator. If you come across any text that’s not clear, you can easily translate it into your language. Just select the text, and it will appear in the translator. To open it, click on the element. You can also move the translator to any convenient place on your screen by"
+msgstr "Al principio, echaremos un vistazo al traductor. Si te encuentras con algún texto que no entiendas, puedes traducirlo fácilmente a tu idioma. Simplemente selecciona el texto y aparecerá en el traductor. Para abrirlo, haz clic en el elemento. También puedes mover el traductor a cualquier lugar conveniente en tu pantalla arrastrándolo."
+
+msgid "(dragging it)."
+msgstr "(arrastrándolo)."
+
+msgid "Try it: After click"
+msgstr "Pruébalo: Después de hacer clic"
+
+msgid "next"
+msgstr "siguiente"
+
+msgid ", open the translator, and select the text you want to translate."
+msgstr ", abre el traductor y selecciona el texto que deseas traducir."
+
+msgid "You can"
+msgstr "Puedes"
+
+msgid "disable"
+msgstr "desactivar"
+
+msgid "the translator display or change your preferences in the settings."
+msgstr "la visualización del traductor o cambiar tus preferencias en la configuración."
+
+# general.js
+msgid "January"
+msgstr "Enero"
+
+msgid "February"
+msgstr "Febrero"
+
+msgid "March"
+msgstr "Marzo"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Mayo"
+
+msgid "June"
+msgstr "Junio"
+
+msgid "July"
+msgstr "Julio"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Septiembre"
+
+msgid "October"
+msgstr "Octubre"
+
+msgid "November"
+msgstr "Noviembre"
+
+msgid "December"
+msgstr "Diciembre"
+
+# model.js
+msgid "Jan"
+msgstr "Ene"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Abr"
+
+msgid "May"
+msgstr "Mayo"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Aug"
+msgstr "Ago"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Oct"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dec"
+msgstr "Dic"
+
+msgid "Oops! Something went wrong. Please try again."
+msgstr "¡Ups! Algo salió mal. Por favor, inténtalo de nuevo."
+
+msgid "Heads up: This content is not a deepfake from Wunjo, but it could be a deepfake from another program or even original content. You know, I don’t know what I don’t know!"
+msgstr "Atención: Este contenido no es un deepfake de Wunjo, pero podría ser un deepfake de otro programa o incluso contenido original. Ya sabes, no sé lo que no sé."
+
+msgid "Yeah! This content appears to be a deepfake created by Wunjo."
+msgstr "¡Sí! Este contenido parece ser un deepfake creado por Wunjo."
+
+msgid "Oops! An unexpected error occurred. Please try again."
+msgstr "¡Vaya! Ocurrió un error inesperado. Por favor, inténtalo de nuevo."
+
+msgid "How many users are there?"
+msgstr "¿Cuántos usuarios hay?"
+
+msgid "Pick your user squad! This sets how many tasks can strut their stuff simultaneously for everyone."
+msgstr "¡Elige tu grupo de usuarios! Esto determina cuántas tareas pueden realizarse simultáneamente para todos."
+
+msgid "What is resolution?"
+msgstr "¿Qué es la resolución?"
+
+msgid "Dial in the max length of your content’s long side. Bigger isn’t always better, but it sure does look good!"
+msgstr "Ajusta la longitud máxima del lado más largo de tu contenido. ¡Lo más grande no siempre es mejor, pero seguro que se ve bien!"
+
+msgid "Power usage?"
+msgstr "¿Uso de energía?"
+
+msgid "Choose your RAM and VRAM power levels. Go big for multitasking magic or play it safe with minimal memory usage."
+msgstr "Elige los niveles de energía de tu RAM y VRAM. Ve a lo grande para magia de multitarea o juega seguro con un uso mínimo de memoria."
+
+msgid "What is the duration? (in minutes)"
+msgstr "¿Cuál es la duración? (en minutos)"
+
+msgid "What is the text length? (characters)"
+msgstr "¿Cuál es la longitud del texto? (en caracteres)"
+
+msgid "Set the limit for your content duration. Anything longer gets the chop—no one likes an endless show!"
+msgstr "Establece el límite para la duración de tu contenido. ¡Lo que sea más largo, se corta—nadie quiere un espectáculo interminable!"
+
+msgid "Define the max character count for your text."
+msgstr "Define la cantidad máxima de caracteres para tu texto."
+
+msgid "Transferring models may take some time. Do not close the software."
+msgstr "Transferir modelos puede tomar algo de tiempo. No cierres el software."
+
+msgid "Bring all!"
+msgstr "¡Trae todo!"
+
+msgid "A small group"
+msgstr "Un pequeño grupo"
+
+msgid "Just me!"
+msgstr "¡Solo yo!"
+
+msgid "Minimum"
+msgstr "Mínimo"
+
+msgid "Medium"
+msgstr "Medio"
+
+msgid "Maximum"
+msgstr "Máximo"
+
+msgid "An error occurred while checking the processor. Please try again later."
+msgstr "Ocurrió un error al verificar el procesador. Por favor, inténtalo de nuevo más tarde."
+
+msgid "requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings."
+msgstr "requiere una GPU para funcionar. Si tu sistema lo admite, cambia de CPU a GPU en tu configuración."
+
+msgid "What models are available?"
+msgstr "¿Qué modelos están disponibles?"
+
+msgid "Which models can I access?"
+msgstr "¿A qué modelos tengo acceso?"
+
+msgid "What options do I have in terms of models?"
+msgstr "¿Qué opciones tengo en cuanto a modelos?"
+
+msgid "What kinds of models are at my disposal?"
+msgstr "¿Qué tipos de modelos tengo a mi disposición?"
+
+msgid "Which models are within my reach?"
+msgstr "¿Qué modelos están a mi alcance?"
+
+msgid "What’s in the repertoire of available models?"
+msgstr "¿Qué hay en el repertorio de modelos disponibles?"
+
+msgid "What choices do I have among the models?"
+msgstr "¿Qué opciones tengo entre los modelos?"
+
+msgid "Which models are up for grabs?"
+msgstr "¿Qué modelos están disponibles?"
+
+msgid "What’s on the menu in terms of models?"
+msgstr "¿Qué modelos están en el menú?"
+
+msgid "What’s in the lineup of available models?"
+msgstr "¿Qué modelos están en la lista de disponibles?"
+
+msgid "For manual model utilization"
+msgstr "Para el uso manual del modelo"
+
+msgid "In manually leveraging the model"
+msgstr "Al aprovechar manualmente el modelo"
+
+msgid "When employing the model manually"
+msgstr "Cuando se utiliza el modelo manualmente"
+
+msgid "Utilizing the model manually involves"
+msgstr "El uso manual del modelo implica"
+
+msgid "When integrating the model manually"
+msgstr "Al integrar manualmente el modelo"
+
+msgid "In the manual application of the model"
+msgstr "En la aplicación manual del modelo"
+
+msgid "For hands-on model utilization"
+msgstr "Para el uso práctico del modelo"
+
+msgid "When using the model manually"
+msgstr "Al usar el modelo manualmente"
+
+msgid "In manual model integration"
+msgstr "En la integración manual del modelo"
+
+msgid "For direct model application"
+msgstr "Para la aplicación directa del modelo"
+
+msgid "During manual model utilization"
+msgstr "Durante el uso manual del modelo"
+
+msgid "Incorporating the model manually requires"
+msgstr "Incorporar el modelo manualmente requiere"
+
+msgid "When applying the model manually"
+msgstr "Al aplicar el modelo manualmente"
+
+msgid "Using the model manually necessitates"
+msgstr "El uso manual del modelo requiere"
+
+msgid "In the hands-on utilization of the model"
+msgstr "En el uso práctico del modelo"
+
+msgid "When integrating the model manually"
+msgstr "Al integrar el modelo manualmente"
+
+msgid "For direct model utilization"
+msgstr "Para el uso directo del modelo"
+
+msgid "In manual model application"
+msgstr "En la aplicación manual del modelo"
+
+msgid "During hands-on model integration"
+msgstr "Durante la integración práctica del modelo"
+
+msgid "Utilizing the model manually entails"
+msgstr "El uso manual del modelo implica"
+
+msgid "You will able to find model in"
+msgstr "Podrás encontrar el modelo en"
+
+msgid "first"
+msgstr "primero"
+
+msgid "download the"
+msgstr "descarga el"
+
+msgid "file. Once downloaded, extract its contents and place them in the following directory"
+msgstr "archivo. Una vez descargado, extrae su contenido y colócalo en el siguiente directorio"
+
+msgid "file. Move it into the"
+msgstr "archivo. Muévelo a"
+
+msgid "renaming it as"
+msgstr "renombrándolo como"
+
+msgid "Your system resources:"
+msgstr "Tus recursos del sistema:"
+
+msgid "Total size of content"
+msgstr "Tamaño total del contenido"
+
+msgid "Total size of models"
+msgstr "Tamaño total de los modelos"
+
+msgid "Total RAM"
+msgstr "RAM total"
+
+msgid "Available RAM"
+msgstr "RAM disponible"
+
+msgid "Total VRAM"
+msgstr "VRAM total"
+
+msgid "Available VRAM"
+msgstr "VRAM disponible"
+
+msgid "in folder"
+msgstr "en la carpeta"
+
+msgid "In GPU mode"
+msgstr "En modo GPU"
+
+msgid "Currently, models from various"
+msgstr "Actualmente, los modelos de varios"
+
+msgid "On this machine, models are limited to CPU processing only. To utilize the GPU, please refer to the FAQ section or check the log for more information."
+msgstr "En esta máquina, los modelos están limitados solo al procesamiento en CPU. Para utilizar la GPU, consulte la sección de preguntas frecuentes o revise el registro para obtener más información."
+
+msgid "models are executed using the GPU"
+msgstr "los modelos se ejecutan utilizando la GPU"
+
+msgid "modules are running on the CPU"
+msgstr "los módulos se están ejecutando en la CPU"
+
+msgid "for enhanced performance. If you wish to give the machine a break, you can transfer the models back to the CPU by clicking"
+msgstr "para un rendimiento mejorado. Si desea darle un descanso a la máquina, puede transferir los modelos de vuelta a la CPU haciendo clic en"
+
+msgid "To switch to GPU processing, simply click"
+msgstr "Para cambiar al procesamiento con GPU, simplemente haga clic en"
+
+msgid "Remember, you can only switch processors when there is no active processing."
+msgstr "Recuerde, solo puede cambiar de procesador cuando no haya procesamiento activo."
+
+msgid "and please note that you can only transfer processing to the GPU if there is no ongoing computation."
+msgstr "y tenga en cuenta que solo puede transferir el procesamiento a la GPU si no hay cálculos en curso."
+
+msgid "A new port has been installed. For the changes to take effect"
+msgstr "Se ha instalado un nuevo puerto. Para que los cambios surtan efecto"
+
+msgid "restart the application."
+msgstr "reinicie la aplicación."
+
+msgid "Your new port"
+msgstr "Su nuevo puerto"
+
+msgid "But, if you need to switch port again. Just let click"
+msgstr "Pero, si necesita cambiar de puerto nuevamente, simplemente haga clic en"
+
+msgid "Application run on port"
+msgstr "La aplicación se ejecuta en el puerto"
+
+msgid "You can get access to application by"
+msgstr "Puede acceder a la aplicación a través de"
+
+msgid "Your static port"
+msgstr "Su puerto estático"
+
+msgid "which you can change in input."
+msgstr "que puede cambiar en la entrada."
+
+msgid "static port in local network."
+msgstr "puerto estático en la red local."
+
+msgid "If you need to apply switch port, I’ll handle it smoothly. Just let click"
+msgstr "Si necesita cambiar de puerto, lo haré sin problemas. Simplemente haga clic en"
+
+msgid "Your share link"
+msgstr "Su enlace de compartición"
+
+msgid "If you want to turn on share mode by"
+msgstr "Si desea activar el modo de compartición a través de"
+
+msgid "public link, click"
+msgstr "enlace público, haga clic en"
+
+msgid "If you wanna turn off share mode, click"
+msgstr "Si desea desactivar el modo de compartición, haga clic en"
+
+msgid "After updating the settings"
+msgstr "Después de actualizar la configuración"
+
+msgid "you need to restart"
+msgstr "debe reiniciar"
+
+msgid "the application for the"
+msgstr "la aplicación para que"
+
+msgid "changes to take effect."
+msgstr "los cambios surtan efecto."
+
+msgid "Max CPU tasks running for all users at once"
+msgstr "Máximo de tareas en CPU ejecutándose para todos los usuarios a la vez"
+
+msgid "Max module tasks running for all users at once"
+msgstr "Máximo de tareas de módulos ejecutándose para todos los usuarios a la vez"
+
+msgid "Max CPU tasks running for one user at once"
+msgstr "Máximo de tareas en CPU ejecutándose para un usuario a la vez"
+
+msgid "Max module tasks running for one user at once"
+msgstr "Máximo de tareas de módulos ejecutándose para un usuario a la vez"
+
+msgid "Time to remove old CPU tasks (minutes)"
+msgstr "Tiempo para eliminar tareas antiguas de CPU (minutos)"
+
+msgid "Time to remove old module tasks (minutes)"
+msgstr "Tiempo para eliminar tareas antiguas de módulos (minutos)"
+
+msgid "Delay between CPU tasks to calculate memory (seconds)"
+msgstr "Retraso entre tareas de CPU para calcular la memoria (segundos)"
+
+msgid "Delay between module tasks to calculate memory (seconds)"
+msgstr "Retraso entre tareas de módulos para calcular la memoria (segundos)"
+
+msgid "Minimum RAM for CPU tasks (GB)"
+msgstr "RAM mínima para tareas en CPU (GB)"
+
+msgid "Minimum RAM for removing background (GB)"
+msgstr "RAM mínima para eliminar el fondo (GB)"
+
+msgid "Minimum VRAM for removing background on GPU (GB)"
+msgstr "VRAM mínima para eliminar el fondo en GPU (GB)"
+
+msgid "Minimum RAM for removing objects (GB)"
+msgstr "RAM mínima para eliminar objetos (GB)"
+
+msgid "Minimum VRAM for removing objects on GPU (GB)"
+msgstr "VRAM mínima para eliminar objetos en GPU (GB)"
+
+msgid "Minimum RAM for face swap tasks (GB)"
+msgstr "Memoria RAM mínima para tareas de intercambio de rostros (GB)"
+
+msgid "Minimum VRAM for face swap tasks on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de intercambio de rostros en GPU (GB)"
+
+msgid "Minimum RAM for enhancement tasks (GB)"
+msgstr "Memoria RAM mínima para tareas de mejora (GB)"
+
+msgid "Minimum VRAM for enhancement tasks on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de mejora en GPU (GB)"
+
+msgid "Minimum RAM for lip sync tasks (GB)"
+msgstr "Memoria RAM mínima para tareas de sincronización labial (GB)"
+
+msgid "Minimum VRAM for lip sync tasks on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de sincronización labial en GPU (GB)"
+
+msgid "Minimum RAM for restyling on GPU (GB)"
+msgstr "Memoria RAM mínima para tareas de cambio de estilo en GPU (GB)"
+
+msgid "Minimum VRAM for restyling on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de cambio de estilo en GPU (GB)"
+
+msgid "Minimum RAM for video generation on GPU (GB)"
+msgstr "Memoria RAM mínima para generación de video en GPU (GB)"
+
+msgid "Minimum VRAM for video generation on GPU (GB)"
+msgstr "Memoria VRAM mínima para generación de video en GPU (GB)"
+
+msgid "Minimum RAM for control restyling on GPU (GB)"
+msgstr "Memoria RAM mínima para control de cambio de estilo en GPU (GB)"
+
+msgid "Minimum VRAM for control restyling on GPU (GB)"
+msgstr "Memoria VRAM mínima para control de cambio de estilo en GPU (GB)"
+
+msgid "Minimum RAM for separator tasks (GB)"
+msgstr "Memoria RAM mínima para tareas de separación (GB)"
+
+msgid "Minimum VRAM for separator tasks on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de separación en GPU (GB)"
+
+msgid "Minimum RAM for cloning voice (GB)"
+msgstr "Memoria RAM mínima para tareas de clonación de voz (GB)"
+
+msgid "Minimum VRAM for cloning voice on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de clonación de voz en GPU (GB)"
+
+msgid "Minimum RAM for live portrait tasks (GB)"
+msgstr "Memoria RAM mínima para tareas de retratos en vivo (GB)"
+
+msgid "Minimum VRAM for live portrait tasks on GPU (GB)"
+msgstr "Memoria VRAM mínima para tareas de retratos en vivo en GPU (GB)"
+
+msgid "Max file size for upload (bytes)"
+msgstr "Tamaño máximo de archivo para cargar (bytes)"
+
+msgid "Max resolution for removing background"
+msgstr "Resolución máxima para eliminar el fondo"
+
+msgid "Max resolution for removing objects"
+msgstr "Resolución máxima para eliminar objetos"
+
+msgid "Max resolution for face swap"
+msgstr "Resolución máxima para intercambio de rostros"
+
+msgid "Max resolution for enhancement"
+msgstr "Resolución máxima para mejora"
+
+msgid "Max resolution for lip sync"
+msgstr "Resolución máxima para sincronización labial"
+
+msgid "Max resolution for restyling"
+msgstr "Resolución máxima para cambio de estilo"
+
+msgid "Max resolution for live portrait"
+msgstr "Resolución máxima para retrato en vivo"
+
+msgid "Max duration for background removal (seconds)"
+msgstr "Duración máxima para eliminación de fondo (segundos)"
+
+msgid "Max duration for object removal (seconds)"
+msgstr "Duración máxima para eliminación de objetos (segundos)"
+
+msgid "Max duration for face swap (seconds)"
+msgstr "Duración máxima para intercambio de rostros (segundos)"
+
+msgid "Max duration for enhancement (seconds)"
+msgstr "Duración máxima para mejora (segundos)"
+
+msgid "Max duration for lip sync (seconds)"
+msgstr "Duración máxima para sincronización labial (segundos)"
+
+msgid "Max duration for restyling (seconds)"
+msgstr "Duración máxima para cambio de estilo (segundos)"
+
+msgid "Max duration for separator tasks (seconds)"
+msgstr "Duración máxima para tareas de separación (segundos)"
+
+msgid "Max duration for cloning voice (seconds)"
+msgstr "Duración máxima para clonación de voz (segundos)"
+
+msgid "Max duration for live portrait (seconds)"
+msgstr "Duración máxima para retrato en vivo (segundos)"
+
+msgid "Max symbols for voice cloning"
+msgstr "Número máximo de símbolos para clonación de voz"
+
+msgid "Static port in local network"
+msgstr "Puerto estático en la red local"
+
+msgid "New value"
+msgstr "Nuevo valor"
+
+msgid "To apply the changes, click"
+msgstr "Para aplicar los cambios, haga clic"
+
+msgid "Remember that the changes will take effect after manually restarting the program."
+msgstr "Recuerde que los cambios tendrán efecto después de reiniciar el programa manualmente."
+
+msgid "The tour is currently disabled, but you can enable it by clicking"
+msgstr "El recorrido está deshabilitado actualmente, pero puede habilitarlo haciendo clic en"
+
+msgid "The tour is enabled to start automatically. To disable it, click"
+msgstr "El recorrido está habilitado para comenzar automáticamente. Para deshabilitarlo, haga clic en"
+
+msgid "The translation tool is currently active and ready for use. Click"
+msgstr "La herramienta de traducción está actualmente activa y lista para usarse. Haga clic en"
+
+msgid "The translation tool is currently disabled. Click"
+msgstr "La herramienta de traducción está actualmente deshabilitada. Haga clic en"
+
+msgid "to disable it."
+msgstr "para deshabilitarla."
+
+msgid "enable it."
+msgstr "habilitarla."
+
+# footer.js
+msgid "Wow, that’s a large file! Please upload a file that’s less than"
+msgstr "¡Vaya, es un archivo muy grande! Por favor, sube un archivo de menos de"
+
+msgid "bytes or change settings limit."
+msgstr "bytes o cambie el límite en la configuración."
+
+msgid "Wow, that’s a lengthy video! Please upload a video that’s less than"
+msgstr "¡Vaya, es un video muy largo! Por favor, sube un video de menos de"
+
+msgid "seconds long or change settings limit."
+msgstr "segundos de duración o cambie el límite en la configuración."
+
+msgid "Wow, that’s a lengthy audio! Please upload an audio that’s less than"
+msgstr "¡Vaya, es un audio muy largo! Por favor, sube un audio de menos de"
+
+msgid "seconds long. Let’s keep it short!"
+msgstr "segundos de duración. ¡Mantengámoslo corto!"
+
+msgid "Error reading file. Please try again."
+msgstr "Error al leer el archivo. Por favor, intente de nuevo."
+
+# clone_voice.js
+msgid "Yikes! Looks like you not uploaded or recorded speech or sample."
+msgstr "¡Vaya! Parece que no has subido ni grabado un discurso o muestra."
+
+msgid "Yikes! Looks like you not wrote text to create speech."
+msgstr "¡Vaya! Parece que no escribiste texto para crear el discurso."
+
+msgid "Yikes! Looks like an alien format. Stick to audio for now."
+msgstr "¡Vaya! Parece que es un formato desconocido. Mantente con audio por ahora."
+
+msgid "Imitate accent"
+msgstr "Imitar acento"
+
+msgid "Activate manual audio creation. Record yourself with any accent or speed, and watch your voice transform into a cloned!"
+msgstr "Activa la creación manual de audio. Graba tu voz con cualquier acento o velocidad, ¡y observa cómo se convierte en una voz clonada!"
+
+msgid "Filename"
+msgstr "Nombre del archivo"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Fake detector"
+msgstr "Detector de falsificaciones"
+
+msgid "Got a sneaky suspicion about some audio? Ready to sniff out those clone voice? Just hit that button."
+msgstr "¿Tienes sospechas sobre algún audio? ¿Listo para detectar esos clones de voz? Solo presiona ese botón."
+
+msgid "Analysis"
+msgstr "Análisis"
+
+msgid "Set text explain"
+msgstr "Explicación de agregar texto"
+
+msgid "Ready to have some fun? Click here to type your text to watch after submit as it turns into a cloned voice masterpiece!"
+msgstr "¿Listo para divertirte? ¡Haz clic aquí para escribir tu texto y observar cómo se convierte en una obra maestra de voz clonada!"
+
+msgid "Set text"
+msgstr "Agregar texto"
+
+msgid "Load audio explain"
+msgstr "Explicación de carga de audio"
+
+msgid "This audio extracts the base speaker tone. A short audio clip is usually enough, but longer clips improve quality."
+msgstr "Este audio extrae el tono base del hablante. Un clip de audio corto suele ser suficiente, pero los clips más largos mejoran la calidad."
+
+msgid "Create sample"
+msgstr "Crear muestra"
+
+msgid "This audio will be used to extract the base speaker tone color embedding. Typically a very short audio should be sufficient, but increasing the audio length will also improve the output audio quality."
+msgstr "Este audio se utilizará para extraer la incrustación del tono base del hablante. Normalmente, un audio muy corto debería ser suficiente, pero aumentar la longitud del audio también mejorará la calidad del audio de salida."
+
+msgid "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents."
+msgstr "La inteligencia artificial (IA) es la inteligencia demostrada por las máquinas, en contraste con la inteligencia natural que muestran los humanos y los animales. Los principales libros de texto de IA definen el campo como el estudio de agentes inteligentes."
+
+msgid "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness."
+msgstr "Era el mejor de los tiempos, era el peor de los tiempos, era la era de la sabiduría, era la era de la necedad, era la época de la creencia, era la época de la incredulidad, era la temporada de la Luz, era la temporada de la Oscuridad."
+
+msgid "The quick brown fox jumps over the lazy dog. This sentence is famous because it includes every letter in the English alphabet, making it a great tool for typing practice."
+msgstr "El rápido zorro marrón salta sobre el perro perezoso. Esta frase es famosa porque incluye todas las letras del alfabeto inglés, lo que la convierte en una excelente herramienta para practicar la mecanografía."
+
+msgid "A journey of a thousand miles begins with a single step. This ancient Chinese proverb reminds us that great things start from humble beginnings."
+msgstr "Un viaje de mil millas comienza con un solo paso. Este antiguo proverbio chino nos recuerda que las grandes cosas comienzan desde humildes comienzos."
+
+msgid "To be, or not to be, that is the question: Whether ’tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles and by opposing end them."
+msgstr "Ser o no ser, esa es la cuestión: Si es más noble en la mente sufrir los golpes y flechas de una fortuna escandalosa, o tomar las armas contra un mar de problemas y, al oponerse, ponerles fin."
+
+msgid "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. It revolutionized the understanding of space, time, and gravity."
+msgstr "La teoría de la relatividad suele abarcar dos teorías interrelacionadas de Albert Einstein: la relatividad especial y la relatividad general. Revolucionó la comprensión del espacio, el tiempo y la gravedad."
+
+msgid "The mitochondrion is often referred to as the powerhouse of the cell. These organelles are responsible for generating most of the cell’s supply of adenosine triphosphate (ATP), used as a source of chemical energy."
+msgstr "El mitocondrio a menudo se denomina la central eléctrica de la célula. Estos orgánulos son responsables de generar la mayor parte del suministro celular de trifosfato de adenosina (ATP), utilizado como fuente de energía química."
+
+msgid "The only thing we have to fear is fear itself. This famous quote by Franklin D. Roosevelt during his inaugural address aims to inspire courage and confidence in the face of challenges."
+msgstr "Lo único que debemos temer es al propio miedo. Esta famosa cita de Franklin D. Roosevelt durante su discurso inaugural tiene como objetivo inspirar coraje y confianza frente a los desafíos."
+
+msgid "In three words I can sum up everything I’ve learned about life: it goes on. This quote by Robert Frost succinctly captures the essence of resilience and the passage of time."
+msgstr "En tres palabras puedo resumir todo lo que he aprendido sobre la vida: sigue adelante. Esta cita de Robert Frost captura de manera sucinta la esencia de la resiliencia y el paso del tiempo."
+
+msgid "The cat sat on the mat. This simple sentence is often used to teach basic sentence structure in English grammar."
+msgstr "El gato se sentó en la alfombra. Esta frase simple se usa a menudo para enseñar la estructura básica de las oraciones en la gramática inglesa."
+
+msgid "E=mc². This famous equation by Albert Einstein establishes the relationship between mass (m) and energy (E), with c representing the speed of light in a vacuum."
+msgstr "E=mc². Esta famosa ecuación de Albert Einstein establece la relación entre masa (m) y energía (E), con c representando la velocidad de la luz en el vacío."
+
+msgid "The Great Wall of China is one of the greatest wonders of the world. It was built to protect Chinese states and empires against the raids and invasions of the nomadic groups of the Eurasian Steppe."
+msgstr "La Gran Muralla China es una de las mayores maravillas del mundo. Fue construida para proteger los estados e imperios chinos contra las incursiones e invasiones de los grupos nómadas de la estepa euroasiática."
+
+msgid "Curiosity killed the cat, but satisfaction brought it back. This proverb warns of the dangers of unnecessary investigation or experimentation, but also highlights the rewarding nature of discovery."
+msgstr "La curiosidad mató al gato, pero la satisfacción lo devolvió. Este proverbio advierte sobre los peligros de la investigación o experimentación innecesarias, pero también resalta la naturaleza gratificante del descubrimiento."
+
+msgid "The universe is under no obligation to make sense to you. This quote by Neil deGrasse Tyson underscores the complexity and mystery of the cosmos."
+msgstr "El universo no tiene la obligación de tener sentido para ti. Esta cita de Neil deGrasse Tyson subraya la complejidad y el misterio del cosmos."
+
+msgid "In the end, we will remember not the words of our enemies, but the silence of our friends. This quote by Martin Luther King Jr. highlights the importance of support and solidarity."
+msgstr "Al final, no recordaremos las palabras de nuestros enemigos, sino el silencio de nuestros amigos. Esta cita de Martin Luther King Jr. resalta la importancia del apoyo y la solidaridad."
+
+msgid "Success is not final, failure is not fatal: It is the courage to continue that counts. This quote by Winston Churchill emphasizes perseverance and resilience."
+msgstr "El éxito no es definitivo, el fracaso no es fatal: lo que cuenta es el coraje de continuar. Esta cita de Winston Churchill enfatiza la perseverancia y la resiliencia."
+
+msgid "The only limit to our realization of tomorrow is our doubts of today. This quote by Franklin D. Roosevelt encourages overcoming self-doubt to achieve future goals."
+msgstr "El único límite para nuestra realización del mañana son nuestras dudas de hoy. Esta cita de Franklin D. Roosevelt anima a superar la autocrítica para alcanzar metas futuras."
+
+msgid "To infinity and beyond! This catchphrase from Buzz Lightyear in Toy Story inspires boundless exploration and adventure."
+msgstr "¡Hasta el infinito y más allá! Esta frase de Buzz Lightyear en Toy Story inspira una exploración y aventura sin límites."
+
+msgid "The only way to do great work is to love what you do. This quote by Steve Jobs underscores the importance of passion in achieving excellence."
+msgstr "La única forma de hacer un gran trabajo es amar lo que haces. Esta cita de Steve Jobs subraya la importancia de la pasión para lograr la excelencia."
+
+msgid "The greatest glory in living lies not in never falling, but in rising every time we fall. This quote by Nelson Mandela celebrates resilience and persistence."
+msgstr "La mayor gloria en la vida no está en no caer nunca, sino en levantarnos cada vez que caemos. Esta cita de Nelson Mandela celebra la resiliencia y la persistencia."
+
+msgid "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world. This quote by Albert Einstein highlights the power of creativity."
+msgstr "La imaginación es más importante que el conocimiento. Porque el conocimiento es limitado, mientras que la imaginación abarca todo el mundo. Esta cita de Albert Einstein resalta el poder de la creatividad."
+
+msgid "Life is what happens when you’re busy making other plans. This quote by John Lennon reminds us to appreciate the present moment."
+msgstr "La vida es lo que sucede mientras estás ocupado haciendo otros planes. Esta cita de John Lennon nos recuerda apreciar el momento presente."
+
+msgid "The best way to predict the future is to invent it. This quote by Alan Kay encourages proactive innovation."
+msgstr "La mejor manera de predecir el futuro es inventarlo. Esta cita de Alan Kay anima a la innovación proactiva."
+
+msgid "Do or do not, there is no try. This quote by Yoda from Star Wars emphasizes commitment and determination."
+msgstr "Hazlo o no lo hagas, no hay intentos. Esta cita de Yoda de Star Wars enfatiza el compromiso y la determinación."
+
+msgid "The more that you read, the more things you will know. The more that you learn, the more places you’ll go. This quote by Dr. Seuss promotes the value of education."
+msgstr "Cuanto más leas, más cosas sabrás. Cuanto más aprendas, más lugares irás. Esta cita de Dr. Seuss promueve el valor de la educación."
+
+msgid "The purpose of our lives is to be happy. This simple yet profound quote by Dalai Lama emphasizes the importance of happiness."
+msgstr "El propósito de nuestras vidas es ser felices. Esta cita simple pero profunda del Dalai Lama enfatiza la importancia de la felicidad."
+
+msgid "It always seems impossible until it’s done. This quote by Nelson Mandela inspires perseverance in the face of challenges."
+msgstr "Siempre parece imposible hasta que se logra. Esta cita de Nelson Mandela inspira perseverancia frente a los desafíos."
+
+msgid "I have not failed. I’ve just found 10,000 ways that won’t work. This quote by Thomas Edison celebrates the process of learning through experimentation."
+msgstr "No he fracasado. Solo he encontrado 10,000 formas que no funcionan. Esta cita de Thomas Edison celebra el proceso de aprender a través de la experimentación."
+
+msgid "If you want to go fast, go alone. If you want to go far, go together. This African proverb highlights the value of collaboration."
+msgstr "Si quieres ir rápido, ve solo. Si quieres ir lejos, ve juntos. Este proverbio africano resalta el valor de la colaboración."
+
+msgid "The only thing standing between you and your goal is the story you keep telling yourself. This quote by Jordan Belfort encourages self-belief."
+msgstr "Lo único que te separa de tu objetivo es la historia que sigues contándote a ti mismo. Esta cita de Jordan Belfort fomenta la autoconfianza."
+
+msgid "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change. This quote by Charles Darwin emphasizes adaptability."
+msgstr "No sobrevive el más fuerte ni el más inteligente de las especies, sino el que mejor se adapta al cambio. Esta cita de Charles Darwin enfatiza la importancia de la adaptabilidad."
+
+msgid "Don’t watch the clock; do what it does. Keep going. This motivational quote by Sam Levenson encourages persistence."
+msgstr "No mires el reloj; haz lo que hace. Sigue adelante. Esta cita motivacional de Sam Levenson anima a la persistencia."
+
+msgid "The greatest wealth is to live content with little. This quote by Plato reminds us that true wealth lies in contentment."
+msgstr "La mayor riqueza es vivir contento con lo poco. Esta cita de Platón nos recuerda que la verdadera riqueza radica en la satisfacción."
+
+msgid "You must be the change you wish to see in the world. This quote by Mahatma Gandhi encourages proactive personal responsibility."
+msgstr "Debes ser el cambio que deseas ver en el mundo. Esta cita de Mahatma Gandhi promueve la responsabilidad personal activa."
+
+msgid "The way to get started is to quit talking and begin doing. This quote by Walt Disney inspires action."
+msgstr "La manera de comenzar es dejar de hablar y empezar a hacer. Esta cita de Walt Disney inspira a la acción."
+
+msgid "The best and most beautiful things in the world cannot be seen or even touched—they must be felt with the heart. This quote by Helen Keller emphasizes the importance of emotional experiences."
+msgstr "Las mejores y más hermosas cosas del mundo no se pueden ver ni tocar; deben sentirse con el corazón. Esta cita de Helen Keller subraya la importancia de las experiencias emocionales."
+
+msgid "Read this text or any text during 15-60 seconds"
+msgstr "Lee este texto o cualquier otro durante 15-60 segundos."
+
+msgid "sample speech"
+msgstr "muestra de discurso"
+
+msgid "Add the audio you want to change. You can simulate any accent and speed. For best results, use audio without noise."
+msgstr "Añade el audio que deseas cambiar. Puedes simular cualquier acento y velocidad. Para obtener los mejores resultados, utiliza audio sin ruido."
+
+msgid "Attach speech"
+msgstr "Adjuntar discurso"
+
+msgid "changeable speech"
+msgstr "discurso modificable"
+
+msgid "Enter text for voice cloning. Use one language for words and phrases; transliterate words from other languages. (Maximal numbers of symbols is"
+msgstr "Introduce el texto para la clonación de voz. Usa un solo idioma para palabras y frases; translitera palabras de otros idiomas. (El número máximo de símbolos es"
+
+msgid "but you can increase in settings"
+msgstr "pero puedes aumentarlo en la configuración"
+
+msgid "clone voice"
+msgstr "clonación de voz"
+
+msgid "Record yourself or upload an audio clip to transform speech style into a cloned version. Make sure the recorded and sample voices match in style and language. Enhance your results by using noise reduction tools."
+msgstr "Graba tu voz o sube un clip de audio para transformar el estilo de la voz en una versión clonada. Asegúrate de que la voz grabada y la muestra coincidan en estilo e idioma. Mejora tus resultados utilizando herramientas de reducción de ruido."
+
+# enhancement.js
+msgid "Yikes! Looks like an alien format. Stick to images or videos for now."
+msgstr "¡Vaya! Parece un formato alienígena. Quédate con imágenes o videos por ahora."
+
+msgid "enhancement"
+msgstr "mejora"
+
+msgid "Method"
+msgstr "Método"
+
+msgid "Resized to"
+msgstr "Redimensionado a"
+
+msgid "Enhance faces and details with Gfpgan. This powerful tool refines facial features and improves overall video quality. It adds realism and sharpness, making your videos stand out with vivid detail and lifelike appearance."
+msgstr "Mejora las caras y los detalles con Gfpgan. Esta poderosa herramienta refina las características faciales y mejora la calidad general del video. Añade realismo y nitidez, haciendo que tus videos se destaquen con detalles vívidos y apariencia realista."
+
+msgid "Face boost"
+msgstr "Mejora de rostro"
+
+msgid "Anime enhance"
+msgstr "Mejora de anime"
+
+msgid "Activate Animesgan to enhance anime-like videos. This innovative feature clarifies lines and colors, bringing out the artistic essence of your videos. It smooths transitions and enhances visual clarity, ensuring your anime-style content looks its best."
+msgstr "Activa Animesgan para mejorar videos estilo anime. Esta innovadora función aclara las líneas y los colores, resaltando la esencia artística de tus videos. Suaviza las transiciones y mejora la claridad visual, asegurando que tu contenido de estilo anime luzca lo mejor posible."
+
+msgid "Real video"
+msgstr "Video real"
+
+msgid "Enable Realesrgan for real-life video enhancement. This advanced tool smoothens and clarifies videos, removing noise and enhancing overall quality. It’s perfect for video and improving visual appeal with crisp details and smooth playback."
+msgstr "Habilita Realesrgan para mejorar videos reales. Esta herramienta avanzada suaviza y aclara videos, eliminando el ruido y mejorando la calidad general. Es perfecta para mejorar la apariencia visual de los videos con detalles nítidos y reproducción fluida."
+
+# face_swap.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to swap. Click on the «Find face» button and set box on person face, please!"
+msgstr "¡Vaya! Parece que no seleccionaste un rostro en tu contenido para cambiar. Haz clic en el botón «Encontrar rostro» y marca el rostro de la persona, ¡por favor!"
+
+msgid "Param Pam Pam! It seems like your avatar’s face is feeling a bit missed!  Give that «Upload avatar» button a click and upload a face with some personality!"
+msgstr "¡Param Pam Pam! Parece que el rostro de tu avatar se siente un poco perdido. ¡Haz clic en el botón «Subir avatar» y carga un rostro con algo de personalidad!"
+
+msgid "Uh-oh! The width looks wonky. Double-check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "¡Ups! El ancho parece raro. Verifica que sea un número y no esté vacío. Tal vez haz clic en «Seleccionar objeto» o carga otro archivo."
+
+msgid "Pick face to swap. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Elige el rostro para cambiar. Selecciona el inicio y el final para cambios suaves. ¡Nada de cortes, solo transiciones suaves! ¡Fácil!"
+
+msgid "Upload photo, craft avatar, choose face to swap. You’re a sculptor of non-existent personas. Done!"
+msgstr "Sube una foto, crea un avatar, elige un rostro para cambiar. ¡Eres un escultor de personas inexistentes! ¡Listo!"
+
+msgid "Got a sneaky suspicion about some content? Ready to sniff out those deepfakes? Just hit that button."
+msgstr "¿Tienes una sospecha sobre algún contenido? ¿Listo para descubrir esos deepfakes? Solo presiona ese botón."
+
+msgid "Gemini faces detection"
+msgstr "Detección de rostros gemelos"
+
+msgid "Replace all detected faces"
+msgstr "Reemplazar todos los rostros detectados"
+
+msgid "Find face"
+msgstr "Encontrar rostro"
+
+msgid "Upload avatar"
+msgstr "Subir avatar"
+
+msgid "face swap"
+msgstr "cambio de rostro"
+
+msgid "Aspect ratio"
+msgstr "Relación de aspecto"
+
+msgid "Frames per second"
+msgstr "Cuadros por segundo"
+
+msgid "Reduce control strength to less depend to frames."
+msgstr "Reduce la fuerza de control para depender menos de los cuadros."
+
+msgid "Increase control strength to up depend to frames."
+msgstr "Aumenta la fuerza de control para depender más de los cuadros."
+
+msgid "Describe the change you want to make"
+msgstr "Describe el cambio que quieres hacer"
+
+msgid "A stuffed animal donkey grazing in a valley"
+msgstr "Un muñeco de peluche de burro pastando en un valle"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Cinemático, día soleado, olas rompiendo en la orilla de la playa"
+
+msgid "A cow grazing in a valley during the day, a UFO approaches in the distance"
+msgstr "Una vaca pastando en un valle durante el día, un OVNI se acerca en la distancia"
+
+msgid "A flower blooming in slow motion"
+msgstr "Una flor abriéndose en cámara lenta"
+
+msgid "3D render, a raccoon holding a mini ice cream cone"
+msgstr "Renderizado 3D, un mapache sosteniendo un mini cucurucho de helado"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "Perspectiva de un automóvil conduciendo en el espacio exterior viajando a través del tiempo, túnel del tiempo"
+
+msgid "2 cats in love eating a candlelit dinner of fresh fish"
+msgstr "2 gatos enamorados comiendo una cena a la luz de las velas con pescado fresco"
+
+msgid "Cinematic, a dog in a car window"
+msgstr "Cinemático, un perro en la ventana de un coche"
+
+msgid "Moody, filmic, 35mm, a doctor walking into the hospital"
+msgstr "Con tono melancólico, cinematográfico, 35mm, un médico caminando hacia el hospital"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "Perspectiva de un automóvil conduciendo en el espacio exterior viajando a través del tiempo, túnel del tiempo"
+
+msgid "3D render, goldfish swimming in a glass container"
+msgstr "Renderizado 3D, un pez dorado nadando en un recipiente de vidrio"
+
+msgid "Nature documentary, jellyfish swimming in the ocean"
+msgstr "Documental de naturaleza, medusas nadando en el océano"
+
+msgid "Cinematic, a Tibetan monk sitting in a temple on a mountain, facing camera."
+msgstr "Cinemático, un monje tibetano sentado en un templo en una montaña, mirando hacia la cámara."
+
+msgid "Nature documentary, natural lighting, flamingo walking in a beautiful beach, head turning"
+msgstr "Documental de naturaleza, luz natural, un flamenco caminando por una hermosa playa, girando la cabeza"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Toma con ángulo bajo, un pueblo del salvaje oeste con salones y calles polvorientas"
+
+msgid "A secret garden with a rainbow waterfall"
+msgstr "Un jardín secreto con una cascada arcoíris"
+
+msgid "Cinematic, a cowboy riding a horse on mirror-like lake, moving clouds"
+msgstr "Cinemático, un vaquero montando un caballo en un lago como un espejo, con nubes en movimiento"
+
+msgid "Cinematic, long tracking shot of the cliffs of Dover"
+msgstr "Cinemático, una toma larga siguiendo los acantilados de Dover"
+
+msgid "1950s film style, a seagull on a boat"
+msgstr "Estilo de película de los 1950, una gaviota en un bote"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Cinemático, día soleado, olas rompiendo en la orilla de la playa"
+
+msgid "A woman smiling while watching fireworks"
+msgstr "Una mujer sonriendo mientras mira los fuegos artificiales"
+
+msgid "Beautiful sunset at the beach, silhouette of a couple walking by the seashore against sunset, beautiful scenery"
+msgstr "Hermoso atardecer en la playa, silueta de una pareja caminando junto a la orilla contra el atardecer, hermoso paisaje"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Toma con ángulo bajo, un pueblo del salvaje oeste con salones y calles polvorientas"
+
+msgid "Anime, a boy and a girl sitting on the grass under the starry sky"
+msgstr "Anime, un niño y una niña sentados en la hierba bajo el cielo estrellado"
+
+msgid "Nature documentary, close up of a lizard in a desert"
+msgstr "Documental de naturaleza, primer plano de una lagartija en el desierto"
+
+msgid "1940s newsreel footage, a soldier stands watch on a rocky hill, facing camera"
+msgstr "Imágenes de noticiero de los 1940, un soldado haciendo guardia en una colina rocosa, mirando hacia la cámara"
+
+msgid "Anime, a woman walking home with groceries, wide angle"
+msgstr "Anime, una mujer caminando a casa con víveres, ángulo amplio"
+
+msgid "Watercolor style of a baby elephant drinking water from a lake in the desert"
+msgstr "Estilo acuarela, un elefante bebé bebiendo agua de un lago en el desierto"
+
+msgid "Futuristic film of a man walking on a street in Paris, cinematic, symmetric composition"
+msgstr "Película futurista de un hombre caminando por una calle en París, cinemática, composición simétrica"
+
+msgid "Claymation, stop motion, a rat sitting on a huge block of cheese"
+msgstr "Claymation, stop motion, una rata sentada en un enorme trozo de queso"
+
+msgid "Prompt"
+msgstr "Solicitud"
+
+msgid "It’s like describe a genie your wishes so they can conjure up just what you need!"
+msgstr "¡Es como describirle a un genio tus deseos para que pueda conjurar justo lo que necesitas!"
+
+msgid "(Optional) Describe your prompt for generation, or leave it blank for a random request. You can use (word) to emphasize specific requests and word:non-integers number from 0 to 1 for request intensity. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "(Opcional) Describe tu solicitud para la generación, o déjala en blanco para una solicitud aleatoria. Puedes usar (palabra) para enfatizar solicitudes específicas y palabra:números-no-enteros de 0 a 1 para la intensidad de la solicitud. Por ejemplo, dog:0.8, cat:0.2 en una solicitud. El número máximo de símbolos es 3000."
+
+msgid "Generation... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Generando... Los botones están bloqueados hasta que se termine. Toca en la pantalla para ver detalles."
+
+msgid "Ready to have some fun? Complete the image and add new elements."
+msgstr "¿Listo para divertirte? Completa la imagen y agrega nuevos elementos."
+
+msgid "Something wrong...During create task. Tap on the screen to view details."
+msgstr "Algo salió mal... Durante la creación de la tarea. Toca en la pantalla para ver detalles."
+
+msgid "Authorization failed. Access is available only with a subscription. Please review available plans and any discounts."
+msgstr "Error de autorización. El acceso está disponible solo con suscripción. Por favor, revisa los planes disponibles y los descuentos."
+
+msgid "Is not valid format."
+msgstr "El formato no es válido."
+
+msgid "Image will be generate."
+msgstr "La imagen será generada."
+
+msgid "Oops! Something went wrong. Please click submit again after some time. Tap on the screen to view details."
+msgstr "¡Ups! Algo salió mal. Por favor, haga clic en enviar nuevamente después de un tiempo. Toque en la pantalla para ver detalles."
+
+msgid "Oops! An unexpected error occurred. Tap on the screen to view details."
+msgstr "¡Ups! Ocurrió un error inesperado. Toque en la pantalla para ver detalles."
+
+msgid "generation"
+msgstr "generación"
+
+# lip_sync.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to animate. Click on the «Find face» button and set box on person face, please!"
+msgstr "¡Vaya! Parece que no seleccionaste una cara en tu contenido para animar. Haz clic en el botón «Buscar cara» y selecciona la cara de la persona, por favor."
+
+msgid "Hmm... The height seems fishy. Verify it’s a number and not empty. Check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "Hmm... La altura parece sospechosa. Verifica que sea un número y no esté vacío. Tal vez haz clic en «Seleccionar objeto» o carga otro archivo."
+
+msgid "Overlay audio"
+msgstr "Superponer audio"
+
+msgid "Smooth defects"
+msgstr "Suavizar defectos"
+
+msgid "Pick face to animate. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Selecciona una cara para animar. Establece el inicio y el final para cambios suaves. Sin cortes, solo transiciones suaves. ¡Fácil!"
+
+msgid "For best results, use in Lip Sync a high-quality audio without noise."
+msgstr "Para obtener los mejores resultados, usa un audio de alta calidad sin ruido en la sincronización de labios."
+
+msgid "lip sync"
+msgstr "sincronización de labios"
+
+# live_portrait.js
+msgid "Expression"
+msgstr "Expresión"
+
+msgid "Head pose"
+msgstr "Posición de la cabeza"
+
+msgid "Lip"
+msgstr "Labios"
+
+msgid "Eyes"
+msgstr "Ojos"
+
+msgid "Animate"
+msgstr "Animar"
+
+msgid "Pick face to live. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Selecciona una cara para animar en vivo. Establece el inicio y el final para cambios suaves. Sin cortes, solo transiciones suaves. ¡Fácil!"
+
+msgid "Upload avatar video to repeat movement. You’re a sculptor of non-existent personas. Done!"
+msgstr "Sube un video de avatar para repetir el movimiento. Eres un escultor de personas inexistentes. ¡Listo!"
+
+msgid "Manually retargeting"
+msgstr "Reasignación manual"
+
+msgid "Wow! Somthing went wrong. Because of scenes can not be empty. Please try another file."
+msgstr "¡Vaya! Algo salió mal. Las escenas no pueden estar vacías. Por favor, prueba con otro archivo."
+
+msgid "Scanning..."
+msgstr "Escaneando..."
+
+msgid "Retargeting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Reasignando... Los botones están bloqueados hasta que se termine. Toque en la pantalla para ver detalles."
+
+msgid "Blinking"
+msgstr "Parpadeo"
+
+msgid "Silent"
+msgstr "Silencio"
+
+msgid "Nodding"
+msgstr "Asintiendo"
+
+msgid "Shaking"
+msgstr "Sacudida"
+
+msgid "Flirt"
+msgstr "Coqueteo"
+
+msgid "Yikes! Looks like an alien format. Stick to videos or image for now."
+msgstr "¡Vaya! Parece un formato alienígena. Por ahora, usa videos o imágenes."
+
+msgid "Something wrong."
+msgstr "Algo salió mal."
+
+msgid "live portrait"
+msgstr "retrato en vivo"
+
+# tour.min.js
+msgid "Don’t show tips on startup"
+msgstr "No mostrar consejos al inicio"
+
+# remove_background.js
+msgid "Oopsie! Seems like you didn’t pick an object in your content. Click on the «Select object» button and choose any object from the media, please!"
+msgstr "¡Ups! Parece que no seleccionaste un objeto en tu contenido. Haz clic en el botón «Seleccionar objeto» y elige cualquier objeto de los medios, por favor."
+
+msgid "Background color"
+msgstr "Color de fondo"
+
+msgid "Reverse select"
+msgstr "Invertir selección"
+
+msgid "Let the neural network handle it, then click to include with the right, exclude with the left. Don’t forget to switch brushes."
+msgstr "Deja que la red neuronal lo maneje, luego haz clic para incluir con la derecha, excluir con la izquierda. ¡No olvides cambiar los pinceles!"
+
+msgid "Select object"
+msgstr "Seleccionar objeto"
+
+msgid "remove background"
+msgstr "eliminar fondo"
+
+# remove_object.js
+msgid "remove object"
+msgstr "eliminar objeto"
+
+msgid "Enable text indication to highlight selected areas while removing text instead of objects from your chosen field."
+msgstr "Habilita la indicación de texto para resaltar las áreas seleccionadas mientras eliminas texto en lugar de objetos de tu campo seleccionado."
+
+msgid "Indicate text"
+msgstr "Indicar texto"
+
+msgid "Improved level"
+msgstr "Nivel mejorado"
+
+msgid "Text bothering you? Just draw a box around it. But the text outside the frame will remain. Easy as pie!"
+msgstr "¿El texto te molesta? Simplemente dibuja un cuadro alrededor de él. ¡Pero el texto fuera del cuadro permanecerá! ¡Tan fácil como un pastel!"
+
+msgid "Select text"
+msgstr "Seleccionar texto"
+
+# restyle.js
+msgid "Looks like you forgot to pick an object to restyle, or hey, why not go all out and change everything? Give it another shot!"
+msgstr "¡Parece que olvidaste seleccionar un objeto para cambiar de estilo, o mejor aún, por qué no cambiar todo! ¡Inténtalo de nuevo!"
+
+msgid "Uh-oh! This is strange magic, but the object is not selected. Try selecting objects again."
+msgstr "¡Vaya! Esta es una magia extraña, pero el objeto no está seleccionado. Intenta seleccionar los objetos nuevamente."
+
+msgid "Diffusion parameters is empty."
+msgstr "Los parámetros de difusión están vacíos."
+
+msgid "Oops. Something wrong... Try another file."
+msgstr "¡Ups! Algo salió mal... Intenta con otro archivo."
+
+msgid "Oops. Something wrong... Try another layer file."
+msgstr "¡Ups! Algo salió mal... Intenta con otro archivo para agregar a la capa."
+
+msgid "Activate the restyle background option to refresh the entire frame. This setting ensures that all elements are redrawn with the neural network, providing a seamless."
+msgstr "Activa la opción de cambiar el fondo para actualizar todo el cuadro. Esta configuración asegura que todos los elementos sean redibujados con la red neuronal, proporcionando una transición sin interrupciones."
+
+msgid "Restyle background"
+msgstr "Cambiar fondo"
+
+msgid "Interval generation"
+msgstr "Generación de intervalos"
+
+msgid "Alright, listen up! The generation interval is like setting the tempo for your video’s style dance-off. Got a video with dynamic moves? Drop that value to crank up the tempo. It’s like your video’s heartbeat - more transitions mean a faster beat, so you’ll want a lower value. Nail that interval, and watch your video steal the spotlight in style!"
+msgstr "¡Bien, escuchen! El intervalo de generación es como establecer el tempo para el duelo de estilos de tu video. ¿Tienes un video con movimientos dinámicos? Baja ese valor para acelerar el tempo. Es como el latido de tu video: más transiciones significan un ritmo más rápido, así que querrás un valor más bajo. ¡Ajusta ese intervalo y mira cómo tu video roba el protagonismo con estilo!"
+
+msgid "Threshold scene"
+msgstr "Escena de umbral"
+
+msgid "Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!"
+msgstr "¡Bien, escuchen! Baja el umbral para debilitar la detección de transiciones entre escenas. Ajusta el umbral y mira cómo tu nueva escena transita perfectamente."
+
+msgid "Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!"
+msgstr "¡Bien, escuchen! Aumenta el umbral para hacer que la detección de transiciones entre escenas sea más precisa. Ajusta el umbral y observa cómo tu nueva escena hace una transición perfecta."
+
+msgid "Control strength"
+msgstr "Fuerza de control"
+
+msgid "Style"
+msgstr "Estilo"
+
+msgid "Add a new custom Stable Diffusion 1.5 model to the configuration file located at"
+msgstr "Agrega un nuevo modelo personalizado de Stable Diffusion 1.5 al archivo de configuración ubicado en"
+
+msgid "Modify specific objects or entire scenes with simple text prompts. Experience advanced visual manipulation!"
+msgstr "Modifica objetos específicos o escenas completas con simples comandos de texto. ¡Experimenta una manipulación visual avanzada!"
+
+msgid "Control restyle"
+msgstr "Restilo manual"
+
+msgid "Scene transitions with frames interval"
+msgstr "Transiciones de escena con intervalo de fotogramas"
+
+msgid "and the first and last frame will be received."
+msgstr "y se recibirán el primer y último fotograma."
+
+msgid "Something wrong...During create task."
+msgstr "Algo salió mal... Durante la creación de la tarea."
+
+msgid "Inpainting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Inpainting... Los botones están bloqueados hasta que termine. Toca en la pantalla para ver los detalles."
+
+msgid "diffuser"
+msgstr "restilo de contenido"
+
+# separator.js
+msgid "separator"
+msgstr "separador de audio"
+
+# login.js
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "Don’t have an account for Wunjo Pro?"
+msgstr "¿No tienes una cuenta en Wunjo Pro?"
+
+msgid "Sign up"
+msgstr "Registrarse"
+
+msgid "This feature is premium and available after login. New users get a"
+msgstr "Esta función es premium y está disponible después de iniciar sesión. Los nuevos usuarios obtienen una"
+
+msgid "free tokens"
+msgstr "fichas gratis"
+
+msgid "to explore all features."
+msgstr "para explorar todas las funciones."
+
+msgid "Turn on the internet and reload"
+msgstr "Enciende el internet y recarga"
+
+msgid "Invalid login credentials"
+msgstr "Credenciales de inicio de sesión inválidas"
+
+msgid "An unexpected error has occurred. Please contact support@wunjo.online"
+msgstr "Ha ocurrido un error inesperado. Por favor, contacta a support@wunjo.online"
+
+msgid "Subscription expired. Renew your license key in wunjo.online."
+msgstr "La suscripción ha expirado. Renueva tu clave de licencia en wunjo.online."
+
+msgid "The license key is not valid"
+msgstr "La clave de licencia no es válida"
+
+# Generation image composition
+msgid "Generate image composition"
+msgstr "Generar composición de imagen"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Image composition"
+msgstr "Composición de imagen"
+
+msgid "Generate an image composition by prompt and images"
+msgstr "Genera una composición de imagen a partir de un texto y unas imágenes"
+
+msgid "Create photos from images and a prompt. Modify age, environment, and characters while preserving identity with realism."
+msgstr "Crea fotos a partir de imágenes y un texto. Modifica la edad, el entorno y los personajes mientras preservas su identidad con realismo."
+
+msgid "Use the prompt field to describe your composition. Click on an image to insert its placeholder into the text automatically. You can add as many images as you like. Example placeholder format: A man image_1 in t-short image_2. Also you can use coefficient. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "Utilice el campo de texto para describir su composición. Haga clic en una imagen para insertar su marcador de posición automáticamente en el texto. Puede agregar tantas imágenes como desee. Formato de marcador de posición de ejemplo: Un hombre image_1 con una camiseta image_2. También puede usar coeficientes. Por ejemplo, dog:0.8, cat:0.2 en un solo texto. El número máximo de símbolos es 3000."
+
+msgid "sec"
+msgstr "seg"
+
+# Update 2.0.7
+msgid "Chat"
+msgstr "Chat"
+
+msgid "automatically edits videos <br> and answers questions."
+msgstr "la red neuronal encuentra automáticamente, edita videos <br> y responde preguntas."
+
+msgid "The neural network now edits a long video into a short one with highlights and answers questions about them, as well as recommends music."
+msgstr "La red neuronal ahora edita un video largo en uno corto con los momentos destacados y responde preguntas sobre ellos, además de recomendar música."
+
+msgid "Edit a long video into a short one with highlights"
+msgstr "Edita un video largo en uno corto con los momentos destacados"
+
+msgid "Ready to analyze the video and answer all the questions!"
+msgstr "¡Listo para analizar el video y responder todas las preguntas!"
+
+msgid "If you want to slow things down a bit, choose a longer segment length. That'll give you fewer, longer chunks, which means less rush, more moments to shine, but a bit less of that fast-paced flow. It's all about balancing energy and detail, so pick what suits your video vibe best!"
+msgstr "Si quieres ralentizar un poco las cosas, elige una longitud de segmento más larga. Esto te dará menos partes, pero más largas, lo que significa menos prisa, más momentos para brillar, pero un poco menos de ese flujo rápido. Todo se trata de equilibrar la energía y los detalles, ¡así que elige lo que mejor se adapte al estilo de tu video!"
+
+msgid "Alright, time to set the pace! The segment length is like choosing the perfect stride for your video’s rhythm. Go with a shorter segment length, and you'll get quick, snappy video chunks — more dynamic, more action, keeping the energy high."
+msgstr "¡Muy bien, es hora de establecer el ritmo! La longitud del segmento es como elegir el paso perfecto para el ritmo de tu video. Elige una longitud de segmento más corta, y obtendrás partes de video rápidas y dinámicas: más acción, manteniendo la energía alta."
+
+msgid "Segment length"
+msgstr "Longitud del segmento"
+
+msgid "You are a highlight editor. List archetypal dramatic moments that would make compelling highlights if they appear in the video. Each moment should be specific enough to be recognizable but generic enough to potentially exist in other videos of this type."
+msgstr "Eres un editor de momentos destacados. Enumera los momentos dramáticos arquetípicos que serían momentos destacados si aparecieran en el video. Cada momento debe ser lo suficientemente específico para ser reconocible, pero lo suficientemente genérico como para existir en otros videos de este tipo."
+
+msgid "You are a helpful visual-language assistant that can understand videos and edit. You are tasked helping the user to create highlight reels for videos. Highlights should be rare and important events in the video in question."
+msgstr "Eres un asistente útil de lenguaje visual que puede entender videos y editarlos. Tu tarea es ayudar al usuario a crear resúmenes de momentos destacados para los videos. Los momentos destacados deben ser eventos raros e importantes en el video en cuestión."
+
+msgid "(Optional) Describe how to edit a video"
+msgstr "(Opcional) Describe cómo editar un video"
+
+msgid "Yikes! Where is video? Attach its and continue."
+msgstr "¡Vaya! ¿Dónde está el video? Adjunta el video y continúa."
+
+# modal.html, generation.html, index.html, highlights.html
+msgid "Smart crop"
+msgstr "Recorte inteligente"
+
+msgid "Enable smart crop to create videos for YouTube, Tik Tok, Instagram, etc. Allows you to change any aspect ratio for your video using artificial intelligence and focus on interest objects and speakers."
+msgstr "Activa el recorte inteligente para crear videos para YouTube, TikTok, Instagram, etc. Permite cambiar cualquier relación de aspecto de tu video usando inteligencia artificial y enfocarse en objetos de interés y personas que hablan."
+
+msgid "Aspect ratio select"
+msgstr "Seleccionar relación de aspecto"
+
+msgid "An custom artificial intelligence system analyzes video frames to detect key subjects and speaking individuals, aligning lip movements with speech to focus on the most meaningful parts of the content. Perfect to create preview and shorts video."
+msgstr "Un sistema personalizado de inteligencia artificial analiza los fotogramas del video para detectar sujetos clave y personas que hablan, alineando los movimientos de los labios con el audio para centrarse en las partes más relevantes del contenido. Perfecto para crear vistas previas y videos cortos."
+
+msgid "Highlights"
+msgstr "Momentos destacados"
+
+msgid "Drag and drop a file or select one. You can upload a video and write how to edit the video, but the latter is not necessary. For instructions on how to use the Highlights module, check out this"
+msgstr "Arrastra y suelta un archivo o selecciona uno. Puedes cargar un video y escribir cómo editarlo, pero esto no es necesario. Para obtener instrucciones sobre cómo usar el módulo de Momentos Destacados, consulta esto"
+
+msgid "Your answer will appear in this textarea."
+msgstr "Tu respuesta aparecerá en este campo de texto."
+
+msgid "You can ask what is happening in the video or its segment, key takeaways, which sounds to use for editing, or any other question based on the video. The maximum number of symbols is 3000."
+msgstr "Puedes preguntar qué está pasando en el video o en su segmento, las conclusiones clave, qué sonidos usar para editar, o cualquier otra pregunta relacionada con el video. El número máximo de caracteres es 3000."
+
+msgid "What is your question?"
+msgstr "¿Cuál es tu pregunta?"
+
+msgid "Number of inference steps"
+msgstr "Número de pasos de inferencia"
+
+msgid "Guidance scale"
+msgstr "Escala de guía"
+
+msgid "Upload an image with a face to make some magic happen!"
+msgstr "¡Sube una imagen con una cara para hacer que ocurra algo mágico!"
+
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgid "Preview of the request"
+msgstr "Vista previa de la solicitud"
+
+msgid "Parameters that do not depend on files will be applied. If a parameter is related to a file (e.g., its size, duration, or selected face), it cannot be used without the file."
+msgstr "Se aplicarán solo los parámetros que no dependan de archivos. Si un parámetro está relacionado con un archivo (por ejemplo, su tamaño, duración o cara seleccionada), no se podrá usar sin el archivo."
+
+msgid "Assistant"
+msgstr "Asistente"
+
+msgid "Ready to transcribe or to analyze the content and answer all the questions!"
+msgstr "¡Listo para transcribir o analizar el contenido y responder todas las preguntas!"
+
+msgid "Transcribe"
+msgstr "Transcribir"
+
+msgid "Visual Method"
+msgstr "Método visual"
+
+msgid "The method works with video by analyzing visual elements, remembering all movements, colors, and objects. It’s ideal for sports events or movies."
+msgstr "El método trabaja con video analizando elementos visuales, recordando todos los movimientos, colores y objetos. Es ideal para eventos deportivos o películas."
+
+msgid "Visual"
+msgstr "Modelo visual"
+
+msgid "Sound Method"
+msgstr "Método de sonido"
+
+msgid "The method works with audio based on speech, capturing what people say. Perfect for podcasts, interviews, or news."
+msgstr "El método funciona con audio basado en el habla, capturando lo que dicen las personas. Perfecto para pódcasts, entrevistas o noticias."
+
+msgid "Sound"
+msgstr "Modelo de sonido"
+
+msgid "Monitor the user is completed tasks throughout the day."
+msgstr "Rastrea el historial de tareas completadas del usuario."
+
+msgid "No tasks found"
+msgstr "No se encontraron tareas"
+
+msgid "There are no tasks in the queue."
+msgstr "No hay tareas en la cola."
+
+msgid "Got an idea for a feature? Drop it in our"
+msgstr "¿Tienes una idea para una función? Compártela en nuestro"
+
+msgid "History session"
+msgstr "Historial de sesión"
+
+msgid "You can see your session to always have quick access to generations."
+msgstr "Puedes ver tu sesión para tener acceso rápido a las generaciones anteriores."
+
+msgid "Maximum duration (min)"
+msgstr "Duración máxima (min)"
+
+msgid "Click any banner to start progress"
+msgstr "Haz clic en cualquier banner para comenzar"
+
+msgid "Waiting"
+msgstr "Esperando"
+
+msgid "Subscribe to unlock"
+msgstr "Suscríbete para desbloquear"
+
+msgid "free"
+msgstr "gratis"
+
+msgid "day"
+msgstr "día"
+
+msgid "Watch ad"
+msgstr "Ver anuncio"
+
+msgid "Monthly limit reached"
+msgstr "Límite mensual alcanzado"
+
+msgid "Cut"
+msgstr "Cortar"
+
+msgid "Smart cutter"
+msgstr "Corte inteligente de file"
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file. Click again to deselect."
+msgstr "Una vez que aparezca el texto, resalta palabras o frases para seleccionar los segmentos de video que deseas editar. Haz clic nuevamente para deseleccionar."
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file."
+msgstr "Una vez que aparezca el texto, resalta palabras o frases para seleccionar los segmentos de video que deseas editar."
+
+msgid "Processing... A video timestamps is on its way."
+msgstr "Procesando... Los segmentos de video con marcas de tiempo estarán disponibles pronto."
+
+msgid "No speech found in a media."
+msgstr "No se encontró voz en el archivo multimedia."
+
+msgid "Want to try the full experience?"
+msgstr "¿Quieres probar la experiencia completa?"
+
+msgid "Every month, you can activate all premium features for free and get early access to new updates — download the latest version from"
+msgstr "Cada mes puedes activar todas las funciones premium de forma gratuita y obtener acceso anticipado a las nuevas actualizaciones — descarga la última versión desde"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Follow the author’s channel to stay up to date with new features and releases."
+msgstr "Sigue el canal del autor para estar al tanto de las nuevas funciones y actualizaciones."
+

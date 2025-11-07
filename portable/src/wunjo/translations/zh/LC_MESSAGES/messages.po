@@ -1,0 +1,3765 @@
+# Chinese translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-10 18:04+0300\n"
+"PO-Revision-Date: 2025-01-17 20:03+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+# loading.html
+msgid "System is preparing"
+msgstr "系统正在准备中"
+
+msgid "NOTE"
+msgstr "注意"
+
+msgid "To ensure proper startup, run the application as"
+msgstr "为了确保正确启动，请以管理员身份运行应用程序"
+
+msgid "Loading the necessary modules may take a few moments. Please wait while everything is being set up."
+msgstr "加载必要的模块可能需要一些时间。请耐心等待，直到所有组件加载完成。"
+
+#: templates/404.html:83
+msgid "Page not found"
+msgstr "页面未找到"
+
+#: templates/404.html:84
+msgid "Go to the App"
+msgstr "返回应用程序"
+
+#: templates/404.html:93 templates/faq.html:379 templates/profile.html:283
+#: templates/settings.html:165
+msgid "All rights reserved"
+msgstr "版权所有"
+
+#: templates/app.html:10
+msgid "Navigation"
+msgstr "导航"
+
+#: templates/app.html:10
+msgid ""
+"In this section, you can check the current version status or any update "
+"indications. Access the «Workspace» by clicking on it, where you’ll find "
+"various modules, settings, your profile, along with tutorials, contact "
+"information for the author, and news updates. Alternatively, clicking on "
+"«Wunjo» will display information about the ongoing processing tasks, "
+"known as the log."
+msgstr ""
+"在本节中，您可以查看当前版本状态或任何更新指示。通过点击“工作区”进入，您将在那里找到各种模块、设置、您的个人资料，以及教程、作者的联系信息和新闻更新。或者，点击“Wunjo”将显示有关正在进行的处理任务的信息，也就是日志。"
+
+#: templates/app.html:17
+msgid "Lite settings"
+msgstr "简化设置"
+
+#: templates/app.html:17
+msgid ""
+"Open settings. Customize the module to suit your needs. You can adjust "
+"the cache directory, switch processors, select the number of users and "
+"tasks, and much more. Be sure to review all the settings."
+msgstr ""
+"打开设置。根据您的需求自定义模块。您可以调整缓存目录、切换处理器、选择用户和任务数量等。请确保查看所有设置。"
+
+#: templates/app.html:24
+msgid "The cache folder"
+msgstr "缓存文件夹"
+
+msgid "size in settings. Downloaded models can occupy large amounts of disk space."
+msgstr "大小可在设置中查看。下载的模型可能会占用大量磁盘空间。"
+
+#: templates/app.html:24 templates/components/modal.html:1767
+#: templates/components/modal.html:1768 templates/components/modal.html:1769
+msgid "GB"
+msgstr "GB"
+
+#: templates/app.html:24
+msgid "click"
+msgstr "点击"
+
+#: templates/app.html:26 templates/profile.html:5 templates/profile.html:30
+msgid "Profile"
+msgstr "个人资料"
+
+#: templates/app.html:27 templates/components/modal.html:1699
+#: templates/settings.html:5 templates/settings.html:24
+msgid "Settings"
+msgstr "设置"
+
+#: templates/app.html:28 templates/faq.html:5
+msgid "FAQ"
+msgstr "常见问题"
+
+#: templates/app.html:32 templates/index.html:42 templates/lip_sync.html:73
+#: templates/live_portrait.html:5
+msgid "Live portrait"
+msgstr "实时肖像"
+
+#: templates/app.html:33 templates/face_swap.html:5
+#: templates/generation.html:484 templates/index.html:43
+msgid "Face swap"
+msgstr "换脸"
+
+#: templates/app.html:34 templates/face_swap.html:39 templates/index.html:44
+#: templates/lip_sync.html:5 templates/live_portrait.html:618
+msgid "Lip sync"
+msgstr "口型同步"
+
+#: templates/app.html:35 templates/enhancement.html:5
+#: templates/face_swap.html:48 templates/generation.html:475
+#: templates/index.html:45 templates/live_portrait.html:627
+#: templates/remove_object.html:45
+msgid "Enhancement"
+msgstr "增强效果"
+
+#: templates/app.html:36 templates/index.html:46 templates/remove_object.html:5
+msgid "Remove object"
+msgstr "移除对象"
+
+#: templates/app.html:37 templates/index.html:47
+#: templates/remove_background.html:5
+msgid "Remove background"
+msgstr "移除背景"
+
+#: templates/app.html:39 templates/generation.html:5
+msgid "Generation"
+msgstr "生成内容"
+
+#: templates/app.html:40 templates/components/modal.html:1767
+#: templates/restyling.html:5
+msgid "Restyling"
+msgstr "内容重塑"
+
+#: templates/app.html:42 templates/clone_voice.html:5 templates/index.html:50
+msgid "Clone voice"
+msgstr "克隆声音"
+
+#: templates/app.html:43 templates/lip_sync.html:82 templates/separator.html:5
+msgid "Separator"
+msgstr "音频分离器"
+
+#: templates/app.html:45 templates/content.html:5 templates/index.html:5
+msgid "Workspace"
+msgstr "工作空间"
+
+#: templates/app.html:62
+msgid "By using Wunjo, you agree to the"
+msgstr "使用 Wunjo 即表示您同意"
+
+#: templates/app.html:62
+msgid "EULA"
+msgstr "最终用户许可协议"
+
+#: templates/app.html:62 templates/login.html:59 templates/preload.html:141
+msgid "and"
+msgstr "和"
+
+#: templates/app.html:62 templates/login.html:60 templates/preload.html:142
+msgid "Privacy Policy"
+msgstr "隐私政策"
+
+#: templates/app.html:63
+msgid "Made by"
+msgstr "制作"
+
+#: templates/clone_voice.html:22
+msgid "What text should be read?"
+msgstr "应该朗读什么文本?"
+
+#: templates/clone_voice.html:23
+msgid ""
+"The text might look a little lost in translation without a language "
+"chosen in the Parameters by Footer. Just sayin’. Now is set"
+msgstr ""
+"请注意，您需要在底部设置中选择语言。当前设置为"
+
+#: templates/clone_voice.html:27 templates/generation.html:112
+msgid "Apply"
+msgstr "应用"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid "Calendar"
+msgstr "日历"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid ""
+"You can select specific dates or date ranges to filter the content you "
+"have previously created."
+msgstr ""
+"您可以选择特定的日期或日期范围，以筛选您之前创建的内容。"
+
+#: templates/clone_voice.html:37 templates/components/modal.html:579
+#: templates/enhancement.html:19 templates/face_swap.html:23
+#: templates/generation.html:494 templates/lip_sync.html:23
+#: templates/live_portrait.html:23 templates/remove_background.html:25
+#: templates/remove_object.html:29 templates/restyling.html:25
+#: templates/separator.html:19
+msgid "Today"
+msgstr "今天"
+
+#: templates/clone_voice.html:91 templates/enhancement.html:70
+#: templates/face_swap.html:104 templates/lip_sync.html:139
+#: templates/live_portrait.html:685 templates/remove_background.html:76
+#: templates/remove_object.html:99 templates/restyling.html:471
+#: templates/separator.html:70
+msgid "Upload file"
+msgstr "上传文件"
+
+#: templates/clone_voice.html:93
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. About module"
+" Clone Voice, look this"
+msgstr ""
+"拖放文件或选择文件。您可以上传音频。有关克隆语音模块的介绍，"
+"请查看"
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "tutorial"
+msgstr "教程"
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "Briefly"
+msgstr "简要介绍"
+
+#: templates/clone_voice.html:93
+msgid ""
+"All red blocks should turn green. Also, use the toggle and make sure to "
+"select the right clone language before pressing"
+msgstr ""
+"所有红色块应变为绿色。同时，使用切换按钮，确保在按下之前选择正确的克隆语言"
+
+#: templates/content.html:49
+msgid "Date Created"
+msgstr "创建日期"
+
+#: templates/content.html:57
+msgid "Control panel"
+msgstr "控制面板"
+
+#: templates/content.html:57
+msgid ""
+"In the file manager, you have the ability to delete, open, and rename "
+"content. Additionally, you can utilize features such as redo, undo, "
+"refresh, and return to the home directory for efficient management of "
+"your files."
+msgstr ""
+"在文件管理器中，您可以删除、打开和重命名内容。此外，您还可以使用撤销、重做、刷新和返回到主目录等功能，以高效地管理您的文件。"
+
+#: templates/content.html:62 templates/index.html:21
+msgid "Explore"
+msgstr "探索"
+
+#: templates/content.html:63 templates/index.html:22
+msgid "Content"
+msgstr "目录"
+
+#: templates/content.html:72
+msgid "Open"
+msgstr "打开"
+
+#: templates/components/modal.html:118 templates/components/modal.html:381
+#: templates/components/modal.html:497 templates/components/view.html:107
+#: templates/components/view.html:220 templates/components/view.html:415
+#: templates/content.html:77
+msgid "Rename"
+msgstr "重命名"
+
+#: templates/components/modal.html:123 templates/components/modal.html:386
+#: templates/components/modal.html:502 templates/components/view.html:420
+#: templates/content.html:82
+msgid "Delete"
+msgstr "删除"
+
+#: templates/components/modal.html:142 templates/components/modal.html:405
+#: templates/components/modal.html:521 templates/components/view.html:439
+#: templates/content.html:96
+msgid "Option"
+msgstr "选项"
+
+#: templates/content.html:125
+msgid "Manager view"
+msgstr "文件管理器视图"
+
+#: templates/content.html:125
+msgid ""
+"In desktop mode, simply double-click on a folder or file to open it. In "
+"mobile mode, tap on the open button to access your folders and files. "
+"Let’s open some file in folder to display content."
+msgstr ""
+"在桌面模式下，只需双击文件夹或文件即可打开。在移动模式下，点击打开按钮以访问您的文件夹和文件。让我们打开文件夹中的文件以显示内容。"
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid "Filter"
+msgstr "过滤器"
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid ""
+"You can display specific types of content such as images, videos, audio, "
+"groups of images, or all content together."
+msgstr ""
+"您可以显示特定类型的内容，如图片、视频、音频、图片组或所有内容一起显示。"
+
+#: templates/enhancement.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Enhancement module, check out "
+"this"
+msgstr ""
+"拖放文件或选择文件。您可以上传视频或图片。有关如何使用增强模块的说明，请查看此处"
+
+#: templates/enhancement.html:72
+msgid "Upload file, and then press the"
+msgstr "上传文件，然后按下"
+
+#: templates/components/view.html:127 templates/components/view.html:240
+#: templates/face_swap.html:36 templates/generation.html:472
+#: templates/lip_sync.html:70 templates/live_portrait.html:615
+#: templates/remove_object.html:42
+msgid "Suggest"
+msgstr "建议"
+
+#: templates/face_swap.html:39 templates/live_portrait.html:618
+msgid ""
+"Ready to give those lips some life? After swapping faces, it’s time to "
+"sync those pouts with the audio. Lip animation should always follow the "
+"face swap for maximum lip-syncing magic. Get ready to make those lips "
+"sing—right"
+msgstr ""
+"准备让这些嘴唇充满生命力吗？面部交换后，到了同步嘴唇和音频的时刻。"
+"嘴唇动画应该始终紧跟面部交换，以获得最佳的嘴唇同步效果。准备好让这些嘴唇歌唱吧——对吧？"
+
+#: templates/face_swap.html:39 templates/lip_sync.html:82
+#: templates/live_portrait.html:618 templates/remove_object.html:45
+msgid "here"
+msgstr "这里"
+
+#: templates/components/modal.html:1491 templates/components/modal.html:1498
+#: templates/components/modal.html:1728 templates/face_swap.html:43
+#: templates/generation.html:479 templates/index.html:30
+#: templates/lip_sync.html:47 templates/lip_sync.html:77
+#: templates/live_portrait.html:622
+msgid "or"
+msgstr "或"
+
+#: templates/face_swap.html:48 templates/live_portrait.html:627
+msgid ""
+"Got a few facial quirks to iron out? No worries! If there are any "
+"imperfections, you’ve got the tools to smooth them out.  Remember, a big "
+"gap in resolution between avatar face and target content can throw off "
+"the vibe. For optimal outcomes, ensure consistency in resolution, or "
+"utilize the facial enhancement tools available in this"
+msgstr ""
+"需要调整一些面部特征吗？不用担心！如果有任何缺陷，您可以使用工具将其平滑处理。记住，"
+"如果头像的面部和目标内容之间的分辨率差距过大，会影响整体效果。为了获得最佳效果，请确保分辨率一致，"
+"或使用本模块提供的面部增强工具。"
+
+#: templates/face_swap.html:48 templates/lip_sync.html:73
+#: templates/live_portrait.html:627
+msgid "module"
+msgstr "模块"
+
+#: templates/face_swap.html:106
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Face Swap module, check out "
+"this"
+msgstr ""
+"拖放文件或选择一个文件。您可以上传视频或图像。有关如何使用面部交换模块的说明，请查看此处。"
+
+#: templates/face_swap.html:106 templates/lip_sync.html:141
+#: templates/live_portrait.html:687 templates/remove_background.html:78
+msgid "All red blocks should turn green, and then press the"
+msgstr "所有红色块应变为绿色，然后按下"
+
+#: templates/faq.html:18 templates/faq.html:45 templates/faq.html:48
+msgid "About"
+msgstr "关于"
+
+#: templates/faq.html:22 templates/faq.html:108 templates/faq.html:111
+msgid "Your Content"
+msgstr "您的内容"
+
+#: templates/faq.html:26 templates/faq.html:144 templates/faq.html:147
+msgid "Creating & Editing"
+msgstr "创建与编辑"
+
+#: templates/faq.html:30 templates/faq.html:223 templates/faq.html:226
+msgid "Subscriptions & Billing"
+msgstr "订阅与账单"
+
+#: templates/faq.html:34 templates/faq.html:319 templates/faq.html:322
+msgid "Tech Issues"
+msgstr "技术问题"
+
+#: templates/faq.html:39
+msgid "FREQUENTLY ASKED QUESTIONS"
+msgstr "常见问题"
+
+#: templates/faq.html:56
+msgid "What is Wunjo?"
+msgstr "什么是Wunjo？"
+
+#: templates/faq.html:61
+msgid ""
+"Wunjo is an idea-to-content platform that utilizes combinations of AI. "
+"There’s a lot of technical stuff involved, but basically, you "
+"reincarnation your content."
+msgstr ""
+"Wunjo 是一个从创意到内容的平台，利用了多种 AI 技术。这里涉及很多技术内容，但基本上，"
+"你可以将你的内容重新创造。"
+
+#: templates/faq.html:69
+msgid "How does Wunjo work?"
+msgstr "Wunjo 是如何工作的？"
+
+#: templates/faq.html:74
+msgid ""
+"I could tell you, but … you can find out this in open source code. "
+"Basically, this is magic. And this is uniq project! It doesn’t exist "
+"anywhere else on the market! I’m pretty darn excited about it!"
+msgstr ""
+"我可以告诉你，但……你可以在开源代码中找到答案。基本上，这是魔法。而且这是一个独特的项目！"
+"它在市场上没有其他类似的！我对此非常兴奋！"
+
+#: templates/faq.html:82
+msgid "Do you have a publicly accessible API?"
+msgstr "你们有公开可用的 API 吗？"
+
+#: templates/faq.html:87
+msgid ""
+"Yes. You can use the application in API mode and connect it to your "
+"services."
+msgstr ""
+"是的。您可以在 API 模式下使用此应用程序，并将其连接到您的服务。"
+
+#: templates/faq.html:94
+msgid "It’s free?"
+msgstr "这是免费的吗？"
+
+#: templates/faq.html:100
+msgid ""
+"Yes. The community edition version is absolutely free and you will able "
+"to find open source code. However, the professional version is available "
+"by subscription. This is a kind of reward to the author that he continues"
+" to develop the project, and gives you access so that you can use it in "
+"your projects and even freely earn money from the project, for example, "
+"using API or temporary links. The project is designed so that you can "
+"have your service in your pocket with minimal effort and without "
+"technical skills."
+msgstr ""
+"是的。社区版是完全免费的，您还可以找到开源代码。然而，专业版是通过订阅提供的。这是对作者的奖励，鼓励他继续开发该项目，并为您提供访问权限，以便您可以将其用于您的项目，甚至可以自由地从项目中赚取收入，例如，使用API或临时链接。该项目的设计旨在让您以最小的努力和不需要技术技能的方式将您的服务带在身边。"
+
+#: templates/faq.html:119
+msgid "Can I use the content I made in Wunjo for commercial purposes?"
+msgstr "我可以将我在Wunjo中制作的内容用于商业目的吗？"
+
+#: templates/faq.html:124
+msgid ""
+"It doesn’t matter if your content is created in a community edition "
+"version or a professional subscription. If it has nothing prohibited or "
+"is not intended to discredit anyone then, whatever you create using Wunjo"
+" can be used commercially, or non-commercially."
+msgstr ""
+"无论您的内容是在社区版版本还是专业版订阅中创建的，都没关系。如果内容没有任何禁止的内容，也没有意图诋毁任何人，那么，您使用Wunjo创建的任何内容都可以用于商业或非商业目的。"
+
+#: templates/faq.html:132
+msgid "Are the content I created in Wunjo private?"
+msgstr "我在Wunjo中创建的内容是私密的吗？"
+
+#: templates/faq.html:137
+msgid ""
+"Yes. The content you create is completely private and stored on your "
+"device. Only you have access and you are responsible for the content you "
+"create."
+msgstr ""
+"是的。您创建的内容完全私密并存储在您的设备上。只有您有访问权限，您对创建的内容负责。"
+
+#: templates/faq.html:155
+msgid "What is the resolution of the content?"
+msgstr "内容的分辨率是多少？"
+
+#: templates/faq.html:160
+msgid ""
+"Baseline content output is Full HD and HD resolution. However, you "
+"customize the application yourself and can increase or decrease the "
+"resolution."
+msgstr ""
+"基本内容输出为Full HD和HD分辨率。然而，您可以自己自定义应用程序，并增加或减少分辨率。"
+
+#: templates/faq.html:168
+msgid "How do I improve quality of output content?"
+msgstr "如何提高输出内容的质量？"
+
+#: templates/faq.html:173
+msgid ""
+"Pay attention to the suggest option. When clicked, there will be a list "
+"of possible actions to improve the quality of the content received."
+msgstr ""
+"注意建议选项。点击后，将出现一个列表，列出可能的操作来改善接收到的内容的质量。"
+
+#: templates/faq.html:181
+msgid "Can I increase videos or audio duration?"
+msgstr "我可以增加视频或音频的持续时间吗？"
+
+#: templates/faq.html:186
+msgid ""
+"Yes. You can freely change the basic settings, including the duration of "
+"the received content."
+msgstr ""
+"是的。您可以自由更改基本设置，包括接收到的内容的持续时间。"
+
+#: templates/faq.html:194
+msgid "Can I improve application performance?"
+msgstr "我可以提高应用程序性能吗？"
+
+#: templates/faq.html:200
+msgid ""
+"Yes. In the settings, pay attention to the parameters for video memory, "
+"RAM, and the number of simultaneously running tasks. You determine the "
+"performance of the application for yourself based on your needs and your "
+"device. You can tighten the settings so you can do other things on your "
+"device at the same time, or loosen them so the app uses more of your "
+"device’s resources."
+msgstr ""
+"是的。在设置中，请注意视频内存、RAM和同时运行任务数量的参数。"
+"根据您的需求和设备，您可以自行确定应用程序的性能。您可以收紧设置，"
+"以便同时在设备上执行其他任务，或者放宽设置，以便应用程序使用更多设备资源。"
+
+#: templates/faq.html:209
+msgid "Can I turn off my internet connection?"
+msgstr "我可以断开互联网连接吗？"
+
+#: templates/faq.html:215
+msgid ""
+"Yes. You can disable your internet connection, but you will need to make "
+"sure that all the required models for your module are downloaded and the "
+"page code is loaded into the cache. You can do this in the settings, as "
+"well as following the instructions for manually downloading models. When "
+"first run, the models are downloaded automatically, and if the generation"
+" is successful, then the model update is no longer checked. However, in "
+"the settings you can choose to check for model updates. Anyway, please "
+"note that the Internet is required to verify the license and obtain the "
+"closed part of the code, which is licensed under a license other than the"
+" public one and after verified you can turn off internet connection."
+msgstr ""
+"是的。您可以禁用互联网连接，但需要确保所有必需的模型都已下载，"
+"并且页面代码已加载到缓存中。您可以在设置中完成此操作，并按照手动下载模型的说明进行操作。"
+"首次运行时，模型会自动下载，如果生成成功，则不再检查模型更新。"
+"然而，您可以在设置中选择检查模型更新。无论如何，请注意，互联网连接是"
+"验证许可证并获取代码的私有部分所必需的，获取并验证后，您可以关闭互联网连接。"
+
+#: templates/faq.html:234
+msgid "How long does the subscription last?"
+msgstr "订阅有效期是多久？"
+
+#: templates/faq.html:239
+msgid ""
+"Depending on the plan you choose. The subscription is counted from the "
+"time of purchase. And when it stops, you will receive a notification."
+msgstr ""
+"根据您选择的计划。订阅从购买时间开始计算，当订阅结束时，您将收到通知。"
+
+#: templates/faq.html:247
+msgid "How do I cancel my subscription?"
+msgstr "如何取消我的订阅？"
+
+#: templates/faq.html:252
+msgid ""
+"Email us at support@wunjo.online if you really want to say goodbye to "
+"your subsription. Please note that if you have an active subscription, "
+"and you take this step, your subscription will be invalidated, and no "
+"refund will be provided."
+msgstr ""
+"如果您真的想取消订阅，请通过电子邮件联系我们 support@wunjo.online。"
+"请注意，如果您有有效的订阅，并采取此步骤，您的订阅将被作废，且不提供退款。"
+
+#: templates/faq.html:260
+msgid "Can my subscription be blocked?"
+msgstr "我的订阅会被封锁吗？"
+
+#: templates/faq.html:265
+msgid ""
+"No. However, if your unique address is noticed to change frequently, with"
+" each suspicious activity, you will be asked to confirm that it is you to"
+" continue the session and gain access to the professional subscription, "
+"otherwise the community edition version will open."
+msgstr ""
+"不会。然而，如果您的唯一地址在每次出现可疑活动时频繁更改，"
+"您将被要求确认是您本人，以继续会话并获得专业订阅的访问权限，"
+"否则将打开社区版。"
+"另外，如果您违反了EULA，您的订阅可能会被封锁。"
+
+#: templates/faq.html:273
+msgid ""
+"If I start a subscription, is it just for during period, or will it renew"
+" automatically?"
+msgstr ""
+"如果我开始订阅，它只会在指定期限内有效，还是会自动续订？"
+
+#: templates/faq.html:278
+msgid ""
+"Not. This will not be automatically renew every period, so you don’t have"
+" to worry about anything. You only receive a notification that your "
+"subscription has ended."
+msgstr "取决于购买平台，可能会自动续订。"
+
+#: templates/faq.html:286
+msgid "What is the difference between Professional and Community Edition?"
+msgstr "Professional Edition和Community Edition之间有什么区别？"
+
+#: templates/faq.html:292
+msgid "You can find out more at"
+msgstr ""
+"您可以在以下网址了解更多关于Professional Edition和Community Edition的区别："
+
+#: templates/faq.html:301
+msgid "Why do you charge money?"
+msgstr "为什么要收费？"
+
+#: templates/faq.html:307
+msgid ""
+"Believe it or not, each time you click generate, it’s the result of "
+"countless sleepless nights and hours of dedicated development. "
+"Subscribing to the professional version is a way to support the author’s "
+"hard work and motivate ongoing project development, including the "
+"addition of new features and enhancements to existing ones."
+msgstr ""
+"信不信由你，每次点击生成按钮，都是无数个不眠之夜和数小时的专注开发成果。"
+"订阅专业版是支持作者辛勤工作并激励项目持续发展的方式，"
+"包括新增功能和现有功能的增强。"
+
+#: templates/faq.html:309
+msgid ""
+"Moreover, the author has designed the application not only for your "
+"personal use but also to enable you to share access with friends or "
+"integrate the API into your projects. This means you can leverage all the"
+" application’s features freely, even for commercial purposes."
+msgstr ""
+"此外，作者不仅为您的个人使用设计了应用程序，还使您能够与朋友共享访问或将API集成到您的项目中。"
+"这意味着您可以自由使用应用程序的所有功能，甚至用于商业目的。"
+
+#: templates/faq.html:311
+msgid ""
+"Your subscription directly contributes to the continued improvement and "
+"sustainability of the project, ensuring you receive the best possible "
+"experience. Thank you for supporting this work!"
+msgstr ""
+"您的订阅直接促进了项目的持续改进和可持续性，确保您获得最佳的体验。感谢您支持这项工作！"
+
+#: templates/faq.html:330
+msgid "What if I have questions that aren’t answered here?"
+msgstr "如果我有这里没有回答的问题怎么办？"
+
+#: templates/faq.html:336
+msgid "Head over to the support channel on"
+msgstr "前往支持频道"
+
+#: templates/faq.html:336
+msgid ""
+"and say hi to the community while you’re there! There’s also a really "
+"robust FAQ section there that may have exactly the answer you need. If "
+"you have any questions, you can contact the author or"
+msgstr ""
+"并在那里向社区打个招呼！那里还有一个非常强大的常见问题部分，"
+"可能恰好有您需要的答案。如果您有任何问题，可以联系作者或"
+
+#: templates/generation.html:23
+msgid "What is your prompt?"
+msgstr "您的提示是什么？"
+
+#: templates/generation.html:33 templates/generation.html:70
+#: templates/generation.html:235 templates/generation.html:272
+#: templates/restyling.html:61 templates/restyling.html:98
+#: templates/restyling.html:247 templates/restyling.html:284
+msgid "Seed"
+msgstr "种子"
+
+#: templates/generation.html:37 templates/generation.html:74
+msgid "e.g."
+msgstr "例如"
+
+#: templates/generation.html:44 templates/generation.html:81
+#: templates/generation.html:246 templates/generation.html:283
+#: templates/restyling.html:72 templates/restyling.html:109
+#: templates/restyling.html:258 templates/restyling.html:295
+msgid "Strength"
+msgstr "强度"
+
+#: templates/generation.html:56 templates/generation.html:93
+#: templates/generation.html:258 templates/generation.html:295
+#: templates/restyling.html:84 templates/restyling.html:121
+#: templates/restyling.html:270 templates/restyling.html:307
+msgid "Scale"
+msgstr "规模"
+
+#: templates/generation.html:106 templates/generation.html:365
+#: templates/restyling.html:134 templates/restyling.html:377
+msgid "Negative prompt"
+msgstr "负面提示"
+
+#: templates/generation.html:108 templates/generation.html:367
+#: templates/restyling.html:136 templates/restyling.html:379
+msgid "e.g. ugly, bad, terrible (optional)"
+msgstr "例如，丑陋、坏、可怕（可选）"
+
+#: templates/generation.html:125
+msgid "Generation settings"
+msgstr "生成设置"
+
+#: templates/generation.html:126
+msgid "You can either fine-tune the parameters to"
+msgstr "您可以调整参数以"
+
+#: templates/generation.html:126
+msgid "generate"
+msgstr "生成"
+
+#: templates/generation.html:126
+msgid "video or take control by manually"
+msgstr "视频，或通过手动控制"
+
+#: templates/generation.html:126 templates/generation.html:127
+msgid "redraw"
+msgstr "重绘"
+
+#: templates/generation.html:126
+msgid ""
+"tweaking the elements within the image before creation. Dive in and make "
+"it truly yours."
+msgstr ""
+"在创作之前调整图像中的元素。深入其中，让它真正属于您。"
+
+#: templates/generation.html:127
+msgid "You can manually"
+msgstr "您可以手动"
+
+#: templates/generation.html:127
+msgid "tweaking the elements within the image. Dive in and make it truly yours."
+msgstr "调整图像中的元素。深入其中，打造属于您的独特作品。"
+
+#: templates/generation.html:134
+msgid "Redraw"
+msgstr "重新绘制"
+
+#: templates/components/modal.html:1295 templates/generation.html:137
+msgid "Generate"
+msgstr "生成"
+
+#: templates/generation.html:154
+msgid "CUSTOMIZING GENERATION"
+msgstr "自定义生成"
+
+#: templates/generation.html:158
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. Additionally, you can regenerate the"
+" image again, or replace it with another one."
+msgstr "准备好您的内容。选择一个对象和场景，设置参数和属性，并通过提示进行更改。此外，您还可以重新生成图像，或者用另一个替换它。"
+
+#: templates/components/modal.html:703 templates/components/modal.html:882
+#: templates/components/modal.html:1051 templates/components/modal.html:1211
+#: templates/generation.html:195 templates/generation.html:412
+#: templates/live_portrait.html:135 templates/restyling.html:209
+msgid "Image input"
+msgstr "图像输入"
+
+#: templates/generation.html:205 templates/generation.html:423
+msgid ""
+"Generation... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr "正在生成... 按钮在完成之前被锁定。点击屏幕查看详情。"
+
+#: templates/generation.html:212 templates/restyling.html:44
+#: templates/restyling.html:227
+msgid "Positive prompt"
+msgstr "正向提示"
+
+#: templates/generation.html:214 templates/restyling.html:46
+#: templates/restyling.html:229
+msgid "Describe the change you want to make"
+msgstr "描述您想要进行的更改"
+
+#: templates/generation.html:216
+msgid "Inspire me"
+msgstr "激励我"
+
+#: templates/generation.html:220
+msgid "NEW"
+msgstr "新功能"
+
+#: templates/generation.html:312 templates/generation.html:339
+#: templates/restyling.html:324 templates/restyling.html:351
+msgid "Control strength"
+msgstr "控制强度"
+
+#: templates/generation.html:324 templates/generation.html:351
+#: templates/generation.html:445 templates/restyling.html:336
+#: templates/restyling.html:363
+msgid "Blur factor"
+msgstr "模糊因子"
+
+#: templates/generation.html:375 templates/live_portrait.html:599
+#: templates/restyling.html:148 templates/restyling.html:391
+msgid "Continue"
+msgstr "继续"
+
+#: templates/generation.html:392
+msgid "OUTPAINTING"
+msgstr "外扩"
+
+#: templates/generation.html:396
+msgid ""
+"Please note that the model used is version 1.5 with a resolution limit of"
+" 1280x1280 for best quality."
+msgstr "请注意，所使用的模型是1.5版本，最佳质量分辨率限制为1280x1280。"
+
+#: templates/generation.html:430
+msgid "Prompt"
+msgstr "提示"
+
+#: templates/generation.html:432
+msgid "(Optional) Describe what should be in the new parts"
+msgstr "(可选) 描述新部分应包含的内容"
+
+#: templates/generation.html:475
+msgid ""
+"So, you’ve created the video. But wait, high-resolution from source "
+"content can sometimes reveal a few sneaky flaws. No sweat! Enhancement"
+msgstr "您已经创建了视频。但等一下，源内容的高分辨率有时会暴露出一些隐藏的瑕疵。别担心！"
+
+#: templates/generation.html:475
+msgid "tools"
+msgstr "工具"
+
+#: templates/generation.html:475
+msgid "are here to smooth out those rough spots."
+msgstr "这些工具可以帮助您修正这些瑕疵。"
+
+#: templates/generation.html:484
+msgid "Lost a face in the content? It can be restored with a"
+msgstr "内容中丢失了面孔？可以通过"
+
+#: templates/generation.html:484
+msgid "face swap"
+msgstr "换脸"
+
+#: templates/generation.html:484
+msgid "by one click."
+msgstr "一键恢复。"
+
+#: templates/generation.html:552
+msgid "Upload file or input text"
+msgstr "上传文件或输入文本"
+
+#: templates/generation.html:554
+msgid ""
+"Drag and drop a file or select one. You can upload an image or use input "
+"for a text. For instructions on how to use the Generation module, check "
+"out this"
+msgstr ""
+"拖放文件或选择文件。您可以上传图像或输入文本。有关如何使用生成模块的说明，请查看"
+
+#: templates/generation.html:554
+msgid "Use an image or a text, and then press the"
+msgstr "使用图像或文本，然后按下"
+
+#: templates/index.html:19
+msgid "Switch view"
+msgstr "切换视图"
+
+#: templates/index.html:19
+msgid ""
+"Switch to content to view your data. Each user can see the content they "
+"previously created based on their IP address."
+msgstr ""
+"切换到内容视图以查看您的数据。每个用户可以根据自己的IP地址查看他们之前创建的内容。"
+
+#: templates/index.html:30
+msgid "Smart search"
+msgstr "智能搜索"
+
+#: templates/index.html:30
+msgid ""
+"For advanced tasks, utilize the smart search feature. Discover "
+"recommendations like"
+msgstr ""
+"对于高级任务，使用智能搜索功能。发现类似于"
+
+#: templates/index.html:30
+msgid "record a song fragment with a cloned voice"
+msgstr "用克隆的声音录制歌曲片段"
+
+#: templates/index.html:30
+msgid "analysis content"
+msgstr "分析内容"
+
+#: templates/index.html:30
+msgid "create a talking person from scratch"
+msgstr "从零开始创建会说话的人物"
+
+#: templates/index.html:30
+msgid ""
+"and etc. If you don’t find the help you need, contact to at "
+"support@wunjo.online."
+msgstr ""
+"等。如果您没有找到所需的帮助，请通过support@wunjo.online与我们联系。"
+
+#: templates/index.html:30
+msgid "Additionally, explore"
+msgstr "此外，探索"
+
+#: templates/index.html:30
+msgid "for exclusive video tutorials to master advanced features."
+msgstr "以掌握高级功能的独家视频教程。"
+
+#: templates/index.html:35
+msgid "What can I help with? (Any language)"
+msgstr "我可以帮忙什么？（任何语言）"
+
+#: templates/index.html:38
+msgid "Quick tips for best results"
+msgstr "快速技巧以获得最佳效果"
+
+#: templates/index.html:38
+msgid ""
+"Each module includes easy-to-follow tips to help you achieve the best "
+"quality outcomes. Start here for straightforward guidance tailored to "
+"your needs."
+msgstr ""
+"每个模块都包括易于遵循的技巧，帮助您获得最佳的质量结果。从这里开始，获取量身定制的简单指南，以满足您的需求。"
+
+#: templates/index.html:48
+msgid "Generation content"
+msgstr "内容生成"
+
+#: templates/index.html:49
+msgid "Restyling visual"
+msgstr "视觉重塑"
+
+#: templates/index.html:51
+msgid "Audio separator"
+msgstr "音频分离器"
+
+#: templates/lip_sync.html:37
+msgid "Model select"
+msgstr "选择模型"
+
+#: templates/lip_sync.html:39
+msgid "Fast Method"
+msgstr "快速方法"
+
+#: templates/lip_sync.html:39
+msgid ""
+"This method is quicker, but the lips might appear inaccurate and blurred."
+" You can enhance the quality using the Enhancement module."
+msgstr ""
+"此方法较快，但嘴唇可能看起来不准确且模糊。您可以使用增强模块提高质量。"
+
+#: templates/lip_sync.html:43
+msgid "Fast"
+msgstr "快速"
+
+#: templates/lip_sync.html:49
+msgid "Latent Diffusion Method"
+msgstr "潜在扩散方法"
+
+#: templates/lip_sync.html:49
+msgid ""
+"This provides more accurate results and visually appealing lip "
+"animations, though the face might occasionally twitch and the mouth may "
+"not fully close."
+msgstr ""
+"该方法提供更精确的结果和更具视觉吸引力的嘴唇动画，尽管面部可能偶尔抽动，嘴巴可能无法完全闭合。"
+
+#: templates/lip_sync.html:54
+msgid "Best"
+msgstr "最佳"
+
+#: templates/lip_sync.html:73
+msgid ""
+"So, you’ve animated those lips. But you think the animation of the lips "
+"is not natural? Try, if the original video, processing it in live "
+"portrait mode silence, to make the mouth closed in"
+msgstr ""
+"所以，你已经动画化了嘴唇。但是你认为嘴唇的动画不自然？试试看，如果原始视频，处理它在实时肖像模式下静音，使嘴巴闭合"
+
+#: templates/lip_sync.html:73
+msgid "and came back to lip sync after."
+msgstr "然后再回到同步嘴唇。"
+
+#: templates/lip_sync.html:82
+msgid ""
+"Got some extra lip action going on? Say goodbye to noisy audio and hello "
+"to separate vocals and music accompaniment in"
+msgstr ""
+"嘴唇动作过多？告别嘈杂的音频，迎接单独的声乐和音乐伴奏"
+
+#: templates/lip_sync.html:82
+msgid "It’s like magic to improve your lip sync!"
+msgstr "这就像魔法一样，能改善你的嘴唇同步！"
+
+#: templates/lip_sync.html:141
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Lip Sync module, check out this"
+msgstr ""
+"拖放文件或选择一个。你可以上传视频或图片。有关如何使用嘴唇同步模块的说明，请查看"
+
+#: templates/lip_sync.html:141
+msgid "For better video, use the «silence» mode in"
+msgstr "为了更好的视频效果，请使用«静音»模式"
+
+#: templates/lip_sync.html:141
+msgid "manually retargeting live portrait"
+msgstr "手动重新定位实时肖像"
+
+#: templates/lip_sync.html:141
+msgid "to pre-process the mouth to a closed state before applying lip sync."
+msgstr ""
+"在应用嘴唇同步之前，预处理嘴巴到闭合状态。"
+
+#: templates/live_portrait.html:37
+msgid ""
+"Choose how often the effect is applied to the frames: a higher number "
+"applies it less frequently, while a lower number applies it more often."
+msgstr ""
+"选择效果应用于帧的频率：更高的数字表示效果应用得较少，较低的数字表示效果应用得较频繁。"
+
+#: templates/live_portrait.html:41
+msgid "Frequency"
+msgstr "频率"
+
+#: templates/live_portrait.html:53
+msgid ""
+"Set the lower and upper thresholds for actions. Adjust values to achieve "
+"the desired accuracy."
+msgstr ""
+"设置动作的下限和上限阈值。调整数值以达到所需的准确性。"
+
+#: templates/live_portrait.html:58
+msgid "Range"
+msgstr "范围"
+
+#: templates/live_portrait.html:75
+msgid "Smooth action on all frames"
+msgstr "平滑处理所有帧"
+
+#: templates/components/modal.html:1704 templates/components/modal.html:1746
+#: templates/live_portrait.html:81
+msgid "Submit"
+msgstr "提交"
+
+#: templates/live_portrait.html:98 templates/restyling.html:405
+msgid "CUSTOMIZING FRAMES"
+msgstr "自定义帧"
+
+#: templates/live_portrait.html:102
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change face movement. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"准备您的内容。选择对象和场景，设置参数和属性，改变面部动作。"
+" 当您对结果满意时，继续到下一个帧。"
+
+#: templates/live_portrait.html:142
+msgid "Qick"
+msgstr "快速"
+
+#: templates/live_portrait.html:152
+msgid ""
+"Retargeting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"重新定位... 按钮被锁定，直到完成。点击屏幕查看详情。"
+
+#: templates/live_portrait.html:164 templates/live_portrait.html:190
+msgid "Eye ratio"
+msgstr "眼睛比例"
+
+#: templates/live_portrait.html:176 templates/live_portrait.html:202
+msgid "Lip ratio"
+msgstr "嘴唇比例"
+
+#: templates/live_portrait.html:218 templates/live_portrait.html:256
+msgid "Pitch"
+msgstr "俯仰"
+
+#: templates/live_portrait.html:230 templates/live_portrait.html:268
+msgid "Yaw"
+msgstr "偏航"
+
+#: templates/live_portrait.html:242 templates/live_portrait.html:280
+msgid "Roll"
+msgstr "滚转"
+
+#: templates/live_portrait.html:296 templates/live_portrait.html:322
+msgid "Eyeball X"
+msgstr "眼球 X"
+
+#: templates/live_portrait.html:308 templates/live_portrait.html:334
+msgid "Eyeball Y"
+msgstr "眼球 Y"
+
+#: templates/live_portrait.html:350 templates/live_portrait.html:388
+msgid "Head X"
+msgstr "头部 X"
+
+#: templates/live_portrait.html:362 templates/live_portrait.html:400
+msgid "Head Y"
+msgstr "头部 Y"
+
+#: templates/live_portrait.html:374 templates/live_portrait.html:412
+msgid "Head Z"
+msgstr "头部 Z"
+
+#: templates/live_portrait.html:428 templates/live_portrait.html:466
+msgid "Smile"
+msgstr "微笑"
+
+#: templates/live_portrait.html:440 templates/live_portrait.html:478
+msgid "Wink"
+msgstr "眨眼"
+
+#: templates/live_portrait.html:452 templates/live_portrait.html:490
+msgid "Eyebrow"
+msgstr "眉毛"
+
+#: templates/live_portrait.html:506 templates/live_portrait.html:544
+msgid "Grin"
+msgstr "咧嘴笑"
+
+#: templates/live_portrait.html:518 templates/live_portrait.html:556
+msgid "Pursing"
+msgstr "撅嘴"
+
+#: templates/live_portrait.html:530 templates/live_portrait.html:568
+msgid "Pouting"
+msgstr "噘嘴"
+
+#: templates/live_portrait.html:580
+msgid "Lip expression"
+msgstr "嘴唇表情"
+
+#: templates/components/modal.html:1558 templates/live_portrait.html:596
+#: templates/profile.html:25 templates/restyling.html:145
+#: templates/restyling.html:388
+msgid "Back"
+msgstr "返回"
+
+#: templates/live_portrait.html:687
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Live Portrait module, check out"
+" this"
+msgstr ""
+"拖放文件或选择文件。您可以上传视频或图像。有关如何使用动态肖像模块的说明，请查看此"
+
+#: templates/login.html:30 templates/preload.html:112
+msgid "New features alert! Soon!"
+msgstr "新功能提醒！即将推出！"
+
+#: templates/login.html:33 templates/preload.html:115
+msgid "To learn more project, check out"
+msgstr "要了解更多关于这个项目，请查看"
+
+#: templates/login.html:34 templates/preload.html:116
+msgid "YouTube channel"
+msgstr "YouTube 频道"
+
+#: templates/login.html:35 templates/preload.html:117
+msgid "We’re"
+msgstr "我们"
+
+#: templates/login.html:36 templates/preload.html:118
+msgid "looking"
+msgstr "正在寻找"
+
+#: templates/login.html:37 templates/preload.html:119
+msgid "for different support!"
+msgstr "任何支持！"
+
+#: templates/login.html:48 templates/preload.html:130
+msgid "Ready to use Wunjo v2?"
+msgstr "准备好使用 Wunjo v2 吗？"
+
+#: templates/login.html:53
+msgid "Let’s Go!"
+msgstr "出发吧！"
+
+#: templates/login.html:57 templates/preload.html:139
+msgid "By signing in, you are agreeing to the"
+msgstr "登录即表示您同意"
+
+#: templates/login.html:58 templates/preload.html:140
+msgid "End-User License Agreement"
+msgstr "最终用户许可协议"
+
+#: templates/login.html:68 templates/preload.html:150
+msgid "Author"
+msgstr "作者"
+
+#: templates/components/modal.html:1719 templates/components/modal.html:1764
+#: templates/preload.html:14 templates/preload.html:77
+msgid "Attention"
+msgstr "注意"
+
+#: templates/preload.html:17 templates/preload.html:175
+msgid "IMPORTANT"
+msgstr "重要"
+
+#: templates/preload.html:17
+msgid ""
+"The CUDA driver is not detected. If you proceed with the installation, "
+"the program will run on the CPU, resulting in"
+msgstr ""
+"未检测到CUDA驱动程序。如果继续安装，程序将在CPU上运行，"
+"这将导致"
+
+#: templates/preload.html:17
+msgid "significantly slower performance"
+msgstr "性能大幅下降"
+
+#: templates/preload.html:17
+msgid ""
+"for some functions, and others may not work at all. To enable GPU "
+"acceleration,"
+msgstr ""
+"某些功能可能无法正常运行。要启用GPU加速，"
+
+#: templates/preload.html:17
+msgid "please install"
+msgstr "请安装"
+
+#: templates/preload.html:17
+msgid "the necessary"
+msgstr "必要的"
+
+#: templates/preload.html:17
+msgid "drivers and restart Wunjo."
+msgstr "驱动程序并重新启动Wunjo。"
+
+#: templates/components/modal.html:641 templates/components/modal.html:1739
+#: templates/preload.html:23 templates/preload.html:58
+#: templates/preload.html:83 templates/preload.html:223
+msgid "Loading"
+msgstr "加载中"
+
+#: templates/preload.html:29
+msgid "Anyway install"
+msgstr "无论如何安装"
+
+#: templates/preload.html:44
+msgid "Welcome"
+msgstr "欢迎"
+
+#: templates/preload.html:45
+msgid ""
+"Welcome to Wunjo! To get started, essential drivers will need to be "
+"installed. Click"
+msgstr "欢迎来到Wunjo！要开始使用，必须先安装必要的驱动程序。点击"
+
+#: templates/preload.html:45 templates/preload.html:65
+msgid "Installation"
+msgstr "安装"
+
+#: templates/preload.html:45 templates/settings.html:60
+msgid "to proceed."
+msgstr "继续。"
+
+#: templates/preload.html:78
+msgid ""
+"It appears that you have CUDA installed, but it’s an outdated version. "
+"Please update CUDA to version 12.4 or higher and install cuDNN 9.x to "
+"take advantage of GPU acceleration."
+msgstr ""
+"看来您已安装CUDA，但版本过旧。请更新CUDA到12.4或更高版本，并安装cuDNN 9.x以"
+"利用GPU加速。"
+
+#: templates/preload.html:131
+msgid "Not found large packages"
+msgstr "未找到大包"
+
+#: templates/preload.html:136
+msgid "Preload"
+msgstr "预加载"
+
+#: templates/preload.html:175
+msgid ""
+"Make sure Wunjo has the necessary permissions for installation. If "
+"needed, try running it as"
+msgstr ""
+"请确保Wunjo具有必要的安装权限。如有需要，尝试以管理员身份运行"
+
+#: templates/preload.html:175
+msgid "Administrator"
+msgstr "管理员"
+
+#: templates/preload.html:306
+msgid "Great. You need to restart Wunjo"
+msgstr "很好。您需要重启Wunjo"
+
+#: templates/preload.html:315
+msgid ""
+"Before you proceed, manually remove any previous versions of torch, "
+"torchaudio, and torchvision. First, close Wunjo software, delete those "
+"folders from"
+msgstr ""
+"在继续之前，请手动删除任何先前版本的torch、torchaudio和torchvision。首先，关闭Wunjo软件，"
+"删除这些文件夹"
+
+#: templates/components/modal.html:1720 templates/preload.html:315
+#: templates/settings.html:60
+msgid "software directory"
+msgstr "软件目录"
+
+#: templates/preload.html:315
+msgid "and then run Wunjo with admin root privileges."
+msgstr "然后以管理员权限运行Wunjo。"
+
+#: templates/preload.html:321
+msgid "Close"
+msgstr "关闭"
+
+#: templates/preload.html:332
+msgid "Error. Not found permission"
+msgstr "错误。未找到权限"
+
+#: templates/preload.html:343
+msgid "Error fetching. Try again"
+msgstr "获取错误。请再试一次"
+
+#: templates/preload.html:384
+msgid "Before you need to install"
+msgstr "请先安装"
+
+#: templates/preload.html:384
+msgid "from official website."
+msgstr "从官方网站下载。"
+
+#: templates/profile.html:42
+msgid "User ID"
+msgstr "用户ID"
+
+#: templates/profile.html:46
+msgid "Public link"
+msgstr "公开链接"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Your password from wunjo.online"
+msgstr "您的wunjo.online密码"
+
+#: templates/profile.html:50
+msgid "Email"
+msgstr "电子邮件"
+
+#: templates/profile.html:59
+msgid "Sign in"
+msgstr "登录"
+
+#: templates/profile.html:63
+msgid "Sign out"
+msgstr "登出"
+
+#: templates/profile.html:67
+msgid "Exit"
+msgstr "退出"
+
+#: templates/profile.html:74
+msgid "Subscription"
+msgstr "订阅"
+
+#: templates/profile.html:77 templates/profile.html:144
+msgid "Plan"
+msgstr "计划"
+
+#: templates/profile.html:82
+msgid "Community Edition"
+msgstr "Community Edition"
+
+#: templates/profile.html:83
+msgid "Free"
+msgstr "免费"
+
+#: templates/profile.html:90 templates/profile.html:159
+msgid "infinity"
+msgstr "无限"
+
+#: templates/profile.html:94 templates/profile.html:119
+#: templates/profile.html:163 templates/profile.html:186
+msgid "credits"
+msgstr "积分"
+
+#: templates/profile.html:101
+msgid "Upgrade"
+msgstr "升级"
+
+#: templates/profile.html:106
+msgid "Unleash the Speed"
+msgstr "释放速度"
+
+#: templates/profile.html:107
+msgid "Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power"
+msgstr ""
+"升级到GPU加速版，享受极速和无与伦比的强大性能"
+
+#: templates/profile.html:129 templates/profile.html:137
+msgid "Upgrade to Professional"
+msgstr "升级到专业版"
+
+msgid "Public links provide access to the program from mobile devices and tablets"
+msgstr "公开链接提供来自移动设备和平板电脑的访问"
+
+#: templates/profile.html:149
+msgid "Professional"
+msgstr "专业版"
+
+#: templates/profile.html:150
+msgid "Activated"
+msgstr "已激活"
+
+#: templates/profile.html:170
+msgid "Expiration date"
+msgstr "到期日期"
+
+#: templates/profile.html:175
+msgid "Unleashed the Speed"
+msgstr "释放速度"
+
+#: templates/profile.html:176 templates/profile.html:270
+msgid "No restrictions on features until"
+msgstr "功能没有限制直到"
+
+#: templates/remove_background.html:78
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Background module, check"
+" out this"
+msgstr ""
+"拖放文件或选择一个文件。您可以上传视频或图片。有关如何使用背景移除模块的说明，请查看这个"
+
+#: templates/remove_object.html:45
+msgid ""
+"So, you’ve nixed an object from your content, nice move! But hey, "
+"sometimes where one thing leaves, a little confusion might creep in "
+"because of the neural network does not know what could be in the place of"
+" a distant object, it just invents it. Noticed some weird glares or "
+"streaks in the now-empty spot? That’s where a video enhancement feature "
+"swoops in to save the day. Take your pick: transform your video into an "
+"anime-style gem, a classic cartoon, or simply give it a polished boost. "
+"The module’s right"
+msgstr ""
+"所以，您已经从内容中删除了一个对象，做得好！但有时，当一个物体消失时，可能会出现一些困惑，因为"
+"神经网络不知道远处物体的位置会是什么，它只是创造出它。是否注意到空白处有奇怪的光晕或条纹？"
+"这时，视频增强功能就能拯救您的创作。选择您的方式：将视频转变为动漫风格的宝石、经典卡通，或"
+"仅仅给它一个精致的提升。模块正在"
+
+#: templates/remove_object.html:45
+msgid ", waiting to sprinkle its magic on your creation."
+msgstr ", 准备好为您的创作施展魔法。"
+
+#: templates/remove_object.html:101
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Object module, check out"
+" this"
+msgstr ""
+"拖放文件或选择一个文件。您可以上传视频或图片。有关如何使用对象移除模块的说明，请查看这个"
+
+#: templates/remove_object.html:101
+msgid ""
+"All red blocks should turn green, use toggle if you need to remove text, "
+"and then press on the button"
+msgstr ""
+"所有红色块应变为绿色，若需要删除文本，请使用切换按钮，然后点击按钮"
+
+#: templates/restyling.html:162
+msgid "CUSTOMIZING PROMPTS"
+msgstr "自定义提示"
+
+#: templates/restyling.html:220
+msgid ""
+"Inpainting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"正在填充... 按钮在完成之前被锁定。点击屏幕查看详细信息。"
+
+#: templates/restyling.html:409
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"准备您的内容。选择一个对象和场景，设置参数和属性，并根据提示进行修改。当您对结果满意时，进入下一个画面。"
+
+#: templates/restyling.html:473
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Restyling module, check out "
+"this"
+msgstr ""
+"拖放文件或选择一个文件。您可以上传视频或图片。有关如何使用内容重塑模块的说明，请查看这个"
+
+#: templates/restyling.html:473
+msgid ""
+"All red blocks should turn green or use toggle to fully restyle, and then"
+" press the"
+msgstr ""
+"所有红色块应变为绿色，或使用切换按钮进行完全重塑，然后点击按钮"
+
+#: templates/separator.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. For "
+"instructions on how to use the Separator module, check out this"
+msgstr ""
+"拖放文件或选择一个文件。您可以上传音频文件。有关如何使用音频分离模块的说明，请查看这个"
+
+#: templates/separator.html:72
+msgid "Upload an audio, and then press the"
+msgstr "上传音频文件，然后点击按钮"
+
+#: templates/settings.html:19 templates/settings.html:30
+#: templates/settings.html:33
+msgid "General"
+msgstr "常规"
+
+#: templates/settings.html:41
+msgid "Which processor should I use?"
+msgstr "我应该使用哪个处理器？"
+
+#: templates/settings.html:54
+msgid "Can I change cache folder?"
+msgstr "我可以更改缓存文件夹吗？"
+
+#: templates/settings.html:60
+msgid "Yes! You can change the location of the cache, including placing it in the"
+msgstr "是的！您可以更改缓存的位置，包括将其放置在"
+
+#: templates/settings.html:60
+msgid ""
+"or on another drive. However, please ensure that the new folder has the "
+"necessary permissions for processing and you have permissions to use "
+"folder. Just"
+msgstr ""
+"或在另一个驱动器上。然而，请确保新文件夹具有处理所需的权限，并且您有使用该文件夹的权限。只需"
+
+#: templates/settings.html:60
+msgid "click here"
+msgstr "点击这里"
+
+#: templates/settings.html:69
+msgid "What is port using?"
+msgstr "正在使用哪个端口？"
+
+#: templates/settings.html:82
+msgid "Can I get public link?"
+msgstr "我可以获取公开链接吗？"
+
+#: templates/settings.html:95
+msgid "Want to go through the software tour once more?"
+msgstr "您想再次了解软件功能吗？"
+
+#: templates/settings.html:108
+msgid "Show translation tool?"
+msgstr "显示翻译工具吗？"
+
+#: templates/settings.html:120
+msgid "What system resources?"
+msgstr "使用了哪些系统资源？"
+
+#: templates/settings.html:132
+msgid "Update application parameters?"
+msgstr "更新应用程序参数吗？"
+
+#: templates/components/modal.html:8 templates/components/modal.html:39
+#: templates/components/modal.html:57
+msgid "Hold up"
+msgstr "稍等一下"
+
+#: templates/components/modal.html:14
+msgid "What happens"
+msgstr "发生了什么"
+
+#: templates/components/modal.html:14
+msgid "Click to see"
+msgstr "点击查看"
+
+#: templates/components/modal.html:25
+msgid "Grab the Log"
+msgstr "下载日志"
+
+#: templates/components/modal.html:40
+msgid "Are you absolutely sure you want to delete"
+msgstr "你确定要删除吗"
+
+#: templates/components/modal.html:40
+msgid "Once it’s gone, it’s gone!"
+msgstr "一旦删除，无法恢复！"
+
+#: templates/components/modal.html:43
+msgid "Sure"
+msgstr "确定"
+
+#: templates/components/modal.html:58
+msgid "Are you ready to replace"
+msgstr "准备好替换了吗"
+
+#: templates/components/modal.html:58
+msgid "Remember, this action cannot be undone! Only if you don’t rename it again."
+msgstr "记住，这个操作无法撤销！只有在您不再重命名它时，才能进行替换。"
+
+#: templates/components/modal.html:62
+msgid "Let’s Do It!"
+msgstr "开始吧！"
+
+#: templates/components/modal.html:82 templates/components/modal.html:198
+#: templates/components/modal.html:336 templates/components/modal.html:466
+msgid "Display content"
+msgstr "显示内容"
+
+#: templates/components/modal.html:101 templates/components/modal.html:220
+#: templates/components/view.html:205
+msgid "Image output"
+msgstr "图像输出"
+
+#: templates/components/modal.html:128 templates/components/modal.html:391
+#: templates/components/modal.html:507 templates/components/view.html:121
+#: templates/components/view.html:234 templates/components/view.html:425
+msgid "Edit"
+msgstr "编辑"
+
+#: templates/components/modal.html:150 templates/components/modal.html:288
+#: templates/components/modal.html:413 templates/components/modal.html:536
+#: templates/components/view.html:136 templates/components/view.html:249
+#: templates/components/view.html:344 templates/components/view.html:527
+msgid "Without description"
+msgstr "无描述"
+
+#: templates/components/modal.html:162 templates/components/modal.html:300
+#: templates/components/modal.html:425 templates/components/modal.html:548
+#: templates/components/view.html:153 templates/components/view.html:266
+#: templates/components/view.html:361 templates/components/view.html:472
+#: templates/components/view.html:544
+msgid "Parameters"
+msgstr "参数"
+
+#: templates/components/modal.html:169 templates/components/modal.html:307
+#: templates/components/modal.html:438 templates/components/modal.html:555
+#: templates/components/view.html:160 templates/components/view.html:273
+#: templates/components/view.html:368 templates/components/view.html:551
+msgid "Consistency with the text"
+msgstr "与文本一致"
+
+#: templates/components/modal.html:253 templates/components/modal.html:278
+msgid "Download All"
+msgstr "下载全部"
+
+#: templates/components/modal.html:257 templates/components/view.html:332
+msgid "Previous"
+msgstr "上一页"
+
+#: templates/components/modal.html:262 templates/components/modal.html:281
+msgid "Delete All"
+msgstr "删除全部"
+
+#: templates/components/modal.html:265 templates/components/view.html:336
+msgid "Next"
+msgstr "下一页"
+
+#: templates/components/modal.html:364 templates/components/view.html:92
+msgid "Video output"
+msgstr "视频输出"
+
+#: templates/components/modal.html:433
+msgid "FPS"
+msgstr "帧率"
+
+#: templates/components/modal.html:582
+msgid "Yesterday"
+msgstr "昨天"
+
+#: templates/components/modal.html:600
+msgid "Sun"
+msgstr "周日"
+
+#: templates/components/modal.html:601
+msgid "Mon"
+msgstr "周一"
+
+#: templates/components/modal.html:602
+msgid "Tue"
+msgstr "周二"
+
+#: templates/components/modal.html:603
+msgid "Wed"
+msgstr "周三"
+
+#: templates/components/modal.html:604
+msgid "Thu"
+msgstr "周四"
+
+#: templates/components/modal.html:605
+msgid "Fri"
+msgstr "周五"
+
+#: templates/components/modal.html:606
+msgid "Sat"
+msgstr "周六"
+
+#: templates/components/modal.html:616
+msgid "Oh, ya!"
+msgstr "哦，是的！"
+
+#: templates/components/modal.html:635
+msgid "Just a second"
+msgstr "稍等一下"
+
+#: templates/components/modal.html:636
+msgid "Please wait while the model is loading into your browser’s memory"
+msgstr "请等待，模型正在加载到浏览器的内存中"
+
+#: templates/components/modal.html:659 templates/components/modal.html:730
+msgid "CLICK ON OBJECT"
+msgstr "点击对象"
+
+#: templates/components/modal.html:678 templates/components/modal.html:749
+msgid "Brush"
+msgstr "画笔"
+
+#: templates/components/modal.html:685 templates/components/modal.html:760
+msgid "Clear"
+msgstr "清除"
+
+#: templates/components/modal.html:696 templates/components/modal.html:780
+msgid ""
+"Embedding... Right-click to select objects, left-click to exclude. Tap "
+"the screen to view details."
+msgstr ""
+"嵌入... 右键点击选择对象，左键点击排除。点击屏幕查看详情。"
+
+#: templates/components/modal.html:756 templates/components/modal.html:932
+#: templates/components/modal.html:1093 templates/components/modal.html:1335
+msgid "Watch"
+msgstr "观看"
+
+#: templates/components/modal.html:787 templates/components/modal.html:956
+#: templates/components/modal.html:1109 templates/components/modal.html:1359
+msgid "Video input"
+msgstr "视频输入"
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Not accessible."
+msgstr "不可访问"
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+msgid "Unlock controls by click on watch button."
+msgstr "点击观看按钮解锁控制"
+
+#: templates/components/modal.html:846 templates/components/modal.html:1015
+#: templates/components/modal.html:1168 templates/components/modal.html:1465
+msgid "Reset"
+msgstr "重置"
+
+#: templates/components/modal.html:866 templates/components/modal.html:917
+#: templates/components/modal.html:1035 templates/components/modal.html:1078
+msgid "SELECT AREA"
+msgstr "选择区域"
+
+#: templates/components/modal.html:891
+msgid "Detection face! Tap on display to see more information."
+msgstr "面部检测！点击显示以查看更多信息。"
+
+#: templates/components/modal.html:949
+msgid "Detection face!"
+msgstr "面部检测！"
+
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Upload media before."
+msgstr "请先上传媒体"
+
+#: templates/components/modal.html:1187 templates/components/modal.html:1320
+msgid "UPLOAD AVATAR"
+msgstr "上传头像"
+
+#: templates/components/modal.html:1222
+msgid "Male"
+msgstr "男性"
+
+#: templates/components/modal.html:1226
+msgid "Female"
+msgstr "女性"
+
+#: templates/components/modal.html:1234 templates/components/modal.html:1247
+#: templates/components/modal.html:1264 templates/components/view.html:14
+msgid "All"
+msgstr "所有"
+
+#: templates/components/modal.html:1245 templates/components/modal.html:1262
+msgid "Ethnic"
+msgstr "种族"
+
+#: templates/components/modal.html:1248 templates/components/modal.html:1265
+msgid "Asian"
+msgstr "亚洲人"
+
+#: templates/components/modal.html:1249 templates/components/modal.html:1266
+msgid "Black"
+msgstr "黑人"
+
+#: templates/components/modal.html:1250 templates/components/modal.html:1267
+msgid "White"
+msgstr "白人"
+
+#: templates/components/modal.html:1251 templates/components/modal.html:1268
+msgid "Indian"
+msgstr "印度人"
+
+#: templates/components/modal.html:1252 templates/components/modal.html:1269
+msgid "Arab"
+msgstr "阿拉伯人"
+
+#: templates/components/modal.html:1253 templates/components/modal.html:1270
+msgid "Latino"
+msgstr "拉丁裔"
+
+#: templates/components/modal.html:1286 templates/components/modal.html:1374
+msgid "Upload"
+msgstr "上传"
+
+#: templates/components/modal.html:1352
+msgid "Upload a video (with a face, of course) and let’s get started!"
+msgstr "上传视频（当然是有面部的）我们开始吧！"
+
+#: templates/components/modal.html:1483 templates/components/modal.html:1526
+msgid "audio"
+msgstr "音频"
+
+#: templates/components/modal.html:1486
+msgid "Upload your audio"
+msgstr "上传您的音频"
+
+#: templates/components/modal.html:1491
+msgid "Drag and drop audio"
+msgstr "拖放音频"
+
+#: templates/components/modal.html:1492
+msgid "upload a file."
+msgstr "上传文件。"
+
+#: templates/components/modal.html:1505
+msgid "Record voice"
+msgstr "录音"
+
+#: templates/components/modal.html:1511
+msgid "Something went wrong. Please, try again."
+msgstr "出了点问题，请重试。"
+
+#: templates/components/modal.html:1526
+msgid "Trim"
+msgstr "修剪"
+
+#: templates/components/modal.html:1527
+msgid ""
+"Use the timeline selector to trim your audio. Anything longer than your "
+"video will be automatically cut off."
+msgstr ""
+"使用时间轴选择器修剪音频。任何比视频长的部分将自动被剪切。"
+
+#: templates/components/modal.html:1531
+msgid "Your audio is longer than"
+msgstr "您的音频比"
+
+#: templates/components/modal.html:1531
+msgid "Trim or redo for best results."
+msgstr "修剪或重新制作以获得最佳效果。"
+
+#: templates/components/modal.html:1562
+msgid "Attach and continue"
+msgstr "附加并继续"
+
+#: templates/components/modal.html:1578
+msgid "Analysis content"
+msgstr "内容分析"
+
+#: templates/components/modal.html:1579
+msgid ""
+"Utilize content analysis to determine whether the content originates from"
+" a deepfake created by Wunjo."
+msgstr ""
+"利用内容分析来判断该内容是否来源于Wunjo创建的深度伪造。"
+
+#: templates/components/modal.html:1582
+msgid ""
+"Gain insights and enhance confidence in the originality of content with "
+"this feature."
+msgstr "使用此功能获得见解并增强对内容原创性的信心。"
+
+#: templates/components/modal.html:1588 templates/components/modal.html:1675
+msgid "Scan"
+msgstr "扫描"
+
+#: templates/components/modal.html:1605
+msgid "What is new?"
+msgstr "有什么新内容？"
+
+#: templates/components/modal.html:1606
+msgid "Try Now"
+msgstr "立即试用"
+
+#: templates/components/modal.html:1620
+msgid "What a twist!"
+msgstr "真是个大转折！"
+
+#: templates/components/modal.html:1624
+msgid "Okay"
+msgstr "好的"
+
+#: templates/components/modal.html:1636
+msgid "The cache folder directory"
+msgstr "缓存文件夹目录"
+
+#: templates/components/modal.html:1636
+msgid "contains invalid characters, such as Cyrillic, ideograms or space. Please ensure that the folder path contains only Latin letters, numbers, and allowed symbols, otherwise the program may not work correctly."
+msgstr "包含无效字符，如西里尔字母、表意文字或空格。请确保文件夹路径仅包含拉丁字母、数字和允许的符号，否则程序可能无法正常工作。"
+
+#: templates/components/modal.html:1639
+msgid "Select"
+msgstr "选择"
+
+msgid "Enter new path of cache folder"
+msgstr "请输入新的缓存文件夹路径"
+
+#: templates/components/modal.html:1640
+msgid "Scene detect"
+msgstr "场景检测"
+
+#: templates/components/modal.html:1641
+msgid ""
+"Transition detection also known as scene cut detection is an important "
+"video processing task that aims at finding interjoined scenes."
+msgstr ""
+"场景切换检测，也称为场景剪辑检测，是一项重要的视频处理任务，旨在寻找相互连接的场景。"
+
+#: templates/components/modal.html:1645
+msgid "Threshold"
+msgstr "阈值"
+
+#: templates/components/modal.html:1657
+msgid "Scene transitions"
+msgstr "场景过渡"
+
+#: templates/components/modal.html:1669
+msgid "Scene transitions and the first and last frame will be received."
+msgstr "将接收场景过渡以及第一帧和最后一帧。"
+
+#: templates/components/modal.html:1692
+msgid "Lite setup"
+msgstr "简化设置"
+
+#: templates/components/modal.html:1693
+msgid "Tailor the"
+msgstr "定制"
+
+#: templates/components/modal.html:1693
+msgid "module to perfectly match your needs."
+msgstr "模块以完美匹配您的需求。"
+
+#: templates/components/modal.html:1720
+msgid ""
+"The cache directory stores configuration settings, neural network models,"
+" temporary files, and user-generated content. This directory requires a "
+"significant amount of hard disk space. You can change the location of the"
+" cache, including placing it in the"
+msgstr ""
+"缓存目录存储配置设置、神经网络模型、临时文件和用户生成的内容。此目录需要大量硬盘空间。您可以更改缓存的位置，包括将其放置在"
+
+#: templates/components/modal.html:1720
+msgid "or on another drive."
+msgstr "或在另一驱动器上。"
+
+#: templates/components/modal.html:1723
+msgid ""
+"Please ensure that the new folder has the necessary permissions for "
+"processing and you have permissions to use folder. Avoid using non-Latin "
+"characters in folder names."
+msgstr ""
+"请确保新文件夹具有必要的处理权限，并且您有权限使用该文件夹。避免在文件夹名称中使用非拉丁字符。"
+
+#: templates/components/modal.html:1726
+msgid "Example directories"
+msgstr "示例目录"
+
+#: templates/components/modal.html:1765
+msgid ""
+"You are about to download a substantial amount of data for your project. "
+"Please note the following sizes"
+msgstr ""
+"您即将为项目下载大量数据。请注意以下大小"
+
+#: templates/components/modal.html:1768
+msgid "Video Generation"
+msgstr "视频生成"
+
+#: templates/components/modal.html:1769
+msgid "General Models"
+msgstr "通用模型"
+
+#: templates/components/modal.html:1771
+msgid ""
+"The download process may take some time, so please be patient. All "
+"downloaded models will be stored in the"
+msgstr ""
+"下载过程可能需要一些时间，请耐心等待。所有下载的模型将存储在"
+
+#: templates/components/modal.html:1771
+msgid "folder. If necessary, you can delete these files separately at any time."
+msgstr ""
+"文件夹中。如有必要，您可以随时单独删除这些文件。"
+
+#: templates/components/modal.html:1774
+msgid "Understand"
+msgstr "明白"
+
+#: templates/components/tooltip.html:6
+msgid "Translation on"
+msgstr "翻译开启"
+
+#: templates/components/view.html:20
+msgid "Video"
+msgstr "视频"
+
+#: templates/components/view.html:26
+msgid "Image"
+msgstr "图像"
+
+#: templates/components/view.html:32
+msgid "Images group"
+msgstr "图像组"
+
+#: templates/components/view.html:38
+msgid "Audio"
+msgstr "音频"
+
+#: templates/components/view.html:44
+msgid "Favorites"
+msgstr "收藏"
+
+#: templates/components/view.html:97 templates/components/view.html:210
+#: templates/components/view.html:323
+msgid "Adult content"
+msgstr "成人内容"
+
+#: templates/components/view.html:139 templates/components/view.html:252
+#: templates/components/view.html:347 templates/components/view.html:458
+#: templates/components/view.html:530
+msgid "Copy"
+msgstr "复制"
+
+#: templates/components/view.html:318
+msgid "Images output"
+msgstr "图像输出"
+
+#: templates/components/view.html:521
+msgid "Hidden"
+msgstr "隐藏"
+
+msgid "Save options"
+msgstr "保存选项"
+
+msgid "Motion control"
+msgstr "视频参数"
+
+# flasgger
+# settings.html
+msgid "Overview"
+msgstr "概述"
+
+msgid "Developer Docs"
+msgstr "开发者文档"
+
+msgid "This is built using OpenAPI 3.0.0. In the API documentation, you can find examples of requests to various modules and a tutorial on how to use them. The schema section provides detailed descriptions of each parameter and their accepted values. Access to the API is token-based, with tokens available to Wunjo Pro subscribers at wunjo.online. The application can also run on localhost or a public link and be used as an API for your projects. This is a Beta API, introduced in the latest version. For any questions, contact support@wunjo.online."
+msgstr "这是使用OpenAPI 3.0.0构建的。在API文档中，您可以找到对各种模块的请求示例以及如何使用它们的教程。模式部分提供了每个参数及其接受值的详细描述。访问API是基于令牌的，令牌可供Wunjo Pro订阅者在wunjo.online上获取。该应用程序也可以在localhost或公共链接上运行，并作为您的项目的API使用。这是Beta版本的API，已在最新版本中推出。如有任何问题，请联系support@wunjo.online。"
+
+# flasgger/body_script.html
+msgid "Authorization"
+msgstr "授权"
+
+msgid "Obtain a token through a POST request using your email and password from wunjo.online. This token is available only to Wunjo Pro subscribers. Use the token for the"
+msgstr "通过使用您的电子邮件和密码从wunjo.online获取POST请求令牌。此令牌仅适用于Wunjo Pro订阅者。使用该令牌"
+
+msgid "Submit module task"
+msgstr "提交模块任务"
+
+msgid "Submit CPU task"
+msgstr "提交CPU任务"
+
+msgid "File upload"
+msgstr "文件上传"
+
+msgid "Before using a module that requires a file, upload it via File upload and then use the file’s name. Files are uploaded to"
+msgstr "在使用需要文件的模块之前，先通过文件上传进行上传，然后使用文件名。文件上传到"
+
+msgid "so ensure file names are unique. Test files like image.jpg, video.mp4, and audio.wav can be found at"
+msgstr "因此，请确保文件名唯一。可以在以下位置找到测试文件，例如image.jpg，video.mp4和audio.wav"
+
+msgid "Example requests are configured to work with these files for testing and customization."
+msgstr "示例请求已配置为与这些文件一起使用，用于测试和自定义。"
+
+msgid "Use the main modules in Wunjo via POST requests. Refer to Example for ready-to-use setups. Check Schema for detailed descriptions of each parameter, including accepted values and limits. Note that tasks are linked to your IP address. For localhost, it’s 127.0.0.1. On remote connections, tasks and files are IP-specific. You’ll receive a unique request_id for your task."
+msgstr "通过POST请求使用Wunjo中的主要模块。参考示例以获得现成的设置。检查模式以查看每个参数的详细描述，包括接受的值和限制。请注意，任务与您的IP地址关联。对于localhost，它是127.0.0.1。在远程连接上，任务和文件与IP地址相关联。您将收到任务的唯一request_id。"
+
+msgid "Track the status of your module task with a GET request by using the unique method name. The task status and response will be returned once with a 201 status, identifiable by the previously issued request_id. After retrieval, the task will be marked as not found. The response includes the media file path."
+msgstr "使用GET请求通过唯一的方法名称跟踪模块任务的状态。任务状态和响应将以201状态返回，可以通过先前发出的request_id进行识别。检索后，任务将标记为未找到。响应包括媒体文件路径。"
+
+msgid "Similar to /submit-module-task, this POST request provides a request_id. More details on parameters can be found in Schema."
+msgstr "类似于/submit-module-task，此POST请求提供request_id。有关参数的更多详细信息可以在模式中找到。"
+
+msgid "Check task readiness with a GET request using the request_id. The task response is returned once with a 201 status, and then the task is marked as not found. The response includes the media file path or data."
+msgstr "使用GET请求通过request_id检查任务的准备情况。任务响应将以201状态返回，然后任务将标记为未找到。响应包括媒体文件路径或数据。"
+
+msgid "Use a GET request to view processing progress, steps completed, error statuses, and success messages. All data is logged. For further questions, contact support@wunjo.online or join on"
+msgstr "使用GET请求查看处理进度、已完成的步骤、错误状态和成功消息。所有数据都被记录。有关更多问题，请联系support@wunjo.online或加入"
+
+msgid "Console log"
+msgstr "控制台日志"
+
+msgid "Query CPU task"
+msgstr "查询CPU任务"
+
+msgid "Query module task"
+msgstr "查询模块任务"
+
+# flasgger/index.html
+msgid "Remember about settings! To work with API, place files in the"
+msgstr "记得设置！要使用API，将文件放在"
+
+msgid "tmp folder"
+msgstr "tmp文件夹"
+
+msgid "of the cache directory."
+msgstr "缓存目录中。"
+
+# JS Code
+msgid "Processing"
+msgstr "处理中"
+
+msgid "Check Warning"
+msgstr "检查警告"
+
+msgid "View Error"
+msgstr "查看错误"
+
+msgid "Ready to manually retargeting face? Feel like a real puppeteer. Let’s go!"
+msgstr "准备好手动重新定位面孔了吗？感觉像个真正的木偶师。走吧！"
+
+msgid "video"
+msgstr "视频"
+
+msgid "image"
+msgstr "图片"
+
+msgid "audio"
+msgstr "音频"
+
+msgid "text"
+msgstr "文本"
+
+msgid "Bring your portraits to life<br> with update a spark of emotion to any"
+msgstr "让您的肖像焕发生命<br>为任何内容添加情感的火花"
+
+msgid "content"
+msgstr "内容"
+
+msgid "Learn how to seamlessly perform<br> a face swap using just one photo"
+msgstr "了解如何无缝执行<br>仅使用一张照片进行换脸"
+
+msgid "Learn how to seamlessly <br> animate mouth movements using audio"
+msgstr "了解如何无缝地<br>使用音频进行口型动画"
+
+msgid "Upgrade"
+msgstr "升级"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "and even give faces a digital makeover."
+msgstr "甚至为面部进行数字化改造。"
+
+msgid "low-res content"
+msgstr "低分辨率内容"
+
+msgid "secrets"
+msgstr "这里"
+
+msgid "Unlock <br> object removal"
+msgstr "解锁 <br> 对象移除"
+
+msgid "and <br> get chroma key."
+msgstr "和 <br> 获取色键。"
+
+msgid "removal"
+msgstr "移除"
+
+msgid "Master background"
+msgstr "掌握背景"
+
+msgid "from text or images. <br>No more effort for beautiful content."
+msgstr "从文本或图像中。<br>无需再为美丽内容费力。"
+
+msgid "video life"
+msgstr "视频生命"
+
+msgid "Bring your content to"
+msgstr "将您的内容带入"
+
+msgid "Discover how to change full <br> content or object inside by text prompts in"
+msgstr "发现如何通过文本提示改变整个 <br> 内容或其中的对象"
+
+msgid "Learn how to seamlessly perform<br> clone voice of your neighbors in"
+msgstr "学习如何无缝地执行<br> 克隆你邻居的声音"
+
+msgid "Separate"
+msgstr "分离"
+
+msgid "vocals from background <br> music effortlessly."
+msgstr "轻松地将人声与背景 <br> 音乐分离。"
+
+msgid "Manipulate and animate faces with ease. Move the head, add emotions, or create blinks — manually or automatically. Ideal for bringing static photos to life!"
+msgstr "轻松操作和动画面部。移动头部，添加情绪，或创建眨眼——手动或自动。非常适合让静态照片栩栩如生！"
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "增强面部细节以修正瑕疵并实现精致的外观。"
+
+msgid "Replace faces in specific time intervals with precision. If inconsistencies appear, try replacing all faces for improved quality."
+msgstr "精确替换特定时间间隔内的面部。如果出现不一致，请尝试替换所有面部以提高质量。"
+
+msgid "Add realism to swapped faces by reintroducing natural blinks manually."
+msgstr "通过手动重新引入自然的眨眼动作，为交换的面部增添真实感。"
+
+msgid "Improve the quality of the swapped face for a seamless result. Experiment by alternating between Enhancement and Live Portrait for better outcomes."
+msgstr "提高替换面部的质量，以获得无缝的结果。通过交替使用增强和实时肖像来实验，以获得更好的效果。"
+
+msgid "For better video, use the «silence» mode in manually retargeting live portrait to pre-process the mouth to a closed state before applying lip sync."
+msgstr "为了更好的视频，在手动重新定向实时肖像时使用“静音”模式，先将嘴巴预处理为闭合状态，然后再应用口型同步。"
+
+msgid "Animate lips in photos and videos with realistic movements. Remove double chins if needed for a refined look (note: this may take extra time)."
+msgstr "在照片和视频中以逼真的动作动画化嘴唇。如有需要，去除双下巴以获得更精致的外观（注意：这可能需要额外时间）。"
+
+msgid "Further enhance the face’s quality for sharper and clearer animations."
+msgstr "进一步增强面部质量，使动画更加清晰和锐利。"
+
+msgid "Refine face or content quality, eliminating blurry areas for a sharper overall result."
+msgstr "改善面部或内容质量，消除模糊区域，获得更清晰的整体效果。"
+
+msgid "Remove unwanted text or objects from videos effortlessly. Even moving objects can be removed automatically by the neural network."
+msgstr "轻松从视频中删除不需要的文本或物体。即使是移动物体也可以通过神经网络自动删除。"
+
+msgid "Restore resolution and improve content quality if it diminishes after object removal."
+msgstr "如果对象移除后分辨率降低，恢复分辨率并提高内容质量。"
+
+msgid "Remove the background from photos or videos. Photos can have transparent backgrounds, while videos will use chromakey."
+msgstr "从照片或视频中删除背景。照片可以具有透明背景，而视频将使用色键。"
+
+msgid "Generate videos from text (any language) and images. Control content with brushes and prompts. Create images from text, customize details, and bring your imagination to life."
+msgstr "从文本（任何语言）和图像生成视频。使用画笔和提示控制内容。从文本中创建图像，定制细节，释放您的创意。"
+
+msgid "Transform using text (any language) your videos or photos into unique styles. For example, dancing in the ocean or sipping coffee in space. Control manually or auto elements such as skin tones."
+msgstr "使用文本（任何语言）将您的视频或照片转变为独特的风格。例如，在海洋中跳舞或在太空中喝咖啡。手动或自动控制元素，如肤色。"
+
+msgid "If limited video memory causes low resolution, enhance content quality and upscale it effortlessly."
+msgstr "如果视频内存有限导致分辨率较低，轻松提升内容质量并放大它。"
+
+msgid "Clone speech from text. Choose a text generation (before this select language) or convert your voice to match a cloned tone."
+msgstr "从文本克隆语音。选择文本生成（在此之前选择语言）或将您的声音转换为匹配克隆音调。"
+
+msgid "Separate vocals and instrumentals from music with just one click."
+msgstr "只需点击一下即可将音乐中的人声和伴奏分离。"
+
+msgid "Customize object colors or experiment with unique styles — turn your face into an alien, for example, with text-driven (any language) transformations."
+msgstr "自定义对象颜色或尝试独特风格——例如，通过文本驱动（任何语言）转变将您的面部变成外星人。"
+
+msgid "Replace deformed or inconsistent faces in frames. Use the first frame of your video to maintain consistent facial features."
+msgstr "替换帧中畸形或不一致的面孔。使用视频的第一帧保持面部特征一致性。"
+
+msgid "Finalize your project by improving the face or overall content quality."
+msgstr "通过提升面部或整体内容质量来完善您的项目。"
+
+msgid "Isolate vocals and instrumentals from a song. This will prepare them for editing and further transformations."
+msgstr "从歌曲中分离人声和伴奏。这将为编辑和进一步的转化做好准备。"
+
+msgid "Record a new vocal segment and clone its sound to match the original song. Then reassemble the vocals and instrumentals for a seamless edit."
+msgstr "录制一个新的声乐段落，并克隆其声音以匹配原始歌曲。然后将人声和伴奏重新组装，以实现无缝编辑。"
+
+msgid "Need a speaking character in your video? Start by finding a similar face or generating one via avatar creation. Perfect for when you lack real footage."
+msgstr "在视频中需要一个会说话的角色吗？从找到一个相似的面孔开始，或通过创建头像生成一个。适用于缺乏真实镜头的情况。"
+
+msgid "Add voice to the video by cloning from a preferred voice tone. Write the script, choose a language, and let the neural network handle the rest."
+msgstr "通过克隆首选语音音调为视频添加语音。编写脚本，选择语言，然后让神经网络处理其余部分。"
+
+msgid "Synchronize lips with the generated voiceover for added realism. Enhance the face quality for a polished result."
+msgstr "与生成的配音同步嘴唇，增加真实感。提升面部质量，达到完美效果。"
+
+msgid "Manipulate the head, add emotions, or create blinks — manually or automatically."
+msgstr "操作头部，添加情绪或创建眨眼——手动或自动。"
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "增强面部细节，纠正瑕疵，达到完美外观。"
+
+msgid "If you need to analyze photos, videos and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "如果您需要分析照片、视频并确定内容是否在Wunjo中人工创建，可以使用分析功能进行操作。"
+
+msgid "If you need to analyze audio and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "如果您需要分析音频并确定内容是否在Wunjo中人工创建，可以使用分析功能进行操作。"
+
+# tooltip.js
+msgid "Translator"
+msgstr "翻译器"
+
+msgid "Hello, welcome to the tour"
+msgstr "你好，欢迎参加我们的导览"
+
+msgid "In begin, we’ll take a look at the translator. If you come across any text that’s not clear, you can easily translate it into your language. Just select the text, and it will appear in the translator. To open it, click on the element. You can also move the translator to any convenient place on your screen by"
+msgstr "首先，我们来看看翻译器。如果你遇到不清楚的文本，你可以轻松地将其翻译成你的语言。只需选择文本，它会出现在翻译器中。点击元素即可打开它。你还可以通过拖动它将翻译器移动到屏幕上的任何方便位置。"
+
+msgid "(dragging it)."
+msgstr "(拖动它)。"
+
+msgid "Try it: After click"
+msgstr "试试看：点击后"
+
+msgid "next"
+msgstr "下一步"
+
+msgid ", open the translator, and select the text you want to translate."
+msgstr "，打开翻译器，选择您要翻译的文本。"
+
+msgid "You can"
+msgstr "您可以"
+
+msgid "disable"
+msgstr "禁用"
+
+msgid "the translator display or change your preferences in the settings."
+msgstr "翻译器显示或在设置中更改您的偏好。"
+
+# general.js
+msgid "January"
+msgstr "一月"
+
+msgid "February"
+msgstr "二月"
+
+msgid "March"
+msgstr "三月"
+
+msgid "April"
+msgstr "四月"
+
+msgid "May"
+msgstr "五月"
+
+msgid "June"
+msgstr "六月"
+
+msgid "July"
+msgstr "七月"
+
+msgid "August"
+msgstr "八月"
+
+msgid "September"
+msgstr "九月"
+
+msgid "October"
+msgstr "十月"
+
+msgid "November"
+msgstr "十一月"
+
+msgid "December"
+msgstr "十二月"
+
+msgid "Jan"
+msgstr "一月"
+
+msgid "Feb"
+msgstr "二月"
+
+msgid "Mar"
+msgstr "三月"
+
+msgid "Apr"
+msgstr "四月"
+
+msgid "May"
+msgstr "五月"
+
+msgid "Jun"
+msgstr "六月"
+
+msgid "Jul"
+msgstr "七月"
+
+msgid "Aug"
+msgstr "八月"
+
+msgid "Sep"
+msgstr "九月"
+
+msgid "Oct"
+msgstr "十月"
+
+msgid "Nov"
+msgstr "十一月"
+
+msgid "Dec"
+msgstr "十二月"
+
+msgid "Oops! Something went wrong. Please try again."
+msgstr "哎呀！出了点问题，请再试一次。"
+
+msgid "Heads up: This content is not a deepfake from Wunjo, but it could be a deepfake from another program or even original content. You know, I don’t know what I don’t know!"
+msgstr "注意：此内容不是来自Wunjo的深度伪造，但它可能是来自其他程序的深度伪造，甚至是原始内容。你知道，我不知道我不知道的东西！"
+
+msgid "Yeah! This content appears to be a deepfake created by Wunjo."
+msgstr "是的！此内容似乎是通过Wunjo创建的深度伪造。"
+
+msgid "Oops! An unexpected error occurred. Please try again."
+msgstr "哎呀！发生了意外错误，请再试一次。"
+
+msgid "How many users are there?"
+msgstr "有多少个用户？"
+
+msgid "Pick your user squad! This sets how many tasks can strut their stuff simultaneously for everyone."
+msgstr "选择你的用户队伍！这决定了每个人可以同时进行多少任务。"
+
+msgid "What is resolution?"
+msgstr "什么是分辨率？"
+
+msgid "Dial in the max length of your content’s long side. Bigger isn’t always better, but it sure does look good!"
+msgstr "设置你内容长边的最大长度。更大不一定更好，但看起来确实不错！"
+
+msgid "Power usage?"
+msgstr "功率使用情况？"
+
+msgid "Choose your RAM and VRAM power levels. Go big for multitasking magic or play it safe with minimal memory usage."
+msgstr "选择你的RAM和VRAM功率级别。选择更大以实现多任务处理的魔力，或以最小内存使用保持安全。"
+
+msgid "What is the duration? (in minutes)"
+msgstr "时长是多少？（分钟）"
+
+msgid "What is the text length? (characters)"
+msgstr "文本长度是多少？（字符）"
+
+msgid "Set the limit for your content duration. Anything longer gets the chop—no one likes an endless show!"
+msgstr "设置内容时长的限制。超过时长的内容将被剪掉——没有人喜欢无休止的节目！"
+
+msgid "Define the max character count for your text."
+msgstr "定义文本的最大字符数。"
+
+msgid "Transferring models may take some time. Do not close the software."
+msgstr "传输模型可能需要一些时间。请不要关闭软件。"
+
+msgid "Bring all!"
+msgstr "全部"
+
+msgid "A small group"
+msgstr "小组"
+
+msgid "Just me!"
+msgstr "只有我！"
+
+msgid "Minimum"
+msgstr "最小"
+
+msgid "Medium"
+msgstr "中等"
+
+msgid "Maximum"
+msgstr "最大"
+
+msgid "An error occurred while checking the processor. Please try again later."
+msgstr "检查处理器时发生错误，请稍后再试。"
+
+msgid "requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings."
+msgstr "需要GPU才能运行。如果您的系统支持，请在设置中将CPU切换为GPU。"
+
+msgid "What models are available?"
+msgstr "有哪些模型可用？"
+
+msgid "Which models can I access?"
+msgstr "我可以访问哪些模型？"
+
+msgid "What options do I have in terms of models?"
+msgstr "我有哪些模型选项？"
+
+msgid "What kinds of models are at my disposal?"
+msgstr "我可以使用哪些类型的模型？"
+
+msgid "Which models are within my reach?"
+msgstr "哪些模型是我可以访问的？"
+
+msgid "What’s in the repertoire of available models?"
+msgstr "可用模型的目录中有哪些内容？"
+
+msgid "What choices do I have among the models?"
+msgstr "在这些模型中，我有什么选择？"
+
+msgid "Which models are up for grabs?"
+msgstr "哪些模型可以使用？"
+
+msgid "What’s on the menu in terms of models?"
+msgstr "有哪些模型可供选择？"
+
+msgid "What’s in the lineup of available models?"
+msgstr "可用模型的阵容有哪些？"
+
+msgid "For manual model utilization"
+msgstr "用于手动使用模型"
+
+msgid "In manually leveraging the model"
+msgstr "在手动利用模型时"
+
+msgid "When employing the model manually"
+msgstr "手动使用模型时"
+
+msgid "Utilizing the model manually involves"
+msgstr "手动使用模型包括"
+
+msgid "When integrating the model manually"
+msgstr "手动集成模型时"
+
+msgid "In the manual application of the model"
+msgstr "手动应用模型时"
+
+msgid "For hands-on model utilization"
+msgstr "用于实践中使用模型"
+
+msgid "When using the model manually"
+msgstr "手动使用模型时"
+
+msgid "In manual model integration"
+msgstr "手动集成模型时"
+
+msgid "For direct model application"
+msgstr "用于直接应用模型"
+
+msgid "During manual model utilization"
+msgstr "在手动使用模型时"
+
+msgid "Incorporating the model manually requires"
+msgstr "手动集成模型需要"
+
+msgid "When applying the model manually"
+msgstr "手动应用模型时"
+
+msgid "Using the model manually necessitates"
+msgstr "手动使用模型需要"
+
+msgid "In the hands-on utilization of the model"
+msgstr "在实践中使用模型时"
+
+msgid "When integrating the model manually"
+msgstr "手动集成模型时"
+
+msgid "For direct model utilization"
+msgstr "用于直接使用模型"
+
+msgid "In manual model application"
+msgstr "在手动应用模型时"
+
+msgid "During hands-on model integration"
+msgstr "在实践中集成模型时"
+
+msgid "Utilizing the model manually entails"
+msgstr "手动使用模型包括"
+
+msgid "You will able to find model in"
+msgstr "您将能够在以下位置找到模型"
+
+msgid "first"
+msgstr "首先"
+
+msgid "download the"
+msgstr "下载"
+
+msgid "file. Once downloaded, extract its contents and place them in the following directory"
+msgstr "文件。下载后，提取其内容并将其放入以下目录"
+
+msgid "file. Move it into the"
+msgstr "文件。将其移动到"
+
+msgid "renaming it as"
+msgstr "并将其重命名为"
+
+msgid "Your system resources:"
+msgstr "您的系统资源："
+
+msgid "Total size of content"
+msgstr "内容的总大小"
+
+msgid "Total size of models"
+msgstr "模型的总大小"
+
+msgid "Total RAM"
+msgstr "总RAM"
+
+msgid "Available RAM"
+msgstr "可用RAM"
+
+msgid "Total VRAM"
+msgstr "总VRAM"
+
+msgid "Available VRAM"
+msgstr "可用VRAM"
+
+msgid "in folder"
+msgstr "在文件夹中"
+
+msgid "In GPU mode"
+msgstr "在GPU模式下"
+
+msgid "Currently, models from various"
+msgstr "目前，来自不同来源的模型"
+
+msgid "On this machine, models are limited to CPU processing only. To utilize the GPU, please refer to the FAQ section or check the log for more information."
+msgstr "在这台机器上，模型仅限于CPU处理。要使用GPU，请参考FAQ部分或查看日志以获取更多信息。"
+
+msgid "models are executed using the GPU"
+msgstr "模型使用GPU执行"
+
+msgid "modules are running on the CPU"
+msgstr "模块在CPU上运行"
+
+msgid "for enhanced performance. If you wish to give the machine a break, you can transfer the models back to the CPU by clicking"
+msgstr "以提高性能。如果您想让机器休息，您可以通过点击将模型转回CPU"
+
+msgid "To switch to GPU processing, simply click"
+msgstr "要切换到GPU处理，只需点击"
+
+msgid "Remember, you can only switch processors when there is no active processing."
+msgstr "请记住，只有在没有正在进行的处理时，您才能切换处理器。"
+
+msgid "and please note that you can only transfer processing to the GPU if there is no ongoing computation."
+msgstr "并请注意，只有在没有正在进行的计算时，您才能将处理转移到GPU。"
+
+msgid "A new port has been installed. For the changes to take effect"
+msgstr "已安装新端口。要使更改生效"
+
+msgid "restart the application."
+msgstr "请重新启动应用程序。"
+
+msgid "Your new port"
+msgstr "您的新端口"
+
+msgid "But, if you need to switch port again. Just let click"
+msgstr "但是，如果您需要再次切换端口，只需点击"
+
+msgid "Application run on port"
+msgstr "应用程序运行在端口"
+
+msgid "You can get access to application by"
+msgstr "您可以通过以下方式访问应用程序"
+
+msgid "Your static port"
+msgstr "您的静态端口"
+
+msgid "which you can change in input."
+msgstr "您可以在输入中更改。"
+
+msgid "static port in local network."
+msgstr "本地网络中的静态端口。"
+
+msgid "If you need to apply switch port, I’ll handle it smoothly. Just let click"
+msgstr "如果您需要切换端口，我会顺利处理。只需点击"
+
+msgid "Your share link"
+msgstr "您的共享链接"
+
+msgid "If you want to turn on share mode by"
+msgstr "如果您想通过开启共享模式"
+
+msgid "public link, click"
+msgstr "公共链接，点击"
+
+msgid "If you wanna turn off share mode, click"
+msgstr "如果您想关闭共享模式，点击"
+
+msgid "After updating the settings"
+msgstr "更新设置后"
+
+msgid "you need to restart"
+msgstr "您需要重新启动"
+
+msgid "the application for the"
+msgstr "应用程序以便"
+
+msgid "changes to take effect."
+msgstr "更改生效。"
+
+msgid "Max CPU tasks running for all users at once"
+msgstr "所有用户同时运行的最大CPU任务数"
+
+msgid "Max module tasks running for all users at once"
+msgstr "所有用户同时运行的最大模块任务数"
+
+msgid "Max CPU tasks running for one user at once"
+msgstr "单个用户同时运行的最大CPU任务数"
+
+msgid "Max module tasks running for one user at once"
+msgstr "单个用户同时运行的最大模块任务数"
+
+msgid "Time to remove old CPU tasks (minutes)"
+msgstr "删除旧CPU任务的时间（分钟）"
+
+msgid "Time to remove old module tasks (minutes)"
+msgstr "删除旧模块任务的时间（分钟）"
+
+msgid "Delay between CPU tasks to calculate memory (seconds)"
+msgstr "CPU任务之间计算内存的延迟（秒）"
+
+msgid "Delay between module tasks to calculate memory (seconds)"
+msgstr "模块任务之间计算内存的延迟（秒）"
+
+msgid "Minimum RAM for CPU tasks (GB)"
+msgstr "CPU任务所需的最小RAM（GB）"
+
+msgid "Minimum RAM for removing background (GB)"
+msgstr "去除背景所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for removing background on GPU (GB)"
+msgstr "在GPU上去除背景所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for removing objects (GB)"
+msgstr "去除对象所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for removing objects on GPU (GB)"
+msgstr "在GPU上去除对象所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for face swap tasks (GB)"
+msgstr "面部交换任务所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for face swap tasks on GPU (GB)"
+msgstr "在GPU上进行面部交换任务所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for enhancement tasks (GB)"
+msgstr "增强任务所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for enhancement tasks on GPU (GB)"
+msgstr "在GPU上进行增强任务所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for lip sync tasks (GB)"
+msgstr "唇同步任务所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for lip sync tasks on GPU (GB)"
+msgstr "在GPU上进行唇同步任务所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for restyling on GPU (GB)"
+msgstr "在GPU上进行样式更改所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for restyling on GPU (GB)"
+msgstr "在GPU上进行样式更改所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for video generation on GPU (GB)"
+msgstr "在GPU上进行视频生成所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for video generation on GPU (GB)"
+msgstr "在GPU上进行视频生成所需的最小VRAM（GB）"
+
+msgid "Minimum RAM for control restyling on GPU (GB)"
+msgstr "在GPU上进行控制样式更改所需的最小RAM（GB）"
+
+msgid "Minimum VRAM for control restyling on GPU (GB)"
+msgstr "GPU 控制风格重塑的最小显存（GB）"
+
+msgid "Minimum RAM for separator tasks (GB)"
+msgstr "分隔任务的最小内存（GB）"
+
+msgid "Minimum VRAM for separator tasks on GPU (GB)"
+msgstr "GPU 上分隔任务的最小显存（GB）"
+
+msgid "Minimum RAM for cloning voice (GB)"
+msgstr "语音克隆任务的最小内存（GB）"
+
+msgid "Minimum VRAM for cloning voice on GPU (GB)"
+msgstr "GPU 上语音克隆任务的最小显存（GB）"
+
+msgid "Minimum RAM for live portrait tasks (GB)"
+msgstr "实时肖像任务的最小内存（GB）"
+
+msgid "Minimum VRAM for live portrait tasks on GPU (GB)"
+msgstr "GPU 上实时肖像任务的最小显存（GB）"
+
+msgid "Max file size for upload (bytes)"
+msgstr "最大上传文件大小（字节）"
+
+msgid "Max resolution for removing background"
+msgstr "去除背景的最大分辨率"
+
+msgid "Max resolution for removing objects"
+msgstr "去除物体的最大分辨率"
+
+msgid "Max resolution for face swap"
+msgstr "面部替换的最大分辨率"
+
+msgid "Max resolution for enhancement"
+msgstr "增强的最大分辨率"
+
+msgid "Max resolution for lip sync"
+msgstr "同步口型的最大分辨率"
+
+msgid "Max resolution for restyling"
+msgstr "风格重塑的最大分辨率"
+
+msgid "Max resolution for live portrait"
+msgstr "实时肖像的最大分辨率"
+
+msgid "Max duration for background removal (seconds)"
+msgstr "去除背景的最大持续时间（秒）"
+
+msgid "Max duration for object removal (seconds)"
+msgstr "去除物体的最大持续时间（秒）"
+
+msgid "Max duration for face swap (seconds)"
+msgstr "面部替换的最大持续时间（秒）"
+
+msgid "Max duration for enhancement (seconds)"
+msgstr "增强的最大持续时间（秒）"
+
+msgid "Max duration for lip sync (seconds)"
+msgstr "同步口型的最大持续时间（秒）"
+
+msgid "Max duration for restyling (seconds)"
+msgstr "风格重塑的最大持续时间（秒）"
+
+msgid "Max duration for separator tasks (seconds)"
+msgstr "分隔任务的最大持续时间（秒）"
+
+msgid "Max duration for cloning voice (seconds)"
+msgstr "语音克隆的最大持续时间（秒）"
+
+msgid "Max duration for live portrait (seconds)"
+msgstr "实时肖像的最大持续时间（秒）"
+
+msgid "Max symbols for voice cloning"
+msgstr "语音克隆的最大字符数"
+
+msgid "Static port in local network"
+msgstr "本地网络中的静态端口"
+
+msgid "New value"
+msgstr "新值"
+
+msgid "To apply the changes, click"
+msgstr "点击以应用更改"
+
+msgid "Remember that the changes will take effect after manually restarting the program."
+msgstr "请记住，变更将在手动重启程序后生效。"
+
+msgid "The tour is currently disabled, but you can enable it by clicking"
+msgstr "向导当前已禁用，但您可以点击启用它"
+
+msgid "The tour is enabled to start automatically. To disable it, click"
+msgstr "向导已启用自动启动。若要禁用它，请点击"
+
+msgid "The translation tool is currently active and ready for use. Click"
+msgstr "翻译工具当前已激活并可使用。点击"
+
+msgid "The translation tool is currently disabled. Click"
+msgstr "翻译工具当前已禁用。点击"
+
+msgid "to disable it."
+msgstr "以禁用它。"
+
+msgid "enable it."
+msgstr "启用它。"
+
+# footer.js
+msgid "Wow, that’s a large file! Please upload a file that’s less than"
+msgstr "哇，这是一个很大的文件！请上传一个小于以下大小的文件"
+
+msgid "bytes or change settings limit."
+msgstr "字节或在设置中更改限制。"
+
+msgid "Wow, that’s a lengthy video! Please upload a video that’s less than"
+msgstr "哇，这是一段很长的视频！请上传一段不超过以下时长的视频"
+
+msgid "seconds long or change settings limit."
+msgstr "秒或在设置中更改限制。"
+
+msgid "Wow, that’s a lengthy audio! Please upload an audio that’s less than"
+msgstr "哇，这是一个很长的音频！请上传一个不超过以下时长的音频"
+
+msgid "seconds long. Let’s keep it short!"
+msgstr "秒。我们保持简短！"
+
+msgid "Error reading file. Please try again."
+msgstr "读取文件时出错。请再试一次。"
+
+# clone_voice.js
+msgid "Yikes! Looks like you not uploaded or recorded speech or sample."
+msgstr "哎呀！看起来你没有上传或录制语音或样本。"
+
+msgid "Yikes! Looks like you not wrote text to create speech."
+msgstr "哎呀！看起来你没有写文本来生成语音。"
+
+msgid "Yikes! Looks like an alien format. Stick to audio for now."
+msgstr "哎呀！看起来是个未知格式。暂时只使用音频吧。"
+
+msgid "Imitate accent"
+msgstr "模仿口音"
+
+msgid "Activate manual audio creation. Record yourself with any accent or speed, and watch your voice transform into a cloned!"
+msgstr "启用手动音频创建。用任何口音或速度录音，看看你的声音如何变成克隆音！"
+
+msgid "Filename"
+msgstr "文件名"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Fake detector"
+msgstr "伪造检测器"
+
+msgid "Got a sneaky suspicion about some audio? Ready to sniff out those clone voice? Just hit that button."
+msgstr "怀疑某些音频有问题？准备好嗅出克隆音了吗？只需点击按钮。"
+
+msgid "Analysis"
+msgstr "分析"
+
+msgid "Set text explain"
+msgstr "文本添加说明"
+
+msgid "Ready to have some fun? Click here to type your text to watch after submit as it turns into a cloned voice masterpiece!"
+msgstr "准备好玩一玩了吗？点击这里输入文本，提交后观看它如何变成克隆语音杰作！"
+
+msgid "Set text"
+msgstr "添加文本"
+
+msgid "Load audio explain"
+msgstr "音频加载说明"
+
+msgid "This audio extracts the base speaker tone. A short audio clip is usually enough, but longer clips improve quality."
+msgstr "该音频提取了基本说话人音调。通常短的音频片段足够了，但较长的片段可以提高质量。"
+
+msgid "Create sample"
+msgstr "创建样本"
+
+msgid "This audio will be used to extract the base speaker tone color embedding. Typically a very short audio should be sufficient, but increasing the audio length will also improve the output audio quality."
+msgstr "此音频将用于提取基础说话人音调颜色嵌入。通常非常短的音频就足够了，但增加音频长度也会改善输出音频质量。"
+
+msgid "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents."
+msgstr "人工智能（AI）是机器展示的智能，与人类和动物展示的自然智能相对。主要的人工智能教材将这一领域定义为智能体的研究。"
+
+msgid "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness."
+msgstr "这是最好的时代，也是最坏的时代；这是智慧的时代，也是愚昧的时代；这是信仰的时代，也是怀疑的时代；这是光明的季节，也是黑暗的季节。"
+
+msgid "The quick brown fox jumps over the lazy dog. This sentence is famous because it includes every letter in the English alphabet, making it a great tool for typing practice."
+msgstr "快速的棕色狐狸跳过懒狗。这句话因包含英语字母表中的每个字母而闻名，是一个很好的打字练习工具。"
+
+msgid "A journey of a thousand miles begins with a single step. This ancient Chinese proverb reminds us that great things start from humble beginnings."
+msgstr "千里之行始于足下。这句古老的中国谚语提醒我们，伟大的事情始于谦逊的开始。"
+
+msgid "To be, or not to be, that is the question: Whether ’tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles and by opposing end them."
+msgstr "生存还是毁灭，这是一个问题：忍受命运的重击和凌辱，还是挺身反抗困境，通过反抗结束它们。"
+
+msgid "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. It revolutionized the understanding of space, time, and gravity."
+msgstr "相对论通常包括爱因斯坦的两个相互关联的理论：狭义相对论和广义相对论。它革命性地改变了人们对空间、时间和引力的理解。"
+
+msgid "The mitochondrion is often referred to as the powerhouse of the cell. These organelles are responsible for generating most of the cell’s supply of adenosine triphosphate (ATP), used as a source of chemical energy."
+msgstr "线粒体通常被称为细胞的动力工厂。这些细胞器负责产生细胞大部分的三磷酸腺苷（ATP），它是细胞化学能量的来源。"
+
+msgid "The only thing we have to fear is fear itself. This famous quote by Franklin D. Roosevelt during his inaugural address aims to inspire courage and confidence in the face of challenges."
+msgstr "我们唯一需要害怕的就是恐惧本身。富兰克林·D·罗斯福在就职演讲中的这句名言旨在激发面对挑战时的勇气和信心。"
+
+msgid "In three words I can sum up everything I’ve learned about life: it goes on. This quote by Robert Frost succinctly captures the essence of resilience and the passage of time."
+msgstr "用三句话总结我对生活的所有理解：它会继续。这句罗伯特·弗罗斯特的名言简洁地概括了韧性和时间流逝的本质。"
+
+msgid "The cat sat on the mat. This simple sentence is often used to teach basic sentence structure in English grammar."
+msgstr "猫坐在垫子上。这个简单的句子通常用来教授英语语法中的基本句子结构。"
+
+msgid "E=mc². This famous equation by Albert Einstein establishes the relationship between mass (m) and energy (E), with c representing the speed of light in a vacuum."
+msgstr "E=mc²。爱因斯坦的这个著名公式建立了质量（m）和能量（E）之间的关系，其中c代表真空中的光速。"
+
+msgid "The Great Wall of China is one of the greatest wonders of the world. It was built to protect Chinese states and empires against the raids and invasions of the nomadic groups of the Eurasian Steppe."
+msgstr "中国的长城是世界七大奇迹之一。它是为了保护中国的国家和帝国免受欧亚草原游牧民族的袭击和入侵而建造的。"
+
+msgid "Curiosity killed the cat, but satisfaction brought it back. This proverb warns of the dangers of unnecessary investigation or experimentation, but also highlights the rewarding nature of discovery."
+msgstr "好奇心害死猫，但满足感让它复生。这个谚语警告我们不必要的调查或实验的危险，同时也强调发现的回报性。"
+
+msgid "The universe is under no obligation to make sense to you. This quote by Neil deGrasse Tyson underscores the complexity and mystery of the cosmos."
+msgstr "宇宙并不需要对你有意义。尼尔·德格拉斯·泰森的这句名言强调了宇宙的复杂性和神秘性。"
+
+msgid "In the end, we will remember not the words of our enemies, but the silence of our friends. This quote by Martin Luther King Jr. highlights the importance of support and solidarity."
+msgstr "最终，我们会记住的不是敌人的话语，而是朋友的沉默。马丁·路德·金的这句名言强调了支持和团结的重要性。"
+
+msgid "Success is not final, failure is not fatal: It is the courage to continue that counts. This quote by Winston Churchill emphasizes perseverance and resilience."
+msgstr "成功不是终点，失败不是致命的：重要的是继续前行的勇气。温斯顿·丘吉尔的这句名言强调了毅力和韧性。"
+
+msgid "The only limit to our realization of tomorrow is our doubts of today. This quote by Franklin D. Roosevelt encourages overcoming self-doubt to achieve future goals."
+msgstr "我们对明天实现的唯一限制是今天的疑虑。富兰克林·D·罗斯福的这句名言鼓励我们克服自我怀疑，以实现未来的目标。"
+
+msgid "To infinity and beyond! This catchphrase from Buzz Lightyear in Toy Story inspires boundless exploration and adventure."
+msgstr "向着无限，超越一切！《玩具总动员》中巴兹·光年（Buzz Lightyear）的这句口号激发了无限的探索和冒险。"
+
+msgid "The only way to do great work is to love what you do. This quote by Steve Jobs underscores the importance of passion in achieving excellence."
+msgstr "做伟大工作的唯一方法就是热爱你所做的事情。史蒂夫·乔布斯的这句名言强调了激情在追求卓越中的重要性。"
+
+msgid "The greatest glory in living lies not in never falling, but in rising every time we fall. This quote by Nelson Mandela celebrates resilience and persistence."
+msgstr "生活中最伟大的荣耀不是从不跌倒，而是每次跌倒后都能站起来。纳尔逊·曼德拉的这句名言歌颂了坚韧和毅力。"
+
+msgid "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world. This quote by Albert Einstein highlights the power of creativity."
+msgstr "想象力比知识更重要。知识是有限的，而想象力则拥抱整个世界。阿尔伯特·爱因斯坦的这句名言突显了创造力的力量。"
+
+msgid "Life is what happens when you’re busy making other plans. This quote by John Lennon reminds us to appreciate the present moment."
+msgstr "生活就是在你忙于制定其他计划时发生的事情。约翰·列侬的这句名言提醒我们珍惜当下的时光。"
+
+msgid "The best way to predict the future is to invent it. This quote by Alan Kay encourages proactive innovation."
+msgstr "预测未来的最佳方法是创造未来。艾伦·凯的这句名言鼓励我们积极创新。"
+
+msgid "Do or do not, there is no try. This quote by Yoda from Star Wars emphasizes commitment and determination."
+msgstr "做，或不做，不能尝试。星球大战中的尤达大师这句名言强调了承诺和决心。"
+
+msgid "The more that you read, the more things you will know. The more that you learn, the more places you’ll go. This quote by Dr. Seuss promotes the value of education."
+msgstr "你读得越多，知道的事情就越多；你学得越多，去的地方也越远。苏斯博士的这句名言强调了教育的价值。"
+
+msgid "The purpose of our lives is to be happy. This simple yet profound quote by Dalai Lama emphasizes the importance of happiness."
+msgstr "我们生活的目的就是要幸福。达赖喇嘛的这句简单而深刻的名言强调了幸福的重要性。"
+
+msgid "It always seems impossible until it’s done. This quote by Nelson Mandela inspires perseverance in the face of challenges."
+msgstr "总是看似不可能，直到它完成。纳尔逊·曼德拉的这句名言激励我们在面对挑战时要坚持不懈。"
+
+msgid "I have not failed. I’ve just found 10,000 ways that won’t work. This quote by Thomas Edison celebrates the process of learning through experimentation."
+msgstr "我没有失败。我只是发现了1万种行不通的方法。托马斯·爱迪生的这句名言赞美了通过实验学习的过程。"
+
+msgid "If you want to go fast, go alone. If you want to go far, go together. This African proverb highlights the value of collaboration."
+msgstr "如果你想走得快，就独自前行；如果你想走得远，就一起走。这句非洲谚语强调了合作的重要性。"
+
+msgid "The only thing standing between you and your goal is the story you keep telling yourself. This quote by Jordan Belfort encourages self-belief."
+msgstr "唯一挡在你和目标之间的，是你不断告诉自己的故事。乔丹·贝尔福特的这句名言鼓励我们相信自己。"
+
+msgid "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change. This quote by Charles Darwin emphasizes adaptability."
+msgstr "生物中并不是最强壮的或最聪明的物种能够生存，而是最能适应变化的物种。查尔斯·达尔文的这句名言强调了适应能力的重要性。"
+
+msgid "Don’t watch the clock; do what it does. Keep going. This motivational quote by Sam Levenson encourages persistence."
+msgstr "不要盯着钟表看，要像它一样做。继续前进。萨姆·莱文森的这句励志名言鼓励我们坚持不懈。"
+
+msgid "The greatest wealth is to live content with little. This quote by Plato reminds us that true wealth lies in contentment."
+msgstr "最大的财富是知足常乐。柏拉图的这句名言提醒我们，真正的财富在于满足。"
+
+msgid "You must be the change you wish to see in the world. This quote by Mahatma Gandhi encourages proactive personal responsibility."
+msgstr "你必须成为你希望在世界上看到的变化。甘地的这句名言鼓励我们积极承担个人责任。"
+
+msgid "The way to get started is to quit talking and begin doing. This quote by Walt Disney inspires action."
+msgstr "开始的方法是停止说话，开始行动。沃尔特·迪士尼的这句名言激励我们付诸行动。"
+
+msgid "The best and most beautiful things in the world cannot be seen or even touched—they must be felt with the heart. This quote by Helen Keller emphasizes the importance of emotional experiences."
+msgstr "世界上最美好和最美丽的事物是无法看到或触摸的——它们必须用心去感受。海伦·凯勒的这句名言强调了情感体验的重要性。"
+
+msgid "Read this text or any text during 15-60 seconds"
+msgstr "在15-60秒内阅读此文本或任何其他文本。"
+
+msgid "sample speech"
+msgstr "示例演讲"
+
+msgid "Add the audio you want to change. You can simulate any accent and speed. For best results, use audio without noise."
+msgstr "添加您想要更改的音频。您可以模拟任何口音和速度。为了最佳效果，请使用没有噪音的音频。"
+
+msgid "Attach speech"
+msgstr "附加演讲"
+
+msgid "changeable speech"
+msgstr "可变语音"
+
+msgid "Enter text for voice cloning. Use one language for words and phrases; transliterate words from other languages. (Maximal numbers of symbols is"
+msgstr "请输入文本进行语音克隆。对单词和短语使用一种语言；将其他语言的单词转写为拼音。（最大字符数是"
+
+msgid "but you can increase in settings"
+msgstr "但您可以在设置中增加此值"
+
+msgid "clone voice"
+msgstr "克隆语音"
+
+msgid "Record yourself or upload an audio clip to transform speech style into a cloned version. Make sure the recorded and sample voices match in style and language. Enhance your results by using noise reduction tools."
+msgstr "录制您的声音或上传音频片段，将语音风格转换为克隆版本。确保录制的声音和样本声音在风格和语言上匹配。使用降噪工具来提高效果。"
+
+# enhancement.js
+msgid "Yikes! Looks like an alien format. Stick to images or videos for now."
+msgstr "哎呀！看起来像是外星格式。现在请坚持使用图片或视频。"
+
+msgid "enhancement"
+msgstr "增强"
+
+msgid "Method"
+msgstr "方法"
+
+msgid "Resized to"
+msgstr "已调整为"
+
+msgid "Enhance faces and details with Gfpgan. This powerful tool refines facial features and improves overall video quality. It adds realism and sharpness, making your videos stand out with vivid detail and lifelike appearance."
+msgstr "使用Gfpgan增强面部和细节。这个强大的工具精细化面部特征并提升整体视频质量。它增加了逼真感和清晰度，使您的视频具有生动的细节和栩栩如生的外观。"
+
+msgid "Face boost"
+msgstr "面部增强"
+
+msgid "Anime enhance"
+msgstr "动漫增强"
+
+msgid "Activate Animesgan to enhance anime-like videos. This innovative feature clarifies lines and colors, bringing out the artistic essence of your videos. It smooths transitions and enhances visual clarity, ensuring your anime-style content looks its best."
+msgstr "启用Animesgan以增强类似动漫的视频。这个创新功能清晰化线条和颜色，突显您视频的艺术精髓。它平滑过渡并增强视觉清晰度，确保您的动漫风格内容达到最佳效果。"
+
+msgid "Real video"
+msgstr "真实视频"
+
+msgid "Enable Realesrgan for real-life video enhancement. This advanced tool smoothens and clarifies videos, removing noise and enhancing overall quality. It’s perfect for video and improving visual appeal with crisp details and smooth playback."
+msgstr "启用Realesrgan进行真实视频增强。这个先进的工具平滑并清晰化视频，去除噪音并提升整体质量。它非常适合视频，并通过清晰的细节和平滑的播放提升视觉吸引力。"
+
+# face_swap.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to swap. Click on the «Find face» button and set box on person face, please!"
+msgstr "哇！似乎您没有选择需要交换的面孔。请点击“找到面孔”按钮，并将框框放在人物脸上！"
+
+msgid "Param Pam Pam! It seems like your avatar’s face is feeling a bit missed!  Give that «Upload avatar» button a click and upload a face with some personality!"
+msgstr "参数啪啦啪啦！看起来您的头像脸部有点失落！点击“上传头像”按钮并上传一个有个性的脸吧！"
+
+msgid "Uh-oh! The width looks wonky. Double-check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "哦哦！宽度看起来有点问题。请再检查一下它是不是数字，而不是空值。也许点击“选择对象”或加载另一个文件。"
+
+msgid "Pick face to swap. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "选择要交换的面孔。选择开始和结束，进行无缝更换。没有剪切，只有平滑过渡。简单！"
+
+msgid "Upload photo, craft avatar, choose face to swap. You’re a sculptor of non-existent personas. Done!"
+msgstr "上传照片，制作头像，选择要交换的面孔。你是不存在人物的雕塑家。完成！"
+
+msgid "Got a sneaky suspicion about some content? Ready to sniff out those deepfakes? Just hit that button."
+msgstr "对某些内容有可疑的直觉吗？准备好识别那些深度伪造视频了吗？只需点击那个按钮。"
+
+msgid "Gemini faces detection"
+msgstr "双胞胎面孔检测"
+
+msgid "Replace all detected faces"
+msgstr "替换所有检测到的面孔"
+
+msgid "Find face"
+msgstr "查找面孔"
+
+msgid "Upload avatar"
+msgstr "上传头像"
+
+msgid "face swap"
+msgstr "换脸"
+
+# generation.js
+msgid "Aspect ratio"
+msgstr "纵横比"
+
+msgid "Frames per second"
+msgstr "每秒帧数"
+
+msgid "Reduce control strength to less depend to frames."
+msgstr "减少控制强度，减少对帧的依赖。"
+
+msgid "Increase control strength to up depend to frames."
+msgstr "增加控制强度，更多依赖于帧。"
+
+msgid "Describe the change you want to make"
+msgstr "描述你想要做的变化"
+
+msgid "A stuffed animal donkey grazing in a valley"
+msgstr "一只毛绒玩具驴在山谷中吃草"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "电影感，阳光明媚的一天，海浪拍打沙滩"
+
+msgid "A cow grazing in a valley during the day, a UFO approaches in the distance"
+msgstr "白天，一头牛在山谷里吃草，远处有UFO接近"
+
+msgid "A flower blooming in slow motion"
+msgstr "一朵花在慢动作中绽放"
+
+msgid "3D render, a raccoon holding a mini ice cream cone"
+msgstr "3D渲染，一只浣熊拿着一个迷你冰淇淋甜筒"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "从车内视角看，车在外太空行驶并穿越时间，时间隧道"
+
+msgid "2 cats in love eating a candlelit dinner of fresh fish"
+msgstr "两只相爱的猫吃着烛光晚餐，晚餐是新鲜的鱼"
+
+msgid "Cinematic, a dog in a car window"
+msgstr "电影感，一只狗在车窗里"
+
+msgid "Moody, filmic, 35mm, a doctor walking into the hospital"
+msgstr "情绪化，电影感，35毫米胶片，一位医生走进医院"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "从车内视角看，车在外太空行驶并穿越时间，时间隧道"
+
+msgid "3D render, goldfish swimming in a glass container"
+msgstr "3D渲染，一条金鱼在玻璃容器中游泳"
+
+msgid "Nature documentary, jellyfish swimming in the ocean"
+msgstr "自然纪录片，海洋中的水母游泳"
+
+msgid "Cinematic, a Tibetan monk sitting in a temple on a mountain, facing camera."
+msgstr "电影感，一位藏传僧侣坐在山上的寺庙里，面对镜头"
+
+msgid "Nature documentary, natural lighting, flamingo walking in a beautiful beach, head turning"
+msgstr "自然纪录片，自然光，火烈鸟走在美丽的沙滩上，头部转动"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "低角度推镜头，西部小镇有酒吧和尘土飞扬的街道"
+
+msgid "A secret garden with a rainbow waterfall"
+msgstr "一个秘密花园，有一个彩虹瀑布"
+
+msgid "Cinematic, a cowboy riding a horse on mirror-like lake, moving clouds"
+msgstr "电影感，一位牛仔骑马在镜面湖面上，云彩在移动"
+
+msgid "Cinematic, long tracking shot of the cliffs of Dover"
+msgstr "电影感，长镜头追踪多佛的悬崖"
+
+msgid "1950s film style, a seagull on a boat"
+msgstr "1950年代电影风格，一只海鸥在船上"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "电影感，阳光明媚的一天，海浪拍打沙滩"
+
+msgid "A woman smiling while watching fireworks"
+msgstr "一位女性在看烟花时微笑"
+
+msgid "Beautiful sunset at the beach, silhouette of a couple walking by the seashore against sunset, beautiful scenery"
+msgstr "美丽的海滩日落，一对情侣的剪影在海边散步，背景是日落，风景美丽"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "低角度推镜头，西部小镇有酒吧和尘土飞扬的街道"
+
+msgid "Anime, a boy and a girl sitting on the grass under the starry sky"
+msgstr "动漫，一男一女坐在草地上，仰望星空"
+
+msgid "Nature documentary, close up of a lizard in a desert"
+msgstr "自然纪录片，沙漠中蜥蜴的特写"
+
+msgid "1940s newsreel footage, a soldier stands watch on a rocky hill, facing camera"
+msgstr "1940年代的新闻片段，一名士兵站在岩石山丘上，面对镜头"
+
+msgid "Anime, a woman walking home with groceries, wide angle"
+msgstr "动漫，一名女子拿着杂货走回家，广角镜头"
+
+msgid "Watercolor style of a baby elephant drinking water from a lake in the desert"
+msgstr "水彩风格的宝宝大象在沙漠中的湖泊喝水"
+
+msgid "Futuristic film of a man walking on a street in Paris, cinematic, symmetric composition"
+msgstr "未来主义电影，男人在巴黎街头行走，电影感，对称构图"
+
+msgid "Claymation, stop motion, a rat sitting on a huge block of cheese"
+msgstr "粘土动画，定格动画，一只老鼠坐在一大块奶酪上"
+
+msgid "Prompt"
+msgstr "提示"
+
+msgid "It’s like describe a genie your wishes so they can conjure up just what you need!"
+msgstr "就像是向精灵描述你的愿望，让它们变出你需要的东西！"
+
+msgid "(Optional) Describe your prompt for generation, or leave it blank for a random request. You can use (word) to emphasize specific requests and word:non-integers number from 0 to 1 for request intensity. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "(可选) 描述您的生成提示，或留空以获取随机请求。您可以使用（单词）来强调特定请求，并使用单词：非整数从0到1表示请求强度。例如，dog:0.8，cat:0.2 在一个提示中。最大字符数为3000。"
+
+msgid "Generation... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "生成中... 按钮在完成前被锁定。点击屏幕查看详情。"
+
+msgid "Ready to have some fun? Complete the image and add new elements."
+msgstr "准备好玩了吗？完成图像并添加新元素。"
+
+msgid "Something wrong...During create task. Tap on the screen to view details."
+msgstr "出了点问题... 在创建任务时发生错误。点击屏幕查看详情。"
+
+msgid "Authorization failed. Access is available only with a subscription. Please review available plans and any discounts."
+msgstr "授权失败。仅通过订阅可访问。请查看可用计划和任何折扣。"
+
+msgid "Is not valid format."
+msgstr "格式无效。"
+
+msgid "Image will be generate."
+msgstr "图像将生成。"
+
+msgid "Oops! Something went wrong. Please click submit again after some time. Tap on the screen to view details."
+msgstr "哎呀！出了点问题。请过一会儿再点击提交。点击屏幕查看详情。"
+
+msgid "Oops! An unexpected error occurred. Tap on the screen to view details."
+msgstr "哎呀！发生了意外错误。点击屏幕查看详情。"
+
+msgid "generation"
+msgstr "生成"
+
+# lip_sync.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to animate. Click on the «Find face» button and set box on person face, please!"
+msgstr "哇！似乎你没有选择需要动画化的面部。请点击「找到面部」按钮并框选人脸！"
+
+msgid "Hmm... The height seems fishy. Verify it’s a number and not empty. Check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "嗯... 高度看起来有点可疑。确认它是一个数字并且不是空的。检查它是否为数字且非空。也许点击「选择对象」或加载另一个文件。"
+
+msgid "Overlay audio"
+msgstr "叠加音频"
+
+msgid "Smooth defects"
+msgstr "平滑缺陷"
+
+msgid "Pick face to animate. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "选择面部进行动画。选择开始和结束以实现无缝变化。没有剪切，只有平滑过渡。简单！"
+
+msgid "For best results, use in Lip Sync a high-quality audio without noise."
+msgstr "为了获得最佳效果，在同步嘴唇时使用高质量且无噪音的音频。"
+
+msgid "lip sync"
+msgstr "同步嘴唇"
+
+# live_portrait.js
+msgid "Expression"
+msgstr "表情"
+
+msgid "Head pose"
+msgstr "头部姿势"
+
+msgid "Lip"
+msgstr "嘴唇"
+
+msgid "Eyes"
+msgstr "眼睛"
+
+msgid "Animate"
+msgstr "动画"
+
+msgid "Pick face to live. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "选择面部进行实时展示。设置开始和结束以实现无缝过渡。没有剪切，只有平滑的过渡。简单！"
+
+msgid "Upload avatar video to repeat movement. You’re a sculptor of non-existent personas. Done!"
+msgstr "上传头像视频以重复动作。你是虚构人物的雕塑家。完成！"
+
+msgid "Manually retargeting"
+msgstr "手动重定向"
+
+msgid "Wow! Somthing went wrong. Because of scenes can not be empty. Please try another file."
+msgstr "哇！出了点问题。场景不能为空。请尝试另一个文件。"
+
+msgid "Scanning..."
+msgstr "扫描中..."
+
+msgid "Retargeting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "重定向中... 按钮在完成之前被锁定。点击屏幕查看详情。"
+
+msgid "Blinking"
+msgstr "眨眼"
+
+msgid "Silent"
+msgstr "静音"
+
+msgid "Nodding"
+msgstr "点头"
+
+msgid "Shaking"
+msgstr "摇动"
+
+msgid "Flirt"
+msgstr "调情"
+
+msgid "Yikes! Looks like an alien format. Stick to videos or image for now."
+msgstr "哇！看起来是外星格式。暂时使用视频或图像。"
+
+msgid "Something wrong."
+msgstr "出了点问题。"
+
+msgid "live portrait"
+msgstr "实时肖像"
+
+# tour.min.js
+msgid "Don’t show tips on startup"
+msgstr "启动时不显示提示"
+
+# remove_background.js
+msgid "Oopsie! Seems like you didn’t pick an object in your content. Click on the «Select object» button and choose any object from the media, please!"
+msgstr "哎呀！看起来你没有选择内容中的对象。点击“选择对象”按钮，从媒体中选择任何对象！"
+
+msgid "Background color"
+msgstr "背景颜色"
+
+msgid "Reverse select"
+msgstr "反向选择"
+
+msgid "Let the neural network handle it, then click to include with the right, exclude with the left. Don’t forget to switch brushes."
+msgstr "让神经网络来处理，然后点击右键选择包括，左键选择排除。别忘了切换画笔。"
+
+msgid "Select object"
+msgstr "选择对象"
+
+msgid "remove background"
+msgstr "移除背景"
+
+# remove_object.js
+msgid "remove object"
+msgstr "移除对象"
+
+msgid "Enable text indication to highlight selected areas while removing text instead of objects from your chosen field."
+msgstr "启用文本指示，以在删除文本而非对象时突出显示所选区域。"
+
+msgid "Indicate text"
+msgstr "指示文本"
+
+msgid "Improved level"
+msgstr "改进的级别"
+
+msgid "Text bothering you? Just draw a box around it. But the text outside the frame will remain. Easy as pie!"
+msgstr "文本让你烦恼吗？只需在周围画个框。但框外的文本将保留。像切蛋糕一样简单！"
+
+msgid "Select text"
+msgstr "选择文本"
+
+# restyle.js
+msgid "Looks like you forgot to pick an object to restyle, or hey, why not go all out and change everything? Give it another shot!"
+msgstr "看起来你忘记选择要重新设计的对象了，或者，为什么不干脆改变所有东西呢？再试一次！"
+
+msgid "Uh-oh! This is strange magic, but the object is not selected. Try selecting objects again."
+msgstr "哦哦！这是奇怪的魔法，但对象未被选择。请重新选择对象。"
+
+msgid "Diffusion parameters is empty."
+msgstr "扩散参数为空。"
+
+msgid "Oops. Something wrong... Try another file."
+msgstr "哎呀，出点问题... 请尝试另一个文件。"
+
+msgid "Oops. Something wrong... Try another layer file."
+msgstr "哎呀，出了点问题... 请尝试另一个图层文件。"
+
+msgid "Activate the restyle background option to refresh the entire frame. This setting ensures that all elements are redrawn with the neural network, providing a seamless."
+msgstr "启用重新设计背景选项以刷新整个画面。此设置确保所有元素都通过神经网络重新绘制，提供无缝过渡。"
+
+msgid "Restyle background"
+msgstr "重新设计背景"
+
+msgid "Interval generation"
+msgstr "生成间隔"
+
+msgid "Alright, listen up! The generation interval is like setting the tempo for your video’s style dance-off. Got a video with dynamic moves? Drop that value to crank up the tempo. It’s like your video’s heartbeat - more transitions mean a faster beat, so you’ll want a lower value. Nail that interval, and watch your video steal the spotlight in style!"
+msgstr "好了，听着！生成间隔就像为你的视频设置节奏舞蹈。视频中有动态动作吗？将这个值降低，提升节奏。就像你视频的心跳 - 更多的过渡意味着更快的节奏，所以你需要选择一个较低的值。调整好间隔，让你的视频以风格抢占聚光灯！"
+
+msgid "Threshold scene"
+msgstr "场景阈值"
+
+msgid "Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!"
+msgstr "好了，听着！降低阈值以减弱场景过渡检测。调整好阈值，看看你的新场景如何过渡！"
+
+msgid "Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!"
+msgstr "好了，听着！增加阈值以提高场景过渡检测的准确性。调整好阈值，看看你的新场景如何过渡！"
+
+msgid "Control strength"
+msgstr "控制强度"
+
+msgid "Style"
+msgstr "风格"
+
+msgid "Add a new custom Stable Diffusion 1.5 model to the configuration file located at"
+msgstr "将新的自定义Stable Diffusion 1.5模型添加到位于的配置文件中"
+
+msgid "Modify specific objects or entire scenes with simple text prompts. Experience advanced visual manipulation!"
+msgstr "通过简单的文本提示修改特定对象或整个场景。体验先进的视觉操作！"
+
+msgid "Control restyle"
+msgstr "控制重新设计"
+
+msgid "Scene transitions with frames interval"
+msgstr "带有帧间隔的场景过渡"
+
+msgid "and the first and last frame will be received."
+msgstr "并将接收第一个和最后一个帧。"
+
+msgid "Something wrong...During create task."
+msgstr "出了点问题... 在创建任务时。"
+
+msgid "Inpainting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "修复中... 按钮被锁定直到完成。点击屏幕查看详细信息。"
+
+msgid "diffuser"
+msgstr "内容重新设计"
+
+msgid "separator"
+msgstr "分隔符"
+
+msgid "Sign in"
+msgstr "登录"
+
+msgid "Token"
+msgstr "令牌"
+
+msgid "Don’t have an account for Wunjo Pro?"
+msgstr "没有Wunjo Pro账号？"
+
+msgid "Sign up"
+msgstr "注册"
+
+msgid "This feature is premium and available after login. New users get a"
+msgstr "此功能为高级功能，登录后可用。新用户可以获得"
+
+msgid "free tokens"
+msgstr "免費代幣"
+
+msgid "to explore all features."
+msgstr "以探索所有功能。"
+
+msgid "Turn on the internet and reload"
+msgstr "打开互联网并重新加载"
+
+msgid "Invalid login credentials"
+msgstr "无效的登录凭证"
+
+msgid "An unexpected error has occurred. Please contact support@wunjo.online"
+msgstr "发生了意外错误。请联系 support@wunjo.online"
+
+msgid "Subscription expired. Renew your license key in wunjo.online."
+msgstr "订阅已过期。请在wunjo.online续订您的许可证密钥。"
+
+msgid "The license key is not valid"
+msgstr "许可证密钥无效"
+
+# Generation image composition
+msgid "Generate image composition"
+msgstr "生成图像合成"
+
+msgid "Width"
+msgstr "宽度"
+
+msgid "Height"
+msgstr "高度"
+
+msgid "Image composition"
+msgstr "图像合成"
+
+msgid "Generate an image composition by prompt and images"
+msgstr "通过提示和图像生成图像合成"
+
+msgid "Create photos from images and a prompt. Modify age, environment, and characters while preserving identity with realism."
+msgstr "通过图像和提示生成照片。修改年龄、环境和角色，同时以逼真的方式保留身份特征。"
+
+msgid "Use the prompt field to describe your composition. Click on an image to insert its placeholder into the text automatically. You can add as many images as you like. Example placeholder format: A man image_1 in t-short image_2. Also you can use coefficient. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "使用提示字段描述您的合成内容。单击图像可以将其占位符自动插入文本中。您可以添加任意数量的图像。占位符示例格式：一个男人 image_1 穿着 T 恤 image_2。此外，您还可以使用系数。例如，在一个提示中可以写成 dog:0.8, cat:0.2。最大字符数为 3000。"
+
+msgid "sec"
+msgstr "秒"
+
+# Update 2.0.7
+msgid "Chat"
+msgstr "聊天"
+
+msgid "automatically edits videos <br> and answers questions."
+msgstr "神经网络自动编辑视频 <br> 并回答问题。"
+
+msgid "The neural network now edits a long video into a short one with highlights and answers questions about them, as well as recommends music."
+msgstr "神经网络现在将长视频编辑为短视频，包含亮点，并回答关于这些亮点的问题，同时推荐音乐。"
+
+msgid "Edit a long video into a short one with highlights"
+msgstr "将长视频编辑成包含亮点的短视频"
+
+msgid "Ready to analyze the video and answer all the questions!"
+msgstr "准备好分析视频并回答所有问题！"
+
+msgid "If you want to slow things down a bit, choose a longer segment length. That'll give you fewer, longer chunks, which means less rush, more moments to shine, but a bit less of that fast-paced flow. It's all about balancing energy and detail, so pick what suits your video vibe best!"
+msgstr "如果你想稍微放慢节奏，可以选择更长的片段长度。这会给你更少但更长的片段，这意味着不那么急促，更多闪光的时刻，但也会减少快节奏的流畅感。关键是找到能平衡能量和细节的点，所以选择最适合你视频风格的设置！"
+
+msgid "Alright, time to set the pace! The segment length is like choosing the perfect stride for your video’s rhythm. Go with a shorter segment length, and you'll get quick, snappy video chunks — more dynamic, more action, keeping the energy high."
+msgstr "好了，时间设定节奏！片段长度就像为视频节奏选择完美的步伐。选择更短的片段长度，你将得到快速、简洁的视频片段——更动态，更富有动作，保持高能量。"
+
+msgid "Segment length"
+msgstr "片段长度"
+
+msgid "You are a highlight editor. List archetypal dramatic moments that would make compelling highlights if they appear in the video. Each moment should be specific enough to be recognizable but generic enough to potentially exist in other videos of this type."
+msgstr "你是一个亮点编辑器。列出在视频中出现时可以成为引人注目的经典戏剧性时刻。每个时刻应该具体到足以被识别，但又足够通用，以便可能出现在其他类型的视频中。"
+
+msgid "You are a helpful visual-language assistant that can understand videos and edit. You are tasked helping the user to create highlight reels for videos. Highlights should be rare and important events in the video in question."
+msgstr "你是一个有用的视觉语言助手，能够理解视频并进行编辑。你的任务是帮助用户为视频创建亮点剪辑。亮点应该是视频中稀有且重要的事件。"
+
+msgid "(Optional) Describe how to edit a video"
+msgstr "(可选) 描述如何编辑视频"
+
+msgid "Yikes! Where is video? Attach its and continue."
+msgstr "哎呀！视频在哪里？请附上视频并继续。"
+
+# modal.html, generation.html, index.html, highlights.html
+msgid "Smart crop"
+msgstr "智能裁剪"
+
+msgid "Enable smart crop to create videos for YouTube, Tik Tok, Instagram, etc. Allows you to change any aspect ratio for your video using artificial intelligence and focus on interest objects and speakers."
+msgstr "启用智能裁剪，可用于制作适合 YouTube、TikTok、Instagram 等平台的视频。通过人工智能，你可以调整任何视频的宽高比，并聚焦于感兴趣的物体和说话者。"
+
+msgid "Aspect ratio select"
+msgstr "选择宽高比"
+
+msgid "An custom artificial intelligence system analyzes video frames to detect key subjects and speaking individuals, aligning lip movements with speech to focus on the most meaningful parts of the content. Perfect to create preview and shorts video."
+msgstr "自定义人工智能系统分析视频帧，检测关键对象和说话者，将唇部动作与语音对齐，聚焦于内容中最重要的部分。非常适合制作预览和短视频。"
+
+msgid "Highlights"
+msgstr "亮点"
+
+msgid "Drag and drop a file or select one. You can upload a video and write how to edit the video, but the latter is not necessary. For instructions on how to use the Highlights module, check out this"
+msgstr "拖放文件或选择文件。你可以上传一个视频并写出如何编辑该视频，但这不是必需的。有关如何使用亮点模块的说明，请查看此处"
+
+msgid "Your answer will appear in this textarea."
+msgstr "您的答案将显示在此文本框中。"
+
+msgid "You can ask what is happening in the video or its segment, key takeaways, which sounds to use for editing, or any other question based on the video. The maximum number of symbols is 3000."
+msgstr "你可以问视频或其片段中发生了什么，关键内容，编辑时使用的声音，或任何与视频相关的其他问题。最大字符数为3000。"
+
+msgid "What is your question?"
+msgstr "你有什么问题吗？"
+
+msgid "Number of inference steps"
+msgstr "推理步骤数"
+
+msgid "Guidance scale"
+msgstr "指导尺度"
+
+msgid "Upload an image with a face to make some magic happen!"
+msgstr "上传一张有脸的图片，来施展一些魔法吧！"
+
+msgid "Metadata"
+msgstr "元数据"
+
+msgid "Preview of the request"
+msgstr "请求预览"
+
+msgid "Parameters that do not depend on files will be applied. If a parameter is related to a file (e.g., its size, duration, or selected face), it cannot be used without the file."
+msgstr "将应用那些不依赖于文件的参数。如果某个参数与文件相关（例如文件大小、时长或选择的面部），则必须有文件才能使用该参数。"
+
+msgid "Assistant"
+msgstr "助手"
+
+msgid "Ready to transcribe or to analyze the content and answer all the questions!"
+msgstr "準備好轉錄或分析內容並回答所有問題！"
+
+msgid "Transcribe"
+msgstr "轉錄"
+
+msgid "Visual Method"
+msgstr "視覺方法"
+
+msgid "The method works with video by analyzing visual elements, remembering all movements, colors, and objects. It’s ideal for sports events or movies."
+msgstr "此方法透過分析視覺元素來處理影片，記錄所有動作、顏色和物體。非常適合運動賽事或電影。"
+
+msgid "Visual"
+msgstr "視覺模型"
+
+msgid "Sound Method"
+msgstr "聲音方法"
+
+msgid "The method works with audio based on speech, capturing what people say. Perfect for podcasts, interviews, or news."
+msgstr "此方法根據語音處理音訊，捕捉人們的語句。非常適合播客、訪談或新聞內容。"
+
+msgid "Sound"
+msgstr "聲音模型"
+
+msgid "Monitor the user is completed tasks throughout the day."
+msgstr "追蹤使用者已完成任務的記錄。"
+
+msgid "No tasks found"
+msgstr "未找到任務"
+
+msgid "There are no tasks in the queue."
+msgstr "佇列中沒有任務。"
+
+msgid "Got an idea for a feature? Drop it in our"
+msgstr "有功能建議嗎？請提交到我們的"
+
+msgid "History session"
+msgstr "歷史工作階段"
+
+msgid "You can see your session to always have quick access to generations."
+msgstr "您可以查看您的工作階段，快速存取過去的生成內容。"
+
+msgid "Maximum duration (min)"
+msgstr "最長時長（分鐘）"
+
+msgid "Click any banner to start progress"
+msgstr "點擊任意橫幅以開始進度"
+
+msgid "Waiting"
+msgstr "等待中"
+
+msgid "Subscribe to unlock"
+msgstr "訂閱以解鎖"
+
+msgid "free"
+msgstr "免費"
+
+msgid "day"
+msgstr "天"
+
+msgid "Watch ad"
+msgstr "觀看廣告"
+
+msgid "Monthly limit reached"
+msgstr "已達每月限制"
+
+msgid "Cut"
+msgstr "剪切"
+
+msgid "Smart cutter"
+msgstr "智能视频剪辑"
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file. Click again to deselect."
+msgstr "文本出现后，高亮显示要编辑的视频片段对应的单词或短语。再次点击即可取消选择。"
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file."
+msgstr "文本出现后，高亮显示要编辑的视频片段对应的单词或短语。"
+
+msgid "Processing... A video timestamps is on its way."
+msgstr "处理中……带有时间戳的视频即将生成。"
+
+msgid "No speech found in a media."
+msgstr "媒体文件中未检测到语音。"
+
+msgid "Want to try the full experience?"
+msgstr "전체 기능을 체험해보고 싶으신가요?"
+
+msgid "Every month, you can activate all premium features for free and get early access to new updates — download the latest version from"
+msgstr "매달 모든 프리미엄 기능을 무료로 활성화하고 새로운 업데이트를 가장 먼저 받아보세요 — 최신 버전을 다음에서 다운로드하세요:"
+
+msgid "Open"
+msgstr "열기"
+
+msgid "Follow the author’s channel to stay up to date with new features and releases."
+msgstr "새로운 기능과 업데이트 소식을 받으려면 작성자의 채널을 팔로우하세요."

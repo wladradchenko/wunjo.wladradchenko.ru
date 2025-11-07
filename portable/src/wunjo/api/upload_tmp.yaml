@@ -1,0 +1,52 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /upload-tmp:
+#    post:
+summary: Upload temporary file
+description: Endpoint for uploading a temporary file in chunks to the server.
+tags:
+  - File Upload
+requestBody:
+  description: Multipart form data containing the file to be uploaded.
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          file:
+            type: string
+            format: binary
+            description: The file to upload.
+        required:
+          - file
+responses:
+  200:
+    description: Chunk uploaded successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Chunk uploaded successfully'
+  400:
+    description: No file uploaded or no file selected.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: 'No file uploaded'  # or 'No file selected'

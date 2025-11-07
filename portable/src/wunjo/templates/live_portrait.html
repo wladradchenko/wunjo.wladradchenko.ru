@@ -1,0 +1,693 @@
+{% extends 'app.html' %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}{{ _('Live portrait') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
+<!-- onnxruntime-web -->
+<script src="{{ url_for('static', filename='modules/js/ort/ort.min.js') }}"></script>
+<!--mnet-->
+<script src="{{ url_for('static', filename='modules/js/mnet/init.min.js') }}" type="module"></script>
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<!--In order to see menu like freeze add in class sticky else remove sticky-->
+<div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
+    <div data-tour="module" data-position="bottom" data-title="{{ _('Calendar') }}" data-intro="{{ _('You can select specific dates or date ranges to filter the content you have previously created.') }}" data-step="2" class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+        <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">{{ _('Today') }}</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 text-center"><i class="fa-regular fa-calendar"></i></button>
+    </div>
+</div>
+
+<!--RETARGETING MODALS-->
+<template class="modal-effect-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-[390px]">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary text-heading-3-mobile md:text-heading-3 uppercase font-alumni h2-alumni"></h2>
+                <p class="text-s">{{ _('Choose how often the effect is applied to the frames: a higher number applies it less frequently, while a lower number applies it more often.') }}</p>
+
+                <div class="frequency-wrapper gap-2.5 text-m-mobile md:tex-m p-2.5 bg-opacity-30 rounded-md bg-dark-tags text-s flex flex-col gap-5 overflow-auto transition-[height_max-height] pr-2" style="max-height: calc(933px - var(--navbar-height) - 60px);">
+                    <div class="flex gap-3 items-center justify-between">
+                        <p class="frequency-text opacity-50 font-extra-thick">{{ _('Frequency') }}</p>
+                        <input class="frequency-input px-2 py-1.5 rounded-md bg-dark-pop-up w-8 box-content text-center outline-none" value="1" min="1" max="100" step="1" type="number">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="frequency-slider-min opacity-60" title="Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!">1</span>
+                        <input class="frequency-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="1" min="1" max="100" step="1" type="range" style="--fill-size: 0%;">
+                        <span class="frequency-slider-max opacity-60" title="Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!">100</span>
+                    </div>
+                </div>
+
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span>{{ _('Set the lower and upper thresholds for actions. Adjust values to achieve the desired accuracy.') }}</span>
+                </p>
+
+                <div class="threshold-wrapper gap-2.5 text-m-mobile md:tex-m p-2.5 bg-opacity-30 rounded-md bg-dark-tags text-s flex flex-col gap-5 overflow-auto transition-[height_max-height] pr-2" style="max-height: calc(933px - var(--navbar-height) - 60px);">
+                    <div class="flex gap-3 items-center justify-between">
+                        <p class="threshold-title opacity-50 font-extra-thick">{{ _('Range') }} </p>
+                        <div>
+                            <input disabled class="threshold-input-min px-2 py-1.5 rounded-md bg-dark-pop-up w-8 box-content text-center outline-none" value="1" min="1" max="100" step="1" type="number">
+                            <input disabled class="threshold-input-max px-2 py-1.5 rounded-md bg-dark-pop-up w-8 box-content text-center outline-none" value="1" min="1" max="100" step="1" type="number">
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="threshold-slider-text-min opacity-60" title="Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!">1</span>
+                        <div class="w-full flex items-center relative flex-1 appearance-none h-1 bg-light-border rounded-md outline-none">
+                            <button value="0" style="left:25%" class="slider-double-min absolute threshold-slider-min w-3 h-3 bg-accent-primary rounded-full cursor-pointer z-[1]"></button>
+                            <button value="100" style="left:75%" class="slider-double-max absolute threshold-slider-max w-3 h-3 bg-accent-primary rounded-full cursor-pointer z-[1]"></button>
+                            <div style="left:25%;width:50%;" class="absolute slider-double-range h-1 bg-accent-primary"></div>
+                        </div>
+                        <span class="threshold-slider-text-max opacity-60" title="Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!">100</span>
+                    </div>
+                </div>
+
+                <div class="smooth-wrapper flex items-center mb-2 text-m"><input type="checkbox" class="h-4 w-4 smooth-checkpoint"><label class="ml-2">{{ _('Smooth action on all frames') }}</label></div>
+
+                <div class="flex flex-col gap-3">
+                    <div class="flex gap-3 items-center">
+                        <button class="frequency-button w-full rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2.5 gap-2 py-2.5 disabled:text-light-tertiary group !pr-4 font-normal hover:bg-accent-hover text-dark-background bg-accent-primary disabled:border disabled:border-white disabled:border-opacity-[15%]">
+                            <i class="fa-solid fa-check"></i>
+                            {{ _('Submit') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-retargeting-submit-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-2xl">
+                <button onclick="closeModal(this);" type="button" class="modal-retarget-close-button absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <div class="flex flex-col gap-2.5 mb-5">
+                    <h2 class="text-accent-primary text-heading-3-mobile md:text-heading-3 uppercase">{{ _('CUSTOMIZING FRAMES') }}</h2>
+                </div>
+                <p class="flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md mb-3 hidden-on-touchscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span>{{ _('Prepare your staff. Select an object and scene, set parameters and properties, and change face movement. When you are satisfied with the result, move on to the next frame.') }}</span>
+                </p>
+                <div class="modal-root-parameters"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="modal-retargeting-parameters-template">
+    <!--UPDATE-->
+    <div class="modal-root">
+        <div class="relative">
+            <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                <div class="modal-content-display relative w-full pt-[calc(9/16*100%)]">
+                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <div class="modal-canvas relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <div class="absolute right-0 top-0 z-[2]">
+                                <button class="download rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16.2422C2.79401 15.435 2 14.0602 2 12.5C2 10.1564 3.79151 8.23129 6.07974 8.01937C6.54781 5.17213 9.02024 3 12 3C14.9798 3 17.4522 5.17213 17.9203 8.01937C20.2085 8.23129 22 10.1564 22 12.5C22 14.0602 21.206 15.435 20 16.2422M8 17L12 21M12 21L16 17M12 21V12" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <button style="margin-top: .125rem;" class="view-button top-10 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen hover:bg-accent-hover text-dark-background bg-accent-primary">
+                                    <i style="width: 20px;height: 18px;margin-top: .125rem;" class="fa-regular fa-eye"></i>
+                                </button>
+                                <button class="delete-button top-20 rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1 z-[1] full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements">
+                                    <svg width="20px" height="20x" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <button class="modal-retarget-btn hidden rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 disabled:text-light-tertiary group hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                                <svg style="transform: scaleX(-1);" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#000000" class="fill-dark-background group-disabled:fill-light-tertiary" stroke-width="1.5"><path d="M9.99935 15.8332L4.16602 9.99984M4.16602 9.99984L9.99935 4.1665M4.16602 9.99984H15.8327" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </button>
+                            <div class="absolute left-1 top-1 flex gap-1 items-center h-8 z-[2]">
+                                <div class="items-center h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                                    <i class="fa-regular fa-image opacity-[.85] shrink-0 w-4 h-4"></i>
+                                    <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">{{ _('Image input') }}</span>
+                                </div>
+                            </div>
+                            <span class="number-frames transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-100 z-[2]">1/23</span>
+                            <div style="right:calc(var(--quick-input));" class="absolute top-1 flex flex-col gap-2 z-[2]">
+                                <div class="flex items-center gap-2 py-1 px-2 flex-1 justify-center bg-dark-pop-up lg:opacity-0 opacity-90 rounded-md hover:opacity-100 full-opacity-on-touchscreen transition-opacity group-hover:opacity-100">
+                                    <i style="scale: 1.1;" class="fa-regular fa-lightbulb opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                                    <input disabled class="quick-input w-14 rounded-md bg-dark-pop-up box-content text-left outline-none" placeholder="{{ _('Qick') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div onclick="openNotificationMessageModal();" class="hidden modal-load-element absolute top-0 left-0 w-full h-full overflow-hidden bg-dark-elements z-[2]">
+                        <div class="relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <div class="relative">
+                                <div class="loader"></div>
+                            </div>
+                            <p class="text-center text-m-mobile xl:text-m text-white text-opacity-60 max-w-[200px]">{{ _('Retargeting... Buttons are locked until finished. Tap on the screen to view details.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="overflow-x: auto;" class="h-[11.25rem] mt-4">
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div class="w-full mr-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eye ratio') }}</p>
+                        <input class="modal-eye-ratio px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.8" max="0.8" step="0.05">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.8</span>
+                        <input class="modal-eye-ratio-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.8" max="0.8" step="0.05" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.8</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div class="w-full ml-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Lip ratio') }}</p>
+                        <input class="modal-lip-ratio px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.8" max="0.8" step="0.05">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.8</span>
+                        <input class="modal-lip-ratio-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.8" max="0.8" step="0.05" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.8</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eye ratio') }}</p>
+                        <input class="modal-eye-ratio px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.8" max="0.8" step="0.05" >
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.8</span>
+                        <input class="modal-eye-ratio-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.8" max="0.8" step="0.05" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.8</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Lip ratio') }}</p>
+                        <input class="modal-lip-ratio px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.8" max="0.8" step="0.05" >
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.8</span>
+                        <input class="modal-lip-ratio-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.8" max="0.8" step="0.05" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.8</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pitch') }}</p>
+                        <input class="modal-pitch px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-pitch-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-90" max="90" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Yaw') }}</p>
+                        <input class="modal-yaw px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-yaw-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-90" max="90" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Roll') }}</p>
+                        <input class="modal-roll px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-roll-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-90" max="90" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pitch') }}</p>
+                        <input class="modal-pitch px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-pitch-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-90" max="90" step="1" style="--fill-size: 47%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Yaw') }}</p>
+                        <input class="modal-yaw px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-yaw-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-90" max="90" step="1" style="--fill-size: 50%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Roll') }}</p>
+                        <input class="modal-roll px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-90</span>
+                        <input class="modal-roll-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-90" max="90" step="1" type="range" style="--fill-size: 47%;">
+                        <span class="opacity-60">90</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div class="w-full mr-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyeball X') }}</p>
+                        <input class="modal-eyeball-direction-x px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-30" max="30" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-30</span>
+                        <input class="modal-eyeball-direction-x-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-30" max="30" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">30</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div class="w-full ml-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyeball Y') }}</p>
+                        <input class="modal-eyeball-direction-y px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-60" max="60" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-60</span>
+                        <input class="modal-eyeball-direction-y-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-60" max="60" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">60</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyeball X') }}</p>
+                        <input class="modal-eyeball-direction-x px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-30" max="30" step="1" >
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-30</span>
+                        <input class="modal-eyeball-direction-x-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-30" max="30" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">30</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyeball Y') }}</p>
+                        <input class="modal-eyeball-direction-y px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-60" max="60" step="1" >
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-60</span>
+                        <input class="modal-eyeball-direction-y-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-60" max="60" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">60</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head X') }}</p>
+                        <input class="modal-x px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.2" max="0.2" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.2</span>
+                        <input class="modal-x-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.2" max="0.2" step="0.01" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.2</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head Y') }}</p>
+                        <input class="modal-y px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.2" max="0.2" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.2</span>
+                        <input class="modal-y-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.2" max="0.2" step="0.01" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.2</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head Z') }}</p>
+                        <input class="modal-z px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="1" min="0.9" max="1.2" step="0.1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0.9</span>
+                        <input class="modal-z-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="1" min="0.9" max="1.2" step="0.01" type="range" style="--fill-size: 33%;">
+                        <span class="opacity-60">1.2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head X') }}</p>
+                        <input class="modal-x px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.2" max="0.2" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.2</span>
+                        <input class="modal-x-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-0.2" max="0.2" step="0.01" style="--fill-size: 47%;">
+                        <span class="opacity-60">0.2</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head Y') }}</p>
+                        <input class="modal-y px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.2" max="0.2" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.2</span>
+                        <input class="modal-y-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-0.2" max="0.2" step="0.01" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.2</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Head Z') }}</p>
+                        <input class="modal-z px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="1" min="0.9" max="1.2" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0.9</span>
+                        <input class="modal-z-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="1" min="0.9" max="1.2" step="0.01" style="--fill-size: 47%;">
+                        <span class="opacity-60">1.2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Smile') }}</p>
+                        <input class="modal-smile px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.3" max="1.3" step="0.1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.3</span>
+                        <input class="modal-smile-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.3" max="1.3" step="0.1" type="range" style="--fill-size: 18.75%;">
+                        <span class="opacity-60">1.3</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Wink') }}</p>
+                        <input class="modal-wink px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="0" max="39" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0</span>
+                        <input class="modal-wink-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="0" max="39" step="1" type="range" style="--fill-size: 0%;">
+                        <span class="opacity-60">39</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyebrow') }}</p>
+                        <input class="modal-eyebrow px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-30" max="30" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-30</span>
+                        <input class="modal-eyebrow-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-30" max="30" step="1" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">30</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Smile') }}</p>
+                        <input class="modal-smile px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.3" max="1.3" step="0.1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.3</span>
+                        <input class="modal-smile-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-0.3" max="1.3" step="0.1" style="--fill-size: 18.75%;">
+                        <span class="opacity-60">1.3</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Wink') }}</p>
+                        <input class="modal-wink px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="0" max="39" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0</span>
+                        <input class="modal-wink-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="0" max="39" step="1" style="--fill-size: 0%;">
+                        <span class="opacity-60">39</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Eyebrow') }}</p>
+                        <input class="modal-eyebrow px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-30" max="30" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-30</span>
+                        <input class="modal-eyebrow-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-30" max="30" step="1" style="--fill-size: 50%;">
+                        <span class="opacity-60">30</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+            <div class="flex flex-row justify-between hidden-on-touchscreen">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Grin') }}</p>
+                        <input class="modal-grin px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="0" max="15" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0</span>
+                        <input class="modal-grin-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="0" max="15" step="1" type="range" style="--fill-size: 0%;">
+                        <span class="opacity-60">15</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pursing') }}</p>
+                        <input class="modal-pursing px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-20" max="15" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-20</span>
+                        <input class="modal-pursing-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-20" max="15" step="1" type="range" style="--fill-size: 57.1%;">
+                        <span class="opacity-60">15</span>
+                    </div>
+                </div>
+                <span class="w-px bg-white bg-opacity-[.15] shrink-0"></span>
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pouting') }}</p>
+                        <input class="modal-pouting px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.1" max="0.1" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.1</span>
+                        <input class="modal-pouting-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-0.1" max="0.1" step="0.01" type="range" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col block-on-touchscreen hidden">
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Grin') }}</p>
+                        <input class="modal-grin px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="0" max="15" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">0</span>
+                        <input class="modal-grin-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="0" max="15" step="1" style="--fill-size: 0%;">
+                        <span class="opacity-60">15</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pursing') }}</p>
+                        <input class="modal-pursing px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-20" max="15" step="1">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-20</span>
+                        <input class="modal-pursing-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-20" max="15" step="1" style="--fill-size: 57.1%;">
+                        <span class="opacity-60">15</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-4 flex gap-3 items-center justify-between">
+                        <p class="font-extra-thick">{{ _('Pouting') }}</p>
+                        <input class="modal-pouting px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-0.1" max="0.1" step="0.01">
+                    </div>
+                    <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                        <span class="opacity-60">-0.1</span>
+                        <input class="modal-pouting-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" type="range" value="0" min="-0.1" max="0.1" step="0.01" style="--fill-size: 50%;">
+                        <span class="opacity-60">0.1</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="mb-4 flex gap-3 items-center justify-between">
+                    <p class="font-extra-thick">{{ _('Lip expression') }}</p>
+                    <input class="modal-lip-expression px-2 py-1.5 rounded-md bg-dark-elements w-9 box-content text-center outline-none" type="number" value="0" min="-90" max="90" step="1" >
+                </div>
+                <div class="flex gap-4 items-center text-m-mobile lg:text-m">
+                    <span class="opacity-60">-90</span>
+                    <input class="modal-lip-expression-slider relative slider flex-1 appearance-none h-1 bg-light-border rounded-md outline-none after:absolute after:left-0 after:top-0 after:h-1 after:rounded-md after:bg-accent-primary after:w-[var(--fill-size)] after:z-0" value="0" min="-90" max="90" step="1" type="range" style="--fill-size: 50%;">
+                    <span class="opacity-60">90</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 mb-4 w-full h-0 border-t border-dashed border-white border-opacity-[.15]"></div>
+
+        <div class="flex gap-3 items-center">
+            <button class="modal-back-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2.5 gap-2 py-2.5 bg-light-emphasis hover:bg-dark-elements-hover text-light-primary bg-dark-elements" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.5"><path d="M9.99935 15.8332L4.16602 9.99984M4.16602 9.99984L9.99935 4.1665M4.16602 9.99984H15.8327" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                {{ _('Back') }}
+            </button>
+            <button class="modal-submit-btn rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 grow hover:bg-accent-hover text-dark-background bg-accent-primary" type="button">
+                <span class="font-normal">{{ _('Continue') }}</span>
+            </button>
+        </div>
+    </div>
+    <!--UPDATE-->
+</template>
+<!--RETARGETING MODALS-->
+
+<!--MODAL VIEW-->
+<template class="modal-view-video-suggest modal-view-image-suggest">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-[390px]">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary font-rubic-ex-ultra text-heading-3-mobile md:text-heading-3 uppercase">{{ _('Suggest') }}</h2>
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span><strong>{{ _('Lip sync') }}:</strong> {{ _('Ready to give those lips some life? After swapping faces, it’s time to sync those pouts with the audio. Lip animation should always follow the face swap for maximum lip-syncing magic. Get ready to make those lips sing—right') }} <a class="underline text-accent-primary" href="/lip-sync?attachment=">{{ _('here') }}</a>.</span>
+                </p>
+                <div class="flex gap-5 items-center">
+                    <span class="flex-1 h-px bg-light-border"></span>
+                    <p class="text-s-mobile md:text-s">{{ _('or') }}</p>
+                    <span class="flex-1 h-px bg-light-border"></span>
+                </div>
+                <p class="modal-message flex gap-2.5 text-m-mobile md:tex-m p-2.5 bg-dark-background bg-opacity-30 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="#fff" fill="#fff" class="shrink-0"><g clip-path="url(#a)"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-width="1.5" d="M10 6.666V10m0 3.333h.008M18.333 10a8.333 8.333 0 1 0-16.667 0 8.333 8.333 0 0 0 16.667 0Z"></path></g><defs><clipPath id="a"><path stroke="none" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                    <span><strong>{{ _('Enhancement') }}:</strong> {{ _('Got a few facial quirks to iron out? No worries! If there are any imperfections, you’ve got the tools to smooth them out.  Remember, a big gap in resolution between avatar face and target content can throw off the vibe. For optimal outcomes, ensure consistency in resolution, or utilize the facial enhancement tools available in this') }} <a class="underline text-accent-primary" href="/enhancement?attachment=">{{ _('module') }}</a>.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</template>
+<!--MODAL VIEW-->
+
+<div data-tour="module" data-position="bottom-right" data-title="{{ _('Filter') }}" data-intro="{{ _('You can display specific types of content such as images, videos, audio, groups of images, or all content together.') }}" data-step="2" class="view-filter"></div>
+
+<div class="flex flex-col gap-10 pt-10">
+    <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div class="mb-[34px]"></div>
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<div class="footer-block px-4 pt-4 pb-5 md:border-t border-t-white border-opacity-[.15]"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const userContentId = {{ user_content_id|tojson|safe }};
+    const userFileTree = {{ user_file_tree|tojson|safe }};
+    const pageFileFormats = ["video", "image"];
+    let userFileFormats = pageFileFormats;
+    const moduleName = {{ folder_name|tojson|safe }};
+    const modelMNET = `{{ url_for('static', filename='modules/models/mnet/mnet.25_v2.simplify.onnx') }}`;
+    const moduleRetargetName = {{ retarget_method|tojson|safe }};
+    const moduleScenedetectName = {{ scenedetect_method|tojson|safe }};
+    const analysisModuleName = {{ analysis_method|tojson|safe }};
+    const maxDurationToShow = {{ max_duration_sec|tojson|safe }};
+    // Set the maximum file size to read (in bytes)
+    const maxFileSize = {{ max_files_size|tojson|safe }};
+</script>
+<script>
+    function initScript() {
+        // Import and initialize the content script here
+        const scriptView = document.createElement('script');
+        scriptView.src = "{{ url_for('static', filename='content/js/view.min.js') }}";
+        document.body.appendChild(scriptView);
+        document.querySelector('.view-filter').appendChild(createViewFilter());
+
+        const scriptLivePortrait = document.createElement('script');
+        scriptLivePortrait.src = "{{ url_for('static', filename='modules/js/live.portrait.min.js') }}";
+        document.body.appendChild(scriptLivePortrait);
+
+        getModuleTaskEventWithIntervalImmediately();
+
+        // Tour for new users
+        const tour = {{ tour|tojson|safe }};
+        if (tour === true) {
+            setTimeout(() => {
+                const footer = document.querySelector('footer');
+                footer.setAttribute("data-tour", "module");
+                footer.setAttribute("data-position", "bottom-right");
+                footer.setAttribute("data-title", `{{ _('Upload file') }}`);
+                footer.setAttribute("data-step", "1");
+                footer.setAttribute("data-intro", `{{ _('Drag and drop a file or select one. You can upload either a video or an image. For instructions on how to use the Live Portrait module, check out this') }} <a target="_blank" rel="noopener noreferrer" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background" href="https://youtu.be/g_GkhKI3JhA?feature=shared&t=4">{{ _('tutorial') }}</a>.<br><br><text class="text-accent-primary">{{ _('Briefly') }}:</text> {{ _('All red blocks should turn green, and then press the') }} <button class="p-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background"><svg class="paper" width="14px" height="14px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M231.626,128a16.015,16.015,0,0,1-8.18262,13.96094L54.53027,236.55273a15.87654,15.87654,0,0,1-18.14648-1.74023,15.87132,15.87132,0,0,1-4.74024-17.60156L60.64746,136H136a8,8,0,0,0,0-16H60.64746L31.64355,38.78906A16.00042,16.00042,0,0,1,54.5293,19.44727l168.915,94.59179A16.01613,16.01613,0,0,1,231.626,128Z"></path></svg></button>.`);
+                startDataTour('module', true);
+            }, 100);
+        };
+    }
+</script>
+{% endblock %}

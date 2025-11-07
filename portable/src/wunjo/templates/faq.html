@@ -1,9 +1,8 @@
 {% extends 'app.html' %}
-{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Wunjo{% endblock %}
 
-{% block nav %}FAQ{% endblock %}
+{% block nav %}{{ _('FAQ') }}{% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -14,39 +13,39 @@
 {% block sections %}
 <div class="flex-1 text-white flex flex-col justify-center w-full lg:py-16 py-8">
     <div class="relative flex max-lg:flex-col w-full items-start gap-10 lg:gap-0 mx-auto" id="faq-page">
-        <ul class="chapters lg:text-regular text-regular-mobile list-none overflow-auto whitespace-nowrap sticky top-[var(--navbar-height)] max-lg:p-5 bg-dark-background max-lg:w-full max-lg:justify-center lg:top-[calc(var(--navbar-height)+4rem)] lg:basis-1/4 lg:flex lg:flex-col gap-5 lg:items-start max-lg:mx-auto scrollbar-hide">
+        <ul class="mr-10 ml-5 max-md:ml-0 rounded-xl view-dark-background pxy-br chapters lg:text-regular text-regular-mobile list-none overflow-auto whitespace-nowrap sticky top-[var(--navbar-height)] max-lg:p-5 bg-dark-background max-lg:w-full max-lg:justify-center lg:top-[calc(var(--navbar-height)+4rem)] lg:basis-1/4 lg:flex lg:flex-col gap-5 lg:items-start max-lg:mx-auto scrollbar-hide">
             <li class="min-h-0 inline-block mr-5 last:mr-0 relative text-accent-primary">
-                <button onclick="scrollToHeader(this, 'About Wunjo')">About Wunjo</button>
+                <button onclick="scrollToHeader(this, `{{ _('About') }}`)">{{ _('About') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
             <li class="min-h-0 inline-block mr-5 last:mr-0">
-                <button onclick="scrollToHeader(this, 'Your Content')">Your Content</button>
+                <button onclick="scrollToHeader(this, `{{ _('Your Content') }}`)">{{ _('Your Content') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
             <li class="min-h-0 inline-block mr-5 last:mr-0">
-                <button onclick="scrollToHeader(this, 'Creating & Editing')">Creating & Editing</button>
+                <button onclick="scrollToHeader(this, `{{ _('Creating & Editing') }}`)">{{ _('Creating & Editing') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
             <li class="min-h-0 inline-block mr-5 last:mr-0">
-                <button onclick="scrollToHeader(this, 'Subscriptions & Billing')">Subscriptions & Billing</button>
+                <button onclick="scrollToHeader(this, `{{ _('Subscriptions & Billing') }}`)">{{ _('Subscriptions & Billing') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
             <li class="min-h-0 inline-block mr-5 last:mr-0">
-                <button onclick="scrollToHeader(this, 'Tech Issues')">Tech Issues</button>
+                <button onclick="scrollToHeader(this, `{{ _('Tech Issues') }}`)">{{ _('Tech Issues') }}</button>
                 <div class="absolute bottom-0 left-0 translate-y-2 w-full h-0.5 bg-accent-primary"></div>
             </li>
         </ul>
-        <div class="max-w-[720px] max-lg:mx-auto">
-            <h1 class="text-heading-1-mobile lg:text-heading-1 font-black text-accent-primary uppercase mb-9 font-alumni">FREQUENTLY ASKED QUESTIONS</h1>
+        <div class="p-5 max-w-[720px] max-lg:mx-auto">
+            <h1 class="text-heading-1-mobile lg:text-heading-1 font-black text-accent-primary uppercase mb-9 font-alumni">{{ _('FREQUENTLY ASKED QUESTIONS') }}</h1>
             <main class="notion light-mode notion-page text-dim-gray text-m-mobile lg:text-m">
                 <div class="notion-viewport"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="About Wunjo">
+                        <a class="notion-hash-link" title="{{ _('About') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">About Wunjo</span>
+                        <span class="notion-h-title">{{ _('About') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -54,12 +53,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">What is Wunjo?</span>
+                                <span class="notion-h-title">{{ _('What is Wunjo?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Wunjo is an idea-to-content platform that utilizes combinations of AI. There’s a lot of technical stuff involved, but basically, you reincarnation your content.</div>
+                        <div class="notion-text">{{ _('Wunjo is an idea-to-content platform that utilizes combinations of AI. There’s a lot of technical stuff involved, but basically, you reincarnation your content.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -67,12 +66,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">How does Wunjo work?</span>
+                                <span class="notion-h-title">{{ _('How does Wunjo work?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">I could tell you, but … you can find out this in open source code. Basically, this is magic. And this is uniq project! It doesn’t exist anywhere else on the market! I'm pretty darn excited about it!</div>
+                        <div class="notion-text">{{ _('I could tell you, but … you can find out this in open source code. Basically, this is magic. And this is uniq project! It doesn’t exist anywhere else on the market! I’m pretty darn excited about it!') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -80,36 +79,36 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Do you have a publicly accessible API?</span>
+                                <span class="notion-h-title">{{ _('Do you have a publicly accessible API?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Yes. You can use the application in API mode and connect it to your services.</div>
+                        <div class="notion-text">{{ _('Yes. You can use the application in API mode and connect it to your services.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
                     <summary>
                         <h3 class="notion-h notion-h2 notion-h-indent-0"><span>
                             <div class="notion-header-anchor"></div>
-                            <span class="notion-h-title">It's free?</span>
+                            <span class="notion-h-title">{{ _('It’s free?') }}</span>
                         </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            Yes. The community edition version is absolutely free and you will able to find open source code. However, the professional version is available by subscription. This is a kind of reward to the author that he continues to develop the project, and gives you access so that you can use it in your projects and even freely earn money from the project, for example, using API or temporary links. The project is designed so that you can have your service in your pocket with minimal effort and without technical skills.
+                            {{ _('Yes. The community edition version is absolutely free and you will able to find open source code. However, the professional version is available by subscription. This is a kind of reward to the author that he continues to develop the project, and gives you access so that you can use it in your projects and even freely earn money from the project, for example, using API or temporary links. The project is designed so that you can have your service in your pocket with minimal effort and without technical skills.') }}
                         </div>
                     </div>
                 </details>
-                <div class="notion-blank">&nbsp;</div>
+                <div class="notion-blank mb-4"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="Your Content">
+                        <a class="notion-hash-link" title="{{ _('Your Content') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">Your Content</span>
+                        <span class="notion-h-title">{{ _('Your Content') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -117,12 +116,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can I use the content I made in Wunjo for commercial purposes?</span>
+                                <span class="notion-h-title">{{ _('Can I use the content I made in Wunjo for commercial purposes?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">It doesn't matter if your content is created in a community edtiion version or a professional subscription. If it has nothing prohibited or is not intended to discredit anyone then, whatever you create using Wunjo can be used commercially, or non-commercially.</div>
+                        <div class="notion-text">{{ _('It doesn’t matter if your content is created in a community edtiion version or a professional subscription. If it has nothing prohibited or is not intended to discredit anyone then, whatever you create using Wunjo can be used commercially, or non-commercially.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -130,22 +129,22 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Are the content I created in Wunjo private?</span>
+                                <span class="notion-h-title">{{ _('Are the content I created in Wunjo private?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Yes. The content you create is completely private and stored on your device. Only you have access and you are responsible for the content you create.</div>
+                        <div class="notion-text">{{ _('Yes. The content you create is completely private and stored on your device. Only you have access and you are responsible for the content you create.') }}</div>
                     </div>
                 </details>
-                <div class="notion-blank">&nbsp;</div>
+                <div class="notion-blank mb-4"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="Creating & Editing">
+                        <a class="notion-hash-link" title="{{ _('Creating & Editing') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">Creating & Editing</span>
+                        <span class="notion-h-title">{{ _('Creating & Editing') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -153,12 +152,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">What is the resolution of the content?</span>
+                                <span class="notion-h-title">{{ _('What is the resolution of the content?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Baseline content output is Full HD and HD resolution. However, you customize the application yourself and can increase or decrease the resolution.</div>
+                        <div class="notion-text">{{ _('Baseline content output is Full HD and HD resolution. However, you customize the application yourself and can increase or decrease the resolution.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -166,12 +165,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">How do I improve quality of output content?</span>
+                                <span class="notion-h-title">{{ _('How do I improve quality of output content?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Pay attention to the suggest option. When clicked, there will be a list of possible actions to improve the quality of the content received.</div>
+                        <div class="notion-text">{{ _('Pay attention to the suggest option. When clicked, there will be a list of possible actions to improve the quality of the content received.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -179,12 +178,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can I increase videos or audio duration?</span>
+                                <span class="notion-h-title">{{ _('Can I increase videos or audio duration?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Yes. You can freely change the basic settings, including the duration of the received content.</div>
+                        <div class="notion-text">{{ _('Yes. You can freely change the basic settings, including the duration of the received content.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -192,13 +191,13 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can I improve application performance?</span>
+                                <span class="notion-h-title">{{ _('Can I improve application performance?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            Yes. In the settings, pay attention to the parameters for video memory, RAM, and the number of simultaneously running tasks. You determine the performance of the application for yourself based on your needs and your device. You can tighten the settings so you can do other things on your device at the same time, or loosen them so the app uses more of your device's resources.
+                            {{ _('Yes. In the settings, pay attention to the parameters for video memory, RAM, and the number of simultaneously running tasks. You determine the performance of the application for yourself based on your needs and your device. You can tighten the settings so you can do other things on your device at the same time, or loosen them so the app uses more of your device’s resources.') }}
                         </div>
                     </div>
                 </details>
@@ -207,24 +206,24 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can I turn off my internet connection?</span>
+                                <span class="notion-h-title">{{ _('Can I turn off my internet connection?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            Yes. You can disable your internet connection, but you will need to make sure that all the required models for your module are downloaded and the page code is loaded into the cache. You can do this in the settings, as well as following the instructions for manually downloading models. When first run, the models are downloaded automatically, and if the generation is successful, then the model update is no longer checked. However, in the settings you can choose to check for model updates. Anyway, please note that the Internet is required to verify the license and obtain the closed part of the code, which is licensed under a license other than the public one and after verified you can turn off internet connection.
+                            {{ _('Yes. You can disable your internet connection, but you will need to make sure that all the required models for your module are downloaded and the page code is loaded into the cache. You can do this in the settings, as well as following the instructions for manually downloading models. When first run, the models are downloaded automatically, and if the generation is successful, then the model update is no longer checked. However, in the settings you can choose to check for model updates. Anyway, please note that the Internet is required to verify the license and obtain the closed part of the code, which is licensed under a license other than the public one and after verified you can turn off internet connection.') }}
                         </div>
                     </div>
                 </details>
-                <div class="notion-blank">&nbsp;</div>
+                <div class="notion-blank mb-4"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="Subscriptions & Billing">
+                        <a class="notion-hash-link" title="{{ _('Subscriptions & Billing') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">Subscriptions & Billing</span>
+                        <span class="notion-h-title">{{ _('Subscriptions & Billing') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -232,12 +231,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">How long does the subscription last?</span>
+                                <span class="notion-h-title">{{ _('How long does the subscription last?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Depending on the plan you choose. The subscription is counted from the time of purchase. And when it stops, you will receive a notification.</div>
+                        <div class="notion-text">{{ _('Depending on the plan you choose. The subscription is counted from the time of purchase. And when it stops, you will receive a notification.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -245,12 +244,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">How do I cancel my subscription?</span>
+                                <span class="notion-h-title">{{ _('How do I cancel my subscription?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Email us at support@wunjo.online if you really want to say goodbye to your subsription. Please note that if you have an active subscription, and you take this step, your subscription will be invalidated, and no refund will be provided.</div>
+                        <div class="notion-text">{{ _('Email us at support@wunjo.online if you really want to say goodbye to your subsription. Please note that if you have an active subscription, and you take this step, your subscription will be invalidated, and no refund will be provided.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -258,12 +257,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Can my subscription be blocked?</span>
+                                <span class="notion-h-title">{{ _('Can my subscription be blocked?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">No. However, if your unique address is noticed to change frequently, with each suspicious activity, you will be asked to confirm that it is you to continue the session and gain access to the professional subscription, otherwise the community edition version will open.</div>
+                        <div class="notion-text">{{ _('No. However, if your unique address is noticed to change frequently, with each suspicious activity, you will be asked to confirm that it is you to continue the session and gain access to the professional subscription, otherwise the community edition version will open.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -271,12 +270,12 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">If I start a subscription, is it just for during period, or will it renew automatically?</span>
+                                <span class="notion-h-title">{{ _('If I start a subscription, is it just for during period, or will it renew automatically?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
-                        <div class="notion-text">Not. This will not be automatically renew every period, so you don’t have to worry about anything. You only receive a notification that your subscription has ended.</div>
+                        <div class="notion-text">{{ _('Not. This will not be automatically renew every period, so you don’t have to worry about anything. You only receive a notification that your subscription has ended.') }}</div>
                     </div>
                 </details>
                 <details class="notion-toggle">
@@ -284,19 +283,13 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">What is the difference between Professional and Community Edition?</span>
+                                <span class="notion-h-title">{{ _('What is the difference between Professional and Community Edition?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            With a professional subscription, you'll enjoy full access to application features, including unlimited <text class="text-accent-primary underline">GPU speed</text>. Additionally, benefit from:
-                            <ul class="notion-list notion-list-disc opacity-60">
-                                <li>Public links for mobile and internet device access</li>
-                                <li>Early access to new features</li>
-                                <li>Video background enhancement and object removal</li>
-                                <li>Content restyling guided by prompts</li>
-                            </ul>
+                            {{ _('You can find out more at') }} wunjo.online/pricing.
                         </div>
                     </div>
                 </details>
@@ -305,28 +298,28 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">Why do you charge money?</span>
+                                <span class="notion-h-title">{{ _('Why do you charge money?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            <p>Believe it or not, each time you click generate, it's the result of countless sleepless nights and hours of dedicated development. Subscribing to the professional version is a way to support the author's hard work and motivate ongoing project development, including the addition of new features and enhancements to existing ones.</p>
+                            <p>{{ _('Believe it or not, each time you click generate, it’s the result of countless sleepless nights and hours of dedicated development. Subscribing to the professional version is a way to support the author’s hard work and motivate ongoing project development, including the addition of new features and enhancements to existing ones.') }}</p>
                             <br>
-                            <p>Moreover, the author has designed the application not only for your personal use but also to enable you to share access with friends or integrate the API into your projects. This means you can leverage all the application's features freely, even for commercial purposes.</p>
+                            <p>{{ _('Moreover, the author has designed the application not only for your personal use but also to enable you to share access with friends or integrate the API into your projects. This means you can leverage all the application’s features freely, even for commercial purposes.') }}</p>
                             <br>
-                            <p>Your subscription directly contributes to the continued improvement and sustainability of the project, ensuring you receive the best possible experience. Thank you for supporting this work!</p>
+                            <p>{{ _('Your subscription directly contributes to the continued improvement and sustainability of the project, ensuring you receive the best possible experience. Thank you for supporting this work!') }}</p>
                         </div>
                     </div>
                 </details>
-                <div class="notion-blank">&nbsp;</div>
+                <div class="notion-blank mb-4"></div>
                 <h4 class="notion-h notion-h3 notion-h-indent-0">
                     <span>
                         <div class="notion-header-anchor"></div>
-                        <a class="notion-hash-link" title="Tech Issues">
+                        <a class="notion-hash-link" title="{{ _('Tech Issues') }}">
                             <svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
                         </a>
-                        <span class="notion-h-title">Tech Issues</span>
+                        <span class="notion-h-title">{{ _('Tech Issues') }}</span>
                     </span>
                 </h4>
                 <details class="notion-toggle">
@@ -334,13 +327,13 @@
                         <h3 class="notion-h notion-h2 notion-h-indent-0">
                             <span>
                                 <div class="notion-header-anchor"></div>
-                                <span class="notion-h-title">What if I have questions that aren’t answered here?</span>
+                                <span class="notion-h-title">{{ _('What if I have questions that aren’t answered here?') }}</span>
                             </span>
                         </h3>
                     </summary>
                     <div>
                         <div class="notion-text">
-                            Head over to the support channel on <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions">GitHub discussion</a>, and say hi to the community while you’re there! There’s also a really robust FAQ section there that may have exactly the answer you need. If you have any questions, you can contact the author or <text class="underline">support@wunjo.online</text>.
+                            {{ _('Head over to the support channel on') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions">GitHub Discussion</a>, {{ _('and say hi to the community while you’re there! There’s also a really robust FAQ section there that may have exactly the answer you need. If you have any questions, you can contact the author or') }} <text class="underline">support@wunjo.online</text>.
                         </div>
                     </div>
                 </details>
@@ -381,8 +374,8 @@
 {% endblock %}
 
 {% block footer %}
-<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-[var(--footer-height)] flex items-center justify-center"></p>
+<p id="author" class="mt-auto text-s text-white text-opacity-50 text-center h-19 flex items-center justify-center"></p>
 <script>
-    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. All rights reserved</a>`;
+    document.querySelector('#author').innerHTML = `<a href="https://wladradchenko.ru">Copyright ©  Wladislav Radchenko ${new Date().getFullYear()}. {{ _('All rights reserved') }}</a>`;
 </script>
 {% endblock %}

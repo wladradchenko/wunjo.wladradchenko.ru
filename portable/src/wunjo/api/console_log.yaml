@@ -1,0 +1,21 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /console-log:
+#    get:
+summary: Retrieve console log
+description: Fetches a list of logs, typically used for debugging purposes.
+tags:
+  - General
+responses:
+  200:
+    description: Successfully retrieved console log
+    content:
+      application/json:
+        schema:
+          type: string
+          items:
+            type: string
+          example: ["Log"]

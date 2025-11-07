@@ -86,3 +86,10 @@
     color:inherit
 }
 /*# sourceMappingURL=awesomplete.min.css.map */
+
+/* Add custom styles for Awesomplete dropdown */
+.awesomplete ul {
+    max-height: 55px; /* Set the maximum height of the dropdown */
+    overflow-y: auto;  /* Enable vertical scrolling if content overflows */
+    padding-right: 5px; /* Optional: Prevent scrollbar overlap with content */
+}

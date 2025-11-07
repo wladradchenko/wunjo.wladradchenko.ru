@@ -1,0 +1,989 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /submit-module-task:
+#    post:
+summary: Submit module task
+description: |
+  Submit Module Task based on the method name. 
+  `Important`: Before using this module, the file must be uploaded to `.cache/wunjo/tmp` via the 
+  **[File Upload](/apidocs/#/File%20Upload/post_upload_tmp)** method.
+tags:
+  - Module Task
+parameters:
+  - in: header
+    name: token
+    required: true
+    description: |
+      Token for API. `Important`: Before submitting a module task, you must authenticate using the
+      **[Authorization API](/apidocs/#/Authorization/post_authorization_api)**. Once authenticated, use the token provided to make further requests.
+    schema:
+      type: string
+      example: 'Your token'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          method:
+            type: string
+            description: The unique name method of the task to query.
+            enum: [ 'face_swap', 'lip_sync', 'remove_background', 'remove_object', 'enhancement', 'separator' ]
+          subMethod:
+            type: string
+            description: The unique name sub method of the task to query.
+            enum: [ 'face_swap', 'lip_sync', 'remove_background', 'remove_object', 'enhancement', 'separator' ]
+          FaceSwap:
+            type: object
+            description: This object defines the properties for performing a face swap operation.
+
+            properties:
+              sourceFile:
+                type: object
+                description: The source file containing the video or image where the face will be replaced.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the source file (e.g., 'video.mp4') in tmp folder.
+                    example: 'video.mp4'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the source file.
+                    example: '/media/tmp/video.mp4'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or an image.
+                    example: 'mp4'
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The file size in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the source file.
+                    example: 1280
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the source file.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: The width after any cropping or adjustment.
+                    example: 1080
+                  offsetHeight:
+                    type: integer
+                    description: The height after any cropping or adjustment.
+                    example: 608
+                  startTime:
+                    type: float
+                    description: For videos, the start time for the segment to use. Null for images.
+                    example: 0.0
+                  endTime:
+                    type: float
+                    description: For videos, the end time for the segment to use. Null for images.
+                    example: 10.0
+
+              avatarFile:
+                type: object
+                description: The file containing the face image that will be swapped onto the source file.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the avatar image file (e.g., 'image.jpg') in tmp folder.
+                    example: 'image.jpg'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the avatar image file.
+                    example: '/media/tmp/image.jpg'
+                  formatFile:
+                    type: string
+                    description: The format of the avatar file, can be a video or image.
+                    example: 'jpg'
+                    enum: [ 'jpg', 'jpeg', 'png' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the avatar file in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the avatar image.
+                    example: 456
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the avatar image.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: The width of the avatar image after cropping or adjustment.
+                    example: 305
+                  offsetHeight:
+                    type: integer
+                    description: The height of the avatar image after cropping or adjustment.
+                    example: 482
+                  startTime:
+                    type: float
+                    description: (Optional) The start time for videos. Null for images.
+                    example: null
+                  endTime:
+                    type: float
+                    description: (Optional) The end time for videos. Null for images.
+                    example: null
+
+              moduleParameters:
+                type: object
+                description: Contains additional parameters for performing the face swap operation.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for the output file after face swap.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  cropField:
+                    type: array
+                    description: Defines the coordinates of the area in the source image that will be used for face replacement.
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: The x-coordinate of the lower-left corner of the crop area.
+                          example: 626.16
+                        y:
+                          type: number
+                          description: The y-coordinate of the lower-left corner of the crop area.
+                          example: 56.12
+                        width:
+                          type: number
+                          description: The width of the crop area.
+                          example: 198.87
+                        height:
+                          type: number
+                          description: The height of the crop area.
+                          example: 171.54
+                  avatarCropField:
+                    type: array
+                    description: Defines the coordinates of the area in the avatar image that will be used for face replacement.
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: The x-coordinate of the lower-left corner of the avatar's crop area.
+                          example: 138.16
+                        y:
+                          type: number
+                          description: The y-coordinate of the lower-left corner of the avatar's crop area.
+                          example: 66.12
+                        width:
+                          type: number
+                          description: The width of the avatar's crop area.
+                          example: 128.87
+                        height:
+                          type: number
+                          description: The height of the avatar's crop area.
+                          example: 263.54
+                  isGeminiFaces:
+                    type: bool
+                    description: Indicates whether the source image contains twins (or multiple faces) that should all have their faces replaced.
+                    example: false
+                    enum: [ true, false ]
+                  replaceAllFaces:
+                    type: bool
+                    description: Indicates whether to replace faces in all frames of the video or in all faces in an image.
+                    example: false
+                    enum: [ true, false ]
+          LipSync:
+            type: object
+            description: This object defines the properties for performing a lip sync operation.
+
+            properties:
+              sourceFile:
+                type: object
+                description: The source file containing the video or image where the lip will be animated.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the source image or video file (e.g., 'image.jpg') in tmp folder.
+                    example: 'image.jpg'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the source image or video file.
+                    example: '/media/tmp/image.jpg'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or image.
+                    example: 'jpg'
+                    enum: [ 'mp4', 'jpg', 'jpeg', 'png' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the source file in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the source image or video.
+                    example: 456
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the source image or video.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: The width of the source image or video after cropping or adjustment.
+                    example: 305
+                  offsetHeight:
+                    type: integer
+                    description: The height of the source image or video after cropping or adjustment.
+                    example: 482
+                  startTime:
+                    type: float
+                    description: (Optional) The start time for videos. Null for images.
+                    example: null
+                  endTime:
+                    type: float
+                    description: (Optional) The end time for videos. Null for images.
+                    example: null
+              moduleParameters:
+                type: object
+                description: Contains additional parameters for performing the lip sync operation.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for the output file after lip sync.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  cropField:
+                    type: array
+                    description: Defines the coordinates of the area in the source image that will be used for face lip animate.
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: The x-coordinate of the lower-left corner of the crop area.
+                          example: 138.16
+                        y:
+                          type: number
+                          description: The y-coordinate of the lower-left corner of the crop area.
+                          example: 66.12
+                        width:
+                          type: number
+                          description:  The width of the crop area.
+                          example: 128.87
+                        height:
+                          type: number
+                          description: The height of the crop area.
+                          example: 263.54
+                  overlayAudio:
+                    type: bool
+                    description: |
+                      If set to `true`, overlays one audio track onto another, allowing the combination of audio sources. 
+                      If set to `false`, no audio overlay is applied.
+                    example: false
+                    enum: [ true, false ]
+                  useGfpgan:
+                    type: bool
+                    description: |
+                      If set to `true`, uses the GFPGAN algorithm to enhance facial details, improving the appearance of faces in the output. 
+                      If set to `false`, facial detail enhancement is not applied. 
+                      This option is only active when `useDiffuser` is `false`.
+                    example: false
+                    enum: [ true, false ]
+                  useSmooth:
+                    type: bool
+                    description: |
+                      If set to `true`, uses a smoothing algorithm to remove double chin or enhance facial contours. 
+                      If set to `false`, no smoothing is applied. 
+                      This option is only active when `useDiffuser` is `false`.
+                    example: false
+                    enum: [ true, false ]
+                  useDiffuser:
+                    type: bool
+                    description: |
+                      If set to `true`, uses the Latent Diffusion Model (LDM) for generating the animation. 
+                      If set to `false`, relies on the Wav2Lip model for lip-syncing without diffusion-based enhancements.
+                      The `useGfpgan` and `useSmooth` options are ignored when this is set to `true`.
+                    example: true
+                    enum: [ true, false ]
+              audioFile:
+                type: object
+                description: The audio file with speech to animate the lip.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for audio file in tmp folder.
+                    example: 'audio.wav'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the audio file.
+                    example: '/media/tmp/audio.wav'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or image.
+                    example: 'wav'
+                    enum: [ 'wav', 'mp3' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the source file in bytes.
+                    example: 150094
+                  startTime:
+                    type: float
+                    description: For audio, the start time for the segment to use.
+                    example: 0.0
+                  endTime:
+                    type: float
+                    description: For audio, the end time for the segment to use.
+                    example: 3.45
+          RemoveBackground:
+            type: object
+            description: |
+              Parameters for removing the background from an image or video. This operation allows users to remove or replace the background with a specified color (or keep it transparent). 
+              The process involves detecting the subject and separating it from the background, which can then be replaced or kept transparent based on the selected options.
+
+            properties:
+              sourceFile:
+                type: object
+                description: The source file containing the video or image where the remove background.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the source image or video file (e.g., 'image.jpg') in tmp folder.
+                    example: 'image.jpg'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the source image or video file.
+                    example: '/media/tmp/image.jpg'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or image.
+                    example: 'jpg'
+                    enum: [ 'mp4', 'jpg', 'jpeg', 'png' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the source file in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the source image or video.
+                    example: 456
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the source image or video.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: The width of the source image or video after cropping or adjustment.
+                    example: 305
+                  offsetHeight:
+                    type: integer
+                    description: The height of the source image or video after cropping or adjustment.
+                    example: 482
+                  startTime:
+                    type: float
+                    description: (Optional) The start time for videos. Null for images.
+                    example: null
+                  endTime:
+                    type: float
+                    description: (Optional) The end time for videos. Null for images.
+                    example: null
+              moduleParameters:
+                type: object
+                description: Contains additional parameters for performing the remove background operation.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for the output file after remove background.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  backgroundColor:
+                    type: string
+                    description: Color in HEX or transparent for background. For video, transparent will be white color.
+                    example: "transparent"
+                    enum: [ "transparent", "#008000" ]  # HEX or transparent
+                  reverseSelect:
+                    type: bool
+                    description: |
+                      If set to `true`, reverses the selection area, excluding areas that were previously selected.
+                      If set to `false`, the selection is retained as is.
+                    example: false
+                    enum: [ false, true ]
+                  SAM:
+                    type: array
+                    description: |
+                      An array of points for selection or exclusion. The array can either be `null` or a list of points. 
+                      Each point is an object with `x` (horizontal coordinate), `y` (vertical coordinate), and `clickType`:
+                      - `clickType` 0 excludes the area, 
+                      - `clickType` 1 includes the area.
+                      `null` means no selection has been made.
+                    example:
+                      - null
+                      - null
+                      - - x: 182.5
+                          y: 201
+                          clickType: 1
+                        - x: 179.5
+                          y: 409
+                          clickType: 0
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: Horizontal coordinate of the point.
+                          example: 182.5
+                        y:
+                          type: number
+                          description: Vertical coordinate of the point.
+                          example: 201
+                        clickType:
+                          type: integer
+                          description: |
+                            Defines whether the point is included or excluded from the selection.
+                            - `0` means the area is excluded.
+                            - `1` means the area is included.
+                          example: 1
+                          enum: [ 0, 1 ]
+          RemoveObject:
+            type: object
+            description: |
+              The module allows you to remove an object from an image or video as if it was never there. This can be useful for removing unwanted objects or elements that distract from the content.
+              When using this method, you need to specify the area where the object to be removed is located. For videos, the system analyzes the sequence of frames to remove the object naturally, considering the context.
+
+            properties:
+              sourceFile:
+                type: object
+                description: The source file containing the video or image where the remove object.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the source image or video file (e.g., 'image.jpg') in tmp folder.
+                    example: 'image.jpg'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the source image or video file.
+                    example: '/media/tmp/image.jpg'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or image.
+                    example: 'jpg'
+                    enum: [ 'mp4', 'jpg', 'jpeg', 'png' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the source file in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the source image or video.
+                    example: 456
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the source image or video.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: The width of the source image or video after cropping or adjustment.
+                    example: 305
+                  offsetHeight:
+                    type: integer
+                    description: The height of the source image or video after cropping or adjustment.
+                    example: 482
+                  startTime:
+                    type: float
+                    description: (Optional) The start time for videos. Null for images.
+                    example: null
+                  endTime:
+                    type: float
+                    description: (Optional) The end time for videos. Null for images.
+                    example: null
+              moduleParameters:
+                type: object
+                description: Contains additional parameters for performing the remove background operation.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for the output file after remove background.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  modelImproved:
+                    type: bool
+                    description: |
+                      Specifies whether to use the improved model for object removal. The improved model is more resource-intensive but analyzes previous frames and context for more accurate object removal, resulting in better results when working with video.
+                      If set to `false`, a simpler model is used, which may be less accurate but faster in processing.
+                    example: false
+                    enum: [ false, true ]
+                  useRemoveText:
+                    type: bool
+                    description: |
+                      Specifies whether to perform text detection in the selected area before removing the object.
+                      If set to `false`, only the object within the selected area is removed without searching for or removing any text.
+                      If set to `true`, the selected area is analyzed for text, and any text found will also be removed along with the object.
+                    example: false
+                    enum: [ false, true ]
+                  reverseSelect:
+                    type: bool
+                    description: |
+                      If set to `true`, reverses the selection area, excluding areas that were previously selected.
+                      If set to `false`, the selection is retained as is.
+                    example: false
+                    enum: [ false, true ]
+                  cropField:
+                    type: array
+                    description: Defines the coordinates of the area in the text on source image or video that will be removed.
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: The x-coordinate of the lower-left corner of the crop area.
+                          example: 626.16
+                        y:
+                          type: number
+                          description: The y-coordinate of the lower-left corner of the crop area.
+                          example: 56.12
+                        width:
+                          type: number
+                          description: The width of the crop area.
+                          example: 198.87
+                        height:
+                          type: number
+                          description: The height of the crop area.
+                          example: 171.54
+                  SAM:
+                    type: array
+                    description: |
+                      An array of points for selection or exclusion. The array can either be `null` or a list of points. 
+                      Each point is an object with `x` (horizontal coordinate), `y` (vertical coordinate), and `clickType`:
+                      - `clickType` 0 excludes the area, 
+                      - `clickType` 1 includes the area.
+                      `null` means no selection has been made.
+                    example:
+                      - null
+                      - null
+                      - - x: 182.5
+                          y: 201
+                          clickType: 1
+                        - x: 179.5
+                          y: 409
+                          clickType: 0
+                    items:
+                      type: object
+                      properties:
+                        x:
+                          type: number
+                          description: Horizontal coordinate of the point.
+                          example: 182.5
+                        y:
+                          type: number
+                          description: Vertical coordinate of the point.
+                          example: 201
+                        clickType:
+                          type: integer
+                          description: |
+                            Defines whether the point is included or excluded from the selection.
+                            - `0` means the area is excluded.
+                            - `1` means the area is included.
+                          example: 1
+                          enum: [ 0, 1 ]
+          Enhancement:
+            type: object
+            description: |
+              This module is used to enhance the quality of an image or video by applying advanced techniques. Depending on the selected model, different enhancement algorithms can be used, such as upscaling, noise reduction, or facial detail improvement.
+              The enhancement process improves the visual appearance by adding more details, clarity, and sharpness, which is particularly useful when working with low-resolution images or videos.
+
+            properties:
+              sourceFile:
+                type: object
+                description: The source file containing the video or image where the enhancement.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The name of the source image or video file (e.g., 'image.jpg') in tmp folder.
+                    example: 'video.mp4'
+                  urlFile:
+                    type: string
+                    description: (Optional) URL to the source image or video file.
+                    example: '/media/tmp/image.mp4'
+                  formatFile:
+                    type: string
+                    description: The format of the source file, can be a video or image.
+                    example: 'mp4'
+                    enum: [ 'mp4', 'jpg', 'jpeg', 'png' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: (Optional) The size of the source file in bytes.
+                    example: 752094
+                  naturalWidth:
+                    type: integer
+                    description: The natural width of the source image or video.
+                    example: 1280
+                  naturalHeight:
+                    type: integer
+                    description: The natural height of the source image or video.
+                    example: 720
+                  offsetWidth:
+                    type: integer
+                    description: Not need to use.
+                    example: null
+                  offsetHeight:
+                    type: integer
+                    description: Not need to use.
+                    example: null
+                  startTime:
+                    type: float
+                    description: Not need to use.
+                    example: null
+                  endTime:
+                    type: float
+                    description: Not need to use.
+                    example: null
+              moduleParameters:
+                type: object
+                description: Contains additional parameters for performing the enhancement operation.
+                properties:
+                  nameFile:
+                    type: string
+                    description: The unique identifier or name for the output file after enhancement.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  model:
+                    type: string
+                    description: |
+                      Specifies the model to be used for the enhancement process. Different models provide different types of enhancements:
+                        - `animesgan`: A model focused on enhancing anime-style images, providing a stylized improvement suitable for anime content.
+                        - `realesrgan`: A real-world super-resolution model that is ideal for enhancing realistic images or photos, with a focus on preserving natural details.
+                        - `gfpgan`: A model designed specifically for enhancing and restoring facial details, making it ideal for portrait or character-based content.
+                    example: 'animesgan'
+                    enum: [ 'animesgan', 'realesrgan', 'gfpgan' ]
+          Separator:
+            type: object
+            description: |
+              The audio separator module is designed to isolate vocal and instrumental tracks from an audio file. It uses advanced algorithms to separate the vocals from the rest of the audio content, allowing users to extract specific components, such as the vocal or residual (instrumental) part of a song.
+              This module is particularly useful for applications such as karaoke creation, remixing, and audio analysis.
+
+            properties:
+              sourceFile:
+                type: object
+                description: |
+                  The source file containing the audio from which the vocals and instrumental tracks will be separated.
+                properties:
+                  nameFile:
+                    type: string
+                    description: |
+                      The name of the source audio file stored in the temporary folder, which will be used for separation.
+                    example: 'audio.wav'
+                  urlFile:
+                    type: string
+                    description: |
+                      (Optional) A URL pointing to the source audio file. If provided, this can be used to retrieve the audio for separation from a remote location.
+                    example: '/media/tmp/audio.wav'
+                  formatFile:
+                    type: string
+                    description: |
+                      Specifies the format of the source audio file. Supported formats include `.wav` and `.mp3`. This allows the system to understand how to process the file.
+                    example: 'wav'
+                    enum: [ 'wav', 'mp3' ]
+                  fileSizeBytes:
+                    type: integer
+                    description: |
+                      (Optional) The size of the source file in bytes. This information can be useful for validating file sizes or limiting uploads based on size constraints.
+                    example: 752094
+                  startTime:
+                    type: float
+                    description: |
+                      This parameter is not required for this operation and can be ignored. It is reserved for potential future use.
+                    example: 0
+                  endTime:
+                    type: float
+                    description: |
+                      This parameter is not required for this operation and can be ignored. It is reserved for potential future use.
+                    example: 91.1
+
+              moduleParameters:
+                type: object
+                description: |
+                  Additional parameters that influence the audio separation process. These settings control how the separation is performed and what output is generated.
+                properties:
+                  nameFile:
+                    type: string
+                    description: |
+                      The unique identifier or name for the output file generated after separating the audio into its components.
+                    example: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+                  extractMethod:
+                    type: string
+                    description: |
+                      Specifies the method of extraction for the audio separation process. The two options available are:
+                        - `vocals`: Extracts the vocal track.
+                        - `residual`: Extracts the instrumental or background track.
+                    example: 'vocals'
+                    enum: [ 'vocals', 'residual' ]
+                  trimSilence:
+                    type: bool
+                    description: |
+                      Indicates whether to automatically trim silence from the start and end of the extracted tracks. This option helps in removing unnecessary silence portions, optimizing the usability of the output.
+                    example: false
+                    enum: [ false, true ]
+
+      examples:
+        FaceSwap:
+          summary: Face Swap
+          description: This object defines the properties for performing a face swap operation.
+          value:
+            method: 'face_swap'
+            subMethod: 'face_swap'
+
+            sourceFile:
+              nameFile: 'video.mp4'
+              urlFile: '/media/tmp/video.mp4'
+              formatFile: 'mp4'
+              fileSizeBytes: 752094
+              naturalWidth: 1280
+              naturalHeight: 720
+              offsetWidth: 1080
+              offsetHeight: 608
+              startTime: 0.0
+              endTime: 10.0
+
+            avatarFile:
+              nameFile: 'image.jpg'
+              urlFile: '/media/tmp/image.jpg'
+              formatFile: 'jpg'
+              fileSizeBytes: 752094
+              naturalWidth: 456
+              naturalHeight: 720
+              offsetWidth: 305
+              offsetHeight: 482
+              startTime: null
+              endTime: null
+
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              cropField:
+                - x: 626.16
+                  y: 56.12
+                  width: 198.87
+                  height: 171.54
+              avatarCropField:
+                - x: 138.16
+                  y: 66.12
+                  width: 128.87
+                  height: 263.54
+              isGeminiFaces: false
+              replaceAllFaces: false
+        LipSync:
+          summary: Lip Sync
+          description: This object defines the properties for performing a lip sync operation.
+          value:
+            method: 'lip_sync'
+            subMethod: 'lip_sync'
+
+            sourceFile:
+              nameFile: 'image.jpg'
+              urlFile: '/media/tmp/image.jpg'
+              formatFile: 'jpg'
+              fileSizeBytes: 752094
+              naturalWidth: 456
+              naturalHeight: 720
+              offsetWidth: 305
+              offsetHeight: 482
+              startTime: null
+              endTime: null
+
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              cropField:
+                - x: 138.16
+                  y: 66.12
+                  width: 128.87
+                  height: 263.54
+              overlayAudio: false
+              useGfpgan: false
+              useSmooth: false
+              useDiffuser: true
+
+            audioFile:
+              nameFile: 'audio.wav'
+              urlFile: '/media/tmp/audio.wav'
+              formatFile: 'wav'
+              fileSizeBytes: null
+              startTime: 0
+              endTime: 3.45
+        RemoveBackground:
+          summary: Remove Background
+          description: |
+            Parameters for removing the background from an image or video. This operation allows users to remove or replace the background with a specified color (or keep it transparent). 
+            The process involves detecting the subject and separating it from the background, which can then be replaced or kept transparent based on the selected options.
+
+          value:
+            method: 'remove_background'
+            subMethod: 'remove_background'
+
+            sourceFile:
+              nameFile: 'image.jpg'
+              urlFile: '/media/tmp/image.jpg'
+              formatFile: 'jpg'
+              fileSizeBytes: 752094
+              naturalWidth: 456
+              naturalHeight: 720
+              offsetWidth: 305
+              offsetHeight: 482
+              startTime: null
+              endTime: null
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              backgroundColor: "transparent"
+              reverseSelect: false
+              SAM:
+                - null
+                - null
+                - - x: 182.5
+                    y: 201
+                    clickType: 1
+                  - x: 179.5
+                    y: 409
+                    clickType: 0
+        RemoveObject:
+          summary: Remove Object
+          description: |
+            The module allows you to remove an object from an image or video as if it was never there. This can be useful for removing unwanted objects or elements that distract from the content.
+            When using this method, you need to specify the area where the object to be removed is located. For videos, the system analyzes the sequence of frames to remove the object naturally, considering the context.
+
+          value:
+            method: 'remove_object'
+            subMethod: 'remove_object'
+
+            sourceFile:
+              nameFile: 'image.jpg'
+              urlFile: '/media/tmp/image.jpg'
+              formatFile: 'jpg'
+              fileSizeBytes: 752094
+              naturalWidth: 456
+              naturalHeight: 720
+              offsetWidth: 305
+              offsetHeight: 482
+              startTime: null
+              endTime: null
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              cropField:
+                -
+              modelImproved: false
+              useRemoveText: false
+              reverseSelect: false
+              SAM:
+                - null
+                - null
+                - - x: 182.5
+                    y: 201
+                    clickType: 1
+                  - x: 179.5
+                    y: 409
+                    clickType: 0
+        RemoveText:
+          summary: Remove Text
+          description: |
+            The module allows you to remove an text from an image or video as if it was never there. This can be useful for removing unwanted text that distract from the content.
+            When using this method, you need to specify the area where the object to be removed is located. For videos, the system analyzes the sequence of frames to remove the object naturally, considering the context.
+
+          value:
+            method: 'remove_object'
+            subMethod: 'remove_object'
+
+            sourceFile:
+              nameFile: 'video.mp4'
+              urlFile: '/media/tmp/video.mp4'
+              formatFile: 'mp4'
+              fileSizeBytes: 752094
+              naturalWidth: 1280
+              naturalHeight: 720
+              offsetWidth: 1058
+              offsetHeight: 596
+              startTime: 0
+              endTime: 10.0
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              cropField:
+                - x: 402
+                  y: 116.5
+                  width: 141
+                  height: 51
+              modelImproved: false
+              useRemoveText: true
+              reverseSelect: false
+              SAM:
+                - null
+                - null
+                - null
+        Enhancement:
+          summary: Enhancement
+          description: |
+            This module is used to enhance the quality of an image or video by applying advanced techniques. Depending on the selected model, different enhancement algorithms can be used, such as upscaling, noise reduction, or facial detail improvement.
+            The enhancement process improves the visual appearance by adding more details, clarity, and sharpness, which is particularly useful when working with low-resolution images or videos.
+
+          value:
+            method: 'enhancement'
+            subMethod: 'enhancement'
+
+            sourceFile:
+              nameFile: 'video.mp4'
+              urlFile: '/media/tmp/video.mp4'
+              formatFile: 'mp4'
+              fileSizeBytes: 752094
+              naturalWidth: 1280
+              naturalHeight: 720
+              offsetWidth: null
+              offsetHeight: null
+              startTime: null
+              endTime: null
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              model: 'animesgan'
+        Separator:
+          type: object
+          summary: Separator
+          description: |
+            The audio separator module is designed to isolate vocal and instrumental tracks from an audio file. It uses advanced algorithms to separate the vocals from the rest of the audio content, allowing users to extract specific components, such as the vocal or residual (instrumental) part of a song.
+            This module is particularly useful for applications such as karaoke creation, remixing, and audio analysis.
+
+          value:
+            method: 'separator'
+            subMethod: 'separator'
+            sourceFile:
+              nameFile: 'audio.wav'
+              urlFile: '/media/tmp/audio.wav'
+              formatFile: 'wav'
+              fileSizeBytes: 752094
+              startTime: 0
+              endTime: 91.1
+
+            moduleParameters:
+              nameFile: 'f78f02a1-3564-4c9f-8882-9abfda712296'
+              extractMethod: 'vocals'
+              trimSilence: false
+
+responses:
+  200:
+    description: Task Successfully Submitted
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Updated delay module task."
+            id:
+              type: string
+              example: "d0a09d02-48cd-4117-871b-2e0f29e0a9b3"
+  404:
+    description: Not found.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Method not found for module task or Unauthorized."

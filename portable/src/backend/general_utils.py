@@ -4,22 +4,41 @@ import sys
 import json
 import time
 import torch
+import ctypes
 import psutil
 import shutil
-import base64
 import random
 import requests
+import subprocess
 from time import strftime
-from cryptography.fernet import Fernet
 
 from backend.config import Settings
 from backend.folders import SETTING_FOLDER
 from backend.download import download_model, unzip, check_download_size
+from backend.cache import ModelCache
 
 
-def get_vram_gb():
-    if torch.cuda.is_available():
-        device = "cuda"
+model_cache = ModelCache(max_models=1)  # Keep cache for CPU tasks
+
+
+def get_best_device(use_cpu=False):
+    if torch.cuda.is_available() and not use_cpu:
+        max_free_memory = 0
+        best_device = None
+        for i in range(torch.cuda.device_count()):
+            device = f"cuda:{i}"
+            properties = torch.cuda.get_device_properties(device)
+            free_memory = properties.total_memory - torch.cuda.memory_allocated(device)
+            if free_memory > max_free_memory:
+                max_free_memory = free_memory
+                best_device = device
+        if best_device:
+            return best_device
+    return "cpu"
+
+
+def get_vram_gb(device="cuda:0"):
+    if torch.cuda.is_available() and device != "cpu":
         properties = torch.cuda.get_device_properties(device)
         total_vram_gb = properties.total_memory / (1024 ** 3)
         available_vram_gb = (properties.total_memory - torch.cuda.memory_allocated()) / (1024 ** 3)
@@ -51,10 +70,9 @@ def ensure_memory_capacity(limit_ram=0, limit_vram=0, device="cuda", retries=15,
         print("The parameters MODULE_MAX_QUEUE_ALL_USER and MODULE_MAX_QUEUE_ONE_USER are set to 1, which means that only one task is processed at a time. Go to the settings page to increase the number of MODULE_MAX_QUEUE_ALL_USER, MODULE_MAX_QUEUE_ONE_USER and adjust the RAM settings for the modules.")
         return True
     for _ in range(retries):
-        random_delay = random.randint(1, delay)
         _, available_ram_gb, _ = get_ram_gb()
         _, available_vram_gb, _ = get_vram_gb()
-        if device == "cuda":
+        if device != "cpu":
             if available_ram_gb > limit_ram and available_vram_gb > limit_vram:
                 return True
         else:
@@ -62,10 +80,16 @@ def ensure_memory_capacity(limit_ram=0, limit_vram=0, device="cuda", retries=15,
                 return True
         lprint(f"Waiting for free memory because of available RAM {available_ram_gb}, but need to have free RAM {limit_ram}")
         lprint(f"Waiting for free memory because of available VRAM {available_vram_gb}, but need to have free VRAM {limit_vram}")
-        time.sleep(random_delay)
+        # Clear cache models
+        model_cache.clear()
         # Clear memory
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
         gc.collect()
+        # Sleep
+        random_delay = random.randint(1, delay)
+        time.sleep(random_delay)
     return False
 
 
@@ -206,11 +230,15 @@ def get_version_app():
 
 def get_folder_size(folder_path):
     size_in_bytes = 0
-    for dirpath, dirnames, filenames in os.walk(folder_path):
-        for filename in filenames:
-            file_path = os.path.join(dirpath, filename)
-            if os.path.isfile(file_path):
-                size_in_bytes += os.path.getsize(file_path)
+    try:
+        for dirpath, dirnames, filenames in os.walk(folder_path):
+            for filename in filenames:
+                file_path = os.path.join(dirpath, filename)
+                if os.path.isfile(file_path):
+                    size_in_bytes += os.path.getsize(file_path)
+    except Exception as error:
+        lprint(msg="Removed file during calculate size", level="error")
+        return 0
     return size_in_bytes / (1024 * 1024)
 
 
@@ -249,21 +277,70 @@ def check_tmp_file_uploaded(file_path, retries=10, delay=30):
     return False
 
 
-def decrypted_bytes(val_base64):
-    return base64.b64decode(val_base64)
+# Helper function to move folders
+def move_folder(src, dst):
+    """
+    Move folders by step to skip using files
+    Parameters
+    ----------
+    src: source path
+    dst: target path
 
+    Returns
+    -------
 
-def decrypted_key(val_base64):
-    return Fernet(decrypted_bytes(val_base64))
+    """
+    if not os.path.exists(src):
+        return
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    # Set permission if windows
+    if sys.platform == 'win32':
+        try:
+            is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except Exception:
+            is_admin = False
+        try:
+            username = os.environ.get('USERNAME') or os.environ.get('USER')
+            cmd = f'icacls "{dst}" /grant:r "Everyone:(R,W)" /T' if is_admin else f'icacls "{dst}" /grant:r "{username}:(R,W)" /T'
+            if os.environ.get('DEBUG', 'False') == 'True':
+                # not silence run
+                os.system(cmd)
+            else:
+                # silence run
+                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception as e:
+            print(e)
+    else:
+        is_admin = True
 
-
-def decrypted_val(val_base64, key_byte, *args):
-    encrypted_bytes = base64.b64decode(val_base64)
-    decrypted_data = key_byte.decrypt(encrypted_bytes)
-    decrypted_json = json.loads(decrypted_data)
-    for a in args:
-        if isinstance(decrypted_json, dict):
-            decrypted_json = decrypted_json.get(a)
-        else:
-            return decrypted_json
-    return decrypted_json
+    for root, dirs, files in os.walk(src):
+        rel_path = os.path.relpath(root, src)
+        dest_dir = os.path.join(dst, rel_path)
+        if not os.path.exists(dest_dir):
+            os.makedirs(dest_dir)
+        for file in files:
+            src_file = os.path.join(root, file)
+            dest_file = os.path.join(dest_dir, file)
+            try:
+                shutil.move(src_file, dest_file)
+                print(f"Moved: {src_file} -> {dest_file}")
+                if sys.platform == 'win32':
+                    username = os.environ.get('USERNAME') or os.environ.get('USER')
+                    cmd = f'icacls "{dest_file}" /grant:r "Everyone:(R,W)" /T' if is_admin else f'icacls "{dest_file}" /grant:r "{username}:(R,W)" /T'
+                    if os.environ.get('DEBUG', 'False') == 'True':
+                        # not silence run
+                        os.system(cmd)
+                    else:
+                        # silence run
+                        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            except (PermissionError, OSError) as e:
+                print(f"Skipped {src_file} (in use or inaccessible): {e}")
+            except Exception as e:
+                print(e)
+    # Attempt to remove src directory structure
+    try:
+        shutil.rmtree(src)
+        print(f"Source folder {src} removed after move.")
+    except OSError as e:
+        print(f"Could not remove source folder {src}: {e}")

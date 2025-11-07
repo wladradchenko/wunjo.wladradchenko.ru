@@ -1,0 +1,108 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include 'flasgger/head.html' %}
+        <!-- To add custom code here override the template templates/flasgger/custom_head.html -->
+        {% include 'flasgger/custom_head.html' %}
+    </head>
+
+    <body class="bg-dark-background font-zen-maru-gothic">
+        <header>
+            <nav>
+                <div class="px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)] w-full flex items-center border-b border-white border-opacity-10 h-[var(--navbar-height)] gap-5">
+                    <div class="notification notification-title cursor-pointer px-1.5 text-3l font-extrabold font-alumni">Wunjo</div>
+                    <div class="flex gap-3 items-center max-md:hidden"></div>
+                    <ul class="flex flex-row items-center gap-2 text-m-mobile lg:text-m text-white h-full ml-auto">
+                        <div class="text-dim-gray">v{{ flasgger_config.version }}</div>
+                        <li class="relative px-2">
+                            <button class="group flex h-full items-center gap-2 peer/anchor nav-menu-btn">
+                                <span class="max-md:hidden">API</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" class="opacity-60 group-hover:opacity-100 transition duration-200"><g><path d="M15 8.5L10 13.5L5 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+                            </button>
+                            <div class="absolute top-[calc(100%_+_4px)] right-0 shadow-popup min-w-[195px] z-30 nav-dropdown-content hidden">
+                                <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl px-4 py-3 border border-[#2c2623] rounded-t-[10px]">
+                                    <p class="access-admin mb-2 text-s">{{ _('Remember about settings! To work with API, place files in the') }} <button class="hover-underline cursor-pointer" onclick="fetch('/open-cache').then(response => { if (response.ok) return response.json(); else throw new Error('Failed to open folder'); }).then(data => console.log(data)).catch(error => console.error('Error:', error));"><text style="color: #ff581b;">{{ _('tmp folder') }}</text></button> {{ _('of the cache directory.') }}</p>
+                                    <div class="flex flex-col">
+                                        <div class="mt-3 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">{{ _('Profile') }}</a><button class="text-dim-gray system-processor flex flex-row gap-2 items-center" onclick="setProcessor()" type="button"></button></div>
+                                        <button class="access-admin mt-3 flex flex-row justify-between"><a id="settings" class="hover-underline cursor-pointer" href="/settings">{{ _('Settings') }}</a></button>
+                                        <a class="hover-underline cursor-pointer mt-3" href="/faq">{{ _('FAQ') }}</a>
+                                    </div>
+                                </div>  <!--Current drive space for local? Or Token if web-->
+                                <ul class="flex flex-col p-4 bg-dark-pop-up" style="max-height: 50vh;overflow-y: auto;">
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/live-portrait">{{ _('Live portrait') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/face-swap">{{ _('Face swap') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/lip-sync">{{ _('Lip sync') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/enhancement">{{ _('Enhancement') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/remove-object">{{ _('Remove object') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/remove-background">{{ _('Remove background') }}</a></li>
+                                    <div class="my-3 h-px w-full bg-light-border"></div>
+                                    <li><a class="hover-underline cursor-pointer" href="/highlights">{{ _('Highlights') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/generation">{{ _('Generation') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/restyling">{{ _('Restyling') }}</a></li>
+                                    <div class="my-3 h-px w-full bg-light-border"></div>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/clone-voice">{{ _('Clone voice') }}</a></li>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/separator">{{ _('Separator') }}</a></li>
+                                    <div class="my-3 h-px w-full bg-light-border"></div>
+                                    <li class="mt-3"><a class="hover-underline cursor-pointer" href="/">{{ _('Workspace') }}</a></li>
+                                    <li class="mt-3 flex" style="justify-content: space-between;font-size: large;">
+                                        <a href="https://www.youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                            <i title="Tutorials" class="fa-brands fa-youtube opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                        </a>
+                                        <a href="https://t.me/s/wladblog" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                            <i title="News" class="fa-solid fa-newspaper opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                        </a>
+                                        <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                            <i title="Report about bug" class="fa-solid fa-bug opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                        </a>
+                                        <a href="https://boosty.to/wunjo" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                            <i title="Support author" class="fa-solid fa-heart opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                                        </a>
+                                    </li>
+                                </ul>  <!--Links to modules-->
+                                <div class="bg-[#424242] px-4 py-3 rounded-b-[10px]">
+                                    <p class="text-s text-light-secondary">{{ _('By using Wunjo, you agree to the') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/eula">{{ _('EULA') }}</a> {{ _('and') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/privacy-policy">{{ _('Privacy Policy') }}</a></p>
+                                    <p class="text-s text-light-secondary" style="margin-top: 10px;">{{ _('Made by') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko">wladradchenko</a></p>
+                                </div>  <!--Information about version and author-->
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <div class="min-h-screen md:pt-[calc(var(--navbar-height)+var(--navbar-top-mobile))] pt-[calc(var(--navbar-height)+var(--navbar-top))] px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]">
+            <div class="mb-[88px] w-full flex-1">
+                <div style="z-index: -1;" class="fixed top-0 left-0 right-0 bottom-0 view-dark-background opacity-[.85]"></div>
+
+                {% include 'flasgger/top.html' %}
+
+                <div id="swagger-ui">
+                    <div data-reactroot="" class="swagger-ui">
+                        <div>
+                            <div class="information-container wrapper">
+                                <section class="block col-12">
+                                    <!-- ADDS THE LOADER SPINNER -->
+                                    <div class="loading-container"><div class="loading"></div></div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="swagger-ui"></div>
+
+                {% include 'flasgger/body_scripts.html' %}
+
+                <!-- To customize the script that loads swagger, override templates/flasgger/swagger.html -->
+                {% include 'flasgger/swagger.html' %}
+            </div>
+        </div>
+
+        <footer class="z-[3] bottom-0 px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]" style="position: fixed;left: 0; right: 0;">
+            <div style="background-color: #161616;border-top: 1px solid #4d4d4d;" class="absolute w-[calc(100vw_-_var(--scrollbar-thickness))] bg-dark-background left-1/2 -translate-x-1/2 top-0 h-full z-[-1]"></div>
+            <!-- To customize the footer and include custom script on templates/flasgger/footer.html -->
+            {% include 'flasgger/footer.html' %}
+        </footer>
+    </body>
+    </html>

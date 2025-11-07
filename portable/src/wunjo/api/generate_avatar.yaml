@@ -1,0 +1,85 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /generate-avatar:
+#    post:
+summary: Generate avatar
+description: Endpoint to generate a user avatar based on specified parameters.
+tags:
+  - CPU Task
+parameters:
+  - in: query
+    name: gender
+    required: true
+    description: Gender for the avatar.
+    schema:
+      type: string
+      example: 'all'
+      enum: [ 'all', 'male', 'female' ]
+  - in: query
+    name: age
+    required: true
+    description: Age group for the avatar.
+    schema:
+      type: string
+      example: 'all'
+      enum: [ 'all', '12-18', '19-25', '26-35', '35-50', '50' ]
+  - in: query
+    name: ethnic
+    required: true
+    description: Ethnicity for the avatar.
+    schema:
+      type: string
+      example: 'all'
+      enum: [ 'all', 'asian', 'black', 'white', 'indian', 'middle_eastern', 'latino_hispanic' ]
+  #- in: header
+  #  name: X-Skip-Intercept
+  #  required: false
+  #  description: If present, the request will be excluded from interception.
+  #  schema:
+  #    type: string
+  #    example: 'true'
+  #    enum: [ 'true', 'false' ]
+responses:
+  200:
+    description: Avatar generated successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            media_file:
+              type: string
+              description: URL to the generated avatar.
+              example: '/media/127_0_0_1/avatars/avatar_456.jpg'
+  300:
+    description: Invalid image data received.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 300
+            message:
+              type: string
+              example: 'Invalid image data received'
+  400:
+    description: Error during avatar generation.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: 'Error message'

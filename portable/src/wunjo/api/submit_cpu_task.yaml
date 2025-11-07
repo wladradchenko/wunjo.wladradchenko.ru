@@ -1,0 +1,607 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /submit-cpu-task:
+#    post:
+summary: Submit CPU task
+description: |
+  Submit CPU Task based on the method name. 
+  `Important`: Before using this module, the file must be uploaded to `.cache/wunjo/tmp` via the 
+  **[File Upload](/apidocs/#/File%20Upload/post_upload_tmp)** method.
+
+tags:
+  - CPU Task
+parameters:
+  - in: header
+    name: token
+    required: true
+    description: |
+      Token for API. `Important`: Before submitting a CPU task, you must authenticate using the
+      **[Authorization API](/apidocs/#/Authorization/post_authorization_api)**. Once authenticated, use the token provided to make further requests.
+    schema:
+      type: string
+      example: 'Your token'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          method:
+            type: string
+            description: The unique name method of the task to query.
+            enum: ['retarget_portrait', 'outpaint', 'txt2img', 'img2img', 'scenedetect', 'analysis', 'facedetect']
+          filename:
+            type: string
+            description: Can be image (png, jpg, jpeg), video (mp4), audio (wav, mp3) or null.
+          RetargetPortraitImage:
+            type: object
+            description: Parameters for retargeting a portrait image by adjusting the face and emotions within the image.
+            properties:
+              cropField:
+                type: array
+                description: Defines the area of the image where the face will be adjusted.
+                items:
+                  type: object
+                  properties:
+                    x:
+                      type: number
+                      description: The x-coordinate of the lower-left corner of the crop field.
+                      example: 138.16
+                    y:
+                      type: number
+                      description: The y-coordinate of the lower-left corner of the crop field.
+                      example: 66.12
+                    width:
+                      type: number
+                      description: The width of the face crop area.
+                      example: 128.87
+                    height:
+                      type: number
+                      description: The height of the face crop area.
+                      example: 263.54
+
+              naturalWidth:
+                type: integer
+                description: The original width of the image before any adjustments.
+                example: 456
+
+              naturalHeight:
+                type: integer
+                description: The original height of the image before any adjustments.
+                example: 720
+
+              offsetWidth:
+                type: integer
+                description: The width offset for the image, used to restore the face square to its actual size after cropping.
+                example: 225
+
+              offsetHeight:
+                type: integer
+                description: The height offset for the image, used to restore the face square to its actual size after cropping.
+                example: 356
+
+              sourceImg:
+                type: string
+                description: The original image, if provided. If null, no source image is defined.
+                example: null
+
+              eyeRatio:
+                type: float
+                description: The ratio of the eyes' size compared to the face.
+                example: 0.15
+                max: 0.8
+                min: 0
+
+              lipRatio:
+                type: float
+                description: The ratio of the lips' size compared to the face.
+                example: 0
+                max: 0.8
+                min: 0
+
+              pitch:
+                type: float
+                description: The pitch (tilt) of the face along the vertical axis.
+                example: 0
+                max: 90
+                min: -90
+
+              yaw:
+                type: float
+                description: The yaw (turn) of the face along the horizontal axis.
+                example: 0
+                max: 90
+                min: -90
+
+              roll:
+                type: float
+                description: The roll (rotation) of the face along the z-axis.
+                example: 0
+                max: 90
+                min: -90
+
+              eyeballX:
+                type: float
+                description: The x-coordinate shift of the eyeballs in the image.
+                example: 0
+                max: 30
+                min: -30
+
+              eyeballY:
+                type: float
+                description: The y-coordinate shift of the eyeballs in the image.
+                example: 0
+                max: 60
+                min: -60
+
+              headX:
+                type: float
+                description: The shift of the head along the x-axis.
+                example: 0
+                max: 0.19
+                min: -0.19
+
+              headY:
+                type: float
+                description: The shift of the head along the y-axis.
+                example: 0
+                max: 0.19
+                min: -0.19
+
+              headZ:
+                type: float
+                description: The shift of the head along the z-axis.
+                example: 1
+                max: 1.2
+                min: 0.9
+
+              smile:
+                type: float
+                description: The intensity of the smile on the face.
+                example: 0
+                max: 1.3
+                min: -0.3
+
+              wink:
+                type: float
+                description: The intensity of the wink expression on the face.
+                example: 0
+                max: 39
+                min: 0
+
+              eyebrow:
+                type: float
+                description: The intensity of the eyebrow raise or furrow expression.
+                example: 0
+                max: 30
+                min: -30
+
+              grin:
+                type: float
+                description: The intensity of the grin expression.
+                example: 0
+                max: 15
+                min: 0
+
+              pursing:
+                type: float
+                description: The intensity of the pursing of the lips expression.
+                example: 0
+                max: 15
+                min: -20
+
+              pouting:
+                type: float
+                description: The intensity of the pouting expression.
+                example: 0
+                max: 0.09
+                min: -0.09
+
+              lipExpression:
+                type: float
+                description: The intensity of the lip expression, such as puckering or stretching.
+                example: 0
+                max: 90
+                min: -90
+          OutPaintImage:
+            type: object
+            description: |
+              Parameters for performing the outpainting operation using a generative model. 
+              This allows you to add new parts to the image based on the given parameters and diffusion settings.
+
+            properties:
+              width:
+                type: number
+                description: |
+                  The width of the image to be extended. Specifies the final width after processing.
+                example: 1279
+
+              height:
+                type: number
+                description: |
+                  The height of the image to be extended. Specifies the final height after processing.
+                example: 720
+
+              blurFactor:
+                type: number
+                description: |
+                  The degree of blurring for the new parts of the image. The higher the value, the stronger the blur effect.
+                example: 10
+                max: 50
+                min: 0
+
+              sdModel:
+                type: string
+                description: |
+                  The diffusion model used to generate the new parts of the image.
+                example: "Realistic_Vision_V5.1.safetensors"
+
+              diffusionParameters:
+                type: object
+                properties:
+                  positivePrompt:
+                    type: string
+                    description: |
+                      (Optional) A description of what should be included in the new parts of the image.
+                      If not provided, the model will generate content based on its default understanding.
+                    example: null
+
+                  width:
+                    type: number
+                    description: |
+                      The width for the diffusion process, which may be different from the final image width.
+                    example: 1279
+
+                  height:
+                    type: number
+                    description: |
+                      The height for the diffusion process, which may be different from the final image height.
+                    example: 720
+
+                  blurFactor:
+                    type: number
+                    description: |
+                      The blur factor to be applied during the diffusion process for the new image areas.
+                    example: 10
+                    max: 50
+                    min: 0
+          Img2Img:
+            type: object
+            description: |
+              Parameters for performing an image-to-image transformation using a generative model.
+              This process allows modifying an existing image (canvas) based on a set of diffusion parameters, prompts, and strength settings to achieve the desired changes.
+
+            properties:
+              canvasFileName:
+                type: string
+                description: |
+                  The file name of the canvas image that will be modified. The image field specified here will undergo changes according to the diffusion process.
+                example: "image_canvas.jpg"
+
+              sdModel:
+                type: string
+                description: |
+                  The diffusion model used to generate the changes in the canvas image. The model determines the style and characteristics of the changes.
+                example: "Realistic_Vision_V5.1.safetensors"
+
+              diffusionParameters:
+                type: object
+                properties:
+                  seed:
+                    type: number
+                    description: |
+                      A random seed value that ensures the changes can be repeated if the same seed is used. It adds variability to the process, allowing different results with each run.
+                    example: 0
+                    min: 0
+                    max: 10000000
+
+                  strength:
+                    type: float
+                    description: |
+                      The strength of the changes applied to the image. A higher value will result in stronger transformations to the original canvas.
+                    example: 0.7
+                    min: 0.1
+                    max: 1.0
+
+                  scale:
+                    type: float
+                    description: |
+                      The scale for the positive prompt. It controls how strongly the input prompt influences the output image, with higher values resulting in greater influence.
+                    example: 10
+                    min: 1
+                    max: 15
+
+                  blurFactor:
+                    type: number
+                    description: |
+                      The blur factor applied during the diffusion process for the new image areas. A higher value results in more pronounced blur in the transformed regions.
+                    example: 10
+                    min: 0
+                    max: 50
+
+                  controlStrength:
+                    type: number
+                    description: |
+                      The strength of control applied to preserve details near the contours of the source image. Higher values allow for more precise changes around the edges of the original canvas.
+                    example: 0.7
+                    min: 0.1
+                    max: 1.0
+
+                  sourceCanvas:
+                    type: string
+                    description: |
+                      The file name of the source canvas image that will be altered for the current frame. This image is used as a reference for modifications in the ongoing process.
+                    example: "image_canvas.jpg"
+
+                  positivePrompt:
+                    type: string
+                    description: |
+                      A description of how the image should be changed. This prompt guides the model in making specific alterations to the canvas.
+                    example: "An Asian man"
+
+                  negativePrompt:
+                    type: string
+                    description: |
+                      A description of what should be avoided in the transformation process. This helps exclude unwanted elements from the resulting image.
+                    example: "An Asian man"
+
+                  sourceImg:
+                    type: string
+                    description:
+                    example: null
+          Txt2Img:
+            type: object
+            description: |
+              Parameters for performing an text-to-image transformation using a generative model.
+              This process allows modifying an existing image (canvas) based on a set of diffusion parameters, prompts, and strength settings to achieve the desired changes.
+
+            properties:
+              width:
+                type: number
+                description: |
+                  The width of the image to generate.
+                example: 1279
+
+              height:
+                type: number
+                description: |
+                  The height of the image to generate.
+                example: 720
+
+              sdModel:
+                type: string
+                description: |
+                  The diffusion model used to generate the changes in the canvas image. The model determines the style and characteristics of the changes.
+                example: "Realistic_Vision_V5.1.safetensors"
+
+              diffusionParameters:
+                type: object
+                properties:
+                  seed:
+                    type: number
+                    description: |
+                      A random seed value that ensures the changes can be repeated if the same seed is used. It adds variability to the process, allowing different results with each run.
+                    example: 0
+                    min: 0
+                    max: 10000000
+
+                  strength:
+                    type: float
+                    description: |
+                      The strength of the changes applied to the image. A higher value will result in stronger transformations to the original canvas.
+                    example: 0.7
+                    min: 0.1
+                    max: 1.0
+
+                  scale:
+                    type: float
+                    description: |
+                      The scale for the positive prompt. It controls how strongly the input prompt influences the output image, with higher values resulting in greater influence.
+                    example: 10
+                    min: 1
+                    max: 15
+
+                  blurFactor:
+                    type: number
+                    description: |
+                      The blur factor applied during the diffusion process for the new image areas. A higher value results in more pronounced blur in the transformed regions.
+                    example: 10
+                    min: 0
+                    max: 50
+
+                  controlStrength:
+                    type: number
+                    description: |
+                      The strength of control applied to preserve details near the contours of the source image. Higher values allow for more precise changes around the edges of the original canvas.
+                    example: 0.7
+                    min: 0.1
+                    max: 1.0
+
+                  sourceCanvas:
+                    type: string
+                    example: null
+
+                  positivePrompt:
+                    type: string
+                    description: |
+                      A description of how the image should be changed. This prompt guides the model in making specific alterations to the canvas.
+                    example: "An Asian man"
+
+                  negativePrompt:
+                    type: string
+                    description: |
+                      A description of what should be avoided in the transformation process. This helps exclude unwanted elements from the resulting image.
+                    example: "Distort, bad, anime"
+
+                  sourceImg:
+                    type: string
+                    description:
+                    example: null
+          ScenedetectVideo:
+            type: object
+            description: |
+              The Scenedetect object is used for scene detection in video processing, specifically to identify transitions between different scenes based on frame differences. This functionality is crucial for tasks such as video segmentation, editing, or analyzing scene changes. Scene transitions are detected based on an interval and threshold value, which determine how sensitive the detection process is to changes between frames.
+
+            properties:
+              interval:
+                type: number
+                description: |
+                  The interval between frames to analyze for scene transitions. A smaller value means more frequent checks, resulting in a finer detection of scene cuts. Increasing the interval reduces the frequency of checks, potentially missing rapid scene changes.
+                example: 15
+                min: 1
+                max: 1000
+
+              threshold:
+                type: number
+                description: |
+                  The threshold value determines the sensitivity of the scene detection. Lower values make the system more sensitive to minor changes, while higher values require more significant differences between frames for a scene change to be detected. This can be adjusted to fine-tune the detection accuracy for different types of video content.
+                example: 47
+                min: 1
+                max: 100
+      examples:
+        RetargetPortraitImage:
+          summary: Retarget Portrait Image
+          description: |
+            The method allows you to change the position of the face and emotions for image.
+          value:
+            method: 'retarget_portrait'
+            filename: 'image.jpg'
+            retargetParameters:
+              cropField:
+                - x: 138.1625266767889
+                  y: 66.12560602282907
+                  width: 128.87384019646055
+                  height: 263.5434981136437
+              naturalWidth: 456
+              naturalHeight: 720
+              offsetWidth: 225
+              offsetHeight: 356
+              sourceImg: null
+              eyeRatio: 0.15
+              lipRatio: 0
+              pitch: 0
+              yaw: 0
+              roll: 0
+              eyeballX: 0
+              eyeballY: 0
+              headX: 0
+              headY: 0
+              headZ: 1
+              smile: 0
+              wink: 0
+              eyebrow: 0
+              grin: 0
+              pursing: 0
+              pouting: 0
+              lipExpression: 0
+        OutPaintImage:
+          summary: OutPaint Image
+          description: |
+            The method allows to complete the image.
+          value:
+            method: 'outpaint'
+            filename: 'image.jpg'
+            width: 1279
+            height: 720
+            blurFactor: 10
+            sdModel: "Realistic_Vision_V5.1.safetensors"
+            diffusionParameters:
+              blurFactor: 10
+              positivePrompt: "Ancient Japan in the background"
+              width: 1279
+              height: 720
+              sourceImg: null
+        Img2Img:
+          summary: Image to Image
+          description: |
+            The method allows you to change details in the image.
+          value:
+            method: 'img2img'
+            filename: 'image.jpg'
+            canvasFileName: "image_canvas.jpg"
+            sdModel: "Realistic_Vision_V5.1.safetensors"
+            diffusionParameters:
+              seed: 510294
+              strength: 0.75
+              controlStrength: 0.7
+              blurFactor: 10
+              scale: 7.5
+              positivePrompt: "An Asian man"
+              negativePrompt: ""
+              sourceCanvas: "image_canvas.jpg"
+              sourceImg: null
+        Txt2Img:
+          summary: Text to Image
+          description: |
+            The method allows you to paint the image from a text.
+          value:
+            method: 'txt2img'
+            filename: null
+            width: 1024
+            height: 576
+            sdModel: "Realistic_Vision_V5.1.safetensors"
+            diffusionParameters:
+              seed: 510294
+              strength: 0.75
+              controlStrength: 0.7
+              blurFactor: 10
+              scale: 7.5
+              positivePrompt: "Soft toy donkey grazing in the valley"
+              negativePrompt: ""
+              sourceCanvas: null
+              sourceImg: null
+        SegmentImage:
+          summary: Segmentation Image
+          description: |
+            Perform image segmentation using SAM (Segment Anything Model) to segment the image into distinct regions and return the result as a NumPy array.
+            This method processes the image to identify different segments (e.g., objects, areas) and represents the result in a structured array format.
+          value:
+            method: "Possible values: 'remove_background', 'remove_object', 'restyle'"
+            filename: 'image.jpg'
+        Analysis:
+          summary: Analysis
+          description: Analysis of image, video or audio to identify the original file without interfering with its data.
+          value:
+            method: "analysis"
+            filename: 'image.jpg'
+        Scenedetect:
+          summary: Scenedetect Video
+          description: The Scenedetect object is used for scene detection in video processing, specifically to identify transitions between different scenes based on frame differences. This functionality is crucial for tasks such as video segmentation, editing, or analyzing scene changes. Scene transitions are detected based on an interval and threshold value, which determine how sensitive the detection process is to changes between frames.
+          value:
+            method: "scenedetect"
+            filename: 'video.mp4'
+            interval: 10
+            threshold: 50
+responses:
+  200:
+    description: Task Successfully Submitted
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Updated delay CPU task."
+            id:
+              type: string
+              example: "d0a09d02-48cd-4117-871b-2e0f29e0a9b3"
+  404:
+    description: Not found.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Method not found for CPU task."

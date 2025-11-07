@@ -1,0 +1,124 @@
+<template class="component-video-player-template" data-component="video-handler">
+    <div class="group/card relative flex flex-col gap-2.5 shrink-0 !px-0">
+        <div class="absolute z-[-1] top-0 left-0 -translate-x-2 -translate-y-2 rounded-2xl w-[calc(100%+1rem)] h-[calc(100%+1rem)] bg-white bg-opacity-0 group-hover/card:bg-opacity-5 transition-colors"></div>
+        <div class="relative">
+            <div class="relative group bg-dark-elements rounded-[.625rem] overflow-hidden w-full">
+                <div class="relative w-full pt-[calc(9/16*100%)]">
+                    <div class="video-player absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <div class="video-player__container js-video-container relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <video class="video video-player__element js-video-element absolute w-auto h-full object-contain" autoplay="" preload="none" loop="" playsinline="">
+                                <source src="" type="video/mp4">
+                            </video>
+                            <div style="flex-direction: column;" class="text-m-mobile lg:text-m flex items-end justify-center font-normal gap-1 absolute top-1 right-1 z-[2]">
+                                <button class="video-player__control--watch js-watch-button rounded-md transition-colors disabled:cursor-not-allowed px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity full-opacity-on-touchscreen !bg-dark-pop-up hover:bg-dark-elements-hover text-light-primary bg-dark-elements" type="button">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span class="hidden-on-touchscreen">{{ _('Watch') }}</span>
+                                </button>
+                            </div>
+                            <span class="video-player__duration js-duration transition-opacity absolute bottom-1 left-1 z-[1] text-s-mobile lg:text-s !font-medium px-2 py-1.5 rounded-md bg-dark-tags opacity-100"></span>
+                            <div class="absolute bottom-1 right-1 flex flex-col gap-2">
+                                <button class="video-player__control--sound js-sound-button rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 hover:bg-dark-elements-hover text-light-primary bg-dark-elements"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div onclick="openNotificationMessageModal();"  class="loader-circle js-loader-circle modal-load-element absolute top-0 left-0 w-full h-full overflow-hidden bg-dark-elements z-[2]">
+                        <div class="loader-circle__container relative flex flex-col shrink-0 items-center justify-center gap-5 basis-full aspect-video !aspect-auto h-full">
+                            <div class="relative">
+                                <div class="loader-circle__element js-loader-circle loader"></div>
+                            </div>
+                            <p style="word-break: break-word;" class="loader-circle__text text-center text-m-mobile xl:text-m text-white text-opacity-60 max-w-[200px]">...</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="absolute left-1 top-1 flex gap-1 items-center h-7 z-[2]">
+                    <div class="h-full p-1.5 bg-dark-background bg-opacity-[.85] rounded-md flex flex-nowrap gap-1.5 max-w-[28px] group-hover:max-w-[200px] transition-[max-width] overflow-hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="opacity-[.85] shrink-0 w-4 h-4"><path d="M12.6667 2H3.33333C2.59695 2 2 2.59695 2 3.33333V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V3.33333C14 2.59695 13.403 2 12.6667 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 5.33333L10 8L6 10.6667V5.33333Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <span class="text-s-mobile lg:text-s opacity-[.85] whitespace-nowrap">{{ _('Video input') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="video-timeline flex flex-col gap-2.5">
+            <div class="flex items-center gap-1 justify-between whitespace-nowrap group">
+                <!--INPUT TIMELINE OR CONTROL BUTTONS?-->
+                <div class="video-timeline__controls flex flex-1 items-center bg-dark-elements rounded-md">
+                    <div class="video-timeline__control js-timeline-start-back relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <i class="fa-solid fa-caret-left opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                    </div>
+                    <button class="relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <input class="video-timeline__control js-timeline-start-input w-14 text-m-mobile lg:text-m rounded-md bg-dark-elements box-content text-center outline-none" min="0" step="0.05" type="number">
+                    </button>
+                    <button class="video-timeline__control js-timeline-start-forward relative group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                        <i class="fa-solid fa-caret-right opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                    </button>
+                    <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
+                    <button class="video-timeline__control js-timeline-end-back relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <i class="fa-solid fa-caret-left opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                    </button>
+                    <div class="relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2">
+                        <input class="video-timeline__control js-timeline-end-input w-14 text-m-mobile lg:text-m rounded-md bg-dark-elements box-content text-center outline-none" min="0" step="0.05" type="number">
+                    </div>
+                    <button class="video-timeline__control js-timeline-end-forward relative group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                        <i class="fa-solid fa-caret-right opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                    </button>
+                </div>
+                <div class="video-timeline__access-message js-access-message absolute w-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md full-opacity-on-touchscreen">
+                    🚫
+                    {{ _('Not accessible.') }} <span class="hidden-on-touchscreen">{{ _('Upload media before.') }}</span>
+                </div>
+            </div>
+            <div class="video-timeline__markers js-timeline-markers flex px-1.5 justify-between text-s-mobile lg:text-s bg-dark-elements rounded-md" style="color: #c4ecd3;">
+                 <div>00:00</div>
+                 <div>NaN:NaN</div>
+             </div>
+            <div class="video-timeline__main js-timeline-main group flex h-14 gap-5 items-center justify-center">
+                <div class="video-timeline__bg js-timeline-bg absolute ml-1 mr-1 right-0 left-0 h-14 flex flex-1 items-center bg-dark-elements"></div>
+                <input type="range" class="video-timeline__range--current js-timeline-current absolute w-full px-1.5" min="0" max="100" value="0" disabled>
+                <div class="video-timeline__track js-timeline-track z-[1] items-center w-full flex justify-between absolute">
+                    <input type="range" class="video-timeline__range video-timeline__range--left js-timeline-range-left" min="0" max="100" step="0.05" value="0">
+                    <input type="range" class="video-timeline__range video-timeline__range--right js-timeline-range-right" min="0" max="100" step="0.05" value="100">
+                </div>
+                <div class="video-timeline__access-message js-access-message z-[2] absolute w-full h-14 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 bg-dark-background bg-opacity-90 border border-white border-opacity-10 rounded-md full-opacity-on-touchscreen">
+                    🚫
+                    {{ _('Not accessible.') }} <span class="hidden-on-touchscreen">{{ _('Upload media before.') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template class="component-audio-player-template" data-component="audio-handler">
+    <div class="relative h-14">
+        <div class="audio-player w-full absolute flex flex-col gap-2 pb-5">
+            <div class="audio-player__container js-audio-container waveform-container w-full h-10 px-3.5 flex gap-3 items-center bg-dark-elements rounded-[.625rem]">
+                <audio class="audio audio-player__element js-audio-element" src="" hidden="" loop></audio>
+                <button class="audio-player__listen js-audio-listen audio-control opacity-60 hover:opacity-100 transition-opacity focus:outline-none" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#fff"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.167 2.5 15.832 10 4.166 17.5v-15Z"></path></svg>
+                    <svg class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#fff"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7.833 3.333H4.5v13.334h3.333V3.333ZM15.5 3.333h-3.333v13.334H15.5V3.333Z"></path></svg>
+                </button>
+                <div class="audio-timeline js-timeline-main relative h-full flex-1 flex items-center justify-between py-2.5">
+                    <span class="audio-timeline__markers--start js-timeline-markers-start absolute h-full top-full left-0 text-white -translate-x-full">00:00</span>
+                    <input type="range" class="audio-timeline__range--current js-timeline-current absolute w-full px-1.5" min="0" max="100" value="0" disabled="">
+                    <div style="margin-top: 1rem;" class="audio-timeline__track js-timeline-track z-[1] items-center w-full flex justify-between absolute">
+                        <input type="range" class="audio-timeline__range audio-timeline__range--left js-timeline-range-left" min="0" max="100" step="0.05" value="0">
+                        <input type="range" class="audio-timeline__range audio-timeline__range--right js-timeline-range-right" min="0" max="100" step="0.05" value="100">
+                    </div>
+                    <span class="audio-timeline__markers--end js-timeline-markers-end absolute h-full top-full right-0 text-white translate-x-full">00:00</span>
+                </div>
+                <button type="button" class="z-[2]">
+                    <svg class="audio-player__control--restart js-restart-button opacity-60 hover:opacity-100" fill="white" width="16px" height="16px" viewBox="-2 0 32 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"><path d="M26.530,31.994 C26.222,31.994 25.915,31.903 25.619,31.722 L2.000,17.205 L2.000,31.000 C2.000,31.553 1.552,32.000 1.000,32.000 C0.448,32.000 -0.000,31.553 -0.000,31.000 L-0.000,1.006 C-0.000,0.453 0.448,0.006 1.000,0.006 C1.552,0.006 2.000,0.453 2.000,1.006 L2.000,13.855 L25.628,0.248 C25.917,0.083 26.211,-0.000 26.507,-0.000 C27.372,-0.000 28.000,0.689 28.000,1.639 L28.000,30.367 C28.000,31.435 27.260,31.994 26.530,31.994 ZM3.097,15.531 L26.000,29.608 L26.000,2.341 L3.097,15.531 Z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="loader-bar js-loader-bar load hidden absolute w-full flex flex-col gap-3">
+            <div class="flex items-center gap-2 p-2.5 relative w-full h-10 bg-dark-elements rounded-[.625rem] overflow-hidden">
+                <div class="absolute w-full h-full left-0 top-0 bg-gradient-to-r from-[rgba(255,237,210,0.20)] to-accent-primary opacity-10" style="background: linear-gradient(to right, rgba(255, 237, 210, 0.2), rgb(255, 237, 210));"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" class="animate-loadingRing mx-auto stroke-accent-primary"><path d="M17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <p style="text-wrap: nowrap;" class="text-m-mobile md:text-m grow">{{ _('Loading') }}...</p>
+                <div class="absolute h-full w-full left-0 top-0 animate-loadingStripe" style="background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 16px, rgba(0, 0, 0, 0.08) 16px, rgba(0, 0, 0, 0.08) 32px) 0% 0% / 200% 200%;"></div>
+            </div>
+        </div>
+    </div>
+</template>

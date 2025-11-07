@@ -1,9 +1,8 @@
 {% extends 'app.html' %}
-{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Wunjo{% endblock %}
 
-{% block nav %}Workspace{% endblock %}
+{% block nav %}{{ _('Workspace') }}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/css/content.css') }}">
@@ -47,7 +46,7 @@
                     </button>
                 </div>
                 <h2 class="text-[1.25rem] leading-6 tracking-[0.0125rem] font-extra-thick modal-root-path"></h2>
-                <p class="mt-3 text-m-mobile lg:text-m">Date Created: <text class="modal-root-created"></text></p>
+                <p class="mt-3 text-m-mobile lg:text-m">{{ _('Date Created') }}: <text class="modal-root-created"></text></p>
                 <audio class="mt-3" style="padding-top: 10px;padding-bottom: 10px;width: 100%;" controls><source class="modal-root-audio" src="" type="audio/mpeg"></audio>
             </div>
         </div>
@@ -55,53 +54,54 @@
 </template>
 
 
-<div style="position: sticky;top: 0;z-index: 10;background: #0d0d0d;">
+<div data-tour="manager" data-position="bottom" data-title="{{ _('Control panel') }}" data-intro="{{ _('In the file manager, you have the ability to delete, open, and rename content. Additionally, you can utilize features such as redo, undo, refresh, and return to the home directory for efficient management of your files.') }}" data-step="1" style="position: sticky;top: 0;z-index: 10;">
     <!--In order to see menu like freeze add in class sticky else remove sticky-->
     <div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-10">
         <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
             <div class="w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform: translateX(calc(100% + 8px));"></div>
-            <a class="font-extra-thick transition-[color] relative z-10 w-24 h-9 py-2 text-center rounded-md text-white font-alumni text-heading-3" href="/">Explore</a>
-            <a class="font-extra-thick transition-[color] relative z-10 w-24 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3" href="/content">Content</a>
+            <a class="font-extra-thick transition-[color] relative z-10 w-24 h-9 py-2 text-center rounded-md text-white font-alumni text-heading-3" href="/">{{ _('Explore') }}</a>
+            <a class="font-extra-thick transition-[color] relative z-10 w-24 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3" href="/content">{{ _('Content') }}</a>
         </div>
     </div>
 
-    <div class="flex items-center gap-1 justify-between whitespace-nowrap">
-        <div class="flex flex-1 items-center bg-dark-elements rounded-md">
-            <button onclick="openFileManagerModal();" class="group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center disabled:cursor-not-allowed text-white disabled:text-opacity-60">
-                <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" width="20px" height="20px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="white" transform="translate(85.333333, 64.000000)"><path d="M128,63.999444 L128,106.666444 L42.6666667,106.666667 L42.6666667,320 L256,320 L256,234.666444 L298.666,234.666444 L298.666667,362.666667 L4.26325641e-14,362.666667 L4.26325641e-14,64 L128,63.999444 Z M362.666667,1.42108547e-14 L362.666667,170.666667 L320,170.666667 L320,72.835 L143.084945,249.751611 L112.915055,219.581722 L289.83,42.666 L192,42.6666667 L192,1.42108547e-14 L362.666667,1.42108547e-14 Z"></path></g></g></svg>
-                <span>Open</span>
-            </button>
-            <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
-            <button onclick="openRenameFileManagerModal();" class="relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2" href="/my-library?remix=5c0fcd62-8880-4884-9814-cd430fec5c86">
-                <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20px" height="20px"><defs><clipPath id="_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle"><rect width="20" height="20"></rect></clipPath></defs><g clip-path="url(#_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle)"><g><path d=" M 16.667 4.996 L 15.833 4.996 L 15.833 6.663 L 16.667 6.663 L 16.667 13.329 L 15.833 13.329 L 15.833 14.996 L 16.667 14.996 C 17.586 14.996 18.333 14.248 18.333 13.329 L 18.333 6.663 C 18.333 5.744 17.585 4.996 16.667 4.996 Z  M 5 8.329" fill="rgb(255,255,255)"></path><path d=" M 14.167 14.996 L 14.167 3.333 L 16.663 3.333 L 16.663 1.667 L 9.996 1.667 L 9.996 3.333 L 12.5 3.333 L 12.5 4.996 L 3.333 4.996 C 2.414 4.996 1.667 5.743 1.667 6.663 L 1.667 13.329 C 1.667 14.248 2.414 14.996 3.333 14.996 L 12.5 14.996 L 12.5 16.667 L 9.996 16.667 L 9.996 18.333 L 16.663 18.333 L 16.663 16.667 L 14.167 16.667 L 14.167 14.996 Z  M 3.333 13.329 L 3.333 6.663 L 12.5 6.663 L 12.5 13.329 L 3.333 13.329 Z " fill="rgb(255,255,255)"></path></g></g></svg>
-                <span>Rename</span>
-            </button>
-            <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
-            <button onclick="openDeleteFileManagerModal();" class="relative group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center" href="/my-library?edit=5c0fcd62-8880-4884-9814-cd430fec5c86">
-                <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Delete</span>
-            </button>
-        </div>
-        <div class="flex md:gap-3 gap-1.5 block hidden">
-            <div class="relative bg-dark-elements rounded-md">
-                <button onclick="document.querySelector('.other-hidden-buttons').classList.toggle('hidden')" class="flex flex-col items-center gap-1 justify-center w-8 h-8  transition-opacity">
-                    <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
-                    <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
-                    <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+    <div class="rounded-xl view-dark-background pxy-br">
+        <div class="flex items-center gap-1 justify-between whitespace-nowrap">
+            <div class="flex flex-1 items-center bg-dark-elements rounded-md">
+                <button onclick="openFileManagerModal();" class="group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center disabled:cursor-not-allowed text-white disabled:text-opacity-60">
+                    <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" width="20px" height="20px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="white" transform="translate(85.333333, 64.000000)"><path d="M128,63.999444 L128,106.666444 L42.6666667,106.666667 L42.6666667,320 L256,320 L256,234.666444 L298.666,234.666444 L298.666667,362.666667 L4.26325641e-14,362.666667 L4.26325641e-14,64 L128,63.999444 Z M362.666667,1.42108547e-14 L362.666667,170.666667 L320,170.666667 L320,72.835 L143.084945,249.751611 L112.915055,219.581722 L289.83,42.666 L192,42.6666667 L192,1.42108547e-14 L362.666667,1.42108547e-14 Z"></path></g></g></svg>
+                    <span>{{ _('Open') }}</span>
                 </button>
-                <div class="other-hidden-buttons absolute md:right-0 md:-translate-x-1/2 max-md:right-0 bottom-full -translate-y-2.5 z-10 bg-dark-elements shadow-popup rounded-md flex flex-col gap-3 hidden">
-                    <div class="flex flex-col gap-3">
-                        <button class="group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
-                            <i class="fa-regular fa-file opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
-                            <span>Option</span>
-                        </button>
+                <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
+                <button onclick="openRenameFileManagerModal();" class="relative group flex items-center gap-2 py-1.5 flex-1 justify-center px-2" href="/my-library?remix=5c0fcd62-8880-4884-9814-cd430fec5c86">
+                    <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20px" height="20px"><defs><clipPath id="_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle"><rect width="20" height="20"></rect></clipPath></defs><g clip-path="url(#_clipPath_CE1EdoP47CPPxNh0BbIsTAEdtqyIADle)"><g><path d=" M 16.667 4.996 L 15.833 4.996 L 15.833 6.663 L 16.667 6.663 L 16.667 13.329 L 15.833 13.329 L 15.833 14.996 L 16.667 14.996 C 17.586 14.996 18.333 14.248 18.333 13.329 L 18.333 6.663 C 18.333 5.744 17.585 4.996 16.667 4.996 Z  M 5 8.329" fill="rgb(255,255,255)"></path><path d=" M 14.167 14.996 L 14.167 3.333 L 16.663 3.333 L 16.663 1.667 L 9.996 1.667 L 9.996 3.333 L 12.5 3.333 L 12.5 4.996 L 3.333 4.996 C 2.414 4.996 1.667 5.743 1.667 6.663 L 1.667 13.329 C 1.667 14.248 2.414 14.996 3.333 14.996 L 12.5 14.996 L 12.5 16.667 L 9.996 16.667 L 9.996 18.333 L 16.663 18.333 L 16.663 16.667 L 14.167 16.667 L 14.167 14.996 Z  M 3.333 13.329 L 3.333 6.663 L 12.5 6.663 L 12.5 13.329 L 3.333 13.329 Z " fill="rgb(255,255,255)"></path></g></g></svg>
+                    <span>{{ _('Rename') }}</span>
+                </button>
+                <span class="w-px bg-white bg-opacity-[.15] h-5 shrink-0"></span>
+                <button onclick="openDeleteFileManagerModal();" class="relative group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center" href="/my-library?edit=5c0fcd62-8880-4884-9814-cd430fec5c86">
+                    <svg class="opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>{{ _('Delete') }}</span>
+                </button>
+            </div>
+            <div class="flex md:gap-3 gap-1.5 block hidden">
+                <div class="relative bg-dark-elements rounded-md">
+                    <button onclick="document.querySelector('.other-hidden-buttons').classList.toggle('hidden')" class="flex flex-col items-center gap-1 justify-center w-8 h-8  transition-opacity">
+                        <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                        <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                        <span class="w-[3px] h-[3px] rounded-full bg-white shrink-0"></span>
+                    </button>
+                    <div class="other-hidden-buttons absolute md:right-0 md:-translate-x-1/2 max-md:right-0 bottom-full -translate-y-2.5 z-10 bg-dark-elements shadow-popup rounded-md flex flex-col gap-3 hidden">
+                        <div class="flex flex-col gap-3">
+                            <button class="group flex items-center gap-2 py-1.5 px-2 flex-1 justify-center">
+                                <i class="fa-regular fa-file opacity-60 group-hover:opacity-100 group-hover:-mt-0.5 transition-all"></i>
+                                <span>{{ _('Option') }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div style="margin-top: 20px;">
+        <div style="margin-top: 20px;">
         <div class="relative flex items-end gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
             <button id="backwardBtn" onclick="backwardFileManager()" class="rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-1.5 gap-1.5 py-1.5 !text-light-tertiary hover:bg-accent-hover text-dark-background bg-accent-primary" type="submit">
                 <i style="font-size: 1em;color: black;height: 1.1em;width: 1.1em;" class="fa-solid fa-arrow-left"></i>
@@ -118,9 +118,11 @@
             </button>
         </div>
     </div><!--Rendo, Undo, Home, Search, Reload-->
+    </div>
 </div>
 
-<div class="filemanager-container-row" style="padding: 1%;display: flex;flex-wrap: wrap;padding-bottom: 30px;"></div><!--Files-->
+
+<div data-tour="manager" data-position="bottom" data-title="{{ _('Manager view') }}" data-intro="{{ _('In desktop mode, simply double-click on a folder or file to open it. In mobile mode, tap on the open button to access your folders and files. Let’s open some file in folder to display content.') }}" data-step="2" class="filemanager-container-row" style="padding: 1%;display: flex;flex-wrap: wrap;padding-bottom: 30px;"></div><!--Files-->
 {% endblock %}
 
 {% block scripts %}
@@ -128,8 +130,16 @@
     function initScript() {
         // Import and initialize the content script here
         const scriptContent = document.createElement('script');
-        scriptContent.src = "/static/content/js/content.min.js";
+        scriptContent.src = "{{ url_for('static', filename='content/js/content.min.js') }}";
         document.body.appendChild(scriptContent);
+
+        // Tour for new users
+        const tour = {{ tour|tojson|safe }};
+        if (tour === true) {
+            setTimeout(() => {
+                startDataTour('manager', true);
+            }, 100);
+        };
     }
 </script>
 <script>

@@ -1,0 +1,3904 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-10 18:04+0300\n"
+"PO-Revision-Date: 2025-01-10 15:45+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+# loading.html
+msgid "System is preparing"
+msgstr "Происходит подготовка системы"
+
+msgid "NOTE"
+msgstr "ЗАМЕТКА"
+
+msgid "To ensure proper startup, run the application as"
+msgstr "Для обеспечения корректного запуска запустите приложение от имени"
+
+msgid "Loading the necessary modules may take a few moments. Please wait while everything is being set up."
+msgstr "Загрузка необходимых модулей может занять некоторое время. Пожалуйста, подождите, пока все компоненты не будут загружены."
+
+#: templates/404.html:83
+msgid "Page not found"
+msgstr "Страница не найдена"
+
+#: templates/404.html:84
+msgid "Go to the App"
+msgstr "Вернуться"
+
+#: templates/404.html:93 templates/faq.html:379 templates/profile.html:283
+#: templates/settings.html:165
+msgid "All rights reserved"
+msgstr "Все права защищены"
+
+#: templates/app.html:10
+msgid "Navigation"
+msgstr "Навигация"
+
+#: templates/app.html:10
+msgid ""
+"In this section, you can check the current version status or any update "
+"indications. Access the «Workspace» by clicking on it, where you’ll find "
+"various modules, settings, your profile, along with tutorials, contact "
+"information for the author, and news updates. Alternatively, clicking on "
+"«Wunjo» will display information about the ongoing processing tasks, "
+"known as the log."
+msgstr ""
+"В этом разделе вы можете проверить текущий статус версии или любые "
+"признаки обновления. Нажмите на «Главная» и вы найдете различные модули, "
+"настройки, ваш профиль, а также руководства, контактную информацию автора"
+" и обновления новостей. В качестве альтернативы, нажав на «Wunjo», вы "
+"увидите информацию о текущих задачах обработки, известную как журнал."
+
+#: templates/app.html:17
+msgid "Lite settings"
+msgstr "Упрощенная настройка"
+
+#: templates/app.html:17
+msgid ""
+"Open settings. Customize the module to suit your needs. You can adjust "
+"the cache directory, switch processors, select the number of users and "
+"tasks, and much more. Be sure to review all the settings."
+msgstr ""
+"Откройте настройки. Настройте модуль под свои нужды. "
+"Вы можете настроить каталог кэша, переключить процессоры, выбрать количество "
+"пользователей и задач и многое другое. Обязательно просмотрите все настройки."
+
+#: templates/app.html:24
+msgid "The cache folder"
+msgstr "Размер папки кэша"
+
+#: templates/app.html:24 templates/components/modal.html:1767
+#: templates/components/modal.html:1768 templates/components/modal.html:1769
+msgid "GB"
+msgstr "ГБ"
+
+#: templates/app.html:24
+msgid "click"
+msgstr "открыть"
+
+#: templates/app.html:24
+msgid "size in settings. Downloaded models can occupy large amounts of disk space."
+msgstr "доступен в настройках. Скачанные модели со временем могут занимать значительный объём диска."
+
+#: templates/app.html:26 templates/profile.html:5 templates/profile.html:30
+msgid "Profile"
+msgstr "Аккаунт"
+
+#: templates/app.html:27 templates/components/modal.html:1699
+#: templates/settings.html:5 templates/settings.html:24
+msgid "Settings"
+msgstr "Настройки"
+
+#: templates/app.html:28 templates/faq.html:5
+msgid "FAQ"
+msgstr "ЧАВО"
+
+#: templates/app.html:32 templates/index.html:42 templates/lip_sync.html:73
+#: templates/live_portrait.html:5
+msgid "Live portrait"
+msgstr "Живой портрет"
+
+#: templates/app.html:33 templates/face_swap.html:5
+#: templates/generation.html:484 templates/index.html:43
+msgid "Face swap"
+msgstr "Замена лица"
+
+#: templates/app.html:34 templates/face_swap.html:39 templates/index.html:44
+#: templates/lip_sync.html:5 templates/live_portrait.html:618
+msgid "Lip sync"
+msgstr "Синхронизация губ"
+
+#: templates/app.html:35 templates/enhancement.html:5
+#: templates/face_swap.html:48 templates/generation.html:475
+#: templates/index.html:45 templates/live_portrait.html:627
+#: templates/remove_object.html:45
+msgid "Enhancement"
+msgstr "Улучшение качества"
+
+#: templates/app.html:36 templates/index.html:46 templates/remove_object.html:5
+msgid "Remove object"
+msgstr "Удалить объект"
+
+#: templates/app.html:37 templates/index.html:47
+#: templates/remove_background.html:5
+msgid "Remove background"
+msgstr "Удалить фон"
+
+#: templates/app.html:39 templates/generation.html:5
+msgid "Generation"
+msgstr "Генерация контента"
+
+#: templates/app.html:40 templates/components/modal.html:1767
+#: templates/restyling.html:5
+msgid "Restyling"
+msgstr "Рестайлинг контента"
+
+#: templates/app.html:42 templates/clone_voice.html:5 templates/index.html:50
+msgid "Clone voice"
+msgstr "Клонировать голос"
+
+#: templates/app.html:43 templates/lip_sync.html:82 templates/separator.html:5
+msgid "Separator"
+msgstr "Разделитель аудио"
+
+#: templates/app.html:45 templates/content.html:5 templates/index.html:5
+msgid "Workspace"
+msgstr "Рабочее пространство"
+
+#: templates/app.html:62
+msgid "By using Wunjo, you agree to the"
+msgstr "Используя Wunjo, вы принимаете"
+
+#: templates/app.html:62
+msgid "EULA"
+msgstr "Лицензионное соглашение"
+
+#: templates/app.html:62 templates/login.html:59 templates/preload.html:141
+msgid "and"
+msgstr "и"
+
+#: templates/app.html:62 templates/login.html:60 templates/preload.html:142
+msgid "Privacy Policy"
+msgstr "Политику конфиденциальности"
+
+#: templates/app.html:63
+msgid "Made by"
+msgstr "Создано"
+
+#: templates/clone_voice.html:22
+msgid "What text should be read?"
+msgstr "Какой текст следует озвучить?"
+
+#: templates/clone_voice.html:23
+msgid ""
+"The text might look a little lost in translation without a language "
+"chosen in the Parameters by Footer. Just sayin’. Now is set"
+msgstr ""
+"Обратите внимание, что вам необходимо выбрать язык в Footer настройках. "
+"Сейчас установлен"
+
+#: templates/clone_voice.html:27 templates/generation.html:112
+msgid "Apply"
+msgstr "Применить"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid "Calendar"
+msgstr "Календарь"
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid ""
+"You can select specific dates or date ranges to filter the content you "
+"have previously created."
+msgstr ""
+"Вы можете выбрать определенные даты или диапазоны дат, чтобы "
+"отфильтровать ранее созданный вами контент."
+
+#: templates/clone_voice.html:37 templates/components/modal.html:579
+#: templates/enhancement.html:19 templates/face_swap.html:23
+#: templates/generation.html:494 templates/lip_sync.html:23
+#: templates/live_portrait.html:23 templates/remove_background.html:25
+#: templates/remove_object.html:29 templates/restyling.html:25
+#: templates/separator.html:19
+msgid "Today"
+msgstr "Сегодня"
+
+#: templates/clone_voice.html:91 templates/enhancement.html:70
+#: templates/face_swap.html:104 templates/lip_sync.html:139
+#: templates/live_portrait.html:685 templates/remove_background.html:76
+#: templates/remove_object.html:99 templates/restyling.html:471
+#: templates/separator.html:70
+msgid "Upload file"
+msgstr "Загрузить файл"
+
+#: templates/clone_voice.html:93
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. About module"
+" Clone Voice, look this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить аудиофайл. Об этом "
+"модуле клонирования речи посмотрите "
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "tutorial"
+msgstr "видеоурок"
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "Briefly"
+msgstr "Кратко"
+
+#: templates/clone_voice.html:93
+msgid ""
+"All red blocks should turn green. Also, use the toggle and make sure to "
+"select the right clone language before pressing"
+msgstr ""
+"Все красные блоки должны стать зелеными. Также используйте переключатель "
+"и убедитесь, что выбран правильный язык клонирования перед нажатием"
+
+#: templates/content.html:49
+msgid "Date Created"
+msgstr "Дата создания"
+
+#: templates/content.html:57
+msgid "Control panel"
+msgstr "Панель управления"
+
+#: templates/content.html:57
+msgid ""
+"In the file manager, you have the ability to delete, open, and rename "
+"content. Additionally, you can utilize features such as redo, undo, "
+"refresh, and return to the home directory for efficient management of "
+"your files."
+msgstr ""
+"В файловом менеджере у вас есть возможность удалять, открывать и "
+"переименовывать контент. Кроме того, вы можете использовать такие "
+"функции, как повтор, отмена, обновление и возврат в домашний каталог для "
+"эффективного управления файлами."
+
+#: templates/content.html:62 templates/index.html:21
+msgid "Explore"
+msgstr "Поиск"
+
+#: templates/content.html:63 templates/index.html:22
+msgid "Content"
+msgstr "Каталог"
+
+#: templates/content.html:72
+msgid "Open"
+msgstr "Открыть"
+
+#: templates/components/modal.html:118 templates/components/modal.html:381
+#: templates/components/modal.html:497 templates/components/view.html:107
+#: templates/components/view.html:220 templates/components/view.html:415
+#: templates/content.html:77
+msgid "Rename"
+msgstr "Изменить"
+
+#: templates/components/modal.html:123 templates/components/modal.html:386
+#: templates/components/modal.html:502 templates/components/view.html:420
+#: templates/content.html:82
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/components/modal.html:142 templates/components/modal.html:405
+#: templates/components/modal.html:521 templates/components/view.html:439
+#: templates/content.html:96
+msgid "Option"
+msgstr "Опции"
+
+#: templates/content.html:125
+msgid "Manager view"
+msgstr "Файловый менеджер"
+
+#: templates/content.html:125
+msgid ""
+"In desktop mode, simply double-click on a folder or file to open it. In "
+"mobile mode, tap on the open button to access your folders and files. "
+"Let’s open some file in folder to display content."
+msgstr ""
+"В режиме рабочего стола просто дважды щелкните по папке или файлу, чтобы "
+"открыть его. В мобильном режиме нажмите кнопку «Открыть», чтобы получить "
+"доступ к папкам и файлам. Давайте откроем какой-нибудь файл в папке, "
+"чтобы отобразить содержимое."
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid "Filter"
+msgstr "Фильтр"
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid ""
+"You can display specific types of content such as images, videos, audio, "
+"groups of images, or all content together."
+msgstr ""
+"Вы можете отображать определенные типы контента, такие как изображения, "
+"видео, аудио, группы изображений или весь контент вместе."
+
+#: templates/enhancement.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Enhancement module, check out "
+"this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля улучшения качества, "
+"посмотрите этот"
+
+#: templates/enhancement.html:72
+msgid "Upload file, and then press the"
+msgstr "Загрузить файл"
+
+#: templates/components/view.html:127 templates/components/view.html:240
+#: templates/face_swap.html:36 templates/generation.html:472
+#: templates/lip_sync.html:70 templates/live_portrait.html:615
+#: templates/remove_object.html:42
+msgid "Suggest"
+msgstr "Идеи"
+
+#: templates/face_swap.html:39 templates/live_portrait.html:618
+msgid ""
+"Ready to give those lips some life? After swapping faces, it’s time to "
+"sync those pouts with the audio. Lip animation should always follow the "
+"face swap for maximum lip-syncing magic. Get ready to make those lips "
+"sing—right"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля Live Portrait "
+"посмотрите это"
+
+#: templates/face_swap.html:39 templates/lip_sync.html:82
+#: templates/live_portrait.html:618 templates/remove_object.html:45
+msgid "here"
+msgstr "здесь"
+
+#: templates/components/modal.html:1491 templates/components/modal.html:1498
+#: templates/components/modal.html:1728 templates/face_swap.html:43
+#: templates/generation.html:479 templates/index.html:30
+#: templates/lip_sync.html:47 templates/lip_sync.html:77
+#: templates/live_portrait.html:622
+msgid "or"
+msgstr "или"
+
+#: templates/face_swap.html:48 templates/live_portrait.html:627
+msgid ""
+"Got a few facial quirks to iron out? No worries! If there are any "
+"imperfections, you’ve got the tools to smooth them out.  Remember, a big "
+"gap in resolution between avatar face and target content can throw off "
+"the vibe. For optimal outcomes, ensure consistency in resolution, or "
+"utilize the facial enhancement tools available in this"
+msgstr ""
+"Нужно сгладить несколько черт лица? Не беспокойтесь! Если есть какие-то "
+"недостатки, у вас есть инструменты, чтобы сгладить их. Помните, большой "
+"разрыв в разрешении между лицом аватара и целевым контентом может "
+"испортить атмосферу. Для оптимальных результатов обеспечьте единообразие "
+"в разрешении или используйте инструменты улучшения лица, доступные в этом"
+
+#: templates/face_swap.html:48 templates/lip_sync.html:73
+#: templates/live_portrait.html:627
+msgid "module"
+msgstr "модуле"
+
+#: templates/face_swap.html:106
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Face Swap module, check out "
+"this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля замены лица, "
+"посмотрите этот"
+
+#: templates/face_swap.html:106 templates/lip_sync.html:141
+#: templates/live_portrait.html:687 templates/remove_background.html:78
+msgid "All red blocks should turn green, and then press the"
+msgstr "Все красные блоки должны стать зелеными, а затем нажмите на"
+
+#: templates/faq.html:18 templates/faq.html:45 templates/faq.html:48
+msgid "About"
+msgstr "Сведения"
+
+#: templates/faq.html:22 templates/faq.html:108 templates/faq.html:111
+msgid "Your Content"
+msgstr "Твой контент"
+
+#: templates/faq.html:26 templates/faq.html:144 templates/faq.html:147
+msgid "Creating & Editing"
+msgstr "Создание и редактирование"
+
+#: templates/faq.html:30 templates/faq.html:223 templates/faq.html:226
+msgid "Subscriptions & Billing"
+msgstr "Подписки и выставление счетов"
+
+#: templates/faq.html:34 templates/faq.html:319 templates/faq.html:322
+msgid "Tech Issues"
+msgstr "Технические проблемы"
+
+#: templates/faq.html:39
+msgid "FREQUENTLY ASKED QUESTIONS"
+msgstr "ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ"
+
+#: templates/faq.html:56
+msgid "What is Wunjo?"
+msgstr "Что такое Wunjo?"
+
+#: templates/faq.html:61
+msgid ""
+"Wunjo is an idea-to-content platform that utilizes combinations of AI. "
+"There’s a lot of technical stuff involved, but basically, you "
+"reincarnation your content."
+msgstr ""
+"Wunjo — это платформа «идея-контент», которая использует комбинации ИИ. "
+"Здесь задействовано много технических вещей, но по сути вы реинкарнируете"
+" свой контент."
+
+#: templates/faq.html:69
+msgid "How does Wunjo work?"
+msgstr "Как работает Wunjo?"
+
+#: templates/faq.html:74
+msgid ""
+"I could tell you, but … you can find out this in open source code. "
+"Basically, this is magic. And this is uniq project! It doesn’t exist "
+"anywhere else on the market! I’m pretty darn excited about it!"
+msgstr ""
+"Я мог бы рассказать вам, но ... вы можете узнать это в открытом исходном "
+"коде. По сути, это магия. И это уникальный проект! Он не существует "
+"больше нигде на рынке! Я чертовски взволнован этим"
+
+#: templates/faq.html:82
+msgid "Do you have a publicly accessible API?"
+msgstr "Есть ли у вас общедоступный API?"
+
+#: templates/faq.html:87
+msgid ""
+"Yes. You can use the application in API mode and connect it to your "
+"services."
+msgstr ""
+"Да. Вы можете использовать приложение в режиме API и подключить его к "
+"своим сервисам."
+
+#: templates/faq.html:94
+msgid "It’s free?"
+msgstr "Это бесплатно?"
+
+#: templates/faq.html:100
+msgid ""
+"Yes. The community edition version is absolutely free and you will able "
+"to find open source code. However, the professional version is available "
+"by subscription. This is a kind of reward to the author that he continues"
+" to develop the project, and gives you access so that you can use it in "
+"your projects and even freely earn money from the project, for example, "
+"using API or temporary links. The project is designed so that you can "
+"have your service in your pocket with minimal effort and without "
+"technical skills."
+msgstr ""
+"Да. Версия Community Edition абсолютно бесплатна, и вы сможете найти "
+"открытый исходный код. Однако профессиональная версия доступна по "
+"подписке. Это своего рода вознаграждение автору за то, что он продолжает "
+"развивать проект, и дает вам доступ, чтобы вы могли использовать его в "
+"своих проектах и ​​даже свободно зарабатывать на проекте, например, "
+"используя API или временные ссылки. Проект разработан таким образом, "
+"чтобы вы могли иметь свой сервис в своем кармане с минимальными усилиями "
+"и без технических навыков."
+
+#: templates/faq.html:119
+msgid "Can I use the content I made in Wunjo for commercial purposes?"
+msgstr ""
+"Могу ли я использовать контент, созданный мной в Wunjo, в коммерческих "
+"целях?"
+
+#: templates/faq.html:124
+msgid ""
+"It doesn’t matter if your content is created in a community edtiion "
+"version or a professional subscription. If it has nothing prohibited or "
+"is not intended to discredit anyone then, whatever you create using Wunjo"
+" can be used commercially, or non-commercially."
+msgstr ""
+"Неважно, создан ли ваш контент в версии Community Edition или "
+"профессиональной подписке. Если в нем нет ничего запрещенного или он не "
+"направлен на дискредитацию кого-либо, то все, что вы создаете с помощью "
+"Wunjo, может быть использовано в коммерческих или некоммерческих целях."
+
+#: templates/faq.html:132
+msgid "Are the content I created in Wunjo private?"
+msgstr "Является ли контент, созданный мной в Wunjo, конфиденциальным?"
+
+#: templates/faq.html:137
+msgid ""
+"Yes. The content you create is completely private and stored on your "
+"device. Only you have access and you are responsible for the content you "
+"create."
+msgstr ""
+"Да. Создаваемый вами контент полностью конфиденциальен и хранится на "
+"вашем устройстве. Доступ есть только у вас, и вы несете ответственность "
+"за создаваемый вами контент."
+
+#: templates/faq.html:155
+msgid "What is the resolution of the content?"
+msgstr "Каково разрешение контента?"
+
+#: templates/faq.html:160
+msgid ""
+"Baseline content output is Full HD and HD resolution. However, you "
+"customize the application yourself and can increase or decrease the "
+"resolution."
+msgstr ""
+"Базовый вывод контента — разрешение Full HD и HD. Однако вы можете "
+"настроить приложение самостоятельно и увеличить или уменьшить разрешение."
+
+#: templates/faq.html:168
+msgid "How do I improve quality of output content?"
+msgstr "Как улучшить качество выходного контента?"
+
+#: templates/faq.html:173
+msgid ""
+"Pay attention to the suggest option. When clicked, there will be a list "
+"of possible actions to improve the quality of the content received."
+msgstr ""
+"Обратите внимание на опцию идея. При нажатии на нее будет предложен "
+"список возможных действий по улучшению качества получаемого контента."
+
+#: templates/faq.html:181
+msgid "Can I increase videos or audio duration?"
+msgstr "Могу ли я увеличить продолжительность видео или аудио?"
+
+#: templates/faq.html:186
+msgid ""
+"Yes. You can freely change the basic settings, including the duration of "
+"the received content."
+msgstr ""
+"Да. Вы можете свободно изменять основные настройки, включая длительность "
+"получаемого контента."
+
+#: templates/faq.html:194
+msgid "Can I improve application performance?"
+msgstr "Могу ли я улучшить производительность приложения?"
+
+#: templates/faq.html:200
+msgid ""
+"Yes. In the settings, pay attention to the parameters for video memory, "
+"RAM, and the number of simultaneously running tasks. You determine the "
+"performance of the application for yourself based on your needs and your "
+"device. You can tighten the settings so you can do other things on your "
+"device at the same time, or loosen them so the app uses more of your "
+"device’s resources."
+msgstr ""
+"Да. В настройках обратите внимание на параметры видеопамяти, оперативной "
+"памяти и количество одновременно запущенных задач. Вы сами определяете "
+"производительность приложения, исходя из своих потребностей и "
+"возможностей устройства. Вы можете ужесточить настройки, чтобы "
+"одновременно заниматься другими делами на устройстве, или ослабить их, "
+"чтобы приложение использовало больше ресурсов вашего устройства."
+
+#: templates/faq.html:209
+msgid "Can I turn off my internet connection?"
+msgstr "Могу ли я отключить интернет-соединение?"
+
+#: templates/faq.html:215
+msgid ""
+"Yes. You can disable your internet connection, but you will need to make "
+"sure that all the required models for your module are downloaded and the "
+"page code is loaded into the cache. You can do this in the settings, as "
+"well as following the instructions for manually downloading models. When "
+"first run, the models are downloaded automatically, and if the generation"
+" is successful, then the model update is no longer checked. However, in "
+"the settings you can choose to check for model updates. Anyway, please "
+"note that the Internet is required to verify the license and obtain the "
+"closed part of the code, which is licensed under a license other than the"
+" public one and after verified you can turn off internet connection."
+msgstr ""
+"Да и нет. Вы не можете отключить интернет-соединение для профессиональной"
+" версии. Вам оно потребуется для загрузки моделей и проверки лицензий. В "
+"бесплатной версии, вы можете это сделать после загрузки всех моделей."
+
+#: templates/faq.html:234
+msgid "How long does the subscription last?"
+msgstr "Как долго действует подписка?"
+
+#: templates/faq.html:239
+msgid ""
+"Depending on the plan you choose. The subscription is counted from the "
+"time of purchase. And when it stops, you will receive a notification."
+msgstr ""
+"В зависимости от выбранного вами плана. Подписка отсчитывается с момента "
+"покупки. И когда она прекратится, вы получите уведомление."
+
+#: templates/faq.html:247
+msgid "How do I cancel my subscription?"
+msgstr "Как отменить подписку?"
+
+#: templates/faq.html:252
+msgid ""
+"Email us at support@wunjo.online if you really want to say goodbye to "
+"your subsription. Please note that if you have an active subscription, "
+"and you take this step, your subscription will be invalidated, and no "
+"refund will be provided."
+msgstr ""
+"Напишите нам на support@wunjo.online, если вы действительно хотите "
+"попрощаться со своей подпиской. Обратите внимание, что если у вас есть "
+"активная подписка, и вы сделаете этот шаг, ваша подписка будет "
+"аннулирована, и возврат средств не будет предоставлен."
+
+#: templates/faq.html:260
+msgid "Can my subscription be blocked?"
+msgstr "Может ли моя подписка быть заблокирована?"
+
+#: templates/faq.html:265
+msgid ""
+"No. However, if your unique address is noticed to change frequently, with"
+" each suspicious activity, you will be asked to confirm that it is you to"
+" continue the session and gain access to the professional subscription, "
+"otherwise the community edition version will open."
+msgstr ""
+"Да. Если будет замечено, что ваш уникальный адрес часто меняется при "
+"каждой подозрительной активности, вам будет предложено подтвердить, что "
+"это вы, чтобы продолжить сеанс и получить доступ к профессиональной "
+"подписке, в противном случае откроется версия Community Edition. "
+"Дополнительно, если вы нарушаете EULA ваша подписка модет быть "
+"заблокирована."
+
+#: templates/faq.html:273
+msgid ""
+"If I start a subscription, is it just for during period, or will it renew"
+" automatically?"
+msgstr ""
+"Если я оформлю подписку, она будет действовать только в течение "
+"определенного периода или будет продлеваться автоматически?"
+
+#: templates/faq.html:278
+msgid ""
+"Not. This will not be automatically renew every period, so you don’t have"
+" to worry about anything. You only receive a notification that your "
+"subscription has ended."
+msgstr "Зависит от платформы, где совершена покупка."
+
+#: templates/faq.html:286
+msgid "What is the difference between Professional and Community Edition?"
+msgstr "В чем разница между Professional Edition и Community Edition?"
+
+#: templates/faq.html:292
+msgid "You can find out more at"
+msgstr ""
+"Ознакомиться с различием Professional Edition и Community Edition вы "
+"cможете на"
+
+#: templates/faq.html:301
+msgid "Why do you charge money?"
+msgstr "Почему вы берете деньги?"
+
+#: templates/faq.html:307
+msgid ""
+"Believe it or not, each time you click generate, it’s the result of "
+"countless sleepless nights and hours of dedicated development. "
+"Subscribing to the professional version is a way to support the author’s "
+"hard work and motivate ongoing project development, including the "
+"addition of new features and enhancements to existing ones."
+msgstr ""
+"Поверьте или нет, но каждый раз, когда вы нажимаете на кнопку генерации, "
+"это результат бесчисленных бессонных ночей и часов преданной работы. "
+"Подписка на профессиональную версию — это способ поддержать усердную "
+"работу автора и мотивировать дальнейшее развитие проекта, включая "
+"добавление новых функций и улучшение существующих."
+
+#: templates/faq.html:309
+msgid ""
+"Moreover, the author has designed the application not only for your "
+"personal use but also to enable you to share access with friends or "
+"integrate the API into your projects. This means you can leverage all the"
+" application’s features freely, even for commercial purposes."
+msgstr ""
+"Кроме того, автор создал приложение не только для вашего личного "
+"использования, но и для того, чтобы вы могли делиться доступом с друзьями"
+" или интегрировать API в свои проекты. Это означает, что вы можете "
+"свободно использовать все функции приложения, даже в коммерческих целях."
+
+#: templates/faq.html:311
+msgid ""
+"Your subscription directly contributes to the continued improvement and "
+"sustainability of the project, ensuring you receive the best possible "
+"experience. Thank you for supporting this work!"
+msgstr ""
+"Ваша подписка напрямую способствует продолжению улучшения и устойчивости "
+"проекта, обеспечивая вам лучший возможный опыт. Спасибо за поддержку этой"
+" работы!"
+
+#: templates/faq.html:330
+msgid "What if I have questions that aren’t answered here?"
+msgstr "Что делать, если у меня есть вопросы, на которые здесь нет ответов?"
+
+#: templates/faq.html:336
+msgid "Head over to the support channel on"
+msgstr "Перейдите в канал поддержки на"
+
+#: templates/faq.html:336
+msgid ""
+"and say hi to the community while you’re there! There’s also a really "
+"robust FAQ section there that may have exactly the answer you need. If "
+"you have any questions, you can contact the author or"
+msgstr ""
+"и поздоровайтесь с сообществом! Там также есть очень полезный раздел с "
+"часто задаваемыми вопросами, который может содержать именно тот ответ, "
+"который вам нужен. Если у вас есть вопросы, вы можете связаться с автором"
+" или написать на"
+
+#: templates/generation.html:23
+msgid "What is your prompt?"
+msgstr "Ваша подсказка?"
+
+#: templates/generation.html:33 templates/generation.html:70
+#: templates/generation.html:235 templates/generation.html:272
+#: templates/restyling.html:61 templates/restyling.html:98
+#: templates/restyling.html:247 templates/restyling.html:284
+msgid "Seed"
+msgstr "Seed"
+
+#: templates/generation.html:37 templates/generation.html:74
+msgid "e.g."
+msgstr "напр."
+
+#: templates/generation.html:44 templates/generation.html:81
+#: templates/generation.html:246 templates/generation.html:283
+#: templates/restyling.html:72 templates/restyling.html:109
+#: templates/restyling.html:258 templates/restyling.html:295
+msgid "Strength"
+msgstr "Strength"
+
+#: templates/generation.html:56 templates/generation.html:93
+#: templates/generation.html:258 templates/generation.html:295
+#: templates/restyling.html:84 templates/restyling.html:121
+#: templates/restyling.html:270 templates/restyling.html:307
+msgid "Scale"
+msgstr "Scale"
+
+#: templates/generation.html:106 templates/generation.html:365
+#: templates/restyling.html:134 templates/restyling.html:377
+msgid "Negative prompt"
+msgstr "Запрос на исключение"
+
+#: templates/generation.html:108 templates/generation.html:367
+#: templates/restyling.html:136 templates/restyling.html:379
+msgid "e.g. ugly, bad, terrible (optional)"
+msgstr "напр., уродливый, плохой, ужасный (необязательно)"
+
+#: templates/generation.html:125
+msgid "Generation settings"
+msgstr "Параметры генерации"
+
+#: templates/generation.html:126
+msgid "You can either fine-tune the parameters to"
+msgstr "Вы можете либо настроить параметры для"
+
+#: templates/generation.html:126
+msgid "generate"
+msgstr "генерации"
+
+#: templates/generation.html:126
+msgid "video or take control by manually"
+msgstr "видео, либо взять управление в свои руки, чтобы вручную"
+
+#: templates/generation.html:126 templates/generation.html:127
+msgid "redraw"
+msgstr "перерисовывать"
+
+#: templates/generation.html:126
+msgid ""
+"tweaking the elements within the image before creation. Dive in and make "
+"it truly yours."
+msgstr ""
+"элементы внутри изображения перед его созданием. Погружайтесь и сделайте "
+"это по-настоящему вашим."
+
+#: templates/generation.html:127
+msgid "You can manually"
+msgstr "Вы можете вручную"
+
+#: templates/generation.html:127
+msgid "tweaking the elements within the image. Dive in and make it truly yours."
+msgstr ""
+"элементы внутри изображения. Погружайтесь и сделайте это по-настоящему "
+"вашим."
+
+#: templates/generation.html:134
+msgid "Redraw"
+msgstr "Перерисовать"
+
+#: templates/components/modal.html:1295 templates/generation.html:137
+msgid "Generate"
+msgstr "Генерация"
+
+#: templates/generation.html:154
+msgid "CUSTOMIZING GENERATION"
+msgstr "Модификация генерации"
+
+#: templates/generation.html:158
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. Additionally, you can regenerate the"
+" image again, or replace it with another one."
+msgstr ""
+"Выберите объект и сцену, задайте параметры и свойства и измените их по "
+"подсказке. Кроме того, вы можете повторно сгенерировать изображение или "
+"заменить его другим."
+
+#: templates/components/modal.html:703 templates/components/modal.html:882
+#: templates/components/modal.html:1051 templates/components/modal.html:1211
+#: templates/generation.html:195 templates/generation.html:412
+#: templates/live_portrait.html:135 templates/restyling.html:209
+msgid "Image input"
+msgstr "Изображение"
+
+#: templates/generation.html:205 templates/generation.html:423
+msgid ""
+"Generation... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Генерация... Кнопки заблокированы до завершения. Нажмите на экран, чтобы "
+"просмотреть подробности."
+
+#: templates/generation.html:212 templates/restyling.html:44
+#: templates/restyling.html:227
+msgid "Positive prompt"
+msgstr "Запрос"
+
+#: templates/generation.html:214 templates/restyling.html:46
+#: templates/restyling.html:229
+msgid "Describe the change you want to make"
+msgstr "Опишите изменение, которое вы хотите внести"
+
+#: templates/generation.html:216
+msgid "Inspire me"
+msgstr "Удиви меня"
+
+#: templates/generation.html:220
+msgid "NEW"
+msgstr "NEW"
+
+#: templates/generation.html:312 templates/generation.html:339
+#: templates/restyling.html:324 templates/restyling.html:351
+msgid "Control strength"
+msgstr "Control strength"
+
+#: templates/generation.html:324 templates/generation.html:351
+#: templates/generation.html:445 templates/restyling.html:336
+#: templates/restyling.html:363
+msgid "Blur factor"
+msgstr "Фактор размытия"
+
+#: templates/generation.html:375 templates/live_portrait.html:599
+#: templates/restyling.html:148 templates/restyling.html:391
+msgid "Continue"
+msgstr "Продолжить"
+
+#: templates/generation.html:392
+msgid "OUTPAINTING"
+msgstr "OUTPAINTING"
+
+#: templates/generation.html:396
+msgid ""
+"Please note that the model used is version 1.5 with a resolution limit of"
+" 1280x1280 for best quality."
+msgstr ""
+"Обратите внимание, что используется модель версии 1.5 с ограничением "
+"разрешения 1280x1280 для наилучшего качества."
+
+#: templates/generation.html:430
+msgid "Prompt"
+msgstr "Запрос"
+
+#: templates/generation.html:432
+msgid "(Optional) Describe what should be in the new parts"
+msgstr "(Необязательно) Опишите, что должно быть в новых деталях"
+
+#: templates/generation.html:475
+msgid ""
+"So, you’ve created the video. But wait, high-resolution from source "
+"content can sometimes reveal a few sneaky flaws. No sweat! Enhancement"
+msgstr ""
+"Итак, вы создали видео. Но подождите, высокое разрешение исходного "
+"контента иногда может выявить некоторые скрытые дефекты. Не переживайте! "
+"Улучшение качества..."
+
+#: templates/generation.html:475
+msgid "tools"
+msgstr "инструменты"
+
+#: templates/generation.html:475
+msgid "are here to smooth out those rough spots."
+msgstr "здесь, чтобы сгладить эти неровности."
+
+#: templates/generation.html:484
+msgid "Lost a face in the content? It can be restored with a"
+msgstr "Потеряли лицо в контенте? Его можно восстановить с помощью"
+
+#: templates/generation.html:484
+msgid "face swap"
+msgstr "замены лица"
+
+#: templates/generation.html:484
+msgid "by one click."
+msgstr "одним кликом."
+
+#: templates/generation.html:552
+msgid "Upload file or input text"
+msgstr "Загрузите файл или введите текст"
+
+#: templates/generation.html:554
+msgid ""
+"Drag and drop a file or select one. You can upload an image or use input "
+"for a text. For instructions on how to use the Generation module, check "
+"out this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить изображение или "
+"использовать ввод для текста. Для инструкций по использованию модуля "
+"генерации контента, посмотрите этот"
+
+#: templates/generation.html:554
+msgid "Use an image or a text, and then press the"
+msgstr "Используйте изображение или текст, а затем нажмите кнопку"
+
+#: templates/index.html:19
+msgid "Switch view"
+msgstr "Переключатель"
+
+#: templates/index.html:19
+msgid ""
+"Switch to content to view your data. Each user can see the content they "
+"previously created based on their IP address."
+msgstr ""
+"Переключитесь на контент, чтобы просмотреть свои данные. Каждый "
+"пользователь может видеть контент, который он ранее создал на основе "
+"своего IP-адреса."
+
+#: templates/index.html:30
+msgid "Smart search"
+msgstr "Умный поиск"
+
+#: templates/index.html:30
+msgid ""
+"For advanced tasks, utilize the smart search feature. Discover "
+"recommendations like"
+msgstr ""
+"Для более сложных задач используйте функцию умного поиска. Откройте для "
+"себя рекомендации, такие как"
+
+#: templates/index.html:30
+msgid "record a song fragment with a cloned voice"
+msgstr "записать фрагмент песни с клонированным голосом"
+
+#: templates/index.html:30
+msgid "analysis content"
+msgstr "анализ контента"
+
+#: templates/index.html:30
+msgid "create a talking person from scratch"
+msgstr "создать говорящего человека с нуля"
+
+#: templates/index.html:30
+msgid ""
+"and etc. If you don’t find the help you need, contact to at "
+"support@wunjo.online."
+msgstr ""
+"и другие. Если вы не нашли нужную помощь, свяжитесь с нами по адресу "
+"support@wunjo.online."
+
+#: templates/index.html:30
+msgid "Additionally, explore"
+msgstr "Кроме того, ознакомьтесь с"
+
+#: templates/index.html:30
+msgid "for exclusive video tutorials to master advanced features."
+msgstr "для эксклюзивных видеоруководств по освоению продвинутых функций."
+
+#: templates/index.html:35
+msgid "What can I help with? (Any language)"
+msgstr "Чем я могу помочь? (На любом языке)"
+
+#: templates/index.html:38
+msgid "Quick tips for best results"
+msgstr "Быстрые рекомендации"
+
+#: templates/index.html:38
+msgid ""
+"Each module includes easy-to-follow tips to help you achieve the best "
+"quality outcomes. Start here for straightforward guidance tailored to "
+"your needs."
+msgstr ""
+"Каждый модуль включает простые в использовании советы, которые помогут "
+"вам достичь наилучших качественных результатов. Начните здесь, чтобы "
+"получить простые рекомендации, соответствующие вашим потребностям."
+
+#: templates/index.html:48
+msgid "Generation content"
+msgstr "Генерация контента"
+
+#: templates/index.html:49
+msgid "Restyling visual"
+msgstr "Рестайлинг контента"
+
+#: templates/index.html:51
+msgid "Audio separator"
+msgstr "Разделитель аудио"
+
+#: templates/lip_sync.html:37
+msgid "Model select"
+msgstr "Выбор модели"
+
+#: templates/lip_sync.html:39
+msgid "Fast Method"
+msgstr "Быстрый метод"
+
+#: templates/lip_sync.html:39
+msgid ""
+"This method is quicker, but the lips might appear inaccurate and blurred."
+" You can enhance the quality using the Enhancement module."
+msgstr ""
+"Метод быстрее, но губы могут быть с неточными движениями и размытыми.Вы "
+"можете улучшить качество с помощью модуля улучшения качества."
+
+#: templates/lip_sync.html:43
+msgid "Fast"
+msgstr "Быстро"
+
+#: templates/lip_sync.html:49
+msgid "Latent Diffusion Method"
+msgstr "Метод скрытой диффузии"
+
+#: templates/lip_sync.html:49
+msgid ""
+"This provides more accurate results and visually appealing lip "
+"animations, though the face might occasionally twitch and the mouth may "
+"not fully close."
+msgstr ""
+"Метод обеспечивает более точные результаты и визуально привлекательные "
+"анимации губ, однако лицо может иногда дергаться, а рот не всегда "
+"полностью закрываться."
+
+#: templates/lip_sync.html:54
+msgid "Best"
+msgstr "Качествено"
+
+#: templates/lip_sync.html:73
+msgid ""
+"So, you’ve animated those lips. But you think the animation of the lips "
+"is not natural? Try, if the original video, processing it in live "
+"portrait mode silence, to make the mouth closed in"
+msgstr ""
+"Итак, вы анимировали губы. Но вам кажется, что анимация губ "
+"неестественная? Попробуйте обработать исходное видео в режиме живого "
+"портрета в режиме «тишина, чтобы закрыть рот в"
+
+#: templates/lip_sync.html:73
+msgid "and came back to lip sync after."
+msgstr "и затем вернитесь к синхронизации губ."
+
+#: templates/lip_sync.html:82
+msgid ""
+"Got some extra lip action going on? Say goodbye to noisy audio and hello "
+"to separate vocals and music accompaniment in"
+msgstr ""
+"Много лишних движений губ? Попрощайтесь с шумным аудио и скажите привет "
+"отдельным вокалам и музыкальному сопровождению в"
+
+#: templates/lip_sync.html:82
+msgid "It’s like magic to improve your lip sync!"
+msgstr "Почти как магия для улучшения синхронизации губ!"
+
+#: templates/lip_sync.html:141
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Lip Sync module, check out this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение.Для инструкций по использованию модуля синхронизации губ, "
+"посмотрите этот"
+
+#: templates/lip_sync.html:141
+msgid "For better video, use the «silence» mode in"
+msgstr "Для лучшего видео используйте режим «тишина» в"
+
+#: templates/lip_sync.html:141
+msgid "manually retargeting live portrait"
+msgstr "ручная манипуляция с портретом"
+
+#: templates/lip_sync.html:141
+msgid "to pre-process the mouth to a closed state before applying lip sync."
+msgstr ""
+"для предварительной обработки рта в закрытое состояние перед применением "
+"синхронизации губ."
+
+#: templates/live_portrait.html:37
+msgid ""
+"Choose how often the effect is applied to the frames: a higher number "
+"applies it less frequently, while a lower number applies it more often."
+msgstr ""
+"Выберите, как часто эффект будет применяться к кадрам: большее число "
+"применяет эффект реже, меньшее число применяет его чаще."
+
+#: templates/live_portrait.html:41
+msgid "Frequency"
+msgstr "Частота"
+
+#: templates/live_portrait.html:53
+msgid ""
+"Set the lower and upper thresholds for actions. Adjust values to achieve "
+"the desired accuracy."
+msgstr ""
+"Установите нижний и верхний пороги для движений. Отрегулируйте значения "
+"для достижения желаемой точности."
+
+#: templates/live_portrait.html:58
+msgid "Range"
+msgstr "Диапазон"
+
+#: templates/live_portrait.html:75
+msgid "Smooth action on all frames"
+msgstr "Сгладить действия на всех кадрах"
+
+#: templates/components/modal.html:1704 templates/components/modal.html:1746
+#: templates/live_portrait.html:81
+msgid "Submit"
+msgstr "Принять"
+
+#: templates/live_portrait.html:98 templates/restyling.html:405
+msgid "CUSTOMIZING FRAMES"
+msgstr "Модификация кадров"
+
+#: templates/live_portrait.html:102
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change face movement. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"Подготовьте ваш контент. Выберите объект и сцену, настройте параметры и "
+"свойства, а также измените движения лица. Когда вы будете довольны "
+"результатом, переходите к следующему кадру."
+
+#: templates/live_portrait.html:142
+msgid "Qick"
+msgstr "Быстро"
+
+#: templates/live_portrait.html:152
+msgid ""
+"Retargeting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Ретаргетинг... Кнопки заблокированы до завершения. Нажмите на экран, "
+"чтобы просмотреть подробности."
+
+#: templates/live_portrait.html:164 templates/live_portrait.html:190
+msgid "Eye ratio"
+msgstr "Соотношение глаз"
+
+#: templates/live_portrait.html:176 templates/live_portrait.html:202
+msgid "Lip ratio"
+msgstr "Соотношение губ"
+
+#: templates/live_portrait.html:218 templates/live_portrait.html:256
+msgid "Pitch"
+msgstr "Тангаж"
+
+#: templates/live_portrait.html:230 templates/live_portrait.html:268
+msgid "Yaw"
+msgstr "Рыскание"
+
+#: templates/live_portrait.html:242 templates/live_portrait.html:280
+msgid "Roll"
+msgstr "Крен"
+
+#: templates/live_portrait.html:296 templates/live_portrait.html:322
+msgid "Eyeball X"
+msgstr "Глаза X"
+
+#: templates/live_portrait.html:308 templates/live_portrait.html:334
+msgid "Eyeball Y"
+msgstr "Глаза Y"
+
+#: templates/live_portrait.html:350 templates/live_portrait.html:388
+msgid "Head X"
+msgstr "Голова X"
+
+#: templates/live_portrait.html:362 templates/live_portrait.html:400
+msgid "Head Y"
+msgstr "Голова Y"
+
+#: templates/live_portrait.html:374 templates/live_portrait.html:412
+msgid "Head Z"
+msgstr "Голова Z"
+
+#: templates/live_portrait.html:428 templates/live_portrait.html:466
+msgid "Smile"
+msgstr "Улыбка"
+
+#: templates/live_portrait.html:440 templates/live_portrait.html:478
+msgid "Wink"
+msgstr "Подмигивание"
+
+#: templates/live_portrait.html:452 templates/live_portrait.html:490
+msgid "Eyebrow"
+msgstr "Брови"
+
+#: templates/live_portrait.html:506 templates/live_portrait.html:544
+msgid "Grin"
+msgstr "Ухмылка"
+
+#: templates/live_portrait.html:518 templates/live_portrait.html:556
+msgid "Pursing"
+msgstr "Поджимание губ"
+
+#: templates/live_portrait.html:530 templates/live_portrait.html:568
+msgid "Pouting"
+msgstr "Надувание губ"
+
+#: templates/live_portrait.html:580
+msgid "Lip expression"
+msgstr "Закрытость рта"
+
+#: templates/components/modal.html:1558 templates/live_portrait.html:596
+#: templates/profile.html:25 templates/restyling.html:145
+#: templates/restyling.html:388
+msgid "Back"
+msgstr "Назад"
+
+#: templates/live_portrait.html:687
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Live Portrait module, check out"
+" this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображениеДля инструкций по использованию модуля оживить портерт "
+"посмотрите этот"
+
+#: templates/login.html:30 templates/preload.html:112
+msgid "New features alert! Soon!"
+msgstr "Ещё больше возможностей? Уже здесь!"
+
+#: templates/login.html:33 templates/preload.html:115
+msgid "To learn more project, check out"
+msgstr "Чтобы узнать больше о проекте, посетите"
+
+#: templates/login.html:34 templates/preload.html:116
+msgid "YouTube channel"
+msgstr "YouTube канал"
+
+#: templates/login.html:35 templates/preload.html:117
+msgid "We’re"
+msgstr "Мы"
+
+#: templates/login.html:36 templates/preload.html:118
+msgid "looking"
+msgstr "рады"
+
+#: templates/login.html:37 templates/preload.html:119
+msgid "for different support!"
+msgstr "любой поддержке!"
+
+#: templates/login.html:48 templates/preload.html:130
+msgid "Ready to use Wunjo v2?"
+msgstr "Готовы использовать Wunjo v2?"
+
+#: templates/login.html:53
+msgid "Let’s Go!"
+msgstr "Поехали!"
+
+#: templates/login.html:57 templates/preload.html:139
+msgid "By signing in, you are agreeing to the"
+msgstr "Используя этот сайт, вы принимаете"
+
+#: templates/login.html:58 templates/preload.html:140
+msgid "End-User License Agreement"
+msgstr "Условия использования"
+
+#: templates/login.html:68 templates/preload.html:150
+msgid "Author"
+msgstr "Автор"
+
+#: templates/components/modal.html:1719 templates/components/modal.html:1764
+#: templates/preload.html:14 templates/preload.html:77
+msgid "Attention"
+msgstr "Внимание"
+
+#: templates/preload.html:17 templates/preload.html:175
+msgid "IMPORTANT"
+msgstr "ВАЖНО"
+
+#: templates/preload.html:17
+msgid ""
+"The CUDA driver is not detected. If you proceed with the installation, "
+"the program will run on the CPU, resulting in"
+msgstr ""
+"Драйвер CUDA не обнаружен. Если вы продолжите установку, программа будет "
+"работать на процессоре, что приведет к"
+
+#: templates/preload.html:17
+msgid "significantly slower performance"
+msgstr "начительному снижению производительности"
+
+#: templates/preload.html:17
+msgid ""
+"for some functions, and others may not work at all. To enable GPU "
+"acceleration,"
+msgstr ""
+"для некоторых функций, а другие могут не работать вовсе. Чтобы включить "
+"ускорение с помощью GPU,"
+
+#: templates/preload.html:17
+msgid "please install"
+msgstr "пожалуйста, установите"
+
+#: templates/preload.html:17
+msgid "the necessary"
+msgstr "необходимые драйверы"
+
+#: templates/preload.html:17
+msgid "drivers and restart Wunjo."
+msgstr "и перезапустите Wunjo."
+
+#: templates/components/modal.html:641 templates/components/modal.html:1739
+#: templates/preload.html:23 templates/preload.html:58
+#: templates/preload.html:83 templates/preload.html:223
+msgid "Loading"
+msgstr "Загрузка"
+
+#: templates/preload.html:29
+msgid "Anyway install"
+msgstr "Установить"
+
+#: templates/preload.html:44
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
+#: templates/preload.html:45
+msgid ""
+"Welcome to Wunjo! To get started, essential drivers will need to be "
+"installed. Click"
+msgstr "Для начала необходимо установить основные драйверы. Нажмите"
+
+#: templates/preload.html:45 templates/preload.html:65
+msgid "Installation"
+msgstr "Установить"
+
+#: templates/preload.html:45 templates/settings.html:60
+msgid "to proceed."
+msgstr ", чтобы продолжить."
+
+#: templates/preload.html:78
+msgid ""
+"It appears that you have CUDA installed, but it’s an outdated version. "
+"Please update CUDA to version 12.4 or higher and install cuDNN 9.x to "
+"take advantage of GPU acceleration."
+msgstr ""
+"Кажется, у вас установлен CUDA, но это устаревшая версия. Обновите CUDA "
+"до версии 12.4 или выше и установите cuDNN версии 9.x, чтобы "
+"воспользоваться ускорением на GPU."
+
+#: templates/preload.html:131
+msgid "Not found large packages"
+msgstr "Не найдено больших пакетов"
+
+#: templates/preload.html:136
+msgid "Preload"
+msgstr "Предварительная загрузка"
+
+#: templates/preload.html:175
+msgid ""
+"Make sure Wunjo has the necessary permissions for installation. If "
+"needed, try running it as"
+msgstr ""
+"Убедитесь, что у Wunjo есть необходимые разрешения для установки. При "
+"необходимости попробуйте запустить программу от имени"
+
+#: templates/preload.html:175
+msgid "Administrator"
+msgstr "Администратора"
+
+#: templates/preload.html:306
+msgid "Great. You need to restart Wunjo"
+msgstr "Отлично. Перезапустите Wunjo."
+
+#: templates/preload.html:315
+msgid ""
+"Before you proceed, manually remove any previous versions of torch, "
+"torchaudio, and torchvision. First, close Wunjo software, delete those "
+"folders from"
+msgstr ""
+"Прежде чем продолжить, вручную удалите все предыдущие версии torch, "
+"torchaudio и torchvision. Сначала закройте программное обеспечение Wunjo,"
+" удалите эти папки из"
+
+#: templates/components/modal.html:1720 templates/preload.html:315
+#: templates/settings.html:60
+msgid "software directory"
+msgstr "каталога программного обеспечения"
+
+#: templates/preload.html:315
+msgid "and then run Wunjo with admin root privileges."
+msgstr "и затем запустите Wunjo с правами администратора."
+
+#: templates/preload.html:321
+msgid "Close"
+msgstr "Закрыть"
+
+#: templates/preload.html:332
+msgid "Error. Not found permission"
+msgstr "Ошибка. Не найдено разрешение"
+
+#: templates/preload.html:343
+msgid "Error fetching. Try again"
+msgstr "Ошибка загрузки. Попробуйте еще раз"
+
+#: templates/preload.html:384
+msgid "Before you need to install"
+msgstr "Прежде установите"
+
+#: templates/preload.html:384
+msgid "from official website."
+msgstr "с официального сайта."
+
+#: templates/profile.html:42
+msgid "User ID"
+msgstr "ID"
+
+#: templates/profile.html:46
+msgid "Public link"
+msgstr "Публичная ссылка"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Your password from wunjo.online"
+msgstr "Ваш пароль от wunjo.online"
+
+#: templates/profile.html:50
+msgid "Email"
+msgstr "Почта"
+
+#: templates/profile.html:59
+msgid "Sign in"
+msgstr "Войти"
+
+#: templates/profile.html:63
+msgid "Sign out"
+msgstr "Выйти"
+
+#: templates/profile.html:67
+msgid "Exit"
+msgstr "Закрыть"
+
+#: templates/profile.html:74
+msgid "Subscription"
+msgstr "Подписка"
+
+#: templates/profile.html:77 templates/profile.html:144
+msgid "Plan"
+msgstr "План"
+
+#: templates/profile.html:82
+msgid "Community Edition"
+msgstr "Community Edition"
+
+#: templates/profile.html:83
+msgid "Free"
+msgstr "Бесплатно"
+
+#: templates/profile.html:90 templates/profile.html:159
+msgid "infinity"
+msgstr "infinity"
+
+#: templates/profile.html:94 templates/profile.html:119
+#: templates/profile.html:163 templates/profile.html:186
+msgid "credits"
+msgstr "credits"
+
+#: templates/profile.html:101
+msgid "Upgrade"
+msgstr "Улучшить"
+
+#: templates/profile.html:106
+msgid "Unleash the Speed"
+msgstr "Полная скорость"
+
+#: templates/profile.html:107
+msgid "Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power"
+msgstr ""
+"Обновитесь до полной версии, чтобы получить молниеносную скорость и "
+"непревзойденную мощность"
+
+#: templates/profile.html:129 templates/profile.html:137
+msgid "Upgrade to Professional"
+msgstr "Обновление до Professional"
+
+msgid "Public links provide access to the program from mobile devices and tablets"
+msgstr "Публичные ссылки обеспечивают доступ к программе с мобильных устройств и планшетов"
+
+#: templates/profile.html:149
+msgid "Professional"
+msgstr "Professional"
+
+#: templates/profile.html:150
+msgid "Activated"
+msgstr "Активировано"
+
+#: templates/profile.html:170
+msgid "Expiration date"
+msgstr "Дата окончания подписки"
+
+#: templates/profile.html:175
+msgid "Unleashed the Speed"
+msgstr "Полная скорость"
+
+#: templates/profile.html:176 templates/profile.html:270
+msgid "No restrictions on features until"
+msgstr "Никаких ограничений на функции до"
+
+#: templates/remove_background.html:78
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Background module, check"
+" out this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля удаление фона "
+"посмотрите этот"
+
+#: templates/remove_object.html:45
+msgid ""
+"So, you’ve nixed an object from your content, nice move! But hey, "
+"sometimes where one thing leaves, a little confusion might creep in "
+"because of the neural network does not know what could be in the place of"
+" a distant object, it just invents it. Noticed some weird glares or "
+"streaks in the now-empty spot? That’s where a video enhancement feature "
+"swoops in to save the day. Take your pick: transform your video into an "
+"anime-style gem, a classic cartoon, or simply give it a polished boost. "
+"The module’s right"
+msgstr ""
+"Итак, вы удалили объект из вашего контента, отличный ход! Но иногда, "
+"когда что-то исчезает, может появиться небольшая путаница, потому что "
+"нейронная сеть не знает, что может находиться на месте удаленного "
+"объекта, она просто придумывает это. Заметили странные блики или полосы? "
+"Вот где функция улучшения качества приходит на помощь. Выберите свой "
+"вариант: превратите видео в аниме-шедевр, классический мультфильм или "
+"просто добавьте ему лоск."
+
+#: templates/remove_object.html:45
+msgid ", waiting to sprinkle its magic on your creation."
+msgstr ", готовьтесь сотворить волшебство с вашим творением."
+
+#: templates/remove_object.html:101
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Object module, check out"
+" this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля удаления объектов "
+"посмотрите этот"
+
+#: templates/remove_object.html:101
+msgid ""
+"All red blocks should turn green, use toggle if you need to remove text, "
+"and then press on the button"
+msgstr ""
+"Все красные блоки должны стать зелеными, используйте переключатель, если "
+"нужно удалить текст, а затем нажмите на кнопку"
+
+#: templates/restyling.html:162
+msgid "CUSTOMIZING PROMPTS"
+msgstr "Модификация запроса"
+
+#: templates/restyling.html:220
+msgid ""
+"Inpainting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+"Inpainting... Кнопки заблокированы до завершения. Нажмите на экран, чтобы"
+" просмотреть подробности."
+
+#: templates/restyling.html:409
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+"Выберите объект и сцену, задайте параметры и свойства и измените их по "
+"подсказке. Когда вы будете удовлетворены результатом, переходите к "
+"следующему кадру."
+
+#: templates/restyling.html:473
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Restyling module, check out "
+"this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить видео или "
+"изображение. Для инструкций по использованию модуля рестайлинг контента "
+"посмотрите этот"
+
+#: templates/restyling.html:473
+msgid ""
+"All red blocks should turn green or use toggle to fully restyle, and then"
+" press the"
+msgstr ""
+"Все красные блоки должны стать зелеными или используйте переключатель для"
+" полного рестайлинга, а затем нажмите на кнопку"
+
+#: templates/separator.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. For "
+"instructions on how to use the Separator module, check out this"
+msgstr ""
+"Перетащите файл или выберите его. Вы можете загрузить аудиофайл. Для "
+"инструкций по использованию модуля аудио разделитель посмотрите этот"
+
+#: templates/separator.html:72
+msgid "Upload an audio, and then press the"
+msgstr "Загрузите аудиофайл, а затем нажмите на кнопку"
+
+#: templates/settings.html:19 templates/settings.html:30
+#: templates/settings.html:33
+msgid "General"
+msgstr "Общие"
+
+#: templates/settings.html:41
+msgid "Which processor should I use?"
+msgstr "Какой процессор мне следует использовать?"
+
+#: templates/settings.html:54
+msgid "Can I change cache folder?"
+msgstr "Можно ли изменить папку кэша?"
+
+#: templates/settings.html:60
+msgid "Yes! You can change the location of the cache, including placing it in the"
+msgstr "Да! Вы можете изменить местоположение кэша, в том числе поместить его в"
+
+#: templates/settings.html:60
+msgid ""
+"or on another drive. However, please ensure that the new folder has the "
+"necessary permissions for processing and you have permissions to use "
+"folder. Just"
+msgstr ""
+"или на другом диске. Однако, пожалуйста, убедитесь, что новая папка имеет"
+" необходимые разрешения для обработки и у вас есть разрешения на "
+"использование папки. Просто"
+
+#: templates/settings.html:60
+msgid "click here"
+msgstr "нажмите здесь"
+
+#: templates/settings.html:69
+msgid "What is port using?"
+msgstr "Какой порт?"
+
+#: templates/settings.html:82
+msgid "Can I get public link?"
+msgstr "Могу ли я получить публичную ссылку?"
+
+#: templates/settings.html:95
+msgid "Want to go through the software tour once more?"
+msgstr "Хотите еще раз узнать больше про программное обеспечение?"
+
+#: templates/settings.html:108
+msgid "Show translation tool?"
+msgstr "Показать инструмент перевода?"
+
+#: templates/settings.html:120
+msgid "What system resources?"
+msgstr "Какие системные ресурсы?"
+
+#: templates/settings.html:132
+msgid "Update application parameters?"
+msgstr "Обновить параметры приложения?"
+
+#: templates/components/modal.html:8 templates/components/modal.html:39
+#: templates/components/modal.html:57
+msgid "Hold up"
+msgstr "Минута внимания"
+
+#: templates/components/modal.html:14
+msgid "What happens"
+msgstr "Что происходит"
+
+#: templates/components/modal.html:14
+msgid "Click to see"
+msgstr "Посмотреть"
+
+#: templates/components/modal.html:25
+msgid "Grab the Log"
+msgstr "Скачать лог"
+
+#: templates/components/modal.html:40
+msgid "Are you absolutely sure you want to delete"
+msgstr "Вы абсолютно уверены, что хотите удалить"
+
+#: templates/components/modal.html:40
+msgid "Once it’s gone, it’s gone!"
+msgstr "Как только оно исчезнет, оно исчезнет!"
+
+#: templates/components/modal.html:43
+msgid "Sure"
+msgstr "Да"
+
+#: templates/components/modal.html:58
+msgid "Are you ready to replace"
+msgstr "Вы готовы заменить"
+
+#: templates/components/modal.html:58
+msgid "Remember, this action cannot be undone! Only if you don’t rename it again."
+msgstr ""
+"Помните, это действие нельзя отменить! Только если вы не переименуете его"
+" снова."
+
+#: templates/components/modal.html:62
+msgid "Let’s Do It!"
+msgstr "Да"
+
+#: templates/components/modal.html:82 templates/components/modal.html:198
+#: templates/components/modal.html:336 templates/components/modal.html:466
+msgid "Display content"
+msgstr "Отображение содержимого"
+
+#: templates/components/modal.html:101 templates/components/modal.html:220
+#: templates/components/view.html:205
+msgid "Image output"
+msgstr "Изображение"
+
+#: templates/components/modal.html:128 templates/components/modal.html:391
+#: templates/components/modal.html:507 templates/components/view.html:121
+#: templates/components/view.html:234 templates/components/view.html:425
+msgid "Edit"
+msgstr "Редактор"
+
+#: templates/components/modal.html:150 templates/components/modal.html:288
+#: templates/components/modal.html:413 templates/components/modal.html:536
+#: templates/components/view.html:136 templates/components/view.html:249
+#: templates/components/view.html:344 templates/components/view.html:527
+msgid "Without description"
+msgstr "Без описания"
+
+#: templates/components/modal.html:162 templates/components/modal.html:300
+#: templates/components/modal.html:425 templates/components/modal.html:548
+#: templates/components/view.html:153 templates/components/view.html:266
+#: templates/components/view.html:361 templates/components/view.html:472
+#: templates/components/view.html:544
+msgid "Parameters"
+msgstr "Параметры"
+
+#: templates/components/modal.html:169 templates/components/modal.html:307
+#: templates/components/modal.html:438 templates/components/modal.html:555
+#: templates/components/view.html:160 templates/components/view.html:273
+#: templates/components/view.html:368 templates/components/view.html:551
+msgid "Consistency with the text"
+msgstr "Соответствие"
+
+#: templates/components/modal.html:253 templates/components/modal.html:278
+msgid "Download All"
+msgstr "Скачать"
+
+#: templates/components/modal.html:257 templates/components/view.html:332
+msgid "Previous"
+msgstr "Назад"
+
+#: templates/components/modal.html:262 templates/components/modal.html:281
+msgid "Delete All"
+msgstr "Удалить"
+
+#: templates/components/modal.html:265 templates/components/view.html:336
+msgid "Next"
+msgstr "Дальше"
+
+#: templates/components/modal.html:364 templates/components/view.html:92
+msgid "Video output"
+msgstr "Видео"
+
+#: templates/components/modal.html:433
+msgid "FPS"
+msgstr "ФПС"
+
+#: templates/components/modal.html:582
+msgid "Yesterday"
+msgstr "Вчера"
+
+#: templates/components/modal.html:600
+msgid "Sun"
+msgstr "Вс"
+
+#: templates/components/modal.html:601
+msgid "Mon"
+msgstr "Пн"
+
+#: templates/components/modal.html:602
+msgid "Tue"
+msgstr "Вт"
+
+#: templates/components/modal.html:603
+msgid "Wed"
+msgstr "Ср"
+
+#: templates/components/modal.html:604
+msgid "Thu"
+msgstr "Чт"
+
+#: templates/components/modal.html:605
+msgid "Fri"
+msgstr "Пт"
+
+#: templates/components/modal.html:606
+msgid "Sat"
+msgstr "Сб"
+
+#: templates/components/modal.html:616
+msgid "Oh, ya!"
+msgstr "Да"
+
+#: templates/components/modal.html:635
+msgid "Just a second"
+msgstr "Секундочку"
+
+#: templates/components/modal.html:636
+msgid "Please wait while the model is loading into your browser’s memory"
+msgstr "Пожалуйста, подождите, пока модель загрузится в память вашего браузера"
+
+#: templates/components/modal.html:659 templates/components/modal.html:730
+msgid "CLICK ON OBJECT"
+msgstr "НАЖМИТЕ НА ОБЪЕКТ"
+
+#: templates/components/modal.html:678 templates/components/modal.html:749
+msgid "Brush"
+msgstr "Кисти"
+
+#: templates/components/modal.html:685 templates/components/modal.html:760
+msgid "Clear"
+msgstr "Очистить"
+
+#: templates/components/modal.html:696 templates/components/modal.html:780
+msgid ""
+"Embedding... Right-click to select objects, left-click to exclude. Tap "
+"the screen to view details."
+msgstr ""
+"Embedding... Щелкните правой кнопкой мыши, чтобы выбрать объекты, левой —"
+" чтобы исключить. Коснитесь экрана, чтобы просмотреть подробности."
+
+#: templates/components/modal.html:756 templates/components/modal.html:932
+#: templates/components/modal.html:1093 templates/components/modal.html:1335
+msgid "Watch"
+msgstr "Просмотр"
+
+#: templates/components/modal.html:787 templates/components/modal.html:956
+#: templates/components/modal.html:1109 templates/components/modal.html:1359
+msgid "Video input"
+msgstr "Видео"
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Not accessible."
+msgstr "Заблокировано."
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+msgid "Unlock controls by click on watch button."
+msgstr "Разблокируйте, нажав на кнопку просмотра."
+
+#: templates/components/modal.html:846 templates/components/modal.html:1015
+#: templates/components/modal.html:1168 templates/components/modal.html:1465
+msgid "Reset"
+msgstr "Сбросить"
+
+#: templates/components/modal.html:866 templates/components/modal.html:917
+#: templates/components/modal.html:1035 templates/components/modal.html:1078
+msgid "SELECT AREA"
+msgstr "ВЫБОР ОБЛАСТИ"
+
+#: templates/components/modal.html:891
+msgid "Detection face! Tap on display to see more information."
+msgstr "Распознавание лиц! Нажмите на дисплей, чтобы увидеть больше информации."
+
+#: templates/components/modal.html:949
+msgid "Detection face!"
+msgstr "Распознавание лица!"
+
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Upload media before."
+msgstr "Загрузите медиафайл заранее."
+
+#: templates/components/modal.html:1187 templates/components/modal.html:1320
+msgid "UPLOAD AVATAR"
+msgstr "ЗАГРУЗИТЬ АВАТАР"
+
+#: templates/components/modal.html:1222
+msgid "Male"
+msgstr "Мужчина"
+
+#: templates/components/modal.html:1226
+msgid "Female"
+msgstr "Женщина"
+
+#: templates/components/modal.html:1234 templates/components/modal.html:1247
+#: templates/components/modal.html:1264 templates/components/view.html:14
+msgid "All"
+msgstr "Все"
+
+#: templates/components/modal.html:1245 templates/components/modal.html:1262
+msgid "Ethnic"
+msgstr "Раса"
+
+#: templates/components/modal.html:1248 templates/components/modal.html:1265
+msgid "Asian"
+msgstr "Азиат"
+
+#: templates/components/modal.html:1249 templates/components/modal.html:1266
+msgid "Black"
+msgstr "Черный"
+
+#: templates/components/modal.html:1250 templates/components/modal.html:1267
+msgid "White"
+msgstr "Белый"
+
+#: templates/components/modal.html:1251 templates/components/modal.html:1268
+msgid "Indian"
+msgstr "Индус"
+
+#: templates/components/modal.html:1252 templates/components/modal.html:1269
+msgid "Arab"
+msgstr "Араб"
+
+#: templates/components/modal.html:1253 templates/components/modal.html:1270
+msgid "Latino"
+msgstr "Латинос"
+
+#: templates/components/modal.html:1286 templates/components/modal.html:1374
+msgid "Upload"
+msgstr "Загрузить"
+
+#: templates/components/modal.html:1352
+msgid "Upload a video (with a face, of course) and let’s get started!"
+msgstr "Загрузите видео (конечно же, с лицом) и начнем!"
+
+#: templates/components/modal.html:1483 templates/components/modal.html:1526
+msgid "audio"
+msgstr "аудио"
+
+#: templates/components/modal.html:1486
+msgid "Upload your audio"
+msgstr "Загрузите свое аудио"
+
+#: templates/components/modal.html:1491
+msgid "Drag and drop audio"
+msgstr "Перетащите аудио"
+
+#: templates/components/modal.html:1492
+msgid "upload a file."
+msgstr "загрузить файл."
+
+#: templates/components/modal.html:1505
+msgid "Record voice"
+msgstr "Запись"
+
+#: templates/components/modal.html:1511
+msgid "Something went wrong. Please, try again."
+msgstr "Что-то пошло не так. Попробуйте еще раз."
+
+#: templates/components/modal.html:1526
+msgid "Trim"
+msgstr "Обрезать"
+
+#: templates/components/modal.html:1527
+msgid ""
+"Use the timeline selector to trim your audio. Anything longer than your "
+"video will be automatically cut off."
+msgstr ""
+"Двигайте временную шкалу, чтобы обрезать аудио. Все, что длиннее вашего "
+"видео, будет автоматически обрезано."
+
+#: templates/components/modal.html:1531
+msgid "Your audio is longer than"
+msgstr "Ваше аудио длиннее, чем"
+
+#: templates/components/modal.html:1531
+msgid "Trim or redo for best results."
+msgstr "Обрежьте или переделайте для достижения наилучших результатов."
+
+#: templates/components/modal.html:1562
+msgid "Attach and continue"
+msgstr "Прикрепить и продолжить"
+
+#: templates/components/modal.html:1578
+msgid "Analysis content"
+msgstr "Анализ контента"
+
+#: templates/components/modal.html:1579
+msgid ""
+"Utilize content analysis to determine whether the content originates from"
+" a deepfake created by Wunjo."
+msgstr ""
+"Используйте анализ контента, чтобы определить, является ли контент, "
+"созданным в Wunjo."
+
+#: templates/components/modal.html:1582
+msgid ""
+"Gain insights and enhance confidence in the originality of content with "
+"this feature."
+msgstr "Проверяет контент на оригинальность."
+
+#: templates/components/modal.html:1588 templates/components/modal.html:1675
+msgid "Scan"
+msgstr "Сканировать"
+
+#: templates/components/modal.html:1605
+msgid "What is new?"
+msgstr "Что нового?"
+
+#: templates/components/modal.html:1606
+msgid "Try Now"
+msgstr "Попробовать"
+
+#: templates/components/modal.html:1620
+msgid "What a twist!"
+msgstr "Вот это поворот!"
+
+#: templates/components/modal.html:1624
+msgid "Okay"
+msgstr "Хорошо"
+
+#: templates/components/modal.html:1636
+msgid "The cache folder directory"
+msgstr "Директория кэш-папки"
+
+#: templates/components/modal.html:1636
+msgid "contains invalid characters, such as Cyrillic, ideograms or space. Please ensure that the folder path contains only Latin letters, numbers, and allowed symbols, otherwise the program may not work correctly."
+msgstr "содержит недопустимые символы, такие как кириллица, иероглифы или проблемы. Пожалуйста, убедитесь, что в пути папки содержатся только латиница, цифры и разрешённые символы, иначе программа может работать некорректно."
+
+#: templates/components/modal.html:1639
+msgid "Select"
+msgstr "Выбрать"
+
+msgid "Enter new path of cache folder"
+msgstr "Введите новый путь к папке кэша"
+
+#: templates/components/modal.html:1640
+msgid "Scene detect"
+msgstr "Обнаружение перехода"
+
+#: templates/components/modal.html:1641
+msgid ""
+"Transition detection also known as scene cut detection is an important "
+"video processing task that aims at finding interjoined scenes."
+msgstr ""
+"Обнаружение перехода сцен, также известное как обнаружение смены кадров, "
+"является важной задачей предобработки видео, направленной на поиск "
+"взаимосвязанных сцен."
+
+#: templates/components/modal.html:1645
+msgid "Threshold"
+msgstr "Погрешность"
+
+#: templates/components/modal.html:1657
+msgid "Scene transitions"
+msgstr "Переходы сцен"
+
+#: templates/components/modal.html:1669
+msgid "Scene transitions and the first and last frame will be received."
+msgstr "Будут получены переходы сцен, а также первый и последний кадр."
+
+#: templates/components/modal.html:1692
+msgid "Lite setup"
+msgstr "Упрощенная настройка"
+
+#: templates/components/modal.html:1693
+msgid "Tailor the"
+msgstr "Подгоните модуль"
+
+#: templates/components/modal.html:1693
+msgid "module to perfectly match your needs."
+msgstr ", под ваши потребности."
+
+#: templates/components/modal.html:1720
+msgid ""
+"The cache directory stores configuration settings, neural network models,"
+" temporary files, and user-generated content. This directory requires a "
+"significant amount of hard disk space. You can change the location of the"
+" cache, including placing it in the"
+msgstr ""
+"Каталог кэша хранит настройки конфигурации, модели нейронных сетей, "
+"временные файлы и пользовательский контент. Каталог требует значительного"
+" объема свободного места на жестком диске. Вы можете изменить "
+"расположение кэша, включая его размещение в"
+
+#: templates/components/modal.html:1720
+msgid "or on another drive."
+msgstr "или на другом диске."
+
+#: templates/components/modal.html:1723
+msgid ""
+"Please ensure that the new folder has the necessary permissions for "
+"processing and you have permissions to use folder. Avoid using non-Latin "
+"characters in folder names."
+msgstr ""
+"Убедитесь, что новая папка имеет необходимые разрешения для обработки, и "
+"у вас есть права на использование этой папки. Избегайте использования "
+"нелатинских символов в именах папки и пути."
+
+#: templates/components/modal.html:1726
+msgid "Example directories"
+msgstr "Примеры каталогов"
+
+#: templates/components/modal.html:1765
+msgid ""
+"You are about to download a substantial amount of data for your project. "
+"Please note the following sizes"
+msgstr ""
+"Вы собираетесь загрузить значительное количество данных. Обратите "
+"внимание на следующие размеры"
+
+#: templates/components/modal.html:1768
+msgid "Video Generation"
+msgstr "Генерация видео"
+
+#: templates/components/modal.html:1769
+msgid "General Models"
+msgstr "Общие модели"
+
+#: templates/components/modal.html:1771
+msgid ""
+"The download process may take some time, so please be patient. All "
+"downloaded models will be stored in the"
+msgstr ""
+"Процесс загрузки может занять некоторое время, поэтому, пожалуйста, "
+"наберитесь терпения. Все загруженные модели будут сохранены в"
+
+#: templates/components/modal.html:1771
+msgid "folder. If necessary, you can delete these files separately at any time."
+msgstr ""
+"папке. При необходимости вы можете удалить эти файлы отдельно в любое "
+"время."
+
+#: templates/components/modal.html:1774
+msgid "Understand"
+msgstr "Понятно"
+
+#: templates/components/tooltip.html:6
+msgid "Translation on"
+msgstr "Перевод на"
+
+#: templates/components/view.html:20
+msgid "Video"
+msgstr "Видео"
+
+#: templates/components/view.html:26
+msgid "Image"
+msgstr "Изображения"
+
+#: templates/components/view.html:32
+msgid "Images group"
+msgstr "Группа"
+
+#: templates/components/view.html:38
+msgid "Audio"
+msgstr "Аудио"
+
+#: templates/components/view.html:44
+msgid "Favorites"
+msgstr "Избраное"
+
+#: templates/components/view.html:97 templates/components/view.html:210
+#: templates/components/view.html:323
+msgid "Adult content"
+msgstr "Взрослый контент"
+
+#: templates/components/view.html:139 templates/components/view.html:252
+#: templates/components/view.html:347 templates/components/view.html:458
+#: templates/components/view.html:530
+msgid "Copy"
+msgstr "Копировать"
+
+#: templates/components/view.html:318
+msgid "Images output"
+msgstr "Изображение"
+
+#: templates/components/view.html:521
+msgid "Hidden"
+msgstr "Скрыть"
+
+msgid "Save options"
+msgstr "Сохранение"
+
+msgid "Motion control"
+msgstr "Видео параметры"
+
+# flasgger
+# settings.html
+msgid "Overview"
+msgstr "Обзор"
+
+msgid "Developer Docs"
+msgstr "Документация разработчика"
+
+msgid "This is built using OpenAPI 3.0.0. In the API documentation, you can find examples of requests to various modules and a tutorial on how to use them. The schema section provides detailed descriptions of each parameter and their accepted values. Access to the API is token-based, with tokens available to Wunjo Pro subscribers at wunjo.online. The application can also run on localhost or a public link and be used as an API for your projects. This is a Beta API, introduced in the latest version. For any questions, contact support@wunjo.online."
+msgstr "Построено с использованием OpenAPI 3.0.0. В документации вы найдете примеры запросов к различным модулям и руководство по их использованию. Раздел схемы предоставляет подробные описания каждого параметра и их допустимые значения. Доступ к API осуществляется через токен, который предоставляется только подписчикам Wunjo Pro на сайте wunjo.online. Приложение также может работать на localhost или публичной ссылке и использоваться как API для ваших проектов. Это Бета-версия API, представленная в последней версии. По всем вопросам обращайтесь на support@wunjo.online."
+
+# flasgger/body_script.html
+msgid "Authorization"
+msgstr "Авторизация"
+
+msgid "Obtain a token through a POST request using your email and password from wunjo.online. This token is available only to Wunjo Pro subscribers. Use the token for the"
+msgstr "Получите токен через POST-запрос, используя вашу электронную почту и пароль с wunjo.online. Токен доступен только подписчикам Wunjo Pro. Используйте токен для"
+
+msgid "Submit module task"
+msgstr "Запуск длительной обработки"
+
+msgid "Submit CPU task"
+msgstr "Запуск быстрой обработки"
+
+msgid "File upload"
+msgstr "Загрузка файлов"
+
+msgid "Before using a module that requires a file, upload it via File upload and then use the file’s name. Files are uploaded to"
+msgstr "Перед использованием модуля, который требует файл, загрузите его через загрузку файлов, а затем используйте имя файла. Файлы загружаются в"
+
+msgid "so ensure file names are unique. Test files like image.jpg, video.mp4, and audio.wav can be found at"
+msgstr "поэтому убедитесь, что имена файлов уникальны. Пример файлов, таких как image.jpg, video.mp4 и audio.wav, можно найти по следующей ссылке"
+
+msgid "Example requests are configured to work with these files for testing and customization."
+msgstr "Пример запросов настроен для работы с этими файлами для тестирования и настройки."
+
+msgid "Use the main modules in Wunjo via POST requests. Refer to Example for ready-to-use setups. Check Schema for detailed descriptions of each parameter, including accepted values and limits. Note that tasks are linked to your IP address. For localhost, it’s 127.0.0.1. On remote connections, tasks and files are IP-specific. You’ll receive a unique request_id for your task."
+msgstr "Используйте основные модули Wunjo через POST-запросы. Обратитесь к Example для готовых настроек. Проверьте Schema для подробных описаний каждого параметра, включая допустимые значения и ограничения. Обратите внимание, что задачи привязаны к вашему IP-адресу. Для localhost это 127.0.0.1. При удаленных подключениях задачи и файлы привязаны к вашему IP. Вы получите уникальный request_id для вашей задачи."
+
+msgid "Track the status of your module task with a GET request by using the unique method name. The task status and response will be returned once with a 201 status, identifiable by the previously issued request_id. After retrieval, the task will be marked as not found. The response includes the media file path."
+msgstr "Отслеживайте статус задачи модуля с помощью GET-запроса, используя уникальное имя метода. Статус задачи и ответ вернутся один раз с кодом 201, который можно идентифицировать по ранее выданному request_id. После получения задача будет помечена как не найденная. Ответ включает путь к файлу."
+
+msgid "Similar to /submit-module-task, this POST request provides a request_id. More details on parameters can be found in Schema."
+msgstr "Похожий на /submit-module-task, этот POST-запрос предоставляет request_id. Дополнительные детали параметров можно найти в Schema."
+
+msgid "Check task readiness with a GET request using the request_id. The task response is returned once with a 201 status, and then the task is marked as not found. The response includes the media file path or data."
+msgstr "Проверьте готовность задачи с помощью GET-запроса, используя request_id. Ответ на задачу вернется один раз с кодом 201, затем задача будет помечена как не найденная. Ответ включает путь к файлу или данные."
+
+msgid "Use a GET request to view processing progress, steps completed, error statuses, and success messages. All data is logged. For further questions, contact support@wunjo.online or join on"
+msgstr "Используйте GET-запрос, чтобы увидеть процесс обработки, выполненные шаги, статусы ошибок и сообщения об успехе. Все данные логируются. По дополнительным вопросам обращайтесь на support@wunjo.online или присоединяйтесь к обсуждению на"
+
+msgid "Console log"
+msgstr "Журнал консоли"
+
+msgid "Query CPU task"
+msgstr "Запрос задачи CPU"
+
+msgid "Query module task"
+msgstr "Запрос задачи модуля"
+
+# flasgger/index.html
+msgid "Remember about settings! To work with API, place files in the"
+msgstr "Помните о настройках! Для работы с API поместите файлы в"
+
+msgid "tmp folder"
+msgstr "tmp директорию"
+
+msgid "of the cache directory."
+msgstr "каталога кэша."
+
+# JS Code
+msgid "Processing"
+msgstr "Обрабатывается"
+
+msgid "Check Warning"
+msgstr "Проверить лог"
+
+msgid "View Error"
+msgstr "Открыть ошибку"
+
+msgid "Ready to manually retargeting face? Feel like a real puppeteer. Let’s go!"
+msgstr "Готовы вручную изменить лицо? Почувствуйте себя настоящим кукловодом. Поехали!"
+
+msgid "video"
+msgstr "видео"
+
+msgid "image"
+msgstr "изображение"
+
+msgid "audio"
+msgstr "аудио"
+
+msgid "text"
+msgstr "текст"
+
+msgid "Bring your portraits to life<br> with update a spark of emotion to any"
+msgstr "Оживите свои портреты<br> добавьте искру эмоций к любому"
+
+msgid "content"
+msgstr "контенту"
+
+msgid "Learn how to seamlessly perform<br> a face swap using just one photo"
+msgstr "Узнайте, как легко сделать<br> замену лица с помощью одной фотографии"
+
+msgid "Learn how to seamlessly <br> animate mouth movements using audio"
+msgstr "Узнайте, как легко <br> анимировать движения рта с помощью аудио"
+
+msgid "Upgrade"
+msgstr "Обновить"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "and even give faces a digital makeover."
+msgstr "и даже убрать морщины для лица."
+
+msgid "low-res content"
+msgstr "контент с низким разрешением"
+
+msgid "secrets"
+msgstr "здесь"
+
+msgid "Unlock <br> object removal"
+msgstr "Откройте <br> удаление объектов"
+
+msgid "and <br> get chroma key."
+msgstr "фона и <br> получения хромакея."
+
+msgid "removal"
+msgstr "удаление"
+
+msgid "Master background"
+msgstr "Освойте"
+
+msgid "from text or images. <br>No more effort for beautiful content."
+msgstr "из текста или изображений. <br>Больше никакой суеты для красивого контента."
+
+msgid "video life"
+msgstr "здесь"
+
+msgid "Bring your content to"
+msgstr "Оживите ваш контент"
+
+msgid "Discover how to change full <br> content or object inside by text prompts in"
+msgstr "Узнайте, как изменить весь <br> контент или объект внутри с помощью текстовых запросов"
+
+msgid "Learn how to seamlessly perform<br> clone voice of your neighbors in"
+msgstr "Узнайте, как легко<br> клонировать голос для обучающих роликов"
+
+msgid "Separate"
+msgstr "Разделите"
+
+msgid "vocals from background <br> music effortlessly."
+msgstr "вокал от фоновой <br> музыки без усилий."
+
+msgid "Manipulate and animate faces with ease. Move the head, add emotions, or create blinks — manually or automatically. Ideal for bringing static photos to life!"
+msgstr "Манипулируйте и анимируйте лица с легкостью. Двигайте голову, добавляйте эмоции или создавайте моргания — вручную или автоматически. Идеально для оживления статических фотографий!"
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Улучшите детали лица для исправления недостатков и достижения безупречного внешнего вида."
+
+msgid "Replace faces in specific time intervals with precision. If inconsistencies appear, try replacing all faces for improved quality."
+msgstr "Заменяйте лица в определенные временные интервалы с точностью. Если появляются несоответствия, попробуйте заменить все лица для улучшения качества."
+
+msgid "Add realism to swapped faces by reintroducing natural blinks manually."
+msgstr "Добавьте реализм замененным лицам, вручную добавив естественные моргания."
+
+msgid "Improve the quality of the swapped face for a seamless result. Experiment by alternating between Enhancement and Live Portrait for better outcomes."
+msgstr "Улучшите качество замененного лица для получения бесшовного результата. Экспериментируйте, чередуя улучшение качества и живой портрет для достижения лучших результатов."
+
+msgid "For better video, use the «silence» mode in manually retargeting live portrait to pre-process the mouth to a closed state before applying lip sync."
+msgstr "Для лучшего видео используйте режим «тишина» при ручном перенаправлении живого портрета, чтобы предварительно обработать рот до закрытого состояния перед применением синхронизации губ."
+
+msgid "Animate lips in photos and videos with realistic movements. Remove double chins if needed for a refined look (note: this may take extra time)."
+msgstr "Анимируйте губы на фотографиях и видео с реалистичными движениями. Удаляйте двойной подбородок при необходимости для более утонченного вида (примечание: это может занять дополнительное время)."
+
+msgid "Further enhance the face’s quality for sharper and clearer animations."
+msgstr "Дальнейшее улучшение качества лица для более четких и ясных анимаций."
+
+msgid "Refine face or content quality, eliminating blurry areas for a sharper overall result."
+msgstr "Улучшите качество лица или контента, устранив размытые области для более четкого общего результата."
+
+msgid "Remove unwanted text or objects from videos effortlessly. Even moving objects can be removed automatically by the neural network."
+msgstr "Удаляйте нежелательный текст или объекты из видео без усилий. Даже движущиеся объекты могут быть автоматически удалены нейронной сетью."
+
+msgid "Restore resolution and improve content quality if it diminishes after object removal."
+msgstr "Восстановите разрешение и улучшите качество контента, если оно уменьшилось после удаления объектов."
+
+msgid "Remove the background from photos or videos. Photos can have transparent backgrounds, while videos will use chromakey."
+msgstr "Удаляйте фон с фотографий или видео. Фотографии могут иметь прозрачный фон, а видео будут использовать хромакей."
+
+msgid "Generate videos from text (any language) and images. Control content with brushes and prompts. Create images from text, customize details, and bring your imagination to life."
+msgstr "Создавайте видео из текста (любой язык) и изображений. Управляйте контентом с помощью кистей и подсказок. Создавайте изображения из текста, настраивайте детали и воплощайте свои идеи в жизнь."
+
+msgid "Transform using text (any language) your videos or photos into unique styles. For example, dancing in the ocean or sipping coffee in space. Control manually or auto elements such as skin tones."
+msgstr "Превращайте ваши видео или фотографии с помощью текста (любой язык) в уникальные стили. Например, танец в океане или кофе в космосе. Управляйте вручную или автоматически элементами, такими как тон кожи."
+
+msgid "If limited video memory causes low resolution, enhance content quality and upscale it effortlessly."
+msgstr "Если ограниченная видеопамять вызывает низкое разрешение, улучшите качество контента и увеличьте его масштаб без усилий."
+
+msgid "Clone speech from text. Choose a text generation (before this select language) or convert your voice to match a cloned tone."
+msgstr "Клонируйте речь из текста. Выберите генерацию текста (перед этим выберите язык) или преобразуйте ваш голос, чтобы он соответствовал клонированному тону."
+
+msgid "Separate vocals and instrumentals from music with just one click."
+msgstr "Разделите вокал и инструменталы в музыке одним кликом."
+
+msgid "Customize object colors or experiment with unique styles — turn your face into an alien, for example, with text-driven (any language) transformations."
+msgstr "Настраивайте цвета объектов или экспериментируйте с уникальными стилями — превратите свое лицо в инопланетянина, например, с текстовыми (любой язык) трансформациями."
+
+msgid "Replace deformed or inconsistent faces in frames. Use the first frame of your video to maintain consistent facial features."
+msgstr "Заменяйте деформированные или несогласованные лица в кадрах. Используйте первый кадр вашего видео, чтобы сохранить согласованность черт лица."
+
+msgid "Finalize your project by improving the face or overall content quality."
+msgstr "Завершите ваш проект, улучшив качество лица или общего контента."
+
+msgid "Isolate vocals and instrumentals from a song. This will prepare them for editing and further transformations."
+msgstr "Изолируйте вокал и инструменталы из песни. Это подготовит их к редактированию и дальнейшим трансформациям."
+
+msgid "Record a new vocal segment and clone its sound to match the original song. Then reassemble the vocals and instrumentals for a seamless edit."
+msgstr "Запишите новый вокальный сегмент и клонируйте его звук, чтобы он соответствовал оригинальной песне. Затем соберите вокал и инструменталы для бесшовного редактирования."
+
+msgid "Need a speaking character in your video? Start by finding a similar face or generating one via avatar creation. Perfect for when you lack real footage."
+msgstr "Нужен говорящий персонаж в вашем видео? Начните с поиска похожего лица или создания его через генерацию аватара. Идеально, когда не хватает реальных кадров."
+
+msgid "Add voice to the video by cloning from a preferred voice tone. Write the script, choose a language, and let the neural network handle the rest."
+msgstr "Добавьте голос к видео, клонировав из предпочитаемого тона голоса. Напишите сценарий, выберите язык, и пусть нейронная сеть сделает остальное."
+
+msgid "Synchronize lips with the generated voiceover for added realism. Enhance the face quality for a polished result."
+msgstr "Синхронизируйте губы с сгенерированной озвучкой для добавления реализма. Улучшите качество лица для безупречного результата."
+
+msgid "Manipulate the head, add emotions, or create blinks — manually or automatically."
+msgstr "Манипулируйте головой, добавляйте эмоции или создавайте моргания — вручную или автоматически."
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Улучшите детали лица для исправления недостатков и достижения безупречного внешнего вида."
+
+msgid "If you need to analyze photos, videos and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Если вам необходимо проанализировать фотографии, видео и определить, является ли контент искусственно созданным в Wunjo, вы можете сделать это с помощью анализа."
+
+msgid "If you need to analyze audio and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Если вам необходимо проанализировать аудио и определить, является ли контент искусственно созданным в Wunjo, вы можете сделать это с помощью анализа."
+
+# tooltip.js
+msgid "Translator"
+msgstr "Переводчик"
+
+msgid "Hello, welcome to the tour"
+msgstr "Добро пожаловать на экскурсию"
+
+msgid "In begin, we’ll take a look at the translator. If you come across any text that’s not clear, you can easily translate it into your language. Just select the text, and it will appear in the translator. To open it, click on the element. You can also move the translator to any convenient place on your screen by"
+msgstr "Сначала мы рассмотрим переводчик. Если вы столкнулись с текстом, который непонятен, вы можете легко перевести его на свой язык. Просто выделите текст, и он появится в переводчике. Чтобы открыть его, нажмите на элемент. Вы также можете переместить переводчик в любое удобное место на экране, перетащив его."
+
+msgid "(dragging it)."
+msgstr "(перетаскивая его)."
+
+msgid "Try it: After click"
+msgstr "Попробуйте: после клика"
+
+msgid "next"
+msgstr "далее"
+
+msgid ", open the translator, and select the text you want to translate."
+msgstr ", откройте переводчик и выберите текст, который хотите перевести."
+
+msgid "You can"
+msgstr "Вы можете"
+
+msgid "disable"
+msgstr "отключить"
+
+msgid "the translator display or change your preferences in the settings."
+msgstr "отображение переводчика или изменить ваши предпочтения в настройках."
+
+# general.js
+msgid "January"
+msgstr "Январь"
+
+msgid "February"
+msgstr "Февраль"
+
+msgid "March"
+msgstr "Март"
+
+msgid "April"
+msgstr "Апрель"
+
+msgid "May"
+msgstr "Май"
+
+msgid "June"
+msgstr "Июнь"
+
+msgid "July"
+msgstr "Июль"
+
+msgid "August"
+msgstr "Август"
+
+msgid "September"
+msgstr "Сентябрь"
+
+msgid "October"
+msgstr "Октябрь"
+
+msgid "November"
+msgstr "Ноябрь"
+
+msgid "December"
+msgstr "Декабрь"
+
+# model.js
+msgid "Jan"
+msgstr "Янв"
+
+msgid "Feb"
+msgstr "Фев"
+
+msgid "Mar"
+msgstr "Мар"
+
+msgid "Apr"
+msgstr "Апр"
+
+msgid "May"
+msgstr "Май"
+
+msgid "Jun"
+msgstr "Июн"
+
+msgid "Jul"
+msgstr "Июл"
+
+msgid "Aug"
+msgstr "Авг"
+
+msgid "Sep"
+msgstr "Сен"
+
+msgid "Oct"
+msgstr "Окт"
+
+msgid "Nov"
+msgstr "Ноя"
+
+msgid "Dec"
+msgstr "Дек"
+
+msgid "Oops! Something went wrong. Please try again."
+msgstr "Упс! Что-то пошло не так. Пожалуйста, попробуйте снова."
+
+msgid "Heads up: This content is not a deepfake from Wunjo, but it could be a deepfake from another program or even original content. You know, I don’t know what I don’t know!"
+msgstr "Внимание: Этот контент не создан в Wunjo, но это может быть измененным (дипфейком) от другой программы или даже оригинальный контент. Знаете, я не знаю того, чего не знаю!"
+
+msgid "Yeah! This content appears to be a deepfake created by Wunjo."
+msgstr "Да! Этот контент измененный, созданным с помощью Wunjo."
+
+msgid "Oops! An unexpected error occurred. Please try again."
+msgstr "Упс! Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова."
+
+msgid "How many users are there?"
+msgstr "Сколько пользователей?"
+
+msgid "Pick your user squad! This sets how many tasks can strut their stuff simultaneously for everyone."
+msgstr "Выберите колличество пользователей! Определяет, сколько задач могут одновременно выполнять все пользователи."
+
+msgid "What is resolution?"
+msgstr "Какое разрешение?"
+
+msgid "Dial in the max length of your content’s long side. Bigger isn’t always better, but it sure does look good!"
+msgstr "Установите максимальную длину длинной стороны вашего контента. Большее не всегда лучше, но выглядит красиво!"
+
+msgid "Power usage?"
+msgstr "Мощность?"
+
+msgid "Choose your RAM and VRAM power levels. Go big for multitasking magic or play it safe with minimal memory usage."
+msgstr "Выберите уровни мощности для вашей оперативной и видеопамяти. Выберите больше для многозадачности или будьте осторожны с минимальным использованием памяти."
+
+msgid "What is the duration? (in minutes)"
+msgstr "Какова продолжительность? (в минутах)"
+
+msgid "What is the text length? (characters)"
+msgstr "Какова длина текста? (в символах)"
+
+msgid "Set the limit for your content duration. Anything longer gets the chop—no one likes an endless show!"
+msgstr "Установите предел для продолжительности вашего контента. Все, что длиннее, будет обрезано — никто не любит бесконечное шоу!"
+
+msgid "Define the max character count for your text."
+msgstr "Определите максимальное количество символов для вашего текста."
+
+msgid "Transferring models may take some time. Do not close the software."
+msgstr "Перемещение моделей может занять некоторое время. Не закрывайте программу."
+
+msgid "Bring all!"
+msgstr "Много"
+
+msgid "A small group"
+msgstr "Немного"
+
+msgid "Just me!"
+msgstr "Один"
+
+msgid "Minimum"
+msgstr "Минимум"
+
+msgid "Medium"
+msgstr "Средний"
+
+msgid "Maximum"
+msgstr "Максимум"
+
+# view.js
+msgid "An error occurred while checking the processor. Please try again later."
+msgstr "Произошла ошибка при проверке процессора. Повторите попытку позже."
+
+msgid "requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings."
+msgstr "для работы требуется ГПУ. Если ваша система поддерживает его, переключитесь с ЦПУ на ГПУ в настройках."
+
+# settings.js
+msgid "What models are available?"
+msgstr "Какие модели доступны?"
+
+msgid "Which models can I access?"
+msgstr "К каким моделям у меня есть доступ?"
+
+msgid "What options do I have in terms of models?"
+msgstr "Какие варианты моделей у меня есть?"
+
+msgid "What kinds of models are at my disposal?"
+msgstr "Какие виды моделей у меня есть в распоряжении?"
+
+msgid "Which models are within my reach?"
+msgstr "Какие модели доступны мне?"
+
+msgid "What’s in the repertoire of available models?"
+msgstr "Какие модели входят в репертуар доступных?"
+
+msgid "What choices do I have among the models?"
+msgstr "Какие у меня есть варианты среди моделей?"
+
+msgid "Which models are up for grabs?"
+msgstr "Какие модели можно использовать?"
+
+msgid "What’s on the menu in terms of models?"
+msgstr "Какие модели представлены в меню?"
+
+msgid "What’s in the lineup of available models?"
+msgstr "Какие модели входят в список доступных?"
+
+msgid "For manual model utilization"
+msgstr "Для ручного использования модели"
+
+msgid "In manually leveraging the model"
+msgstr "При ручном использовании модели"
+
+msgid "When employing the model manually"
+msgstr "При ручном применении модели"
+
+msgid "Utilizing the model manually involves"
+msgstr "Ручное использование модели включает"
+
+msgid "When integrating the model manually"
+msgstr "При ручной интеграции модели"
+
+msgid "In the manual application of the model"
+msgstr "При ручном применении модели"
+
+msgid "For hands-on model utilization"
+msgstr "Для практического использования модели"
+
+msgid "When using the model manually"
+msgstr "При использовании модели вручную"
+
+msgid "In manual model integration"
+msgstr "При ручной интеграции модели"
+
+msgid "For direct model application"
+msgstr "Для прямого применения модели"
+
+msgid "During manual model utilization"
+msgstr "Во время ручного использования модели"
+
+msgid "Incorporating the model manually requires"
+msgstr "Ручное включение модели требует"
+
+msgid "When applying the model manually"
+msgstr "При ручном применении модели"
+
+msgid "Using the model manually necessitates"
+msgstr "Ручное использование модели требует"
+
+msgid "In the hands-on utilization of the model"
+msgstr "При практическом использовании модели"
+
+msgid "When integrating the model manually"
+msgstr "При ручной интеграции модели"
+
+msgid "For direct model utilization"
+msgstr "Для прямого использования модели"
+
+msgid "In manual model application"
+msgstr "При ручном применении модели"
+
+msgid "During hands-on model integration"
+msgstr "Во время практической интеграции модели"
+
+msgid "Utilizing the model manually entails"
+msgstr "Ручное использование модели включает"
+
+msgid "You will able to find model in"
+msgstr "Вы сможете найти модель в"
+
+msgid "first"
+msgstr "сначала"
+
+msgid "download the"
+msgstr "скачайте"
+
+msgid "file. Once downloaded, extract its contents and place them in the following directory"
+msgstr "файл. После загрузки извлеките его содержимое и поместите в следующую директорию"
+
+msgid "file. Move it into the"
+msgstr "файл. Переместите его в"
+
+msgid "renaming it as"
+msgstr "переименовав его в"
+
+msgid "Your system resources:"
+msgstr "Ваши системные ресурсы:"
+
+msgid "Total size of content"
+msgstr "Общий размер контента"
+
+msgid "Total size of models"
+msgstr "Общий размер моделей"
+
+msgid "Total RAM"
+msgstr "Объем оперативной памяти"
+
+msgid "Available RAM"
+msgstr "Доступная оперативная память"
+
+msgid "Total VRAM"
+msgstr "Общий объем видеопамяти"
+
+msgid "Available VRAM"
+msgstr "Доступная видеопамять"
+
+msgid "in folder"
+msgstr "в папке"
+
+msgid "In GPU mode"
+msgstr "В режиме GPU"
+
+msgid "Currently, models from various"
+msgstr "В настоящее время модели из различных"
+
+msgid "On this machine, models are limited to CPU processing only. To utilize the GPU, please refer to the FAQ section or check the log for more information."
+msgstr "На этом компьютере модели ограничены только обработкой на CPU. Для использования GPU обратитесь к разделу FAQ или проверьте журнал для получения дополнительной информации."
+
+msgid "models are executed using the GPU"
+msgstr "модели выполняются с использованием GPU"
+
+msgid "modules are running on the CPU"
+msgstr "модули работают на CPU"
+
+msgid "for enhanced performance. If you wish to give the machine a break, you can transfer the models back to the CPU by clicking"
+msgstr "для повышения производительности. Если вы хотите дать машине отдых, вы можете вернуть модели на CPU, нажав"
+
+msgid "To switch to GPU processing, simply click"
+msgstr "Чтобы переключиться на обработку с помощью GPU, просто нажмите"
+
+msgid "Remember, you can only switch processors when there is no active processing."
+msgstr "Помните, что вы можете переключаться между процессорами только при отсутствии активной обработки."
+
+msgid "and please note that you can only transfer processing to the GPU if there is no ongoing computation."
+msgstr "и обратите внимание, что вы можете перенести обработку на GPU только при отсутствии текущих вычислений."
+
+msgid "A new port has been installed. For the changes to take effect"
+msgstr "Установлен новый порт. Чтобы изменения вступили в силу"
+
+msgid "restart the application."
+msgstr "перезапустите приложение."
+
+msgid "Your new port"
+msgstr "Ваш новый порт"
+
+msgid "But, if you need to switch port again. Just let click"
+msgstr "Но, если вам нужно снова переключить порт, просто нажмите"
+
+msgid "Application run on port"
+msgstr "Приложение запущено на порту"
+
+msgid "You can get access to application by"
+msgstr "Вы можете получить доступ к приложению через"
+
+msgid "Your static port"
+msgstr "Ваш статический порт"
+
+msgid "which you can change in input."
+msgstr "который вы можете изменить."
+
+msgid "static port in local network."
+msgstr "статический порт в локальной сети."
+
+msgid "If you need to apply switch port, I’ll handle it smoothly. Just let click"
+msgstr "Если вам нужно переключить порт, я сделаю это без проблем. Просто нажмите"
+
+msgid "Your share link"
+msgstr "Ваша ссылка для совместного доступа"
+
+msgid "If you want to turn on share mode by"
+msgstr "Если вы хотите включить режим совместного доступа через"
+
+msgid "public link, click"
+msgstr "публичную ссылку, нажмите"
+
+msgid "If you wanna turn off share mode, click"
+msgstr "Если вы хотите отключить режим совместного доступа, нажмите"
+
+msgid "After updating the settings"
+msgstr "После обновления настроек"
+
+msgid "you need to restart"
+msgstr "вам нужно перезапустить"
+
+msgid "the application for the"
+msgstr "приложение, чтобы"
+
+msgid "changes to take effect."
+msgstr "изменения вступили в силу."
+
+msgid "Max CPU tasks running for all users at once"
+msgstr "Максимальное количество задач на CPU для всех пользователей одновременно"
+
+msgid "Max module tasks running for all users at once"
+msgstr "Максимальное количество задач модулей для всех пользователей одновременно"
+
+msgid "Max CPU tasks running for one user at once"
+msgstr "Максимальное количество задач на CPU для одного пользователя одновременно"
+
+msgid "Max module tasks running for one user at once"
+msgstr "Максимальное количество задач модулей для одного пользователя одновременно"
+
+msgid "Time to remove old CPU tasks (minutes)"
+msgstr "Время для удаления старых задач на CPU (минуты)"
+
+msgid "Time to remove old module tasks (minutes)"
+msgstr "Время для удаления старых задач модулей (минуты)"
+
+msgid "Delay between CPU tasks to calculate memory (seconds)"
+msgstr "Задержка между задачами на CPU для расчета памяти (секунды)"
+
+msgid "Delay between module tasks to calculate memory (seconds)"
+msgstr "Задержка между задачами модулей для расчета памяти (секунды)"
+
+msgid "Minimum RAM for CPU tasks (GB)"
+msgstr "Минимальная оперативная память для задач на CPU (ГБ)"
+
+msgid "Minimum RAM for removing background (GB)"
+msgstr "Минимальная оперативная память для удаления фона (ГБ)"
+
+msgid "Minimum VRAM for removing background on GPU (GB)"
+msgstr "Минимальная видеопамять для удаления фона на GPU (ГБ)"
+
+msgid "Minimum RAM for removing objects (GB)"
+msgstr "Минимальная оперативная память для удаления объектов (ГБ)"
+
+msgid "Minimum VRAM for removing objects on GPU (GB)"
+msgstr "Минимальная видеопамять для удаления объектов на GPU (ГБ)"
+
+msgid "Minimum RAM for face swap tasks (GB)"
+msgstr "Минимальная оперативная память для задач смены лиц (ГБ)"
+
+msgid "Minimum VRAM for face swap tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач смены лиц на GPU (ГБ)"
+
+msgid "Minimum RAM for enhancement tasks (GB)"
+msgstr "Минимальная оперативная память для задач улучшения (ГБ)"
+
+msgid "Minimum VRAM for enhancement tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач улучшения на GPU (ГБ)"
+
+msgid "Minimum RAM for lip sync tasks (GB)"
+msgstr "Минимальная оперативная память для задач синхронизации губ (ГБ)"
+
+msgid "Minimum VRAM for lip sync tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач синхронизации губ на GPU (ГБ)"
+
+msgid "Minimum RAM for restyling on GPU (GB)"
+msgstr "Минимальная оперативная память для задач изменения стиля на GPU (ГБ)"
+
+msgid "Minimum VRAM for restyling on GPU (GB)"
+msgstr "Минимальная видеопамять для задач изменения стиля на GPU (ГБ)"
+
+msgid "Minimum RAM for video generation on GPU (GB)"
+msgstr "Минимальная оперативная память для генерации видео на GPU (ГБ)"
+
+msgid "Minimum VRAM for video generation on GPU (GB)"
+msgstr "Минимальная видеопамять для генерации видео на GPU (ГБ)"
+
+msgid "Minimum RAM for control restyling on GPU (GB)"
+msgstr "Минимальная оперативная память для контроля изменения стиля на GPU (ГБ)"
+
+msgid "Minimum VRAM for control restyling on GPU (GB)"
+msgstr "Минимальная видеопамять для контроля изменения стиля на GPU (ГБ)"
+
+msgid "Minimum RAM for separator tasks (GB)"
+msgstr "Минимальная оперативная память для задач разделения (ГБ)"
+
+msgid "Minimum VRAM for separator tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач разделения на GPU (ГБ)"
+
+msgid "Minimum RAM for cloning voice (GB)"
+msgstr "Минимальная оперативная память для задач клонирования голоса (ГБ)"
+
+msgid "Minimum VRAM for cloning voice on GPU (GB)"
+msgstr "Минимальная видеопамять для задач клонирования голоса на GPU (ГБ)"
+
+msgid "Minimum RAM for live portrait tasks (GB)"
+msgstr "Минимальная оперативная память для задач с живыми портретами (ГБ)"
+
+msgid "Minimum VRAM for live portrait tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач с живыми портретами на GPU (ГБ)"
+
+msgid "Max file size for upload (bytes)"
+msgstr "Максимальный размер файла для загрузки (байты)"
+
+msgid "Max resolution for removing background"
+msgstr "Максимальное разрешение для удаления фона"
+
+msgid "Max resolution for removing objects"
+msgstr "Максимальное разрешение для удаления объектов"
+
+msgid "Max resolution for face swap"
+msgstr "Максимальное разрешение для смены лиц"
+
+msgid "Max resolution for enhancement"
+msgstr "Максимальное разрешение для улучшения"
+
+msgid "Max resolution for lip sync"
+msgstr "Максимальное разрешение для синхронизации губ"
+
+msgid "Max resolution for restyling"
+msgstr "Максимальное разрешение для изменения стиля"
+
+msgid "Max resolution for live portrait"
+msgstr "Максимальное разрешение для живого портрета"
+
+msgid "Max duration for background removal (seconds)"
+msgstr "Максимальная продолжительность удаления фона (секунды)"
+
+msgid "Max duration for object removal (seconds)"
+msgstr "Максимальная продолжительность удаления объектов (секунды)"
+
+msgid "Max duration for face swap (seconds)"
+msgstr "Максимальная продолжительность смены лиц (секунды)"
+
+msgid "Max duration for enhancement (seconds)"
+msgstr "Максимальная продолжительность улучшения (секунды)"
+
+msgid "Max duration for lip sync (seconds)"
+msgstr "Максимальная продолжительность синхронизации губ (секунды)"
+
+msgid "Max duration for restyling (seconds)"
+msgstr "Максимальная продолжительность изменения стиля (секунды)"
+
+msgid "Max duration for separator tasks (seconds)"
+msgstr "Максимальная продолжительность задач разделения (секунды)"
+
+msgid "Max duration for cloning voice (seconds)"
+msgstr "Максимальная продолжительность клонирования голоса (секунды)"
+
+msgid "Max duration for live portrait (seconds)"
+msgstr "Максимальная продолжительность живого портрета (секунды)"
+
+msgid "Max symbols for voice cloning"
+msgstr "Максимальное количество символов для клонирования голоса"
+
+msgid "Static port in local network"
+msgstr "Статический порт в локальной сети"
+
+msgid "New value"
+msgstr "Новое значение"
+
+msgid "To apply the changes, click"
+msgstr "Чтобы применить изменения, нажмите"
+
+msgid "Remember that the changes will take effect after manually restarting the program."
+msgstr "Помните, что изменения вступят в силу после ручной перезагрузки программы."
+
+msgid "The tour is currently disabled, but you can enable it by clicking"
+msgstr "Подсказки по Wunjo в настоящее время отключен, но вы можете включить его, нажав"
+
+msgid "The tour is enabled to start automatically. To disable it, click"
+msgstr "Подсказки по Wunjo включен. Чтобы отключить его, нажмите"
+
+msgid "The translation tool is currently active and ready for use. Click"
+msgstr "Инструмент перевода в настоящее время активен и готов к использованию. Нажмите"
+
+msgid "The translation tool is currently disabled. Click"
+msgstr "Инструмент перевода в настоящее время отключен. Нажмите"
+
+msgid "to disable it."
+msgstr "чтобы отключить его."
+
+msgid "enable it."
+msgstr "включить его."
+
+# footer.js
+msgid "Wow, that’s a large file! Please upload a file that’s less than"
+msgstr "Ого, это очень большой файл! Пожалуйста, загрузите файл размером меньше"
+
+msgid "bytes or change settings limit."
+msgstr "байт или измените предел в настройках."
+
+msgid "Wow, that’s a lengthy video! Please upload a video that’s less than"
+msgstr "Ого, это очень длинное видео! Пожалуйста, загрузите видео длительностью меньше"
+
+msgid "seconds long or change settings limit."
+msgstr "секунд или измените предел в настройках."
+
+msgid "Wow, that’s a lengthy audio! Please upload an audio that’s less than"
+msgstr "Ого, это очень длинное аудио! Пожалуйста, загрузите аудио длительностью меньше"
+
+msgid "seconds long. Let’s keep it short!"
+msgstr "секунд. Давайте сделаем его короче!"
+
+msgid "Error reading file. Please try again."
+msgstr "Ошибка чтения файла. Пожалуйста, попробуйте снова."
+
+# clone_voice.js
+msgid "Yikes! Looks like you not uploaded or recorded speech or sample."
+msgstr "Ой! Похоже, вы не загрузили или не записали речь или образец."
+
+msgid "Yikes! Looks like you not wrote text to create speech."
+msgstr "Ой! Похоже, вы не написали текст для создания речи."
+
+msgid "Yikes! Looks like an alien format. Stick to audio for now."
+msgstr "Ой! Похоже, это неизвестный формат. Пока придерживайтесь аудио."
+
+msgid "Imitate accent"
+msgstr "Имитация акцента"
+
+msgid "Activate manual audio creation. Record yourself with any accent or speed, and watch your voice transform into a cloned!"
+msgstr "Активируйте ручное создание аудио. Запишите себя с любым акцентом или скоростью, и наблюдайте, как ваш голос превращается в клонированный!"
+
+msgid "Filename"
+msgstr "Имя файла"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Fake detector"
+msgstr "Детектор подделок"
+
+msgid "Got a sneaky suspicion about some audio? Ready to sniff out those clone voice? Just hit that button."
+msgstr "Готовы выявить клонированные голоса? Просто запустите анализ."
+
+msgid "Analysis"
+msgstr "Анализ"
+
+msgid "Set text explain"
+msgstr "Объяснение добавления текста"
+
+msgid "Ready to have some fun? Click here to type your text to watch after submit as it turns into a cloned voice masterpiece!"
+msgstr "Нажмите здесь, чтобы ввести текст и наблюдать, как он превратится в шедевр клонированного голоса!"
+
+msgid "Set text"
+msgstr "Добавить текст"
+
+msgid "Load audio explain"
+msgstr "Объяснение загрузки аудио"
+
+msgid "This audio extracts the base speaker tone. A short audio clip is usually enough, but longer clips improve quality."
+msgstr "Аудио извлекает основной тон говорящего. Достаточно короткого аудио, но длинное аудио улучшит качество."
+
+msgid "Create sample"
+msgstr "Создать образец"
+
+msgid "This audio will be used to extract the base speaker tone color embedding. Typically a very short audio should be sufficient, but increasing the audio length will also improve the output audio quality."
+msgstr "Аудио для извлечения тональности говорящего. Обычно достаточно очень короткого аудио, но увеличение длины аудио улучшит качество результата."
+
+msgid "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents."
+msgstr "Искусственный интеллект (ИИ) — это интеллект, демонстрируемый машинами, в отличие от естественного интеллекта, проявляемого людьми и животными. Ведущие учебники по ИИ определяют эту область как изучение интеллектуальных агентов."
+
+msgid "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness."
+msgstr "Это было лучшее из времен, это было худшее из времен, это был век мудрости, это был век глупости, это была эпоха веры, это была эпоха неверия, это был сезон Света, это был сезон Тьмы."
+
+msgid "The quick brown fox jumps over the lazy dog. This sentence is famous because it includes every letter in the English alphabet, making it a great tool for typing practice."
+msgstr "Быстрая коричневая лиса прыгает через ленивую собаку. Это предложение знаменито тем, что включает каждую букву английского алфавита, что делает его отличным инструментом для практики печати."
+
+msgid "A journey of a thousand miles begins with a single step. This ancient Chinese proverb reminds us that great things start from humble beginnings."
+msgstr "Путешествие в тысячу миль начинается с одного шага. Эта древняя китайская пословица напоминает нам, что великие вещи начинаются с малого."
+
+msgid "To be, or not to be, that is the question: Whether ’tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles and by opposing end them."
+msgstr "Быть или не быть, вот в чем вопрос: Достойно ли терпеть удары и стрелы неистовой судьбы или восстать против моря бед и победить их."
+
+msgid "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. It revolutionized the understanding of space, time, and gravity."
+msgstr "Теория относительности обычно охватывает две взаимосвязанные теории Альберта Эйнштейна: специальную и общую теорию относительности. Она революционизировала понимание пространства, времени и гравитации."
+
+msgid "The mitochondrion is often referred to as the powerhouse of the cell. These organelles are responsible for generating most of the cell’s supply of adenosine triphosphate (ATP), used as a source of chemical energy."
+msgstr "Митохондрию часто называют энергетической станцией клетки. Эти органеллы отвечают за генерацию большинства запасов аденозинтрифосфата (АТФ) клетки, используемого в качестве источника химической энергии."
+
+msgid "The only thing we have to fear is fear itself. This famous quote by Franklin D. Roosevelt during his inaugural address aims to inspire courage and confidence in the face of challenges."
+msgstr "Единственное, чего мы должны бояться, это самого страха. Эта известная цитата Франклина Д. Рузвельта из его инаугурационной речи призвана вдохновить на смелость и уверенность перед лицом испытаний."
+
+msgid "In three words I can sum up everything I’ve learned about life: it goes on. This quote by Robert Frost succinctly captures the essence of resilience and the passage of time."
+msgstr "Тремя словами я могу выразить все, что я узнал о жизни: она продолжается. Эта цитата Роберта Фроста лаконично передает суть стойкости и течения времени."
+
+msgid "The cat sat on the mat. This simple sentence is often used to teach basic sentence structure in English grammar."
+msgstr "Кот сидел на коврике. Это простое предложение часто используется для обучения базовой структуре предложений в английской грамматике."
+
+msgid "E=mc². This famous equation by Albert Einstein establishes the relationship between mass (m) and energy (E), with c representing the speed of light in a vacuum."
+msgstr "E=mc². Это знаменитое уравнение Альберта Эйнштейна устанавливает связь между массой (m) и энергией (E), где c представляет скорость света в вакууме."
+
+msgid "The Great Wall of China is one of the greatest wonders of the world. It was built to protect Chinese states and empires against the raids and invasions of the nomadic groups of the Eurasian Steppe."
+msgstr "Великая китайская стена является одним из величайших чудес света. Она была построена для защиты китайских государств и империй от набегов и вторжений кочевых групп Евразийской степи."
+
+msgid "Curiosity killed the cat, but satisfaction brought it back. This proverb warns of the dangers of unnecessary investigation or experimentation, but also highlights the rewarding nature of discovery."
+msgstr "Любопытство убило кошку, но удовлетворение вернуло ее к жизни. Эта пословица предостерегает от опасностей ненужных исследований или экспериментов, но также подчеркивает наградную природу открытий."
+
+msgid "The universe is under no obligation to make sense to you. This quote by Neil deGrasse Tyson underscores the complexity and mystery of the cosmos."
+msgstr "Вселенная не обязана быть понятной для вас. Эта цитата Нила Деграсса Тайсона подчеркивает сложность и загадочность космоса."
+
+msgid "In the end, we will remember not the words of our enemies, but the silence of our friends. This quote by Martin Luther King Jr. highlights the importance of support and solidarity."
+msgstr "В конце концов, мы будем помнить не слова наших врагов, а молчание наших друзей. Эта цитата Мартина Лютера Кинга-младшего подчеркивает важность поддержки и солидарности."
+
+msgid "Success is not final, failure is not fatal: It is the courage to continue that counts. This quote by Winston Churchill emphasizes perseverance and resilience."
+msgstr "Успех не является окончательным, неудача не смертельна: важно мужество продолжать. Эта цитата Уинстона Черчилля подчеркивает настойчивость и стойкость."
+
+msgid "The only limit to our realization of tomorrow is our doubts of today. This quote by Franklin D. Roosevelt encourages overcoming self-doubt to achieve future goals."
+msgstr "Единственный предел к нашему достижению завтрашнего дня — это наши сегодняшние сомнения. Эта цитата Франклина Д. Рузвельта побуждает преодолевать сомнения, чтобы достичь будущих целей."
+
+msgid "To infinity and beyond! This catchphrase from Buzz Lightyear in Toy Story inspires boundless exploration and adventure."
+msgstr "К бесконечности и дальше! Эта крылатая фраза Базза Лайтера из «Истории игрушек» вдохновляет на бескрайние исследования и приключения."
+
+msgid "The only way to do great work is to love what you do. This quote by Steve Jobs underscores the importance of passion in achieving excellence."
+msgstr "Единственный способ делать великую работу — это любить то, что ты делаешь. Эта цитата Стива Джобса подчеркивает важность страсти для достижения совершенства."
+
+msgid "The greatest glory in living lies not in never falling, but in rising every time we fall. This quote by Nelson Mandela celebrates resilience and persistence."
+msgstr "Величайшая слава в жизни заключается не в том, чтобы никогда не падать, а в том, чтобы подниматься каждый раз, когда мы падаем. Эта цитата Нельсона Манделы воспевает стойкость и настойчивость."
+
+msgid "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world. This quote by Albert Einstein highlights the power of creativity."
+msgstr "Воображение важнее знания. Знание ограничено, тогда как воображение охватывает весь мир. Эта цитата Альберта Эйнштейна подчеркивает силу творчества."
+
+msgid "Life is what happens when you’re busy making other plans. This quote by John Lennon reminds us to appreciate the present moment."
+msgstr "Жизнь – это то, что происходит, пока вы заняты составлением других планов. Эта цитата Джона Леннона напоминает нам о важности ценить настоящий момент."
+
+msgid "The best way to predict the future is to invent it. This quote by Alan Kay encourages proactive innovation."
+msgstr "Лучший способ предсказать будущее – это создать его. Эта цитата Алана Кея вдохновляет на активные инновации."
+
+msgid "Do or do not, there is no try. This quote by Yoda from Star Wars emphasizes commitment and determination."
+msgstr "Делай или не делай, нет попыток. Эта цитата Йоды из Звездных войн подчеркивает важность приверженности и решительности."
+
+msgid "The more that you read, the more things you will know. The more that you learn, the more places you’ll go. This quote by Dr. Seuss promotes the value of education."
+msgstr "Чем больше вы читаете, тем больше вы узнаете. Чем больше вы учитесь, тем дальше вы пойдете. Эта цитата доктора Сьюза подчеркивает ценность образования."
+
+msgid "The purpose of our lives is to be happy. This simple yet profound quote by Dalai Lama emphasizes the importance of happiness."
+msgstr "Цель нашей жизни – быть счастливыми. Эта простая, но глубокая цитата Далай-ламы подчеркивает важность счастья."
+
+msgid "It always seems impossible until it’s done. This quote by Nelson Mandela inspires perseverance in the face of challenges."
+msgstr "Всегда кажется невозможным, пока это не сделано. Эта цитата Нельсона Манделы вдохновляет на упорство перед лицом трудностей."
+
+msgid "I have not failed. I’ve just found 10,000 ways that won’t work. This quote by Thomas Edison celebrates the process of learning through experimentation."
+msgstr "Я не потерпел неудачу. Я просто нашел 10 000 способов, которые не работают. Эта цитата Томаса Эдисона воспевает процесс обучения через эксперименты."
+
+msgid "If you want to go fast, go alone. If you want to go far, go together. This African proverb highlights the value of collaboration."
+msgstr "Если хочешь идти быстро, иди один. Если хочешь идти далеко, иди вместе. Эта африканская пословица подчеркивает ценность сотрудничества."
+
+msgid "The only thing standing between you and your goal is the story you keep telling yourself. This quote by Jordan Belfort encourages self-belief."
+msgstr "Единственное, что стоит между вами и вашей целью, – это история, которую вы постоянно себе рассказываете. Эта цитата Джордана Белфорта вдохновляет на веру в себя."
+
+msgid "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change. This quote by Charles Darwin emphasizes adaptability."
+msgstr "Выживает не самый сильный или самый умный вид, а тот, кто наиболее приспосабливается к изменениям. Эта цитата Чарльза Дарвина подчеркивает важность адаптивности."
+
+msgid "Don’t watch the clock; do what it does. Keep going. This motivational quote by Sam Levenson encourages persistence."
+msgstr "Не смотри на часы; делай то, что они делают. Продолжай двигаться. Эта мотивационная цитата Сэма Левенсона призывает к настойчивости."
+
+msgid "The greatest wealth is to live content with little. This quote by Plato reminds us that true wealth lies in contentment."
+msgstr "Величайшее богатство – жить, довольствуясь малым. Эта цитата Платона напоминает нам, что истинное богатство заключается в удовлетворенности."
+
+msgid "You must be the change you wish to see in the world. This quote by Mahatma Gandhi encourages proactive personal responsibility."
+msgstr "Ты должен быть тем изменением, которое хочешь видеть в мире. Эта цитата Махатмы Ганди призывает к активной личной ответственности."
+
+msgid "The way to get started is to quit talking and begin doing. This quote by Walt Disney inspires action."
+msgstr "Способ начать – это перестать говорить и начать делать. Эта цитата Уолта Диснея вдохновляет на действие."
+
+msgid "The best and most beautiful things in the world cannot be seen or even touched—they must be felt with the heart. This quote by Helen Keller emphasizes the importance of emotional experiences."
+msgstr "Лучшие и самые красивые вещи в мире нельзя увидеть или даже потрогать – их нужно почувствовать сердцем. Эта цитата Хелен Келлер подчеркивает важность эмоциональных переживаний."
+
+msgid "Read this text or any text during 15-60 seconds"
+msgstr "Прочитайте текст в обычном темпе (можно несколько раз) или любой другой в течение 15-60 секунд."
+
+msgid "sample speech"
+msgstr "образец речи"
+
+msgid "Add the audio you want to change. You can simulate any accent and speed. For best results, use audio without noise."
+msgstr "Вы можете имитировать любой акцент и скорость. Для лучших результатов используйте аудио без шума."
+
+msgid "Attach speech"
+msgstr "Прикрепить речь"
+
+msgid "changeable speech"
+msgstr "изменяемая речь"
+
+msgid "Enter text for voice cloning. Use one language for words and phrases; transliterate words from other languages. (Maximal numbers of symbols is"
+msgstr "Введите текст для клонирования голоса. Используйте один язык для слов и фраз; транслитерируйте слова из других языков. (Максимальное количество символов —"
+
+msgid "but you can increase in settings"
+msgstr "но вы можете увеличить это значение в настройках"
+
+msgid "clone voice"
+msgstr "клонирование голоса"
+
+msgid "Record yourself or upload an audio clip to transform speech style into a cloned version. Make sure the recorded and sample voices match in style and language. Enhance your results by using noise reduction tools."
+msgstr "Запишите свой голос или загрузите аудиоклип, чтобы преобразовать стиль речи и акцент в клонированную версию. Убедитесь, что записанный голос и образец голоса совпадают. Улучшите свои результаты, используя инструмент шумоподавления (разделитель аудио)."
+
+# enhancement.js
+msgid "Yikes! Looks like an alien format. Stick to images or videos for now."
+msgstr "Ой! Похоже на инопланетный формат. Пока придерживайтесь изображений или видео."
+
+msgid "enhancement"
+msgstr "улучшение качества"
+
+msgid "Method"
+msgstr "Метод"
+
+msgid "Resized to"
+msgstr "Размер"
+
+msgid "Enhance faces and details with Gfpgan. This powerful tool refines facial features and improves overall video quality. It adds realism and sharpness, making your videos stand out with vivid detail and lifelike appearance."
+msgstr "Улучшите лица и детали с помощью Gfpgan. Этот мощный инструмент совершенствует черты лица и улучшает общее качество видео. Он добавляет реалистичность и четкость, делая ваши видео яркими и живыми."
+
+msgid "Face boost"
+msgstr "Улучшение лица"
+
+msgid "Anime enhance"
+msgstr "Улучшение аниме"
+
+msgid "Activate Animesgan to enhance anime-like videos. This innovative feature clarifies lines and colors, bringing out the artistic essence of your videos. It smooths transitions and enhances visual clarity, ensuring your anime-style content looks its best."
+msgstr "Активируйте Animesgan для улучшения видео в стиле аниме. Инновационная функция уточняет линии и цвета, подчеркивая художественную сущность ваших видео. Она сглаживает переходы и улучшает визуальную четкость, гарантируя, что ваш контент в стиле аниме будет выглядеть наилучшим образом."
+
+msgid "Real video"
+msgstr "Реальное видео"
+
+msgid "Enable Realesrgan for real-life video enhancement. This advanced tool smoothens and clarifies videos, removing noise and enhancing overall quality. It’s perfect for video and improving visual appeal with crisp details and smooth playback."
+msgstr "Включите Realesrgan для улучшения реальных видео. Этот продвинутый инструмент сглаживает и уточняет видео, удаляя шум и повышая общее качество. Это идеально для улучшения визуальной привлекательности видео с четкими деталями и плавным воспроизведением."
+
+# face_swap.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to swap. Click on the «Find face» button and set box on person face, please!"
+msgstr "Ух ты! Похоже, вы не выбрали лицо в вашем контенте, которое нужно заменить. Нажмите кнопку «Найти лицо» и установите рамку на лицо человека, пожалуйста!"
+
+msgid "Param Pam Pam! It seems like your avatar’s face is feeling a bit missed!  Give that «Upload avatar» button a click and upload a face with some personality!"
+msgstr "Парам-пам-пам! Похоже, что лицо вашего аватара немного потеряно! Нажмите кнопку «Загрузить аватар» и загрузите лицо с характером!"
+
+msgid "Uh-oh! The width looks wonky. Double-check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "Упс! Ширина выглядит странно. Убедитесь, что это число, а не пустое значение. Возможно, нажмите «Выбрать объект» или загрузите другой файл."
+
+msgid "Pick face to swap. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для замены. Установите начало и конец для плавных изменений."
+
+msgid "Upload photo, craft avatar, choose face to swap. You’re a sculptor of non-existent personas. Done!"
+msgstr "Загрузите фото или сгенерируйте, выберите лицо для замены. Вы скульптор несуществующих персонажей."
+
+msgid "Got a sneaky suspicion about some content? Ready to sniff out those deepfakes? Just hit that button."
+msgstr "Есть подозрение насчет контента? Готовы обнаружить дипфейки? Просто нажмите анализировать."
+
+msgid "Gemini faces detection"
+msgstr "Найти близнецов"
+
+msgid "Replace all detected faces"
+msgstr "Заменить все лица"
+
+msgid "Find face"
+msgstr "Найти лицо"
+
+msgid "Upload avatar"
+msgstr "Загрузить аватар"
+
+msgid "face swap"
+msgstr "замена лица"
+
+# generation.js
+msgid "Aspect ratio"
+msgstr "Соотношение сторон"
+
+msgid "Frames per second"
+msgstr "Кадры в секунду"
+
+msgid "Reduce control strength to less depend to frames."
+msgstr "Уменьшите силу управления, чтобы меньше зависеть от кадров."
+
+msgid "Increase control strength to up depend to frames."
+msgstr "Увеличьте силу управления, чтобы больше зависеть от кадров."
+
+msgid "Describe the change you want to make"
+msgstr "Опишите изменение, которое вы хотите внести"
+
+msgid "A stuffed animal donkey grazing in a valley"
+msgstr "Мягкая игрушка осел, пасущийся в долине"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Кинематографично, солнечный день, волны разбиваются о берег пляжа"
+
+msgid "A cow grazing in a valley during the day, a UFO approaches in the distance"
+msgstr "Корова пасется в долине днем, вдалеке приближается НЛО"
+
+msgid "A flower blooming in slow motion"
+msgstr "Цветок, раскрывающийся в замедленной съемке"
+
+msgid "3D render, a raccoon holding a mini ice cream cone"
+msgstr "3D рендер, енот, держащий мини-вафельный рожок с мороженым"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "От первого лица, автомобиль, едущий в космосе и путешествующий во времени, туннель времени"
+
+msgid "2 cats in love eating a candlelit dinner of fresh fish"
+msgstr "2 кошки влюблены, едят ужин при свечах из свежей рыбы"
+
+msgid "Cinematic, a dog in a car window"
+msgstr "Кинематографично, собака в окне машины"
+
+msgid "Moody, filmic, 35mm, a doctor walking into the hospital"
+msgstr "Настроенчески, фильмовая съемка, 35мм, врач идет в больницу"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "От первого лица, автомобиль, едущий в космосе и путешествующий во времени, туннель времени"
+
+msgid "3D render, goldfish swimming in a glass container"
+msgstr "3D рендер, золотая рыбка, плавающая в стеклянной емкости"
+
+msgid "Nature documentary, jellyfish swimming in the ocean"
+msgstr "Природный документальный фильм, медузы, плавающие в океане"
+
+msgid "Cinematic, a Tibetan monk sitting in a temple on a mountain, facing camera."
+msgstr "Кинематографично, тибетский монах, сидящий в храме на горе, лицом к камере."
+
+msgid "Nature documentary, natural lighting, flamingo walking in a beautiful beach, head turning"
+msgstr "Природный документальный фильм, естественное освещение, фламинго идет по красивому пляжу, поворачивая голову"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Съемка с низкого угла, дикая западная деревня с салунами и пыльными улицами"
+
+msgid "A secret garden with a rainbow waterfall"
+msgstr "Тайный сад с радужным водопадом"
+
+msgid "Cinematic, a cowboy riding a horse on mirror-like lake, moving clouds"
+msgstr "Кинематографично, ковбой, едущий на лошади по озеру, как зеркало, с движущимися облаками"
+
+msgid "Cinematic, long tracking shot of the cliffs of Dover"
+msgstr "Кинематографично, длинный следящий кадр скал Дувра"
+
+msgid "1950s film style, a seagull on a boat"
+msgstr "Фильм 1950-х, чайка на лодке"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Кинематографично, солнечный день, волны разбиваются о берег пляжа"
+
+msgid "A woman smiling while watching fireworks"
+msgstr "Женщина улыбается, смотря на фейерверки"
+
+msgid "Beautiful sunset at the beach, silhouette of a couple walking by the seashore against sunset, beautiful scenery"
+msgstr "Красивый закат на пляже, силуэт пары, идущей вдоль берега на фоне заката, красивый пейзаж"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Съемка с низкого угла, дикая западная деревня с салунами и пыльными улицами"
+
+msgid "Anime, a boy and a girl sitting on the grass under the starry sky"
+msgstr "Аниме, мальчик и девочка сидят на траве под звездным небом"
+
+msgid "Nature documentary, close up of a lizard in a desert"
+msgstr "Природный документальный фильм, крупный план ящерицы в пустыне"
+
+msgid "1940s newsreel footage, a soldier stands watch on a rocky hill, facing camera"
+msgstr "Новостные кадры 1940-х, солдат стоит на посту на каменистом холме, лицом к камере"
+
+msgid "Anime, a woman walking home with groceries, wide angle"
+msgstr "Аниме, женщина идет домой с продуктами, широкоугольный кадр"
+
+msgid "Watercolor style of a baby elephant drinking water from a lake in the desert"
+msgstr "Акварельный стиль, детеныш слона пьет воду из озера в пустыне"
+
+msgid "Futuristic film of a man walking on a street in Paris, cinematic, symmetric composition"
+msgstr "Футуристический фильм о человеке, идущем по улице в Париже, кинематографичный, симметричный состав"
+
+msgid "Claymation, stop motion, a rat sitting on a huge block of cheese"
+msgstr "Клеймейшн, покадровая анимация, крыса сидит на огромном куске сыра"
+
+msgid "Prompt"
+msgstr "Запрос"
+
+msgid "It’s like describe a genie your wishes so they can conjure up just what you need!"
+msgstr "Опишите его так, как будто описываете джину свои желания, чтобы он сотворил именно то, что вам нужно!"
+
+msgid "(Optional) Describe your prompt for generation, or leave it blank for a random request. You can use (word) to emphasize specific requests and word:non-integers number from 0 to 1 for request intensity. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "(Опционально) Опишите свой запрос для генерации или оставьте его пустым для случайного запроса. Вы можете использовать (слово) для акцента на определенных запросах и слово:нецелые числа от 0 до 1 для интенсивности запроса. Например, dog:0.8, cat:0.2 в одном запросе. Максимальное количество символов — 3000."
+
+msgid "Generation... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Генерация... Кнопки заблокированы до завершения. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Ready to have some fun? Complete the image and add new elements."
+msgstr "Готовы повеселиться? Завершите изображение и добавьте новые элементы."
+
+msgid "Something wrong...During create task. Tap on the screen to view details."
+msgstr "Что-то пошло не так... При создании задачи. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Authorization failed. Access is available only with a subscription. Please review available plans and any discounts."
+msgstr "Ошибка авторизации. Доступ доступен только с подпиской. Пожалуйста, ознакомьтесь с доступными планами и возможными скидками."
+
+msgid "Is not valid format."
+msgstr "Некорректный формат."
+
+msgid "Image will be generate."
+msgstr "Изображение будет сгенерировано."
+
+msgid "Oops! Something went wrong. Please click submit again after some time. Tap on the screen to view details."
+msgstr "Ой! Что-то пошло не так. Пожалуйста, нажмите «Отправить» снова через некоторое время. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Oops! An unexpected error occurred. Tap on the screen to view details."
+msgstr "Ой! Произошла непредвиденная ошибка. Нажмите на экран, чтобы увидеть детали."
+
+msgid "generation"
+msgstr "генерация контента"
+
+# lip_sync.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to animate. Click on the «Find face» button and set box on person face, please!"
+msgstr "Ух ты! Похоже, вы не выбрали лицо на вашем контенте для анимации. Нажмите кнопку «Найти лицо» и обведите лицо человека, пожалуйста!"
+
+msgid "Hmm... The height seems fishy. Verify it’s a number and not empty. Check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "Хмм... Высота кажется подозрительной. Проверьте, что это число, а не пустое значение. Возможно, нажмите «Выбрать объект» или загрузите другой файл."
+
+msgid "Overlay audio"
+msgstr "Наложить аудио"
+
+msgid "Smooth defects"
+msgstr "Сгладить дефекты"
+
+msgid "Pick face to animate. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для анимации. Установите начало и конец для плавных изменений."
+
+msgid "For best results, use in Lip Sync a high-quality audio without noise."
+msgstr "Для наилучших результатов синхронизации губ используйте аудио без шума."
+
+msgid "lip sync"
+msgstr "синхронизации губ"
+
+# live_portrait.js
+msgid "Expression"
+msgstr "Выражение"
+
+msgid "Head pose"
+msgstr "Голова"
+
+msgid "Lip"
+msgstr "Губы"
+
+msgid "Eyes"
+msgstr "Глаза"
+
+msgid "Animate"
+msgstr "Анимировать"
+
+msgid "Pick face to live. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для анимации. Установите начало и конец для плавных изменений."
+
+msgid "Upload avatar video to repeat movement. You’re a sculptor of non-existent personas. Done!"
+msgstr "Загрузите видео с лицом для повторения движения. Вы скульптор несуществующих движений."
+
+msgid "Manually retargeting"
+msgstr "Ручная обработка"
+
+msgid "Wow! Somthing went wrong. Because of scenes can not be empty. Please try another file."
+msgstr "Ух ты! Что-то пошло не так. Сцены не могут быть пустыми. Пожалуйста, попробуйте другой файл."
+
+msgid "Scanning..."
+msgstr "Сканирование..."
+
+msgid "Retargeting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Обработка... Кнопки заблокированы до завершения. Нажмите на экран, чтобы просмотреть детали."
+
+msgid "Blinking"
+msgstr "Моргание"
+
+msgid "Silent"
+msgstr "Тишина"
+
+msgid "Nodding"
+msgstr "Кивание"
+
+msgid "Shaking"
+msgstr "Покачивание"
+
+msgid "Flirt"
+msgstr "Флирт"
+
+msgid "Yikes! Looks like an alien format. Stick to videos or image for now."
+msgstr "Ух ты! Похоже, это инопланетный формат. Пока что используйте видео или изображения."
+
+msgid "Something wrong."
+msgstr "Что-то не так."
+
+msgid "live portrait"
+msgstr "живого портрета"
+
+# tour.min.js
+msgid "Don’t show tips on startup"
+msgstr "Не показывать подсказки при запуске"
+
+# remove_background.js
+msgid "Oopsie! Seems like you didn’t pick an object in your content. Click on the «Select object» button and choose any object from the media, please!"
+msgstr "Упс! Похоже, вы не выбрали объект в вашем контенте. Нажмите на кнопку «Выбрать объект» и выберите любой объект из медиатеки."
+
+msgid "Background color"
+msgstr "Цвет фона"
+
+msgid "Reverse select"
+msgstr "Инверсия области"
+
+msgid "Let the neural network handle it, then click to include with the right, exclude with the left. Don’t forget to switch brushes."
+msgstr "Щелкните правой кнопкой для включения, левой для исключения области. Не забудьте переключить кисти."
+
+msgid "Select object"
+msgstr "Выбрать объект"
+
+msgid "remove background"
+msgstr "удаления фона"
+
+# remove_object.js
+msgid "remove object"
+msgstr "удаления объектов"
+
+msgid "Enable text indication to highlight selected areas while removing text instead of objects from your chosen field."
+msgstr "Включите индикатор текста, чтобы выделить выбранные области при удалении текста, а не объектов, из вашего выбранного поля."
+
+msgid "Indicate text"
+msgstr "Указать текст"
+
+msgid "Improved level"
+msgstr "Продвинутый алгоритм"
+
+msgid "Text bothering you? Just draw a box around it. But the text outside the frame will remain. Easy as pie!"
+msgstr "Текст мешает? Просто нарисуйте коробку вокруг него. Текст за пределами рамки останется. Просто как пирог!"
+
+msgid "Select text"
+msgstr "Выбрать текст"
+
+# restyle.js
+msgid "Looks like you forgot to pick an object to restyle, or hey, why not go all out and change everything? Give it another shot!"
+msgstr "Похоже, вы забыли выбрать объект для изменения стиля, или почему бы не изменить всё? Попробуйте ещё раз!"
+
+msgid "Uh-oh! This is strange magic, but the object is not selected. Try selecting objects again."
+msgstr "Ой! Это странная магия, но объект не выбран. Попробуйте выбрать объект снова."
+
+msgid "Diffusion parameters is empty."
+msgstr "Параметры диффузии пусты."
+
+msgid "Oops. Something wrong... Try another file."
+msgstr "Ой, что-то не так... Попробуйте другой файл."
+
+msgid "Oops. Something wrong... Try another layer file."
+msgstr "Ой, что-то не так... Попробуйте другой файл для добавления в слой."
+
+msgid "Activate the restyle background option to refresh the entire frame. This setting ensures that all elements are redrawn with the neural network, providing a seamless."
+msgstr "Активируйте опцию изменения фона, чтобы обновить весь кадр. Настройка гарантирует, что все элементы будут перерисованы нейросетью, обеспечивая плавность."
+
+msgid "Restyle background"
+msgstr "Изменить фон"
+
+msgid "Interval generation"
+msgstr "Интервал генерации"
+
+msgid "Alright, listen up! The generation interval is like setting the tempo for your video’s style dance-off. Got a video with dynamic moves? Drop that value to crank up the tempo. It’s like your video’s heartbeat - more transitions mean a faster beat, so you’ll want a lower value. Nail that interval, and watch your video steal the spotlight in style!"
+msgstr "Итак, внимание! Интервал генерации — это как установка темпа для танцевального стиля вашего видео. Есть видео с динамичными движениями? Уменьшите это значение, чтобы увеличить темп. Это как пульс вашего видео — больше переходов означает более быстрый ритм, поэтому вам нужно выбрать более низкое значение. Подберите правильный интервал, и ваше видео станет потрясающим!"
+
+msgid "Threshold scene"
+msgstr "Погрешность перехода"
+
+msgid "Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!"
+msgstr "Итак, внимание! Уменьшите погрешность, чтобы ослабить обнаружение переходов между сценами. Подберите правильный порог и наблюдайте, как ваша новая сцена плавно переходит!"
+
+msgid "Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!"
+msgstr "Итак, внимание! Увеличьте погрешность, чтобы повысить точность обнаружения переходов между сценами. Подберите правильный порог и наблюдайте, как ваша новая сцена плавно переходит!"
+
+msgid "Control strength"
+msgstr "Control strength"
+
+msgid "Style"
+msgstr "Стиль"
+
+msgid "Add a new custom Stable Diffusion 1.5 model to the configuration file located at"
+msgstr "Добавьте новую пользовательскую модель Stable Diffusion 1.5 в конфигурационный файл, расположенный в каталоге"
+
+msgid "Modify specific objects or entire scenes with simple text prompts. Experience advanced visual manipulation!"
+msgstr "Изменяйте конкретные объекты или целые сцены с помощью простых текстовых команд."
+
+msgid "Control restyle"
+msgstr "Ручной рестайлинг"
+
+msgid "Scene transitions with frames interval"
+msgstr "Переходы между сценами с интервалом кадров"
+
+msgid "and the first and last frame will be received."
+msgstr "и будут получены первый и последний кадры."
+
+msgid "Something wrong...During create task."
+msgstr "Что-то не так... Во время создания задачи."
+
+msgid "Inpainting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Inpainting... Кнопки заблокированы до завершения. Нажмите на экран, чтобы увидеть подробности."
+
+msgid "diffuser"
+msgstr "рестайлинга контента"
+
+# separator.js
+msgid "separator"
+msgstr "аудио разделителя"
+
+# login.js
+msgid "Sign in"
+msgstr "Войти"
+
+msgid "Token"
+msgstr "Токен"
+
+msgid "Don’t have an account for Wunjo Pro?"
+msgstr "Нет аккаунта?"
+
+msgid "Sign up"
+msgstr "Регистрация"
+
+msgid "This feature is premium and available after login. New users get a"
+msgstr "Премиум функционал доступен после авторизации. Новые пользователи получают"
+
+msgid "free tokens"
+msgstr "бесплатные токены"
+
+msgid "to explore all features."
+msgstr "для ознакомления со всеми возможностями."
+
+msgid "Turn on the internet and reload"
+msgstr "Включите интернет и перезагрузите"
+
+msgid "Invalid login credentials"
+msgstr "Неверные учетные данные"
+
+msgid "An unexpected error has occurred. Please contact support@wunjo.online"
+msgstr "Произошла непредвиденная ошибка. Пожалуйста, свяжитесь с support@wunjo.online"
+
+msgid "Subscription expired. Renew your license key in wunjo.online."
+msgstr "Подписка истекла. Обновите свой лицензионный токен на wunjo.online."
+
+msgid "The license key is not valid"
+msgstr "Лицензионный токен недействителен"
+
+# Generation image composition
+msgid "Generate image composition"
+msgstr "Создать композицию изображений"
+
+msgid "Width"
+msgstr "Ширина"
+
+msgid "Height"
+msgstr "Высота"
+
+msgid "Image composition"
+msgstr "Композиция изображений"
+
+msgid "Generate an image composition by prompt and images"
+msgstr "Сгенерируйте композицию изображения по подсказке и изображениям"
+
+msgid "Create photos from images and a prompt. Modify age, environment, and characters while preserving identity with realism."
+msgstr "Создавайте фотографии из изображений и подсказки. Измените возраст, окружение и персонажей, сохраняя при этом индивидуальность с реализмом."
+
+msgid "Use the prompt field to describe your composition. Click on an image to insert its placeholder into the text automatically. You can add as many images as you like. Example placeholder format: A man image_1 in t-short image_2. Also you can use coefficient. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "Используйте поле подсказки для описания вашей композиции. Щелкните на изображение, чтобы автоматически вставить его в текст. Вы можете добавить столько изображений, сколько пожелаете. Пример формата заполнителя: Мужчина image_1 в футболке image_2. Также можно использовать коэффициенты. Например, dog:0.8, cat:0.2 в одной подсказке. Максимальное количество символов — 3000."
+
+msgid "sec"
+msgstr "сек"
+
+# Update 2.0.7
+msgid "Chat"
+msgstr "Чат"
+
+msgid "automatically edits videos <br> and answers questions."
+msgstr "нейронная сеть находит автоматически, редактирует видео <br> и отвечает на вопросы."
+
+msgid "The neural network now edits a long video into a short one with highlights and answers questions about them, as well as recommends music."
+msgstr "Нейросеть редактирует длинное видео в короткое с основными моментами и отвечает на вопросы о видео."
+
+msgid "Edit a long video into a short one with highlights"
+msgstr "Отредактируйте длинное видео в короткое с основными моментами"
+
+msgid "Ready to analyze the video and answer all the questions!"
+msgstr "Анализ видео, чтобы получить ответы на все вопросы!"
+
+msgid "If you want to slow things down a bit, choose a longer segment length. That'll give you fewer, longer chunks, which means less rush, more moments to shine, but a bit less of that fast-paced flow. It's all about balancing energy and detail, so pick what suits your video vibe best!"
+msgstr "Если вы хотите немного замедлить процесс, выберите более длинную продолжительность сегмента. Это даст вам меньше, но более длинных частей, что означает меньше спешки, больше моментов для ярких событий, но немного меньше быстрого темпа. Важно найти баланс между энергией и деталями, поэтому выберите то, что лучше всего подходит для настроения вашего видео!"
+
+msgid "Alright, time to set the pace! The segment length is like choosing the perfect stride for your video’s rhythm. Go with a shorter segment length, and you'll get quick, snappy video chunks — more dynamic, more action, keeping the energy high."
+msgstr "Хорошо, время задать ритм! Длина сегмента — это как выбор идеального шага для ритма вашего видео. Выберите более короткую длину сегмента, и вы получите быстрые, динамичные части видео — больше динамики, больше действия, поддерживающее высокий уровень энергии."
+
+msgid "Segment length"
+msgstr "Длина сегмента"
+
+msgid "You are a highlight editor. List archetypal dramatic moments that would make compelling highlights if they appear in the video. Each moment should be specific enough to be recognizable but generic enough to potentially exist in other videos of this type."
+msgstr "Вы — редактор ярких моментов. Перечислите архетипичные драматические моменты, которые могут стать интересными яркими моментами, если они появятся в видео. Каждый момент должен быть достаточно специфичным, чтобы его можно было распознать, но достаточно универсальным, чтобы он мог встречаться и в других видео этого типа."
+
+msgid "You are a helpful visual-language assistant that can understand videos and edit. You are tasked helping the user to create highlight reels for videos. Highlights should be rare and important events in the video in question."
+msgstr "Вы — полезный ассистент визуального языка, который может понимать видео и редактировать их. Ваша задача — помочь пользователю создавать нарезки ярких моментов для видео. Яркие моменты должны быть редкими и важными событиями в видео."
+
+msgid "(Optional) Describe how to edit a video"
+msgstr "(Необязательно) Опишите, как редактировать видео"
+
+msgid "Yikes! Where is video? Attach its and continue."
+msgstr "Ой! Где видео? Прикрепите его и продолжите."
+
+# modal.html, generation.html, index.html, highlights.html
+msgid "Smart crop"
+msgstr "Умная обрезка"
+
+msgid "Enable smart crop to create videos for YouTube, Tik Tok, Instagram, etc. Allows you to change any aspect ratio for your video using artificial intelligence and focus on interest objects and speakers."
+msgstr "Включите интеллектуальную обрезку для создания видео для YouTube, Tik Tok, Instagram и т. д. Позволяет изменять любое соотношение сторон видео с помощью искусственного интеллекта и фокусироваться на интересующих объектах и говорящих. Идеально для подкастов."
+
+msgid "Aspect ratio select"
+msgstr "Выбор соотношения сторон"
+
+msgid "An custom artificial intelligence system analyzes video frames to detect key subjects and speaking individuals, aligning lip movements with speech to focus on the most meaningful parts of the content. Perfect to create preview and shorts video."
+msgstr "Специальная система искусственного интеллекта анализирует видеокадры, выявляя ключевые объекты и говорящих людей, синхронизируя движения губ с речью, чтобы сосредоточиться на наиболее значимых фрагментах контента. Идеально подходит для создания превью и коротких видеороликов."
+
+msgid "Highlights"
+msgstr "Яркие моменты"
+
+msgid "Drag and drop a file or select one. You can upload a video and write how to edit the video, but the latter is not necessary. For instructions on how to use the Highlights module, check out this"
+msgstr "Перетащите файл или выберите его. Вы можете загрузить видео и написать, как его отредактировать, но это не обязательно. Для инструкций по использованию модуля «Яркие моменты» посмотрите это"
+
+msgid "Your answer will appear in this textarea."
+msgstr "Ваш ответ появится в этом поле для ввода."
+
+msgid "You can ask what is happening in the video or its segment, key takeaways, which sounds to use for editing, or any other question based on the video. The maximum number of symbols is 3000."
+msgstr "Вы можете задать вопросы о том, что происходит в видео или его сегменте, о ключевых моментах, о звуках, которые можно использовать для редактирования, или любой другой вопрос, связанный с видео. Максимальное количество символов — 3000."
+
+msgid "What is your question?"
+msgstr "Есть вопросы?"
+
+msgid "Number of inference steps"
+msgstr "Количество шагов генерации"
+
+msgid "Guidance scale"
+msgstr "Guidance scale"
+
+msgid "Upload an image with a face to make some magic happen!"
+msgstr "Загрузите изображение с лицом, чтобы сделать магию!"
+
+msgid "Metadata"
+msgstr "Метаданные"
+
+msgid "Preview of the request"
+msgstr "Предпросмотр запроса"
+
+msgid "Parameters that do not depend on files will be applied. If a parameter is related to a file (e.g., its size, duration, or selected face), it cannot be used without the file."
+msgstr "Будут применяться только параметры, не зависящие от файлов. Если параметр связан с файлом (например, его размер, длительность или выбранное лицо), он не может быть использован без файла."
+
+msgid "Assistant"
+msgstr "Помощник"
+
+msgid "Ready to transcribe or to analyze the content and answer all the questions!"
+msgstr "Расшифровывает или анализирует содержание и отвечает на все вопросы!"
+
+msgid "Transcribe"
+msgstr "Транскрибировать"
+
+msgid "Visual Method"
+msgstr "Визуальный метод"
+
+msgid "The method works with video by analyzing visual elements, remembering all movements, colors, and objects. It’s ideal for sports events or movies."
+msgstr "Метод работает с видео, анализируя визуальные элементы и запоминая движения, цвета и объекты. Идеален для спортивных событий или фильмов."
+
+msgid "Visual"
+msgstr "Визуальная модель"
+
+msgid "Sound Method"
+msgstr "Звуковой метод"
+
+msgid "The method works with audio based on speech, capturing what people say. Perfect for podcasts, interviews, or news."
+msgstr "Метод работает с аудио, ориентируясь на речь и фиксируя сказанное. Подходит для подкастов, интервью или новостей."
+
+msgid "Sound"
+msgstr "Звуковая модель"
+
+msgid "Monitor the user is completed tasks throughout the day."
+msgstr "Отслеживайте историю выполненных задач пользователя за день."
+
+msgid "No tasks found"
+msgstr "Задачи не найдены"
+
+msgid "There are no tasks in the queue."
+msgstr "В очереди нет задач."
+
+msgid "Got an idea for a feature? Drop it in our"
+msgstr "Есть идея для функции? Поделитесь ею в"
+
+msgid "History session"
+msgstr "История сеанса"
+
+msgid "You can see your session to always have quick access to generations."
+msgstr "Вы можете просматривать сеанс, чтобы всегда иметь быстрый доступ к сгенерированным результатам."
+
+msgid "Maximum duration (min)"
+msgstr "Продолжительность (мин)"
+
+msgid "Click any banner to start progress"
+msgstr "Нажмите на баннер, чтобы начать прогресс"
+
+msgid "Waiting"
+msgstr "Ожидание"
+
+msgid "Subscribe to unlock"
+msgstr "Подпишитесь для разблокировки"
+
+msgid "free"
+msgstr "бесплатно"
+
+msgid "day"
+msgstr "день"
+
+msgid "Watch ad"
+msgstr "Посмотреть рекламу"
+
+msgid "Monthly limit reached"
+msgstr "Достигнут месячный лимит"
+
+msgid "Cut"
+msgstr "Вырезать"
+
+msgid "Smart cutter"
+msgstr "Умная обрезка файла"
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file. Click again to deselect."
+msgstr "После появления текста выделите слова или фразы, чтобы выбрать фрагменты видео или аудио для редактирования медиафайла. Щелкните или выделите ещё раз, чтобы снять выделение."
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file."
+msgstr "После появления текста выделите слова или фразы, чтобы выбрать фрагменты видео или аудио для редактирования медиафайла."
+
+msgid "Processing... A file timestamps is on its way."
+msgstr "Обработка... Файл с временными метками в пути."
+
+msgid "No speech found in a media."
+msgstr "В файле речи не обнаружено."
+
+msgid "Want to try the full experience?"
+msgstr "Хотите попробовать расширенные возможности?"
+
+msgid "Every month, you can activate all premium features for free and get early access to new updates — download the latest version from"
+msgstr "Каждый месяц вы можете бесплатно активировать полный функционал и получать ранние обновления — загрузите актуальную версию с"
+
+msgid "Open"
+msgstr "Открыть"
+
+msgid "Follow the author’s channel to stay up to date with new features and releases."
+msgstr "Подписывайтесь на канал автора, чтобы быть в курсе новинок и обновлений."

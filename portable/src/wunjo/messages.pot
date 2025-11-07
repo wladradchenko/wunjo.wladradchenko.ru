@@ -1,0 +1,2159 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-10 18:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+# loading.html
+msgid "System is preparing"
+msgstr ""
+
+msgid "NOTE"
+msgstr ""
+
+msgid "To ensure proper startup, run the application as"
+msgstr ""
+
+msgid "Loading the necessary modules may take a few moments. Please wait while everything is being set up."
+msgstr ""
+
+#: templates/404.html:83
+msgid "Page not found"
+msgstr ""
+
+#: templates/404.html:84
+msgid "Go to the App"
+msgstr ""
+
+#: templates/404.html:93 templates/faq.html:379 templates/profile.html:283
+#: templates/settings.html:165
+msgid "All rights reserved"
+msgstr ""
+
+#: templates/app.html:10
+msgid "Navigation"
+msgstr ""
+
+#: templates/app.html:10
+msgid ""
+"In this section, you can check the current version status or any update "
+"indications. Access the «Workspace» by clicking on it, where you’ll find "
+"various modules, settings, your profile, along with tutorials, contact "
+"information for the author, and news updates. Alternatively, clicking on "
+"«Wunjo» will display information about the ongoing processing tasks, "
+"known as the log."
+msgstr ""
+
+#: templates/app.html:17
+msgid "Lite settings"
+msgstr ""
+
+#: templates/app.html:17
+msgid ""
+"Open settings. Customize the module to suit your needs. You can adjust "
+"the cache directory, switch processors, select the number of users and "
+"tasks, and much more. Be sure to review all the settings."
+msgstr ""
+
+#: templates/app.html:24
+msgid "The cache folder"
+msgstr ""
+
+#: templates/app.html:24 templates/components/modal.html:1767
+#: templates/components/modal.html:1768 templates/components/modal.html:1769
+msgid "GB"
+msgstr ""
+
+#: templates/app.html:24
+msgid "click"
+msgstr ""
+
+#: templates/app.html:24
+msgid "size in settings. Downloaded models can occupy large amounts of disk space."
+msgstr ""
+
+#: templates/app.html:26 templates/profile.html:5 templates/profile.html:30
+msgid "Profile"
+msgstr ""
+
+#: templates/app.html:27 templates/components/modal.html:1699
+#: templates/settings.html:5 templates/settings.html:24
+msgid "Settings"
+msgstr ""
+
+#: templates/app.html:28 templates/faq.html:5
+msgid "FAQ"
+msgstr ""
+
+#: templates/app.html:32 templates/index.html:42 templates/lip_sync.html:73
+#: templates/live_portrait.html:5
+msgid "Live portrait"
+msgstr ""
+
+#: templates/app.html:33 templates/face_swap.html:5
+#: templates/generation.html:484 templates/index.html:43
+msgid "Face swap"
+msgstr ""
+
+#: templates/app.html:34 templates/face_swap.html:39 templates/index.html:44
+#: templates/lip_sync.html:5 templates/live_portrait.html:618
+msgid "Lip sync"
+msgstr ""
+
+#: templates/app.html:35 templates/enhancement.html:5
+#: templates/face_swap.html:48 templates/generation.html:475
+#: templates/index.html:45 templates/live_portrait.html:627
+#: templates/remove_object.html:45
+msgid "Enhancement"
+msgstr ""
+
+#: templates/app.html:36 templates/index.html:46 templates/remove_object.html:5
+msgid "Remove object"
+msgstr ""
+
+#: templates/app.html:37 templates/index.html:47
+#: templates/remove_background.html:5
+msgid "Remove background"
+msgstr ""
+
+#: templates/app.html:39 templates/generation.html:5
+msgid "Generation"
+msgstr ""
+
+#: templates/app.html:40 templates/components/modal.html:1767
+#: templates/restyling.html:5
+msgid "Restyling"
+msgstr ""
+
+#: templates/app.html:42 templates/clone_voice.html:5 templates/index.html:50
+msgid "Clone voice"
+msgstr ""
+
+#: templates/app.html:43 templates/lip_sync.html:82 templates/separator.html:5
+msgid "Separator"
+msgstr ""
+
+#: templates/app.html:45 templates/content.html:5 templates/index.html:5
+msgid "Workspace"
+msgstr ""
+
+#: templates/app.html:62
+msgid "By using Wunjo, you agree to the"
+msgstr ""
+
+#: templates/app.html:62
+msgid "EULA"
+msgstr ""
+
+#: templates/app.html:62 templates/login.html:59 templates/preload.html:141
+msgid "and"
+msgstr ""
+
+#: templates/app.html:62 templates/login.html:60 templates/preload.html:142
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/app.html:63
+msgid "Made by"
+msgstr ""
+
+#: templates/clone_voice.html:22
+msgid "What text should be read?"
+msgstr ""
+
+#: templates/clone_voice.html:23
+msgid ""
+"The text might look a little lost in translation without a language "
+"chosen in the Parameters by Footer. Just sayin’. Now is set"
+msgstr ""
+
+#: templates/clone_voice.html:27 templates/generation.html:112
+msgid "Apply"
+msgstr ""
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid "Calendar"
+msgstr ""
+
+#: templates/clone_voice.html:35 templates/enhancement.html:17
+#: templates/face_swap.html:21 templates/generation.html:492
+#: templates/lip_sync.html:21 templates/live_portrait.html:21
+#: templates/remove_background.html:23 templates/remove_object.html:27
+#: templates/restyling.html:23 templates/separator.html:17
+msgid ""
+"You can select specific dates or date ranges to filter the content you "
+"have previously created."
+msgstr ""
+
+#: templates/clone_voice.html:37 templates/components/modal.html:579
+#: templates/enhancement.html:19 templates/face_swap.html:23
+#: templates/generation.html:494 templates/lip_sync.html:23
+#: templates/live_portrait.html:23 templates/remove_background.html:25
+#: templates/remove_object.html:29 templates/restyling.html:25
+#: templates/separator.html:19
+msgid "Today"
+msgstr ""
+
+#: templates/clone_voice.html:91 templates/enhancement.html:70
+#: templates/face_swap.html:104 templates/lip_sync.html:139
+#: templates/live_portrait.html:685 templates/remove_background.html:76
+#: templates/remove_object.html:99 templates/restyling.html:471
+#: templates/separator.html:70
+msgid "Upload file"
+msgstr ""
+
+#: templates/clone_voice.html:93
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. About module"
+" Clone Voice, look this"
+msgstr ""
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "tutorial"
+msgstr ""
+
+#: templates/clone_voice.html:93 templates/enhancement.html:72
+#: templates/face_swap.html:106 templates/generation.html:554
+#: templates/lip_sync.html:141 templates/live_portrait.html:687
+#: templates/remove_background.html:78 templates/remove_object.html:101
+#: templates/restyling.html:473 templates/separator.html:72
+msgid "Briefly"
+msgstr ""
+
+#: templates/clone_voice.html:93
+msgid ""
+"All red blocks should turn green. Also, use the toggle and make sure to "
+"select the right clone language before pressing"
+msgstr ""
+
+#: templates/content.html:49
+msgid "Date Created"
+msgstr ""
+
+#: templates/content.html:57
+msgid "Control panel"
+msgstr ""
+
+#: templates/content.html:57
+msgid ""
+"In the file manager, you have the ability to delete, open, and rename "
+"content. Additionally, you can utilize features such as redo, undo, "
+"refresh, and return to the home directory for efficient management of "
+"your files."
+msgstr ""
+
+#: templates/content.html:62 templates/index.html:21
+msgid "Explore"
+msgstr ""
+
+#: templates/content.html:63 templates/index.html:22
+msgid "Content"
+msgstr ""
+
+#: templates/content.html:72
+msgid "Open"
+msgstr ""
+
+#: templates/components/modal.html:118 templates/components/modal.html:381
+#: templates/components/modal.html:497 templates/components/view.html:107
+#: templates/components/view.html:220 templates/components/view.html:415
+#: templates/content.html:77
+msgid "Rename"
+msgstr ""
+
+#: templates/components/modal.html:123 templates/components/modal.html:386
+#: templates/components/modal.html:502 templates/components/view.html:420
+#: templates/content.html:82
+msgid "Delete"
+msgstr ""
+
+#: templates/components/modal.html:142 templates/components/modal.html:405
+#: templates/components/modal.html:521 templates/components/view.html:439
+#: templates/content.html:96
+msgid "Option"
+msgstr ""
+
+#: templates/content.html:125
+msgid "Manager view"
+msgstr ""
+
+#: templates/content.html:125
+msgid ""
+"In desktop mode, simply double-click on a folder or file to open it. In "
+"mobile mode, tap on the open button to access your folders and files. "
+"Let’s open some file in folder to display content."
+msgstr ""
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid "Filter"
+msgstr ""
+
+#: templates/enhancement.html:24 templates/face_swap.html:56
+#: templates/lip_sync.html:90 templates/live_portrait.html:635
+#: templates/remove_background.html:30 templates/remove_object.html:53
+#: templates/restyling.html:419
+msgid ""
+"You can display specific types of content such as images, videos, audio, "
+"groups of images, or all content together."
+msgstr ""
+
+#: templates/enhancement.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Enhancement module, check out "
+"this"
+msgstr ""
+
+#: templates/enhancement.html:72
+msgid "Upload file, and then press the"
+msgstr ""
+
+#: templates/components/view.html:127 templates/components/view.html:240
+#: templates/face_swap.html:36 templates/generation.html:472
+#: templates/lip_sync.html:70 templates/live_portrait.html:615
+#: templates/remove_object.html:42
+msgid "Suggest"
+msgstr ""
+
+#: templates/face_swap.html:39 templates/live_portrait.html:618
+msgid ""
+"Ready to give those lips some life? After swapping faces, it’s time to "
+"sync those pouts with the audio. Lip animation should always follow the "
+"face swap for maximum lip-syncing magic. Get ready to make those lips "
+"sing—right"
+msgstr ""
+
+#: templates/face_swap.html:39 templates/lip_sync.html:82
+#: templates/live_portrait.html:618 templates/remove_object.html:45
+msgid "here"
+msgstr ""
+
+#: templates/components/modal.html:1491 templates/components/modal.html:1498
+#: templates/components/modal.html:1728 templates/face_swap.html:43
+#: templates/generation.html:479 templates/index.html:30
+#: templates/lip_sync.html:47 templates/lip_sync.html:77
+#: templates/live_portrait.html:622
+msgid "or"
+msgstr ""
+
+#: templates/face_swap.html:48 templates/live_portrait.html:627
+msgid ""
+"Got a few facial quirks to iron out? No worries! If there are any "
+"imperfections, you’ve got the tools to smooth them out.  Remember, a big "
+"gap in resolution between avatar face and target content can throw off "
+"the vibe. For optimal outcomes, ensure consistency in resolution, or "
+"utilize the facial enhancement tools available in this"
+msgstr ""
+
+#: templates/face_swap.html:48 templates/lip_sync.html:73
+#: templates/live_portrait.html:627
+msgid "module"
+msgstr ""
+
+#: templates/face_swap.html:106
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Face Swap module, check out "
+"this"
+msgstr ""
+
+#: templates/face_swap.html:106 templates/lip_sync.html:141
+#: templates/live_portrait.html:687 templates/remove_background.html:78
+msgid "All red blocks should turn green, and then press the"
+msgstr ""
+
+#: templates/faq.html:18 templates/faq.html:45 templates/faq.html:48
+msgid "About"
+msgstr ""
+
+#: templates/faq.html:22 templates/faq.html:108 templates/faq.html:111
+msgid "Your Content"
+msgstr ""
+
+#: templates/faq.html:26 templates/faq.html:144 templates/faq.html:147
+msgid "Creating & Editing"
+msgstr ""
+
+#: templates/faq.html:30 templates/faq.html:223 templates/faq.html:226
+msgid "Subscriptions & Billing"
+msgstr ""
+
+#: templates/faq.html:34 templates/faq.html:319 templates/faq.html:322
+msgid "Tech Issues"
+msgstr ""
+
+#: templates/faq.html:39
+msgid "FREQUENTLY ASKED QUESTIONS"
+msgstr ""
+
+#: templates/faq.html:56
+msgid "What is Wunjo?"
+msgstr ""
+
+#: templates/faq.html:61
+msgid ""
+"Wunjo is an idea-to-content platform that utilizes combinations of AI. "
+"There’s a lot of technical stuff involved, but basically, you "
+"reincarnation your content."
+msgstr ""
+
+#: templates/faq.html:69
+msgid "How does Wunjo work?"
+msgstr ""
+
+#: templates/faq.html:74
+msgid ""
+"I could tell you, but … you can find out this in open source code. "
+"Basically, this is magic. And this is uniq project! It doesn’t exist "
+"anywhere else on the market! I’m pretty darn excited about it!"
+msgstr ""
+
+#: templates/faq.html:82
+msgid "Do you have a publicly accessible API?"
+msgstr ""
+
+#: templates/faq.html:87
+msgid ""
+"Yes. You can use the application in API mode and connect it to your "
+"services."
+msgstr ""
+
+#: templates/faq.html:94
+msgid "It’s free?"
+msgstr ""
+
+#: templates/faq.html:100
+msgid ""
+"Yes. The community edition version is absolutely free and you will able "
+"to find open source code. However, the professional version is available "
+"by subscription. This is a kind of reward to the author that he continues"
+" to develop the project, and gives you access so that you can use it in "
+"your projects and even freely earn money from the project, for example, "
+"using API or temporary links. The project is designed so that you can "
+"have your service in your pocket with minimal effort and without "
+"technical skills."
+msgstr ""
+
+#: templates/faq.html:119
+msgid "Can I use the content I made in Wunjo for commercial purposes?"
+msgstr ""
+
+#: templates/faq.html:124
+msgid ""
+"It doesn’t matter if your content is created in a community edtiion "
+"version or a professional subscription. If it has nothing prohibited or "
+"is not intended to discredit anyone then, whatever you create using Wunjo"
+" can be used commercially, or non-commercially."
+msgstr ""
+
+#: templates/faq.html:132
+msgid "Are the content I created in Wunjo private?"
+msgstr ""
+
+#: templates/faq.html:137
+msgid ""
+"Yes. The content you create is completely private and stored on your "
+"device. Only you have access and you are responsible for the content you "
+"create."
+msgstr ""
+
+#: templates/faq.html:155
+msgid "What is the resolution of the content?"
+msgstr ""
+
+#: templates/faq.html:160
+msgid ""
+"Baseline content output is Full HD and HD resolution. However, you "
+"customize the application yourself and can increase or decrease the "
+"resolution."
+msgstr ""
+
+#: templates/faq.html:168
+msgid "How do I improve quality of output content?"
+msgstr ""
+
+#: templates/faq.html:173
+msgid ""
+"Pay attention to the suggest option. When clicked, there will be a list "
+"of possible actions to improve the quality of the content received."
+msgstr ""
+
+#: templates/faq.html:181
+msgid "Can I increase videos or audio duration?"
+msgstr ""
+
+#: templates/faq.html:186
+msgid ""
+"Yes. You can freely change the basic settings, including the duration of "
+"the received content."
+msgstr ""
+
+#: templates/faq.html:194
+msgid "Can I improve application performance?"
+msgstr ""
+
+#: templates/faq.html:200
+msgid ""
+"Yes. In the settings, pay attention to the parameters for video memory, "
+"RAM, and the number of simultaneously running tasks. You determine the "
+"performance of the application for yourself based on your needs and your "
+"device. You can tighten the settings so you can do other things on your "
+"device at the same time, or loosen them so the app uses more of your "
+"device’s resources."
+msgstr ""
+
+#: templates/faq.html:209
+msgid "Can I turn off my internet connection?"
+msgstr ""
+
+#: templates/faq.html:215
+msgid ""
+"Yes. You can disable your internet connection, but you will need to make "
+"sure that all the required models for your module are downloaded and the "
+"page code is loaded into the cache. You can do this in the settings, as "
+"well as following the instructions for manually downloading models. When "
+"first run, the models are downloaded automatically, and if the generation"
+" is successful, then the model update is no longer checked. However, in "
+"the settings you can choose to check for model updates. Anyway, please "
+"note that the Internet is required to verify the license and obtain the "
+"closed part of the code, which is licensed under a license other than the"
+" public one and after verified you can turn off internet connection."
+msgstr ""
+
+#: templates/faq.html:234
+msgid "How long does the subscription last?"
+msgstr ""
+
+#: templates/faq.html:239
+msgid ""
+"Depending on the plan you choose. The subscription is counted from the "
+"time of purchase. And when it stops, you will receive a notification."
+msgstr ""
+
+#: templates/faq.html:247
+msgid "How do I cancel my subscription?"
+msgstr ""
+
+#: templates/faq.html:252
+msgid ""
+"Email us at support@wunjo.online if you really want to say goodbye to "
+"your subsription. Please note that if you have an active subscription, "
+"and you take this step, your subscription will be invalidated, and no "
+"refund will be provided."
+msgstr ""
+
+#: templates/faq.html:260
+msgid "Can my subscription be blocked?"
+msgstr ""
+
+#: templates/faq.html:265
+msgid ""
+"No. However, if your unique address is noticed to change frequently, with"
+" each suspicious activity, you will be asked to confirm that it is you to"
+" continue the session and gain access to the professional subscription, "
+"otherwise the community edition version will open."
+msgstr ""
+
+#: templates/faq.html:273
+msgid ""
+"If I start a subscription, is it just for during period, or will it renew"
+" automatically?"
+msgstr ""
+
+#: templates/faq.html:278
+msgid ""
+"Not. This will not be automatically renew every period, so you don’t have"
+" to worry about anything. You only receive a notification that your "
+"subscription has ended."
+msgstr ""
+
+#: templates/faq.html:286
+msgid "What is the difference between Professional and Community Edition?"
+msgstr ""
+
+#: templates/faq.html:292
+msgid "You can find out more at"
+msgstr ""
+
+#: templates/faq.html:301
+msgid "Why do you charge money?"
+msgstr ""
+
+#: templates/faq.html:307
+msgid ""
+"Believe it or not, each time you click generate, it’s the result of "
+"countless sleepless nights and hours of dedicated development. "
+"Subscribing to the professional version is a way to support the author’s "
+"hard work and motivate ongoing project development, including the "
+"addition of new features and enhancements to existing ones."
+msgstr ""
+
+#: templates/faq.html:309
+msgid ""
+"Moreover, the author has designed the application not only for your "
+"personal use but also to enable you to share access with friends or "
+"integrate the API into your projects. This means you can leverage all the"
+" application’s features freely, even for commercial purposes."
+msgstr ""
+
+#: templates/faq.html:311
+msgid ""
+"Your subscription directly contributes to the continued improvement and "
+"sustainability of the project, ensuring you receive the best possible "
+"experience. Thank you for supporting this work!"
+msgstr ""
+
+#: templates/faq.html:330
+msgid "What if I have questions that aren’t answered here?"
+msgstr ""
+
+#: templates/faq.html:336
+msgid "Head over to the support channel on"
+msgstr ""
+
+#: templates/faq.html:336
+msgid ""
+"and say hi to the community while you’re there! There’s also a really "
+"robust FAQ section there that may have exactly the answer you need. If "
+"you have any questions, you can contact the author or"
+msgstr ""
+
+#: templates/generation.html:23
+msgid "What is your prompt?"
+msgstr ""
+
+#: templates/generation.html:33 templates/generation.html:70
+#: templates/generation.html:235 templates/generation.html:272
+#: templates/restyling.html:61 templates/restyling.html:98
+#: templates/restyling.html:247 templates/restyling.html:284
+msgid "Seed"
+msgstr ""
+
+#: templates/generation.html:37 templates/generation.html:74
+msgid "e.g."
+msgstr ""
+
+#: templates/generation.html:44 templates/generation.html:81
+#: templates/generation.html:246 templates/generation.html:283
+#: templates/restyling.html:72 templates/restyling.html:109
+#: templates/restyling.html:258 templates/restyling.html:295
+msgid "Strength"
+msgstr ""
+
+#: templates/generation.html:56 templates/generation.html:93
+#: templates/generation.html:258 templates/generation.html:295
+#: templates/restyling.html:84 templates/restyling.html:121
+#: templates/restyling.html:270 templates/restyling.html:307
+msgid "Scale"
+msgstr ""
+
+#: templates/generation.html:106 templates/generation.html:365
+#: templates/restyling.html:134 templates/restyling.html:377
+msgid "Negative prompt"
+msgstr ""
+
+#: templates/generation.html:108 templates/generation.html:367
+#: templates/restyling.html:136 templates/restyling.html:379
+msgid "e.g. ugly, bad, terrible (optional)"
+msgstr ""
+
+#: templates/generation.html:125
+msgid "Generation settings"
+msgstr ""
+
+#: templates/generation.html:126
+msgid "You can either fine-tune the parameters to"
+msgstr ""
+
+#: templates/generation.html:126
+msgid "generate"
+msgstr ""
+
+#: templates/generation.html:126
+msgid "video or take control by manually"
+msgstr ""
+
+#: templates/generation.html:126 templates/generation.html:127
+msgid "redraw"
+msgstr ""
+
+#: templates/generation.html:126
+msgid ""
+"tweaking the elements within the image before creation. Dive in and make "
+"it truly yours."
+msgstr ""
+
+#: templates/generation.html:127
+msgid "You can manually"
+msgstr ""
+
+#: templates/generation.html:127
+msgid "tweaking the elements within the image. Dive in and make it truly yours."
+msgstr ""
+
+#: templates/generation.html:134
+msgid "Redraw"
+msgstr ""
+
+#: templates/components/modal.html:1295 templates/generation.html:137
+msgid "Generate"
+msgstr ""
+
+#: templates/generation.html:154
+msgid "CUSTOMIZING GENERATION"
+msgstr ""
+
+#: templates/generation.html:158
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. Additionally, you can regenerate the"
+" image again, or replace it with another one."
+msgstr ""
+
+#: templates/components/modal.html:703 templates/components/modal.html:882
+#: templates/components/modal.html:1051 templates/components/modal.html:1211
+#: templates/generation.html:195 templates/generation.html:412
+#: templates/live_portrait.html:135 templates/restyling.html:209
+msgid "Image input"
+msgstr ""
+
+#: templates/generation.html:205 templates/generation.html:423
+msgid ""
+"Generation... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+
+#: templates/generation.html:212 templates/restyling.html:44
+#: templates/restyling.html:227
+msgid "Positive prompt"
+msgstr ""
+
+#: templates/generation.html:214 templates/restyling.html:46
+#: templates/restyling.html:229
+msgid "Describe the change you want to make"
+msgstr ""
+
+#: templates/generation.html:216
+msgid "Inspire me"
+msgstr ""
+
+#: templates/generation.html:220
+msgid "NEW"
+msgstr ""
+
+#: templates/generation.html:312 templates/generation.html:339
+#: templates/restyling.html:324 templates/restyling.html:351
+msgid "Control strength"
+msgstr ""
+
+#: templates/generation.html:324 templates/generation.html:351
+#: templates/generation.html:445 templates/restyling.html:336
+#: templates/restyling.html:363
+msgid "Blur factor"
+msgstr ""
+
+#: templates/generation.html:375 templates/live_portrait.html:599
+#: templates/restyling.html:148 templates/restyling.html:391
+msgid "Continue"
+msgstr ""
+
+#: templates/generation.html:392
+msgid "OUTPAINTING"
+msgstr ""
+
+#: templates/generation.html:396
+msgid ""
+"Please note that the model used is version 1.5 with a resolution limit of"
+" 1280x1280 for best quality."
+msgstr ""
+
+#: templates/generation.html:430
+msgid "Prompt"
+msgstr ""
+
+#: templates/generation.html:432
+msgid "(Optional) Describe what should be in the new parts"
+msgstr ""
+
+#: templates/generation.html:475
+msgid ""
+"So, you’ve created the video. But wait, high-resolution from source "
+"content can sometimes reveal a few sneaky flaws. No sweat! Enhancement"
+msgstr ""
+
+#: templates/generation.html:475
+msgid "tools"
+msgstr ""
+
+#: templates/generation.html:475
+msgid "are here to smooth out those rough spots."
+msgstr ""
+
+#: templates/generation.html:484
+msgid "Lost a face in the content? It can be restored with a"
+msgstr ""
+
+#: templates/generation.html:484
+msgid "face swap"
+msgstr ""
+
+#: templates/generation.html:484
+msgid "by one click."
+msgstr ""
+
+#: templates/generation.html:552
+msgid "Upload file or input text"
+msgstr ""
+
+#: templates/generation.html:554
+msgid ""
+"Drag and drop a file or select one. You can upload an image or use input "
+"for a text. For instructions on how to use the Generation module, check "
+"out this"
+msgstr ""
+
+#: templates/generation.html:554
+msgid "Use an image or a text, and then press the"
+msgstr ""
+
+#: templates/index.html:19
+msgid "Switch view"
+msgstr ""
+
+#: templates/index.html:19
+msgid ""
+"Switch to content to view your data. Each user can see the content they "
+"previously created based on their IP address."
+msgstr ""
+
+#: templates/index.html:30
+msgid "Smart search"
+msgstr ""
+
+#: templates/index.html:30
+msgid ""
+"For advanced tasks, utilize the smart search feature. Discover "
+"recommendations like"
+msgstr ""
+
+#: templates/index.html:30
+msgid "record a song fragment with a cloned voice"
+msgstr ""
+
+#: templates/index.html:30
+msgid "analysis content"
+msgstr ""
+
+#: templates/index.html:30
+msgid "create a talking person from scratch"
+msgstr ""
+
+#: templates/index.html:30
+msgid ""
+"and etc. If you don’t find the help you need, contact to at "
+"support@wunjo.online."
+msgstr ""
+
+#: templates/index.html:30
+msgid "Additionally, explore"
+msgstr ""
+
+#: templates/index.html:30
+msgid "for exclusive video tutorials to master advanced features."
+msgstr ""
+
+#: templates/index.html:35
+msgid "What can I help with? (Any language)"
+msgstr ""
+
+#: templates/index.html:38
+msgid "Quick tips for best results"
+msgstr ""
+
+#: templates/index.html:38
+msgid ""
+"Each module includes easy-to-follow tips to help you achieve the best "
+"quality outcomes. Start here for straightforward guidance tailored to "
+"your needs."
+msgstr ""
+
+#: templates/index.html:48
+msgid "Generation content"
+msgstr ""
+
+#: templates/index.html:49
+msgid "Restyling visual"
+msgstr ""
+
+#: templates/index.html:51
+msgid "Audio separator"
+msgstr ""
+
+#: templates/lip_sync.html:37
+msgid "Model select"
+msgstr ""
+
+#: templates/lip_sync.html:39
+msgid "Fast Method"
+msgstr ""
+
+#: templates/lip_sync.html:39
+msgid ""
+"This method is quicker, but the lips might appear inaccurate and blurred."
+" You can enhance the quality using the Enhancement module."
+msgstr ""
+
+#: templates/lip_sync.html:43
+msgid "Fast"
+msgstr ""
+
+#: templates/lip_sync.html:49
+msgid "Latent Diffusion Method"
+msgstr ""
+
+#: templates/lip_sync.html:49
+msgid ""
+"This provides more accurate results and visually appealing lip "
+"animations, though the face might occasionally twitch and the mouth may "
+"not fully close."
+msgstr ""
+
+#: templates/lip_sync.html:54
+msgid "Best"
+msgstr ""
+
+#: templates/lip_sync.html:73
+msgid ""
+"So, you’ve animated those lips. But you think the animation of the lips "
+"is not natural? Try, if the original video, processing it in live "
+"portrait mode silence, to make the mouth closed in"
+msgstr ""
+
+#: templates/lip_sync.html:73
+msgid "and came back to lip sync after."
+msgstr ""
+
+#: templates/lip_sync.html:82
+msgid ""
+"Got some extra lip action going on? Say goodbye to noisy audio and hello "
+"to separate vocals and music accompaniment in"
+msgstr ""
+
+#: templates/lip_sync.html:82
+msgid "It’s like magic to improve your lip sync!"
+msgstr ""
+
+#: templates/lip_sync.html:141
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Lip Sync module, check out this"
+msgstr ""
+
+#: templates/lip_sync.html:141
+msgid "For better video, use the «silence» mode in"
+msgstr ""
+
+#: templates/lip_sync.html:141
+msgid "manually retargeting live portrait"
+msgstr ""
+
+#: templates/lip_sync.html:141
+msgid "to pre-process the mouth to a closed state before applying lip sync."
+msgstr ""
+
+#: templates/live_portrait.html:37
+msgid ""
+"Choose how often the effect is applied to the frames: a higher number "
+"applies it less frequently, while a lower number applies it more often."
+msgstr ""
+
+#: templates/live_portrait.html:41
+msgid "Frequency"
+msgstr ""
+
+#: templates/live_portrait.html:53
+msgid ""
+"Set the lower and upper thresholds for actions. Adjust values to achieve "
+"the desired accuracy."
+msgstr ""
+
+#: templates/live_portrait.html:58
+msgid "Range"
+msgstr ""
+
+#: templates/live_portrait.html:75
+msgid "Smooth action on all frames"
+msgstr ""
+
+#: templates/components/modal.html:1704 templates/components/modal.html:1746
+#: templates/live_portrait.html:81
+msgid "Submit"
+msgstr ""
+
+#: templates/live_portrait.html:98 templates/restyling.html:405
+msgid "CUSTOMIZING FRAMES"
+msgstr ""
+
+#: templates/live_portrait.html:102
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change face movement. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+
+#: templates/live_portrait.html:142
+msgid "Qick"
+msgstr ""
+
+#: templates/live_portrait.html:152
+msgid ""
+"Retargeting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+
+#: templates/live_portrait.html:164 templates/live_portrait.html:190
+msgid "Eye ratio"
+msgstr ""
+
+#: templates/live_portrait.html:176 templates/live_portrait.html:202
+msgid "Lip ratio"
+msgstr ""
+
+#: templates/live_portrait.html:218 templates/live_portrait.html:256
+msgid "Pitch"
+msgstr ""
+
+#: templates/live_portrait.html:230 templates/live_portrait.html:268
+msgid "Yaw"
+msgstr ""
+
+#: templates/live_portrait.html:242 templates/live_portrait.html:280
+msgid "Roll"
+msgstr ""
+
+#: templates/live_portrait.html:296 templates/live_portrait.html:322
+msgid "Eyeball X"
+msgstr ""
+
+#: templates/live_portrait.html:308 templates/live_portrait.html:334
+msgid "Eyeball Y"
+msgstr ""
+
+#: templates/live_portrait.html:350 templates/live_portrait.html:388
+msgid "Head X"
+msgstr ""
+
+#: templates/live_portrait.html:362 templates/live_portrait.html:400
+msgid "Head Y"
+msgstr ""
+
+#: templates/live_portrait.html:374 templates/live_portrait.html:412
+msgid "Head Z"
+msgstr ""
+
+#: templates/live_portrait.html:428 templates/live_portrait.html:466
+msgid "Smile"
+msgstr ""
+
+#: templates/live_portrait.html:440 templates/live_portrait.html:478
+msgid "Wink"
+msgstr ""
+
+#: templates/live_portrait.html:452 templates/live_portrait.html:490
+msgid "Eyebrow"
+msgstr ""
+
+#: templates/live_portrait.html:506 templates/live_portrait.html:544
+msgid "Grin"
+msgstr ""
+
+#: templates/live_portrait.html:518 templates/live_portrait.html:556
+msgid "Pursing"
+msgstr ""
+
+#: templates/live_portrait.html:530 templates/live_portrait.html:568
+msgid "Pouting"
+msgstr ""
+
+#: templates/live_portrait.html:580
+msgid "Lip expression"
+msgstr ""
+
+#: templates/components/modal.html:1558 templates/live_portrait.html:596
+#: templates/profile.html:25 templates/restyling.html:145
+#: templates/restyling.html:388
+msgid "Back"
+msgstr ""
+
+#: templates/live_portrait.html:687
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Live Portrait module, check out"
+" this"
+msgstr ""
+
+#: templates/login.html:30 templates/preload.html:112
+msgid "New features alert! Soon!"
+msgstr ""
+
+#: templates/login.html:33 templates/preload.html:115
+msgid "To learn more project, check out"
+msgstr ""
+
+#: templates/login.html:34 templates/preload.html:116
+msgid "YouTube channel"
+msgstr ""
+
+#: templates/login.html:35 templates/preload.html:117
+msgid "We’re"
+msgstr ""
+
+#: templates/login.html:36 templates/preload.html:118
+msgid "looking"
+msgstr ""
+
+#: templates/login.html:37 templates/preload.html:119
+msgid "for different support!"
+msgstr ""
+
+#: templates/login.html:48 templates/preload.html:130
+msgid "Ready to use Wunjo v2?"
+msgstr ""
+
+#: templates/login.html:53
+msgid "Let’s Go!"
+msgstr ""
+
+#: templates/login.html:57 templates/preload.html:139
+msgid "By signing in, you are agreeing to the"
+msgstr ""
+
+#: templates/login.html:58 templates/preload.html:140
+msgid "End-User License Agreement"
+msgstr ""
+
+#: templates/login.html:68 templates/preload.html:150
+msgid "Author"
+msgstr ""
+
+#: templates/components/modal.html:1719 templates/components/modal.html:1764
+#: templates/preload.html:14 templates/preload.html:77
+msgid "Attention"
+msgstr ""
+
+#: templates/preload.html:17 templates/preload.html:175
+msgid "IMPORTANT"
+msgstr ""
+
+#: templates/preload.html:17
+msgid ""
+"The CUDA driver is not detected. If you proceed with the installation, "
+"the program will run on the CPU, resulting in"
+msgstr ""
+
+#: templates/preload.html:17
+msgid "significantly slower performance"
+msgstr ""
+
+#: templates/preload.html:17
+msgid ""
+"for some functions, and others may not work at all. To enable GPU "
+"acceleration,"
+msgstr ""
+
+#: templates/preload.html:17
+msgid "please install"
+msgstr ""
+
+#: templates/preload.html:17
+msgid "the necessary"
+msgstr ""
+
+#: templates/preload.html:17
+msgid "drivers and restart Wunjo."
+msgstr ""
+
+#: templates/components/modal.html:641 templates/components/modal.html:1739
+#: templates/preload.html:23 templates/preload.html:58
+#: templates/preload.html:83 templates/preload.html:223
+msgid "Loading"
+msgstr ""
+
+#: templates/preload.html:29
+msgid "Anyway install"
+msgstr ""
+
+#: templates/preload.html:44
+msgid "Welcome"
+msgstr ""
+
+#: templates/preload.html:45
+msgid ""
+"Welcome to Wunjo! To get started, essential drivers will need to be "
+"installed. Click"
+msgstr ""
+
+#: templates/preload.html:45 templates/preload.html:65
+msgid "Installation"
+msgstr ""
+
+#: templates/preload.html:45 templates/settings.html:60
+msgid "to proceed."
+msgstr ""
+
+#: templates/preload.html:78
+msgid ""
+"It appears that you have CUDA installed, but it’s an outdated version. "
+"Please update CUDA to version 12.4 or higher and install cuDNN 9.x to "
+"take advantage of GPU acceleration."
+msgstr ""
+
+#: templates/preload.html:131
+msgid "Not found large packages"
+msgstr ""
+
+#: templates/preload.html:136
+msgid "Preload"
+msgstr ""
+
+#: templates/preload.html:175
+msgid ""
+"Make sure Wunjo has the necessary permissions for installation. If "
+"needed, try running it as"
+msgstr ""
+
+#: templates/preload.html:175
+msgid "Administrator"
+msgstr ""
+
+#: templates/preload.html:306
+msgid "Great. You need to restart Wunjo"
+msgstr ""
+
+#: templates/preload.html:315
+msgid ""
+"Before you proceed, manually remove any previous versions of torch, "
+"torchaudio, and torchvision. First, close Wunjo software, delete those "
+"folders from"
+msgstr ""
+
+#: templates/components/modal.html:1720 templates/preload.html:315
+#: templates/settings.html:60
+msgid "software directory"
+msgstr ""
+
+#: templates/preload.html:315
+msgid "and then run Wunjo with admin root privileges."
+msgstr ""
+
+#: templates/preload.html:321
+msgid "Close"
+msgstr ""
+
+#: templates/preload.html:332
+msgid "Error. Not found permission"
+msgstr ""
+
+#: templates/preload.html:343
+msgid "Error fetching. Try again"
+msgstr ""
+
+#: templates/preload.html:384
+msgid "Before you need to install"
+msgstr ""
+
+#: templates/preload.html:384
+msgid "from official website."
+msgstr ""
+
+#: templates/profile.html:42
+msgid "User ID"
+msgstr ""
+
+#: templates/profile.html:46
+msgid "Public link"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Your password from wunjo.online"
+msgstr ""
+
+#: templates/profile.html:50
+msgid "Email"
+msgstr ""
+
+#: templates/profile.html:59
+msgid "Sign in"
+msgstr ""
+
+#: templates/profile.html:63
+msgid "Sign out"
+msgstr ""
+
+#: templates/profile.html:67
+msgid "Exit"
+msgstr ""
+
+#: templates/profile.html:74
+msgid "Subscription"
+msgstr ""
+
+#: templates/profile.html:77 templates/profile.html:144
+msgid "Plan"
+msgstr ""
+
+#: templates/profile.html:82
+msgid "Community Edition"
+msgstr ""
+
+#: templates/profile.html:83
+msgid "Free"
+msgstr ""
+
+#: templates/profile.html:90 templates/profile.html:159
+msgid "infinity"
+msgstr ""
+
+#: templates/profile.html:94 templates/profile.html:119
+#: templates/profile.html:163 templates/profile.html:186
+msgid "credits"
+msgstr ""
+
+#: templates/profile.html:101
+msgid "Upgrade"
+msgstr ""
+
+#: templates/profile.html:106
+msgid "Unleash the Speed"
+msgstr ""
+
+#: templates/profile.html:107
+msgid "Upgrade to the GPU-Powered Version for Blazing Speed and Unmatched Power"
+msgstr ""
+
+#: templates/profile.html:129 templates/profile.html:137
+msgid "Upgrade to Professional"
+msgstr ""
+
+msgid "Public links provide access to the program from mobile devices and tablets"
+msgstr ""
+
+#: templates/profile.html:149
+msgid "Professional"
+msgstr ""
+
+#: templates/profile.html:150
+msgid "Activated"
+msgstr ""
+
+#: templates/profile.html:170
+msgid "Expiration date"
+msgstr ""
+
+#: templates/profile.html:175
+msgid "Unleashed the Speed"
+msgstr ""
+
+#: templates/profile.html:176 templates/profile.html:270
+msgid "No restrictions on features until"
+msgstr ""
+
+#: templates/remove_background.html:78
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Background module, check"
+" out this"
+msgstr ""
+
+#: templates/remove_object.html:45
+msgid ""
+"So, you’ve nixed an object from your content, nice move! But hey, "
+"sometimes where one thing leaves, a little confusion might creep in "
+"because of the neural network does not know what could be in the place of"
+" a distant object, it just invents it. Noticed some weird glares or "
+"streaks in the now-empty spot? That’s where a video enhancement feature "
+"swoops in to save the day. Take your pick: transform your video into an "
+"anime-style gem, a classic cartoon, or simply give it a polished boost. "
+"The module’s right"
+msgstr ""
+
+#: templates/remove_object.html:45
+msgid ", waiting to sprinkle its magic on your creation."
+msgstr ""
+
+#: templates/remove_object.html:101
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Remove Object module, check out"
+" this"
+msgstr ""
+
+#: templates/remove_object.html:101
+msgid ""
+"All red blocks should turn green, use toggle if you need to remove text, "
+"and then press on the button"
+msgstr ""
+
+#: templates/restyling.html:162
+msgid "CUSTOMIZING PROMPTS"
+msgstr ""
+
+#: templates/restyling.html:220
+msgid ""
+"Inpainting... Buttons are locked until finished. Tap on the screen to "
+"view details."
+msgstr ""
+
+#: templates/restyling.html:409
+msgid ""
+"Prepare your staff. Select an object and scene, set parameters and "
+"properties, and change it by prompt. When you are satisfied with the "
+"result, move on to the next frame."
+msgstr ""
+
+#: templates/restyling.html:473
+msgid ""
+"Drag and drop a file or select one. You can upload either a video or an "
+"image. For instructions on how to use the Restyling module, check out "
+"this"
+msgstr ""
+
+#: templates/restyling.html:473
+msgid ""
+"All red blocks should turn green or use toggle to fully restyle, and then"
+" press the"
+msgstr ""
+
+#: templates/separator.html:72
+msgid ""
+"Drag and drop a file or select one. You can upload an audio. For "
+"instructions on how to use the Separator module, check out this"
+msgstr ""
+
+#: templates/separator.html:72
+msgid "Upload an audio, and then press the"
+msgstr ""
+
+#: templates/settings.html:19 templates/settings.html:30
+#: templates/settings.html:33
+msgid "General"
+msgstr ""
+
+#: templates/settings.html:41
+msgid "Which processor should I use?"
+msgstr ""
+
+#: templates/settings.html:54
+msgid "Can I change cache folder?"
+msgstr ""
+
+#: templates/settings.html:60
+msgid "Yes! You can change the location of the cache, including placing it in the"
+msgstr ""
+
+#: templates/settings.html:60
+msgid ""
+"or on another drive. However, please ensure that the new folder has the "
+"necessary permissions for processing and you have permissions to use "
+"folder. Just"
+msgstr ""
+
+#: templates/settings.html:60
+msgid "click here"
+msgstr ""
+
+#: templates/settings.html:69
+msgid "What is port using?"
+msgstr ""
+
+#: templates/settings.html:82
+msgid "Can I get public link?"
+msgstr ""
+
+#: templates/settings.html:95
+msgid "Want to go through the software tour once more?"
+msgstr ""
+
+#: templates/settings.html:108
+msgid "Show translation tool?"
+msgstr ""
+
+#: templates/settings.html:120
+msgid "What system resources?"
+msgstr ""
+
+#: templates/settings.html:132
+msgid "Update application parameters?"
+msgstr ""
+
+#: templates/components/modal.html:8 templates/components/modal.html:39
+#: templates/components/modal.html:57
+msgid "Hold up"
+msgstr ""
+
+#: templates/components/modal.html:14
+msgid "What happens"
+msgstr ""
+
+#: templates/components/modal.html:14
+msgid "Click to see"
+msgstr ""
+
+#: templates/components/modal.html:25
+msgid "Grab the Log"
+msgstr ""
+
+#: templates/components/modal.html:40
+msgid "Are you absolutely sure you want to delete"
+msgstr ""
+
+#: templates/components/modal.html:40
+msgid "Once it’s gone, it’s gone!"
+msgstr ""
+
+#: templates/components/modal.html:43
+msgid "Sure"
+msgstr ""
+
+#: templates/components/modal.html:58
+msgid "Are you ready to replace"
+msgstr ""
+
+#: templates/components/modal.html:58
+msgid "Remember, this action cannot be undone! Only if you don’t rename it again."
+msgstr ""
+
+#: templates/components/modal.html:62
+msgid "Let’s Do It!"
+msgstr ""
+
+#: templates/components/modal.html:82 templates/components/modal.html:198
+#: templates/components/modal.html:336 templates/components/modal.html:466
+msgid "Display content"
+msgstr ""
+
+#: templates/components/modal.html:101 templates/components/modal.html:220
+#: templates/components/view.html:205
+msgid "Image output"
+msgstr ""
+
+#: templates/components/modal.html:128 templates/components/modal.html:391
+#: templates/components/modal.html:507 templates/components/view.html:121
+#: templates/components/view.html:234 templates/components/view.html:425
+msgid "Edit"
+msgstr ""
+
+#: templates/components/modal.html:150 templates/components/modal.html:288
+#: templates/components/modal.html:413 templates/components/modal.html:536
+#: templates/components/view.html:136 templates/components/view.html:249
+#: templates/components/view.html:344 templates/components/view.html:527
+msgid "Without description"
+msgstr ""
+
+#: templates/components/modal.html:162 templates/components/modal.html:300
+#: templates/components/modal.html:425 templates/components/modal.html:548
+#: templates/components/view.html:153 templates/components/view.html:266
+#: templates/components/view.html:361 templates/components/view.html:472
+#: templates/components/view.html:544
+msgid "Parameters"
+msgstr ""
+
+#: templates/components/modal.html:169 templates/components/modal.html:307
+#: templates/components/modal.html:438 templates/components/modal.html:555
+#: templates/components/view.html:160 templates/components/view.html:273
+#: templates/components/view.html:368 templates/components/view.html:551
+msgid "Consistency with the text"
+msgstr ""
+
+#: templates/components/modal.html:253 templates/components/modal.html:278
+msgid "Download All"
+msgstr ""
+
+#: templates/components/modal.html:257 templates/components/view.html:332
+msgid "Previous"
+msgstr ""
+
+#: templates/components/modal.html:262 templates/components/modal.html:281
+msgid "Delete All"
+msgstr ""
+
+#: templates/components/modal.html:265 templates/components/view.html:336
+msgid "Next"
+msgstr ""
+
+#: templates/components/modal.html:364 templates/components/view.html:92
+msgid "Video output"
+msgstr ""
+
+#: templates/components/modal.html:433
+msgid "FPS"
+msgstr ""
+
+#: templates/components/modal.html:582
+msgid "Yesterday"
+msgstr ""
+
+#: templates/components/modal.html:600
+msgid "Sun"
+msgstr ""
+
+#: templates/components/modal.html:601
+msgid "Mon"
+msgstr ""
+
+#: templates/components/modal.html:602
+msgid "Tue"
+msgstr ""
+
+#: templates/components/modal.html:603
+msgid "Wed"
+msgstr ""
+
+#: templates/components/modal.html:604
+msgid "Thu"
+msgstr ""
+
+#: templates/components/modal.html:605
+msgid "Fri"
+msgstr ""
+
+#: templates/components/modal.html:606
+msgid "Sat"
+msgstr ""
+
+#: templates/components/modal.html:616
+msgid "Oh, ya!"
+msgstr ""
+
+#: templates/components/modal.html:635
+msgid "Just a second"
+msgstr ""
+
+#: templates/components/modal.html:636
+msgid "Please wait while the model is loading into your browser’s memory"
+msgstr ""
+
+#: templates/components/modal.html:659 templates/components/modal.html:730
+msgid "CLICK ON OBJECT"
+msgstr ""
+
+#: templates/components/modal.html:678 templates/components/modal.html:749
+msgid "Brush"
+msgstr ""
+
+#: templates/components/modal.html:685 templates/components/modal.html:760
+msgid "Clear"
+msgstr ""
+
+#: templates/components/modal.html:696 templates/components/modal.html:780
+msgid ""
+"Embedding... Right-click to select objects, left-click to exclude. Tap "
+"the screen to view details."
+msgstr ""
+
+#: templates/components/modal.html:756 templates/components/modal.html:932
+#: templates/components/modal.html:1093 templates/components/modal.html:1335
+msgid "Watch"
+msgstr ""
+
+#: templates/components/modal.html:787 templates/components/modal.html:956
+#: templates/components/modal.html:1109 templates/components/modal.html:1359
+msgid "Video input"
+msgstr ""
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Not accessible."
+msgstr ""
+
+#: templates/components/modal.html:825 templates/components/modal.html:841
+msgid "Unlock controls by click on watch button."
+msgstr ""
+
+#: templates/components/modal.html:846 templates/components/modal.html:1015
+#: templates/components/modal.html:1168 templates/components/modal.html:1465
+msgid "Reset"
+msgstr ""
+
+#: templates/components/modal.html:866 templates/components/modal.html:917
+#: templates/components/modal.html:1035 templates/components/modal.html:1078
+msgid "SELECT AREA"
+msgstr ""
+
+#: templates/components/modal.html:891
+msgid "Detection face! Tap on display to see more information."
+msgstr ""
+
+#: templates/components/modal.html:949
+msgid "Detection face!"
+msgstr ""
+
+#: templates/components/modal.html:994 templates/components/modal.html:1010
+#: templates/components/modal.html:1147 templates/components/modal.html:1163
+#: templates/components/modal.html:1444 templates/components/modal.html:1460
+msgid "Upload media before."
+msgstr ""
+
+#: templates/components/modal.html:1187 templates/components/modal.html:1320
+msgid "UPLOAD AVATAR"
+msgstr ""
+
+#: templates/components/modal.html:1222
+msgid "Male"
+msgstr ""
+
+#: templates/components/modal.html:1226
+msgid "Female"
+msgstr ""
+
+#: templates/components/modal.html:1234 templates/components/modal.html:1247
+#: templates/components/modal.html:1264 templates/components/view.html:14
+msgid "All"
+msgstr ""
+
+#: templates/components/modal.html:1245 templates/components/modal.html:1262
+msgid "Ethnic"
+msgstr ""
+
+#: templates/components/modal.html:1248 templates/components/modal.html:1265
+msgid "Asian"
+msgstr ""
+
+#: templates/components/modal.html:1249 templates/components/modal.html:1266
+msgid "Black"
+msgstr ""
+
+#: templates/components/modal.html:1250 templates/components/modal.html:1267
+msgid "White"
+msgstr ""
+
+#: templates/components/modal.html:1251 templates/components/modal.html:1268
+msgid "Indian"
+msgstr ""
+
+#: templates/components/modal.html:1252 templates/components/modal.html:1269
+msgid "Arab"
+msgstr ""
+
+#: templates/components/modal.html:1253 templates/components/modal.html:1270
+msgid "Latino"
+msgstr ""
+
+#: templates/components/modal.html:1286 templates/components/modal.html:1374
+msgid "Upload"
+msgstr ""
+
+#: templates/components/modal.html:1352
+msgid "Upload a video (with a face, of course) and let’s get started!"
+msgstr ""
+
+#: templates/components/modal.html:1483 templates/components/modal.html:1526
+msgid "audio"
+msgstr ""
+
+#: templates/components/modal.html:1486
+msgid "Upload your audio"
+msgstr ""
+
+#: templates/components/modal.html:1491
+msgid "Drag and drop audio"
+msgstr ""
+
+#: templates/components/modal.html:1492
+msgid "upload a file."
+msgstr ""
+
+#: templates/components/modal.html:1505
+msgid "Record voice"
+msgstr ""
+
+#: templates/components/modal.html:1511
+msgid "Something went wrong. Please, try again."
+msgstr ""
+
+#: templates/components/modal.html:1526
+msgid "Trim"
+msgstr ""
+
+#: templates/components/modal.html:1527
+msgid ""
+"Use the timeline selector to trim your audio. Anything longer than your "
+"video will be automatically cut off."
+msgstr ""
+
+#: templates/components/modal.html:1531
+msgid "Your audio is longer than"
+msgstr ""
+
+#: templates/components/modal.html:1531
+msgid "Trim or redo for best results."
+msgstr ""
+
+#: templates/components/modal.html:1562
+msgid "Attach and continue"
+msgstr ""
+
+#: templates/components/modal.html:1578
+msgid "Analysis content"
+msgstr ""
+
+#: templates/components/modal.html:1579
+msgid ""
+"Utilize content analysis to determine whether the content originates from"
+" a deepfake created by Wunjo."
+msgstr ""
+
+#: templates/components/modal.html:1582
+msgid ""
+"Gain insights and enhance confidence in the originality of content with "
+"this feature."
+msgstr ""
+
+#: templates/components/modal.html:1588 templates/components/modal.html:1675
+msgid "Scan"
+msgstr ""
+
+#: templates/components/modal.html:1605
+msgid "What is new?"
+msgstr ""
+
+#: templates/components/modal.html:1606
+msgid "Try Now"
+msgstr ""
+
+#: templates/components/modal.html:1620
+msgid "What a twist!"
+msgstr ""
+
+#: templates/components/modal.html:1624
+msgid "Okay"
+msgstr ""
+
+#: templates/components/modal.html:1636
+msgid "The cache folder directory"
+msgstr ""
+
+#: templates/components/modal.html:1636
+msgid "contains invalid characters, such as Cyrillic, ideograms or space. Please ensure that the folder path contains only Latin letters, numbers, and allowed symbols, otherwise the program may not work correctly."
+msgstr ""
+
+#: templates/components/modal.html:1639
+msgid "Select"
+msgstr ""
+
+msgid "Enter new path of cache folder"
+msgstr ""
+
+#: templates/components/modal.html:1640
+msgid "Scene detect"
+msgstr ""
+
+#: templates/components/modal.html:1641
+msgid ""
+"Transition detection also known as scene cut detection is an important "
+"video processing task that aims at finding interjoined scenes."
+msgstr ""
+
+#: templates/components/modal.html:1645
+msgid "Threshold"
+msgstr ""
+
+#: templates/components/modal.html:1657
+msgid "Scene transitions"
+msgstr ""
+
+#: templates/components/modal.html:1669
+msgid "Scene transitions and the first and last frame will be received."
+msgstr ""
+
+#: templates/components/modal.html:1692
+msgid "Lite setup"
+msgstr ""
+
+#: templates/components/modal.html:1693
+msgid "Tailor the"
+msgstr ""
+
+#: templates/components/modal.html:1693
+msgid "module to perfectly match your needs."
+msgstr ""
+
+#: templates/components/modal.html:1720
+msgid ""
+"The cache directory stores configuration settings, neural network models,"
+" temporary files, and user-generated content. This directory requires a "
+"significant amount of hard disk space. You can change the location of the"
+" cache, including placing it in the"
+msgstr ""
+
+#: templates/components/modal.html:1720
+msgid "or on another drive."
+msgstr ""
+
+#: templates/components/modal.html:1723
+msgid ""
+"Please ensure that the new folder has the necessary permissions for "
+"processing and you have permissions to use folder. Avoid using non-Latin "
+"characters in folder names."
+msgstr ""
+
+#: templates/components/modal.html:1726
+msgid "Example directories"
+msgstr ""
+
+#: templates/components/modal.html:1765
+msgid ""
+"You are about to download a substantial amount of data for your project. "
+"Please note the following sizes"
+msgstr ""
+
+#: templates/components/modal.html:1768
+msgid "Video Generation"
+msgstr ""
+
+#: templates/components/modal.html:1769
+msgid "General Models"
+msgstr ""
+
+#: templates/components/modal.html:1771
+msgid ""
+"The download process may take some time, so please be patient. All "
+"downloaded models will be stored in the"
+msgstr ""
+
+#: templates/components/modal.html:1771
+msgid "folder. If necessary, you can delete these files separately at any time."
+msgstr ""
+
+#: templates/components/modal.html:1774
+msgid "Understand"
+msgstr ""
+
+#: templates/components/tooltip.html:6
+msgid "Translation on"
+msgstr ""
+
+#: templates/components/view.html:20
+msgid "Video"
+msgstr ""
+
+#: templates/components/view.html:26
+msgid "Image"
+msgstr ""
+
+#: templates/components/view.html:32
+msgid "Images group"
+msgstr ""
+
+#: templates/components/view.html:38
+msgid "Audio"
+msgstr ""
+
+#: templates/components/view.html:44
+msgid "Favorites"
+msgstr ""
+
+#: templates/components/view.html:97 templates/components/view.html:210
+#: templates/components/view.html:323
+msgid "Adult content"
+msgstr ""
+
+#: templates/components/view.html:139 templates/components/view.html:252
+#: templates/components/view.html:347 templates/components/view.html:458
+#: templates/components/view.html:530
+msgid "Copy"
+msgstr ""
+
+#: templates/components/view.html:318
+msgid "Images output"
+msgstr ""
+
+#: templates/components/view.html:521
+msgid "Hidden"
+msgstr ""
+
+msgid "Save options"
+msgstr ""
+
+msgid "Motion control"
+msgstr ""
+
+#: flasgger
+# settings.html
+msgid "Overview"
+msgstr ""
+
+msgid "Developer Docs"
+msgstr ""
+
+msgid "This is built using OpenAPI 3.0.0. In the API documentation, you can find examples of requests to various modules and a tutorial on how to use them. The schema section provides detailed descriptions of each parameter and their accepted values. Access to the API is token-based, with tokens available to Wunjo Pro subscribers at wunjo.online. The application can also run on localhost or a public link and be used as an API for your projects. This is a Beta API, introduced in the latest version. For any questions, contact support@wunjo.online."
+msgstr ""
+
+# flasgger/body_script.html
+msgid "Authorization"
+msgstr ""
+
+msgid "Obtain a token through a POST request using your email and password from wunjo.online. This token is available only to Wunjo Pro subscribers. Use the token for the"
+msgstr ""
+
+msgid "Submit module task"
+msgstr ""
+
+msgid "Submit CPU task"
+msgstr ""
+
+msgid "File upload"
+msgstr ""
+
+msgid "Before using a module that requires a file, upload it via File upload and then use the file’s name. Files are uploaded to"
+msgstr ""
+
+msgid "so ensure file names are unique. Test files like image.jpg, video.mp4, and audio.wav can be found at"
+msgstr ""
+
+msgid "Example requests are configured to work with these files for testing and customization."
+msgstr ""
+
+msgid "Use the main modules in Wunjo via POST requests. Refer to Example for ready-to-use setups. Check Schema for detailed descriptions of each parameter, including accepted values and limits. Note that tasks are linked to your IP address. For localhost, it’s 127.0.0.1. On remote connections, tasks and files are IP-specific. You’ll receive a unique request_id for your task."
+msgstr ""
+
+msgid "Track the status of your module task with a GET request by using the unique method name. The task status and response will be returned once with a 201 status, identifiable by the previously issued request_id. After retrieval, the task will be marked as not found. The response includes the media file path."
+msgstr ""
+
+msgid "Similar to /submit-module-task, this POST request provides a request_id. More details on parameters can be found in Schema."
+msgstr ""
+
+msgid "Check task readiness with a GET request using the request_id. The task response is returned once with a 201 status, and then the task is marked as not found. The response includes the media file path or data."
+msgstr ""
+
+msgid "Use a GET request to view processing progress, steps completed, error statuses, and success messages. All data is logged. For further questions, contact support@wunjo.online or join on"
+msgstr ""
+
+msgid "Console log"
+msgstr ""
+
+msgid "Query CPU task"
+msgstr ""
+
+msgid "Query module task"
+msgstr ""
+
+# flasgger/index.html
+msgid "Remember about settings! To work with API, place files in the"
+msgstr ""
+
+msgid "tmp folder"
+msgstr ""
+
+msgid "of the cache directory."
+msgstr ""
+
+# modal.html, generation.html, index.html, highlights.html
+msgid "Aspect ratio select"
+msgstr ""
+
+msgid "An custom artificial intelligence system analyzes video frames to detect key subjects and speaking individuals, aligning lip movements with speech to focus on the most meaningful parts of the content. Perfect to create preview and shorts video."
+msgstr ""
+
+msgid "Highlights"
+msgstr ""
+
+msgid "Drag and drop a file or select one. You can upload a video and write how to edit the video, but the latter is not necessary. For instructions on how to use the Highlights module, check out this"
+msgstr ""
+
+msgid "Your answer will appear in this textarea."
+msgstr ""
+
+msgid "You can ask what is happening in the video or its segment, key takeaways, which sounds to use for editing, or any other question based on the video. The maximum number of symbols is 3000."
+msgstr ""
+
+msgid "What is your question?"
+msgstr ""
+
+msgid "Number of inference steps"
+msgstr ""
+
+msgid "Guidance scale"
+msgstr ""
+
+msgid "Upload an image with a face to make some magic happen!"
+msgstr ""
+
+msgid "Metadata"
+msgstr ""
+
+msgid "Preview of the request"
+msgstr ""
+
+msgid "Parameters that do not depend on files will be applied. If a parameter is related to a file (e.g., its size, duration, or selected face), it cannot be used without the file."
+msgstr ""
+
+msgid "Transcribe"
+msgstr ""
+
+msgid "Chat"
+msgstr ""
+
+msgid "Visual Method"
+msgstr ""
+
+msgid "The method works with video by analyzing visual elements, remembering all movements, colors, and objects. It’s ideal for sports events or movies."
+msgstr ""
+
+msgid "Visual"
+msgstr ""
+
+msgid "Sound Method"
+msgstr ""
+
+msgid "The method works with audio based on speech, capturing what people say. Perfect for podcasts, interviews, or news."
+msgstr ""
+
+msgid "Sound"
+msgstr ""
+
+msgid "Monitor the user is completed tasks throughout the day."
+msgstr ""
+
+msgid "No tasks found"
+msgstr ""
+
+msgid "There are no tasks in the queue."
+msgstr ""
+
+msgid "Got an idea for a feature? Drop it in our"
+msgstr ""
+
+msgid "History session"
+msgstr ""
+
+msgid "You can see your session to always have quick access to generations."
+msgstr ""

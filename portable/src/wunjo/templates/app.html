@@ -7,44 +7,44 @@
 {% block body %}
 <body class="bg-dark-background">
     <header>
-        <nav style="background-color: #161616;border-bottom: 1px solid #4d4d4d;" class="fixed top-[var(--navbar-top-mobile)] md:top-[var(--navbar-top)] transition-[top] bg-dark-background z-20 w-full font-zen-maru-gothic">
-            <div class="flex justify-between bg-accent-primary h-7 text-lg px-4 md:px-6 lg:px-14 text-dark-elements font-alumni font-medium items-center">
-                <div></div>
-                <div class="flex flex-row">Loving the Wunjo? <a class="underline ml-1 mr-1" href="https://wunjo.online/pricing" target="_blank" rel="noopener noreferrer">Upgrade</a> to the professional with fully functional!</div>
-                <button onclick="this.parentElement.remove();"><i class="mt-1 fa-solid fa-circle-xmark"></i></button>
-            </div>
+        <nav data-tour="index" data-position="bottom-middle" data-title="{{ _('Navigation') }}" data-intro="{{ _('In this section, you can check the current version status or any update indications. Access the «Workspace» by clicking on it, where you’ll find various modules, settings, your profile, along with tutorials, contact information for the author, and news updates. Alternatively, clicking on «Wunjo» will display information about the ongoing processing tasks, known as the log.') }}" data-step="4" style="background-color: #161616;border-bottom: 1px solid #4d4d4d;" class="fixed top-[var(--navbar-top-mobile)] md:top-[var(--navbar-top)] transition-[top] bg-dark-background z-20 w-full font-zen-maru-gothic">
+            <div class="discount transition-all h-0 opacity-0 flex justify-between bg-accent-primary text-lg px-4 md:px-6 lg:px-14 text-dark-elements font-alumni font-medium items-center hidden-on-touchscreen"><div></div></div>
             <div class="px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)] w-full flex items-center border-b border-white border-opacity-10 h-[var(--navbar-height)] gap-5">
                 <div class="notification notification-title cursor-pointer px-1.5 text-3l font-extrabold font-alumni">Wunjo</div>
                 <div class="flex gap-3 items-center max-md:hidden"></div>
                 <ul class="flex flex-row items-center gap-2 text-m-mobile lg:text-m text-white h-full ml-auto">
-                    <div onclick="createModalUpdate();" class="version text-dim-gray" vers="{{ version[:-2] }}">v{{ version }}</div>
-                    <li class="relative px-2">
+                    <div onclick="createModalUpdate();" class="version text-dim-gray" vers="{{ version[:-1] }}">v{{ version }}</div>
+                    <li data-tour="module" data-position="bottom" data-title="{{ _('Lite settings') }}" data-intro="{{ _('Open settings. Customize the module to suit your needs. You can adjust the cache directory, switch processors, select the number of users and tasks, and much more. Be sure to review all the settings.') }}" data-step="4" class="relative px-2">
                         <button class="group flex h-full items-center gap-2 peer/anchor nav-menu-btn">
                             <span class="max-md:hidden">{% block nav %}{% endblock %}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" class="opacity-60 group-hover:opacity-100 transition duration-200"><g><path d="M15 8.5L10 13.5L5 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
                         </button>  <!--Name of page and arrow-->
                         <div class="absolute top-[calc(100%_+_4px)] right-0 shadow-popup min-w-[195px] z-30 nav-dropdown-content hidden">
                             <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl px-4 py-3 border border-[#2c2623] rounded-t-[10px]">
-                                <p class="access-admin mb-2 text-s">Don't forget to customize settings</p>
+                                <p class="access-admin mb-2 text-s">{{ _('The cache folder') }} <button class="hover-underline cursor-pointer" onclick="fetch('/open-cache').then(response => { if (response.ok) return response.json(); else throw new Error('Failed to open folder'); }).then(data => console.log(data)).catch(error => console.error('Error:', error));"><text style="color: #ff581b;">({{ _('click') }})</text></button> {{ _('size in settings. Downloaded models can occupy large amounts of disk space.') }}</p>
                                 <div class="flex flex-col">
-                                    <div class="mt-3 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">Profile</a><button class="text-dim-gray system-processor flex flex-row gap-2 items-center" onclick="setProcessor()" type="button"></button></div>
-                                    <a class="access-admin hover-underline cursor-pointer mt-4" href="/settings">Settings</a>
-                                    <a class="hover-underline cursor-pointer mt-4" href="/faq">FAQ</a>
+                                    <div class="mt-3 flex flex-row justify-between"><a class="hover-underline cursor-pointer" href="/profile">{{ _('Profile') }}</a><button class="text-dim-gray system-processor flex flex-row gap-2 items-center" onclick="setProcessor()" type="button"></button></div>
+                                    <button class="access-admin mt-3 flex flex-row justify-between"><a id="settings" class="hover-underline cursor-pointer" href="/settings">{{ _('Settings') }}</a></button>
+                                    <a class="hover-underline cursor-pointer mt-3" href="/faq">{{ _('FAQ') }}</a>
                                 </div>
                             </div>  <!--Current drive space for local? Or Token if web-->
-                            <ul class="flex flex-col p-4 bg-dark-pop-up" style="max-height: 50vh;overflow-y: auto;">
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/face-swap">Face swap</a></li>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/lip-sync">Lip sync</a></li>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/enhancement">Enhancement</a></li>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/remove-object">Remove object</a></li>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/remove-background">Remove background</a></li>
-                                <div class="my-4 h-px w-full bg-light-border"></div>
-                                <li class="mt-3"><a class="hover-underline cursor-pointer" href="/generation">Generation</a></li>
-                                <div class="my-4 h-px w-full bg-light-border"></div>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/separator">Separator</a></li>
-                                <div class="my-4 h-px w-full bg-light-border"></div>
-                                <li class="mt-4"><a class="hover-underline cursor-pointer" href="/">Other</a></li>
-                                <li class="mt-4 flex" style="justify-content: space-between;font-size: large;">
+                            <ul class="flex flex-col p-4 bg-dark-pop-up gap-3" style="max-height: 50vh;overflow-y: auto;">
+                                <li><a class="hover-underline cursor-pointer" href="/live-portrait">{{ _('Live portrait') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/face-swap">{{ _('Face swap') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/lip-sync">{{ _('Lip sync') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/enhancement">{{ _('Enhancement') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/remove-object">{{ _('Remove object') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/remove-background">{{ _('Remove background') }}</a></li>
+                                <div class="access-gpu h-px w-full bg-light-border"></div>
+                                <li class="access-gpu"><a class="hover-underline cursor-pointer" href="/highlights">{{ _('Highlights') }}</a></li>
+                                <li class="access-gpu"><a class="hover-underline cursor-pointer" href="/generation">{{ _('Generation') }}</a></li>
+                                <li class="access-gpu"><a class="hover-underline cursor-pointer" href="/restyling">{{ _('Restyling') }}</a></li>
+                                <div class="h-px w-full bg-light-border"></div>
+                                <li><a class="hover-underline cursor-pointer" href="/clone-voice">{{ _('Clone voice') }}</a></li>
+                                <li><a class="hover-underline cursor-pointer" href="/separator">{{ _('Separator') }}</a></li>
+                                <div class="h-px w-full bg-light-border"></div>
+                                <li><a class="hover-underline cursor-pointer" href="/">{{ _('Workspace') }}</a></li>
+                                <li class="flex" style="justify-content: space-between;font-size: large;">
                                     <a href="https://www.youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
                                         <i title="Tutorials" class="fa-brands fa-youtube opacity-60 group-hover:opacity-100 transition-opacity"></i>
                                     </a>
@@ -54,14 +54,34 @@
                                     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
                                         <i title="Report about bug" class="fa-solid fa-bug opacity-60 group-hover:opacity-100 transition-opacity"></i>
                                     </a>
-                                    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/Support-the-Project" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
+                                    <a href="https://boosty.to/wunjo" target="_blank" rel="noopener noreferrer" class="group cursor-pointer">
                                         <i title="Support author" class="fa-solid fa-heart opacity-60 group-hover:opacity-100 transition-opacity"></i>
                                     </a>
                                 </li>
                             </ul>  <!--Links to modules-->
                             <div class="bg-[#424242] px-4 py-3 rounded-b-[10px]">
-                                <p class="text-s text-light-secondary">By using Wunjo, you agree to the <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/eula">EULA</a> and <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/privacy-policy">Privacy Policy</a></p>
-                                <p class="text-s text-light-secondary" style="margin-top: 10px;">Made by <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko">wladradchenko</a></p>
+                                <p class="text-s text-light-secondary">{{ _('By using Wunjo, you agree to the') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/eula">{{ _('EULA') }}</a> {{ _('and') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="{{ host }}/privacy-policy">{{ _('Privacy Policy') }}</a></p>
+                                <p class="text-s text-light-secondary" style="margin-top: 10px;">{{ _('Made by') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko">wladradchenko</a></p>
+                            </div>  <!--Information about version and author-->
+                        </div>
+                    </li>
+                    <li data-tour="module" data-position="bottom" data-title="{{ _('History session') }}" data-intro="{{ _('You can see your session to always have quick access to generations.') }}" data-step="5" class="relative px-2">
+                        <button style="scale:0.85" class="group flex h-full items-center gap-2 peer/anchor nav-menu-btn nav-history">
+                            <i class="fa-solid fa-clock-rotate-left opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                        </button>  <!--Name of page and arrow-->
+                        <div class="absolute top-[calc(100%_+_4px)] right-0 shadow-popup min-w-[195px] z-30 nav-dropdown-content nav-history hidden">
+                            <div class="bg-dark-pop-up bg-opacity-50 backdrop-blur-2xl px-4 py-3 border border-[#2c2623] rounded-t-[10px]">
+                                <p class="access-admin mb-2 text-s">{{ _('Monitor the user is completed tasks throughout the day.') }}</p>
+                            </div>  <!--Current drive space for local? Or Token if web-->
+                            <ul class="flex flex-col p-4 bg-dark-pop-up gap-3" style="max-height: 50vh;overflow-y: auto;">
+                                <div class="flex flex-col justify-center text-center gap-1">
+                                    <i style="font-size:xxx-large;" class="fa-regular fa-circle-question"></i>
+                                    <span class="mt-2">{{ _('No tasks found') }}?</span>
+                                    <span class="text-s">{{ _('There are no tasks in the queue.') }}</span>
+                                </div>
+                            </ul>
+                            <div class="bg-[#424242] px-4 py-3 rounded-b-[10px]">
+                                <p class="text-s text-light-secondary">{{ _('Got an idea for a feature? Drop it in our') }} <a target="_blank" rel="noopener noreferrer" class="underline" href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">GitHub!</a></p>
                             </div>  <!--Information about version and author-->
                         </div>
                     </li>
@@ -74,14 +94,14 @@
 
 
     <div class="min-h-screen md:pt-[calc(var(--navbar-height)+var(--navbar-top-mobile))] pt-[calc(var(--navbar-height)+var(--navbar-top))] px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]">
-
+        <div class="fixed top-0 left-0 right-0 bottom-0 view-dark-background opacity-[.85]"></div>
         <div class="mb-[88px] w-full pt-10 flex-1">
             {% block sections %}
             {% endblock %}
         </div>
 
         <footer class="z-[3] bottom-0 px-4 md:px-6 lg:px-14 xl:px-[calc((100vw-var(--max-width))/2)]" style="position: fixed;left: 0; right: 0;">
-            <div class="sticky bottom-0 w-full z-10 bg-dark-background max-md:border-t border-t-white border-opacity-[.15] mt-10">
+            <div class="sticky bottom-0 w-full z-10 bg-dark-background max-md:border-t border-t-white border-opacity-[.15]">
                 <div style="background-color: #161616;border-top: 1px solid #4d4d4d;" class="absolute w-[calc(100vw_-_var(--scrollbar-thickness))] bg-dark-background left-1/2 -translate-x-1/2 top-0 h-full z-[-1]"></div>
                 {% block footer %}
                     <!--HIDDEN FOOTER...NOT FORGET-->
@@ -94,41 +114,77 @@
 
         <!--TEMPLATES-->
         <script async>
-            // Define a function to load scripts sequentially
+            // Function to load a single script
+            function loadScript(url) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = url;
+                    script.defer = true; // Use defer to load scripts asynchronously
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            // Function to load multiple scripts sequentially
             function loadScripts(urls) {
-                return Promise.all(urls.map(url => {
-                    return new Promise((resolve, reject) => {
-                        const script = document.createElement('script');
-                        script.src = url;
-                        script.defer = true; // Use defer to load scripts asynchronously
-                        script.onload = resolve;
-                        script.onerror = reject;
-                        document.head.appendChild(script);
-                    });
+                return Promise.all(urls.map(url => loadScript(url)));
+            }
+
+            // Define a function to load scripts with fallback
+            async function loadScriptWithFallback(scripts) {
+                return Promise.all(scripts.map(async ({ remoteUrl, localUrl }) => {
+                    if (!navigator.onLine) {
+                        console.warn("No internet connection. Unable to fetch avatar.");
+                        await loadScript(localUrl);
+                        return;
+                    }
+                    try {
+                        await loadScript(remoteUrl);
+                    } catch (error) {
+                        console.warn(`Failed to load remote script: ${remoteUrl}. Falling back to local script: ${localUrl}`);
+                        await loadScript(localUrl);
+                    }
                 }));
             }
 
             // Function to fetch and append templates
-            async function fetchAndAppendTemplate(url) {
-                const response = await fetch(url);
-                const html = await response.text();
-                document.body.innerHTML += html;
+            async function fetchAndAppendTemplate(templateName) {
+                const url = `/components_template/${encodeURIComponent(templateName)}`;
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    if (data.html) {
+                        document.body.innerHTML += data.html;
+                    } else {
+                        console.error('Error loading template:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                }
             }
 
-            // Load scripts sequentially and then fetch and append templates
+            // Load critical scripts first
             loadScripts([
-                "/static/basic/js/base.min.js",
-                "/static/basic/js/jszip.min.js",
-                "/static/templates/js/general.min.js",
-                "/static/templates/js/modal.min.js",
-                "/static/templates/js/view.min.js",
-                "/static/templates/js/footer.min.js"
+                "{{ url_for('static', filename='basic/js/base.min.js') }}",
+                "{{ url_for('static', filename='basic/js/jszip.min.js') }}",
+                "{{ url_for('static', filename='basic/js/tour.min.js') }}",
+                "{{ url_for('static', filename='basic/js/awesomplete.min.js') }}",
+                "{{ url_for('static', filename='components/js/general.min.js') }}",
+                "{{ url_for('static', filename='components/js/modal.min.js') }}",
+                "{{ url_for('static', filename='components/js/view.min.js') }}",
+                "{{ url_for('static', filename='components/js/footer.min.js') }}",
             ]).then(() => {
-                // All scripts have loaded successfully, now fetch and append templates
+                // All core scripts have loaded successfully, now fetch and append templates
                 return Promise.all([
-                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/modal.html') }}"),
-                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/view.html') }}"),
-                    fetchAndAppendTemplate("{{ url_for('static', filename='templates/html/footer.html') }}")
+                    fetchAndAppendTemplate("element.html"),
+                    fetchAndAppendTemplate("modal.html"),
+                    fetchAndAppendTemplate("tooltip.html"),
+                    fetchAndAppendTemplate("view.html"),
+                    fetchAndAppendTemplate("footer.html")
                 ]);
             }).then(() => {
                 // After templates are appended, execute additional logic
@@ -142,8 +198,40 @@
                 }
                 initNotification();
                 setAccess();
+                {% if get_locale() == 'en' %}
+                    loadScript('{{ url_for('static', filename='components/js/tooltip.min.js') }}').then(() => {
+                        createTooltipTranslation();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+                {% else %}
+                {% endif %}
+
+                // Lazy load trial.min.js and login.min.js after the main page load
+                loadScriptWithFallback([
+                    {
+                        remoteUrl: "{{ url_for('static', filename='basic/js/trial.min.js') }}",
+                        localUrl: "{{ url_for('static', filename='basic/js/trial.min.js') }}"
+                    },
+                    {
+                        remoteUrl: "{{ url_for('static', filename='basic/js/login.min.js') }}",
+                        localUrl: "{{ url_for('static', filename='basic/js/login.min.js') }}"
+                    }
+                ]).then(() => {
+                    isAuthorized().then((isAuthorizedResult) => {
+                        if (!isAuthorizedResult) {
+                            createDiscountElement();
+                        };
+                    });
+                    if (typeof initLazyScript === 'function') {
+                        initLazyScript();
+                    }
+                }).catch(error => {
+                    console.error('Error loading lazy scripts:', error);
+                });
             }).catch(error => {
-                console.error('Error loading scripts or templates:', error);
+                console.error('Error loading core scripts or templates:', error);
             });
         </script>
         <!--TEMPLATES-->
@@ -151,6 +239,8 @@
         <script>
             const serverVersionData = {{ changelog|tojson|safe }};
             const currentVersionDiv = document.querySelector(".version");
+            const languageTooltipTranslation = {{ language_tooltip_translation|tojson|safe }};
+            const enableTooltipTranslation = {{ enable_tooltip_translation|tojson|safe }};
         </script>
         <script>
             async function setProcessor() {
@@ -181,17 +271,30 @@
                     const upgradeGPU = data.upgrade_gpu;
                     const currentProcessor = data.current_processor;
                     const systemProcessor = document.querySelector('.system-processor');
-
+                    const settingsProcessor = document.querySelector('.settings-processor') || null;
 
                     if (upgradeGPU === true) {
                         console.log(currentProcessor)
                         if (currentProcessor === 'cuda'){
                             systemProcessor.innerHTML = `<div class="flex items-center"><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.15"></path></svg><svg style="margin-left: -5px; margin-right: -5px;" width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.5"></path></svg><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ff581b" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#ff581b" fill-opacity="0.75"></path></svg></div> GPU`;
+                            if (settingsProcessor) {
+                                settingsProcessor.classList.add('hover:bg-accent-hover','text-dark-background','bg-accent-primary');
+                                settingsProcessor.classList.remove('hover:bg-dark-elements-hover','text-light-primary','bg-dark-elements');
+                                settingsProcessor.textContent = 'GPU';
+                            };
                         } else {
                             systemProcessor.innerHTML = `<div class="flex items-center"><svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg" color="grey" class=""><path fill-rule="evenodd" clip-rule="evenodd" d="M6.92851 0.727609C6.92859 0.567738 6.87693 0.412296 6.78152 0.285327C6.6861 0.158358 6.55226 0.0669382 6.40069 0.0252099C6.24911 -0.0165185 6.08826 -0.00623016 5.943 0.0544834C5.79775 0.115197 5.6762 0.222952 5.59714 0.361081L0.59735 9.08795C0.53401 9.19847 0.500431 9.32405 0.500004 9.45201C0.499577 9.57997 0.532318 9.70578 0.59492 9.81673C0.657523 9.92769 0.74777 10.0199 0.85655 10.0839C0.96533 10.148 1.08879 10.1818 1.21447 10.1817H4.07149V15.2724C4.07141 15.4323 4.12307 15.5877 4.21848 15.7147C4.3139 15.8416 4.44774 15.9331 4.59931 15.9748C4.75089 16.0165 4.91174 16.0062 5.057 15.9455C5.20225 15.8848 5.32381 15.777 5.40286 15.6389L10.4027 6.91205C10.466 6.80153 10.4996 6.67595 10.5 6.54799C10.5004 6.42003 10.4677 6.29422 10.4051 6.18327C10.3425 6.07231 10.2522 5.98014 10.1434 5.91605C10.0347 5.85197 9.91121 5.81824 9.78553 5.81828H6.92851V0.727609Z" fill="#FFFFFF" fill-opacity="0.75"></path></svg></div> CPU`;
+                            if (settingsProcessor) {
+                                settingsProcessor.classList.remove('hover:bg-accent-hover','text-dark-background','bg-accent-primary');
+                                settingsProcessor.classList.add('hover:bg-dark-elements-hover','text-light-primary','bg-dark-elements');
+                                settingsProcessor.textContent = 'CPU';
+                            };
                         };
                     } else {
                         systemProcessor.remove();
+                        if (settingsProcessor) {
+                            settingsProcessor.remove();
+                        };
                     }
                 } catch (error) {
                     console.error('Error fetching processor:', error.message);
@@ -204,6 +307,7 @@
                 console.error('Error fetching system resources:', error.message);
             });
         </script>
+
     </div>
 </body>
 {% endblock %}

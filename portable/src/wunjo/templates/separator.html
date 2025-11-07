@@ -1,9 +1,8 @@
 {% extends 'app.html' %}
-{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Wunjo{% endblock %}
 
-{% block nav %}Separator{% endblock %}
+{% block nav %}{{ _('Separator') }}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
@@ -15,17 +14,17 @@
 {% block sections %}
 <!--In order to see menu like freeze add in class sticky else remove sticky-->
 <div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
-    <div class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+    <div data-tour="module" data-position="bottom" data-title="{{ _('Calendar') }}" data-intro="{{ _('You can select specific dates or date ranges to filter the content you have previously created.') }}" data-step="2" class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
         <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
-        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">Today</div>
-        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 p-2 text-center"><i class="fa-regular fa-calendar"></i></button>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">{{ _('Today') }}</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 text-center"><i class="fa-regular fa-calendar"></i></button>
     </div>
 </div>
 
 <div class="view-filter"></div>
 
 <div class="flex flex-col gap-10 pt-10">
-    <div class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div style="overflow: hidden;" class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
     <div class="mb-[34px]"></div>
 </div>
 
@@ -51,15 +50,29 @@
     function initScript() {
         // Import and initialize the content script here
         const scriptView = document.createElement('script');
-        scriptView.src = "/static/content/js/view.min.js";
+        scriptView.src = "{{ url_for('static', filename='content/js/view.min.js') }}";
         document.body.appendChild(scriptView);
         document.querySelector('.view-filter').appendChild(createViewFilter());
 
         const scriptSeparator = document.createElement('script');
-        scriptSeparator.src = "/static/modules/js/separator.min.js";
+        scriptSeparator.src = "{{ url_for('static', filename='modules/js/separator.min.js') }}";
         document.body.appendChild(scriptSeparator);
 
         getModuleTaskEventWithIntervalImmediately();
+
+        // Tour for new users
+        const tour = {{ tour|tojson|safe }};
+        if (tour === true) {
+            setTimeout(() => {
+                const footer = document.querySelector('footer');
+                footer.setAttribute("data-tour", "module");
+                footer.setAttribute("data-position", "bottom-right");
+                footer.setAttribute("data-title", `{{ _('Upload file') }}`);
+                footer.setAttribute("data-step", "1");
+                footer.setAttribute("data-intro", `{{ _('Drag and drop a file or select one. You can upload an audio. For instructions on how to use the Separator module, check out this') }} <a target="_blank" rel="noopener noreferrer" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background" href="https://youtu.be/LIMlsOZdzWM?feature=shared&t=594">{{ _('tutorial') }}</a>.<br><br><text class="text-accent-primary">{{ _('Briefly') }}:</text> {{ _('Upload an audio, and then press the') }} <button class="p-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background"><svg class="paper" width="14px" height="14px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M231.626,128a16.015,16.015,0,0,1-8.18262,13.96094L54.53027,236.55273a15.87654,15.87654,0,0,1-18.14648-1.74023,15.87132,15.87132,0,0,1-4.74024-17.60156L60.64746,136H136a8,8,0,0,0,0-16H60.64746L31.64355,38.78906A16.00042,16.00042,0,0,1,54.5293,19.44727l168.915,94.59179A16.01613,16.01613,0,0,1,231.626,128Z"></path></svg></button>.`);
+                startDataTour('module', true);
+            }, 100);
+        };
     }
 </script>
 {% endblock %}

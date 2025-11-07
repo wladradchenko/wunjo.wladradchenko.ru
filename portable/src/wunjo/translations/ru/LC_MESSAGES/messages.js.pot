@@ -1,0 +1,1500 @@
+# JS Code
+msgid "Processing"
+msgstr "Обрабатывается"
+
+msgid "Check Warning"
+msgstr "Проверить лог"
+
+msgid "View Error"
+msgstr "Открыть ошибку"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "Ready to manually retargeting face? Feel like a real puppeteer. Let’s go!"
+msgstr "Готовы вручную изменить лицо? Почувствуйте себя настоящим кукловодом. Поехали!"
+
+# index.js
+msgid "video"
+msgstr "видео"
+
+msgid "image"
+msgstr "изображение"
+
+msgid "audio"
+msgstr "аудио"
+
+msgid "text"
+msgstr "текст"
+
+msgid "Update"
+msgstr "Обновление"
+
+msgid "Bring your portraits to life<br> with update a spark of emotion to any"
+msgstr "Оживите свои портреты<br> добавьте искру эмоций к любому"
+
+msgid "content"
+msgstr "контенту"
+
+msgid "Learn how to seamlessly perform<br> a face swap using just one photo"
+msgstr "Узнайте, как легко сделать<br> замену лица с помощью одной фотографии"
+
+msgid "Learn how to seamlessly <br> animate mouth movements using audio"
+msgstr "Узнайте, как легко <br> анимировать движения рта с помощью аудио"
+
+msgid "Upgrade"
+msgstr "Обновить"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "and even give faces a digital makeover."
+msgstr "и даже убрать морщины для лица."
+
+msgid "low-res content"
+msgstr "контент с низким разрешением"
+
+msgid "secrets"
+msgstr "здесь"
+
+msgid "Unlock <br> object removal"
+msgstr "Откройте <br> удаление объектов"
+
+msgid "and <br> get chroma key."
+msgstr "фона и <br> получения хромакея."
+
+msgid "removal"
+msgstr "удаление"
+
+msgid "Master background"
+msgstr "Освойте"
+
+msgid "from text or images. <br>No more effort for beautiful content."
+msgstr "из текста или изображений. <br>Больше никакой суеты для красивого контента."
+
+msgid "video life"
+msgstr "здесь"
+
+msgid "Bring your content to"
+msgstr "Оживите ваш контент"
+
+msgid "Discover how to change full <br> content or object inside by text prompts in"
+msgstr "Узнайте, как изменить весь <br> контент или объект внутри с помощью текстовых запросов"
+
+msgid "Learn how to seamlessly perform<br> clone voice of your neighbors in"
+msgstr "Узнайте, как легко<br> клонировать голос для обучающих роликов"
+
+msgid "Separate"
+msgstr "Разделите"
+
+msgid "vocals from background <br> music effortlessly."
+msgstr "вокал от фоновой <br> музыки без усилий."
+
+msgid "Manipulate and animate faces with ease. Move the head, add emotions, or create blinks — manually or automatically. Ideal for bringing static photos to life!"
+msgstr "Манипулируйте и анимируйте лица с легкостью. Двигайте голову, добавляйте эмоции или создавайте моргания — вручную или автоматически. Идеально для оживления статических фотографий!"
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Улучшите детали лица для исправления недостатков и достижения безупречного внешнего вида."
+
+msgid "Replace faces in specific time intervals with precision. If inconsistencies appear, try replacing all faces for improved quality."
+msgstr "Заменяйте лица в определенные временные интервалы с точностью. Если появляются несоответствия, попробуйте заменить все лица для улучшения качества."
+
+msgid "Add realism to swapped faces by reintroducing natural blinks manually."
+msgstr "Добавьте реализм замененным лицам, вручную добавив естественные моргания."
+
+msgid "Improve the quality of the swapped face for a seamless result. Experiment by alternating between Enhancement and Live Portrait for better outcomes."
+msgstr "Улучшите качество замененного лица для получения бесшовного результата. Экспериментируйте, чередуя улучшение качества и живой портрет для достижения лучших результатов."
+
+msgid "For better video, use the «silence» mode in manually retargeting live portrait to pre-process the mouth to a closed state before applying lip sync."
+msgstr "Для лучшего видео используйте режим «тишина» при ручном перенаправлении живого портрета, чтобы предварительно обработать рот до закрытого состояния перед применением синхронизации губ."
+
+msgid "Animate lips in photos and videos with realistic movements. Remove double chins if needed for a refined look (note: this may take extra time)."
+msgstr "Анимируйте губы на фотографиях и видео с реалистичными движениями. Удаляйте двойной подбородок при необходимости для более утонченного вида (примечание: это может занять дополнительное время)."
+
+msgid "Further enhance the face’s quality for sharper and clearer animations."
+msgstr "Дальнейшее улучшение качества лица для более четких и ясных анимаций."
+
+msgid "Refine face or content quality, eliminating blurry areas for a sharper overall result."
+msgstr "Улучшите качество лица или контента, устранив размытые области для более четкого общего результата."
+
+msgid "Remove unwanted text or objects from videos effortlessly. Even moving objects can be removed automatically by the neural network."
+msgstr "Удаляйте нежелательный текст или объекты из видео без усилий. Даже движущиеся объекты могут быть автоматически удалены нейронной сетью."
+
+msgid "Restore resolution and improve content quality if it diminishes after object removal."
+msgstr "Восстановите разрешение и улучшите качество контента, если оно уменьшилось после удаления объектов."
+
+msgid "Remove the background from photos or videos. Photos can have transparent backgrounds, while videos will use chromakey."
+msgstr "Удаляйте фон с фотографий или видео. Фотографии могут иметь прозрачный фон, а видео будут использовать хромакей."
+
+msgid "Generate videos from text (any language) and images. Control content with brushes and prompts. Create images from text, customize details, and bring your imagination to life."
+msgstr "Создавайте видео из текста (любой язык) и изображений. Управляйте контентом с помощью кистей и подсказок. Создавайте изображения из текста, настраивайте детали и воплощайте свои идеи в жизнь."
+
+msgid "Transform using text (any language) your videos or photos into unique styles. For example, dancing in the ocean or sipping coffee in space. Control manually or auto elements such as skin tones."
+msgstr "Превращайте ваши видео или фотографии с помощью текста (любой язык) в уникальные стили. Например, танец в океане или кофе в космосе. Управляйте вручную или автоматически элементами, такими как тон кожи."
+
+msgid "If limited video memory causes low resolution, enhance content quality and upscale it effortlessly."
+msgstr "Если ограниченная видеопамять вызывает низкое разрешение, улучшите качество контента и увеличьте его масштаб без усилий."
+
+msgid "Clone speech from text. Choose a text generation (before this select language) or convert your voice to match a cloned tone."
+msgstr "Клонируйте речь из текста. Выберите генерацию текста (перед этим выберите язык) или преобразуйте ваш голос, чтобы он соответствовал клонированному тону."
+
+msgid "Separate vocals and instrumentals from music with just one click."
+msgstr "Разделите вокал и инструменталы в музыке одним кликом."
+
+msgid "Customize object colors or experiment with unique styles — turn your face into an alien, for example, with text-driven (any language) transformations."
+msgstr "Настраивайте цвета объектов или экспериментируйте с уникальными стилями — превратите свое лицо в инопланетянина, например, с текстовыми (любой язык) трансформациями."
+
+msgid "Replace deformed or inconsistent faces in frames. Use the first frame of your video to maintain consistent facial features."
+msgstr "Заменяйте деформированные или несогласованные лица в кадрах. Используйте первый кадр вашего видео, чтобы сохранить согласованность черт лица."
+
+msgid "Finalize your project by improving the face or overall content quality."
+msgstr "Завершите ваш проект, улучшив качество лица или общего контента."
+
+msgid "Isolate vocals and instrumentals from a song. This will prepare them for editing and further transformations."
+msgstr "Изолируйте вокал и инструменталы из песни. Это подготовит их к редактированию и дальнейшим трансформациям."
+
+msgid "Record a new vocal segment and clone its sound to match the original song. Then reassemble the vocals and instrumentals for a seamless edit."
+msgstr "Запишите новый вокальный сегмент и клонируйте его звук, чтобы он соответствовал оригинальной песне. Затем соберите вокал и инструменталы для бесшовного редактирования."
+
+msgid "Need a speaking character in your video? Start by finding a similar face or generating one via avatar creation. Perfect for when you lack real footage."
+msgstr "Нужен говорящий персонаж в вашем видео? Начните с поиска похожего лица или создания его через генерацию аватара. Идеально, когда не хватает реальных кадров."
+
+msgid "Add voice to the video by cloning from a preferred voice tone. Write the script, choose a language, and let the neural network handle the rest."
+msgstr "Добавьте голос к видео, клонировав из предпочитаемого тона голоса. Напишите сценарий, выберите язык, и пусть нейронная сеть сделает остальное."
+
+msgid "Synchronize lips with the generated voiceover for added realism. Enhance the face quality for a polished result."
+msgstr "Синхронизируйте губы с сгенерированной озвучкой для добавления реализма. Улучшите качество лица для безупречного результата."
+
+msgid "Manipulate the head, add emotions, or create blinks — manually or automatically."
+msgstr "Манипулируйте головой, добавляйте эмоции или создавайте моргания — вручную или автоматически."
+
+msgid "Enhance facial details to correct imperfections and achieve a polished look."
+msgstr "Улучшите детали лица для исправления недостатков и достижения безупречного внешнего вида."
+
+msgid "If you need to analyze photos, videos and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Если вам необходимо проанализировать фотографии, видео и определить, является ли контент искусственно созданным в Wunjo, вы можете сделать это с помощью анализа."
+
+msgid "If you need to analyze audio and determine whether the content is artificially created in Wunjo, you can do this using analysis."
+msgstr "Если вам необходимо проанализировать аудио и определить, является ли контент искусственно созданным в Wunjo, вы можете сделать это с помощью анализа."
+
+# tooltip.js
+msgid "Translator"
+msgstr "Переводчик"
+
+msgid "Hello, welcome to the tour"
+msgstr "Добро пожаловать на экскурсию"
+
+msgid "In begin, we’ll take a look at the translator. If you come across any text that’s not clear, you can easily translate it into your language. Just select the text, and it will appear in the translator. To open it, click on the element. You can also move the translator to any convenient place on your screen by"
+msgstr "Сначала мы рассмотрим переводчик. Если вы столкнулись с текстом, который непонятен, вы можете легко перевести его на свой язык. Просто выделите текст, и он появится в переводчике. Чтобы открыть его, нажмите на элемент. Вы также можете переместить переводчик в любое удобное место на экране, перетащив его."
+
+msgid "(dragging it)."
+msgstr "(перетаскивая его)."
+
+msgid "Try it: After click"
+msgstr "Попробуйте: после клика"
+
+msgid "next"
+msgstr "далее"
+
+msgid ", open the translator, and select the text you want to translate."
+msgstr ", откройте переводчик и выберите текст, который хотите перевести."
+
+msgid "You can"
+msgstr "Вы можете"
+
+msgid "disable"
+msgstr "отключить"
+
+msgid "the translator display or change your preferences in the settings."
+msgstr "отображение переводчика или изменить ваши предпочтения в настройках."
+
+# general.js
+msgid "January"
+msgstr "Январь"
+
+msgid "February"
+msgstr "Февраль"
+
+msgid "March"
+msgstr "Март"
+
+msgid "April"
+msgstr "Апрель"
+
+msgid "May"
+msgstr "Май"
+
+msgid "June"
+msgstr "Июнь"
+
+msgid "July"
+msgstr "Июль"
+
+msgid "August"
+msgstr "Август"
+
+msgid "September"
+msgstr "Сентябрь"
+
+msgid "October"
+msgstr "Октябрь"
+
+msgid "November"
+msgstr "Ноябрь"
+
+msgid "December"
+msgstr "Декабрь"
+
+# model.js
+msgid "Jan"
+msgstr "Янв"
+
+msgid "Feb"
+msgstr "Фев"
+
+msgid "Mar"
+msgstr "Мар"
+
+msgid "Apr"
+msgstr "Апр"
+
+msgid "May"
+msgstr "Май"
+
+msgid "Jun"
+msgstr "Июн"
+
+msgid "Jul"
+msgstr "Июл"
+
+msgid "Aug"
+msgstr "Авг"
+
+msgid "Sep"
+msgstr "Сен"
+
+msgid "Oct"
+msgstr "Окт"
+
+msgid "Nov"
+msgstr "Ноя"
+
+msgid "Dec"
+msgstr "Дек"
+
+msgid "Oops! Something went wrong. Please try again."
+msgstr "Упс! Что-то пошло не так. Пожалуйста, попробуйте снова."
+
+msgid "Heads up: This content is not a deepfake from Wunjo, but it could be a deepfake from another program or even original content. You know, I don’t know what I don’t know!"
+msgstr "Внимание: Этот контент не создан в Wunjo, но это может быть измененным (дипфейком) от другой программы или даже оригинальный контент. Знаете, я не знаю того, чего не знаю!"
+
+msgid "Yeah! This content appears to be a deepfake created by Wunjo."
+msgstr "Да! Этот контент измененный, созданным с помощью Wunjo."
+
+msgid "Oops! An unexpected error occurred. Please try again."
+msgstr "Упс! Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова."
+
+msgid "How many users are there?"
+msgstr "Сколько пользователей?"
+
+msgid "Pick your user squad! This sets how many tasks can strut their stuff simultaneously for everyone."
+msgstr "Выберите колличество пользователей! Определяет, сколько задач могут одновременно выполнять все пользователи."
+
+msgid "What is resolution?"
+msgstr "Какое разрешение?"
+
+msgid "Dial in the max length of your content’s long side. Bigger isn’t always better, but it sure does look good!"
+msgstr "Установите максимальную длину длинной стороны вашего контента. Большее не всегда лучше, но выглядит красиво!"
+
+msgid "Power usage?"
+msgstr "Мощность?"
+
+msgid "Choose your RAM and VRAM power levels. Go big for multitasking magic or play it safe with minimal memory usage."
+msgstr "Выберите уровни мощности для вашей оперативной и видеопамяти. Выберите больше для многозадачности или будьте осторожны с минимальным использованием памяти."
+
+msgid "What is the duration? (in minutes)"
+msgstr "Какова продолжительность? (в минутах)"
+
+msgid "What is the text length? (characters)"
+msgstr "Какова длина текста? (в символах)"
+
+msgid "Set the limit for your content duration. Anything longer gets the chop—no one likes an endless show!"
+msgstr "Установите предел для продолжительности вашего контента. Все, что длиннее, будет обрезано — никто не любит бесконечное шоу!"
+
+msgid "Define the max character count for your text."
+msgstr "Определите максимальное количество символов для вашего текста."
+
+msgid "Transferring models may take some time. Do not close the software."
+msgstr "Перемещение моделей может занять некоторое время. Не закрывайте программу."
+
+msgid "Bring all!"
+msgstr "Много"
+
+msgid "A small group"
+msgstr "Немного"
+
+msgid "Just me!"
+msgstr "Один"
+
+msgid "Minimum"
+msgstr "Минимум"
+
+msgid "Medium"
+msgstr "Средний"
+
+msgid "Maximum"
+msgstr "Максимум"
+
+# view.js
+msgid "An error occurred while checking the processor. Please try again later."
+msgstr "Произошла ошибка при проверке процессора. Повторите попытку позже."
+
+msgid "requires a GPU to function. If your system supports it, please switch from CPU to GPU in your settings."
+msgstr "для работы требуется ГПУ. Если ваша система поддерживает его, переключитесь с ЦПУ на ГПУ в настройках."
+
+# settings.js
+msgid "What models are available?"
+msgstr "Какие модели доступны?"
+
+msgid "Which models can I access?"
+msgstr "К каким моделям у меня есть доступ?"
+
+msgid "What options do I have in terms of models?"
+msgstr "Какие варианты моделей у меня есть?"
+
+msgid "What kinds of models are at my disposal?"
+msgstr "Какие виды моделей у меня есть в распоряжении?"
+
+msgid "Which models are within my reach?"
+msgstr "Какие модели доступны мне?"
+
+msgid "What’s in the repertoire of available models?"
+msgstr "Какие модели входят в репертуар доступных?"
+
+msgid "What choices do I have among the models?"
+msgstr "Какие у меня есть варианты среди моделей?"
+
+msgid "Which models are up for grabs?"
+msgstr "Какие модели можно использовать?"
+
+msgid "What’s on the menu in terms of models?"
+msgstr "Какие модели представлены в меню?"
+
+msgid "What’s in the lineup of available models?"
+msgstr "Какие модели входят в список доступных?"
+
+msgid "For manual model utilization"
+msgstr "Для ручного использования модели"
+
+msgid "In manually leveraging the model"
+msgstr "При ручном использовании модели"
+
+msgid "When employing the model manually"
+msgstr "При ручном применении модели"
+
+msgid "Utilizing the model manually involves"
+msgstr "Ручное использование модели включает"
+
+msgid "When integrating the model manually"
+msgstr "При ручной интеграции модели"
+
+msgid "In the manual application of the model"
+msgstr "При ручном применении модели"
+
+msgid "For hands-on model utilization"
+msgstr "Для практического использования модели"
+
+msgid "When using the model manually"
+msgstr "При использовании модели вручную"
+
+msgid "In manual model integration"
+msgstr "При ручной интеграции модели"
+
+msgid "For direct model application"
+msgstr "Для прямого применения модели"
+
+msgid "During manual model utilization"
+msgstr "Во время ручного использования модели"
+
+msgid "Incorporating the model manually requires"
+msgstr "Ручное включение модели требует"
+
+msgid "When applying the model manually"
+msgstr "При ручном применении модели"
+
+msgid "Using the model manually necessitates"
+msgstr "Ручное использование модели требует"
+
+msgid "In the hands-on utilization of the model"
+msgstr "При практическом использовании модели"
+
+msgid "When integrating the model manually"
+msgstr "При ручной интеграции модели"
+
+msgid "For direct model utilization"
+msgstr "Для прямого использования модели"
+
+msgid "In manual model application"
+msgstr "При ручном применении модели"
+
+msgid "During hands-on model integration"
+msgstr "Во время практической интеграции модели"
+
+msgid "Utilizing the model manually entails"
+msgstr "Ручное использование модели включает"
+
+msgid "You will able to find model in"
+msgstr "Вы сможете найти модель в"
+
+msgid "first"
+msgstr "сначала"
+
+msgid "download the"
+msgstr "скачайте"
+
+msgid "file. Once downloaded, extract its contents and place them in the following directory"
+msgstr "файл. После загрузки извлеките его содержимое и поместите в следующую директорию"
+
+msgid "file. Move it into the"
+msgstr "файл. Переместите его в"
+
+msgid "renaming it as"
+msgstr "переименовав его в"
+
+msgid "Your system resources:"
+msgstr "Ваши системные ресурсы:"
+
+msgid "Total size of content"
+msgstr "Общий размер контента"
+
+msgid "Total size of models"
+msgstr "Общий размер моделей"
+
+msgid "Total RAM"
+msgstr "Объем оперативной памяти"
+
+msgid "Available RAM"
+msgstr "Доступная оперативная память"
+
+msgid "Total VRAM"
+msgstr "Общий объем видеопамяти"
+
+msgid "Available VRAM"
+msgstr "Доступная видеопамять"
+
+msgid "in folder"
+msgstr "в папке"
+
+msgid "In GPU mode"
+msgstr "В режиме GPU"
+
+msgid "Currently, models from various"
+msgstr "В настоящее время модели из различных"
+
+msgid "On this machine, models are limited to CPU processing only. To utilize the GPU, please refer to the FAQ section or check the log for more information."
+msgstr "На этом компьютере модели ограничены только обработкой на CPU. Для использования GPU обратитесь к разделу FAQ или проверьте журнал для получения дополнительной информации."
+
+msgid "models are executed using the GPU"
+msgstr "модели выполняются с использованием GPU"
+
+msgid "modules are running on the CPU"
+msgstr "модули работают на CPU"
+
+msgid "for enhanced performance. If you wish to give the machine a break, you can transfer the models back to the CPU by clicking"
+msgstr "для повышения производительности. Если вы хотите дать машине отдых, вы можете вернуть модели на CPU, нажав"
+
+msgid "To switch to GPU processing, simply click"
+msgstr "Чтобы переключиться на обработку с помощью GPU, просто нажмите"
+
+msgid "Remember, you can only switch processors when there is no active processing."
+msgstr "Помните, что вы можете переключаться между процессорами только при отсутствии активной обработки."
+
+msgid "and please note that you can only transfer processing to the GPU if there is no ongoing computation."
+msgstr "и обратите внимание, что вы можете перенести обработку на GPU только при отсутствии текущих вычислений."
+
+msgid "A new port has been installed. For the changes to take effect"
+msgstr "Установлен новый порт. Чтобы изменения вступили в силу"
+
+msgid "restart the application."
+msgstr "перезапустите приложение."
+
+msgid "Your new port"
+msgstr "Ваш новый порт"
+
+msgid "But, if you need to switch port again. Just let click"
+msgstr "Но, если вам нужно снова переключить порт, просто нажмите"
+
+msgid "Application run on port"
+msgstr "Приложение запущено на порту"
+
+msgid "You can get access to application by"
+msgstr "Вы можете получить доступ к приложению через"
+
+msgid "Your static port"
+msgstr "Ваш статический порт"
+
+msgid "which you can change in input."
+msgstr "который вы можете изменить."
+
+msgid "static port in local network."
+msgstr "статический порт в локальной сети."
+
+msgid "If you need to apply switch port, I’ll handle it smoothly. Just let click"
+msgstr "Если вам нужно переключить порт, я сделаю это без проблем. Просто нажмите"
+
+msgid "Your share link"
+msgstr "Ваша ссылка для совместного доступа"
+
+msgid "If you want to turn on share mode by"
+msgstr "Если вы хотите включить режим совместного доступа через"
+
+msgid "public link, click"
+msgstr "публичную ссылку, нажмите"
+
+msgid "If you wanna turn off share mode, click"
+msgstr "Если вы хотите отключить режим совместного доступа, нажмите"
+
+msgid "After updating the settings"
+msgstr "После обновления настроек"
+
+msgid "you need to restart"
+msgstr "вам нужно перезапустить"
+
+msgid "the application for the"
+msgstr "приложение, чтобы"
+
+msgid "changes to take effect."
+msgstr "изменения вступили в силу."
+
+msgid "Max CPU tasks running for all users at once"
+msgstr "Максимальное количество задач на CPU для всех пользователей одновременно"
+
+msgid "Max module tasks running for all users at once"
+msgstr "Максимальное количество задач модулей для всех пользователей одновременно"
+
+msgid "Max CPU tasks running for one user at once"
+msgstr "Максимальное количество задач на CPU для одного пользователя одновременно"
+
+msgid "Max module tasks running for one user at once"
+msgstr "Максимальное количество задач модулей для одного пользователя одновременно"
+
+msgid "Time to remove old CPU tasks (minutes)"
+msgstr "Время для удаления старых задач на CPU (минуты)"
+
+msgid "Time to remove old module tasks (minutes)"
+msgstr "Время для удаления старых задач модулей (минуты)"
+
+msgid "Delay between CPU tasks to calculate memory (seconds)"
+msgstr "Задержка между задачами на CPU для расчета памяти (секунды)"
+
+msgid "Delay between module tasks to calculate memory (seconds)"
+msgstr "Задержка между задачами модулей для расчета памяти (секунды)"
+
+msgid "Minimum RAM for CPU tasks (GB)"
+msgstr "Минимальная оперативная память для задач на CPU (ГБ)"
+
+msgid "Minimum RAM for removing background (GB)"
+msgstr "Минимальная оперативная память для удаления фона (ГБ)"
+
+msgid "Minimum VRAM for removing background on GPU (GB)"
+msgstr "Минимальная видеопамять для удаления фона на GPU (ГБ)"
+
+msgid "Minimum RAM for removing objects (GB)"
+msgstr "Минимальная оперативная память для удаления объектов (ГБ)"
+
+msgid "Minimum VRAM for removing objects on GPU (GB)"
+msgstr "Минимальная видеопамять для удаления объектов на GPU (ГБ)"
+
+msgid "Minimum RAM for face swap tasks (GB)"
+msgstr "Минимальная оперативная память для задач смены лиц (ГБ)"
+
+msgid "Minimum VRAM for face swap tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач смены лиц на GPU (ГБ)"
+
+msgid "Minimum RAM for enhancement tasks (GB)"
+msgstr "Минимальная оперативная память для задач улучшения (ГБ)"
+
+msgid "Minimum VRAM for enhancement tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач улучшения на GPU (ГБ)"
+
+msgid "Minimum RAM for lip sync tasks (GB)"
+msgstr "Минимальная оперативная память для задач синхронизации губ (ГБ)"
+
+msgid "Minimum VRAM for lip sync tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач синхронизации губ на GPU (ГБ)"
+
+msgid "Minimum RAM for restyling on GPU (GB)"
+msgstr "Минимальная оперативная память для задач изменения стиля на GPU (ГБ)"
+
+msgid "Minimum VRAM for restyling on GPU (GB)"
+msgstr "Минимальная видеопамять для задач изменения стиля на GPU (ГБ)"
+
+msgid "Minimum RAM for video generation on GPU (GB)"
+msgstr "Минимальная оперативная память для генерации видео на GPU (ГБ)"
+
+msgid "Minimum VRAM for video generation on GPU (GB)"
+msgstr "Минимальная видеопамять для генерации видео на GPU (ГБ)"
+
+msgid "Minimum RAM for control restyling on GPU (GB)"
+msgstr "Минимальная оперативная память для контроля изменения стиля на GPU (ГБ)"
+
+msgid "Minimum VRAM for control restyling on GPU (GB)"
+msgstr "Минимальная видеопамять для контроля изменения стиля на GPU (ГБ)"
+
+msgid "Minimum RAM for separator tasks (GB)"
+msgstr "Минимальная оперативная память для задач разделения (ГБ)"
+
+msgid "Minimum VRAM for separator tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач разделения на GPU (ГБ)"
+
+msgid "Minimum RAM for cloning voice (GB)"
+msgstr "Минимальная оперативная память для задач клонирования голоса (ГБ)"
+
+msgid "Minimum VRAM for cloning voice on GPU (GB)"
+msgstr "Минимальная видеопамять для задач клонирования голоса на GPU (ГБ)"
+
+msgid "Minimum RAM for live portrait tasks (GB)"
+msgstr "Минимальная оперативная память для задач с живыми портретами (ГБ)"
+
+msgid "Minimum VRAM for live portrait tasks on GPU (GB)"
+msgstr "Минимальная видеопамять для задач с живыми портретами на GPU (ГБ)"
+
+msgid "Max file size for upload (bytes)"
+msgstr "Максимальный размер файла для загрузки (байты)"
+
+msgid "Max resolution for removing background"
+msgstr "Максимальное разрешение для удаления фона"
+
+msgid "Max resolution for removing objects"
+msgstr "Максимальное разрешение для удаления объектов"
+
+msgid "Max resolution for face swap"
+msgstr "Максимальное разрешение для смены лиц"
+
+msgid "Max resolution for enhancement"
+msgstr "Максимальное разрешение для улучшения"
+
+msgid "Max resolution for lip sync"
+msgstr "Максимальное разрешение для синхронизации губ"
+
+msgid "Max resolution for restyling"
+msgstr "Максимальное разрешение для изменения стиля"
+
+msgid "Max resolution for live portrait"
+msgstr "Максимальное разрешение для живого портрета"
+
+msgid "Max duration for background removal (seconds)"
+msgstr "Максимальная продолжительность удаления фона (секунды)"
+
+msgid "Max duration for object removal (seconds)"
+msgstr "Максимальная продолжительность удаления объектов (секунды)"
+
+msgid "Max duration for face swap (seconds)"
+msgstr "Максимальная продолжительность смены лиц (секунды)"
+
+msgid "Max duration for enhancement (seconds)"
+msgstr "Максимальная продолжительность улучшения (секунды)"
+
+msgid "Max duration for lip sync (seconds)"
+msgstr "Максимальная продолжительность синхронизации губ (секунды)"
+
+msgid "Max duration for restyling (seconds)"
+msgstr "Максимальная продолжительность изменения стиля (секунды)"
+
+msgid "Max duration for separator tasks (seconds)"
+msgstr "Максимальная продолжительность задач разделения (секунды)"
+
+msgid "Max duration for cloning voice (seconds)"
+msgstr "Максимальная продолжительность клонирования голоса (секунды)"
+
+msgid "Max duration for live portrait (seconds)"
+msgstr "Максимальная продолжительность живого портрета (секунды)"
+
+msgid "Max symbols for voice cloning"
+msgstr "Максимальное количество символов для клонирования голоса"
+
+msgid "Static port in local network"
+msgstr "Статический порт в локальной сети"
+
+msgid "New value"
+msgstr "Новое значение"
+
+msgid "To apply the changes, click"
+msgstr "Чтобы применить изменения, нажмите"
+
+msgid "Remember that the changes will take effect after manually restarting the program."
+msgstr "Помните, что изменения вступят в силу после ручной перезагрузки программы."
+
+msgid "The tour is currently disabled, but you can enable it by clicking"
+msgstr "Подсказки по Wunjo в настоящее время отключен, но вы можете включить его, нажав"
+
+msgid "The tour is enabled to start automatically. To disable it, click"
+msgstr "Подсказки по Wunjo включен. Чтобы отключить его, нажмите"
+
+msgid "The translation tool is currently active and ready for use. Click"
+msgstr "Инструмент перевода в настоящее время активен и готов к использованию. Нажмите"
+
+msgid "The translation tool is currently disabled. Click"
+msgstr "Инструмент перевода в настоящее время отключен. Нажмите"
+
+msgid "to disable it."
+msgstr "чтобы отключить его."
+
+msgid "enable it."
+msgstr "включить его."
+
+# footer.js
+msgid "Wow, that’s a large file! Please upload a file that’s less than"
+msgstr "Ого, это очень большой файл! Пожалуйста, загрузите файл размером меньше"
+
+msgid "bytes or change settings limit."
+msgstr "байт или измените предел в настройках."
+
+msgid "Wow, that’s a lengthy video! Please upload a video that’s less than"
+msgstr "Ого, это очень длинное видео! Пожалуйста, загрузите видео длительностью меньше"
+
+msgid "seconds long or change settings limit."
+msgstr "секунд или измените предел в настройках."
+
+msgid "Wow, that’s a lengthy audio! Please upload an audio that’s less than"
+msgstr "Ого, это очень длинное аудио! Пожалуйста, загрузите аудио длительностью меньше"
+
+msgid "seconds long. Let’s keep it short!"
+msgstr "секунд. Давайте сделаем его короче!"
+
+msgid "Error reading file. Please try again."
+msgstr "Ошибка чтения файла. Пожалуйста, попробуйте снова."
+
+# clone_voice.js
+msgid "Yikes! Looks like you not uploaded or recorded speech or sample."
+msgstr "Ой! Похоже, вы не загрузили или не записали речь или образец."
+
+msgid "Yikes! Looks like you not wrote text to create speech."
+msgstr "Ой! Похоже, вы не написали текст для создания речи."
+
+msgid "Yikes! Looks like an alien format. Stick to audio for now."
+msgstr "Ой! Похоже, это неизвестный формат. Пока придерживайтесь аудио."
+
+msgid "Imitate accent"
+msgstr "Имитация акцента"
+
+msgid "Activate manual audio creation. Record yourself with any accent or speed, and watch your voice transform into a cloned!"
+msgstr "Активируйте ручное создание аудио. Запишите себя с любым акцентом или скоростью, и наблюдайте, как ваш голос превращается в клонированный!"
+
+msgid "Filename"
+msgstr "Имя файла"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Fake detector"
+msgstr "Детектор подделок"
+
+msgid "Got a sneaky suspicion about some audio? Ready to sniff out those clone voice? Just hit that button."
+msgstr "Готовы выявить клонированные голоса? Просто запустите анализ."
+
+msgid "Analysis"
+msgstr "Анализ"
+
+msgid "Set text explain"
+msgstr "Объяснение добавления текста"
+
+msgid "Ready to have some fun? Click here to type your text to watch after submit as it turns into a cloned voice masterpiece!"
+msgstr "Нажмите здесь, чтобы ввести текст и наблюдать, как он превратится в шедевр клонированного голоса!"
+
+msgid "Set text"
+msgstr "Добавить текст"
+
+msgid "Load audio explain"
+msgstr "Объяснение загрузки аудио"
+
+msgid "This audio extracts the base speaker tone. A short audio clip is usually enough, but longer clips improve quality."
+msgstr "Аудио извлекает основной тон говорящего. Достаточно короткого аудио, но длинное аудио улучшит качество."
+
+msgid "Create sample"
+msgstr "Создать образец"
+
+msgid "This audio will be used to extract the base speaker tone color embedding. Typically a very short audio should be sufficient, but increasing the audio length will also improve the output audio quality."
+msgstr "Аудио для извлечения тональности говорящего. Обычно достаточно очень короткого аудио, но увеличение длины аудио улучшит качество результата."
+
+msgid "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents."
+msgstr "Искусственный интеллект (ИИ) — это интеллект, демонстрируемый машинами, в отличие от естественного интеллекта, проявляемого людьми и животными. Ведущие учебники по ИИ определяют эту область как изучение интеллектуальных агентов."
+
+msgid "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness."
+msgstr "Это было лучшее из времен, это было худшее из времен, это был век мудрости, это был век глупости, это была эпоха веры, это была эпоха неверия, это был сезон Света, это был сезон Тьмы."
+
+msgid "The quick brown fox jumps over the lazy dog. This sentence is famous because it includes every letter in the English alphabet, making it a great tool for typing practice."
+msgstr "Быстрая коричневая лиса прыгает через ленивую собаку. Это предложение знаменито тем, что включает каждую букву английского алфавита, что делает его отличным инструментом для практики печати."
+
+msgid "A journey of a thousand miles begins with a single step. This ancient Chinese proverb reminds us that great things start from humble beginnings."
+msgstr "Путешествие в тысячу миль начинается с одного шага. Эта древняя китайская пословица напоминает нам, что великие вещи начинаются с малого."
+
+msgid "To be, or not to be, that is the question: Whether ’tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles and by opposing end them."
+msgstr "Быть или не быть, вот в чем вопрос: Достойно ли терпеть удары и стрелы неистовой судьбы или восстать против моря бед и победить их."
+
+msgid "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. It revolutionized the understanding of space, time, and gravity."
+msgstr "Теория относительности обычно охватывает две взаимосвязанные теории Альберта Эйнштейна: специальную и общую теорию относительности. Она революционизировала понимание пространства, времени и гравитации."
+
+msgid "The mitochondrion is often referred to as the powerhouse of the cell. These organelles are responsible for generating most of the cell’s supply of adenosine triphosphate (ATP), used as a source of chemical energy."
+msgstr "Митохондрию часто называют энергетической станцией клетки. Эти органеллы отвечают за генерацию большинства запасов аденозинтрифосфата (АТФ) клетки, используемого в качестве источника химической энергии."
+
+msgid "The only thing we have to fear is fear itself. This famous quote by Franklin D. Roosevelt during his inaugural address aims to inspire courage and confidence in the face of challenges."
+msgstr "Единственное, чего мы должны бояться, это самого страха. Эта известная цитата Франклина Д. Рузвельта из его инаугурационной речи призвана вдохновить на смелость и уверенность перед лицом испытаний."
+
+msgid "In three words I can sum up everything I’ve learned about life: it goes on. This quote by Robert Frost succinctly captures the essence of resilience and the passage of time."
+msgstr "Тремя словами я могу выразить все, что я узнал о жизни: она продолжается. Эта цитата Роберта Фроста лаконично передает суть стойкости и течения времени."
+
+msgid "The cat sat on the mat. This simple sentence is often used to teach basic sentence structure in English grammar."
+msgstr "Кот сидел на коврике. Это простое предложение часто используется для обучения базовой структуре предложений в английской грамматике."
+
+msgid "E=mc². This famous equation by Albert Einstein establishes the relationship between mass (m) and energy (E), with c representing the speed of light in a vacuum."
+msgstr "E=mc². Это знаменитое уравнение Альберта Эйнштейна устанавливает связь между массой (m) и энергией (E), где c представляет скорость света в вакууме."
+
+msgid "The Great Wall of China is one of the greatest wonders of the world. It was built to protect Chinese states and empires against the raids and invasions of the nomadic groups of the Eurasian Steppe."
+msgstr "Великая китайская стена является одним из величайших чудес света. Она была построена для защиты китайских государств и империй от набегов и вторжений кочевых групп Евразийской степи."
+
+msgid "Curiosity killed the cat, but satisfaction brought it back. This proverb warns of the dangers of unnecessary investigation or experimentation, but also highlights the rewarding nature of discovery."
+msgstr "Любопытство убило кошку, но удовлетворение вернуло ее к жизни. Эта пословица предостерегает от опасностей ненужных исследований или экспериментов, но также подчеркивает наградную природу открытий."
+
+msgid "The universe is under no obligation to make sense to you. This quote by Neil deGrasse Tyson underscores the complexity and mystery of the cosmos."
+msgstr "Вселенная не обязана быть понятной для вас. Эта цитата Нила Деграсса Тайсона подчеркивает сложность и загадочность космоса."
+
+msgid "In the end, we will remember not the words of our enemies, but the silence of our friends. This quote by Martin Luther King Jr. highlights the importance of support and solidarity."
+msgstr "В конце концов, мы будем помнить не слова наших врагов, а молчание наших друзей. Эта цитата Мартина Лютера Кинга-младшего подчеркивает важность поддержки и солидарности."
+
+msgid "Success is not final, failure is not fatal: It is the courage to continue that counts. This quote by Winston Churchill emphasizes perseverance and resilience."
+msgstr "Успех не является окончательным, неудача не смертельна: важно мужество продолжать. Эта цитата Уинстона Черчилля подчеркивает настойчивость и стойкость."
+
+msgid "The only limit to our realization of tomorrow is our doubts of today. This quote by Franklin D. Roosevelt encourages overcoming self-doubt to achieve future goals."
+msgstr "Единственный предел к нашему достижению завтрашнего дня — это наши сегодняшние сомнения. Эта цитата Франклина Д. Рузвельта побуждает преодолевать сомнения, чтобы достичь будущих целей."
+
+msgid "To infinity and beyond! This catchphrase from Buzz Lightyear in Toy Story inspires boundless exploration and adventure."
+msgstr "К бесконечности и дальше! Эта крылатая фраза Базза Лайтера из «Истории игрушек» вдохновляет на бескрайние исследования и приключения."
+
+msgid "The only way to do great work is to love what you do. This quote by Steve Jobs underscores the importance of passion in achieving excellence."
+msgstr "Единственный способ делать великую работу — это любить то, что ты делаешь. Эта цитата Стива Джобса подчеркивает важность страсти для достижения совершенства."
+
+msgid "The greatest glory in living lies not in never falling, but in rising every time we fall. This quote by Nelson Mandela celebrates resilience and persistence."
+msgstr "Величайшая слава в жизни заключается не в том, чтобы никогда не падать, а в том, чтобы подниматься каждый раз, когда мы падаем. Эта цитата Нельсона Манделы воспевает стойкость и настойчивость."
+
+msgid "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world. This quote by Albert Einstein highlights the power of creativity."
+msgstr "Воображение важнее знания. Знание ограничено, тогда как воображение охватывает весь мир. Эта цитата Альберта Эйнштейна подчеркивает силу творчества."
+
+msgid "Life is what happens when you’re busy making other plans. This quote by John Lennon reminds us to appreciate the present moment."
+msgstr "Жизнь – это то, что происходит, пока вы заняты составлением других планов. Эта цитата Джона Леннона напоминает нам о важности ценить настоящий момент."
+
+msgid "The best way to predict the future is to invent it. This quote by Alan Kay encourages proactive innovation."
+msgstr "Лучший способ предсказать будущее – это создать его. Эта цитата Алана Кея вдохновляет на активные инновации."
+
+msgid "Do or do not, there is no try. This quote by Yoda from Star Wars emphasizes commitment and determination."
+msgstr "Делай или не делай, нет попыток. Эта цитата Йоды из Звездных войн подчеркивает важность приверженности и решительности."
+
+msgid "The more that you read, the more things you will know. The more that you learn, the more places you’ll go. This quote by Dr. Seuss promotes the value of education."
+msgstr "Чем больше вы читаете, тем больше вы узнаете. Чем больше вы учитесь, тем дальше вы пойдете. Эта цитата доктора Сьюза подчеркивает ценность образования."
+
+msgid "The purpose of our lives is to be happy. This simple yet profound quote by Dalai Lama emphasizes the importance of happiness."
+msgstr "Цель нашей жизни – быть счастливыми. Эта простая, но глубокая цитата Далай-ламы подчеркивает важность счастья."
+
+msgid "It always seems impossible until it’s done. This quote by Nelson Mandela inspires perseverance in the face of challenges."
+msgstr "Всегда кажется невозможным, пока это не сделано. Эта цитата Нельсона Манделы вдохновляет на упорство перед лицом трудностей."
+
+msgid "I have not failed. I’ve just found 10,000 ways that won’t work. This quote by Thomas Edison celebrates the process of learning through experimentation."
+msgstr "Я не потерпел неудачу. Я просто нашел 10 000 способов, которые не работают. Эта цитата Томаса Эдисона воспевает процесс обучения через эксперименты."
+
+msgid "If you want to go fast, go alone. If you want to go far, go together. This African proverb highlights the value of collaboration."
+msgstr "Если хочешь идти быстро, иди один. Если хочешь идти далеко, иди вместе. Эта африканская пословица подчеркивает ценность сотрудничества."
+
+msgid "The only thing standing between you and your goal is the story you keep telling yourself. This quote by Jordan Belfort encourages self-belief."
+msgstr "Единственное, что стоит между вами и вашей целью, – это история, которую вы постоянно себе рассказываете. Эта цитата Джордана Белфорта вдохновляет на веру в себя."
+
+msgid "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change. This quote by Charles Darwin emphasizes adaptability."
+msgstr "Выживает не самый сильный или самый умный вид, а тот, кто наиболее приспосабливается к изменениям. Эта цитата Чарльза Дарвина подчеркивает важность адаптивности."
+
+msgid "Don’t watch the clock; do what it does. Keep going. This motivational quote by Sam Levenson encourages persistence."
+msgstr "Не смотри на часы; делай то, что они делают. Продолжай двигаться. Эта мотивационная цитата Сэма Левенсона призывает к настойчивости."
+
+msgid "The greatest wealth is to live content with little. This quote by Plato reminds us that true wealth lies in contentment."
+msgstr "Величайшее богатство – жить, довольствуясь малым. Эта цитата Платона напоминает нам, что истинное богатство заключается в удовлетворенности."
+
+msgid "You must be the change you wish to see in the world. This quote by Mahatma Gandhi encourages proactive personal responsibility."
+msgstr "Ты должен быть тем изменением, которое хочешь видеть в мире. Эта цитата Махатмы Ганди призывает к активной личной ответственности."
+
+msgid "The way to get started is to quit talking and begin doing. This quote by Walt Disney inspires action."
+msgstr "Способ начать – это перестать говорить и начать делать. Эта цитата Уолта Диснея вдохновляет на действие."
+
+msgid "The best and most beautiful things in the world cannot be seen or even touched—they must be felt with the heart. This quote by Helen Keller emphasizes the importance of emotional experiences."
+msgstr "Лучшие и самые красивые вещи в мире нельзя увидеть или даже потрогать – их нужно почувствовать сердцем. Эта цитата Хелен Келлер подчеркивает важность эмоциональных переживаний."
+
+msgid "Read this text or any text during 15-60 seconds"
+msgstr "Прочитайте текст в обычном темпе (можно несколько раз) или любой другой в течение 15-60 секунд."
+
+msgid "sample speech"
+msgstr "образец речи"
+
+msgid "Add the audio you want to change. You can simulate any accent and speed. For best results, use audio without noise."
+msgstr "Вы можете имитировать любой акцент и скорость. Для лучших результатов используйте аудио без шума."
+
+msgid "Attach speech"
+msgstr "Прикрепить речь"
+
+msgid "changeable speech"
+msgstr "изменяемая речь"
+
+msgid "Enter text for voice cloning. Use one language for words and phrases; transliterate words from other languages. (Maximal numbers of symbols is"
+msgstr "Введите текст для клонирования голоса. Используйте один язык для слов и фраз; транслитерируйте слова из других языков. (Максимальное количество символов —"
+
+msgid "but you can increase in settings"
+msgstr "но вы можете увеличить это значение в настройках"
+
+msgid "clone voice"
+msgstr "клонирование голоса"
+
+msgid "Record yourself or upload an audio clip to transform speech style into a cloned version. Make sure the recorded and sample voices match in style and language. Enhance your results by using noise reduction tools."
+msgstr "Запишите свой голос или загрузите аудиоклип, чтобы преобразовать стиль речи и акцент в клонированную версию. Убедитесь, что записанный голос и образец голоса совпадают. Улучшите свои результаты, используя инструмент шумоподавления (разделитель аудио)."
+
+# enhancement.js
+msgid "Yikes! Looks like an alien format. Stick to images or videos for now."
+msgstr "Ой! Похоже на инопланетный формат. Пока придерживайтесь изображений или видео."
+
+msgid "enhancement"
+msgstr "улучшение качества"
+
+msgid "Method"
+msgstr "Метод"
+
+msgid "Resized to"
+msgstr "Размер"
+
+msgid "Enhance faces and details with Gfpgan. This powerful tool refines facial features and improves overall video quality. It adds realism and sharpness, making your videos stand out with vivid detail and lifelike appearance."
+msgstr "Улучшите лица и детали с помощью Gfpgan. Этот мощный инструмент совершенствует черты лица и улучшает общее качество видео. Он добавляет реалистичность и четкость, делая ваши видео яркими и живыми."
+
+msgid "Face boost"
+msgstr "Улучшение лица"
+
+msgid "Anime enhance"
+msgstr "Улучшение аниме"
+
+msgid "Activate Animesgan to enhance anime-like videos. This innovative feature clarifies lines and colors, bringing out the artistic essence of your videos. It smooths transitions and enhances visual clarity, ensuring your anime-style content looks its best."
+msgstr "Активируйте Animesgan для улучшения видео в стиле аниме. Инновационная функция уточняет линии и цвета, подчеркивая художественную сущность ваших видео. Она сглаживает переходы и улучшает визуальную четкость, гарантируя, что ваш контент в стиле аниме будет выглядеть наилучшим образом."
+
+msgid "Real video"
+msgstr "Реальное видео"
+
+msgid "Enable Realesrgan for real-life video enhancement. This advanced tool smoothens and clarifies videos, removing noise and enhancing overall quality. It’s perfect for video and improving visual appeal with crisp details and smooth playback."
+msgstr "Включите Realesrgan для улучшения реальных видео. Этот продвинутый инструмент сглаживает и уточняет видео, удаляя шум и повышая общее качество. Это идеально для улучшения визуальной привлекательности видео с четкими деталями и плавным воспроизведением."
+
+# face_swap.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to swap. Click on the «Find face» button and set box on person face, please!"
+msgstr "Ух ты! Похоже, вы не выбрали лицо в вашем контенте, которое нужно заменить. Нажмите кнопку «Найти лицо» и установите рамку на лицо человека, пожалуйста!"
+
+msgid "Param Pam Pam! It seems like your avatar’s face is feeling a bit missed!  Give that «Upload avatar» button a click and upload a face with some personality!"
+msgstr "Парам-пам-пам! Похоже, что лицо вашего аватара немного потеряно! Нажмите кнопку «Загрузить аватар» и загрузите лицо с характером!"
+
+msgid "Uh-oh! The width looks wonky. Double-check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "Упс! Ширина выглядит странно. Убедитесь, что это число, а не пустое значение. Возможно, нажмите «Выбрать объект» или загрузите другой файл."
+
+msgid "Pick face to swap. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для замены. Установите начало и конец для плавных изменений."
+
+msgid "Upload photo, craft avatar, choose face to swap. You’re a sculptor of non-existent personas. Done!"
+msgstr "Загрузите фото или сгенерируйте, выберите лицо для замены. Вы скульптор несуществующих персонажей."
+
+msgid "Got a sneaky suspicion about some content? Ready to sniff out those deepfakes? Just hit that button."
+msgstr "Есть подозрение насчет контента? Готовы обнаружить дипфейки? Просто нажмите анализировать."
+
+msgid "Gemini faces detection"
+msgstr "Найти близнецов"
+
+msgid "Replace all detected faces"
+msgstr "Заменить все лица"
+
+msgid "Find face"
+msgstr "Найти лицо"
+
+msgid "Upload avatar"
+msgstr "Загрузить аватар"
+
+msgid "face swap"
+msgstr "замена лица"
+
+# generation.js
+msgid "Aspect ratio"
+msgstr "Соотношение сторон"
+
+msgid "Frames per second"
+msgstr "Кадры в секунду"
+
+msgid "Reduce control strength to less depend to frames."
+msgstr "Уменьшите силу управления, чтобы меньше зависеть от кадров."
+
+msgid "Increase control strength to up depend to frames."
+msgstr "Увеличьте силу управления, чтобы больше зависеть от кадров."
+
+msgid "Describe the change you want to make"
+msgstr "Опишите изменение, которое вы хотите внести"
+
+msgid "A stuffed animal donkey grazing in a valley"
+msgstr "Мягкая игрушка осел, пасущийся в долине"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Кинематографично, солнечный день, волны разбиваются о берег пляжа"
+
+msgid "A cow grazing in a valley during the day, a UFO approaches in the distance"
+msgstr "Корова пасется в долине днем, вдалеке приближается НЛО"
+
+msgid "A flower blooming in slow motion"
+msgstr "Цветок, раскрывающийся в замедленной съемке"
+
+msgid "3D render, a raccoon holding a mini ice cream cone"
+msgstr "3D рендер, енот, держащий мини-вафельный рожок с мороженым"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "От первого лица, автомобиль, едущий в космосе и путешествующий во времени, туннель времени"
+
+msgid "2 cats in love eating a candlelit dinner of fresh fish"
+msgstr "2 кошки влюблены, едят ужин при свечах из свежей рыбы"
+
+msgid "Cinematic, a dog in a car window"
+msgstr "Кинематографично, собака в окне машины"
+
+msgid "Moody, filmic, 35mm, a doctor walking into the hospital"
+msgstr "Настроенчески, фильмовая съемка, 35мм, врач идет в больницу"
+
+msgid "POV of a car driving in outer space traveling through time, time travel tunnel"
+msgstr "От первого лица, автомобиль, едущий в космосе и путешествующий во времени, туннель времени"
+
+msgid "3D render, goldfish swimming in a glass container"
+msgstr "3D рендер, золотая рыбка, плавающая в стеклянной емкости"
+
+msgid "Nature documentary, jellyfish swimming in the ocean"
+msgstr "Природный документальный фильм, медузы, плавающие в океане"
+
+msgid "Cinematic, a Tibetan monk sitting in a temple on a mountain, facing camera."
+msgstr "Кинематографично, тибетский монах, сидящий в храме на горе, лицом к камере."
+
+msgid "Nature documentary, natural lighting, flamingo walking in a beautiful beach, head turning"
+msgstr "Природный документальный фильм, естественное освещение, фламинго идет по красивому пляжу, поворачивая голову"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Съемка с низкого угла, дикая западная деревня с салунами и пыльными улицами"
+
+msgid "A secret garden with a rainbow waterfall"
+msgstr "Тайный сад с радужным водопадом"
+
+msgid "Cinematic, a cowboy riding a horse on mirror-like lake, moving clouds"
+msgstr "Кинематографично, ковбой, едущий на лошади по озеру, как зеркало, с движущимися облаками"
+
+msgid "Cinematic, long tracking shot of the cliffs of Dover"
+msgstr "Кинематографично, длинный следящий кадр скал Дувра"
+
+msgid "1950s film style, a seagull on a boat"
+msgstr "Фильм 1950-х, чайка на лодке"
+
+msgid "Cinematic, sunny day, waves crashing on the shore of a beach"
+msgstr "Кинематографично, солнечный день, волны разбиваются о берег пляжа"
+
+msgid "A woman smiling while watching fireworks"
+msgstr "Женщина улыбается, смотря на фейерверки"
+
+msgid "Beautiful sunset at the beach, silhouette of a couple walking by the seashore against sunset, beautiful scenery"
+msgstr "Красивый закат на пляже, силуэт пары, идущей вдоль берега на фоне заката, красивый пейзаж"
+
+msgid "Low angle dolly in shot, a wild west town with saloons and dusty streets"
+msgstr "Съемка с низкого угла, дикая западная деревня с салунами и пыльными улицами"
+
+msgid "Anime, a boy and a girl sitting on the grass under the starry sky"
+msgstr "Аниме, мальчик и девочка сидят на траве под звездным небом"
+
+msgid "Nature documentary, close up of a lizard in a desert"
+msgstr "Природный документальный фильм, крупный план ящерицы в пустыне"
+
+msgid "1940s newsreel footage, a soldier stands watch on a rocky hill, facing camera"
+msgstr "Новостные кадры 1940-х, солдат стоит на посту на каменистом холме, лицом к камере"
+
+msgid "Anime, a woman walking home with groceries, wide angle"
+msgstr "Аниме, женщина идет домой с продуктами, широкоугольный кадр"
+
+msgid "Watercolor style of a baby elephant drinking water from a lake in the desert"
+msgstr "Акварельный стиль, детеныш слона пьет воду из озера в пустыне"
+
+msgid "Futuristic film of a man walking on a street in Paris, cinematic, symmetric composition"
+msgstr "Футуристический фильм о человеке, идущем по улице в Париже, кинематографичный, симметричный состав"
+
+msgid "Claymation, stop motion, a rat sitting on a huge block of cheese"
+msgstr "Клеймейшн, покадровая анимация, крыса сидит на огромном куске сыра"
+
+msgid "Prompt"
+msgstr "Запрос"
+
+msgid "It’s like describe a genie your wishes so they can conjure up just what you need!"
+msgstr "Опишите его так, как будто описываете джину свои желания, чтобы он сотворил именно то, что вам нужно!"
+
+msgid "(Optional) Describe your prompt for generation, or leave it blank for a random request. You can use (word) to emphasize specific requests and word:non-integers number from 0 to 1 for request intensity. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "(Опционально) Опишите свой запрос для генерации или оставьте его пустым для случайного запроса. Вы можете использовать (слово) для акцента на определенных запросах и слово:нецелые числа от 0 до 1 для интенсивности запроса. Например, dog:0.8, cat:0.2 в одном запросе. Максимальное количество символов — 3000."
+
+msgid "Generation... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Генерация... Кнопки заблокированы до завершения. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Ready to have some fun? Complete the image and add new elements."
+msgstr "Готовы повеселиться? Завершите изображение и добавьте новые элементы."
+
+msgid "Something wrong...During create task. Tap on the screen to view details."
+msgstr "Что-то пошло не так... При создании задачи. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Authorization failed. Access is available only with a subscription. Please review available plans and any discounts."
+msgstr "Ошибка авторизации. Доступ доступен только с подпиской. Пожалуйста, ознакомьтесь с доступными планами и возможными скидками."
+
+msgid "Is not valid format."
+msgstr "Некорректный формат."
+
+msgid "Image will be generate."
+msgstr "Изображение будет сгенерировано."
+
+msgid "Oops! Something went wrong. Please click submit again after some time. Tap on the screen to view details."
+msgstr "Ой! Что-то пошло не так. Пожалуйста, нажмите «Отправить» снова через некоторое время. Нажмите на экран, чтобы увидеть детали."
+
+msgid "Oops! An unexpected error occurred. Tap on the screen to view details."
+msgstr "Ой! Произошла непредвиденная ошибка. Нажмите на экран, чтобы увидеть детали."
+
+msgid "generation"
+msgstr "генерация контента"
+
+# lip_sync.js
+msgid "Wow! Seems like you didn’t pick a face in your content witch need to animate. Click on the «Find face» button and set box on person face, please!"
+msgstr "Ух ты! Похоже, вы не выбрали лицо на вашем контенте для анимации. Нажмите кнопку «Найти лицо» и обведите лицо человека, пожалуйста!"
+
+msgid "Hmm... The height seems fishy. Verify it’s a number and not empty. Check it’s a number and not empty. Maybe click on «Select object» or load another file."
+msgstr "Хмм... Высота кажется подозрительной. Проверьте, что это число, а не пустое значение. Возможно, нажмите «Выбрать объект» или загрузите другой файл."
+
+msgid "Overlay audio"
+msgstr "Наложить аудио"
+
+msgid "Smooth defects"
+msgstr "Сгладить дефекты"
+
+msgid "Pick face to animate. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для анимации. Установите начало и конец для плавных изменений."
+
+msgid "For best results, use in Lip Sync a high-quality audio without noise."
+msgstr "Для наилучших результатов синхронизации губ используйте аудио без шума."
+
+msgid "lip sync"
+msgstr "синхронизации губ"
+
+# live_portrait.js
+msgid "Expression"
+msgstr "Выражение"
+
+msgid "Head pose"
+msgstr "Голова"
+
+msgid "Lip"
+msgstr "Губы"
+
+msgid "Eyes"
+msgstr "Глаза"
+
+msgid "Animate"
+msgstr "Анимировать"
+
+msgid "Pick face to live. Select start and end for seamless changes. No cutting, just smooth transitions. Easy!"
+msgstr "Выберите лицо для анимации. Установите начало и конец для плавных изменений."
+
+msgid "Upload avatar video to repeat movement. You’re a sculptor of non-existent personas. Done!"
+msgstr "Загрузите видео с лицом для повторения движения. Вы скульптор несуществующих движений."
+
+msgid "Manually retargeting"
+msgstr "Ручная обработка"
+
+msgid "Wow! Somthing went wrong. Because of scenes can not be empty. Please try another file."
+msgstr "Ух ты! Что-то пошло не так. Сцены не могут быть пустыми. Пожалуйста, попробуйте другой файл."
+
+msgid "Scanning..."
+msgstr "Сканирование..."
+
+msgid "Retargeting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Обработка... Кнопки заблокированы до завершения. Нажмите на экран, чтобы просмотреть детали."
+
+msgid "Blinking"
+msgstr "Моргание"
+
+msgid "Silent"
+msgstr "Тишина"
+
+msgid "Nodding"
+msgstr "Кивание"
+
+msgid "Shaking"
+msgstr "Покачивание"
+
+msgid "Flirt"
+msgstr "Флирт"
+
+msgid "Yikes! Looks like an alien format. Stick to videos or image for now."
+msgstr "Ух ты! Похоже, это инопланетный формат. Пока что используйте видео или изображения."
+
+msgid "Something wrong."
+msgstr "Что-то не так."
+
+msgid "live portrait"
+msgstr "живого портрета"
+
+# tour.min.js
+msgid "Don’t show tips on startup"
+msgstr "Не показывать подсказки при запуске"
+
+# remove_background.js
+msgid "Oopsie! Seems like you didn’t pick an object in your content. Click on the «Select object» button and choose any object from the media, please!"
+msgstr "Упс! Похоже, вы не выбрали объект в вашем контенте. Нажмите на кнопку «Выбрать объект» и выберите любой объект из медиатеки."
+
+msgid "Background color"
+msgstr "Цвет фона"
+
+msgid "Reverse select"
+msgstr "Инверсия области"
+
+msgid "Let the neural network handle it, then click to include with the right, exclude with the left. Don’t forget to switch brushes."
+msgstr "Щелкните правой кнопкой для включения, левой для исключения области. Не забудьте переключить кисти."
+
+msgid "Select object"
+msgstr "Выбрать объект"
+
+msgid "remove background"
+msgstr "удаления фона"
+
+# remove_object.js
+msgid "remove object"
+msgstr "удаления объектов"
+
+msgid "Enable text indication to highlight selected areas while removing text instead of objects from your chosen field."
+msgstr "Включите индикатор текста, чтобы выделить выбранные области при удалении текста, а не объектов, из вашего выбранного поля."
+
+msgid "Indicate text"
+msgstr "Указать текст"
+
+msgid "Improved level"
+msgstr "Продвинутый алгоритм"
+
+msgid "Text bothering you? Just draw a box around it. But the text outside the frame will remain. Easy as pie!"
+msgstr "Текст мешает? Просто нарисуйте коробку вокруг него. Текст за пределами рамки останется. Просто как пирог!"
+
+msgid "Select text"
+msgstr "Выбрать текст"
+
+# restyle.js
+msgid "Looks like you forgot to pick an object to restyle, or hey, why not go all out and change everything? Give it another shot!"
+msgstr "Похоже, вы забыли выбрать объект для изменения стиля, или почему бы не изменить всё? Попробуйте ещё раз!"
+
+msgid "Uh-oh! This is strange magic, but the object is not selected. Try selecting objects again."
+msgstr "Ой! Это странная магия, но объект не выбран. Попробуйте выбрать объект снова."
+
+msgid "Diffusion parameters is empty."
+msgstr "Параметры диффузии пусты."
+
+msgid "Oops. Something wrong... Try another file."
+msgstr "Ой, что-то не так... Попробуйте другой файл."
+
+msgid "Oops. Something wrong... Try another layer file."
+msgstr "Ой, что-то не так... Попробуйте другой файл для добавления в слой."
+
+msgid "Activate the restyle background option to refresh the entire frame. This setting ensures that all elements are redrawn with the neural network, providing a seamless."
+msgstr "Активируйте опцию изменения фона, чтобы обновить весь кадр. Настройка гарантирует, что все элементы будут перерисованы нейросетью, обеспечивая плавность."
+
+msgid "Restyle background"
+msgstr "Изменить фон"
+
+msgid "Interval generation"
+msgstr "Интервал генерации"
+
+msgid "Alright, listen up! The generation interval is like setting the tempo for your video’s style dance-off. Got a video with dynamic moves? Drop that value to crank up the tempo. It’s like your video’s heartbeat - more transitions mean a faster beat, so you’ll want a lower value. Nail that interval, and watch your video steal the spotlight in style!"
+msgstr "Итак, внимание! Интервал генерации — это как установка темпа для танцевального стиля вашего видео. Есть видео с динамичными движениями? Уменьшите это значение, чтобы увеличить темп. Это как пульс вашего видео — больше переходов означает более быстрый ритм, поэтому вам нужно выбрать более низкое значение. Подберите правильный интервал, и ваше видео станет потрясающим!"
+
+msgid "Threshold scene"
+msgstr "Погрешность перехода"
+
+msgid "Alright, listen up! Drop threshold to weaken scene transition detection. Nail that threshold, and watch your new scene transition!"
+msgstr "Итак, внимание! Уменьшите погрешность, чтобы ослабить обнаружение переходов между сценами. Подберите правильный порог и наблюдайте, как ваша новая сцена плавно переходит!"
+
+msgid "Alright, listen up! Increase threshold to do scene transition detection more accuracy. Nail that threshold, and watch your new scene transition!"
+msgstr "Итак, внимание! Увеличьте погрешность, чтобы повысить точность обнаружения переходов между сценами. Подберите правильный порог и наблюдайте, как ваша новая сцена плавно переходит!"
+
+msgid "Control strength"
+msgstr "Control strength"
+
+msgid "Style"
+msgstr "Стиль"
+
+msgid "Add a new custom Stable Diffusion 1.5 model to the configuration file located at"
+msgstr "Добавьте новую пользовательскую модель Stable Diffusion 1.5 в конфигурационный файл, расположенный в каталоге"
+
+msgid "Modify specific objects or entire scenes with simple text prompts. Experience advanced visual manipulation!"
+msgstr "Изменяйте конкретные объекты или целые сцены с помощью простых текстовых команд."
+
+msgid "Control restyle"
+msgstr "Ручной рестайлинг"
+
+msgid "Scene transitions with frames interval"
+msgstr "Переходы между сценами с интервалом кадров"
+
+msgid "and the first and last frame will be received."
+msgstr "и будут получены первый и последний кадры."
+
+msgid "Something wrong...During create task."
+msgstr "Что-то не так... Во время создания задачи."
+
+msgid "Inpainting... Buttons are locked until finished. Tap on the screen to view details."
+msgstr "Inpainting... Кнопки заблокированы до завершения. Нажмите на экран, чтобы увидеть подробности."
+
+msgid "diffuser"
+msgstr "рестайлинга контента"
+
+# separator.js
+msgid "separator"
+msgstr "аудио разделителя"
+
+# login.js
+msgid "Sign in"
+msgstr "Войти"
+
+msgid "Token"
+msgstr "Токен"
+
+msgid "Don’t have an account for Wunjo Pro?"
+msgstr "Нет аккаунта?"
+
+msgid "Sign up"
+msgstr "Регистрация"
+
+msgid "This feature is premium and available after login. New users get a"
+msgstr "Премиум функционал доступен после авторизации. Новые пользователи получают"
+
+msgid "free trial"
+msgstr "бесплатный пробный период"
+
+msgid "to explore all features."
+msgstr "для ознакомления со всеми возможностями."
+
+msgid "Turn on the internet and reload"
+msgstr "Включите интернет и перезагрузите"
+
+msgid "Invalid login credentials"
+msgstr "Неверные учетные данные"
+
+msgid "An unexpected error has occurred. Please contact support@wunjo.online"
+msgstr "Произошла непредвиденная ошибка. Пожалуйста, свяжитесь с support@wunjo.online"
+
+msgid "Subscription expired. Renew your license key in wunjo.online."
+msgstr "Подписка истекла. Обновите свой лицензионный токен на wunjo.online."
+
+msgid "The license key is not valid"
+msgstr "Лицензионный токен недействителен"
+
+# Generation image composition
+msgid "Generate image composition"
+msgstr "Создать композицию изображений"
+
+msgid "Width"
+msgstr "Ширина"
+
+msgid "Height"
+msgstr "Высота"
+
+msgid "Image composition"
+msgstr "Композиция изображений"
+
+msgid "Generate an image composition by prompt and images"
+msgstr "Сгенерируйте композицию изображения по подсказке и изображениям"
+
+msgid "Create photos from images and a prompt. Modify age, environment, and characters while preserving identity with realism."
+msgstr "Создавайте фотографии из изображений и подсказки. Измените возраст, окружение и персонажей, сохраняя при этом индивидуальность с реализмом."
+
+msgid "Use the prompt field to describe your composition. Click on an image to insert its placeholder into the text automatically. You can add as many images as you like. Example placeholder format: A man image_1 in t-short image_2. Also you can use coefficient. For example, dog:0.8, cat:0.2 in one prompt. The maximum number of symbols is 3000."
+msgstr "Используйте поле подсказки для описания вашей композиции. Щелкните на изображение, чтобы автоматически вставить его в текст. Вы можете добавить столько изображений, сколько пожелаете. Пример формата заполнителя: Мужчина image_1 в футболке image_2. Также можно использовать коэффициенты. Например, dog:0.8, cat:0.2 в одной подсказке. Максимальное количество символов — 3000."
+
+msgid "sec"
+msgstr "сек"
+
+# Update 2.0.7
+msgid "Chat"
+msgstr "Чат"
+
+msgid "automatically edits videos <br> and answers questions."
+msgstr "автоматически редактирует видео <br> и отвечает на вопросы."
+
+msgid "The neural network now edits a long video into a short one with highlights and answers questions about them, as well as recommends music."
+msgstr "Нейросеть редактирует длинное видео в короткое с основными моментами и отвечает на вопросы о видео."
+
+msgid "Edit a long video into a short one with highlights"
+msgstr "Отредактируйте длинное видео в короткое с основными моментами"
+
+msgid "Ready to analyze the video and answer all the questions!"
+msgstr "Анализ видео, чтобы получить ответы на все вопросы!"
+
+msgid "If you want to slow things down a bit, choose a longer segment length. That'll give you fewer, longer chunks, which means less rush, more moments to shine, but a bit less of that fast-paced flow. It's all about balancing energy and detail, so pick what suits your video vibe best!"
+msgstr "Если вы хотите немного замедлить процесс, выберите более длинную продолжительность сегмента. Это даст вам меньше, но более длинных частей, что означает меньше спешки, больше моментов для ярких событий, но немного меньше быстрого темпа. Важно найти баланс между энергией и деталями, поэтому выберите то, что лучше всего подходит для настроения вашего видео!"
+
+msgid "Alright, time to set the pace! The segment length is like choosing the perfect stride for your video’s rhythm. Go with a shorter segment length, and you'll get quick, snappy video chunks — more dynamic, more action, keeping the energy high."
+msgstr "Хорошо, время задать ритм! Длина сегмента — это как выбор идеального шага для ритма вашего видео. Выберите более короткую длину сегмента, и вы получите быстрые, динамичные части видео — больше динамики, больше действия, поддерживающее высокий уровень энергии."
+
+msgid "Segment length"
+msgstr "Длина сегмента"
+
+msgid "You are a highlight editor. List archetypal dramatic moments that would make compelling highlights if they appear in the video. Each moment should be specific enough to be recognizable but generic enough to potentially exist in other videos of this type."
+msgstr "Вы — редактор ярких моментов. Перечислите архетипичные драматические моменты, которые могут стать интересными яркими моментами, если они появятся в видео. Каждый момент должен быть достаточно специфичным, чтобы его можно было распознать, но достаточно универсальным, чтобы он мог встречаться и в других видео этого типа."
+
+msgid "You are a helpful visual-language assistant that can understand videos and edit. You are tasked helping the user to create highlight reels for videos. Highlights should be rare and important events in the video in question."
+msgstr "Вы — полезный ассистент визуального языка, который может понимать видео и редактировать их. Ваша задача — помочь пользователю создавать нарезки ярких моментов для видео. Яркие моменты должны быть редкими и важными событиями в видео."
+
+msgid "(Optional) Describe how to edit a video"
+msgstr "(Необязательно) Опишите, как редактировать видео"
+
+msgid "Yikes! Where is video? Attach its and continue."
+msgstr "Ой! Где видео? Прикрепите его и продолжите."
+
+msgid "Assistant"
+msgstr "Помощник"
+
+msgid "Ready to transcribe or to analyze the content and answer all the questions!"
+msgstr "Расшифровывает или анализирует содержание и отвечает на все вопросы!"
+
+msgid "Maximum duration (min)"
+msgstr "Продолжительность (мин)"
+
+msgid "Click any banner to start progress"
+msgstr "Нажмите на баннер, чтобы начать прогресс"
+
+msgid "Waiting"
+msgstr "Ожидание"
+
+msgid "Subscribe to unlock"
+msgstr "Подпишитесь для разблокировки"
+
+msgid "free"
+msgstr "бесплатно"
+
+msgid "day"
+msgstr "день"
+
+msgid "Watch ad"
+msgstr "Посмотреть рекламу"
+
+msgid "Monthly limit reached"
+msgstr "Достигнут месячный лимит"
+
+msgid "Smart crop"
+msgstr "Умная обрезка"
+
+msgid "Enable smart crop to create videos for YouTube, Tik Tok, Instagram, etc. Allows you to change any aspect ratio for your video using artificial intelligence and focus on interest objects and speakers."
+msgstr "Включите интеллектуальную обрезку для создания видео для YouTube, Tik Tok, Instagram и т. д. Позволяет изменять любое соотношение сторон видео с помощью искусственного интеллекта и фокусироваться на интересующих объектах и говорящих. Идеально для подкастов."
+
+msgid "Processing... A video timestamps is on its way."
+msgstr "Обработка... Видео с временными метками в пути."
+
+msgid "No speech found in a media."
+msgstr "В файле речи не обнаружено."
+
+msgid "Cut"
+msgstr "Вырезать"
+
+msgid "Once the text appears, highlight words or phrases to select video or audio segments to edit a media file."
+msgstr "После появления текста выделите слова или фразы, чтобы выбрать фрагменты файла для редактирования медиафайла."

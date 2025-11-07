@@ -1,0 +1,99 @@
+{% extends 'app.html' %}
+
+{% block title %}Wunjo{% endblock %}
+
+{% block nav %}{{ _('Clone voice') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='basic/css/calendar.css') }}">
+{% endblock %}
+
+{% block menubar %}
+{% endblock %}
+
+{% block sections %}
+<template class="modal-text-speech-template">
+    <div class="modal-root">
+        <div class="fixed backdrop-blur-xl top-0 left-0 h-screen w-full flex items-center justify-center z-[9999] p-3.75 md:p-10 bg-black bg-opacity-40">
+            <div class="relative flex flex-col gap-5 p-5 rounded-[.625rem] bg-dark-pop-up w-full max-w-xl">
+                <button onclick="closeModal(this);" type="button" class="absolute top-2 right-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white"><path d="M15 5L5 15M5 5L15 15" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <h2 class="text-accent-primary font-alumni text-heading-3-mobile md:text-heading-3 uppercase h2-alumni">{{ _('What text should be read?') }}</h2>
+                <p class="modal-notification md:text-s text-s-mobile mb-2">{{ _('The text might look a little lost in translation without a language chosen in the Parameters by Footer. Just sayin’. Now is set') }} <text class="text-accent-primary">English</text>.</p>
+                <div class="relative flex items-end gap-2 bg-dark-elements rounded-[.625rem] py-2 pl-4 pr-2 min-h-[3rem]">
+                    <textarea class="bg-transparent appearance-none outline-none w-full resize-none placeholder:text-light-secondary disabled:cursor-not-allowed text-prompt-mobile lg:text-prompt self-center"  rows="1" style="font-kerning: auto; font-optical-sizing: auto; font-stretch: 100%; height: 350px;"></textarea>
+                </div>
+                <button class="submit-text rounded-md flex items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-4 gap-2 py-2.5 hover:bg-accent-hover text-dark-background bg-accent-primary">{{ _('Apply') }}</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!--In order to see menu like freeze add in class sticky else remove sticky-->
+<div class="flex justify-center md:justify-between items-center top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top-mobile))] md:top-[calc(var(--navbar-height)_+_20px_+_var(--navbar-top))] transition-[top] w-full z-10 pointer-events-none mb-4">
+    <div data-tour="module" data-position="bottom" data-title="{{ _('Calendar') }}" data-intro="{{ _('You can select specific dates or date ranges to filter the content you have previously created.') }}" data-step="2" class="flex items-center p-1 rounded-[.625rem] gap-2 relative bg-dark-pop-up pointer-events-auto shadow-floating-button">
+        <div class="user-calendar-date-bg w-24 h-9 py-2 rounded-md absolute z-0 top-1 transition-transform bg-accent-primary" style="transform:translateX(calc(0% + 0px));"></div>
+        <div class="user-calendar-date w-24 font-extra-thick transition-[color] relative z-10 h-9 py-2 text-center rounded-md text-dark-background font-alumni text-heading-3">{{ _('Today') }}</div>
+        <button onclick="openCalendarModal(true, () => reloadViewContent(moduleName, userFileFormats));" class="relative z-10 w-9 h-9 text-center"><i class="fa-regular fa-calendar"></i></button>
+    </div>
+</div>
+
+<div class="view-filter"></div>
+
+<div class="flex flex-col gap-10 pt-10">
+    <div style="overflow: hidden;" class="view-content grid gap-10 w-full mx-auto grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3"></div>
+    <div class="mb-[34px]"></div>
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<div class="footer-block px-4 pt-4 pb-5 md:border-t border-t-white border-opacity-[.15]"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const userContentId = {{ user_content_id|tojson|safe }};
+    const userFileTree = {{ user_file_tree|tojson|safe }};
+    const pageFileFormats = ["audio"];
+    let userFileFormats = pageFileFormats;
+    const moduleName = {{ folder_name|tojson|safe }};
+    const analysisModuleName = {{ analysis_method|tojson|safe }};
+    const maxDurationToShow = {{ max_duration_sec|tojson|safe }};
+    // Set the maximum file size to read (in bytes)
+    const maxFileSize = {{ max_files_size|tojson|safe }};
+    // Limit for symbols
+    const maxNumberSymbols = {{ max_number_symbols|tojson|safe }};
+</script>
+<script>
+    function initScript() {
+        // Import and initialize the content script here
+        const scriptView = document.createElement('script');
+        scriptView.src = "{{ url_for('static', filename='content/js/view.min.js') }}";
+        document.body.appendChild(scriptView);
+        document.querySelector('.view-filter').appendChild(createViewFilter());
+
+        const scriptCloneVoice = document.createElement('script');
+        scriptCloneVoice.src = "{{ url_for('static', filename='modules/js/clone.voice.min.js') }}";
+        document.body.appendChild(scriptCloneVoice);
+
+        getModuleTaskEventWithIntervalImmediately();
+
+        // Tour for new users
+        const tour = {{ tour|tojson|safe }};
+        if (tour === true) {
+            setTimeout(() => {
+                const footer = document.querySelector('footer');
+                footer.setAttribute("data-tour", "module");
+                footer.setAttribute("data-position", "bottom-right");
+                footer.setAttribute("data-title", `{{ _('Upload file') }}`);
+                footer.setAttribute("data-step", "1");
+                footer.setAttribute("data-intro", `{{ _('Drag and drop a file or select one. You can upload an audio. About module Clone Voice, look this') }} <a target="_blank" rel="noopener noreferrer" class="pb-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background" href="https://youtu.be/LIMlsOZdzWM?feature=shared&t=510">{{ _('tutorial') }}</a>.<br><br><text class="text-accent-primary">{{ _('Briefly') }}:</text> {{ _('All red blocks should turn green. Also, use the toggle and make sure to select the right clone language before pressing') }} <button class="p-1 rounded-md items-center justify-center transition-colors font-normal disabled:cursor-not-allowed px-2 basis-1/3 flex-1 hover:bg-dark-elements-hover text-light-primary bg-dark-elements !bg-accent-primary !text-dark-background"><svg class="paper" width="14px" height="14px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M231.626,128a16.015,16.015,0,0,1-8.18262,13.96094L54.53027,236.55273a15.87654,15.87654,0,0,1-18.14648-1.74023,15.87132,15.87132,0,0,1-4.74024-17.60156L60.64746,136H136a8,8,0,0,0,0-16H60.64746L31.64355,38.78906A16.00042,16.00042,0,0,1,54.5293,19.44727l168.915,94.59179A16.01613,16.01613,0,0,1,231.626,128Z"></path></svg></button>.`);
+                startDataTour('module', true);
+            }, 100);
+        };
+    }
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Wunjo"
 bundle = "ce.version"  # wunjo ce.version
-version = "2.0.3"
+version = "2.0.8b1"  # beta realease 1
 url = "https://wunjo.online"
 license = "MIT License"
 author = "Wladislav Radchenko"
@@ -27,22 +27,25 @@ Explore the exciting features of Wunjo:
 For more information and updates, visit offical website [wunjo.online](https://wunjo.online) or [GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
 """
 icon = "src/wunjo/static/basic/icon/round/logo"
-
 sources = [
     "src/wunjo",
     "src/backend",
-    "src/deepfake",
-    "src/speech",
+    "src/visual_processing",
+    "src/sound_processing",
     "aifc.py",
     "sunau.py"
 ]
 test_sources = [
+]
+cleanup_paths = [
 ]
 
 requires = [
     "tensorboard==1.15.0",
     "Flask",
     "Flask-Cors",
+    "flask-babel",
+    "flasgger",
     "pyyaml",
     "loguru",
     "numpy==1.23.5",
@@ -56,7 +59,6 @@ requires = [
     "Pillow",
     "scikit-image",
     "kornia",
-    "face_alignment==1.3.5",
     "yacs",
     "pydub",
     "gfpgan",
@@ -75,16 +77,27 @@ requires = [
     "openunmix",
     "torchlibrosa",
     "apscheduler",
-    "cryptography"
+    "httpx",
+    "cryptography",
+    "anyio==3.7.1",
+    "faster-whisper",
+    "whisper-timestamped",
+    "gTTS",
+    "scenedetect[opencv]",
+    "pykalman==0.9.7",
+    "decord",
+    "peft",
+    "packaging",
+    "skbase"
 ]
 test_requires = [
 ]
 
 [tool.briefcase.app.wunjo.macOS]
 requires = [
-    "torch==2.1.0",
-    "torchaudio==2.1.0",
-    "torchvision==0.16.0",
+    "torch==2.2.2",
+    "torchaudio==2.2.2",
+    "torchvision==0.17.2",
     "soundfile==0.11.0",
     "std-nslog~=1.0.0",
     "onnxruntime"
@@ -95,9 +108,9 @@ sources = [
 
 [tool.briefcase.app.wunjo.linux]
 requires = [
-    "torch==2.0.0",
-    "torchaudio==2.0.1",
-    "torchvision==0.15.1",
+    "torch",
+    "torchaudio",
+    "torchvision",
     "soundfile==0.10.3.post1",
     "onnxruntime",
 ]
@@ -107,16 +120,17 @@ sources = [
 
 [tool.briefcase.app.wunjo.linux.system.debian]
 system_requires = [
+    "libcudnn9-cuda-12", "libcudnn9-dev-cuda-12", "ffmpeg"
 ]
-
 system_runtime_requires = [
+    "ffmpeg"
 ]
 
 [tool.briefcase.app.wunjo.linux.system.rhel]
 system_requires = [
 ]
-
 system_runtime_requires = [
+    "ffmpeg"
 ]
 
 [tool.briefcase.app.wunjo.linux.system.arch]
@@ -134,12 +148,16 @@ system_requires = [
 linuxdeploy_plugins = []
 
 [tool.briefcase.app.wunjo.linux.flatpak]
+flatpak_sdk = "org.freedesktop.Sdk"
+flatpak_runtime = "org.freedesktop.Platform"
+flatpak_runtime_version = "21.08"
 
 [tool.briefcase.app.wunjo.windows]
+create_desktop_shortcut = true
 requires = [
-    "torch==2.0.0",
-    "torchaudio==2.0.1",
-    "torchvision==0.15.1",
+    "torch",
+    "torchaudio",
+    "torchvision",
     "soundfile==0.10.3.post1",
     "onnxruntime"
 ]
@@ -149,7 +167,7 @@ sources = [
 cleanup_paths = [
     "**/app_packages/torch",
     "**/app_packages/torchvision",
-    "**/app_packages/torchaudio"
+    "**/app_packages/torchaudio",
 ]
 
 # Mobile deployments
@@ -161,4 +179,14 @@ supported = false
 
 # Web deployments
 [tool.briefcase.app.wunjo.web]
-supported = false
+supported = true
+requires = [
+    "torch",
+    "torchaudio",
+    "torchvision",
+    "soundfile==0.10.3.post1",
+    "onnxruntime",
+]
+sources = [
+    "../venv/lib/python3.10/site-packages/insightface",
+]

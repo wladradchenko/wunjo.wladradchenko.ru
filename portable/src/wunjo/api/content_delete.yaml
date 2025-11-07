@@ -1,0 +1,70 @@
+#openapi: 3.0.0  # For Postman
+#info:
+#  title: Wunjo API
+#  version: 2.0.6
+#paths:
+#  /content-delete:
+#    post:
+summary: Content delete
+description: Endpoint for securely deleting a content file. Validates user input, secures file paths, and ensures the deletion process is safe and accurate.
+tags:
+  - General
+requestBody:
+  description: JSON payload for deleting a content file.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          filePath:
+            type: string
+            description: Relative path to the file within the .cache/wunjo/content/user's ip directory/*.
+            example: '/live_portrait/folder'
+          fileName:
+            type: string
+            description: Name of the file to be deleted.
+            example: 'file_to_delete.txt'
+        required:
+          - filePath
+          - fileName
+responses:
+  200:
+    description: File deleted successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'File deleted successfully.'
+  404:
+    description: Various errors related to file path, name, or user identification.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: 'File path does not exist.'
+  500:
+    description: Server error occurred during file deletion.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              example: 'Error deleting file: detailed error message.'
