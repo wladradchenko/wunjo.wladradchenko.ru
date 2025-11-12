@@ -26,7 +26,8 @@
     "vgg16_east.pth": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/vgg16_east.pth",
     "ParseNet-latest.pth": "https://github.com/vinthony/video-retalking/releases/download/v0.0.1/ParseNet-latest.pth",
     "RetinaFace-R50.pth": "https://github.com/vinthony/video-retalking/releases/download/v0.0.1/RetinaFace-R50.pth",
-    "synclip_v2.model": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/lips/synclip_v2.model"
+    "synclip_v2.model": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/lips/synclip_v2.model",
+    "fasterrcnn_resnet50_fpn_coco-258fb6c6.pth": "https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth"
   },
   "gfpgan": {
     "alignment_WFLW_4HG.pth": "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth",
