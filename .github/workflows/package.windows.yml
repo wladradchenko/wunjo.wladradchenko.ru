@@ -33,6 +33,9 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ${{ matrix.runs-on }}
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         target: [windows]
