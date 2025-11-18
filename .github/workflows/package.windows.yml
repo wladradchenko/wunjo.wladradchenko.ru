@@ -33,9 +33,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ${{ matrix.runs-on }}
-    permissions:
-      id-token: write
-      contents: read
     strategy:
       matrix:
         target: [windows]
@@ -48,6 +45,10 @@ jobs:
               choco install wixtoolset --version 4.0.5 --confirm
             runs-on: "windows-latest"
             python-version: "3.10"
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -63,6 +64,17 @@ jobs:
         run: |
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
+
+      - name: Install/Update SignPath PowerShell module
+        shell: pwsh
+        run: |
+          Write-Host "Installing SignPath PowerShell module (min version 4.4.4)..."
+          # Install or update to at least version 4.4.4
+          Install-Module -Name SignPath -MinimumVersion 4.4.4 -Force -Scope CurrentUser
+          Write-Host "Installed SignPath versions:"
+          Get-Module -ListAvailable -Name SignPath | Select-Object Name, Version | Format-Table
+          Import-Module SignPath -Force
+          Write-Host "SignPath module imported successfully."
 
       - name: (DEBUG) Checkout portable only
         if: ${{ github.event.inputs.debug == 'yes' }}
@@ -177,7 +189,7 @@ jobs:
             $origin = @{
                 RepositoryData = @{
                     SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
                     BranchName = "$($env:GITHUB_REF_NAME)"
                     CommitId = "$($env:GITHUB_SHA)"
                 }
@@ -267,7 +279,7 @@ jobs:
             $origin = @{
                 RepositoryData = @{
                     SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
                     BranchName = "$($env:GITHUB_REF_NAME)"
                     CommitId = "$($env:GITHUB_SHA)"
                 }
