@@ -174,7 +174,7 @@ jobs:
             $origin = @{
                 RepositoryData = @{
                     SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
                     BranchName = "$($env:GITHUB_REF_NAME)"
                     CommitId = "$($env:GITHUB_SHA)"
                 }
@@ -264,7 +264,7 @@ jobs:
             $origin = @{
                 RepositoryData = @{
                     SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
                     BranchName = "$($env:GITHUB_REF_NAME)"
                     CommitId = "$($env:GITHUB_SHA)"
                 }
