@@ -20,10 +20,6 @@ on:
         required: false
         default: 'no'
 
-permissions:
-  id-token: write
-  contents: read
-
 env:
   FORCE_COLOR: "1"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -174,7 +170,19 @@ jobs:
           
             Import-Module SignPath -Force
             Write-Host "SignPath module imported"
-        
+            
+            $origin = @{
+                RepositoryData = @{
+                    SourceControlManagementType = "git"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    BranchName = "$($env:GITHUB_REF_NAME)"
+                    CommitId = "$($env:GITHUB_SHA)"
+                }
+                BuildData = @{
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
+                }
+            }
+          
             $filesToSign = @(
               "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
               "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
@@ -197,11 +205,12 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
         
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file `
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
+                    -Origin $origin `
                     -OutputArtifactPath $signedPath -WaitForCompletion
         
                   if (Test-Path $signedPath) {
@@ -246,6 +255,18 @@ jobs:
 
             Import-Module SignPath -Force
             Write-Host "SignPath module imported"
+          
+            $origin = @{
+                RepositoryData = @{
+                    SourceControlManagementType = "git"
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                    BranchName = "$($env:GITHUB_REF_NAME)"
+                    CommitId = "$($env:GITHUB_SHA)"
+                }
+                BuildData = @{
+                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
+                }
+            }
 
             $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
 
@@ -261,11 +282,12 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
 
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file `
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial_msi" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
+                    -Origin $origin `
                     -OutputArtifactPath $signedPath -WaitForCompletion
 
                   if (Test-Path $signedPath) {
