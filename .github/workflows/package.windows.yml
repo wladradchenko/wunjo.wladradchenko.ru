@@ -183,6 +183,10 @@ jobs:
                 }
             }
           
+            $parameters = @{ 
+              productVersion="2.0.8b1" 
+            }
+          
             $filesToSign = @(
               "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
               "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
@@ -208,6 +212,7 @@ jobs:
                   Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial" `
+                    -Parameters $parameters `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
                     -Origin $origin `
@@ -267,6 +272,10 @@ jobs:
                     Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
                 }
             }
+          
+            $parameters = @{ 
+              productVersion="2.0.8b1" 
+            }
 
             $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
 
@@ -285,6 +294,7 @@ jobs:
                   Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial_msi" `
+                    -Parameters $parameters `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
                     -SigningPolicySlug "test-signing" `
                     -Origin $origin `
