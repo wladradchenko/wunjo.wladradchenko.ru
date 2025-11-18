@@ -46,6 +46,10 @@ jobs:
             runs-on: "windows-latest"
             python-version: "3.10"
 
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -209,7 +213,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
         
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                  Submit-SigningRequest -InputArtifactPath $file `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial" `
                     -Parameters $parameters `
@@ -291,7 +295,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
 
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                  Submit-SigningRequest -InputArtifactPath $file `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial_msi" `
                     -Parameters $parameters `
