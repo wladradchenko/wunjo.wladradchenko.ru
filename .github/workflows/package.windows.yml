@@ -20,6 +20,10 @@ on:
         required: false
         default: 'no'
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   FORCE_COLOR: "1"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -193,7 +197,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
         
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                  Submit-SigningRequest -InputArtifactPath $file `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
@@ -257,7 +261,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
 
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
+                  Submit-SigningRequest -InputArtifactPath $file `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial_msi" `
                     -ProjectSlug "wunjo.wladradchenko.ru" `
