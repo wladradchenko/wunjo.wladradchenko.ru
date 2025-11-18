@@ -55,6 +55,27 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Test Origin Variable
+        shell: pwsh
+        run: |
+          $origin = @{
+              RepositoryData = @{
+                  SourceControlManagementType = "git"
+                  Url = "https://github.com/$($env:GITHUB_REPOSITORY)"
+                  BranchName = "$($env:GITHUB_REF_NAME)"
+                  CommitId = "$($env:GITHUB_SHA)"
+              }
+              BuildData = @{
+                  Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
+              }
+          }
+
+          Write-Host "===== ORIGIN ====="
+          $origin | ConvertTo-Json -Depth 5 | Write-Host
+          Write-Host "=================="
+
+          exit 1
+
       - name: Set WIX_HOME and update PATH
         shell: pwsh
         run: |
