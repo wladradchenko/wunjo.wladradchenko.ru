@@ -173,9 +173,61 @@ jobs:
 
           Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
+      - name: Upload unsigned artifacts
+        id: upload-unsigned
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned
+          path: |
+            portable/build/wunjo/windows/app/src/libcrypto-1_1.dll
+            portable/build/wunjo/windows/app/src/libssl-1_1.dll
+            portable/build/wunjo/windows/app/src/libffi-7.dll
+            portable/build/wunjo/windows/app/src/vcruntime140.dll
+            portable/build/wunjo/windows/app/src/vcruntime140_1.dll
+            portable/build/wunjo/windows/app/src/Wunjo.exe
+            portable/build/wunjo/windows/app/src/app/win/webgui.exe
+          compression-level: 0
+
+      - name: Sign with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'signed'
+
+      - name: Replace unsigned files with signed versions
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        shell: pwsh
+        run: |
+          $destRoot = "portable/build/wunjo/windows/app/src"
+          $signedRoot = "signed"
+          
+          if (-not (Test-Path $signedRoot)) {
+            Write-Error "ERROR: The signed directory '$signedRoot' does not exist. Signing probably failed."
+          }
+          
+          $signedFiles = Get-ChildItem -Recurse $signedRoot -File
+
+          if ($signedFiles.Count -eq 0) {
+            Write-Error "ERROR: The signed directory '$signedRoot' is empty. No files were returned by SignPath."
+          }
+
+          Copy-Item "$signedRoot/*.dll" $destRoot -Force -ErrorAction SilentlyContinue
+          Copy-Item "$signedRoot/*.exe" $destRoot -Force -ErrorAction SilentlyContinue
+          Copy-Item "$signedRoot/app/win/webgui.exe" "$destRoot/app/win/" -Force
+          
+          exit 1
+
       - name: SignPath files
         shell: pwsh
         run: |
+          // TODO REMOVE
           if ('${{ github.event.inputs.sign-file }}' -eq 'yes') {
           
             if (-not (Get-Module -ListAvailable -Name SignPath)) {
@@ -224,7 +276,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
         
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file `
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial" `
                     -Parameters $parameters `
@@ -306,7 +358,7 @@ jobs:
                 $signedPath = Join-Path $dir ("signed_" + $name)
 
                 try {
-                  Submit-SigningRequest -InputArtifactPath $file `
+                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
                     -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
                     -ArtifactConfigurationSlug "initial_msi" `
                     -Parameters $parameters `
