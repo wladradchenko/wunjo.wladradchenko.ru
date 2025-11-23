@@ -162,7 +162,23 @@ jobs:
 
           Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
-      - name: Sign libcrypto-1_1.dll with SignPath
+      - name: Upload unsigned artifacts
+        id: upload-unsigned-files
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-files-${{ github.run_id }}
+          path: |
+            portable/build/wunjo/windows/app/src/libcrypto-1_1.dll
+            portable/build/wunjo/windows/app/src/libssl-1_1.dll
+            portable/build/wunjo/windows/app/src/libffi-7.dll
+            portable/build/wunjo/windows/app/src/vcruntime140.dll
+            portable/build/wunjo/windows/app/src/vcruntime140_1.dll
+            portable/build/wunjo/windows/app/src/Wunjo.exe
+            portable/build/wunjo/windows/app/src/app/win/webgui.exe
+          compression-level: 0
+
+      - name: Sign with SignPath
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
@@ -170,129 +186,53 @@ jobs:
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libcrypto-1_1.dll"
+          artifact-configuration-slug: "initial_zip"
+          github-artifact-id: ${{ steps.upload-unsigned-files.outputs.artifact-id }}
           wait-for-completion: true
+          output-artifact-directory: './signed-artifact'
 
-      - name: Sign libssl-1_1.dll with SignPath
+      - name: Replace unsigned files with signed versions
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/libssl-1_1.dll"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libssl-1_1.dll"
-          wait-for-completion: true
-
-      - name: Sign libffi-7.dll with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/libffi-7.dll"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libffi-7.dll"
-          wait-for-completion: true
-
-      - name: Sign vcruntime140.dll with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/vcruntime140.dll"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_vcruntime140.dll"
-          wait-for-completion: true
-
-      - name: Sign vcruntime140_1.dll with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/vcruntime140_1.dll"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_vcruntime140_1.dll"
-          wait-for-completion: true
-
-      - name: Sign Wunjo.exe with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/Wunjo.exe"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_Wunjo.exe"
-          wait-for-completion: true
-
-      - name: Sign webgui.exe with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial'
-          input-artifact-path: "portable/build/wunjo/windows/app/src/app/win/webgui.exe"
-          output-artifact-path: "portable/build/wunjo/windows/app/src/app/win/signed_webgui.exe"
-          wait-for-completion: true
-
-      - name: SignPath files
         shell: pwsh
         run: |
-          if ('${{ github.event.inputs.sign-file }}' -eq 'yes') {
+          $signedZip = "./signed-artifact/unsigned-files-${{ github.run_id }}.zip"
+          $destRoot = "portable/build/wunjo/windows/app/src"
 
-            $filesToSign = @(
-              "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
-              "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
-              "portable/build/wunjo/windows/app/src/libffi-7.dll",
-              "portable/build/wunjo/windows/app/src/vcruntime140.dll",
-              "portable/build/wunjo/windows/app/src/vcruntime140_1.dll",
-              "portable/build/wunjo/windows/app/src/Wunjo.exe",
-              "portable/build/wunjo/windows/app/src/app/win/webgui.exe"
-            )
-
-            foreach ($file in $filesToSign) {
-              if (Test-Path $file) {
-                $fileInfo = Get-Item $file
-                $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
-                Write-Host "File for signature: $file (Size: $sizeMB MB)"
-
-                Write-Host "File for signature: $file"
-                $dir = Split-Path $file -Parent
-                $name = Split-Path $file -Leaf
-                $signedPath = Join-Path $dir ("signed_" + $name)
-
-                if (Test-Path $signedPath) {
-                  Remove-Item -Path $file
-                  Rename-Item -Path $signedPath -NewName $name
-                  Write-Host "The file '$file' has been signed and replaced."
-                } else {
-                  Write-Error "Signing Error! The signed file '$file' was not created."
-                  exit 1
-                }
-              } else {
-                Write-Error "File '$file' not found!"
-              }
-            }
+          if (-not (Test-Path $signedZip)) {
+              Write-Error "Signed artifact '$signedZip' not found!"
+              exit 1
           }
-          
+
+          $tempDir = "./signed-temp"
+          if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
+          New-Item -ItemType Directory -Path $tempDir | Out-Null
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZip, $tempDir)
+
+          $filesToReplace = @(
+              "libcrypto-1_1.dll",
+              "libssl-1_1.dll",
+              "libffi-7.dll",
+              "vcruntime140.dll",
+              "vcruntime140_1.dll",
+              "Wunjo.exe",
+              "app/win/webgui.exe"
+          )
+
+          foreach ($file in $filesToReplace) {
+              $source = Join-Path $tempDir $file
+              $target = Join-Path $destRoot $file
+              if (Test-Path $source) {
+                  Copy-Item $source $target -Force
+                  Write-Host "Replaced: $file"
+              } else {
+                  Write-Error "Signed file '$file' not found in zip!"
+                  exit 1
+              }
+          }
+
+          Remove-Item -Recurse -Force $tempDir
           exit 1
 
       - name: Package application
