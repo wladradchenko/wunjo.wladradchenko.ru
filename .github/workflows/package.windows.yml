@@ -214,32 +214,41 @@ jobs:
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         shell: pwsh
         run: |
-          $signedZip = Get-ChildItem -Path "./signed-artifact" -Filter *.zip | Select-Object -First 1
-          $destRoot = "portable/build/wunjo/windows/app/src"
-
-          if (-not $signedZip) {
-              Write-Error "No signed artifact found in './signed-artifact'"
-              exit 1
+          $signedArtifactDir = "./signed-artifact"
+          if (Test-Path $signedArtifactDir) {
+            Write-Host "Files in $signedArtifactDir:"
+            Get-ChildItem -Path $signedArtifactDir -Recurse -File | ForEach-Object {
+              $sizeMB = [math]::Round($_.Length / 1MB, 2)
+              Write-Host "- $($_.FullName) ($sizeMB MB)"
+          
+              $dest = Join-Path $tempDir $_.FullName.Substring($signedArtifactDir.Length + 1)
+              $destFolder = Split-Path $dest -Parent
+              if (-not (Test-Path $destFolder)) { New-Item -ItemType Directory -Path $destFolder | Out-Null }
+              Copy-Item $_.FullName $dest -Force
+            }
+          } else {
+            Write-Error "Folder '$signedArtifactDir' not found!"
+            exit 1
           }
 
           $tempDir = "./signed-temp"
           if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
           New-Item -ItemType Directory -Path $tempDir | Out-Null
 
-          Add-Type -AssemblyName System.IO.Compression.FileSystem
-          [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZip.FullName, $tempDir)
-          
-          if ('${{ github.event.inputs.sign-file }}' -eq 'yes' -and '${{ github.event.inputs.debug }}' -eq 'yes') {
-            $signedZipWebgui = Get-ChildItem -Path "./signed-webgui" -Filter *.zip | Select-Object -First 1
-          
-            if (-not $signedZipWebgui) {
-              Write-Error "No signed artifact found in './signed-webgui'"
-              exit 1
+          $signedWebguiDir = "./signed-webgui"
+          if (Test-Path $signedWebguiDir) {
+            Write-Host "Files in $signedWebguiDir:"
+            Get-ChildItem -Path $signedWebguiDir -Recurse -File | ForEach-Object {
+              $dest = Join-Path $tempDir $_.FullName.Substring($signedWebguiDir.Length + 1)
+              $destFolder = Split-Path $dest -Parent
+              if (-not (Test-Path $destFolder)) { New-Item -ItemType Directory -Path $destFolder | Out-Null }
+              Copy-Item $_.FullName $dest -Force
             }
-          
-           [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZipWebgui.FullName, $tempDir)
+          } else {
+            Write-Error "Folder '$signedWebguiDir' not found!"
           }
-
+          
+          $destRoot = "portable/build/wunjo/windows/app/src"
           $filesToReplace = @(
               "libcrypto-1_1.dll",
               "libssl-1_1.dll",
