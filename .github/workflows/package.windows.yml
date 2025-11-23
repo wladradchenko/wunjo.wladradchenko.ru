@@ -189,7 +189,7 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: './signed-artifact'
 
-      - name: Upload unsigned artifacts
+      - name: Upload unsigned webgui artifact
         id: upload-unsigned-webgui
         if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
         uses: actions/upload-artifact@v4
@@ -205,7 +205,7 @@ jobs:
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: "initial_software"
+          artifact-configuration-slug: "initial_exe"
           github-artifact-id: ${{ steps.upload-unsigned-webgui.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: './signed-webgui'
@@ -291,7 +291,7 @@ jobs:
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: "initial_software"
+          artifact-configuration-slug: "initial_msi"
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
           wait-for-completion: false
           output-artifact-directory: './signed-installer'
