@@ -175,7 +175,6 @@ jobs:
             portable/build/wunjo/windows/app/src/vcruntime140.dll
             portable/build/wunjo/windows/app/src/vcruntime140_1.dll
             portable/build/wunjo/windows/app/src/Wunjo.exe
-            portable/build/wunjo/windows/app/src/app/win/webgui.exe
 
       - name: Sign files with SignPath
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
@@ -185,20 +184,41 @@ jobs:
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: "initial_zip"
+          artifact-configuration-slug: "initial_files"
           github-artifact-id: ${{ steps.upload-unsigned-files.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: './signed-artifact'
+
+      - name: Upload unsigned artifacts
+        id: upload-unsigned-webgui
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-webgui-${{ github.run_id }}
+          path: portable/build/wunjo/windows/app/src/app/win/webgui.exe
+
+      - name: Sign webgui with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: "initial_software"
+          github-artifact-id: ${{ steps.upload-unsigned-webgui.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: './signed-webgui'
 
       - name: Replace unsigned files with signed versions
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         shell: pwsh
         run: |
-          $signedZip = "./signed-artifact/unsigned-files-${{ github.run_id }}.zip"
+          $signedZip = Get-ChildItem -Path "./signed-artifact" -Filter *.zip | Select-Object -First 1
           $destRoot = "portable/build/wunjo/windows/app/src"
 
-          if (-not (Test-Path $signedZip)) {
-              Write-Error "Signed artifact '$signedZip' not found!"
+          if (-not $signedZip) {
+              Write-Error "No signed artifact found in './signed-artifact'"
               exit 1
           }
 
@@ -207,7 +227,18 @@ jobs:
           New-Item -ItemType Directory -Path $tempDir | Out-Null
 
           Add-Type -AssemblyName System.IO.Compression.FileSystem
-          [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZip, $tempDir)
+          [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZip.FullName, $tempDir)
+          
+          if ('${{ github.event.inputs.sign-file }}' -eq 'yes' -and '${{ github.event.inputs.debug }}' -eq 'yes') {
+            $signedZipWebgui = Get-ChildItem -Path "./signed-webgui" -Filter *.zip | Select-Object -First 1
+          
+            if (-not $signedZipWebgui) {
+              Write-Error "No signed artifact found in './signed-webgui'"
+              exit 1
+            }
+          
+           [System.IO.Compression.ZipFile]::ExtractToDirectory($signedZipWebgui.FullName, $tempDir)
+          }
 
           $filesToReplace = @(
               "libcrypto-1_1.dll",
@@ -253,14 +284,14 @@ jobs:
           path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
       - name: Sign with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: "initial_msi"
+          artifact-configuration-slug: "initial_software"
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
           wait-for-completion: false
           output-artifact-directory: './signed-installer'
