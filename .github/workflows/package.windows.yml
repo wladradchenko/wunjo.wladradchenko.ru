@@ -214,7 +214,13 @@ jobs:
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         shell: pwsh
         run: |
-          $signedArtifactDir = "./signed-artifact"
+          Write-Host "Current directory:"
+          pwd
+          Write-Host "Listing files here:"
+          Get-ChildItem -Recurse
+    
+          $signedArtifactDir = Join-Path $PWD "signed-artifact"
+          Write-Host "Expected signed-artifact dir: $signedArtifactDir"
           if (Test-Path $signedArtifactDir) {
             Write-Host "Files in $signedArtifactDir"
             Get-ChildItem -Path $signedArtifactDir -Recurse -File | ForEach-Object {
@@ -235,7 +241,7 @@ jobs:
           if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
           New-Item -ItemType Directory -Path $tempDir | Out-Null
 
-          $signedWebguiDir = "./signed-webgui"
+          $signedWebguiDir = Join-Path $PWD "signed-webgui"
           if (Test-Path $signedWebguiDir) {
             Write-Host "Files in $signedWebguiDir"
             Get-ChildItem -Path $signedWebguiDir -Recurse -File | ForEach-Object {
