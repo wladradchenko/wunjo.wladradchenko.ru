@@ -176,9 +176,8 @@ jobs:
             portable/build/wunjo/windows/app/src/vcruntime140_1.dll
             portable/build/wunjo/windows/app/src/Wunjo.exe
             portable/build/wunjo/windows/app/src/app/win/webgui.exe
-          compression-level: 0
 
-      - name: Sign with SignPath
+      - name: Sign files with SignPath
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
@@ -228,7 +227,6 @@ jobs:
                   Write-Host "Replaced: $file"
               } else {
                   Write-Error "Signed file '$file' not found in zip!"
-                  exit 1
               }
           }
 
@@ -249,42 +247,23 @@ jobs:
 
       - name: Upload unsigned installer
         id: upload-unsigned-installer
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned installer
-          path: |
-            portable/dist/*.msi
-          compression-level: 0
+          name: unsigned-installer-${{ github.run_id }}
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
-      - name: Sign installer with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
+      - name: Sign with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'initial_msi'
+          artifact-configuration-slug: "initial_msi"
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: 'installer'
-
-      - name: Upload signed artifact
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
-        uses: actions/upload-artifact@v5
-        with:
-          name: installer
-          path: installer
-
-
-      - name: Upload unsigned artifact
-        if: ${{ github.event.inputs['sign-file'] == 'no' || github.event.inputs['debug'] == 'no' || env.OUTPUT_FORMAT == 'zip' }}
-        uses: actions/upload-artifact@v5
-        with:
-          name: portable-dist
-          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
-
+          wait-for-completion: false
+          output-artifact-directory: './signed-installer'
 
       - name: Upload Log
         if: failure()
