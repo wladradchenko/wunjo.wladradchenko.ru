@@ -225,11 +225,6 @@ jobs:
         run: |
           cp ./signed-webgui/webgui.exe ./portable/build/wunjo/windows/app/src/app/win/webgui.exe
 
-      - name: Replace unsigned files with signed versions
-        shell: pwsh
-        run: |
-          exit 1
-
       - name: Package application
         shell: pwsh
         run: |
