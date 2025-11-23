@@ -65,17 +65,6 @@ jobs:
           echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
           echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
 
-      - name: Install/Update SignPath PowerShell module
-        shell: pwsh
-        run: |
-          Write-Host "Installing SignPath PowerShell module (min version 4.4.4)..."
-          # Install or update to at least version 4.4.4
-          Install-Module -Name SignPath -MinimumVersion 4.4.4 -Force -Scope CurrentUser
-          Write-Host "Installed SignPath versions:"
-          Get-Module -ListAvailable -Name SignPath | Select-Object Name, Version | Format-Table
-          Import-Module SignPath -Force
-          Write-Host "SignPath module imported successfully."
-
       - name: (DEBUG) Checkout portable only
         if: ${{ github.event.inputs.debug == 'yes' }}
         uses: actions/checkout@v4
@@ -173,23 +162,7 @@ jobs:
 
           Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
 
-      - name: Upload unsigned artifacts
-        id: upload-unsigned
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned
-          path: |
-            portable/build/wunjo/windows/app/src/libcrypto-1_1.dll
-            portable/build/wunjo/windows/app/src/libssl-1_1.dll
-            portable/build/wunjo/windows/app/src/libffi-7.dll
-            portable/build/wunjo/windows/app/src/vcruntime140.dll
-            portable/build/wunjo/windows/app/src/vcruntime140_1.dll
-            portable/build/wunjo/windows/app/src/Wunjo.exe
-            portable/build/wunjo/windows/app/src/app/win/webgui.exe
-          compression-level: 0
-
-      - name: Sign with SignPath
+      - name: Sign libcrypto-1_1.dll with SignPath
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
@@ -197,63 +170,94 @@ jobs:
           organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'test-signing'
-          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libcrypto-1_1.dll"
           wait-for-completion: true
-          output-artifact-directory: 'signed'
 
-      - name: Replace unsigned files with signed versions
+      - name: Sign libssl-1_1.dll with SignPath
         if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        shell: pwsh
-        run: |
-          $destRoot = "portable/build/wunjo/windows/app/src"
-          $signedRoot = "signed"
-          
-          if (-not (Test-Path $signedRoot)) {
-            Write-Error "ERROR: The signed directory '$signedRoot' does not exist. Signing probably failed."
-          }
-          
-          $signedFiles = Get-ChildItem -Recurse $signedRoot -File
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/libssl-1_1.dll"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libssl-1_1.dll"
+          wait-for-completion: true
 
-          if ($signedFiles.Count -eq 0) {
-            Write-Error "ERROR: The signed directory '$signedRoot' is empty. No files were returned by SignPath."
-          }
+      - name: Sign libffi-7.dll with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/libffi-7.dll"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_libffi-7.dll"
+          wait-for-completion: true
 
-          Copy-Item "$signedRoot/*.dll" $destRoot -Force -ErrorAction SilentlyContinue
-          Copy-Item "$signedRoot/*.exe" $destRoot -Force -ErrorAction SilentlyContinue
-          Copy-Item "$signedRoot/app/win/webgui.exe" "$destRoot/app/win/" -Force
-          
-          exit 1
+      - name: Sign vcruntime140.dll with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/vcruntime140.dll"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_vcruntime140.dll"
+          wait-for-completion: true
+
+      - name: Sign vcruntime140_1.dll with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/vcruntime140_1.dll"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_vcruntime140_1.dll"
+          wait-for-completion: true
+
+      - name: Sign Wunjo.exe with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/Wunjo.exe"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/signed_Wunjo.exe"
+          wait-for-completion: true
+
+      - name: Sign webgui.exe with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial'
+          input-artifact-path: "portable/build/wunjo/windows/app/src/app/win/webgui.exe"
+          output-artifact-path: "portable/build/wunjo/windows/app/src/app/win/signed_webgui.exe"
+          wait-for-completion: true
 
       - name: SignPath files
         shell: pwsh
         run: |
-          // TODO REMOVE
           if ('${{ github.event.inputs.sign-file }}' -eq 'yes') {
-          
-            if (-not (Get-Module -ListAvailable -Name SignPath)) {
-              Install-Module -Name SignPath -Force -Scope CurrentUser
-              Write-Host "SignPath module installed"
-            }
-          
-            Import-Module SignPath -Force
-            Write-Host "SignPath module imported"
-            
-            $origin = @{
-                RepositoryData = @{
-                    SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
-                    BranchName = "$($env:GITHUB_REF_NAME)"
-                    CommitId = "$($env:GITHUB_SHA)"
-                }
-                BuildData = @{
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
-                }
-            }
-          
-            $parameters = @{ 
-              productVersion="2.0.8b1" 
-            }
-          
+
             $filesToSign = @(
               "portable/build/wunjo/windows/app/src/libcrypto-1_1.dll",
               "portable/build/wunjo/windows/app/src/libssl-1_1.dll",
@@ -263,38 +267,24 @@ jobs:
               "portable/build/wunjo/windows/app/src/Wunjo.exe",
               "portable/build/wunjo/windows/app/src/app/win/webgui.exe"
             )
-        
+
             foreach ($file in $filesToSign) {
               if (Test-Path $file) {
                 $fileInfo = Get-Item $file
                 $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
                 Write-Host "File for signature: $file (Size: $sizeMB MB)"
-          
+
                 Write-Host "File for signature: $file"
                 $dir = Split-Path $file -Parent
                 $name = Split-Path $file -Leaf
                 $signedPath = Join-Path $dir ("signed_" + $name)
-        
-                try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
-                    -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-                    -ArtifactConfigurationSlug "initial" `
-                    -Parameters $parameters `
-                    -ProjectSlug "wunjo.wladradchenko.ru" `
-                    -SigningPolicySlug "test-signing" `
-                    -Origin $origin `
-                    -OutputArtifactPath $signedPath -WaitForCompletion
-        
-                  if (Test-Path $signedPath) {
-                    Remove-Item -Path $file
-                    Rename-Item -Path $signedPath -NewName $name
-                    Write-Host "The file '$file' has been signed and replaced."
-                  } else {
-                    Write-Error "Signing Error! The signed file '$file' was not created."
-                    exit 1
-                  }
-                } catch {
-                  Write-Error "Signing failed for '$file': $_"
+
+                if (Test-Path $signedPath) {
+                  Remove-Item -Path $file
+                  Rename-Item -Path $signedPath -NewName $name
+                  Write-Host "The file '$file' has been signed and replaced."
+                } else {
+                  Write-Error "Signing Error! The signed file '$file' was not created."
                   exit 1
                 }
               } else {
@@ -302,6 +292,8 @@ jobs:
               }
             }
           }
+          
+          exit 1
 
       - name: Package application
         shell: pwsh
@@ -315,75 +307,44 @@ jobs:
           Write-Host "Created package files:"
           $distFiles | ForEach-Object { Write-Host $_.FullName }
 
-      - name: SignPath installer
-        shell: pwsh
-        run: |
-          if ('${{ github.event.inputs.sign-file }}' -eq 'yes' -and '${{ github.event.inputs.debug }}' -eq 'yes' -and $env:OUTPUT_FORMAT -eq 'msi') {
+      - name: Upload unsigned installer
+        id: upload-unsigned-installer
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned installer
+          path: |
+            portable/dist/*.msi
+          compression-level: 0
 
-            if (-not (Get-Module -ListAvailable -Name SignPath)) {
-              Install-Module -Name SignPath -Force -Scope CurrentUser
-              Write-Host "SignPath module installed"
-            }
+      - name: Sign installer with SignPath
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
+          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          project-slug: 'wunjo.wladradchenko.ru'
+          signing-policy-slug: 'test-signing'
+          artifact-configuration-slug: 'initial_msi'
+          github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'installer'
 
-            Import-Module SignPath -Force
-            Write-Host "SignPath module imported"
-          
-            $origin = @{
-                RepositoryData = @{
-                    SourceControlManagementType = "git"
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY).git"
-                    BranchName = "$($env:GITHUB_REF_NAME)"
-                    CommitId = "$($env:GITHUB_SHA)"
-                }
-                BuildData = @{
-                    Url = "https://github.com/$($env:GITHUB_REPOSITORY)/actions/runs/$($env:GITHUB_RUN_ID)"
-                }
-            }
-          
-            $parameters = @{ 
-              productVersion="2.0.8b1" 
-            }
+      - name: Upload signed artifact
+        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: installer
+          path: installer
 
-            $filesToSign = Get-ChildItem -Path "portable/dist" -Filter *.msi
 
-            foreach ($file in $filesToSign) {
-              if (Test-Path $file) {
-                $fileInfo = Get-Item $file
-                $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
-                Write-Host "File for signature: $file (Size: $sizeMB MB)"
-                                          
-                Write-Host "File for signature: $file"
-                $dir = Split-Path $file -Parent
-                $name = Split-Path $file -Leaf
-                $signedPath = Join-Path $dir ("signed_" + $name)
+      - name: Upload unsigned artifact
+        if: ${{ github.event.inputs['sign-file'] == 'no' || github.event.inputs['debug'] == 'no' || env.OUTPUT_FORMAT == 'zip' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: portable-dist
+          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
 
-                try {
-                  Submit-SigningRequest -InputArtifactPath $file -ApiToken "${{ secrets.SIGN_PATH_TOKEN }}" `
-                    -OrganizationId "b01997fa-53cc-4ead-afd5-d225dccbc2c9" `
-                    -ArtifactConfigurationSlug "initial_msi" `
-                    -Parameters $parameters `
-                    -ProjectSlug "wunjo.wladradchenko.ru" `
-                    -SigningPolicySlug "test-signing" `
-                    -Origin $origin `
-                    -OutputArtifactPath $signedPath -WaitForCompletion
-
-                  if (Test-Path $signedPath) {
-                    Remove-Item -Path $file
-                    Rename-Item -Path $signedPath -NewName $name
-                    Write-Host "The file '$file' has been signed and replaced."
-                  } else {
-                    Write-Error "Signing Error! The signed file '$file' was not created."
-                    exit 1
-                  }
-                } catch {
-                  Write-Error "Signing failed for '$file': $_"
-                  exit 1
-                }
-              } else {
-                Write-Error "File '$file' not found!"
-              }
-            }
-          }
 
       - name: Upload Log
         if: failure()
@@ -391,9 +352,3 @@ jobs:
         with:
           name: Log-Failure-${{ matrix.target }}
           path: logs/*
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: portable-dist
-          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
