@@ -181,9 +181,9 @@ jobs:
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
           project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: "initial_files"
           github-artifact-id: ${{ steps.upload-unsigned-files.outputs.artifact-id }}
           wait-for-completion: true
@@ -212,9 +212,9 @@ jobs:
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
           project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: "initial_exe"
           github-artifact-id: ${{ steps.upload-unsigned-webgui.outputs.artifact-id }}
           wait-for-completion: true
@@ -249,9 +249,9 @@ jobs:
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: "b01997fa-53cc-4ead-afd5-d225dccbc2c9"
+          organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
           project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'test-signing'
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: "initial_msi"
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
           wait-for-completion: false
