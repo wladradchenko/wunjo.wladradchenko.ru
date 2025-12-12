@@ -1,5 +1,5 @@
 {
-    "version": "2.0.7",
+    "version": "2.0.8",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -142,6 +142,12 @@
           "New video generator methods (only for flash-attn version)",
           "More generators parameters",
           "Metadata"
+        ],
+        "2.0.8": [
+          "Smart Crop a feature that automatically adapts any video to any aspect ratio",
+          "Loading and processing times are about twice as quick",
+          "Word-based editing with Smart Cut",
+          "Memory optimization and fix bugs"
         ]
     }
 }
