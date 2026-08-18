@@ -1,5 +1,5 @@
 {
-    "version": "2.0.8",
+    "version": "3.0.0",
     "history": {
         "1.4.0": [
           "Introduced deepfake synchronization with source video for lip movements",
@@ -148,6 +148,17 @@
           "Loading and processing times are about twice as quick",
           "Word-based editing with Smart Cut",
           "Memory optimization and fix bugs"
+        ],
+        "3.0.0": [
+            "Rebuilt as a desktop nonlinear editor on the MLT framework, replacing the web interface",
+            "Multi-track timeline with transitions, effects, keyframes and time remapping",
+            "Colour correction, audio post-production, subtitles and titling",
+            "Rendering to practically any format through FFmpeg",
+            "Built-in face detection for tracking or hiding a face on a clip",
+            "Plugin platform: installable Artificial Intelligence plugins in isolated Python environments",
+            "Plugins for speech recognition, voice cloning, voice separation and content cutting",
+            "Chat assistant that drives the editor through its scripting interface",
+            "Update notifications for installations made from a file"
         ]
     }
 }
