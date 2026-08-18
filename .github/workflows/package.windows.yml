@@ -97,7 +97,20 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile CraftBootstrap.py
           python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults
-          Select-String -Path "$env:CRAFT_ROOT\etc\CraftSettings.ini" -Pattern '^ABI'
+
+      # Craft derives everything from the ABI stored in CraftSettings.ini: which
+      # binary cache it downloads from and which toolchain it configures. A
+      # restored cache carries whatever ABI it was built with, so check it here
+      # rather than an hour into fetching packages for the wrong compiler.
+      - name: Check the Craft ABI
+        shell: pwsh
+        run: |
+          $abi = (Select-String -Path "$env:CRAFT_ROOT\etc\CraftSettings.ini" -Pattern '^ABI\s*=\s*(.+)$').Matches.Groups[1].Value.Trim()
+          Write-Host "Craft ABI: $abi"
+          if ($abi -ne $env:CRAFT_ABI) {
+            Write-Host "::error::Craft is set up for '$abi', expected '$env:CRAFT_ABI'. Re-run with 'Rebuild the dependency cache from scratch'."
+            exit 1
+          }
 
       - name: Register the Wunjo blueprint
         shell: pwsh

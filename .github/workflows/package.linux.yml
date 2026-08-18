@@ -98,8 +98,25 @@ jobs:
         if: steps.craft-cache.outputs.cache-matched-key == ''
         run: |
           curl -sSLo CraftBootstrap.py https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py
+          # CraftBootstrap decides the platform before anything else, and its
+          # test for Android is literally `"ANDROID_SDK_ROOT" in os.environ` —
+          # which every hosted runner image sets, because it ships the Android
+          # SDK. Left alone, --use-defaults picks android-clang-arm64 here.
+          unset ANDROID_SDK_ROOT
           python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --branch master --use-defaults
-          grep -E '^ABI' "$CRAFT_ROOT/etc/CraftSettings.ini"
+
+      # Craft derives everything from the ABI stored in CraftSettings.ini: which
+      # binary cache it downloads from and which toolchain it configures. A
+      # restored cache carries whatever ABI it was built with, so check it here
+      # rather than an hour into fetching packages for the wrong platform.
+      - name: Check the Craft ABI
+        run: |
+          abi=$(sed -n 's/^ABI *= *//p' "$CRAFT_ROOT/etc/CraftSettings.ini")
+          echo "Craft ABI: $abi"
+          if [ "$abi" != "$CRAFT_ABI" ]; then
+            echo "::error::Craft is set up for '$abi', expected '$CRAFT_ABI'. Re-run with 'Rebuild the dependency cache from scratch'."
+            exit 1
+          fi
 
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
