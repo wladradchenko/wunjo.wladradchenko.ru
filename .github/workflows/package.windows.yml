@@ -145,7 +145,7 @@ jobs:
       # The binaries are signed *before* packaging so the installer ships signed
       # files; the installer is signed after, as the last step.
       - name: Locate the executables
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         shell: pwsh
         run: |
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
@@ -165,14 +165,14 @@ jobs:
 
       - name: Upload unsigned executables
         id: upload-unsigned-exes
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-exes-${{ github.run_id }}
           path: unsigned/
 
       - name: Sign the executables with SignPath
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
@@ -185,7 +185,7 @@ jobs:
           output-artifact-directory: './signed-exes'
 
       - name: Put the signed executables back
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         shell: pwsh
         run: |
           Get-Content exe-paths.txt | ForEach-Object {
@@ -214,7 +214,7 @@ jobs:
 
       - name: Upload the unsigned installer
         id: upload-unsigned-installer
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-installer-${{ github.run_id }}
@@ -223,7 +223,7 @@ jobs:
       # The one signature that actually decides whether SmartScreen shouts at a
       # person who downloads the file.
       - name: Sign the installer with SignPath
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
@@ -236,7 +236,7 @@ jobs:
           output-artifact-directory: './signed-installer'
 
       - name: Swap in the signed installer
-        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ inputs.sign }}
         shell: pwsh
         run: Copy-Item ./signed-installer/* -Destination packages/ -Force
 

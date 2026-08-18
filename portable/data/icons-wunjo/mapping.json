@@ -61,9 +61,25 @@
     "source": "lucide",
     "id": "arrow-up"
   },
+  "audio-aac": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-flac": {
+    "source": "lucide",
+    "id": "file-music"
+  },
   "audio-input-microphone": {
     "source": "lucide",
     "id": "mic"
+  },
+  "audio-mp4": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-mpeg": {
+    "source": "lucide",
+    "id": "file-music"
   },
   "audio-off": {
     "source": "lucide",
@@ -82,6 +98,14 @@
     "id": "volume-x"
   },
   "audio-x-generic": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-x-vorbis+ogg": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-x-wav": {
     "source": "lucide",
     "id": "file-music"
   },
@@ -117,6 +141,10 @@
   "collapse-all": {
     "source": "lucide",
     "id": "list-collapse"
+  },
+  "color-management": {
+    "source": "custom",
+    "file": "color-management.svg"
   },
   "color-picker": {
     "source": "lucide",
@@ -158,6 +186,10 @@
     "source": "lucide",
     "id": "triangle-alert"
   },
+  "delete": {
+    "source": "custom",
+    "file": "delete.svg"
+  },
   "dialog-cancel": {
     "source": "lucide",
     "id": "circle-x"
@@ -173,6 +205,10 @@
   "dialog-information": {
     "source": "lucide",
     "id": "info"
+  },
+  "dialog-input-devices": {
+    "source": "custom",
+    "file": "dialog-input-devices.svg"
   },
   "dialog-ok": {
     "source": "lucide",
@@ -259,6 +295,10 @@
     "source": "lucide",
     "id": "download"
   },
+  "draw-bezier-curves": {
+    "source": "custom",
+    "file": "draw-bezier-curves.svg"
+  },
   "draw-ellipse": {
     "source": "lucide",
     "id": "circle"
@@ -300,6 +340,10 @@
     "source": "alias",
     "of": "download"
   },
+  "edit-entry": {
+    "source": "custom",
+    "file": "edit-entry.svg"
+  },
   "edit-find": {
     "source": "lucide",
     "id": "search"
@@ -308,6 +352,10 @@
     "source": "lucide",
     "id": "replace"
   },
+  "edit-link": {
+    "source": "custom",
+    "file": "edit-link.svg"
+  },
   "edit-opacity": {
     "source": "lucide",
     "id": "blend"
@@ -315,6 +363,10 @@
   "edit-paste": {
     "source": "lucide",
     "id": "clipboard-paste"
+  },
+  "edit-paste-style": {
+    "source": "custom",
+    "file": "edit-paste-style.svg"
   },
   "edit-redo": {
     "source": "lucide",
@@ -368,9 +420,17 @@
     "source": "lucide",
     "id": "folder-plus"
   },
+  "folder-open": {
+    "source": "custom",
+    "file": "folder-open.svg"
+  },
   "folder-yellow": {
     "source": "lucide",
     "id": "folder"
+  },
+  "font-enable": {
+    "source": "custom",
+    "file": "font-enable.svg"
   },
   "format-font-size-less": {
     "source": "lucide",
@@ -379,6 +439,34 @@
   "format-font-size-more": {
     "source": "lucide",
     "id": "a-arrow-up"
+  },
+  "format-justify-center": {
+    "source": "custom",
+    "file": "format-justify-center.svg"
+  },
+  "format-justify-left": {
+    "source": "custom",
+    "file": "format-justify-left.svg"
+  },
+  "format-justify-right": {
+    "source": "custom",
+    "file": "format-justify-right.svg"
+  },
+  "format-text-bold": {
+    "source": "custom",
+    "file": "format-text-bold.svg"
+  },
+  "format-text-italic": {
+    "source": "custom",
+    "file": "format-text-italic.svg"
+  },
+  "format-text-strikethrough": {
+    "source": "custom",
+    "file": "format-text-strikethrough.svg"
+  },
+  "format-text-underline": {
+    "source": "custom",
+    "file": "format-text-underline.svg"
   },
   "games-solve": {
     "source": "lucide",
@@ -444,6 +532,14 @@
     "source": "lucide",
     "id": "lightbulb"
   },
+  "image-bmp": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-gif": {
+    "source": "lucide",
+    "id": "file-image"
+  },
   "image-jpeg": {
     "source": "lucide",
     "id": "file-image"
@@ -451,6 +547,22 @@
   "image-missing": {
     "source": "lucide",
     "id": "image-off"
+  },
+  "image-png": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-svg+xml": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-tiff": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-webp": {
+    "source": "lucide",
+    "id": "file-image"
   },
   "image-x-generic": {
     "source": "lucide",
@@ -533,6 +645,10 @@
   "lock": {
     "source": "lucide",
     "id": "lock"
+  },
+  "mail-attachment": {
+    "source": "custom",
+    "file": "mail-attachment.svg"
   },
   "measure": {
     "source": "lucide",
@@ -634,6 +750,14 @@
     "source": "alias",
     "of": "audio-volume-high"
   },
+  "plugins": {
+    "source": "custom",
+    "file": "plugins.svg"
+  },
+  "preferences-desktop-color": {
+    "source": "custom",
+    "file": "preferences-desktop-color.svg"
+  },
   "preview-add-zone": {
     "source": "lucide",
     "id": "square-plus"
@@ -658,9 +782,21 @@
     "source": "lucide",
     "id": "ban"
   },
+  "project-defaults": {
+    "source": "custom",
+    "file": "project-defaults.svg"
+  },
   "run-build": {
     "source": "lucide",
     "id": "hammer"
+  },
+  "run-install": {
+    "source": "custom",
+    "file": "run-install.svg"
+  },
+  "search": {
+    "source": "custom",
+    "file": "search.svg"
   },
   "select-rectangular": {
     "source": "lucide",
@@ -772,6 +908,10 @@
     "source": "lucide",
     "id": "tangent"
   },
+  "tools": {
+    "source": "custom",
+    "file": "tools.svg"
+  },
   "tools-report-bug": {
     "source": "lucide",
     "id": "bug"
@@ -812,9 +952,9 @@
     "source": "lucide",
     "id": "video"
   },
-  "video-off": {
-    "source": "lucide",
-    "id": "video-off"
+  "video-display": {
+    "source": "custom",
+    "file": "video-display.svg"
   },
   "video-mlt-playlist": {
     "source": "lucide",
@@ -824,19 +964,31 @@
     "source": "lucide",
     "id": "file-video-camera"
   },
-  "video-webm": {
+  "video-mpeg": {
     "source": "lucide",
     "id": "file-video-camera"
   },
-  "video-x-msvideo": {
+  "video-off": {
     "source": "lucide",
-    "id": "file-video-camera"
+    "id": "video-off"
   },
   "video-quicktime": {
     "source": "lucide",
     "id": "file-video-camera"
   },
-  "video-mpeg": {
+  "video-television": {
+    "source": "lucide",
+    "id": "tv"
+  },
+  "video-webm": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-x-generic": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-x-matroska": {
     "source": "lucide",
     "id": "file-video-camera"
   },
@@ -844,63 +996,7 @@
     "source": "lucide",
     "id": "file-video-camera"
   },
-  "audio-mpeg": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "audio-mp4": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "audio-x-wav": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "audio-flac": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "audio-x-vorbis+ogg": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "audio-aac": {
-    "source": "lucide",
-    "id": "file-music"
-  },
-  "image-png": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "image-gif": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "image-webp": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "image-bmp": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "image-tiff": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "image-svg+xml": {
-    "source": "lucide",
-    "id": "file-image"
-  },
-  "video-television": {
-    "source": "lucide",
-    "id": "tv"
-  },
-  "video-x-generic": {
-    "source": "lucide",
-    "id": "file-video-camera"
-  },
-  "video-x-matroska": {
+  "video-x-msvideo": {
     "source": "lucide",
     "id": "file-video-camera"
   },
@@ -932,6 +1028,10 @@
     "source": "lucide",
     "id": "sliders-vertical"
   },
+  "view-more-symbolic": {
+    "source": "custom",
+    "file": "view-more-symbolic.svg"
+  },
   "view-preview": {
     "source": "lucide",
     "id": "monitor-play"
@@ -943,6 +1043,10 @@
   "view-right-close": {
     "source": "lucide",
     "id": "panel-right-close"
+  },
+  "view-sort": {
+    "source": "custom",
+    "file": "view-sort.svg"
   },
   "view-split-effect": {
     "source": "lucide",
@@ -1007,6 +1111,10 @@
     "source": "compose",
     "base": "lucide:sparkles",
     "badge": "pencil"
+  },
+  "wunjo-detect-faces": {
+    "source": "lucide",
+    "id": "scan-face"
   },
   "wunjo-hide-video": {
     "source": "lucide",
@@ -1123,9 +1231,5 @@
   "zoom-out": {
     "source": "lucide",
     "id": "zoom-out"
-  },
-  "wunjo-detect-faces": {
-    "source": "lucide",
-    "id": "scan-face"
   }
 }

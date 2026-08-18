@@ -22,7 +22,13 @@ PATTERNS = [
     re.compile(r'QIcon::fromTheme\(\s*"([^"]+)"'),
     re.compile(r'image://icon/([A-Za-z0-9_-]+)'),
     re.compile(r'"(wunjo-[a-z][a-z0-9-]+)"'),
+    # KPageDialog::addPage(widget, title, iconName) — the settings dialog names
+    # every one of its pages this way and never calls QIcon::fromTheme, so
+    # without this the whole left-hand column of Settings is unchecked.
+    re.compile(r'addPage\([^;]*?,\s*QStringLiteral\(\s*"([^"]+)"\s*\)\s*\)'),
 ]
+# Designer files name theme icons in their own markup.
+UI_PATTERN = re.compile(r'<iconset theme="([^"]+)"')
 # QML icon.name lines may hold several names (ternaries) — grab every string
 QML_LINE = re.compile(r'(?:icon\.name|iconName):([^\n]*)')
 QML_STRING = re.compile(r'"([^"]+)"')
@@ -41,6 +47,11 @@ IMPLICIT_NAMES = {
 # Dynamic families built with QString::arg() etc.
 DYNAMIC_PREFIXES = ("task-process-",)
 
+# Caught by the wunjo-* pattern above but not icon names: "wunjo-light" is the
+# light icon *theme* (theme.cpp picks between the "wunjo" and "wunjo-light"
+# themes), "wunjo-make" is the MCP server id in the assistant's prompt.
+NON_ICON_NAMES = {"wunjo-light", "wunjo-make"}
+
 
 def referenced_names() -> set:
     names = set(IMPLICIT_NAMES)
@@ -51,12 +62,17 @@ def referenced_names() -> set:
                 names.update(pat.findall(text))
             for line in QML_LINE.findall(text):
                 names.update(QML_STRING.findall(line))
+        elif path.suffix == ".ui":
+            names.update(UI_PATTERN.findall(
+                path.read_text(encoding="utf-8", errors="replace")))
     rc = SRC / "wunjoui.rc"
     if rc.is_file():
         names.update(RC_PATTERN.findall(rc.read_text(encoding="utf-8")))
     # drop non-icon matches (paths, ternary fragments, the app icon template)
     return {n for n in names
-            if re.fullmatch(r"[a-z][a-z0-9_-]+", n) and not n.startswith("wunjo-x")}
+            if re.fullmatch(r"[a-z][a-z0-9_-]+", n)
+            and not n.startswith("wunjo-x")
+            and n not in NON_ICON_NAMES}
 
 
 def main() -> int:
