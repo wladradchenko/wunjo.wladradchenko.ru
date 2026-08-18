@@ -29,7 +29,7 @@ tracker above — not to them.
 - **Interface**: Qt 6 and KDE Frameworks 6
 - **Plugins**: Python, in per-plugin environments built by `uv`
 - **Scripting**: a local socket serving the editor's methods, driven by the MCP server
-  in `../mcp` — see `dev-docs/dbus-removal-checklist.md` for why it is not D-Bus
+  in `mcp` — see `dev-docs/dbus-removal-checklist.md` for why it is not D-Bus
 
 ## Building
 

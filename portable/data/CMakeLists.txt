@@ -40,32 +40,25 @@ install(DIRECTORY fonts DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
 # Built-in AI plugins shipped out of the box. They install to
 # share/wunjo/plugins/<id>/, a read-only AppLocalData root PluginManager::rescan()
 # scans as "bundled" — optional (the app runs without them), not compiled in.
-# In directory data/plugins put default plugiins
-#
-# Guarded on the folder existing because it is empty today and Git does not
-# carry empty directories: a fresh checkout has no data/plugins at all, and
-# install(DIRECTORY) treats a missing source as an error rather than as nothing
-# to do. Same reason as the mcp block below. Once real plugins live here and are
-# committed this installs them with no further change.
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/plugins)
-    install(DIRECTORY plugins DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX})
-endif()
+# Put further default plugins in this directory and they ship with no change here.
+install(DIRECTORY plugins DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
+        PATTERN "__pycache__" EXCLUDE
+        PATTERN ".venv" EXCLUDE)
 
 # The MCP server the assistant speaks through — the same one whether the driver
-# is the built-in model or Claude Code in a terminal. It lives at the top of the
-# repository (it is used standalone during development too) and is copied into
-# the build by the flatpak manifest, so a plain source checkout has no such
-# folder and simply ships without it.
-if(EXISTS ${CMAKE_SOURCE_DIR}/mcp)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/mcp DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
-            PATTERN "__pycache__" EXCLUDE
-            PATTERN ".venv" EXCLUDE
-            PATTERN "tests" EXCLUDE)
-    # The launcher an outside agent names in .mcp.json goes inside that folder,
-    # as "mcp/start": everything about the server then sits in one place, and
-    # the name says what it does without repeating the application's own.
-    install(PROGRAMS mcp_start DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}/mcp RENAME start)
-endif()
+# is the built-in model or Claude Code in a terminal. It used to live at the top
+# of the repository and be copied in by the flatpak manifest, which meant every
+# other build shipped without it: the copy is a step only flatpak-builder
+# performs, so an AppImage or a plain cmake install silently had no MCP server
+# and the assistant no hands. It lives here now, and every build gets it.
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/mcp DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
+        PATTERN "__pycache__" EXCLUDE
+        PATTERN ".venv" EXCLUDE
+        PATTERN "tests" EXCLUDE)
+# The launcher an outside agent names in .mcp.json goes inside that folder,
+# as "mcp/start": everything about the server then sits in one place, and
+# the name says what it does without repeating the application's own.
+install(PROGRAMS mcp_start DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}/mcp RENAME start)
 
 install(FILES profiles.xml DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}/export)
 # The metainfo is what software centres and Flathub read, so it ships by default.

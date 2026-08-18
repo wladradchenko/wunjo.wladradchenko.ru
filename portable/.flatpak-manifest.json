@@ -118,16 +118,6 @@
                 {
                     "type": "dir",
                     "path": "."
-                },
-                {
-                    "type": "dir",
-                    "path": "../mcp",
-                    "dest": "mcp"
-                },
-                {
-                    "type": "dir",
-                    "path": "../plugins/agent",
-                    "dest": "data/plugins/agent"
                 }
             ],
             "build-options": {
