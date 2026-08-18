@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop-application">
+  <id>online.wunjo.make</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <developer id="online.wunjo">
+    <name translate="no">Wunjo</name>
+  </developer>
+  <branding>
+    <color type="primary" scheme_preference="light">#C8EDD2</color>
+    <color type="primary" scheme_preference="dark">#2B3A32</color>
+  </branding>
+  <name>Wunjo Make</name>
+  <name xml:lang="ar">Wunjo Make</name>
+  <name xml:lang="ast">Wunjo Make</name>
+  <name xml:lang="az">Wunjo Make</name>
+  <name xml:lang="bs">Wunjo Make</name>
+  <name xml:lang="ca">Wunjo Make</name>
+  <name xml:lang="ca-valencia">Wunjo Make</name>
+  <name xml:lang="cs">Wunjo Make</name>
+  <name xml:lang="da">Wunjo Make</name>
+  <name xml:lang="de">Wunjo Make</name>
+  <name xml:lang="el">Wunjo Make</name>
+  <name xml:lang="en-GB">Wunjo Make</name>
+  <name xml:lang="eo">Wunjo Make</name>
+  <name xml:lang="es">Wunjo Make</name>
+  <name xml:lang="et">Wunjo Make</name>
+  <name xml:lang="eu">Wunjo Make</name>
+  <name xml:lang="fi">Wunjo Make</name>
+  <name xml:lang="fr">Wunjo Make</name>
+  <name xml:lang="ga">Wunjo Make</name>
+  <name xml:lang="gl">Wunjo Make</name>
+  <name xml:lang="he">Wunjo Make</name>
+  <name xml:lang="hi">Wunjo Make</name>
+  <name xml:lang="id">Wunjo Make</name>
+  <name xml:lang="it">Wunjo Make</name>
+  <name xml:lang="ja">Wunjo Make</name>
+  <name xml:lang="ka">Wunjo Make</name>
+  <name xml:lang="ko">Wunjo Make</name>
+  <name xml:lang="lo">Wunjo Make</name>
+  <name xml:lang="lv">Wunjo Make</name>
+  <name xml:lang="nl">Wunjo Make</name>
+  <name xml:lang="nn">Wunjo Make</name>
+  <name xml:lang="pl">Wunjo Make</name>
+  <name xml:lang="pt">Wunjo Make</name>
+  <name xml:lang="pt-BR">Wunjo Make</name>
+  <name xml:lang="ru">Wunjo Make</name>
+  <name xml:lang="sa">Wunjo Make</name>
+  <name xml:lang="sk">Wunjo Make</name>
+  <name xml:lang="sl">Wunjo Make</name>
+  <name xml:lang="sv">Wunjo Make</name>
+  <name xml:lang="tr">Wunjo Make</name>
+  <name xml:lang="ug">Wunjo Make</name>
+  <name xml:lang="uk">Wunjo Make</name>
+  <name xml:lang="zh-CN">Wunjo Make</name>
+  <name xml:lang="zh-TW">Wunjo Make</name>
+  <summary>Video editor</summary>
+  <summary xml:lang="ar">محرّر فيديوهات</summary>
+  <summary xml:lang="ca">Editor de vídeo</summary>
+  <summary xml:lang="ca-valencia">Editor de vídeo</summary>
+  <summary xml:lang="cs">Editor videa</summary>
+  <summary xml:lang="de">Video-Editor</summary>
+  <summary xml:lang="el">Επεξεργαστής βίντεο</summary>
+  <summary xml:lang="en-GB">Video editor</summary>
+  <summary xml:lang="eo">Videoredaktilo</summary>
+  <summary xml:lang="es">Editor de video</summary>
+  <summary xml:lang="eu">Bideo editorea</summary>
+  <summary xml:lang="fi">Videomuokkain</summary>
+  <summary xml:lang="fr">Éditeur vidéo</summary>
+  <summary xml:lang="ga">Eagarthóir físe</summary>
+  <summary xml:lang="gl">Editor de vídeo</summary>
+  <summary xml:lang="he">עורך וידאו</summary>
+  <summary xml:lang="hi">वीडियो संपादक</summary>
+  <summary xml:lang="id">Editor video</summary>
+  <summary xml:lang="it">Editor video</summary>
+  <summary xml:lang="ka">ვიდეორედაქტორი</summary>
+  <summary xml:lang="lo">ໂປຣແກຣມຕັດຕໍ່ວິດີໂອ</summary>
+  <summary xml:lang="lv">Video redaktors</summary>
+  <summary xml:lang="nl">Videobewerker</summary>
+  <summary xml:lang="pl">Edytor wideo</summary>
+  <summary xml:lang="pt-BR">Editor de Vídeo</summary>
+  <summary xml:lang="ru">Видеоредактор</summary>
+  <summary xml:lang="sa">विडियो सम्पादक</summary>
+  <summary xml:lang="sk">Editor videa</summary>
+  <summary xml:lang="sl">Program za videomontažo</summary>
+  <summary xml:lang="sv">Videoeditor</summary>
+  <summary xml:lang="tr">Video düzenleyicisi</summary>
+  <summary xml:lang="uk">Відеоредактор</summary>
+  <summary xml:lang="zh-CN">视频编辑器</summary>
+  <summary xml:lang="zh-TW">影片編輯軟體</summary>
+  <description>
+    <p>Wunjo is a video editing application with support for many audio and video formats. It offers advanced editing features, a variety of effects and transitions, color correction, audio post-production and subtitling tools. Additionally, it provides the flexibility to render into practically any format of your choice.</p>
+    <p xml:lang="ar">كدنلايف هو تطبيق لتحرير الفيديو يدعم العديد من تنسيقات الصوت والفيديو. فهو يوفر ميزات تحرير متقدمة، ومجموعة متنوعة من التأثيرات والانتقالات، وتصحيح الألوان، وأدوات ما بعد الإنتاج الصوتي وترجمة الأفلام.بالإضافة إلى ذلك، فهو يوفر المرونة اللازمة للتصيير  إلى أي تنسيق من اختيارك.</p>
+    <p xml:lang="ca">El Wunjo és una aplicació d'edició de vídeo amb suport per a molts formats d'àudio i vídeo. Ofereix funcions avançades d'edició, una gran varietat d'efectes i transicions, correcció de color, postproducció d'àudio i eines de subtitulació. A més, proporciona la flexibilitat per a convertir pràcticament a qualsevol format de la vostra elecció.</p>
+    <p xml:lang="ca-valencia">Wunjo és una aplicació d'edició de vídeo amb suport per a molts formats d'àudio i vídeo. Oferix característiques avançades d'edició, una gran varietat d'efectes i transicions, correcció de color, postproducció d'àudio i eines de subtitulació. A més, proporciona la flexibilitat per a convertir pràcticament a qualsevol format de la vostra elecció.</p>
+    <p xml:lang="de">Wunjo ist ein Videobearbeitungsprogramm, das viele Audio- und Videoformate unterstützt. Es bietet erweiterte Bearbeitungsfunktionen, eine Vielzahl von Effekten und Übergängen, Farbkorrektur, Audio-Nachbearbeitung und Untertitelungswerkzeuge. Darüber hinaus bietet es die Flexibilität, ein Video in praktisch jedes Format Ihrer Wahl zu rendern.</p>
+    <p xml:lang="en-GB">Wunjo is a video editing application with support for many audio and video formats. It offers advanced editing features, a variety of effects and transitions, colour correction, audio post-production and subtitling tools. Additionally, it provides the flexibility to render into practically any format of your choice.</p>
+    <p xml:lang="eo">Wunjo estas videoredakta aplikaĵo kun subteno por multaj audaĵaj kaj vidaĵaj formatoj. Ĝi ofertas altnivelajn redaktajn funkciojn, diversajn efektojn kaj transirojn, kolorkorektado, aŭda postproduktado kaj subtitolaj iloj. Aldone, ĝi provizas la flekseblecon por redoni en preskaŭ ajna formato de via elekto.</p>
+    <p xml:lang="es">Wunjo es una aplicación de edición de video con soporte para una variedad de formatos de audio y video. Ofrece características avanzadas de edición, múltiples efectos y transiciones, corrección de color, posproducción de audio y herramientas de subtitulado. Adicionalmente, permite la exportación a prácticamente cualquier formato de audio y video existente.</p>
+    <p xml:lang="eu">Wunjo, audio- eta bideo-formatu askorako euskarria duen bideoa editatzeko tresna bat da. Edizio-funtzio aurreratuak eskaintzen ditu, efektu eta trantsizio ezberdinak, kolore-zuzenketa, audio post-produkzioa eta azpidatzietarako tresnak. Gainera, aukeratzen duzun ia edozein formatutan errendatzeko malgutasuna ematen du.</p>
+    <p xml:lang="fi">Wunjo on videomuokkaussovellus, joka tukee monia ääni- ja videomuotoja. Se työkalut tarjoavat edistyneet muokkausominaisuudet, joukon tehosteita ja siirtymiä, värinkorjauksen, äänen jälkituotannon sekä tekstityksen. Lisäksi se tarjoaa joustoa hahmontaa tuloksen lähes mihin tahansa haluamaasi muotoon.</p>
+    <p xml:lang="fr">Wunjo est une application de montage vidéo prenant en charge de nombreux formats audio et vidéo. Il offre des fonctionnalités d'édition avancées, une variété d'effets et de transitions, une correction des couleurs, une post-production audio et des outils de sous-titrage. En outre, il offre la flexibilité de faire un rendu dans pratiquement n'importe quel format de votre choix.</p>
+    <p xml:lang="ga">Is feidhmchlár eagarthóireachta físe é Wunjo a thacaíonn le go leor formáidí fuaime agus físe. Cuireann sé gnéithe eagarthóireachta chun cinn, réimse éifeachtaí agus aistrithe, ceartú datha, iarléiriú fuaime agus uirlisí fotheidealaithe ar fáil. Ina theannta sin, cuireann sé an tsolúbthacht ar fáil chun rindreáil i mbeagnach aon fhormáid is rogha leat.</p>
+    <p xml:lang="gl">Wunjo é unha aplicación de edición de vídeo para moitos formatos de son e de vídeo. Fornece funcionalidades avanzadas de edición, varios efectos e transicións, corrección de cor, post-produción de son e ferramentas de subtítulos. Ademais, fornece a flexibilidade de renderizar en calquera formato da súa escolla.</p>
+    <p xml:lang="he">Wunjo הוא יישום לעריכת וידאו עם תמיכה במגוון סוגים של וידאו ושמע. הוא מציע יכולות עריכה מתקדמות, שלל אפקטים ומעברונים, תיקון צבע, הפקת פוסט של שמע וכלי כתוביות. בנוסף, הוא מספק את הגמישות לעבד לכמעט כל סוג אפשרי שיש לבחירתך.</p>
+    <p xml:lang="hi">Wunjo एक वीडियो संपादन एप्लिकेशन है जो कई ऑडियो और वीडियो प्रारूपों के लिए समर्थन प्रदान करता है। यह उन्नत संपादन सुविधाएँ, विभिन्न प्रकार के प्रभाव और संक्रमण, रंग सुधार, ऑडियो पोस्ट-प्रोडक्शन और उपशीर्षक उपकरण प्रदान करता है। इसके अतिरिक्त, यह आपकी पसंद के व्यावहारिक रूप से किसी भी प्रारूप में रेंडर करने की सुविधा प्रदान करता है।</p>
+    <p xml:lang="id">Wunjo adalah aplikasi pengeditan video yang mendukung banyak format audio dan video. Aplikasi ini menawarkan fitur pengeditan tingkat lanjut, berbagai efek dan transisi, koreksi warna, pascaproduksi audio, dan alat subtitel. Selain itu, aplikasi ini menyediakan fleksibilitas untuk melakukan render ke hampir semua format pilihan Anda.</p>
+    <p xml:lang="it">Wunjo è un'applicazione di editing video che supporta molti formati audio e video. Offre funzionalità avanzate di modifica, un assortimento di effetti e transizioni, correzione del colore, strumenti per la post-produzione audio e la sottotitolazione. In aggiunta, fornisce la flessibilità di produrre praticamente in qualsiasi formato tu desideri.</p>
+    <p xml:lang="ka">Wunjo ვიდეორედაქტორია ბევრი აუდიო და ვიდეოფორმატების მხარდაჭერით. ის გთავაზობთ დამატებითი ჩასწორების ფუნქციებს, მრავალ ეფექტსა და გადასვლას, ფერის შესწორებას, აუდიოს პოსტ-პროდაქშენს და სუბტიტრების მორგებას. დამატებით, ის გაძლევთ საშუალებას, დაარენდეროთ პრაქტიკულად ნებისმიერ ფორმატში, რომელსაც აირჩევთ.</p>
+    <p xml:lang="lo">Wunjo ແມ່ນແອັບພລິເຄຊັນຕັດຕໍ່ວິດີໂອທີ່ຮອງຮັບຮູບແບບສຽງ ແລະ ວິດີໂອທີ່ຫຼາກຫຼາຍ. ມັນມີຄຸນສົມບັດການຕັດຕໍ່ຂັ້ນສູງ, ເອັບເຟັກ ແລະ ການປ່ຽນຜ່ານ (transitions) ທີ່ຫຼາກຫຼາຍ, ການປັບແກ້ສີ, ການປັບແຕ່ງສຽງຫຼັງການຜະລິດ ແລະ ເຄື່ອງມືໃສ່ຄຳບັນຍາຍ. ນອກຈາກນັ້ນ, ມັນຍັງມີຄວາມຢືດຢຸ່ນໃນການເຣັນເດີ (render) ເປັນຮູບແບບຕ່າງໆແທບທຸກປະເພດຕາມທີ່ທ່ານຕ້ອງການ.</p>
+    <p xml:lang="lv">„Wunjo“ ir video rediģēšanas programma ar daudzu audio un video formātu atbalstu. Tā sniedz plašas rediģēšanas iespējas, dažādus efektus un pārejas, krāsu korekcijas iespējas, skaņas pēcapstrādes un subtitru rīkus. Turklāt „Wunjo“ ļauj renderēt praktiski jebkurā formātā pēc jūsu izvēles.</p>
+    <p xml:lang="nl">Wunjo is een toepassing voor video bewerken met ondersteuning voor vele audio- en videoformaten. Het biedt geavanceerde bewerkingsfuncties, een verscheidenheid aan effecten en transities, kleurcorrectie, audio nabewerking en hulpmiddelen voor ondertiteling. Bovendien levert het de flexibiliteit om te renderen in praktisch elk formaat van uw keuze.</p>
+    <p xml:lang="pl">Wunjo jest aplikacją do edytowania wideo z obsługą wielu formatów dźwięku i obrazu. Daje rozbudowane możliwości, wiele efektów i przejść, poprawianie barw, po-produkcję dźwięki oraz narzędzia do napisów. Dodatkowo, zapewnia możliwość zapisania do właściwie dowolnego formatu jaki sobie wybierzesz.</p>
+    <p xml:lang="pt-BR">Wunjo é um aplicativo de edição de vídeo com suporte para vários formatos de áudio e vídeo. Ele oferece recursos avançados de edição, uma variedade de efeitos e transições, correção de cores, pós-produção de áudio e ferramentas de legenda. Além disso, fornece a flexibilidade para renderizar em praticamente qualquer formato que você escolher.</p>
+    <p xml:lang="ru">Wunjo — видеоредактор, поддерживающий различные форматы аудио- и видеозаписей. Программа предоставляет расширенные возможности редактирования, широкий ряд эффектов и переходов, инструменты цветокоррекции, окончательного монтажа аудио и наложения субтитров. Кроме того, гибкость настройки программы позволяет получить на выходе файл практически любого формата.</p>
+    <p xml:lang="sa">Wunjo इति एकः विडियो सम्पादन-अनुप्रयोगः अस्ति यस्य समर्थनं बहुषु श्रव्य-वीडियो-स्वरूपेषु भवति । अस्मिन् उन्नतसम्पादनविशेषताः, विविधाः प्रभावाः संक्रमणाः च, वर्णशुद्धिः, श्रव्य-उत्तरनिर्माणं, उपशीर्षकसाधनं च प्राप्यते । तदतिरिक्तं, भवतः पसन्दस्य व्यावहारिकरूपेण कस्मिन् अपि प्रारूपे प्रतिपादयितुं लचीलापनं प्रदाति ।</p>
+    <p xml:lang="sk">Wunjo is a video editing application with support for many audio and video formats. It offers advanced editing features, a variety of effects and transitions, color correction, audio post-production and subtitling tools. Additionally, it provides the flexibility to render into practically any format of your choice.</p>
+    <p xml:lang="sl">Wunjo je program za montažo videoposnetkov s podporo za številne zvokovne in video zapise. Ponuja napredne funkcije montaže, urejanja, različne učinke in prehode, korekcijo barv, poprodukcijo zvoka in orodja za podnaslavljanje. Poleg tega zagotavlja prilagodljivost za izrisovanje v praktično poljuben zapis po vašem izboru.</p>
+    <p xml:lang="sv">Wunjo är ett videoredigeringsprogram med stöd för många ljud- och videoformat. Det erbjuder avancerade redigeringsfunktioner, en mängd olika effekter och övergångar, färgkorrigering, efterproduktion av ljud och textningsverktyg. Dessutom ger det flexibiliteten att återge till praktiskt taget vilket format som helst.</p>
+    <p xml:lang="tr">Wunjo, birçok ses ve video biçimini destekleyen bir video düzenleme uygulamasıdır. Gelişmiş düzenleme özellikleri, çeşitli efektler ve geçişler, renk düzeltme, ses post-prodüksiyon ve altyazı araçları sunar. Ek olarak, neredeyse seçtiğiniz herhangi bir biçime dönüştürme esnekliği de sağlar.</p>
+    <p xml:lang="uk">Wunjo — програма для редагування відео із підтримкою багатьох форматів даних відео та звуку. У ній реалізовано широкі можливості з редагування, спектр ефектів та переходів, виправлення кольорів, остаточну обробку звуку та засоби субтитрування. Крім того, програма здатна гнучко обробляти дані практично до будь-якого вибраного вами формату.</p>
+    <p xml:lang="zh-CN">Wunjo 是一款视频编辑应用程序，支持多种音视频格式。它提供了各种高级编辑功能、种类丰富的效果和转场、色彩校正、音频后处理和字幕工具。它还能灵活地将视频输出为您需要的任意格式。</p>
+    <p xml:lang="zh-TW">Wunjo 是支援許多音訊與影片格式的影片編輯軟體。它提供進階的剪輯功能、許多的效果、轉場特效、顏色校正、音效後製與字幕工具等等。它也支援輸出到基本上任何您所想要使用的格式。</p>
+    <p>Features:</p>
+    <p xml:lang="ar">الميزات:</p>
+    <p xml:lang="az">İmkanlar:</p>
+    <p xml:lang="bs">Svojstva:</p>
+    <p xml:lang="ca">Característiques:</p>
+    <p xml:lang="ca-valencia">Característiques:</p>
+    <p xml:lang="cs">Vlastnosti:</p>
+    <p xml:lang="da">Funktioner:</p>
+    <p xml:lang="de">Funktionen:</p>
+    <p xml:lang="el">Χαρακτηριστικά:</p>
+    <p xml:lang="en-GB">Features:</p>
+    <p xml:lang="eo">Trajtoj:</p>
+    <p xml:lang="es">Características:</p>
+    <p xml:lang="et">Omadused:</p>
+    <p xml:lang="eu">Ezaugarriak:</p>
+    <p xml:lang="fi">Ominaisuuksia:</p>
+    <p xml:lang="fr">Fonctionnalités :</p>
+    <p xml:lang="ga">Gnéithe:</p>
+    <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="he">יכולות:</p>
+    <p xml:lang="hi">विशेषताएँ:</p>
+    <p xml:lang="id">Fitur:</p>
+    <p xml:lang="it">Funzionalità:</p>
+    <p xml:lang="ja">特徴:</p>
+    <p xml:lang="ka">თვისებები:</p>
+    <p xml:lang="ko">기능:</p>
+    <p xml:lang="lo">ຄຸນສົມບັດ:</p>
+    <p xml:lang="lv">Iespējas:</p>
+    <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="nn">Funksjonar:</p>
+    <p xml:lang="pl">Możliwości:</p>
+    <p xml:lang="pt">Funcionalidades:</p>
+    <p xml:lang="pt-BR">Funcionalidades:</p>
+    <p xml:lang="ru">Возможности:</p>
+    <p xml:lang="sa">गुणाः:</p>
+    <p xml:lang="sk">Funkcie:</p>
+    <p xml:lang="sl">Zmožnosti:</p>
+    <p xml:lang="sv">Funktioner:</p>
+    <p xml:lang="tr">Özellikler:</p>
+    <p xml:lang="ug">ئىقتىدار:</p>
+    <p xml:lang="uk">Можливості:</p>
+    <p xml:lang="zh-CN">程序功能：</p>
+    <p xml:lang="zh-TW">功能：</p>
+    <ul>
+      <li>Nested Sequences</li>
+      <li xml:lang="ar">تسلسلات متداخلة</li>
+      <li xml:lang="ca">Seqüències imbricades</li>
+      <li xml:lang="ca-valencia">Seqüències imbricades</li>
+      <li xml:lang="de">Verschachtelte Sequenzen</li>
+      <li xml:lang="en-GB">Nested Sequences</li>
+      <li xml:lang="eo">Ingitaj Sinsekvoj</li>
+      <li xml:lang="es">Secuencias anidadas</li>
+      <li xml:lang="eu">Habiaratutako sekuentziak</li>
+      <li xml:lang="fi">Sisäkkäiset sekvenssit</li>
+      <li xml:lang="fr">Séquences imbriquées</li>
+      <li xml:lang="ga">Seichimh Neadaithe</li>
+      <li xml:lang="gl">Secuencias aniñadas.</li>
+      <li xml:lang="he">רצפים מקוננים</li>
+      <li xml:lang="hi">नेस्टेड अनुक्रम</li>
+      <li xml:lang="id">Urutan Bersarang</li>
+      <li xml:lang="it">Sequenze annidate</li>
+      <li xml:lang="ka">ერთმანეთში ჩალაგებული მიმდევრობები</li>
+      <li xml:lang="lo">ລຳດັບພາບຊ້ອນ (Nested Sequences)</li>
+      <li xml:lang="lv">Ievietotas sekvences</li>
+      <li xml:lang="nl">Geneste sequenties</li>
+      <li xml:lang="pl">Osadzone odcinki</li>
+      <li xml:lang="pt-BR">Sequências aninhadas</li>
+      <li xml:lang="ru">Вложенные последовательности</li>
+      <li xml:lang="sa">नेस्टेड अनुक्रम</li>
+      <li xml:lang="sk">Nested Sequences</li>
+      <li xml:lang="sl">Ugnezdena zaporedja</li>
+      <li xml:lang="sv">Nästlade sekvenser</li>
+      <li xml:lang="tr">İç içe geçmiş sekanslar</li>
+      <li xml:lang="uk">Вкладені послідовності</li>
+      <li xml:lang="zh-CN">嵌套序列</li>
+      <li xml:lang="zh-TW">巢狀序列</li>
+      <li>Configurable interface and shortcuts</li>
+      <li xml:lang="ar">اختصارات و واجهة قابلة للتخصيص</li>
+      <li xml:lang="ca">Interfície i dreceres configurables</li>
+      <li xml:lang="ca-valencia">Interfície i dreceres configurables</li>
+      <li xml:lang="de">Konfigurierbare Benutzeroberfläche und Kurzbefehle</li>
+      <li xml:lang="en-GB">Configurable interface and shortcuts</li>
+      <li xml:lang="eo">Agordeblaj interfaco kaj ŝparvojoj</li>
+      <li xml:lang="es">Interfaz y atajos de teclado configurables</li>
+      <li xml:lang="eu">Interfaze eta lasterbide konfiguragarriak</li>
+      <li xml:lang="fi">Mukautettava käyttöliittymä ja pikanäppäimet</li>
+      <li xml:lang="fr">Interface et raccourcis configurables</li>
+      <li xml:lang="ga">Comhéadan agus aicearraí inchumraithe</li>
+      <li xml:lang="gl">Interface e atallos configurábeis.</li>
+      <li xml:lang="he">ממשק וקיצורי דרך גמישים</li>
+      <li xml:lang="hi">कॉन्फ़िगर करने योग्य इंटरफ़ेस और शॉर्टकट</li>
+      <li xml:lang="id">Pintasan dan antarmuka yang dapat dikonfigurasi</li>
+      <li xml:lang="it">Scorciatoie e interfaccia configurabili</li>
+      <li xml:lang="ka">მორგებადი ინტერფეისი და მალსახმობები</li>
+      <li xml:lang="lo">ໜ້າຕ່າງ ແລະ ທາງລັດທີ່ສາມາດປັບແຕ່ງໄດ້</li>
+      <li xml:lang="lv">Konfigurējama saskarne un saīsnes</li>
+      <li xml:lang="nl">Te configureren interface en sneltoetsen</li>
+      <li xml:lang="pl">Interfejs i skróty dające się dostosować</li>
+      <li xml:lang="pt-BR">Interface e atalhos configuráveis</li>
+      <li xml:lang="ru">Настраиваемые интерфейс и комбинации клавиш</li>
+      <li xml:lang="sa">विन्यासयोग्यं अन्तरफलकं शॉर्टकट् च</li>
+      <li xml:lang="sk">Configurable interface and shortcuts</li>
+      <li xml:lang="sl">Nastavljiv vmesnik in bližnjice</li>
+      <li xml:lang="sv">Anpassningsbart gränssnitt och genvägar</li>
+      <li xml:lang="tr">Yapılandırılabilir arayüz ve kısayollar</li>
+      <li xml:lang="uk">Можливість налаштовування інтерфейсу та клавіатурних скорочень</li>
+      <li xml:lang="zh-CN">可定制的界面和快捷键</li>
+      <li xml:lang="zh-TW">可調整的介面與快捷鍵</li>
+      <li>Scopes: Histogram, Vectorscope, RGB Parade, Waveform and Audio Meter</li>
+      <li xml:lang="ar">المناظير: الرسم البياني، Vectorscope، RGB Parade، الموجي ومقياس الصوت</li>
+      <li xml:lang="ca">Vectoscopis: Histograma, Vectoscopi, Histograma RGB, Forma d'ona i Mesurador d'àudio</li>
+      <li xml:lang="ca-valencia">Vectoscopis: Histograma, Vectoscopi, Histograma RGB, Forma d'ona i Mesurador d'àudio</li>
+      <li xml:lang="de">Anzeigen: Histogramm, Vektorskop, RGB-Parade, Wellenform und Audiometer</li>
+      <li xml:lang="en-GB">Scopes: Histogram, Vectorscope, RGB Parade, Waveform and Audio Meter</li>
+      <li xml:lang="eo">Ampleksoj: Histogramo, Vectorscope, RGB Parade, Ondoformo kaj Aŭdmezurilo</li>
+      <li xml:lang="es">Instrumentos: Histograma, Vectorscopio, Presentación RVA, Medidores de forma de onda y volumen</li>
+      <li xml:lang="eu">Eskopioak: Histograma, Bektoreskopioa, RGB parada, Uhin-forma eta Audio-neurgailua</li>
+      <li xml:lang="fr">Oscilloscopes : histogramme, oscilloscope vectoriel, défilé RVB, mesure de signaux et audiomètre</li>
+      <li xml:lang="ga">Scóipeanna: Histogram, Veicteoirscóp, Paráid RGB, Tonnfhoirm agus Méadar Fuaime</li>
+      <li xml:lang="gl">Ámbitos: histograma, vectorscopio, desfile RGB, forma de onda e medidor de son.</li>
+      <li xml:lang="he">טווחים: היסטוגרמה, וקטורסקופ, צורת גל ומד עוצמת שמע</li>
+      <li xml:lang="hi">कार्यक्षेत्र: हिस्टोग्राम, वेक्टरस्कोप, आरजीबी परेड, वेवफॉर्म और ऑडियो मीटर</li>
+      <li xml:lang="id">Cakupan: Histogram, Vectorscope, RGB Parade, Bentuk Gelombang, dan Pengukur Audio</li>
+      <li xml:lang="it">Diagrammi: istogramma, Evidenza le punte massime, Esibizione RGB, Forma d'onda e Misuratore audio</li>
+      <li xml:lang="ka">მზომები: ჰისტოგრამა, ვექტორსკოპი, RGB პარადი, Waveform და აუდიომეტრი</li>
+      <li xml:lang="lo">Scopes: Histogram, Vectorscope, RGB Parade, Waveform ແລະ ມາດວັດສຽງ</li>
+      <li xml:lang="lv">Tvērumi: histogramma, vektorskops, RGB parāde, viļņformas un audio mērītājs</li>
+      <li xml:lang="nl">Scopes: Histogram, Vectorscope, RGB Parade, golfvorm en Audio-meter</li>
+      <li xml:lang="pl">Widoki: Histogram, Wektoroskop, Parada RGB, Kształt Fali oraz Miernik Dźwięku</li>
+      <li xml:lang="pt-BR">Escopos: Histograma, Vetorescópio, Desfile RGB, Forma de onda e Medidor de áudio</li>
+      <li xml:lang="ru">Отображение: гистограмма, вектороскоп, парад RGB, звуковой спектр и уровень звука</li>
+      <li xml:lang="sa">व्याप्तिः : हिस्टोग्राम, वेक्टरस्कोप, आरजीबी परेड, तरङ्गरूप तथा ऑडियो मीटर्</li>
+      <li xml:lang="sk">Scopes: Histogram, Vectorscope, RGB Parade, Waveform and Audio Meter</li>
+      <li xml:lang="sl">Merilniki: histogram, vektroskop, parada RGB, signalna oblika in merilnik jakosti zvoka</li>
+      <li xml:lang="sv">Oscilloskop: Histogram, vektoroscilloskop, RGB-parad, vågform och ljudmätare</li>
+      <li xml:lang="tr">Kapsamlar: Histogram, Vektörskop, RGB Geçidi, Dalga Biçimi ve Ses Ölçeri</li>
+      <li xml:lang="uk">Області: гістограма, векторскоп, розкладка RGB, форма хвилі та рівень звуку</li>
+      <li xml:lang="zh-CN">示波器：直方图、矢量示波器、RGB Parade 直方图、波形图、音量计</li>
+      <li xml:lang="zh-TW">示波器：直方圖、向量示波器、RGB 檢視、波形以及音訊音量測量</li>
+      <li>Proxy editing</li>
+      <li xml:lang="ar">التحرير بواسطة الوسطاء</li>
+      <li xml:lang="ca">Edició d'intermediaris</li>
+      <li xml:lang="ca-valencia">Editeu intermediaris</li>
+      <li xml:lang="cs">Úprava proxy</li>
+      <li xml:lang="de">Proxy-Bearbeitung</li>
+      <li xml:lang="en-GB">Proxy editing</li>
+      <li xml:lang="eo">Redaktado de Prokurilo</li>
+      <li xml:lang="es">Edición usando reemplazos</li>
+      <li xml:lang="eu">Ordezkaria editatzea</li>
+      <li xml:lang="fr">Modification du serveur mandataire</li>
+      <li xml:lang="ga">Eagarthóireacht seachfhreastalaí</li>
+      <li xml:lang="gl">Edición intermediaria.</li>
+      <li xml:lang="he">עריכת תיווך</li>
+      <li xml:lang="hi">प्रॉक्सी संपादन</li>
+      <li xml:lang="id">Pengeditan proksi</li>
+      <li xml:lang="it">Modifica del proxy</li>
+      <li xml:lang="ka">პროქსი ჩასწორება</li>
+      <li xml:lang="lo">ການຕັດຕໍ່ແບບ Proxy</li>
+      <li xml:lang="lv">Rediģēšana caur starpniekvideo un starpniekattēliem</li>
+      <li xml:lang="nl">Proxy-bewerking</li>
+      <li xml:lang="pl">Edytowanie pośredników</li>
+      <li xml:lang="pt-BR">Edição com proxy</li>
+      <li xml:lang="ru">Редактирование с промежуточными клипами</li>
+      <li xml:lang="sa">प्रॉक्सी सम्पादनम्</li>
+      <li xml:lang="sk">Proxy editing</li>
+      <li xml:lang="sl">Montaža posrednih posnetkov</li>
+      <li xml:lang="sv">Ersättningsredigering</li>
+      <li xml:lang="tr">Vekilli düzenleme</li>
+      <li xml:lang="uk">Редагування із проміжними кліпами</li>
+      <li xml:lang="zh-CN">代理剪辑编辑</li>
+      <li xml:lang="zh-TW">代理編輯</li>
+      <li>Free online assets and templates</li>
+      <li xml:lang="ar">موارد وقوالب مجانية على الإنترنت</li>
+      <li xml:lang="ca">Actius i plantilles lliures en línia</li>
+      <li xml:lang="ca-valencia">Actius i plantilles lliures en línia</li>
+      <li xml:lang="de">Kostenlose Online-Ressourcen und -Vorlagen</li>
+      <li xml:lang="en-GB">Free online assets and templates</li>
+      <li xml:lang="eo">Liberaj enretaj valoraĵoj kaj ŝablonoj</li>
+      <li xml:lang="es">Recursos y plantillas libres en línea</li>
+      <li xml:lang="eu">Lerroan doako aktiboak eta txantiloiak</li>
+      <li xml:lang="fr">Produits et modèles en ligne gratuits</li>
+      <li xml:lang="ga">Sócmhainní agus teimpléid ar líne saor in aisce</li>
+      <li xml:lang="gl">Recursos e modelos libres por Internet.</li>
+      <li xml:lang="he">משאבים ותבניות מקוונים בחינם</li>
+      <li xml:lang="hi">निःशुल्क ऑनलाइन परिसंपत्तियाँ और टेम्पलेट्स</li>
+      <li xml:lang="id">Templat dan aset gratis online</li>
+      <li xml:lang="it">Risorse e modelli in linea gratuiti</li>
+      <li xml:lang="ka">უფასო მასალები და ნიმუშები ინტერნეტში</li>
+      <li xml:lang="lo">ຊັບພະຍາກອນ ແລະ ແມ່ແບບອອນລາຍຟຣີ</li>
+      <li xml:lang="lv">Bezmaksas tiešsaistes resursi un veidnes</li>
+      <li xml:lang="nl">Vrij online bezit en sjablonen</li>
+      <li xml:lang="pl">Darmowe zasoby i wzorce z sieci</li>
+      <li xml:lang="pt-BR">Recursos e modelos online gratuitos</li>
+      <li xml:lang="ru">Бесплатные ресурсы и шаблоны в Интернете</li>
+      <li xml:lang="sa">निःशुल्क ऑनलाइन सम्पत्तिः टेम्पलेट् च</li>
+      <li xml:lang="sk">Free online assets and templates</li>
+      <li xml:lang="sl">Brezplačna spletna sredstva in predloge</li>
+      <li xml:lang="sv">Fria tillgångar och mallar på nätet</li>
+      <li xml:lang="tr">Ücretsiz çevrim içi kaynaklar ve şablonlar</li>
+      <li xml:lang="uk">Безкоштовні ресурси та шаблони в інтернеті</li>
+      <li xml:lang="zh-CN">自由免费的在线资源和模板</li>
+      <li xml:lang="zh-TW">免費線上資源與範本</li>
+      <li>Motion tracking</li>
+      <li xml:lang="ar">تتبع الحركة</li>
+      <li xml:lang="ca">Seguiment de moviment</li>
+      <li xml:lang="ca-valencia">Seguiment de moviment</li>
+      <li xml:lang="de">Bewegungsverfolgung</li>
+      <li xml:lang="en-GB">Motion tracking</li>
+      <li xml:lang="eo">Moviĝospurado</li>
+      <li xml:lang="es">Rastreo de movimiento</li>
+      <li xml:lang="eu">Higiduraren jarraipena</li>
+      <li xml:lang="fi">Liikkeen jäljitys</li>
+      <li xml:lang="fr">Suivi de déplacement</li>
+      <li xml:lang="ga">Rianú gluaisne</li>
+      <li xml:lang="gl">Seguimento de movemento.</li>
+      <li xml:lang="he">מעקב אחר תנועה</li>
+      <li xml:lang="hi">मोशन ट्रेकिंग</li>
+      <li xml:lang="id">Pelacakan gerakan</li>
+      <li xml:lang="it">Tracciatore di movimento</li>
+      <li xml:lang="ka">მოძრაობის ტრეკინგი</li>
+      <li xml:lang="lo">ການຕິດຕາມການເຄື່ອນໄຫວ</li>
+      <li xml:lang="lv">Kustību izsekošana</li>
+      <li xml:lang="nl">Volgen van beweging</li>
+      <li xml:lang="pl">Śledzenie ruchu</li>
+      <li xml:lang="pt-BR">Rastreamento de movimento</li>
+      <li xml:lang="ru">Отслеживание движения</li>
+      <li xml:lang="sa">गतिनिरीक्षणम्</li>
+      <li xml:lang="sk">Motion tracking</li>
+      <li xml:lang="sl">Sledenje gibanju</li>
+      <li xml:lang="sv">Rörelseföljning</li>
+      <li xml:lang="tr">Hareket izlemesi</li>
+      <li xml:lang="uk">Стеження за рухом</li>
+      <li xml:lang="zh-CN">运动跟踪功能</li>
+      <li xml:lang="zh-TW">動態追蹤</li>
+      <li>AI powered tools</li>
+      <li xml:lang="ar">أدوات بالذكاء الاصطناعي</li>
+      <li xml:lang="ca">Eines que funcionen amb IA</li>
+      <li xml:lang="ca-valencia">Eines que funcionen amb IA</li>
+      <li xml:lang="de">KI-gestützte Werkzeuge</li>
+      <li xml:lang="en-GB">AI powered tools</li>
+      <li xml:lang="eo">AI-pelitaj iloj</li>
+      <li xml:lang="es">Herramientas potenciadas mediante IA</li>
+      <li xml:lang="eu">AAk bultzatutako tresnak</li>
+      <li xml:lang="fi">Tekoälytehosteiset työkalut</li>
+      <li xml:lang="fr">Outils alimentés par l'intelligence artificielle</li>
+      <li xml:lang="ga">Uirlisí faoi thiomáint AI</li>
+      <li xml:lang="gl">Ferramentas que usan intelixencia artificial.</li>
+      <li xml:lang="he">כלים מחוזקי בינה מלאכותית</li>
+      <li xml:lang="hi">एआई संचालित उपकरण</li>
+      <li xml:lang="id">Alat bertenaga AI</li>
+      <li xml:lang="it">Strumenti alimentati dalla IA</li>
+      <li xml:lang="ka">ფუნქციები AI-ით</li>
+      <li xml:lang="lo">ເຄື່ອງມືທີ່ຂັບເຄື່ອນດ້ວຍ AI</li>
+      <li xml:lang="lv">Mākslīgā intelekta rīki</li>
+      <li xml:lang="nl">AI aangedreven hulpmiddelen</li>
+      <li xml:lang="pl">Narzędzia wspomagane SI</li>
+      <li xml:lang="pt-BR">Ferramentas com IA</li>
+      <li xml:lang="ru">Инструменты на основе ИИ</li>
+      <li xml:lang="sa">एआइ-सञ्चालित-उपकरणम्</li>
+      <li xml:lang="sk">AI powered tools</li>
+      <li xml:lang="sl">Orodja, ki jih poganja umetna inteligenca</li>
+      <li xml:lang="sv">AI-drivna verktyg</li>
+      <li xml:lang="tr">Yapay Zeka destekli araçlar</li>
+      <li xml:lang="uk">Інструменти на основі ШІ</li>
+      <li xml:lang="zh-CN">基于 AI 的工具</li>
+      <li xml:lang="zh-TW">利用 AI 的工具</li>
+    </ul>
+  </description>
+  <releases>
+    <release version="3.0.0" date="2026-08-14">
+      <description>
+        <p>First release of Wunjo Make, a nonlinear video editor built on the MLT framework.</p>
+        <ul>
+          <li>Multi-track timeline editing with transitions, effects, keyframes and time remapping</li>
+          <li>Colour correction, audio post-production, subtitles and titling</li>
+          <li>Rendering to practically any format through FFmpeg</li>
+          <li>Built-in face detection for hiding or tracking faces on a clip</li>
+          <li>Artificial Intelligence plugins for speech recognition, voice cloning and content cutting</li>
+          <li>Chat assistant that drives the editor directly</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  <url type="homepage">https://wunjo.online</url>
+  <url type="bugtracker">https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues</url>
+  <url type="help">https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki</url>
+  <url type="donation">https://wunjo.online/fund</url>
+  <url type="contact">https://wunjo.online/support</url>
+  <url type="contribute">https://github.com/wladradchenko/wunjo.wladradchenko.ru</url>
+  <url type="vcs-browser">https://github.com/wladradchenko/wunjo.wladradchenko.ru</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Dark theme</caption>
+      <caption xml:lang="ar">سمة مظلمة</caption>
+      <caption xml:lang="ca">Tema fosc</caption>
+      <caption xml:lang="ca-valencia">Tema fosc</caption>
+      <caption xml:lang="cs">Tmavý motiv</caption>
+      <caption xml:lang="de">Dunkles Design</caption>
+      <caption xml:lang="en-GB">Dark theme</caption>
+      <caption xml:lang="eo">Malhela etoso</caption>
+      <caption xml:lang="es">Tema oscuro</caption>
+      <caption xml:lang="eu">Gai iluna</caption>
+      <caption xml:lang="fi">Tumma teema</caption>
+      <caption xml:lang="fr">Thème sombre</caption>
+      <caption xml:lang="ga">Téama dorcha</caption>
+      <caption xml:lang="gl">Tema escuro.</caption>
+      <caption xml:lang="he">ערכת צבעים כהה</caption>
+      <caption xml:lang="hi">डार्क थीम</caption>
+      <caption xml:lang="id">Tema gelap</caption>
+      <caption xml:lang="it">Tema scuro</caption>
+      <caption xml:lang="ka">მუქი თემა</caption>
+      <caption xml:lang="lo">ຊຸດຮູບແບບສີເຂັ້ມ</caption>
+      <caption xml:lang="lv">Tumšais motīvs</caption>
+      <caption xml:lang="nl">Donker thema</caption>
+      <caption xml:lang="pl">Ciemny wygląd</caption>
+      <caption xml:lang="pt-BR">Tema escuro</caption>
+      <caption xml:lang="ru">Тёмная тема</caption>
+      <caption xml:lang="sa">अन्धकारमयः विषयः</caption>
+      <caption xml:lang="sk">Dark theme</caption>
+      <caption xml:lang="sl">Temna tema</caption>
+      <caption xml:lang="sv">Mörkt tema</caption>
+      <caption xml:lang="tr">Koyu tema</caption>
+      <caption xml:lang="ug">قاراڭغۇ ئۆرنەك</caption>
+      <caption xml:lang="uk">Темна тема</caption>
+      <caption xml:lang="zh-CN">深色主题</caption>
+      <caption xml:lang="zh-TW">暗色主題</caption>
+      <image type="source">https://wunjo.online/404</image>
+    </screenshot>
+    <screenshot type="source">
+      <caption>Default interface</caption>
+      <caption xml:lang="ar">الواجهة المبدئية</caption>
+      <caption xml:lang="ca">Interfície predeterminada</caption>
+      <caption xml:lang="ca-valencia">Interfície predeterminada</caption>
+      <caption xml:lang="de">Standard-Interface</caption>
+      <caption xml:lang="en-GB">Default interface</caption>
+      <caption xml:lang="eo">Defaŭlta interfaco</caption>
+      <caption xml:lang="es">Interfaz estándar</caption>
+      <caption xml:lang="eu">Interfaze lehenetsia</caption>
+      <caption xml:lang="fi">Oletuskäyttöliittymä</caption>
+      <caption xml:lang="fr">Interface par défaut</caption>
+      <caption xml:lang="ga">Comhéadan réamhshocraithe</caption>
+      <caption xml:lang="gl">Interface predeterminada.</caption>
+      <caption xml:lang="he">ממשק ברירת מחדל</caption>
+      <caption xml:lang="hi">डिफ़ॉल्ट इंटरफ़ेस</caption>
+      <caption xml:lang="id">Antarmuka baku</caption>
+      <caption xml:lang="it">Interfaccia predefinita</caption>
+      <caption xml:lang="ka">ნაგულისხმევი ინტერფეისი</caption>
+      <caption xml:lang="lo">ໜ້າຕ່າງເລີ່ມຕົ້ນ</caption>
+      <caption xml:lang="lv">Noklusējuma saskarne</caption>
+      <caption xml:lang="nl">Standaard interface</caption>
+      <caption xml:lang="pl">Domyślny interfejs</caption>
+      <caption xml:lang="pt-BR">Interface padrão</caption>
+      <caption xml:lang="ru">Интерфейс по умолчанию</caption>
+      <caption xml:lang="sa">पूर्वनिर्धारित अन्तरफलक</caption>
+      <caption xml:lang="sk">Default interface</caption>
+      <caption xml:lang="sl">Privzeti vmesnik</caption>
+      <caption xml:lang="sv">Standardgränssnitt</caption>
+      <caption xml:lang="tr">Öntanımlı arayüz</caption>
+      <caption xml:lang="ug">كۆڭۈلدىكى ئارايۈز</caption>
+      <caption xml:lang="uk">Типовий інтерфейс</caption>
+      <caption xml:lang="zh-CN">默认界面</caption>
+      <caption xml:lang="zh-TW">預設介面</caption>
+      <image>https://wunjo.online/404</image>
+    </screenshot>
+    <screenshot type="source">
+      <caption>Color correction</caption>
+      <caption xml:lang="ar">تصحيح الألوان</caption>
+      <caption xml:lang="ca">Correcció del color</caption>
+      <caption xml:lang="ca-valencia">Correcció del color</caption>
+      <caption xml:lang="cs">Barevná úprava</caption>
+      <caption xml:lang="de">Farbkorrektur</caption>
+      <caption xml:lang="en-GB">Colour correction</caption>
+      <caption xml:lang="eo">Kolorkorektado</caption>
+      <caption xml:lang="es">Corrección de color</caption>
+      <caption xml:lang="eu">Kolore zuzenketa</caption>
+      <caption xml:lang="fi">Värinkorjaus</caption>
+      <caption xml:lang="fr">Correction de couleurs</caption>
+      <caption xml:lang="ga">Ceartú datha</caption>
+      <caption xml:lang="gl">Corrección de cor.</caption>
+      <caption xml:lang="he">תיקון צבע</caption>
+      <caption xml:lang="hi">रंग सुधार</caption>
+      <caption xml:lang="id">Koreksi warna</caption>
+      <caption xml:lang="it">Correzione del colore</caption>
+      <caption xml:lang="ka">ფერების კორექცია</caption>
+      <caption xml:lang="lo">ການປັບແກ້ສີ</caption>
+      <caption xml:lang="lv">Krāsu korekcija</caption>
+      <caption xml:lang="nl">Kleurcorrectie</caption>
+      <caption xml:lang="pl">Poprawki barw</caption>
+      <caption xml:lang="pt-BR">Correção de cores</caption>
+      <caption xml:lang="ru">Цветокоррекция</caption>
+      <caption xml:lang="sa">वर्णशुद्धिकरणम्</caption>
+      <caption xml:lang="sk">Farebné rozsahy</caption>
+      <caption xml:lang="sl">Korekcija barv</caption>
+      <caption xml:lang="sv">Färgkorrektion</caption>
+      <caption xml:lang="tr">Renk düzeltmesi</caption>
+      <caption xml:lang="ug">رەڭ تۈزىتىش</caption>
+      <caption xml:lang="uk">Виправлення кольорів</caption>
+      <caption xml:lang="zh-CN">色彩校正</caption>
+      <caption xml:lang="zh-TW">顏色校正</caption>
+      <image>https://wunjo.online/404</image>
+    </screenshot>
+    <screenshot type="source">
+      <caption>Configurable interface</caption>
+      <caption xml:lang="ar">واجهة قابلة للتخصيص</caption>
+      <caption xml:lang="ca">Interfície configurable</caption>
+      <caption xml:lang="ca-valencia">Interfície configurable</caption>
+      <caption xml:lang="de">Konfigurierbares Interface</caption>
+      <caption xml:lang="en-GB">Configurable interface</caption>
+      <caption xml:lang="eo">Agordebla interfaco</caption>
+      <caption xml:lang="es">Interfaz configurable</caption>
+      <caption xml:lang="eu">Interfaze konfiguragarria</caption>
+      <caption xml:lang="fi">Mukautettava käyttöliittymä</caption>
+      <caption xml:lang="fr">Interface configurable</caption>
+      <caption xml:lang="ga">Comhéadan inchumraithe</caption>
+      <caption xml:lang="gl">Interface configurábel.</caption>
+      <caption xml:lang="he">ממשק גמיש</caption>
+      <caption xml:lang="hi">कॉन्फ़िगर करने योग्य इंटरफ़ेस</caption>
+      <caption xml:lang="id">Antarmuka dapat dikonfigurasi</caption>
+      <caption xml:lang="it">Interfaccia configurabile</caption>
+      <caption xml:lang="ka">მორგებადი ინტერფეისი</caption>
+      <caption xml:lang="lo">ໜ້າຕ່າງທີ່ປັບແຕ່ງໄດ້</caption>
+      <caption xml:lang="lv">Konfigurējama saskarne</caption>
+      <caption xml:lang="nl">Te configureren interface</caption>
+      <caption xml:lang="pl">Interfejs dający się dostosować</caption>
+      <caption xml:lang="pt-BR">Interface configurável</caption>
+      <caption xml:lang="ru">Настраиваемый интерфейс</caption>
+      <caption xml:lang="sa">विन्यासयोग्यं अन्तरफलकं</caption>
+      <caption xml:lang="sk">Configurable interface</caption>
+      <caption xml:lang="sl">Nastavljiv vmesnik</caption>
+      <caption xml:lang="sv">Anpassningsbart gränssnitt</caption>
+      <caption xml:lang="tr">Yapılandırılabilir arayüz</caption>
+      <caption xml:lang="uk">Придатний до налаштовування інтерфейс</caption>
+      <caption xml:lang="zh-CN">可定制的界面</caption>
+      <caption xml:lang="zh-TW">可自訂的介面</caption>
+      <image>https://wunjo.online/404</image>
+    </screenshot>
+    <screenshot type="source">
+      <caption>Titling</caption>
+      <caption xml:lang="ar">العنونة</caption>
+      <caption xml:lang="ca">Titulació</caption>
+      <caption xml:lang="ca-valencia">Titulació</caption>
+      <caption xml:lang="de">Titelgebung</caption>
+      <caption xml:lang="en-GB">Titling</caption>
+      <caption xml:lang="eo">Titolado</caption>
+      <caption xml:lang="es">Titulación</caption>
+      <caption xml:lang="eu">Tituluak ipintzea</caption>
+      <caption xml:lang="fi">Väliotsikot</caption>
+      <caption xml:lang="fr">Titrage</caption>
+      <caption xml:lang="ga">Teidealú</caption>
+      <caption xml:lang="gl">Titulación.</caption>
+      <caption xml:lang="he">מתן כותרות</caption>
+      <caption xml:lang="hi">शीर्षक</caption>
+      <caption xml:lang="id">Pemberian teks</caption>
+      <caption xml:lang="it">Titolazione</caption>
+      <caption xml:lang="ka">დასათაურება</caption>
+      <caption xml:lang="lo">ການສ້າງຫົວຂໍ້</caption>
+      <caption xml:lang="lv">Titri</caption>
+      <caption xml:lang="nl">Titels toevoegen</caption>
+      <caption xml:lang="pl">Nadawanie tytułów</caption>
+      <caption xml:lang="pt-BR">Gerador de caracteres</caption>
+      <caption xml:lang="ru">Наложение субтитров</caption>
+      <caption xml:lang="sa">उपाधिकरणम्</caption>
+      <caption xml:lang="sk">Titling</caption>
+      <caption xml:lang="sl">Naslavljanje</caption>
+      <caption xml:lang="sv">Textning</caption>
+      <caption xml:lang="tr">Başlıklandırma</caption>
+      <caption xml:lang="uk">Титрування</caption>
+      <caption xml:lang="zh-CN">字幕功能</caption>
+      <caption xml:lang="zh-TW">傾斜</caption>
+      <image>https://wunjo.online/404</image>
+    </screenshot>
+    <screenshot type="source">
+      <caption>Time remapping and same-track transitions</caption>
+      <caption xml:lang="ar">انتقالات و إعادة رسم خرائط الوقت  في نفسه المسار</caption>
+      <caption xml:lang="ca">Reassignació del temps i transicions de la mateixa pista</caption>
+      <caption xml:lang="ca-valencia">Reassignació del temps i transicions de la mateixa pista</caption>
+      <caption xml:lang="de">Zeit-Neuzuordnung und Übergänge innerhalb der selben Spur</caption>
+      <caption xml:lang="en-GB">Time remapping and same-track transitions</caption>
+      <caption xml:lang="eo">Tempa remapado kaj samtrakaj transiroj</caption>
+      <caption xml:lang="es">Remapeo de tiempo y transiciones en una misma pista</caption>
+      <caption xml:lang="eu">Denboraren mapa berregitea eta pista bereko trantsizioak</caption>
+      <caption xml:lang="fr">Nouvelle cartographie du temps et transitions sur la même piste</caption>
+      <caption xml:lang="ga">Athmhapáil ama agus aistrithe ar an rian céanna</caption>
+      <caption xml:lang="gl">Cambio de asociación de tempos e transicións nunha mesma pista.</caption>
+      <caption xml:lang="he">מיפוי זמן מחדש ומעברונים באותה הרצועה</caption>
+      <caption xml:lang="hi">समय पुनर्निर्धारण और समान-ट्रैक संक्रमण</caption>
+      <caption xml:lang="id">Pemetaan ulang waktu dan transisi trek yang sama</caption>
+      <caption xml:lang="it">Modifica del tempo e transizioni nella stessa traccia</caption>
+      <caption xml:lang="ka">დროის თავიდან ასახვა და გადასვლები იგივე ტრეკში</caption>
+      <caption xml:lang="lo">ການປັບຄວາມໄວເວລາ ແລະ ການປ່ຽນຜ່ານໃນແທຣັກດຽວກັນ</caption>
+      <caption xml:lang="lv">Laika pārkartēšana ar viena celiņa pārejām</caption>
+      <caption xml:lang="nl">Snelheid van video wijzigen (time remapping) en overgangen in dezelfde track</caption>
+      <caption xml:lang="pl">Przemapowywanie czasu oraz przejścia w obrębie jednej ścieżki</caption>
+      <caption xml:lang="pt-BR">Remapeamento de tempo e transições na mesma trilha</caption>
+      <caption xml:lang="ru">Переназначение времени и переходы в одной и той же дорожке</caption>
+      <caption xml:lang="sa">समयस्य पुनः मानचित्रणं तथा समान-पट्टिका-संक्रमणम्</caption>
+      <caption xml:lang="sk">Time remapping and same-track transitions</caption>
+      <caption xml:lang="sl">Preslikava časa in prehodi na isti stezi</caption>
+      <caption xml:lang="sv">Tidsomvandling och övergångar i samma spår</caption>
+      <caption xml:lang="tr">Zaman eşlemlemesi ve aynı izde geçişler</caption>
+      <caption xml:lang="uk">Переприв'язка за часом та переходи на одній доріжці</caption>
+      <caption xml:lang="zh-CN">时间重新映射和同轨转场功能</caption>
+      <caption xml:lang="zh-TW">時間重映射與單軌道轉場特效</caption>
+      <image>https://wunjo.online/404</image>
+    </screenshot>
+  </screenshots>
+  <launchable type="desktop-id">online.wunjo.make.desktop</launchable>
+  <provides>
+    <binary>wunjo</binary>
+    <binary>wunjo_render</binary>
+  </provides>
+  <content_rating type="oars-1.1"/>
+</component>

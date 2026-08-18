@@ -1,0 +1,34 @@
+/*
+    SPDX-FileCopyrightText: 2011 Jean-Baptiste Mardelle <jb@kdenlive.org>
+
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#include "abstractmonitor.h"
+#include "monitormanager.h"
+
+#include "wunjosettings.h"
+
+AbstractMonitor::AbstractMonitor(Wunjo::MonitorId id, MonitorManager *manager, QWidget *parent)
+    : QWidget(parent)
+    , m_id(id)
+    , m_monitorManager(manager)
+{
+}
+
+AbstractMonitor::~AbstractMonitor() = default;
+
+bool AbstractMonitor::isActive() const
+{
+    return m_monitorManager->isActive(m_id);
+}
+
+bool AbstractMonitor::slotActivateMonitor()
+{
+    return m_monitorManager->activateMonitor(m_id, true);
+}
+
+bool AbstractMonitor::slotTemporaryActivateMonitor()
+{
+    return m_monitorManager->activateMonitor(m_id, false);
+}

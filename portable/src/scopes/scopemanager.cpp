@@ -1,0 +1,298 @@
+/*
+    SPDX-FileCopyrightText: 2011 Simon Andreas Eugster <simon.eu@gmail.com>
+    This file is part of wunjo. See www.wunjo.online.
+
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#include "scopemanager.h"
+#include "colorscopes/histogram.h"
+#include "colorscopes/rgbparade.h"
+#include "colorscopes/vectorscope.h"
+#include "colorscopes/waveform.h"
+#include "core.h"
+#include "definitions.h"
+#include "wunjosettings.h"
+#include "mainwindow.h"
+#include "monitor/monitormanager.h"
+
+#include "klocalizedstring.h"
+#include <QDockWidget>
+#include <QSignalMapper>
+
+//#define DEBUG_SM
+#ifdef DEBUG_SM
+#include <QDebug>
+#endif
+
+ScopeManager::ScopeManager(QObject *parent)
+    : QObject(parent)
+
+{
+    connect(pCore->monitorManager(), &MonitorManager::checkColorScopes, this, &ScopeManager::slotUpdateActiveRenderer);
+    connect(pCore->monitorManager(), &MonitorManager::clearScopes, this, &ScopeManager::slotClearColorScopes);
+    connect(pCore->monitorManager(), &MonitorManager::checkScopes, this, &ScopeManager::slotCheckActiveScopes);
+
+    slotUpdateActiveRenderer();
+
+    createScopes();
+}
+
+bool ScopeManager::addScope(AbstractAudioScopeWidget *audioScope, KDDockWidgets::QtWidgets::DockWidget *audioScopeWidget)
+{
+    bool added = false;
+    int exists = 0;
+    // Only add the scope if it does not exist yet in the list
+    for (auto &m_audioScope : m_audioScopes) {
+        if (m_audioScope.scope == audioScope) {
+            exists = 1;
+            break;
+        }
+    }
+    if (exists == 0) {
+// Add scope to the list, set up signal/slot connections
+#ifdef DEBUG_SM
+        qCDebug(WUNJO_LOG) << "Adding scope to scope manager: " << audioScope->widgetName();
+#endif
+
+        AudioScopeData asd;
+        asd.scope = audioScope;
+        m_audioScopes.append(asd);
+
+        if (audioScopeWidget != nullptr) {
+            connect(audioScopeWidget, &KDDockWidgets::QtWidgets::DockWidget::isOpenChanged, this, &ScopeManager::slotCheckActiveScopes);
+            connect(audioScopeWidget, &KDDockWidgets::QtWidgets::DockWidget::isOpenChanged, this,
+                    [this, audioScope]() { slotRequestFrame(QString(audioScope->widgetName())); });
+        }
+
+        added = true;
+    }
+    return added;
+}
+bool ScopeManager::addScope(AbstractGfxScopeWidget *colorScope, KDDockWidgets::QtWidgets::DockWidget *colorScopeWidget)
+{
+    bool added = false;
+    int exists = 0;
+    for (auto &m_colorScope : m_colorScopes) {
+        if (m_colorScope.scope == colorScope) {
+            exists = 1;
+            break;
+        }
+    }
+    if (exists == 0) {
+#ifdef DEBUG_SM
+        qCDebug(WUNJO_LOG) << "Adding scope to scope manager: " << colorScope->widgetName();
+#endif
+
+        GfxScopeData gsd;
+        gsd.scope = colorScope;
+        m_colorScopes.append(gsd);
+
+        connect(colorScope, &AbstractGfxScopeWidget::signalFrameRequest, this, &ScopeManager::slotRequestFrame);
+        connect(colorScope, &AbstractScopeWidget::signalScopeRenderingFinished, this, &ScopeManager::slotScopeReady);
+        if (colorScopeWidget != nullptr) {
+            connect(colorScopeWidget, &KDDockWidgets::QtWidgets::DockWidget::isOpenChanged, this, &ScopeManager::slotCheckActiveScopes);
+            connect(colorScopeWidget, &KDDockWidgets::QtWidgets::DockWidget::isOpenChanged, this,
+                    [this, colorScope]() { slotRequestFrame(QString(colorScope->widgetName())); });
+        }
+
+        added = true;
+    }
+    return added;
+}
+
+void ScopeManager::slotDistributeAudio(const audioShortVector &sampleData, int freq, int num_channels, int num_samples)
+{
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "ScopeManager: Starting to distribute audio.";
+#endif
+    for (auto &m_audioScope : m_audioScopes) {
+        // Distribute audio to all scopes that are visible and want to be refreshed
+        if (!m_audioScope.scope->visibleRegion().isEmpty()) {
+            m_audioScope.scope->slotReceiveAudio(sampleData, freq, num_channels, num_samples);
+#ifdef DEBUG_SM
+            qCDebug(WUNJO_LOG) << "ScopeManager: Distributed audio to " << m_audioScopes[i].scope->widgetName();
+#endif
+        }
+    }
+}
+void ScopeManager::slotDistributeFrame(const QImage &image)
+{
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "ScopeManager: Starting to distribute frame.";
+#endif
+    for (auto &m_colorScope : m_colorScopes) {
+        if (!m_colorScope.scope->visibleRegion().isEmpty()) {
+            m_colorScope.scope->slotRenderZoneUpdated(image);
+        }
+    }
+    // checkActiveColourScopes();
+}
+
+void ScopeManager::slotScopeReady()
+{
+    if (m_lastConnectedRenderer) {
+        Q_EMIT m_lastConnectedRenderer->scopesClear();
+    }
+}
+
+void ScopeManager::slotRequestFrame(const QString &widgetName)
+{
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "ScopeManager: New frame was requested by " << widgetName;
+#endif
+
+    // Search for the scope in the lists and tag it to trigger a forced update
+    // in the distribution slots
+    for (auto &m_colorScope : m_colorScopes) {
+        if (m_colorScope.scope->widgetName() == widgetName) {
+            m_colorScope.singleFrameRequested = true;
+            break;
+        }
+    }
+    for (auto &m_audioScope : m_audioScopes) {
+        if (m_audioScope.scope->widgetName() == widgetName) {
+            m_audioScope.singleFrameRequested = true;
+            break;
+        }
+    }
+    if (m_lastConnectedRenderer) {
+        // TODO: trigger refresh?
+        m_lastConnectedRenderer->refreshMonitorIfActive();
+        // m_lastConnectedRenderer->sendFrameUpdate();
+    }
+}
+
+void ScopeManager::slotClearColorScopes()
+{
+    m_lastConnectedRenderer = nullptr;
+}
+
+void ScopeManager::slotUpdateActiveRenderer()
+{
+    // Disconnect old connections
+    if (m_lastConnectedRenderer != nullptr) {
+#ifdef DEBUG_SM
+        qCDebug(WUNJO_LOG) << "Disconnected previous renderer: " << m_lastConnectedRenderer->id();
+#endif
+        m_lastConnectedRenderer->disconnect(this);
+    }
+
+    m_lastConnectedRenderer = pCore->monitorManager()->activeMonitor();
+
+    // Connect new renderer
+    if (m_lastConnectedRenderer != nullptr) {
+        connect(m_lastConnectedRenderer, &Monitor::frameUpdated, this, &ScopeManager::slotDistributeFrame, Qt::UniqueConnection);
+        connect(m_lastConnectedRenderer, &Monitor::audioSamplesSignal, this, &ScopeManager::slotDistributeAudio, Qt::UniqueConnection);
+
+#ifdef DEBUG_SM
+        qCDebug(WUNJO_LOG) << "Renderer connected to ScopeManager: " << m_lastConnectedRenderer->id();
+#endif
+
+        if (imagesAcceptedByScopes()) {
+#ifdef DEBUG_SM
+            qCDebug(WUNJO_LOG) << "Some scopes accept images, triggering frame update.";
+#endif
+            m_lastConnectedRenderer->refreshMonitorIfActive();
+        }
+    }
+}
+
+void ScopeManager::slotCheckActiveScopes()
+{
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "Checking active scopes …";
+#endif
+    // Leave a small delay to make sure that scope widget has been shown or hidden
+    QTimer::singleShot(500, this, &ScopeManager::checkActiveAudioScopes);
+    QTimer::singleShot(500, this, &ScopeManager::checkActiveColourScopes);
+}
+
+bool ScopeManager::audioAcceptedByScopes() const
+{
+    bool accepted = pCore->audioMixerVisible;
+    for (auto m_audioScope : m_audioScopes) {
+        if (m_audioScope.scope->isVisible()) {
+            accepted = true;
+            break;
+        }
+    }
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "Any scope accepting audio? " << accepted;
+#endif
+    return accepted;
+}
+bool ScopeManager::imagesAcceptedByScopes() const
+{
+    bool accepted = false;
+    for (auto m_colorScope : m_colorScopes) {
+        if (!m_colorScope.scope->visibleRegion().isEmpty()) {
+            accepted = true;
+            break;
+        }
+    }
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "Any scope accepting images? " << accepted;
+#endif
+    return accepted;
+}
+
+void ScopeManager::checkActiveAudioScopes()
+{
+    bool audioStillRequested = audioAcceptedByScopes();
+
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "ScopeManager: New audio data still requested? " << audioStillRequested;
+#endif
+    WunjoSettings::setMonitor_audio(audioStillRequested);
+    pCore->monitorManager()->slotUpdateAudioMonitoring();
+}
+
+void ScopeManager::checkActiveColourScopes()
+{
+    bool imageStillRequested = imagesAcceptedByScopes();
+
+#ifdef DEBUG_SM
+    qCDebug(WUNJO_LOG) << "ScopeManager: New frames still requested? " << imageStillRequested;
+#endif
+
+    // Notify monitors whether frames are still required
+    Monitor *monitor;
+    monitor = static_cast<Monitor *>(pCore->monitorManager()->monitor(Wunjo::ProjectMonitor));
+    if (monitor != nullptr) {
+        monitor->sendFrameForAnalysis(imageStillRequested);
+    }
+
+    monitor = static_cast<Monitor *>(pCore->monitorManager()->monitor(Wunjo::ClipMonitor));
+    if (monitor != nullptr) {
+        monitor->sendFrameForAnalysis(imageStillRequested);
+    }
+}
+
+void ScopeManager::createScopes()
+{
+    createScopeDock(new Vectorscope(pCore->window()), i18n("Vectorscope"), QStringLiteral("vectorscope"));
+    createScopeDock(new Waveform(pCore->window()), i18n("Waveform"), QStringLiteral("waveform"));
+    createScopeDock(new RGBParade(pCore->window()), i18n("RGB Parade"), QStringLiteral("rgb_parade"));
+    createScopeDock(new Histogram(pCore->window()), i18n("Histogram"), QStringLiteral("histogram"));
+    // Deprecated scopes
+    // createScopeDock(new Spectrogram(pCore->window()),   i18n("Spectrogram"));
+    // createScopeDock(new AudioSignal(pCore->window()),   i18n("Audio Signal"));
+    // createScopeDock(new AudioSpectrum(pCore->window()), i18n("AudioSpectrum"));
+}
+
+template <class T> void ScopeManager::createScopeDock(T *scopeWidget, const QString &title, const QString &name)
+{
+    auto dock = pCore->window()->addDock(title, name, scopeWidget);
+    addScope(scopeWidget, dock);
+    m_scopeNames << name;
+
+    // close for initial layout
+    // actual state will be restored by session management
+    dock->close();
+}
+
+const QStringList ScopeManager::getScopesNames() const
+{
+    return m_scopeNames;
+}

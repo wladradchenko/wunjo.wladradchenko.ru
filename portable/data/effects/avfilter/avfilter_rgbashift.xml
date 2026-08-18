@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.rgbashift" id="avfilter.rgbashift">
+    <name>RGBA Shift</name>
+    <description>Shift R/G/B/A pixels horizontally and/or vertically</description>
+    <author>libavfilter</author>
+    <parameter type="animated" name="av.rh" default="0" min="-255" max="255" factor="1">
+        <name>Red Horizontal Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.rv" default="0" min="-255" max="255" factor="1">
+        <name>Red Vertical Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.gh" default="0" min="-255" max="255" factor="1">
+        <name>Green Horizontal Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.gv" default="0" min="-255" max="255" factor="1">
+        <name>Green Vertical Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.bh" default="0" min="-255" max="255" factor="1">
+        <name>Blue Horizontal Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.bv" default="0" min="-255" max="255" factor="1">
+        <name>Blue Vertical Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.ah" default="0" min="-255" max="255" factor="1">
+        <name>Alpha Horizontal Shift</name>
+    </parameter>
+    <parameter type="animated" name="av.av" default="0" min="-255" max="255" factor="1">
+        <name>Alpha Vertical Shift</name>
+    </parameter>
+    <parameter type="list" name="av.edge" default="smear" paramlist="smear;wrap">
+        <name>Edge Operation</name>
+        <paramlistdisplay>Smear,Wrap</paramlistdisplay>
+    </parameter>
+</effect>

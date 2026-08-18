@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.sobel" id="avfilter.sobel">
+    <name>Sobel with planes</name>
+    <description>Apply sobel operator to input video stream.</description>
+    <author>libavfilter</author>
+    <parameter type="list" name="av.planes" default="7" paramlist="0;1;2;3;4;5;6;7;8">
+        <name>Planes</name>
+        <paramlistdisplay>None,Y (Luminance),U (Chroma red-diff),YU,V (Chroma blue-diff),YV,UV,All,Alpha</paramlistdisplay>
+    </parameter>
+    <parameter type="animated" name="av.scale" default="25" min="0" max="250" factor="1">
+        <name>Scale</name>
+    </parameter>
+    <parameter type="animated" name="av.delta" default="-255" min="-300" max="300" decimals="2">
+        <name>Delta</name>
+    </parameter>
+</effect>

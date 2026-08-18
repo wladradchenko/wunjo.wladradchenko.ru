@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.drawbox" id="avfilter.drawbox">
+    <name>Draw Box</name>
+    <description>Draw a colored box on the input video</description>
+    <author>libavfilter</author>
+    <parameter type="animatedfakerect" name="wunjo:fakerect" default="100 100 100 100" opacity="false">
+        <name>Rectangle</name>
+        <parammap target="left" source="av.x" max="%width" min="0" default="100" />
+        <parammap target="top" source="av.y" max="%height" min="0" default="100" />
+        <parammap target="width" source="av.w" max="%width" min="1" default="100" />
+        <parammap target="height" source="av.h" max="%height" min="1" default="100" />
+    </parameter>
+    <parameter type="fixedcolor" name="av.color" default="0x0000FF" alpha="1">
+        <name>Color</name>
+    	<comment><![CDATA[Select a color for the line.<br>
+    	Use the <em>Alpha</em> value to make the line semi-transparent.]]></comment>
+    </parameter>
+    <parameter type="animated" name="av.t" default="3" min="0" max="%height" factor="1">
+        <name>Thickness (px)</name>
+    	<comment><![CDATA[Sets the thickness for the line in pixels]]></comment>
+    </parameter>
+    <parameter type="bool" name="av.replace" default="0" min="0" max="1">
+        <name>Replace color and alpha</name>
+    	<comment><![CDATA[If the input has alpha, checking this<br>
+    	will overwrite the video's color and alpha pixels with the pixels of the painted box.<br>
+    	By default, the box will be composited onto the input, leaving the video's alpha intact.]]></comment>
+    </parameter>
+</effect>

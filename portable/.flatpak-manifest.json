@@ -1,0 +1,139 @@
+{
+    "id": "online.wunjo.make",
+    "default-branch": "master",
+    "runtime": "org.kde.Platform",
+    "runtime-version": "6.10",
+    "sdk": "org.kde.Sdk",
+    "sdk-extensions": [
+        "org.freedesktop.Sdk.Extension.llvm21"
+    ],
+    "build-options": {
+        "append-pkg-config-path": "/app/lib64/pkgconfig"
+    },
+    "command": "wunjo",
+    "x-comment": "Translations stay in the application instead of the .Locale extension: the extension is a separate ref that this local build does not reinstall, so the sandbox kept serving the previous catalogues (kdenlive.mo) no matter what was built.",
+    "separate-locales": false,
+    "rename-icon": "wunjo",
+    "finish-args": [
+        "--device=all",
+        "--env=FREI0R_PATH=/app/lib/frei0r-1",
+        "--env=LADSPA_PATH=/app/extensions/Plugins/ladspa:/app/lib/ladspa",
+        "--env=PACKAGE_TYPE=flatpak",
+        "--env=QT_ENABLE_HIGHDPI_SCALING=1",
+        "--env=TMPDIR=/var/tmp",
+        "--filesystem=host",
+        "--filesystem=xdg-config/kdeglobals:ro",
+        "--filesystem=xdg-run/pipewire-0",
+        "--require-version=0.11.4",
+        "--share=ipc",
+        "--share=network",
+        "--socket=session-bus",
+        "--socket=fallback-x11",
+        "--socket=pulseaudio",
+        "--socket=wayland"
+    ],
+    "add-extensions": {
+        "org.freedesktop.LinuxAudio.Plugins": {
+            "directory": "extensions/Plugins",
+            "version": "25.08",
+            "add-ld-path": "lib",
+            "merge-dirs": "ladspa",
+            "subdirectories": true,
+            "no-autodownload": true
+        },
+        "org.freedesktop.LinuxAudio.Plugins.swh": {
+            "directory": "extensions/Plugins/swh",
+            "version": "25.08",
+            "add-ld-path": "lib",
+            "merge-dirs": "ladspa",
+            "autodelete": false,
+            "subdirectories": true
+        },
+        "org.freedesktop.LinuxAudio.Plugins.TAP": {
+            "directory": "extensions/Plugins/TAP",
+            "version": "25.08",
+            "add-ld-path": "lib",
+            "merge-dirs": "ladspa",
+            "autodelete": false,
+            "subdirectories": true
+        }
+    },
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/lib/cmake",
+        "/mkspecs",
+        "/share/aclocal",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "*.a",
+        "*.la",
+        "*.cmake"
+    ],
+    "modules": [
+        "packaging/flatpak/online.wunjo.make-dependencies.json",
+        {
+            "x-comment": "The package manager the plugin environments are built with. It keeps one cache of unpacked wheels and hard-links them into each environment, so a second plugin wanting the same torch costs no disk and no download. Shipped as the prebuilt binary — it is written in Rust and building it here would pull a whole toolchain for one executable.",
+            "name": "uv",
+            "buildsystem": "simple",
+            "build-commands": [
+                "install -Dm755 uv /app/bin/uv"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/astral-sh/uv/releases/download/0.12.3/uv-x86_64-unknown-linux-gnu.tar.gz",
+                    "sha256": "600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101",
+                    "strip-components": 1,
+                    "only-arches": [
+                        "x86_64"
+                    ]
+                },
+                {
+                    "type": "archive",
+                    "url": "https://github.com/astral-sh/uv/releases/download/0.12.3/uv-aarch64-unknown-linux-gnu.tar.gz",
+                    "sha256": "bb66cb52e7b1823aed1183630d8d8e5c958840d584a4c55ec10a4cfc168dcca2",
+                    "strip-components": 1,
+                    "only-arches": [
+                        "aarch64"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "wunjo",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+                "-DRELEASE_BUILD=OFF",
+                "-DBUILD_TESTING=OFF",
+                "-DINSTALL_METAINFO=OFF"
+            ],
+            "post-install": [
+                "install -d /app/extensions/Plugins"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                },
+                {
+                    "type": "dir",
+                    "path": "../mcp",
+                    "dest": "mcp"
+                },
+                {
+                    "type": "dir",
+                    "path": "../plugins/agent",
+                    "dest": "data/plugins/agent"
+                }
+            ],
+            "build-options": {
+                "strip": false,
+                "no-debuginfo": true
+            }
+        }
+    ]
+}

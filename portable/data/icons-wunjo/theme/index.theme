@@ -1,0 +1,19 @@
+[Icon Theme]
+Name=Wunjo
+Comment=Wunjo Make monochrome outline icons
+Inherits=breeze-dark
+Directories=actions/16,actions/22
+
+[actions/16]
+Size=16
+Context=Actions
+Type=Scalable
+MinSize=8
+MaxSize=16
+
+[actions/22]
+Size=22
+Context=Actions
+Type=Scalable
+MinSize=17
+MaxSize=512

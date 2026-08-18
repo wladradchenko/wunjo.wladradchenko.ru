@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="sepia" id="sepia">
+    <name context="Sepia Effect Name">Sepia</name>
+    <description>Turn clip colors to sepia</description>
+    <author>Charles Yates</author>
+    <parameter type="keyframe" name="u" max="255" min="0" default="75">
+        <name>Chrominance U</name>
+    </parameter>
+    <parameter type="keyframe" name="v" max="255" min="0" default="150">
+        <name>Chrominance V</name>
+    </parameter>
+</effect>

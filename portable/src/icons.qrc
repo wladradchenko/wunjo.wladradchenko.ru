@@ -1,0 +1,16 @@
+<!-- SPDX-FileCopyrightText: none -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+
+<RCC>
+    <qresource prefix="pics">
+        <file alias="wunjo.png">../data/icons/48-apps-wunjo.png</file>
+        <file alias="wunjo.svg">../data/icons/sc-apps-wunjo.svg</file>
+        <file alias="wunjo-logo.png">../data/pics/wunjo-logo.png</file>
+        <!-- The app mark without the dark tile of the launcher icon, in one ink
+             per theme: it sits on the window background, not on a desktop, so it
+             follows the text rather than staying mint. -->
+        <file alias="logo-mark-black.svg">../data/pics/logo-mark-black.svg</file>
+        <file alias="logo-mark-white.svg">../data/pics/logo-mark-white.svg</file>
+        <file alias="splash-background.webp">../data/pics/splash-background.webp</file>
+    </qresource>
+</RCC>

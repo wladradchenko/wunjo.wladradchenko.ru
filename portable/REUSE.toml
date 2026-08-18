@@ -1,0 +1,267 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: None
+
+version = 1
+SPDX-PackageName = "Wunjo Make"
+SPDX-PackageSupplier = "Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-PackageDownloadLocation = "https://github.com/wladradchenko/wunjo.wladradchenko.ru"
+
+[[annotations]]
+path = ["data/effects/**.xml", "data/transitions/**.xml", "data/generators/**.xml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["data/transitions/previews/**.webp"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["data/effects/**/CMakeLists.txt", "data/effects/CMakeLists.txt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/effects/README.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Julius Künzel"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["data/lumas/PAL/**", "data/lumas/HD/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Massimo Stella"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/layouts/**.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/luts/**.cube"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/knewstuff/**.knsrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Kdenlive translators"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+# Every icon in this directory was drawn for Wunjo Make; they carry
+# "Generator: Wunjo" or "Generator: Gravit". Two of them keep an upstream file
+# name — application-x-kdenlivetitle and video-mlt-playlist — because those name
+# MLT producers and mime types, not the artwork.
+[[annotations]]
+path = ["data/icons/**.png", "data/icons/**.svg", "data/icons/**.svgz", "data/icons/wunjo.ico"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+
+
+[[annotations]]
+path = "data/resourceproviders/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2021 Julius Künzel"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/titles/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Marco Gittler"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["data/Info.plist", "data/camcorderfilters.rc", "data/clipjobsettings.rc", "data/encodingprofiles.rc", "data/externalproxies.rc", "data/westley.xml", "data/scripts/automask/sammodelsinfo.rc"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/pics/breeze-light/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+# Brand artwork, drawn for Wunjo Make. wlogo-black.svg carries
+# "Generator: Wunjo"; the rest of the set is the same mark and the same splash.
+[[annotations]]
+path = ["data/pics/wunjo-logo.png", "data/pics/splash-background**", "data/pics/wlogo-black.svg", "data/pics/wlogo-light.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = ["data/pics/logo-mark-black.svg", "data/pics/logo-mark-white.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/profiles.xml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Vincent Pinon, Farid Abdelnour, Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/profiles/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["data/excluded_effects.txt", "data/excluded_transitions.txt", "data/hidden_effects.txt", "data/hidden_transitions.txt", "data/included_effects.txt", "data/included_transitions.txt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle, Massimo Stella"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/scripts/**.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/transitions/parameters.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Swastik Patel, Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/man/wunjo**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Mads Bondo Dydensborg"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/preferred_effects.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle, Juku Trump"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "data/online.wunjo.make.**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Kdenlive translators"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/meta_magiclantern.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Magic Lantern Project"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/wunjo**.notifyrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle, Kdenlive translators"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = ["data/slideanimations.rc", "data/transcodingrc"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/effectscategory.rc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Massimo Stella"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "data/shortcuts/Premiere"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Bruno Santos"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = [".flatpak-manifest.json", "packaging/flatpak/online.wunjo.make-**.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "packaging/craft/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "dev-docs/**.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Kdenlive contributors"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = "doc/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Kdenlive contributors"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = "src/uiresources.qrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Julius Künzel, Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["src/mlt_config.h.in", "src/ui.rc", "src/wunjosettings.kcfg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "po/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Kdenlive translators (see each file for details)"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = "tests/dataset/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle, Eric Jiang"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "tests/small.mkv"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "thumbnailer/mltpreview.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Kdenlive translators"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = ["suppressions.txt", ".mailmap"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "config-wunjo.h.cmake"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jean-Baptiste Mardelle, Alberto Villa"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "snapcraft.yaml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Scarlett Moore"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+[[annotations]]
+path = ".well-known/funding-manifest-urls"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Farid Abdelnour"
+SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"

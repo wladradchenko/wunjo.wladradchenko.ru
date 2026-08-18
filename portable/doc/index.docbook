@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE">
+]>
+<book id="wunjo" lang="&language;">
+<bookinfo>
+<title>The Wunjo Make Handbook</title>
+<authorgroup>
+<author>
+<firstname>Vladislav</firstname>
+<surname>Radchenko</surname>
+<affiliation>
+<address><email>i@wladradchenko.ru</email></address>
+</affiliation>
+</author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+</authorgroup>
+<copyright>
+<year>2026</year>
+<holder>Vladislav Radchenko</holder>
+</copyright>
+<legalnotice>&FDLNotice;</legalnotice>
+<date>2026-08-14</date>
+<releaseinfo>Wunjo Make 3.0.0</releaseinfo>
+<abstract>
+<para>Wunjo Make is a nonlinear video editor with built-in Artificial Intelligence tools.</para>
+</abstract>
+<keywordset>
+<keyword>Wunjo</keyword>
+<keyword>multimedia</keyword>
+<keyword>video</keyword>
+<keyword>editor</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+<para>
+Wunjo Make is a nonlinear video editor built on the
+<ulink url="https://mltframework.org">MLT</ulink> multimedia framework. It supports
+multi-track timeline editing, transitions, effects and keyframes, colour correction,
+audio post-production, subtitles and titling, and renders to practically any format
+through <ulink url="https://ffmpeg.org">FFmpeg</ulink>.
+</para>
+<para>
+In addition to conventional editing, Wunjo Make ships Artificial Intelligence tools:
+built-in face detection that can track or hide a face on a clip, installable plugins
+for speech recognition, voice cloning and content cutting, and a chat assistant that
+can drive the editor directly.
+</para>
+</chapter>
+
+<chapter id="documentation">
+<title>Where to find the full documentation</title>
+<para>
+This handbook is a stub. The complete, continuously updated manual lives online:
+</para>
+<itemizedlist>
+<listitem><para>Project website: <ulink url="https://wunjo.online">wunjo.online</ulink></para></listitem>
+<listitem><para>Source code and issue tracker:
+<ulink url="https://github.com/wladradchenko/wunjo.wladradchenko.ru">github.com/wladradchenko/wunjo.wladradchenko.ru</ulink></para></listitem>
+</itemizedlist>
+<para>
+Please report bugs and request features through the issue tracker above.
+</para>
+</chapter>
+
+<chapter id="credits">
+<title>Credits and License</title>
+
+<para>
+Wunjo Make is a modified version of
+<ulink url="https://kdenlive.org">Kdenlive</ulink>, the video editor developed by the
+KDE community. The rebranding, the Artificial Intelligence features, the plugin
+platform and the interface changes are the work of the Wunjo project; everything else
+is the work of the Kdenlive authors, to whom this project owes its existence and offers
+its thanks. Wunjo Make is not endorsed by, affiliated with or supported by KDE e.V. or
+the Kdenlive project — please direct support requests to the Wunjo issue tracker, not
+to them.
+</para>
+
+<para>
+Wunjo Make also builds on the <ulink url="https://mltframework.org">MLT</ulink>
+multimedia framework, <ulink url="https://ffmpeg.org">FFmpeg</ulink>, Qt and the
+KDE Frameworks.
+</para>
+
+<para>
+Program copyright &copy; 2024&ndash;2026 Vladislav Radchenko
+<email>i@wladradchenko.ru</email> and, for the parts inherited from Kdenlive,
+their respective authors.
+</para>
+
+<para>
+Documentation copyright &copy; 2026 Vladislav Radchenko
+<email>i@wladradchenko.ru</email>
+</para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+&underFDL;
+&underGPL;
+</chapter>
+
+</book>
+
+<!--
+Local Variables:
+mode: xml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->

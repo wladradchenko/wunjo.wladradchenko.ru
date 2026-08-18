@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="greyscale" id="greyscale">
+    <name context="Greyscale Effect Name">Greyscale</name>
+    <description>Discard color information</description>
+    <author>Charles Yates</author>
+</effect>

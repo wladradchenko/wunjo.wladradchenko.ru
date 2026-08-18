@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.twolay0r" id="frei0r.twolay0r">
+    <name>Binarize dynamically</name>
+    <description>Dynamic thresholding</description>
+    <author>Martin Bayer</author>
+</effect>

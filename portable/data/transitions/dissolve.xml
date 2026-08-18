@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<transition tag="luma" id="dissolve" type="videotransition">
+    <name context="Dissolve Transition Name">Dissolve</name>
+    <description>Fade out one video while fading in the other video.</description>
+    <parameter type="urllist" name="resource" paramlist="%lumaPaths" filter="Luma files (*.png *.pgm)" newstuff=":data/wunjo_wipes.knsrc" optional="1">
+        <name>Luma Map</name>
+    </parameter>
+    <parameter type="double" name="softness" max="100" min="0" default="0" factor="100">
+        <name>Softness</name>
+    </parameter>
+    <parameter type="bool" name="reverse" default="0">
+        <name>Reverse</name>
+    </parameter>
+    <parameter type="bool" name="alpha_over" max="1" min="0" default="1">
+        <name>Use transparency</name>
+    </parameter>
+    <parameter type="bool" name="fix_background_alpha" max="1" min="0" default="1">
+        <name>Make padding transparent</name>
+    </parameter>
+</transition>

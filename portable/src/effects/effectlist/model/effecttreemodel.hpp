@@ -1,0 +1,42 @@
+/*
+    SPDX-FileCopyrightText: 2017 Nicolas Carion
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include "abstractmodel/abstracttreemodel.hpp"
+#include "assets/assetlist/model/assettreemodel.hpp"
+
+/** @brief This class represents an effect hierarchy to be displayed as a tree
+ */
+class TreeItem;
+
+class EffectTreeModel : public AssetTreeModel
+{
+
+protected:
+    explicit EffectTreeModel(QObject *parent = nullptr);
+
+public:
+    static std::shared_ptr<EffectTreeModel> construct(const QString &categoryFile, QObject *parent);
+    void reloadEffect(const QString &path);
+    /** @brief Drop an effect whose XML file is gone because the plugin that
+     *  brought it was uninstalled */
+    void removeEffect(const QString &id);
+    void reloadTemplates();
+    void reloadEffectFromIndex(const QModelIndex &index);
+    void reloadAssetMenu(QMenu *effectsMenu, KActionCategory *effectActions) override;
+    void setFavorite(const QModelIndex &index, bool favorite, bool isEffect) override;
+    void deleteEffect(const QModelIndex &index) override;
+    bool isMasterOnly(const QString &assetId) const;
+    void editCustomAsset(const QString &newName, const QString &newDescription, const QModelIndex &index) override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+
+protected:
+    std::shared_ptr<TreeItem> m_customCategory;
+    /** @brief Holds the effects installed plugins brought with them */
+    std::shared_ptr<TreeItem> m_pluginCategory;
+    std::shared_ptr<TreeItem> m_templateCategory;
+    QStringList m_masterOnlyEffects;
+};

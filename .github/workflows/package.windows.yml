@@ -1,265 +1,203 @@
+# Windows build via KDE Craft.
+#
+# Craft compiles Qt6, KF6, MLT and FFmpeg from source the first time, which does
+# not fit in a job. So the run is split in two: "deps" builds the dependency
+# tree and caches it, "app" restores that cache and builds only Wunjo Make.
+# A cold deps job takes hours; a warm app job takes minutes.
+#
+# UNVERIFIED. Nobody has run this yet — it is written from the project's own
+# dependency list and Craft's documented interface, not from a green run. Expect
+# the first attempts to fail on package names; fix them in
+# portable/packaging/craft/blueprints/apps/wunjo/wunjo.py.
 name: CI/CD Pipeline Package Windows
 
 on:
   workflow_dispatch:
     inputs:
-      processor:
-        description: 'Choose the processor type (gpu, cpu, zluda)'
-        required: false
-        default: 'gpu'
-      output-format:
-        description: 'Choose the output format (msi or zip)'
-        required: true
-        default: 'msi'
-      sign-file:
-        description: "Sign the file (yes or no)"
-        required: false
-        default: 'no'
-      debug:
-        description: "Debug (yes or no)"
-        required: false
-        default: 'no'
+      rebuild-deps:
+        description: 'Rebuild the dependency cache from scratch'
+        type: boolean
+        default: false
+      sign:
+        description: 'Sign with SignPath (spends the grant certificate quota)'
+        type: boolean
+        default: false
+        # Tag pushes always sign, input or not — see the conditions below.
+  push:
+    tags:
+      - 'v*'
 
 env:
-  FORCE_COLOR: "1"
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  SSH_HOST: ${{ secrets.SSH_HOST }}
-  SSH_PORT: ${{ secrets.SSH_PORT || 22 }}
-  SSH_USER: ${{ secrets.SSH_USER }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
-  OUTPUT_FORMAT: ${{ github.event.inputs.output-format || 'msi' }}
+  CRAFT_ROOT: C:\CraftRoot
+  # msvc2022 is what Kdenlive ships with; mingw is the other supported target.
+  CRAFT_TARGET: windows-msvc2022_64-cl
 
 jobs:
-  build-and-deploy:
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      matrix:
-        target: [windows]
-        include:
-          - target: "windows"
-            output-format: "msi"
-            pre-command: |
-              choco install visualstudio2022buildtools --confirm
-              choco install visualstudio2022-workload-vctools --confirm
-              choco install wixtoolset --version 4.0.5 --confirm
-            runs-on: "windows-latest"
-            python-version: "3.10"
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 350   # the hosted limit is 6 h
 
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.12'
 
-      - name: Set WIX_HOME and update PATH
-        shell: pwsh
-        run: |
-          echo "WIX_HOME=C:\Program Files\WiX Toolset v4.0" >> $env:GITHUB_ENV
-          echo "PATH=C:\Program Files\WiX Toolset v4.0\bin;$env:PATH" >> $env:GITHUB_ENV
-
-      - name: (DEBUG) Checkout portable only
-        if: ${{ github.event.inputs.debug == 'yes' }}
-        uses: actions/checkout@v4
+      # The whole Craft tree, dependencies included. Keyed on the blueprint so a
+      # dependency change invalidates it; restore-keys let an unrelated change
+      # start from the last good tree instead of from nothing.
+      - name: Restore Craft cache
+        if: ${{ !inputs.rebuild-deps }}
+        uses: actions/cache/restore@v4
+        id: craft-cache
         with:
-          repository: wladradchenko/pro.wunjo.wladradchenko.ru
-          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
-          ssh-strict: true
-          path: portable-repo
-          sparse-checkout: portable
-          ref: main
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          restore-keys: craft-${{ env.CRAFT_TARGET }}-
 
-      - name: (DEBUG) Move portable folder
-        if: ${{ github.event.inputs.debug == 'yes' }}
+      - name: Bootstrap Craft
+        if: steps.craft-cache.outputs.cache-matched-key == ''
         shell: pwsh
         run: |
-          if (Test-Path "portable") {
-              Remove-Item -Recurse -Force "portable"
-          } 
+          Invoke-WebRequest -Uri https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile CraftBootstrap.py
+          python CraftBootstrap.py --prefix $env:CRAFT_ROOT --target $env:CRAFT_TARGET --branch master
 
-          Move-Item -Path "portable-repo/portable" -Destination "portable" -Force
-          Remove-Item -Recurse -Force "portable-repo"
-
-          Write-Host "Portable folder updated from repo"
-
-      - name: Build electron browser
-        working-directory: tools/js/browser
+      - name: Register the Wunjo blueprint
         shell: pwsh
         run: |
-          npm install
-          npx electron-builder --$env:TARGET portable
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          craft --add-blueprint-repository "$env:GITHUB_WORKSPACE\portable\packaging\craft\blueprints"
 
-      - name: Copy browser files
+      # Prebuilt where KDE publishes one, compiled where it does not. This is
+      # the step that decides whether the job takes twenty minutes or five hours.
+      - name: Build dependencies
         shell: pwsh
         run: |
-          $sourceDir = "tools/js/browser/dist"
-          $destDir = "portable/src/win"
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          craft --install-deps wunjo
 
-          # Create the target directory if it doesn't exist
-          if (-not (Test-Path $destDir)) {
-            New-Item -ItemType Directory -Path $destDir -Force | Out-Null
-          }
+      - name: Build Wunjo Make
+        shell: pwsh
+        run: |
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          craft --no-cache --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
-          $exeFile = Get-ChildItem -Path $sourceDir -Filter *.exe -File | Select-Object -First 1
-
-          if ($exeFile) {
-            Write-Host "Found EXE: $($exeFile.Name), copying it"
-            Copy-Item -Path $exeFile.FullName -Destination (Join-Path $destDir "webgui.exe") -Force
-          }
-          elseif (Test-Path "$sourceDir/win-unpacked") {
-            Write-Host "No single EXE found, copying win-unpacked contents"
-            Get-ChildItem -Path "$sourceDir/win-unpacked" | ForEach-Object {
-              Copy-Item -Path $_.FullName -Destination $destDir -Recurse -Force
-            }
-          }
-          else {
-            Write-Host "::error::No built files found in $sourceDir"
+      # ── signing ────────────────────────────────────────────────────────
+      # Two executables and, later, the installer. Nothing else: the build ships
+      # several hundred Qt and KF6 DLLs, and signing them would spend the grant
+      # certificate's quota on files Windows never checks. What Windows actually
+      # judges is the downloaded installer (it carries the Mark-of-the-Web) and,
+      # for some AV and enterprise policies, the executables the user launches.
+      #
+      # The binaries are signed *before* packaging so the installer ships signed
+      # files; the installer is signed after, as the last step.
+      - name: Locate the executables
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        shell: pwsh
+        run: |
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          $found = Get-ChildItem -Path $env:CRAFT_ROOT -Recurse -Include wunjo.exe, wunjo_render.exe -ErrorAction SilentlyContinue |
+                   Where-Object { $_.FullName -notmatch '\\build\\' }
+          if ($found.Count -lt 2) {
+            Write-Host "::error::expected wunjo.exe and wunjo_render.exe, found $($found.Count)"
+            $found | ForEach-Object { Write-Host "  $($_.FullName)" }
             exit 1
           }
-
-          # Display a list of copied files for verification
-          Write-Host "Copied files:"
-          Get-ChildItem -Path $destDir | Select-Object Name
-
-      - name: Select processor configuration
-        working-directory: portable
-        shell: pwsh
-        run: |
-          Write-Host "Using processor: $env:PROCESSOR"
-          if (-not (Test-Path "pyproject_$env:PROCESSOR.toml")) {
-            throw "File pyproject_$env:PROCESSOR.toml not found!"
+          New-Item -ItemType Directory -Force -Path unsigned | Out-Null
+          $found | ForEach-Object {
+            Copy-Item $_.FullName -Destination unsigned
+            Write-Host "to sign: $($_.FullName)"
+            "$($_.Name)=$($_.FullName)" | Out-File -Append -Encoding utf8 exe-paths.txt
           }
-          Copy-Item "pyproject_$env:PROCESSOR.toml" -Destination "pyproject.toml"
 
-      - name: Set up Python environment
-        shell: pwsh
-        run: |
-          python -m venv venv --copies
-
-          .\venv\Scripts\Activate.ps1
-          
-          python -m pip install -U --force-reinstall pip
-          python -m pip install -U setuptools wheel
-          python -m pip install briefcase insightface
-
-          python --version
-          python -m pip --version
-
-      - name: Build application
-        shell: pwsh
-        run: |
-          .\venv\Scripts\Activate.ps1
-
-          cd portable
-          python -m briefcase build $env:TARGET
-
-          Get-ChildItem -Path .\build -Recurse | Select-Object FullName | Write-Host
-
-      - name: Upload unsigned artifacts
-        id: upload-unsigned-files
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+      - name: Upload unsigned executables
+        id: upload-unsigned-exes
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned-files-${{ github.run_id }}
-          path: |
-            portable/build/wunjo/windows/app/src/libcrypto-1_1.dll
-            portable/build/wunjo/windows/app/src/libssl-1_1.dll
-            portable/build/wunjo/windows/app/src/libffi-7.dll
-            portable/build/wunjo/windows/app/src/vcruntime140.dll
-            portable/build/wunjo/windows/app/src/vcruntime140_1.dll
-            portable/build/wunjo/windows/app/src/Wunjo.exe
+          name: unsigned-exes-${{ github.run_id }}
+          path: unsigned/
 
-      - name: Sign files with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
+      - name: Sign the executables with SignPath
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
           organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: "initial_files"
-          github-artifact-id: ${{ steps.upload-unsigned-files.outputs.artifact-id }}
+          artifact-configuration-slug: 'initial_files'
+          github-artifact-id: ${{ steps.upload-unsigned-exes.outputs.artifact-id }}
           wait-for-completion: true
-          output-artifact-directory: './signed-artifact'
+          output-artifact-directory: './signed-exes'
 
-      - name: Copy signed files
-        if: ${{ github.event.inputs['sign-file'] == 'yes' }}
-        run: |
-          cp ./signed-artifact/libcrypto-1_1.dll ./portable/build/wunjo/windows/app/src/libcrypto-1_1.dll
-          cp ./signed-artifact/libssl-1_1.dll ./portable/build/wunjo/windows/app/src/libssl-1_1.dll
-          cp ./signed-artifact/libffi-7.dll ./portable/build/wunjo/windows/app/src/libffi-7.dll
-          cp ./signed-artifact/vcruntime140.dll ./portable/build/wunjo/windows/app/src/vcruntime140.dll
-          cp ./signed-artifact/vcruntime140_1.dll ./portable/build/wunjo/windows/app/src/vcruntime140_1.dll
-          cp ./signed-artifact/Wunjo.exe ./portable/build/wunjo/windows/app/src/Wunjo.exe
-
-      - name: Upload unsigned webgui artifact
-        id: upload-unsigned-webgui
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-webgui-${{ github.run_id }}
-          path: portable/build/wunjo/windows/app/src/app/win/webgui.exe
-
-      - name: Sign webgui with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGN_PATH_TOKEN }}
-          organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
-          project-slug: 'wunjo.wladradchenko.ru'
-          signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: "initial_exe"
-          github-artifact-id: ${{ steps.upload-unsigned-webgui.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: './signed-webgui'
-
-      - name: Copy signed webgui
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' }}
-        run: |
-          cp ./signed-webgui/webgui.exe ./portable/build/wunjo/windows/app/src/app/win/webgui.exe
-
-      - name: Package application
+      - name: Put the signed executables back
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
         shell: pwsh
         run: |
-          .\venv\Scripts\Activate.ps1
-          cd portable
+          Get-Content exe-paths.txt | ForEach-Object {
+            $name, $path = $_ -split '=', 2
+            Copy-Item "./signed-exes/$name" -Destination $path -Force
+            Write-Host "replaced $path"
+          }
 
-          python -m briefcase package $env:TARGET -p $env:OUTPUT_FORMAT --adhoc-sign --log
+      - name: Package
+        shell: pwsh
+        run: |
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          craft --install-deps nsis
+          craft --package --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
-          $distFiles = Get-ChildItem -Path .\dist
-          Write-Host "Created package files:"
-          $distFiles | ForEach-Object { Write-Host $_.FullName }
+      - name: Collect installers
+        shell: pwsh
+        run: |
+          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          $dir = craft -q --get "packageDestinationDir()" virtual/base
+          New-Item -ItemType Directory -Force -Path packages | Out-Null
+          Get-ChildItem -Path $dir -Recurse -Include *.exe, *.7z, *.sha256 | Copy-Item -Destination packages
 
-      - name: Upload unsigned installer
+      - name: Upload the unsigned installer
         id: upload-unsigned-installer
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-installer-${{ github.run_id }}
-          path: "portable/dist/*.${{ env.OUTPUT_FORMAT }}"
+          path: packages/*.exe
 
-      - name: Sign with SignPath
-        if: ${{ github.event.inputs['sign-file'] == 'yes' && github.event.inputs['debug'] == 'yes' && env.OUTPUT_FORMAT == 'msi' }}
+      # The one signature that actually decides whether SmartScreen shouts at a
+      # person who downloads the file.
+      - name: Sign the installer with SignPath
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGN_PATH_TOKEN }}
           organization-id: ${{ secrets.SIGN_PATH_ORGANIZATION_ID }}
           project-slug: 'wunjo.wladradchenko.ru'
           signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: "initial_msi"
+          artifact-configuration-slug: 'initial_exe'
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
-          wait-for-completion: false
+          wait-for-completion: true
           output-artifact-directory: './signed-installer'
 
-      - name: Upload Log
-        if: failure()
-        uses: actions/upload-artifact@v5
+      - name: Swap in the signed installer
+        if: ${{ inputs.sign || startsWith(github.ref, 'refs/tags/') }}
+        shell: pwsh
+        run: Copy-Item ./signed-installer/* -Destination packages/ -Force
+
+      - uses: actions/upload-artifact@v4
         with:
-          name: Log-Failure-${{ matrix.target }}
-          path: logs/*
+          name: wunjo-windows
+          path: packages/
+          retention-days: 14
+
+      - name: Save Craft cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}

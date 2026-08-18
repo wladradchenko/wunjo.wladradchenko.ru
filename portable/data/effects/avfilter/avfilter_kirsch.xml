@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.kirsch" id="avfilter.kirsch">
+    <name>Kirsch</name>
+    <description>Apply kirsch operator.</description>
+    <author>libavfilter</author>
+    <parameter type="animated" name="av.scale" min="0" max="65535" default="1" decimals="0">
+        <name>Scale</name>
+        <comment>Set value which will be multiplied with filtered result.</comment>
+    </parameter>
+    <parameter type="animated" name="av.delta" min="-65535" max="65535" default="0" decimals="0">
+        <name>Delta</name>
+        <comment>Set value which will be added to filtered result.</comment>
+    </parameter>
+    <parameter type="list" name="av.planes" default="7" paramlist="0;1;2;3;4;5;6;7">
+        <name>Planes</name>
+        <paramlistdisplay>Alpha,Y (Luminance),U (Chroma),V (Chroma),Red,Green,Blue,All</paramlistdisplay>
+    </parameter>
+</effect>

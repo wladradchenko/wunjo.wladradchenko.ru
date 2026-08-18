@@ -1,18 +1,15 @@
-[![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
-[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
+[![License: GPL v3](https://img.shields.io/badge/editor-GPL--3.0-blue.svg)](desktop/COPYING)
+[![C++ / Qt 6](https://img.shields.io/badge/C%2B%2B-Qt%206%20%2F%20KF6%20%2F%20MLT-004182.svg?logo=qt&logoColor=white)](https://www.qt.io/)
 [![GitHub package version](https://img.shields.io/github/v/release/wladradchenko/wunjo.wladradchenko.ru?display_name=tag&sort=semver)](https://github.com/wladradchenko/wunjo.wladradchenko.ru)
-[![License: MIT v1.0](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/LICENSE)
 <br>
 [![YouTube Tutorials](https://img.shields.io/badge/YouTube-Tutorials-red?style=flat&logo=youtube&logoColor=red)](https://youtube.com/playlist?list=PLJG0sD6007zFJyV78mkU-KW2UxbirgTGr&feature=shared)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru)
 [![Patreon Support](https://img.shields.io/badge/Patreon-Support-white?style=flat&logo=patreon&logoColor=white)](https://patreon.com/wladradchenko)
 [![Boosty Support](https://img.shields.io/badge/Boosty-Support-orange?style=flat&logo=boosty&logoColor=orange)](https://boosty.to/wunjo)
-[![Docker](https://img.shields.io/badge/Docker-Available-blue?logo=docker)](https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/main/docker)
 [![Installer](https://img.shields.io/badge/Wunjo-Installers-rgb%28200%2C%20237%2C%20210%29?logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCEtLSBHZW5lcmF0b3I6IEdyYXZpdC5pbyAtLT48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHN0eWxlPSJpc29sYXRpb246aXNvbGF0ZSIgdmlld0JveD0iMCAwIDE2IDE2IiB3aWR0aD0iMTZwdCIgaGVpZ2h0PSIxNnB0Ij48ZGVmcz48Y2xpcFBhdGggaWQ9Il9jbGlwUGF0aF9lNUF4NTFaTUMxaElaUmRYZ1pqUURmdVRsUmFaN08xMiI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ii8+PC9jbGlwUGF0aD48L2RlZnM+PGcgY2xpcC1wYXRoPSJ1cmwoI19jbGlwUGF0aF9lNUF4NTFaTUMxaElaUmRYZ1pqUURmdVRsUmFaN08xMikiPjxwYXRoIGQ9IiBNIDEyLjE1NiAxMy4yODYgQyAxMy43NSAxMi4wNTMgMTQuNzc1IDEwLjEyNyAxNC43NzUgNy45NjQgQyAxNC43NzUgNC4yNDIgMTEuNzM5IDEuMjIgOCAxLjIyIEMgNC4yNjEgMS4yMiAxLjIyNSA0LjI0MiAxLjIyNSA3Ljk2NCBDIDEuMjI1IDEwLjExNiAyLjI0IDEyLjAzNCAzLjgxOSAxMy4yNjggTCA1LjQyOSAxMS44NiBMIDcuOTM4IDkuNjg2IEwgMTAuNDQ3IDExLjg2IEwgMTIuMTU2IDEzLjI4NiBaICBNIDQuMTc1IDE0Ljk0MiBMIDQuMTY3IDE0Ljk0OCBDIDEuNjgzIDEzLjYgMCAxMC45NzYgMCA3Ljk2NCBDIDAgMy41NjkgMy41ODUgMCA4IDAgQyAxMi40MTUgMCAxNiAzLjU2OSAxNiA3Ljk2NCBDIDE2IDExLjA0MiAxNC4yNDIgMTMuNzE0IDExLjY3MSAxNS4wMzcgTCAxMS41NzcgMTUuMTAxIEwgOS45IDEzLjUwNyBMIDcuOTUyIDExLjgzOSBMIDYuMDA0IDEzLjUwNyBMIDQuMjUyIDE0Ljk5NiBMIDQuMTc1IDE0Ljk0MiBaICIgZmlsbC1ydWxlPSJldmVub2RkIiBmaWxsPSJyZ2IoMTk2LDIzNiwyMTEpIi8+PHBhdGggZD0iIE0gOCAxMy45OTEgQyA3LjEzNSAxMy45OTEgNi40NyAxNC44NjcgNi40NDEgMTQuOTEgQyA2LjM5OCAxNC45NjggNi4zOTggMTUuMDI0IDYuNDQxIDE1LjA4MSBDIDYuNDcgMTUuMTI0IDcuMTM1IDE2IDggMTYgQyA4Ljg2NSAxNiA5LjUzIDE1LjEyNCA5LjU1OSAxNS4wODEgQyA5LjYwMiAxNS4wMjQgOS42MDIgMTQuOTY3IDkuNTU5IDE0LjkxIEMgOS41MyAxNC44NjcgOC44NjUgMTMuOTkxIDggMTMuOTkxIFogIE0gOCAxNC4yNzggQyA4LjQwNCAxNC4yNzggOC43MjEgMTQuNTk0IDguNzIxIDE0Ljk5NiBDIDguNzIxIDE1LjM5NyA4LjQwNCAxNS43MTMgOCAxNS43MTMgQyA3LjU5NiAxNS43MTMgNy4yNzkgMTUuMzk3IDcuMjc5IDE0Ljk5NiBDIDcuMjc5IDE0LjU5NCA3LjU5NiAxNC4yNzggOCAxNC4yNzggWiAgTSA4IDE0LjYzNyBDIDcuODAxIDE0LjYzNyA3LjY0IDE0Ljc5NyA3LjY0IDE0Ljk5NiBDIDcuNjQgMTUuMTkzIDcuODAxIDE1LjM1NCA4IDE1LjM1NCBDIDguMTk5IDE1LjM1NCA4LjM2IDE1LjE5MyA4LjM2IDE0Ljk5NiBDIDguMzYgMTQuNzk4IDguMTk5IDE0LjYzNyA4IDE0LjYzNyBaICIgZmlsbD0icmdiKDE5NiwyMzYsMjExKSIvPjxwYXRoIGQ9IiBNIDUuOTgyIDMuOTEzIEwgNy41NjggNS42NjggTCA3LjU2OCAxMC42OTEgTCA1Ljk4MiAxMS45ODIgTCA1Ljk4MiAzLjkxMyBaICIgZmlsbD0icmdiKDE5NiwyMzYsMjExKSIvPjxwYXRoIGQ9IiBNIDcuMjc5IDEyLjQxMyBMIDEyLjMyNCA3Ljk2NCBMIDYuMjExIDEuMjIgTCA0LjA1NiAxLjIyIEwgMTAuMDE4IDcuODIxIEwgNi45OTEgMTAuNTQ3IEwgNy4yNzkgMTIuNDEzIFogIiBmaWxsPSJyZ2IoMTk2LDIzNiwyMTEpIi8+PC9nPjwvc3ZnPg==)](https://wunjo.online)
 
 [//]: # ([![GitHub Actions]&#40;https://img.shields.io/badge/GitHub_Actions-CI-white?logo=github&logoColor=white&#41;]&#40;https://github.com/wladradchenko/wunjo.wladradchenko.ru/actions&#41;)
 
-<p align="right">[<a href="README_ru.md">RU v2.0</a>]</p>
 <div id="top"></div>
 
 <br />
@@ -21,7 +18,7 @@
     <img src="https://wunjo.online/static/basic/icon/round/logo-512.png" alt="Logo" width="165" height="165">
   </a>
 
-  <h3 align="center">Wunjo Community Edition (CE)</h3>
+  <h3 align="center">Wunjo Make</h3>
 
   <p align="center">
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Documentation</a>
@@ -34,70 +31,28 @@
   </p>
 </div>
 
-<!-- WUNJO V2 -->
-## 🌟 Goal: 4,096 Stars on GitHub! 🌟
-
-Once we reach this milestone, Wunjo CE's open-source code of v2.0.8 will update with the latest version changes! 
-
-Wunjo Pro is now easier and more powerful than ever! 
-
-**Available languages:** English, Spanish, Chinese, Korean, Russian.
-
-### How You Can Help:
-- 🌟 **Star the project on GitHub** to help make Wunjo Pro open-source!  
-- 📣 **Spread the word**: Share Wunjo with your friends and invite them to support the project on GitHub!
-- 🎥 **Video Reviews on YouTube**: Leave a video review of Wunjo with an open-source mention on GitHub, share the video link with support@wunjo.online, and I'll give you **free access to the latest version's full functionality for a year**!
-
+<!-- WUNJO V3 -->
 ## Project vs Commercial Product
 
-This repository contains the open-source project **Wunjo**. 
+This repository contains the open-source project **Wunjo Make** v3.x. 
 
-Please note that the commercial product available at [https://wunjo.online](https://wunjo.online) is a completely separate product:
+Please note that the commercial product v2.x available at [https://wunjo.online](https://wunjo.online) is a completely separate product:
 - It has a different codebase.
 - It does not use or derive from this open-source repository.
 - It may include commercial features not available in this repository.
 
 This separation ensures clarity for users and compliance with open-source licensing.
 
-## Big update Wunjo CE v2.0.8
-
-### Smart Crop and Cut for Video!
-
-<b>Hey there!</b> Your support means the world to me and is crucial in accelerating the release of new updates for the Community Edition (CE). Your encouragement and stars drives me to enhance features. And now <b>video edit</b> with text and smart cropping for any format where neural network select the most interest frame, allowing you to easily transform vertical videos into horizontal ones and vice versa. Smart crop is only available in the Pro version.
-
-Also available API now in CE version. 
-
-### Available now
-
-<b>Professional (Pro) version</b> available on <a href="https://wunjo.online">wunjo.online</a> to download. <b>Community Edition (CE)</b> available on GitHub with voting for features to migrate on <a href="https://boosty.to/wunjo">Boosty</a>.
-
-<b>And if you wanna help to project, you can do:</b> 
-<ul>
-  <li>Spread the Word: Share the project with your friends and invite them to join our community.</li>
-  <li>Stay Connected: Subscribe to the Wunjo project on GitHub and follow me on social media. You can find me by <a href="https://www.youtube.com/@wladradchenko">wladradchenko</a> in social media and <a href="https://t.me/wladblog">wladblog</a> in Telegram.</li>
-  <li><a href="https://boosty.to/wunjo">Support on Boosty</a>: Your support on Boosty will help determine which features from the Professional version will migrate to the CE.</li>
-</ul>
-
-<details>
-<summary>What is update? Open this list to see full review on YouTube.</summary>
-  
-<div align="center">
-  <table>
-  <tr>
-    <th>Review</th>
-  </tr>
-  <tr align="center">
-    <td><a href="https://youtu.be/-MGow5zCZUQ?si=msVDNhIPruBtg9ah"><img src="example/thumbnail/update_v2.png" alt="video" width="500"></a></td>
-  </tr>
-</table>
-</div>
-
-</details>
-
 <!-- ABOUT THE PROJECT -->
 ## About
 
 Wunjo harnesses the power of advanced neural networks to transform video, image, and audio content in unprecedented ways. It allows you to seamlessly replace faces, control facial motion, and enhance lip-sync animation, while also generating videos from text, photos, or multiple images. Intelligent video editing automates cropping to any aspect ratio, selects the most interesting moments, and enables text-based montage. Wunjo can remove objects, improve video quality, restyle images and videos, clone speech, and even separate music from spoken words, giving you full creative control over every element of your media. Official website <a href="https://wunjo.online">wunjo.online</a>.
+
+The program is a full-fledged video editor based on the [Kdenlive by KDE License GPL v3](https://github.com/KDE/kdenlive) codebase. Integration with MSP Cloud Code, Cursor, and Codex for content editing and generation has been added, and it also has a local model based on Qwen 3.5 for managing the editor. Loop and skills are also available for AI Agents. 
+
+The new version incorporates the concept of Python plugins. You can freely create plugins using vibecoding and use them within the program for working with faces, video, and audio or content generation local or remotly by API. Additionally, you can use plugins to replace the default Qwen model with a more advanced one.
+
+The program runs on Linux, Windows, and MacOS, but to use local models, you'll need 8GB of video memory and CUDA 12.x. Otherwise, consider using MCP via Cloud Code or Cursor and plugins with API services.
 
 <div align="center">
   <table>
@@ -110,153 +65,95 @@ Wunjo harnesses the power of advanced neural networks to transform video, image,
 </table>
 </div>
 
-<details>
-<summary><b>Open list to see more details.</b></summary>
-
-The new version 2.0 introduces a completely redesigned interface, enhanced performance, improved face swap functionality, a generator for non-existent people’s faces, and a deepfake analyzer. It also includes improvements in lip sync, content enhancement, object, text, and background removal, as well as content and component restyling using text prompts. Additionally, public links enable community creation and collaboration.
-For audio you will able to use improved audio separator and <b>clone voice on any language from text and audio</b>.
-
-Available as both a free Community Edition and a subscription-based Professional Edition on <a href="https://wunjo.online/pricing">wunjo.online</a>, Wunjo caters to a wide range of users, from beginners to professionals, ensuring privacy by operating locally on your device.
-
-**Why Choose Wunjo Community Edition?**
-
-- **All-in-One:** A comprehensive tool catering to both your voice and visual AI needs.
-- **User-friendly:** Designed for all, from beginners to professionals.
-- **Privacy First:** Functions locally on your desktop, ensuring your data remains private.
-- **Open-source & Free:** Benefit from community-driven enhancements and enjoy the app without any cost.
-
-**Why Choose Wunjo Professional?**
-
-- **More features:** First access to updates, additional and more advanced features ad restyling and clone voice.
-- **Public links:** Host your own server (PC) application accessible from anywhere in the world.
-- **Unlimited performance:** Process multiple tasks simultaneously to increase overall productivity.
-
-Step into the future of AI-powered creativity with Wunjo.
-</details>
-
 <!-- FEATURES -->
 ## Setup
 
-Requirements [Python](https://www.python.org/downloads/) version 3.10 and [ffmpeg](https://ffmpeg.org/download.html). For GPU it is necessary to install CUDA on Nvidia processors.
+### Easy installation
 
-For detailed instructions about setup Wunjo CE from GitHub, refer to the [Launch Project from GitHub](https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki/How-to-install-the-application#launch-project-from-github) section in our wiki.
+### For development
 
-<div align="center">
-  <table>
-  <tr>
-    <th>How build from code on Windows?</th>
-  </tr>
-  <tr align="center">
-    <td><a href="https://youtu.be/fucxKhX7n4E"><img src="example/thumbnail/how_install.png" alt="video" width="500"></a></td>
-  </tr>
-</table>
-</div>
+#### Linux
 
-<!-- DOWNLOAD -->
-You will find on [wunjo.online](https://wunjo.online) official installers on Wundows/Ubuntu.
+******The application is built and run as a flatpak. Install the tooling and add Flathub once:******
 
-<!-- DOCKER -->
-In addition to the standard build process, you can use [Docker](https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/main/docker) for both CPU and GPU versions. Also, check out the [GitHub Actions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/actions) workflows that are set up to build installers directly within GitHub.
-
-<details>
-<summary><b>⚠️ Run GPU on AMD ⚠️</b></summary>
-
-You can use the GPU processor on AMD too, if you managed to install [ZLUDA](https://github.com/vosen/ZLUDA). You also need to install `firmware-linux-nonfree` package to GPU became available [Issue 72](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/72).
-
-```
-sudo apt update
-sudo apt install firmware-linux-nonfree
-
-cd wunjo.wladradchenko.ru
-
-python3.10 -m venv venv
-source venv/bin/activate
-
-python -m pip install -r requirements_zluda.txt
-python -m pip install -U torch torchaudio torchvision --extra-index-url https://download.pytorch.org/whl/rocm6.1
-python -m pip install -U xformers --extra-index-url https://download.pytorch.org/whl/rocm6.1
-
-cd portable
-briefcase dev
+```bash
+sudo apt install flatpak flatpak-builder
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 ```
 
-More details in [Issue 65](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/65) and its continuation [Issue 68](https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues/68). 
+Then build and install it. Folder `build-flatpak` is a scratch directory the builder creates itself, nothing has to exist there beforehand:
 
-</details>
+```bash
+git clone https://github.com/wladradchenko/wunjo.wladradchenko.ru.git
+cd wunjo.wladradchenko.ru/portable
+
+# MLT pulls one of its dependencies over file://, which git refuses by default
+GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=protocol.file.allow GIT_CONFIG_VALUE_0=always flatpak-builder --user --install --force-clean --install-deps-from=flathub --default-branch=master build-flatpak .flatpak-manifest.json
+
+flatpak run online.wunjo.make
+```
+
+The KDE runtime and SDK come from Flathub on the first run of that command; MLT, FFmpeg and the  other pinned dependencies are built from source, so expect the first build to take a while and some 30 GB of scratch space. Later builds only recompile the editor. Delete `build-flatpak/` and `.flatpak-builder/` when you are done — they are the scratch space, not the program.
+
+To hand the result to somebody else as a single file, export it through a local repository `repo` is created by the command as well:
+
+```bash
+flatpak-builder --repo=repo --force-clean build-flatpak .flatpak-manifest.json
+flatpak build-bundle repo wunjo-make.flatpak online.wunjo.make master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+```
+
+#### Windows and macOS
+
+Both are built with [KDE Craft](https://community.kde.org/Craft) from
+`desktop/packaging/craft` — the same source tree, no second implementation. Installers are
+published on [GitHub Releases](https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases) as they are signed and tested.
+
+#### Requirements
+
+A graphics card is optional for editing and recommended for the AI plugins. Plugins run on the processor without one, several times slower. Each plugin says what it needs in its own settings page, and downloads it there.
+
+# Plugins
+
+The `plugins` directory contains the agent plugin and the following list of plugins:
+
+| Installable plugin        | What it does                                                                             |
+|---------------------------|------------------------------------------------------------------------------------------|
+| **Face Toolkit**          | Face Swap and Live Portrait to swap face from photo and added emotions in photo or video |
+| **Lip Sync (LatentSync)** | Make the face on a clip speak a recorded track (soon)                                    |
+| **Voice Toolkit**         | Clone a voice from a recording and separate voice from music                             |
+| **Cut Finder**            | Find where to cut, scene changes and speech boundaries, placed as markers or cuts        |
+
+In order to install the plugin `Settings` > `Configure Wunjo Make` > `Plugins` > `From archive` and select `.wmproj` file. Next, you will need to click the import plugin button, and then, in the plugin tab, click the install button and download the models, if necessary.
+
+| Built-in plugin      | What it does                                     |
+|----------------------|--------------------------------------------------|
+| **Agent (Qwen 3.5)** | The local model behind the chat panel            |
+| **Whisper**          | Microphone and audio transcription and subtitling |
+| **SAM**              | Object masks by pointing at a thing on one frame |
+
+Built-in plugin already have their own plugin tabs. However, you'll need to click the install button and then click the download button for the selected model.
+
+### For developers
+
+In the plugins directory, you'll find a README file with information for vibecoding, how to quickly create plugins, connect various services to them, and compile them.
 
 <!-- UPDATE -->
 
 ## Updates
 
 <details>
-<summary>Update 2.0.0</summary>
+<summary>Update 3.0.0</summary>
 
-- [x] Completely redesigned interface for desktop and mobile devices, from ground zero.
-- [x] Enhanced performance with simultaneous task handling, stability, and faster processing.
-- [x] Improved face swap functionality now supports multiple face swap at different timings via API.
-- [x] Introducing generator of non-existent people face.
-- [x] Deepfake analyzer added to discern authentic content from manipulated media.
-- [x] Enhanced lip sync for smoother animations and elimination of chin defects.
-- [x] Real-time mask selection for seamless editing experience.
-- [x] Added select area to remove text.
-- [x] Separated tasks for object removal and background elimination for greater precision. Now you can create chroma key video.
-- [x] Custom file manager introduced for efficient file management within the application.
-- [x] Improved interaction with neural network models, including seamless downloading from the internet.
-- [x] Easy switch from client to server application and back.
-- [x] Multi-user support with customizable limits on simultaneous tasks and memory usage (RAM, VRAM, duration, size, number at the same time task).
-- [x] Internal tips provided for optimizing content quality.
-- [x] Smart generator of prompts for video and object restyling.
-
-</details>
-
-<details>
-<summary>Update 2.0.1</summary>
-
-- [x] Fix bugs.
-
-</details>
-
-<details>
-<summary>Update 2.0.2</summary>
-
-- [x] Added functionality to clone voice in any language from text and audio.
-- [x] Improved audio separator to remove noise before clone voice.
-- [x] Enhanced processing speed.
-
-</details>
-
-<details>
-<summary>Update 2.0.3</summary>
-
-- [x] Added control restyling (This work with 8 GB VRAM).
-- [x] Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image.
-- [x] Improved quality of restyling.
-
-</details>
-
-<details>
-
-<summary>Update 2.0.4 & 2.0.5</summary>
-
-- [x] **Animate Portrait Mode & Retarget Portrait** (Pro): Copy head movements and facial expressions from any video or image to your content.
-- [x] **Manual Control & Quick Templates**: Add blinks, head turns, and emotions for more realistic animations.
-- [x] **Offline & Portable**: Works without an internet connection and is available as a portable version.
-- [x] **Smart Search & Quick Tips**: Find exactly what you need faster!
-- [x] **Free**: Wunjo in wunjo.online is now free, with some Pro functionality available through partial payment.
-- [x] **Loading**: You always know what is happening and how much time is left until the task is completed.
-
-</details>
-
-<details>
-
-<summary>Update 2.0.6 & 2.0.7</summary>
-
-- [x] **Highlights Video**: One of the coolest new features is the neural network that can automatically review long videos and create a shorter version with the best moments! It’ll even answer questions about the video—like what music fits, or what the video is about. Basically, it can help with anything you need related to the content.
-- [x] **API for Developers**: Integrate Wunjo into your projects.
-- [x] **Multilingual Interface**: Available in English, Spanish, Russian, Chinese, and Korean.
-- [x] **Zoom**: Zoom into images to better control changes.
-- [x] **Identity-Preserving Generation**: Generate images and videos from multiple images, integrated into the prompt
-
+- [x] Rebuilt as a desktop nonlinear editor on the MLT framework, replacing the web interface.
+- [x] Multi-track timeline with transitions, effects, keyframes and time remapping.
+- [x] Colour correction, audio post-production, subtitles and titling.
+- [x] Rendering to practically any format through FFmpeg.
+- [x] Built-in face detection for tracking or hiding a face on a clip.
+- [x] Plugin platform as isolated Python environments.
+- [x] Plugins for speech recognition, voice cloning, voice separation and content cutting.
+- [x] Chat assistant that drives the editor through its scripting interface.
+- [x] Update notifications for installations made from a file.
+- 
 </details>
 
 All information about changes and new features for Wunjo Pro can be found at [CHANGELOG](https://github.com/wladradchenko/wunjo.wladradchenko.ru/blob/main/portable/CHANGELOG).
@@ -318,11 +215,13 @@ Wunjo comes from the ancient runic alphabet and represents joy and contentment, 
 
 Wunjo is built upon the remarkable work of various open-source projects. Each integrated component reflects a commitment to improving and adapting existing technologies within the collaborative landscape of open-source development. The list below highlights the projects that have been adapted and enhanced for inclusion in Wunjo:
 
-- **User Interface & Packaging:** Implementations of [Flask UI](https://github.com/ClimenteA/flaskwebgui) and [BeeWare](https://beeware.org/project/projects/tools/briefcase/)
-- **Facial Animation & Enhancement:** Adapted versions of [Wav2lip](https://github.com/Rudrabha/Wav2Lip), [Face Utils](https://github.com/xinntao/facexlib), [Insightface](https://github.com/deepinsight/insightface) which provided a well-made library and some models for face.
+- **User Interface & Packaging:** Implementations of [KDE Kdenlive](https://github.com/KDE/kdenlive), [Flatpak](https://github.com/flatpak/flatpak) [MLT framework](https://www.mltframework.org/), [Qt](https://www.qt.io/),
+[KDE Frameworks](https://develop.kde.org/products/frameworks/), [FFmpeg](https://ffmpeg.org/)
+and [frei0r](https://frei0r.dyne.org/).
+- **Facial Animation & Enhancement:** Adapted versions of [Face Utils](https://github.com/xinntao/facexlib), [LivePortrait](https://github.com/KwaiVGI/LivePortrait), [Insightface](https://github.com/deepinsight/insightface) which provided a well-made library and some models for face.
 - **Image & Video Enhancement:** Adapted [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) for superior quality enhancements
-- **Video Processing & Segmentation:** Adaptations of [Segment Anything](https://github.com/facebookresearch/segment-anything), [Rerender a Video](https://github.com/williamyang1991/Rerender_A_Video), [GMFlow](https://github.com/haofeixu/gmflow), [ControlNet](https://github.com/lllyasviel/ControlNet) and upgraded [Ebsynth](https://github.com/jamriska/ebsynth)
-- **Video and Image Generation:** [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5) and [Stable Video Diffusion](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt) for creative image and video AI-driven art.
+- **Video Segmentation:** Adaptations of [Segment Anything 2](https://github.com/facebookresearch/segment-anything)
+- **Speech:** [Whisper](https://github.com/openai/whisper) for recognition, [Silero VAD](https://github.com/snakers4/silero-vad) for finding where speech is
 
 I extend my deepest gratitude to the original contributors of these technologies. Their groundbreaking work has been instrumental in advancing the capabilities of Wunjo CE. For the persistent storage and versioning of the models I have personally trained, I utilize the [Hugging Face Model Storage](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru). If you're interested in contributing to Wunjo CE, especially in the area of voice cloning for new languages, please feel free to propose your models or reach out for collaboration via [GitHub Discussions](https://github.com/wladradchenko/wunjo.wladradchenko.ru/discussions) or the [Hugging Face](https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/discussions).
 

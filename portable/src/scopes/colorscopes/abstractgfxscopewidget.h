@@ -1,0 +1,53 @@
+/*
+    SPDX-FileCopyrightText: 2010 Simon Andreas Eugster <simon.eu@gmail.com>
+    This file is part of wunjo. See www.wunjo.online.
+
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include "../abstractscopewidget.h"
+
+#include <QString>
+#include <QWidget>
+
+/**
+* @brief Abstract class for scopes analyzing image frames.
+*/
+class AbstractGfxScopeWidget : public AbstractScopeWidget
+{
+    Q_OBJECT
+
+public:
+    explicit AbstractGfxScopeWidget(bool trackMouse = false, QWidget *parent = nullptr);
+    ~AbstractGfxScopeWidget() override; // Must be virtual because of inheritance, to avoid memory leaks
+
+protected:
+    ///// Variables /////
+
+    /** @brief Scope renderer. Must emit signalScopeRenderingFinished()
+     *  when calculation has finished, to allow multi-threading.
+     *  accelerationFactor hints how much faster than usual the calculation should be accomplished, if possible. */
+    virtual QImage renderGfxScope(uint accelerationFactor, const QImage &) = 0;
+
+    QImage renderScope(uint accelerationFactor) override;
+
+    void mouseReleaseEvent(QMouseEvent *) override;
+
+private:
+    QImage m_scopeImage;
+    QMutex m_mutex;
+
+public Q_SLOTS:
+    /** @brief Must be called when the active monitor has shown a new frame.
+     * This slot must be connected in the implementing class, it is *not*
+     * done in this abstract class. */
+    void slotRenderZoneUpdated(const QImage &);
+
+protected Q_SLOTS:
+    virtual void slotAutoRefreshToggled(bool autoRefresh);
+
+Q_SIGNALS:
+    void signalFrameRequest(const QString &widgetName);
+};

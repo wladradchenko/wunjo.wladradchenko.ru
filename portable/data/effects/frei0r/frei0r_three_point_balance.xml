@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.three_point_balance" id="frei0r.three_point_balance">
+    <name>3-Point Balance</name>
+    <description>Adjust color balance with 3 color points</description>
+    <author>Maksim Golovkin</author>
+    <parameter type="color" name="0" default="0x000000ff">
+        <name>Black Color</name>
+    </parameter>
+    <parameter type="color" name="1" default="0x808080ff">
+        <name>Gray Color</name>
+    </parameter>
+    <parameter type="color" name="2" default="0xffffffff">
+        <name>White Color</name>
+    </parameter>
+    <parameter type="fixed" name="3" default="0">
+        <name>Split screen preview</name>
+    </parameter>
+    <parameter type="fixed" name="4" default="0">
+        <name>Source image on left side</name>
+    </parameter>
+</effect>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.hqdn3d" id="avfilter.hqdn3d">
+    <name>HQ 3D Denoiser (avfilter)</name>
+    <description>Apply a high quality 3D denoiser</description>
+    <author>libavfilter</author>
+    <parameter type="float" name="av.luma_spatial" default="0" min="0" max="500" format="double">
+        <name>Spatial Luma Strength</name>
+    </parameter>
+    <parameter type="float" name="av.chroma_spatial" default="0" min="0" max="500" format="double">
+        <name>Spatial Chroma Strength</name>
+    </parameter>
+    <parameter type="float" name="av.luma_tmp" default="0" min="0" max="500" format="double">
+        <name>Temporal Luma Strength</name>
+    </parameter>
+    <parameter type="float" name="av.chroma_tmp" default="0" min="0" max="500" format="double">
+        <name>Temporal Chroma Strength</name>
+    </parameter>
+</effect>

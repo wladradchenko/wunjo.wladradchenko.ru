@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.epx" id="avfilter.epx">
+    <name>EPX Scaler</name>
+    <description>Scale the input using EPX algorithm.</description>
+    <author>libavfilter</author>
+    <parameter type="list" name="av.n" default="3" paramlist="2;3">
+        <name>Scale factor</name>
+        <paramlistdisplay>2x,3x</paramlistdisplay>
+    </parameter>
+</effect>

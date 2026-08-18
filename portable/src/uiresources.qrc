@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/kxmlgui5/wunjo">
+        <file>ui.rc</file>
+    </qresource>
+    <qresource prefix="/data">
+        <file alias="style.qss">assets/style.qss</file>
+        <file alias="included_effects.txt">../data/included_effects.txt</file>
+        <file alias="excluded_effects.txt">../data/excluded_effects.txt</file>
+        <file alias="hidden_effects.txt">../data/hidden_effects.txt</file>
+        <file alias="included_transitions.txt">../data/included_transitions.txt</file>
+        <file alias="excluded_transitions.txt">../data/excluded_transitions.txt</file>
+        <file alias="hidden_transitions.txt">../data/hidden_transitions.txt</file>
+        <file alias="preferred_effects.txt">../data/preferred_effects.txt</file>
+        <file alias="wunjo_renderprofiles.knsrc">../data/knewstuff/wunjo_renderprofiles.knsrc</file>
+        <file alias="wunjo_titles.knsrc">../data/knewstuff/wunjo_titles.knsrc</file>
+        <file alias="wunjo_effects.knsrc">../data/knewstuff/wunjo_effects.knsrc</file>
+        <file alias="wunjo_wipes.knsrc">../data/knewstuff/wunjo_wipes.knsrc</file>
+        <file alias="wunjo_keyboardschemes.knsrc">../data/knewstuff/wunjo_keyboardschemes.knsrc</file>
+        <file alias="wunjo_luts.knsrc">../data/knewstuff/wunjo_luts.knsrc</file>
+    </qresource>
+</RCC>

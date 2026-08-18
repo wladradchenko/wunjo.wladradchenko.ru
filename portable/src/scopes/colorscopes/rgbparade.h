@@ -1,0 +1,63 @@
+/*
+    SPDX-FileCopyrightText: 2010 Simon Andreas Eugster <simon.eu@gmail.com>
+    This file is part of wunjo. See www.wunjo.online.
+
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include "abstractgfxscopewidget.h"
+#include "ui_rgbparade_ui.h"
+
+class QImage;
+class RGBParade_UI;
+class RGBParadeGenerator;
+
+/**
+ * @brief Displays the RGB waveform of a frame.
+ * This is the same as the Waveform, but for each color channel separately.
+ */
+class RGBParade : public AbstractGfxScopeWidget
+{
+public:
+    explicit RGBParade(QWidget *parent = nullptr);
+    ~RGBParade() override;
+    QString widgetName() const override;
+
+protected:
+    void readConfig() override;
+    void writeConfig();
+    QRect scopeRect() override;
+
+private:
+    Ui::RGBParade_UI *m_ui;
+    RGBParadeGenerator *m_rgbParadeGenerator;
+
+    // Settings menu
+    QMenu *m_settingsMenu;
+    QMenu *m_paintModeMenu;
+
+    // Paint mode actions
+    QActionGroup *m_agPaintMode;
+    QAction *m_aPaintModeRGB;
+    QAction *m_aPaintModeWhite;
+
+    /** Paint mode */
+    int m_iPaintMode;
+
+    QAction *m_aAxis;
+    QAction *m_aGradRef;
+
+    bool isHUDDependingOnInput() const override;
+    bool isScopeDependingOnInput() const override;
+    bool isBackgroundDependingOnInput() const override;
+
+    QImage renderHUD(uint accelerationFactor) override;
+    QImage renderGfxScope(uint accelerationFactor, const QImage &) override;
+    QImage renderBackground(uint accelerationFactor) override;
+
+private Q_SLOTS:
+    void showSettingsMenu();
+    void slotPaintModeChanged();
+};

@@ -1,0 +1,4 @@
+# Below 2.0: that release moved the server out of mcp.server.fastmcp, which is
+# what control/server.py is built on.
+mcp>=1.0,<2
+# the api package is vendored in this directory (adapted for Wunjo Make D-Bus names)

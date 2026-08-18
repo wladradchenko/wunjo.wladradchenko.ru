@@ -1,92 +1,115 @@
+# Linux build via KDE Craft, packaged as an AppImage.
+#
+# Why not a .deb built against system libraries: the project needs Qt 6.10 and
+# KDE Frameworks 6.21, and no Debian or Ubuntu release ships either. Any Linux
+# package therefore has to carry the whole stack with it, and an AppImage is the
+# format that does that with one file and no install step — which is what
+# "download from the site and run it" needs.
+#
+# Runs on ubuntu-22.04 on purpose: an AppImage works on the glibc it was built
+# against and anything newer, so building on the oldest supported runner is what
+# makes it run on the widest range of machines.
+#
+# UNVERIFIED. Written from the project's dependency list and Craft's documented
+# interface, not from a green run. Expect the first attempts to fail on package
+# names; fix them in portable/packaging/craft/blueprints/apps/wunjo/wunjo.py.
 name: CI/CD Pipeline Package Linux
 
 on:
   workflow_dispatch:
     inputs:
-      processor:
-        description: 'Choose the processor type (gpu, cpu, zluda)'
-        required: false
-        default: 'gpu'
+      rebuild-deps:
+        description: 'Rebuild the dependency cache from scratch'
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'v*'
 
 env:
-  FORCE_COLOR: "1"
-  SSH_HOST: ${{ secrets.SSH_HOST }}
-  SSH_PORT: ${{ secrets.SSH_PORT || 22 }}
-  SSH_USER: ${{ secrets.SSH_USER }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  PROCESSOR: ${{ github.event.inputs.processor || 'gpu' }}  # Default to 'gpu' if not provided
+  CRAFT_ROOT: /home/runner/CraftRoot
+  CRAFT_TARGET: linux-64-gcc
 
 jobs:
-  build-and-deploy:
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      matrix:
-        target: [linux]
-        include:
-          - target: "linux"
-            platform: "Linux"
-            output-format: "deb"
-            pre-command: |
-              sudo apt -y install socat openssh-client build-essential gcc make
-              sudo rm -rf /usr/share/dotnet
-              sudo rm -rf /usr/local/lib/android
-              sudo rm -rf /opt/ghc
-            runs-on: "ubuntu-22.04"
-            python-version: "3.10"
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 350
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.12'
 
-      - name: Select processor configuration
-        working-directory: portable
+      # Craft builds Qt and KF6 itself, but it still needs the system's X11,
+      # OpenGL and audio headers to build them against.
+      - name: Install system build dependencies
         run: |
-          echo "Using processor: $PROCESSOR"
-          cp pyproject_$PROCESSOR.toml pyproject.toml
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build git \
+            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libxkbcommon-x11-dev \
+            libx11-dev libxcb1-dev libxcb-*-dev libwayland-dev \
+            libasound2-dev libpulse-dev libfuse2 \
+            libssl-dev libdbus-1-dev
 
-      - name: Set up Python environment
-        run: |
-          python -m venv venv --copies
-          source venv/bin/activate  # For Linux/MacOS
-
-          pip install -U pip setuptools wheel
-          pip install briefcase insightface
-
-      - name: Build application
-        run: |
-          source venv/bin/activate  # For Linux/MacOS
-
-          cd portable
-          python -m briefcase build ${{ matrix.target }}
-
-      - name: Package application
-        run: |
-          source venv/bin/activate  # For Linux/MacOS
-
-          cd portable
-          python -m briefcase package ${{ matrix.target }} --update --adhoc-sign --no-input --log
-          ls -la dist/
-
-      - name: Upload Log
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Restore Craft cache
+        if: ${{ !inputs.rebuild-deps }}
+        uses: actions/cache/restore@v4
+        id: craft-cache
         with:
-          name: Log-Failure-${{ matrix.target }}
-          path: logs/*
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          restore-keys: craft-${{ env.CRAFT_TARGET }}-
 
-      - name: Setup SSH
-        if: env.SSH_PRIVATE_KEY != ''
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy via SSH
-        if: env.SSH_PRIVATE_KEY != '' && env.SSH_PORT != '' && env.SSH_USER != '' && env.SSH_HOST != ''
-        working-directory: portable
+      - name: Bootstrap Craft
+        if: steps.craft-cache.outputs.cache-matched-key == ''
         run: |
-          scp -P ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          curl -sSLo CraftBootstrap.py https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py
+          python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --target "$CRAFT_TARGET" --branch master
+
+      - name: Register the Wunjo blueprint
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --add-blueprint-repository "$GITHUB_WORKSPACE/portable/packaging/craft/blueprints"
+
+      - name: Build dependencies
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --install-deps wunjo
+
+      - name: Build Wunjo Make
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      - name: Package as AppImage
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --package --options "[Packager]PackageType=AppImagePackager" \
+                          --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      - name: Collect the AppImage
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          dir=$(craft -q --get "packageDestinationDir()" virtual/base)
+          mkdir -p packages
+          find "$dir" \( -name '*.AppImage' -o -name '*.sha256' \) -exec cp {} packages/ \;
+          ls -la packages/
+
+      # No signing: Linux has no equivalent of SmartScreen or Gatekeeper, so a
+      # checksum published next to the download is what people can actually
+      # verify. Craft writes the .sha256 above.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wunjo-linux-x86_64
+          path: packages/
+          retention-days: 14
+
+      - name: Save Craft cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}

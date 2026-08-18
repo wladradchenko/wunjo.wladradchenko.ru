@@ -1,0 +1,35 @@
+#!/bin/sh
+# Starts the MCP server that lets an outside agent — Claude Code, Cursor — drive
+# Wunjo Make.
+#
+# It is meant to be named in a generated .mcp.json, and on a sandboxed install
+# that entry re-enters the sandbox (`flatpak run --command=… online.wunjo.make`)
+# rather than calling a Python on the host. There is a reason for the detour:
+# the environment this server needs is built by the app, inside the sandbox, and
+# its interpreter is the runtime's own — a path that does not exist outside.
+#
+# The environment belongs to the Assistant plugin, which is also what the
+# built-in assistant runs in. One environment, one server, whichever end is
+# driving.
+set -eu
+
+data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+python="$data_home/wunjo/venv-agent/bin/python3"
+server="$(dirname "$0")/run.py"
+
+if [ ! -x "$python" ]; then
+    echo "The Wunjo assistant environment is not installed yet." >&2
+    echo "Open Wunjo Make ▸ Settings ▸ Plugins ▸ Assistant and install it," >&2
+    echo "or pick a way of talking in the Chat panel, then try again." >&2
+    exit 1
+fi
+
+# Speech belongs to the app's shared environment, not to this one: whisper is
+# installed once for the whole editor. transcribe_media needs to be told where
+# it lives, or an agent has to put a clip on the timeline and read the subtitle
+# track back just to find out what was said.
+WUNJO_SPEECH_PYTHON="$data_home/wunjo/venv/bin/python3"
+WUNJO_SPEECH_MODELS="${XDG_CACHE_HOME:-$HOME/.cache}/whisper"
+export WUNJO_SPEECH_PYTHON WUNJO_SPEECH_MODELS
+
+exec "$python" "$server" "$@"

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.subtitles" type="hidden">
+    <name>Subtitles</name>
+    <description>Render subtitles onto the video</description>
+    <author>libavfilter</author>
+    <parameter type="url" name="av.filename" filter="*.ass *.srt">
+        <name>Subtitle file to apply</name>
+    </parameter>
+</effect>

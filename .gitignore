@@ -8,3 +8,6 @@ portable/src/win
 portable/src/win-unpacked
 gitkey
 NOTE.md
+.flatpak-builder/
+portable/repo
+portable/build-flatpak/

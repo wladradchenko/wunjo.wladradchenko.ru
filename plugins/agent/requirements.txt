@@ -1,0 +1,8 @@
+# The assistant's environment is deliberately small: it holds no model and no
+# inference code. The weights run in llama-server and the agent loop in Goose,
+# both downloaded as models, and the editor is reached through the D-Bus command
+# line tools the runtime already ships. What is left is the MCP server that
+# stands between them.
+# Pinned below 2.0: that release moved the server out of mcp.server.fastmcp,
+# which is what the MCP server is built on. Raising this means porting it.
+mcp>=1.0,<2

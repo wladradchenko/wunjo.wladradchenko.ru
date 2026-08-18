@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="oldfilm" id="oldfilm" type="video" requires_in_out="1" unique="1">
+    <name>Old Film Simulator</name>
+    <description>Moves the picture up and down and adds random brightness changes</description>
+    <author>Marco Gittler</author>
+    <parameter type="animated" name="delta" max="400" min="0" default="14" suffix="px">
+        <name>Maximum Up/Down Move</name>
+        <comment><![CDATA[Determines the maximum vertical movement in pixels]]></comment>
+    </parameter>
+    <parameter type="animated" name="every" max="100" min="0" default="20" suffix="%">
+        <name>Frames With Movement</name>
+        <comment><![CDATA[Determines percentage of frames with vertical movement]]></comment>
+    </parameter>
+    <parameter type="animated" name="brightnessdelta_up" max="100" min="0" default="20">
+        <name>Brightness Up</name>
+        <comment><![CDATA[Determines the value in brightness change up]]></comment>
+    </parameter>
+    <parameter type="animated" name="brightnessdelta_down" max="100" min="0" default="30">
+        <name>Brightness Down</name>
+        <comment><![CDATA[Determines the value in brightness change down]]></comment>
+    </parameter>
+    <parameter type="animated" name="brightnessdelta_every" max="100" min="0" default="70" suffix="%">
+        <name>Brightness Every</name>
+        <comment><![CDATA[Determines percentage of frames with brightness changes]]></comment>
+    </parameter>
+    <parameter type="animated" name="unevendevelop_up" max="100" min="0" default="60">
+        <name>Uneven Develop Up</name>
+        <comment><![CDATA[Determines the value in lightness change up]]></comment>
+    </parameter>
+    <parameter type="animated" name="unevendevelop_down" max="100" min="0" default="20">
+        <name>Uneven Develop Down</name>
+        <comment><![CDATA[Determines the value in lightness change down]]></comment>
+    </parameter>
+    <parameter type="animated" name="unevendevelop_duration" max="10000" min="0" default="70">
+        <name>Uneven Develop Duration</name>
+        <comment><![CDATA[Time (in frames) of an uneven development up/down cycle]]></comment>
+    </parameter>
+</effect>

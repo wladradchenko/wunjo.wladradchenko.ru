@@ -1,0 +1,266 @@
+/*
+    Wunjo Make — global application stylesheet.
+
+    Layered on top of the Breeze QStyle (KStyleManager::initStyle()), colors
+    follow data/color-schemes/Wunjo.colors:
+      bg-0 #0D0D0D  bg-1 #161616  bg-2 #1F1F1F  bg-3 #2D2D2D
+      text #FFFFFF  text-dim #696969
+      mint #C8EDD2  mint-dim #A2E0B2  mint-tint #2B3A32
+
+    WunjoTheme::applyTokens() rewrites those hexes for the active theme + primary
+    color before the sheet is applied, so the accent has two roles here:
+      - #C8EDD2 is the accent as *ink* — text, borders, tab underlines. On the
+        light theme it is darkened to stay readable on white, so never use it as
+        a background that dark text sits on;
+      - @accent-fill / @on-accent are the accent as a *background* and whatever is
+        drawn on it. They stay pastel + near-black in both themes. Named rather
+        than hex because on the light theme they no longer equal #C8EDD2/#0D0D0D.
+
+    Constraints (breaking these breaks Breeze-drawn widgets elsewhere):
+      - never style QPushButton globally (dialog buttons lose Breeze focus rings);
+        scope button rules by container class or objectName
+      - no `*` or bare `QWidget { }` selectors
+      - do not add padding/min-width to QToolButton beyond the popupMode rules
+        below, or toolbar buttons with menus will clip
+      - QToolButton keeps a transparent 1px border in every state so hovering
+        never changes size (no layout jump)
+*/
+
+/* ---- Tool buttons ------------------------------------------------------- */
+
+QToolButton {
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+QToolButton:hover {
+    background-color: #1F1F1F;
+}
+QToolButton:checked, QToolButton:on {
+    border-color: #C8EDD2;
+    background-color: #2B3A32;
+}
+/* Reserve room for the drop-down arrow on menu buttons so it doesn't overlap
+   the icon, with breathing room before the button edge (do not shrink). */
+QToolButton[popupMode="1"] { padding-right: 20px; }
+QToolButton[popupMode="1"]::menu-button { width: 16px; border: none; }
+QToolButton[popupMode="2"] { padding-right: 18px; }
+QToolButton::menu-indicator {
+    subcontrol-origin: padding;
+    subcontrol-position: right center;
+    right: 6px;
+    width: 8px;
+}
+
+/* ---- Toolbars ----------------------------------------------------------- */
+
+QToolBar {
+    background: transparent;
+    border: none;
+    spacing: 2px;
+    padding: 2px 0;
+}
+QToolBar::separator {
+    background: #2D2D2D;
+    width: 1px;
+    margin: 4px 6px;
+}
+/* no drag handle — it reads as a mysterious left offset */
+QToolBar::handle {
+    image: none;
+    width: 0px;
+    height: 0px;
+    margin: 0;
+}
+
+/* ---- Tabs (dock groups, sequence tabs) ---------------------------------- */
+
+/* The bar itself keeps no base line: Breeze draws one under the whole strip,
+   and with our own underline on the selected tab that reads as a doubled
+   border (most visibly in the About dialogs, whose tabs are document-mode). */
+QTabBar {
+    background: transparent;
+    border: none;
+}
+QTabWidget::tab-bar {
+    alignment: left;
+}
+QTabBar::tab {
+    background: transparent;
+    border: none;
+    /* transparent underline reserves space so selection never shifts layout */
+    border-bottom: 2px solid transparent;
+    padding: 6px 14px;
+    color: #696969;
+}
+QTabBar::tab:selected {
+    color: #FFFFFF;
+    border-bottom: 2px solid #C8EDD2;
+}
+QTabBar::tab:hover:!selected {
+    color: #C8EDD2;
+}
+QTabBar::close-button {
+    subcontrol-origin: padding;
+    subcontrol-position: right;
+}
+QTabWidget::pane {
+    border: none;
+}
+
+/* ---- Scrollbars --------------------------------------------------------- */
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 0;
+}
+QScrollBar:horizontal {
+    background: transparent;
+    height: 10px;
+    margin: 0;
+}
+QScrollBar::handle:vertical {
+    background: #2D2D2D;
+    border-radius: 5px;
+    min-height: 24px;
+    margin: 2px;
+}
+QScrollBar::handle:horizontal {
+    background: #2D2D2D;
+    border-radius: 5px;
+    min-width: 24px;
+    margin: 2px;
+}
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+    background: #A2E0B2;
+}
+QScrollBar::add-line, QScrollBar::sub-line {
+    width: 0;
+    height: 0;
+}
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: transparent;
+}
+
+/* ---- Menus -------------------------------------------------------------- */
+
+QMenu {
+    background-color: #161616;
+    border: 1px solid #2D2D2D;
+    /* keep radius small: without WA_TranslucentBackground larger radii show
+       opaque corner artifacts */
+    border-radius: 6px;
+    padding: 6px;
+}
+QMenu::item {
+    padding: 6px 24px 6px 12px;
+    border-radius: 8px;
+}
+QMenu::item:selected {
+    background: #2B3A32;
+    color: #C8EDD2;
+}
+QMenu::separator {
+    height: 1px;
+    background: #2D2D2D;
+    margin: 4px 8px;
+}
+
+QMenuBar {
+    background: #0D0D0D;
+}
+QMenuBar::item {
+    /* Zen Maru Gothic renders Latin low in its line box, so less top than bottom
+       padding lifts the label to the visual centre of the highlight */
+    padding: 2px 10px 4px 10px;
+    border-radius: 8px;
+    background: transparent;
+}
+QMenuBar::item:selected {
+    background: #1F1F1F;
+    color: #C8EDD2;
+}
+
+/* ---- Input fields ------------------------------------------------------- */
+
+QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTimeEdit {
+    background: #1F1F1F;
+    border: 1px solid #2D2D2D;
+    border-radius: 8px;
+    padding: 3px 6px;
+    selection-background-color: @accent-fill;
+    selection-color: @on-accent;
+}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus, QTimeEdit:focus {
+    border-color: #A2E0B2;
+}
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+/* ---- Render progress button (one pill, arrow integrated) ---------------- */
+
+ProgressButton {
+    background: #1F1F1F;
+    border: 1px solid #2D2D2D;
+    border-radius: 8px;
+    padding: 2px 6px 2px 10px;
+}
+ProgressButton:hover {
+    background: #2B3A32;
+    border-color: #C8EDD2;
+}
+ProgressButton::menu-button {
+    border: none;
+    width: 16px;
+}
+
+/* ---- Layout switcher pills (menu bar corner) ---------------------------- */
+
+LayoutSwitcher QPushButton {
+    background: transparent;
+    border: none;
+    /* softly rounded segmented-control look (not a full pill) */
+    border-radius: 6px;
+    /* flatter pill; less top than bottom padding lifts the CJK-font label to centre */
+    padding: 1px 14px 3px 14px;
+    color: #696969;
+}
+LayoutSwitcher QPushButton:hover {
+    background: #1F1F1F;
+    color: #FFFFFF;
+}
+LayoutSwitcher QPushButton:checked {
+    background: #2B3A32;
+    color: #C8EDD2;
+}
+LayoutSwitcher QPushButton:checked:hover {
+    background: #2B3A32;
+    color: #C8EDD2;
+}
+
+/* ---- Chrome ------------------------------------------------------------- */
+
+QStatusBar {
+    background: #0D0D0D;
+    border-top: 1px solid #1F1F1F;
+}
+QStatusBar::item {
+    border: none;
+}
+
+QToolTip {
+    background-color: #2E2E2E;
+    color: #FFFFFF;
+    border: 1px solid #2D2D2D;
+    /* keep small like QMenu: no translucent bg → larger radii show corner artifacts */
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+
+QHeaderView::section {
+    background: #161616;
+    border: none;
+    padding: 4px 8px;
+}

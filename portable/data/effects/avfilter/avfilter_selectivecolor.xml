@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.selectivecolor" id="avfilter.selectivecolor">
+    <name>CMYK adjust</name>
+    <description>Apply CMYK correction to specific color ranges</description>
+    <author>libavfilter</author>
+    <parameter type="list" name="av.correction_method" default="absolute" paramlist="absolute;relative">
+        <name>Correction Method</name>
+        <paramlistdisplay>Absolute,Relative</paramlistdisplay>
+    </parameter>
+    <parameter type="constant" name="av.reds" default="0" min="-1" max="1" decimals="3">
+        <name>Reds</name>
+    </parameter>
+    <parameter type="constant" name="av.yellows" default="0" min="-1" max="1" decimals="3">
+        <name>Yellows</name>
+    </parameter>
+    <parameter type="constant" name="av.greens" default="0" min="-1" max="1" decimals="3">
+        <name>Greens</name>
+    </parameter>
+    <parameter type="constant" name="av.cyans" default="0" min="-1" max="1" decimals="3">
+        <name>Cyans</name>
+    </parameter>
+    <parameter type="constant" name="av.blues" default="0" min="-1" max="1" decimals="3">
+        <name>Blues</name>
+    </parameter>
+    <parameter type="constant" name="av.magentas" default="0" min="-1" max="1" decimals="3">
+        <name>Magentas</name>
+    </parameter>
+    <parameter type="constant" name="av.whites" default="0" min="-1" max="1" decimals="3">
+        <name>Whites</name>
+    </parameter>
+    <parameter type="constant" name="av.neutrals" default="0" min="-1" max="1" decimals="3">
+        <name>Neutrals</name>
+    </parameter>
+    <parameter type="constant" name="av.blacks" default="0" min="-1" max="1" decimals="3">
+        <name>Blacks</name>
+    </parameter>
+</effect>

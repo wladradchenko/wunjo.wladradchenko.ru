@@ -1,0 +1,896 @@
+{
+    "wunjoInfo": [
+        {
+            "layoutVersion": 1,
+            "displayName": "Editing",
+            "default": true,
+            "vertical": false
+        }
+    ],
+    "allDockWidgets": [
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 2,
+                "wasFloating": false
+            },
+            "uniqueName": "clip_properties"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 3,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "timeline"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "project_bin"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "library"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "subtitles"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "textedit"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "timeremap"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "markers"
+        },
+        {
+            "lastCloseReason": 1,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "screengrab"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "audiospectrum"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 1,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "clipmonitor"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 2,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "projectmonitor"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "notes_widget"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "media_browser"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "onlineresources"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "effect_stack"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 3,
+                "wasFloating": false
+            },
+            "uniqueName": "effect_list"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "transition_list"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 660,
+                    "width": 678,
+                    "x": 12,
+                    "y": 70
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 1,
+                "wasFloating": false
+            },
+            "uniqueName": "undo_history"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "mixer"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "vectorscope"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "waveform"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "rgb_parade"
+        },
+        {
+            "lastCloseReason": 2,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 0,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "histogram"
+        },
+        {
+            "lastCloseReason": 0,
+            "lastPosition": {
+                "lastFloatingGeometry": {
+                    "height": 0,
+                    "width": 0,
+                    "x": 0,
+                    "y": 0
+                },
+                "lastOverlayedGeometries": [],
+                "placeholders": [
+                    {
+                        "isFloatingWindow": false,
+                        "itemIndex": 4,
+                        "mainWindowUniqueName": "WunjoKDDock"
+                    }
+                ],
+                "tabIndex": 0,
+                "wasFloating": false
+            },
+            "uniqueName": "chat"
+        }
+    ],
+    "closedDockWidgets": [
+        "audiospectrum",
+        "histogram",
+        "library",
+        "markers",
+        "media_browser",
+        "mixer",
+        "notes_widget",
+        "onlineresources",
+        "rgb_parade",
+        "screengrab",
+        "subtitles",
+        "textedit",
+        "timeremap",
+        "transition_list",
+        "vectorscope",
+        "waveform"
+    ],
+    "floatingWindows": [],
+    "mainWindows": [
+        {
+            "affinities": null,
+            "geometry": {
+                "height": 1119,
+                "width": 1916,
+                "x": 1,
+                "y": 31
+            },
+            "isVisible": true,
+            "multiSplitterLayout": {
+                "frames": {
+                    "13999": {
+                        "currentTabIndex": 0,
+                        "dockWidgets": [
+                            "project_bin",
+                            "undo_history",
+                            "clip_properties",
+                            "effect_list"
+                        ],
+                        "geometry": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 420,
+                            "height": 520
+                        },
+                        "id": "13999",
+                        "isNull": false,
+                        "mainWindowUniqueName": "WunjoKDDock",
+                        "objectName": "project_bin",
+                        "options": 0
+                    },
+                    "13799": {
+                        "currentTabIndex": 0,
+                        "dockWidgets": [
+                            "clipmonitor",
+                            "effect_stack"
+                        ],
+                        "geometry": {
+                            "x": 0,
+                            "y": 520,
+                            "width": 420,
+                            "height": 529
+                        },
+                        "id": "13799",
+                        "isNull": false,
+                        "mainWindowUniqueName": "WunjoKDDock",
+                        "objectName": "clipmonitor",
+                        "options": 0
+                    },
+                    "14179": {
+                        "currentTabIndex": 0,
+                        "dockWidgets": [
+                            "projectmonitor"
+                        ],
+                        "geometry": {
+                            "x": 420,
+                            "y": 0,
+                            "width": 1076,
+                            "height": 630
+                        },
+                        "id": "14179",
+                        "isNull": false,
+                        "mainWindowUniqueName": "WunjoKDDock",
+                        "objectName": "projectmonitor",
+                        "options": 0
+                    },
+                    "13767": {
+                        "currentTabIndex": 0,
+                        "dockWidgets": [
+                            "timeline"
+                        ],
+                        "geometry": {
+                            "x": 420,
+                            "y": 630,
+                            "width": 1076,
+                            "height": 419
+                        },
+                        "id": "13767",
+                        "isNull": false,
+                        "mainWindowUniqueName": "WunjoKDDock",
+                        "objectName": "timeline",
+                        "options": 0
+                    },
+                    "13862": {
+                        "currentTabIndex": 0,
+                        "dockWidgets": [
+                            "chat"
+                        ],
+                        "geometry": {
+                            "x": 1496,
+                            "y": 0,
+                            "width": 420,
+                            "height": 1049
+                        },
+                        "id": "13862",
+                        "isNull": false,
+                        "mainWindowUniqueName": "WunjoKDDock",
+                        "objectName": "chat",
+                        "options": 0
+                    }
+                },
+                "layout": {
+                    "isContainer": true,
+                    "isVisible": true,
+                    "orientation": 1,
+                    "sizingInfo": {
+                        "geometry": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 1916,
+                            "height": 1049
+                        },
+                        "maxSizeHint": {
+                            "height": 524287,
+                            "width": 524287
+                        },
+                        "minSize": {
+                            "height": 90,
+                            "width": 80
+                        },
+                        "percentageWithinParent": 1.0
+                    },
+                    "children": [
+                        {
+                            "isContainer": true,
+                            "isVisible": true,
+                            "orientation": 2,
+                            "sizingInfo": {
+                                "geometry": {
+                                    "x": 0,
+                                    "y": 0,
+                                    "width": 420,
+                                    "height": 1049
+                                },
+                                "maxSizeHint": {
+                                    "height": 524287,
+                                    "width": 524287
+                                },
+                                "minSize": {
+                                    "height": 90,
+                                    "width": 80
+                                },
+                                "percentageWithinParent": 0.21920668058455114
+                            },
+                            "children": [
+                                {
+                                    "guestId": "13999",
+                                    "isContainer": false,
+                                    "isVisible": true,
+                                    "sizingInfo": {
+                                        "geometry": {
+                                            "x": 0,
+                                            "y": 0,
+                                            "width": 420,
+                                            "height": 520
+                                        },
+                                        "maxSizeHint": {
+                                            "height": 524287,
+                                            "width": 524287
+                                        },
+                                        "minSize": {
+                                            "height": 267,
+                                            "width": 141
+                                        },
+                                        "percentageWithinParent": 0.49571020019065776
+                                    }
+                                },
+                                {
+                                    "guestId": "13799",
+                                    "isContainer": false,
+                                    "isVisible": true,
+                                    "sizingInfo": {
+                                        "geometry": {
+                                            "x": 0,
+                                            "y": 520,
+                                            "width": 420,
+                                            "height": 529
+                                        },
+                                        "maxSizeHint": {
+                                            "height": 524287,
+                                            "width": 524287
+                                        },
+                                        "minSize": {
+                                            "height": 230,
+                                            "width": 326
+                                        },
+                                        "percentageWithinParent": 0.5042897998093422
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "isContainer": true,
+                            "isVisible": true,
+                            "orientation": 2,
+                            "sizingInfo": {
+                                "geometry": {
+                                    "x": 420,
+                                    "y": 0,
+                                    "width": 1076,
+                                    "height": 1049
+                                },
+                                "maxSizeHint": {
+                                    "height": 524287,
+                                    "width": 524287
+                                },
+                                "minSize": {
+                                    "height": 90,
+                                    "width": 80
+                                },
+                                "percentageWithinParent": 0.5615866388308977
+                            },
+                            "children": [
+                                {
+                                    "guestId": "14179",
+                                    "isContainer": false,
+                                    "isVisible": true,
+                                    "sizingInfo": {
+                                        "geometry": {
+                                            "x": 420,
+                                            "y": 0,
+                                            "width": 1076,
+                                            "height": 630
+                                        },
+                                        "maxSizeHint": {
+                                            "height": 524287,
+                                            "width": 524287
+                                        },
+                                        "minSize": {
+                                            "height": 295,
+                                            "width": 394
+                                        },
+                                        "percentageWithinParent": 0.6005719733079123
+                                    }
+                                },
+                                {
+                                    "guestId": "13767",
+                                    "isContainer": false,
+                                    "isVisible": true,
+                                    "sizingInfo": {
+                                        "geometry": {
+                                            "x": 420,
+                                            "y": 630,
+                                            "width": 1076,
+                                            "height": 419
+                                        },
+                                        "maxSizeHint": {
+                                            "height": 524287,
+                                            "width": 524287
+                                        },
+                                        "minSize": {
+                                            "height": 90,
+                                            "width": 80
+                                        },
+                                        "percentageWithinParent": 0.3994280266920877
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "guestId": "13862",
+                            "isContainer": false,
+                            "isVisible": true,
+                            "sizingInfo": {
+                                "geometry": {
+                                    "x": 1496,
+                                    "y": 0,
+                                    "width": 420,
+                                    "height": 1049
+                                },
+                                "maxSizeHint": {
+                                    "height": 524287,
+                                    "width": 524287
+                                },
+                                "minSize": {
+                                    "height": 90,
+                                    "width": 80
+                                },
+                                "percentageWithinParent": 0.21920668058455114
+                            }
+                        }
+                    ]
+                }
+            },
+            "normalGeometry": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+            },
+            "options": 0,
+            "screenIndex": 0,
+            "screenSize": {
+                "height": 1200,
+                "width": 1920
+            },
+            "uniqueName": "WunjoKDDock",
+            "windowState": 0
+        }
+    ],
+    "screenInfo": [
+        {
+            "devicePixelRatio": 1.0,
+            "geometry": {
+                "height": 1200,
+                "width": 1920,
+                "x": 0,
+                "y": 0
+            },
+            "index": 0,
+            "name": ""
+        }
+    ],
+    "serializationVersion": 3
+}

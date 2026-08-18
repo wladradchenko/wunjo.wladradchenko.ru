@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs><style type="text/css" id="current-color-scheme">.ColorScheme-Text { color:#fcfcfc; }</style></defs>
+  <g class="ColorScheme-Text" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round">
+    <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z" />
+    <path d="M15.5 22.5l.7-2.6 4.3-4.3a1.35 1.35 0 0 1 1.9 1.9l-4.3 4.3z"/>
+  </g>
+</svg>

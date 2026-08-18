@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-FileCopyrightText: Jean-Baptiste Mardelle <jb@kdenlive.org>, Julius Künzel <julius.kuenzel@kde.org>, Eric Jiang <erjiang@alumni.iu.edu>, Vincent Pinon <vincent.pinon@asygn.com>
+
+include_directories(..)
+set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR})
+configure_file(tests_definitions.h.in tests_definitions.h)
+kde_enable_exceptions()
+
+set(WunjoTest_SOURCES
+    avcurvetest.cpp
+    audiolevelstasktest.cpp
+    cachetest.cpp
+    colorscopestest.cpp
+    compositiontest.cpp
+    documenttest.cpp
+    effectstest.cpp
+    effectsgrouptest.cpp
+    filetest.cpp # codespell:ignore filetest
+    groupstest.cpp
+    hidetest.cpp
+    keyframetest.cpp
+    markertest.cpp
+    mixtest.cpp
+    modeltest.cpp
+    movetest.cpp
+    nestingtest.cpp
+    otiotest.cpp
+    regressions.cpp
+    rendermodeltest.cpp
+    replacetest.cpp
+    sequencetest.cpp
+    snaptest.cpp
+    spacertest.cpp
+    subtitlestest.cpp
+    timelinepreviewtest.cpp
+    timewarptest.cpp
+    titlertest.cpp
+    treetest.cpp
+    trimmingtest.cpp
+    utilstest.cpp
+)
+
+include(ECMAddTests)
+
+foreach(_source ${WunjoTest_SOURCES})
+  get_filename_component(_targetname ${_source} NAME_WE)
+  ecm_add_test(
+      TestMain.cpp
+      test_utils.cpp
+      abortutil.cpp
+      ${_source}
+      TEST_NAME ${_targetname}
+      LINK_LIBRARIES wunjoLib
+  )
+  set_property(TARGET ${_targetname} PROPERTY CXX_STANDARD 14)
+endforeach()

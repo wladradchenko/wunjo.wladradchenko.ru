@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.scale0tilt" id="frei0r.scale0tilt">
+    <name>Crop, Scale, and Tilt</name>
+    <description>Scales, tilts, and crops an image</description>
+    <author>Richard Spindler</author>
+    <parameter type="animated" name="Clip left" max="%width" min="0" default="0" factor="%width">
+        <name>Crop Left</name>
+    </parameter>
+    <parameter type="animated" name="Clip right" max="%width" min="0" default="0" factor="%width">
+        <name>Crop Right</name>
+    </parameter>
+    <parameter type="animated" name="Clip top" max="%height" min="0" default="0" factor="%height">
+        <name>Crop Top</name>
+    </parameter>
+    <parameter type="animated" name="Clip bottom" max="%height" min="0" default="0" factor="%height">
+        <name>Crop Bottom</name>
+    </parameter>
+    <parameter type="animated" name="Scale X" max="1000" min="1" default="0.5" factor="200">
+        <name>Scale X</name>
+    </parameter>
+    <parameter type="animated" name="Scale Y" max="1000" min="1" default="0.5" factor="200">
+        <name>Scale Y</name>
+    </parameter>
+    <parameter type="animated" name="Tilt X" max="%width" min="0" default="0.5" factor="%width">
+        <name>Tilt X</name>
+    </parameter>
+    <parameter type="animated" name="Tilt Y" max="%height" min="0" default="0.5" factor="%height">
+        <name>Tilt Y</name>
+    </parameter>
+</effect>

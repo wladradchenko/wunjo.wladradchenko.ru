@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="ladspa.9354877" id="ladspa.9354877" type="audio">
+    <name>Noise Suppressor for Voice</name>
+    <description>Microphone background noise removal filter</description>
+    <author>Danil Werman</author>
+    <parameter type="constant" name="2" default="49" min="0" max="99" suffix="%">
+        <name>VAD Threshold (%)</name>
+    </parameter>
+    <parameter type="constant" name="3" default="500" min="0" max="1000">
+        <name>VAD Grace Period (ms)</name>
+    </parameter>
+    <parameter type="constant" name="4" default="0" min="0" max="200">
+        <name>Retroactive VAD Grace Period (ms)</name>
+    </parameter>
+</effect>

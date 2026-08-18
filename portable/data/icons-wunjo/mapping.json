@@ -1,0 +1,1131 @@
+{
+  "_comment": "Icon name -> source recipe for the 'wunjo' icon theme. Sources: lucide (id in the Lucide release), compose (base lucide id or custom file + badge), custom (file in custom/), alias (copy of another mapped name), fallback (intentionally left to the inherited breeze-dark theme). Regenerate with generate.py; see README.md.",
+  "add-subtitle": {
+    "source": "compose",
+    "base": "lucide:captions",
+    "badge": "plus"
+  },
+  "adjustlevels": {
+    "source": "lucide",
+    "id": "sliders-horizontal"
+  },
+  "align-horizontal-center": {
+    "source": "lucide",
+    "id": "align-center-vertical"
+  },
+  "align-horizontal-left": {
+    "source": "lucide",
+    "id": "align-start-vertical"
+  },
+  "align-horizontal-right": {
+    "source": "lucide",
+    "id": "align-end-vertical"
+  },
+  "align-vertical-bottom": {
+    "source": "lucide",
+    "id": "align-end-horizontal"
+  },
+  "align-vertical-center": {
+    "source": "lucide",
+    "id": "align-center-horizontal"
+  },
+  "align-vertical-top": {
+    "source": "lucide",
+    "id": "align-start-horizontal"
+  },
+  "application-exit": {
+    "source": "lucide",
+    "id": "log-out"
+  },
+  "application-menu": {
+    "source": "lucide",
+    "id": "menu"
+  },
+  "application-x-executable-script": {
+    "source": "lucide",
+    "id": "file-terminal"
+  },
+  "arrow-down": {
+    "source": "lucide",
+    "id": "arrow-down"
+  },
+  "arrow-left": {
+    "source": "lucide",
+    "id": "arrow-left"
+  },
+  "arrow-right": {
+    "source": "lucide",
+    "id": "arrow-right"
+  },
+  "arrow-up": {
+    "source": "lucide",
+    "id": "arrow-up"
+  },
+  "audio-input-microphone": {
+    "source": "lucide",
+    "id": "mic"
+  },
+  "audio-off": {
+    "source": "lucide",
+    "id": "volume-off"
+  },
+  "audio-volume-high": {
+    "source": "lucide",
+    "id": "volume-2"
+  },
+  "audio-volume-medium": {
+    "source": "lucide",
+    "id": "volume-1"
+  },
+  "audio-volume-muted": {
+    "source": "lucide",
+    "id": "volume-x"
+  },
+  "audio-x-generic": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "autocorrection": {
+    "source": "lucide",
+    "id": "spell-check"
+  },
+  "bookmark-edit": {
+    "source": "compose",
+    "base": "lucide:bookmark",
+    "badge": "pencil"
+  },
+  "bookmark-new": {
+    "source": "lucide",
+    "id": "bookmark-plus"
+  },
+  "bookmark-remove": {
+    "source": "lucide",
+    "id": "bookmark-minus"
+  },
+  "bookmarks": {
+    "source": "lucide",
+    "id": "bookmark"
+  },
+  "camera-photo": {
+    "source": "lucide",
+    "id": "camera"
+  },
+  "camera-video": {
+    "source": "lucide",
+    "id": "video"
+  },
+  "collapse-all": {
+    "source": "lucide",
+    "id": "list-collapse"
+  },
+  "color-picker": {
+    "source": "lucide",
+    "id": "pipette"
+  },
+  "colormanagement": {
+    "source": "lucide",
+    "id": "palette"
+  },
+  "composite-track-on": {
+    "source": "lucide",
+    "id": "layers"
+  },
+  "composite-track-preview": {
+    "source": "lucide",
+    "id": "layers-2"
+  },
+  "configure": {
+    "source": "lucide",
+    "id": "settings"
+  },
+  "configure-shortcuts": {
+    "source": "lucide",
+    "id": "keyboard"
+  },
+  "configure-toolbars": {
+    "source": "lucide",
+    "id": "wrench"
+  },
+  "coordinate": {
+    "source": "lucide",
+    "id": "axis-3d"
+  },
+  "cursor-arrow": {
+    "source": "lucide",
+    "id": "mouse-pointer-2"
+  },
+  "data-warning": {
+    "source": "lucide",
+    "id": "triangle-alert"
+  },
+  "dialog-cancel": {
+    "source": "lucide",
+    "id": "circle-x"
+  },
+  "dialog-close": {
+    "source": "lucide",
+    "id": "x"
+  },
+  "dialog-error": {
+    "source": "lucide",
+    "id": "octagon-alert"
+  },
+  "dialog-information": {
+    "source": "lucide",
+    "id": "info"
+  },
+  "dialog-ok": {
+    "source": "lucide",
+    "id": "check"
+  },
+  "dialog-ok-apply": {
+    "source": "lucide",
+    "id": "check-check"
+  },
+  "dialog-warning": {
+    "source": "lucide",
+    "id": "triangle-alert"
+  },
+  "distribute-horizontal-x": {
+    "source": "lucide",
+    "id": "align-horizontal-space-between"
+  },
+  "document-close": {
+    "source": "lucide",
+    "id": "file-x"
+  },
+  "document-edit": {
+    "source": "lucide",
+    "id": "file-pen"
+  },
+  "document-export": {
+    "source": "lucide",
+    "id": "file-up"
+  },
+  "document-import": {
+    "source": "lucide",
+    "id": "file-down"
+  },
+  "document-new": {
+    "source": "lucide",
+    "id": "file-plus"
+  },
+  "document-open": {
+    "source": "lucide",
+    "id": "folder-open"
+  },
+  "document-open-recent": {
+    "source": "lucide",
+    "id": "history"
+  },
+  "document-print": {
+    "source": "lucide",
+    "id": "printer"
+  },
+  "document-print-preview": {
+    "source": "lucide",
+    "id": "printer"
+  },
+  "document-revert": {
+    "source": "lucide",
+    "id": "history"
+  },
+  "document-save": {
+    "source": "lucide",
+    "id": "save"
+  },
+  "document-save-all": {
+    "source": "lucide",
+    "id": "save-all"
+  },
+  "document-save-as": {
+    "source": "compose",
+    "base": "lucide:save",
+    "badge": "pencil"
+  },
+  "document-save-as-template": {
+    "source": "lucide",
+    "id": "layout-template"
+  },
+  "document-share": {
+    "source": "lucide",
+    "id": "share"
+  },
+  "donate": {
+    "source": "lucide",
+    "id": "heart"
+  },
+  "download": {
+    "source": "lucide",
+    "id": "download"
+  },
+  "draw-ellipse": {
+    "source": "lucide",
+    "id": "circle"
+  },
+  "draw-text": {
+    "source": "lucide",
+    "id": "type"
+  },
+  "edit-clear": {
+    "source": "lucide",
+    "id": "eraser"
+  },
+  "edit-clear-all": {
+    "source": "lucide",
+    "id": "eraser"
+  },
+  "edit-clear-history": {
+    "source": "compose",
+    "base": "lucide:history",
+    "badge": "x"
+  },
+  "edit-copy": {
+    "source": "lucide",
+    "id": "copy"
+  },
+  "edit-cut": {
+    "source": "lucide",
+    "id": "scissors"
+  },
+  "edit-delete": {
+    "source": "lucide",
+    "id": "trash-2"
+  },
+  "edit-delete-remove": {
+    "source": "lucide",
+    "id": "trash-2"
+  },
+  "edit-download": {
+    "source": "alias",
+    "of": "download"
+  },
+  "edit-find": {
+    "source": "lucide",
+    "id": "search"
+  },
+  "edit-find-replace": {
+    "source": "lucide",
+    "id": "replace"
+  },
+  "edit-opacity": {
+    "source": "lucide",
+    "id": "blend"
+  },
+  "edit-paste": {
+    "source": "lucide",
+    "id": "clipboard-paste"
+  },
+  "edit-redo": {
+    "source": "lucide",
+    "id": "redo-2"
+  },
+  "edit-reset": {
+    "source": "lucide",
+    "id": "rotate-ccw"
+  },
+  "edit-select": {
+    "source": "lucide",
+    "id": "square-dashed-mouse-pointer"
+  },
+  "edit-select-all": {
+    "source": "lucide",
+    "id": "square-dashed"
+  },
+  "edit-select-invert": {
+    "source": "lucide",
+    "id": "square-slash"
+  },
+  "edit-select-none": {
+    "source": "lucide",
+    "id": "square-x"
+  },
+  "edit-undo": {
+    "source": "lucide",
+    "id": "undo-2"
+  },
+  "entry-delete": {
+    "source": "lucide",
+    "id": "delete"
+  },
+  "favorite": {
+    "source": "lucide",
+    "id": "star"
+  },
+  "file": {
+    "source": "lucide",
+    "id": "file"
+  },
+  "find-location": {
+    "source": "lucide",
+    "id": "locate"
+  },
+  "folder": {
+    "source": "lucide",
+    "id": "folder"
+  },
+  "folder-new": {
+    "source": "lucide",
+    "id": "folder-plus"
+  },
+  "folder-yellow": {
+    "source": "lucide",
+    "id": "folder"
+  },
+  "format-font-size-less": {
+    "source": "lucide",
+    "id": "a-arrow-down"
+  },
+  "format-font-size-more": {
+    "source": "lucide",
+    "id": "a-arrow-up"
+  },
+  "games-solve": {
+    "source": "lucide",
+    "id": "lightbulb"
+  },
+  "go-down": {
+    "source": "lucide",
+    "id": "chevron-down"
+  },
+  "go-first": {
+    "source": "lucide",
+    "id": "chevrons-left"
+  },
+  "go-home": {
+    "source": "lucide",
+    "id": "house"
+  },
+  "go-jump": {
+    "source": "lucide",
+    "id": "arrow-right-to-line"
+  },
+  "go-last": {
+    "source": "lucide",
+    "id": "chevrons-right"
+  },
+  "go-next": {
+    "source": "lucide",
+    "id": "chevron-right"
+  },
+  "go-previous": {
+    "source": "lucide",
+    "id": "chevron-left"
+  },
+  "go-up": {
+    "source": "lucide",
+    "id": "chevron-up"
+  },
+  "headphones": {
+    "source": "lucide",
+    "id": "headphones"
+  },
+  "help-about": {
+    "source": "lucide",
+    "id": "info"
+  },
+  "help-browser": {
+    "source": "lucide",
+    "id": "circle-question-mark"
+  },
+  "help-contents": {
+    "source": "lucide",
+    "id": "book-open"
+  },
+  "help-hint": {
+    "source": "lucide",
+    "id": "lightbulb"
+  },
+  "help-whatsthis": {
+    "source": "lucide",
+    "id": "circle-question-mark"
+  },
+  "hint": {
+    "source": "lucide",
+    "id": "lightbulb"
+  },
+  "image-jpeg": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-missing": {
+    "source": "lucide",
+    "id": "image-off"
+  },
+  "image-x-generic": {
+    "source": "lucide",
+    "id": "image"
+  },
+  "insert-image": {
+    "source": "lucide",
+    "id": "image-plus"
+  },
+  "insert-text": {
+    "source": "lucide",
+    "id": "text-cursor-input"
+  },
+  "internet-services": {
+    "source": "lucide",
+    "id": "globe"
+  },
+  "keyboard-spacebar": {
+    "source": "lucide",
+    "id": "space"
+  },
+  "keyframe": {
+    "source": "lucide",
+    "id": "diamond"
+  },
+  "keyframe-add": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "plus"
+  },
+  "keyframe-disable": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "slash"
+  },
+  "keyframe-duplicate": {
+    "source": "custom",
+    "file": "keyframe-duplicate.svg"
+  },
+  "keyframe-next": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "chevron-right"
+  },
+  "keyframe-previous": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "chevron-left"
+  },
+  "keyframe-record": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "dot"
+  },
+  "keyframe-remove": {
+    "source": "compose",
+    "base": "lucide:diamond",
+    "badge": "minus"
+  },
+  "layer-visible-on": {
+    "source": "lucide",
+    "id": "eye"
+  },
+  "linear": {
+    "source": "lucide",
+    "id": "trending-up"
+  },
+  "link": {
+    "source": "lucide",
+    "id": "link"
+  },
+  "list-add": {
+    "source": "lucide",
+    "id": "plus"
+  },
+  "list-remove": {
+    "source": "lucide",
+    "id": "minus"
+  },
+  "lock": {
+    "source": "lucide",
+    "id": "lock"
+  },
+  "measure": {
+    "source": "lucide",
+    "id": "ruler"
+  },
+  "media-playback-pause": {
+    "source": "lucide",
+    "id": "pause"
+  },
+  "media-playback-start": {
+    "source": "lucide",
+    "id": "play"
+  },
+  "media-playback-stop": {
+    "source": "lucide",
+    "id": "square"
+  },
+  "media-record": {
+    "source": "lucide",
+    "id": "circle-dot"
+  },
+  "media-seek-backward": {
+    "source": "lucide",
+    "id": "rewind"
+  },
+  "media-seek-forward": {
+    "source": "lucide",
+    "id": "fast-forward"
+  },
+  "media-skip-backward": {
+    "source": "lucide",
+    "id": "skip-back"
+  },
+  "media-skip-forward": {
+    "source": "lucide",
+    "id": "skip-forward"
+  },
+  "messagebox_warning": {
+    "source": "lucide",
+    "id": "triangle-alert"
+  },
+  "motion_path_animations": {
+    "source": "lucide",
+    "id": "spline"
+  },
+  "network-server-database": {
+    "source": "lucide",
+    "id": "database"
+  },
+  "object-flip-horizontal": {
+    "source": "lucide",
+    "id": "flip-horizontal-2"
+  },
+  "object-flip-vertical": {
+    "source": "lucide",
+    "id": "flip-vertical-2"
+  },
+  "object-group": {
+    "source": "lucide",
+    "id": "group"
+  },
+  "object-order-back": {
+    "source": "lucide",
+    "id": "send-to-back"
+  },
+  "object-order-front": {
+    "source": "lucide",
+    "id": "bring-to-front"
+  },
+  "object-order-lower": {
+    "source": "lucide",
+    "id": "square-arrow-down"
+  },
+  "object-order-raise": {
+    "source": "lucide",
+    "id": "square-arrow-up"
+  },
+  "object-rotate-right": {
+    "source": "lucide",
+    "id": "rotate-cw"
+  },
+  "object-ungroup": {
+    "source": "lucide",
+    "id": "ungroup"
+  },
+  "paper-color": {
+    "source": "lucide",
+    "id": "paint-roller"
+  },
+  "path-mask-edit": {
+    "source": "lucide",
+    "id": "pen-tool"
+  },
+  "pixelate": {
+    "source": "lucide",
+    "id": "grid-3x3"
+  },
+  "player-volume": {
+    "source": "alias",
+    "of": "audio-volume-high"
+  },
+  "preview-add-zone": {
+    "source": "lucide",
+    "id": "square-plus"
+  },
+  "preview-remove-all": {
+    "source": "lucide",
+    "id": "square-x"
+  },
+  "preview-remove-zone": {
+    "source": "lucide",
+    "id": "square-minus"
+  },
+  "preview-render-off": {
+    "source": "lucide",
+    "id": "zap-off"
+  },
+  "preview-render-on": {
+    "source": "lucide",
+    "id": "zap"
+  },
+  "process-stop": {
+    "source": "lucide",
+    "id": "ban"
+  },
+  "run-build": {
+    "source": "lucide",
+    "id": "hammer"
+  },
+  "select-rectangular": {
+    "source": "lucide",
+    "id": "square-dashed"
+  },
+  "selection-lower": {
+    "source": "lucide",
+    "id": "square-arrow-down"
+  },
+  "selection-raise": {
+    "source": "lucide",
+    "id": "square-arrow-up"
+  },
+  "settings-configure": {
+    "source": "alias",
+    "of": "configure"
+  },
+  "show-all-effects": {
+    "source": "lucide",
+    "id": "sparkles"
+  },
+  "show-menu": {
+    "source": "lucide",
+    "id": "menu"
+  },
+  "sidebar-expand-right": {
+    "source": "lucide",
+    "id": "panel-right-open"
+  },
+  "smartphone": {
+    "source": "lucide",
+    "id": "smartphone"
+  },
+  "snap": {
+    "source": "lucide",
+    "id": "magnet"
+  },
+  "speaker": {
+    "source": "lucide",
+    "id": "speaker"
+  },
+  "speedometer": {
+    "source": "lucide",
+    "id": "gauge"
+  },
+  "tag": {
+    "source": "lucide",
+    "id": "tag"
+  },
+  "tag-new": {
+    "source": "compose",
+    "base": "lucide:tag",
+    "badge": "plus"
+  },
+  "task-process-0": {
+    "source": "lucide",
+    "id": "circle"
+  },
+  "task-process-1": {
+    "source": "lucide",
+    "id": "loader"
+  },
+  "task-process-2": {
+    "source": "lucide",
+    "id": "loader"
+  },
+  "task-process-3": {
+    "source": "lucide",
+    "id": "loader-circle"
+  },
+  "task-process-4": {
+    "source": "lucide",
+    "id": "circle-check"
+  },
+  "text-plain": {
+    "source": "lucide",
+    "id": "file-text"
+  },
+  "text-speak": {
+    "source": "lucide",
+    "id": "speech"
+  },
+  "timeline-extract": {
+    "source": "custom",
+    "file": "timeline-extract.svg"
+  },
+  "timeline-insert": {
+    "source": "custom",
+    "file": "timeline-insert.svg"
+  },
+  "timeline-lift": {
+    "source": "custom",
+    "file": "timeline-lift.svg"
+  },
+  "timeline-overwrite": {
+    "source": "custom",
+    "file": "timeline-overwrite.svg"
+  },
+  "timeline-use-zone-off": {
+    "source": "compose",
+    "base": "lucide:brackets",
+    "badge": "slash"
+  },
+  "timeline-use-zone-on": {
+    "source": "lucide",
+    "id": "brackets"
+  },
+  "tool_curve": {
+    "source": "lucide",
+    "id": "tangent"
+  },
+  "tools-report-bug": {
+    "source": "lucide",
+    "id": "bug"
+  },
+  "tools-wizard": {
+    "source": "lucide",
+    "id": "wand-sparkles"
+  },
+  "transform-crop": {
+    "source": "lucide",
+    "id": "crop"
+  },
+  "transform-move": {
+    "source": "lucide",
+    "id": "move"
+  },
+  "transform-move-horizontal": {
+    "source": "lucide",
+    "id": "move-horizontal"
+  },
+  "transform-scale": {
+    "source": "lucide",
+    "id": "scaling"
+  },
+  "unknown": {
+    "source": "lucide",
+    "id": "file-question-mark"
+  },
+  "unlock": {
+    "source": "lucide",
+    "id": "lock-open"
+  },
+  "user-group-new": {
+    "source": "lucide",
+    "id": "user-plus"
+  },
+  "video": {
+    "source": "lucide",
+    "id": "video"
+  },
+  "video-off": {
+    "source": "lucide",
+    "id": "video-off"
+  },
+  "video-mlt-playlist": {
+    "source": "lucide",
+    "id": "list-video"
+  },
+  "video-mp4": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-webm": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-x-msvideo": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-quicktime": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-mpeg": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-x-ms-wmv": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "audio-mpeg": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-mp4": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-x-wav": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-flac": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-x-vorbis+ogg": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "audio-aac": {
+    "source": "lucide",
+    "id": "file-music"
+  },
+  "image-png": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-gif": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-webp": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-bmp": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-tiff": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "image-svg+xml": {
+    "source": "lucide",
+    "id": "file-image"
+  },
+  "video-television": {
+    "source": "lucide",
+    "id": "tv"
+  },
+  "video-x-generic": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "video-x-matroska": {
+    "source": "lucide",
+    "id": "file-video-camera"
+  },
+  "view-filter": {
+    "source": "lucide",
+    "id": "funnel"
+  },
+  "view-fullscreen": {
+    "source": "lucide",
+    "id": "maximize"
+  },
+  "view-grid": {
+    "source": "lucide",
+    "id": "layout-grid"
+  },
+  "view-hidden": {
+    "source": "lucide",
+    "id": "eye-off"
+  },
+  "view-list-icons": {
+    "source": "lucide",
+    "id": "grid-2x2"
+  },
+  "view-list-tree": {
+    "source": "lucide",
+    "id": "list-tree"
+  },
+  "view-media-equalizer": {
+    "source": "lucide",
+    "id": "sliders-vertical"
+  },
+  "view-preview": {
+    "source": "lucide",
+    "id": "monitor-play"
+  },
+  "view-refresh": {
+    "source": "lucide",
+    "id": "refresh-cw"
+  },
+  "view-right-close": {
+    "source": "lucide",
+    "id": "panel-right-close"
+  },
+  "view-split-effect": {
+    "source": "lucide",
+    "id": "columns-2"
+  },
+  "view-split-left-right": {
+    "source": "lucide",
+    "id": "columns-2"
+  },
+  "view-split-top-bottom": {
+    "source": "lucide",
+    "id": "rows-2"
+  },
+  "view-visible": {
+    "source": "lucide",
+    "id": "eye"
+  },
+  "visibility": {
+    "source": "lucide",
+    "id": "eye"
+  },
+  "window-close": {
+    "source": "lucide",
+    "id": "x"
+  },
+  "wunjo": {
+    "source": "fallback"
+  },
+  "wunjo-add-clip": {
+    "source": "compose",
+    "base": "lucide:film",
+    "badge": "plus"
+  },
+  "wunjo-add-color-clip": {
+    "source": "compose",
+    "base": "lucide:palette",
+    "badge": "plus"
+  },
+  "wunjo-add-slide-clip": {
+    "source": "compose",
+    "base": "lucide:images",
+    "badge": "plus"
+  },
+  "wunjo-add-text-clip": {
+    "source": "compose",
+    "base": "lucide:type",
+    "badge": "plus"
+  },
+  "wunjo-analysis": {
+    "source": "lucide",
+    "id": "activity"
+  },
+  "wunjo-axis-x-inverted": {
+    "source": "lucide",
+    "id": "flip-horizontal-2"
+  },
+  "wunjo-axis-y-inverted": {
+    "source": "lucide",
+    "id": "flip-vertical-2"
+  },
+  "wunjo-custom-effect": {
+    "source": "compose",
+    "base": "lucide:sparkles",
+    "badge": "pencil"
+  },
+  "wunjo-hide-video": {
+    "source": "lucide",
+    "id": "video-off"
+  },
+  "wunjo-insert-edit": {
+    "source": "lucide",
+    "id": "between-horizontal-start"
+  },
+  "wunjo-insert-rect": {
+    "source": "compose",
+    "base": "lucide:square",
+    "badge": "plus"
+  },
+  "wunjo-insert-unicode": {
+    "source": "lucide",
+    "id": "omega"
+  },
+  "wunjo-normal-edit": {
+    "source": "lucide",
+    "id": "mouse-pointer-2"
+  },
+  "wunjo-overwrite-edit": {
+    "source": "lucide",
+    "id": "square-stack"
+  },
+  "wunjo-render": {
+    "source": "lucide",
+    "id": "circle-dot"
+  },
+  "wunjo-renderqueue": {
+    "source": "lucide",
+    "id": "list-video"
+  },
+  "wunjo-ripple": {
+    "source": "custom",
+    "file": "wunjo-ripple.svg"
+  },
+  "wunjo-rolling": {
+    "source": "custom",
+    "file": "wunjo-rolling.svg"
+  },
+  "wunjo-scene": {
+    "source": "lucide",
+    "id": "clapperboard"
+  },
+  "wunjo-select-images": {
+    "source": "lucide",
+    "id": "image"
+  },
+  "wunjo-select-rects": {
+    "source": "lucide",
+    "id": "square"
+  },
+  "wunjo-select-texts": {
+    "source": "lucide",
+    "id": "type"
+  },
+  "wunjo-show-audiothumb": {
+    "source": "lucide",
+    "id": "audio-waveform"
+  },
+  "wunjo-show-markers": {
+    "source": "lucide",
+    "id": "flag"
+  },
+  "wunjo-show-video": {
+    "source": "lucide",
+    "id": "video"
+  },
+  "wunjo-slide": {
+    "source": "custom",
+    "file": "wunjo-slide.svg"
+  },
+  "wunjo-slip": {
+    "source": "custom",
+    "file": "wunjo-slip.svg"
+  },
+  "zone-in": {
+    "source": "custom",
+    "file": "zone-in.svg"
+  },
+  "zone-out": {
+    "source": "custom",
+    "file": "zone-out.svg"
+  },
+  "zoom": {
+    "source": "lucide",
+    "id": "search"
+  },
+  "zoom-1-to-2": {
+    "source": "fallback"
+  },
+  "zoom-fit-best": {
+    "source": "lucide",
+    "id": "scan"
+  },
+  "zoom-fit-height": {
+    "source": "lucide",
+    "id": "unfold-vertical"
+  },
+  "zoom-fit-width": {
+    "source": "lucide",
+    "id": "unfold-horizontal"
+  },
+  "zoom-in": {
+    "source": "lucide",
+    "id": "zoom-in"
+  },
+  "zoom-original": {
+    "source": "lucide",
+    "id": "maximize-2"
+  },
+  "zoom-out": {
+    "source": "lucide",
+    "id": "zoom-out"
+  },
+  "wunjo-detect-faces": {
+    "source": "lucide",
+    "id": "scan-face"
+  }
+}

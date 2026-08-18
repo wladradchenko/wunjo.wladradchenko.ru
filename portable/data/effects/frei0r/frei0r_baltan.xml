@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.baltan" id="frei0r.baltan">
+    <name>Baltan</name>
+    <description>Delayed alpha smoothed blit of time</description>
+    <author>Kentaro, Jaromil</author>
+</effect>

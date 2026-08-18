@@ -1,0 +1,172 @@
+# macOS build via KDE Craft.
+#
+# Homebrew has Qt but not the KDE Frameworks, so Craft is the only realistic
+# route: it builds the whole stack and knows how to make a .dmg out of it.
+#
+# Only arm64 is built. The x86_64 runners (macos-13) are on their way out, and a
+# universal binary means building everything twice and lipo-ing the result —
+# worth doing only once there is demand from Intel Macs.
+#
+# UNVERIFIED. Written from the project's dependency list and Craft's documented
+# interface, not from a green run. Expect the first attempts to fail on package
+# names; fix them in portable/packaging/craft/blueprints/apps/wunjo/wunjo.py.
+name: CI/CD Pipeline Package macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      rebuild-deps:
+        description: 'Rebuild the dependency cache from scratch'
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CRAFT_ROOT: /Users/runner/CraftRoot
+  APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
+  CRAFT_TARGET: macos-clang-arm64
+
+jobs:
+  build:
+    runs-on: macos-14      # Apple Silicon
+    timeout-minutes: 350
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore Craft cache
+        if: ${{ !inputs.rebuild-deps }}
+        uses: actions/cache/restore@v4
+        id: craft-cache
+        with:
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          restore-keys: craft-${{ env.CRAFT_TARGET }}-
+
+      - name: Bootstrap Craft
+        if: steps.craft-cache.outputs.cache-matched-key == ''
+        run: |
+          curl -sSLo CraftBootstrap.py https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py
+          python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --target "$CRAFT_TARGET" --branch master
+
+      - name: Register the Wunjo blueprint
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --add-blueprint-repository "$GITHUB_WORKSPACE/portable/packaging/craft/blueprints"
+
+      - name: Build dependencies
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --install-deps wunjo
+
+      - name: Build Wunjo Make
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      # ── signing ────────────────────────────────────────────────────────
+      # Skipped entirely without an Apple Developer ID, and the build still
+      # produces a .dmg — one that Gatekeeper refuses to open on any machine
+      # that downloaded it. That artifact is for testing on a Mac where the
+      # quarantine bit has been cleared, nothing else.
+      #
+      # macOS is not like Windows here: every Mach-O inside the bundle has to be
+      # signed or notarisation rejects the whole thing, so there is no picking a
+      # few files to save a signing quota. That is why --deep is used.
+      #
+      # Secrets required, all four or none:
+      #   APPLE_CERT_P12          Developer ID Application certificate, base64
+      #   APPLE_CERT_PASSWORD     its password
+      #   APPLE_ID                the Apple ID that owns the developer account
+      #   APPLE_TEAM_ID           the team identifier
+      #   APPLE_APP_PASSWORD      an app-specific password for notarytool
+      #
+      # A SignPath-held key works here too: install their CryptoTokenKit
+      # extension instead of importing the .p12, and leave the codesign call as
+      # it is — it finds the identity in the keychain either way.
+      - name: Import the signing certificate
+        id: signing
+        if: ${{ env.APPLE_CERT_P12 != '' }}
+        env:
+          APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
+          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+        run: |
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          password="$(uuidgen)"
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          echo "$APPLE_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" -P "$APPLE_CERT_PASSWORD" \
+                  -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -k "$password" "$keychain" >/dev/null
+          security list-keychain -d user -s "$keychain" login.keychain-db
+          rm -f "$RUNNER_TEMP/cert.p12"
+          identity=$(security find-identity -v -p codesigning "$keychain" | awk '/Developer ID Application/ {print $2; exit}')
+          if [ -z "$identity" ]; then echo "::error::no Developer ID Application identity in the certificate"; exit 1; fi
+          echo "identity=$identity" >> "$GITHUB_OUTPUT"
+
+      - name: Sign the application bundle
+        if: ${{ steps.signing.outputs.identity != '' }}
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
+          if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
+          echo "signing $bundle"
+          # Hardened runtime is a notarisation requirement, not an option.
+          codesign --deep --force --timestamp --options runtime \
+                   --sign "${{ steps.signing.outputs.identity }}" "$bundle"
+          codesign --verify --deep --strict --verbose=2 "$bundle"
+
+      - name: Package
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --package --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      - name: Collect the disk image
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          dir=$(craft -q --get "packageDestinationDir()" virtual/base)
+          mkdir -p packages
+          find "$dir" \( -name '*.dmg' -o -name '*.7z' -o -name '*.sha256' \) -exec cp {} packages/ \;
+
+      # Signing proves who built it; notarisation is Apple confirming they
+      # scanned it. Gatekeeper wants both, and they are separate operations —
+      # this one goes to Apple, not to the certificate holder.
+      - name: Notarise and staple the disk image
+        if: ${{ steps.signing.outputs.identity != '' }}
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          for dmg in packages/*.dmg; do
+            [ -e "$dmg" ] || continue
+            echo "notarising $dmg"
+            xcrun notarytool submit "$dmg" \
+              --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" \
+              --password "$APPLE_APP_PASSWORD" --wait
+            # Stapling puts the ticket inside the file, so it opens on a machine
+            # that is offline when the user first runs it.
+            xcrun stapler staple "$dmg"
+            xcrun stapler validate "$dmg"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wunjo-macos-arm64
+          path: packages/
+          retention-days: 14
+
+      - name: Save Craft cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CRAFT_ROOT }}
+          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
