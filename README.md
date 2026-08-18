@@ -65,6 +65,10 @@ The program runs on Linux, Windows, and MacOS, but to use local models, you'll n
 </table>
 </div>
 
+### Please note
+
+The previous version of Wunjo Make v2 is still available in the [repository](https://github.com/wladradchenko/wunjo.wladradchenko.ru/tree/v2.0.8). It offers more functionality for local editing and content generation. The new ideology of Wunjo Make v3 is being developed with cross-platform compatibility (running on MacOS) and the ability to run on devices without a GPU and CUDA, taking into account the MSP and API for content generation and self plugin creation by neural coding.
+
 <!-- FEATURES -->
 ## Setup
 
