@@ -151,11 +151,19 @@ def main() -> None:
             out = args.out / "actions" / size / f"{name}.svg"
             out.write_text(WRAPPER.format(stroke=stroke, body=indented), encoding="utf-8")
 
+    # breeze-dark first: the KDE SDK the flatpak builds against ships it as
+    # files under /usr/share/icons. Craft does not ship any icon files at
+    # all — it builds breeze-icons with SKIP_INSTALL_ICONS=ON and
+    # ICONS_LIBRARY=ON, so the only Breeze available there is a Qt resource
+    # inside libKF6BreezeIcons.so, and that resource holds one theme named
+    # "breeze". Naming only breeze-dark left every icon this theme does not
+    # define blank in the AppImage. hicolor closes the chain as the spec
+    # requires.
     (args.out / "index.theme").write_text(
         "[Icon Theme]\n"
         "Name=Wunjo\n"
         "Comment=Wunjo Make monochrome outline icons\n"
-        "Inherits=breeze-dark\n"
+        "Inherits=breeze-dark,breeze,hicolor\n"
         "Directories=actions/16,actions/22\n"
         "\n"
         "[actions/16]\n"

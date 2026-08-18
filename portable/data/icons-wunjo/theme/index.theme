@@ -1,7 +1,7 @@
 [Icon Theme]
 Name=Wunjo
 Comment=Wunjo Make monochrome outline icons
-Inherits=breeze-dark
+Inherits=breeze-dark,breeze,hicolor
 Directories=actions/16,actions/22
 
 [actions/16]

@@ -47,7 +47,11 @@ class subinfo(info.infoclass):
             # step aborts with "Craft requires linuxdeploy to create an AppImage".
             self.buildDependencies["dev-utils/linuxdeploy"] = None
 
-        # Qt 6 — see find_package(Qt6 …) in CMakeLists.txt
+        # Qt 6 — see find_package(Qt6 …) in CMakeLists.txt.
+        # qtimageformats is not in that list and is still required: it carries
+        # the WebP decoder, and every transition preview under
+        # data/transitions/previews plus both splash backgrounds are .webp.
+        # Without it they load as nothing at all, with no error anywhere.
         for module in (
             "qtbase",
             "qtdeclarative",
@@ -56,6 +60,7 @@ class subinfo(info.infoclass):
             "qtnetworkauth",
             "qttools",
             "qt5compat",
+            "qtimageformats",
         ):
             self.runtimeDependencies[f"libs/qt6/{module}"] = None
 
