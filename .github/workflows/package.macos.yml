@@ -110,12 +110,19 @@ jobs:
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      # Craft's own binary cache covers all but one package, so the tree is
+      # mostly downloaded rather than compiled — but pulseaudio does build from
+      # source, and a runner that fills its disk fails without saying so.
+      - name: Report disk space
+        if: always()
+        run: df -h / "$CRAFT_ROOT" 2>/dev/null || df -h
 
       - name: Build Wunjo Make
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still
@@ -174,7 +181,7 @@ jobs:
       - name: Package
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --package --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --package --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       - name: Collect the disk image
         run: |

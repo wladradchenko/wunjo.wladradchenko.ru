@@ -122,13 +122,18 @@ jobs:
         shell: pwsh
         run: |
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
-          craft --install-deps --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
+          craft --ci-mode --install-deps --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
+
+      - name: Report disk space
+        if: always()
+        shell: pwsh
+        run: Get-PSDrive -PSProvider FileSystem | Format-Table -AutoSize
 
       - name: Build Wunjo Make
         shell: pwsh
         run: |
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
-          craft --no-cache --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
+          craft --ci-mode --no-cache --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
       # ── signing ────────────────────────────────────────────────────────
       # Two executables and, later, the installer. Nothing else: the build ships
@@ -193,8 +198,8 @@ jobs:
         shell: pwsh
         run: |
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
-          craft --install-deps nsis
-          craft --package --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
+          craft --ci-mode --install-deps nsis
+          craft --ci-mode --package --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
       - name: Collect installers
         shell: pwsh
