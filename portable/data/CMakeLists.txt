@@ -41,7 +41,15 @@ install(DIRECTORY fonts DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
 # share/wunjo/plugins/<id>/, a read-only AppLocalData root PluginManager::rescan()
 # scans as "bundled" — optional (the app runs without them), not compiled in.
 # In directory data/plugins put default plugiins
-install(DIRECTORY plugins DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX})
+#
+# Guarded on the folder existing because it is empty today and Git does not
+# carry empty directories: a fresh checkout has no data/plugins at all, and
+# install(DIRECTORY) treats a missing source as an error rather than as nothing
+# to do. Same reason as the mcp block below. Once real plugins live here and are
+# committed this installs them with no further change.
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/plugins)
+    install(DIRECTORY plugins DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX})
+endif()
 
 # The MCP server the assistant speaks through — the same one whether the driver
 # is the built-in model or Claude Code in a terminal. It lives at the top of the
