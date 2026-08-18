@@ -11,3 +11,5 @@ NOTE.md
 .flatpak-builder/
 portable/repo
 portable/build-flatpak/
+.cursor/
+.claude/

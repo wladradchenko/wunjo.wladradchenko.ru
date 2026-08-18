@@ -8,12 +8,12 @@ KDE Frameworks and their dependencies, and pulls most of them from a prebuilt
 binary cache instead of compiling them. This file is the recipe for *this*
 application on top of that.
 
-The dependency list mirrors `find_package` in `desktop/CMakeLists.txt` and
-`desktop/src/CMakeLists.txt`. When one changes, so must the other, or the build
+The dependency list mirrors `find_package` in `portable/CMakeLists.txt` and
+`portable/src/CMakeLists.txt`. When one changes, so must the other, or the build
 fails on the runner with a missing package rather than here.
 
 The source directory is passed in by the workflow with
-`--options wunjo.srcDir=<checkout>/desktop`, so this blueprint never fetches
+`--options wunjo.srcDir=<checkout>/portable`, so this blueprint never fetches
 anything itself.
 
 The repeated name in the path is Craft's rule, not a choice: it finds blueprints
@@ -23,7 +23,9 @@ its directory. `apps` is the category, the same way KDE's own repository uses
 """
 
 import info
+from CraftCore import CraftCore
 from Package.CMakePackageBase import CMakePackageBase
+from Packager.AppImagePackager import AppImagePackager
 
 
 class subinfo(info.infoclass):
@@ -39,7 +41,11 @@ class subinfo(info.infoclass):
 
         # Build-only
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
-        self.buildDependencies["dev-utils/pkg-config"] = None
+        self.buildDependencies["dev-utils/pkgconf"] = None
+        if CraftCore.compiler.isLinux:
+            # AppImagePackager shells out to linuxdeploy; without it the package
+            # step aborts with "Craft requires linuxdeploy to create an AppImage".
+            self.buildDependencies["dev-utils/linuxdeploy"] = None
 
         # Qt 6 — see find_package(Qt6 …) in CMakeLists.txt
         for module in (
@@ -53,48 +59,82 @@ class subinfo(info.infoclass):
         ):
             self.runtimeDependencies[f"libs/qt6/{module}"] = None
 
-        # KDE Frameworks 6 — see find_package(KF6 …) in CMakeLists.txt
+        # KDE Frameworks 6 — see find_package(KF6 …) in CMakeLists.txt.
+        # Craft resolves dependencies by exact path, and its KF6 recipes are
+        # filed under the framework's tier, so the tier is part of the name.
         for framework in (
-            "ki18n",
-            "karchive",
-            "kbookmarks",
-            "kcodecs",
-            "kcoreaddons",
-            "kconfig",
-            "kconfigwidgets",
-            "kio",
-            "kwidgetsaddons",
-            "knotifyconfig",
-            "knewstuff",
-            "kxmlgui",
-            "knotifications",
-            "kguiaddons",
-            "ktextwidgets",
-            "kiconthemes",
-            "solid",
-            "kfilemetadata",
-            "purpose",
-            "kcrash",
-            "kdoctools",
-            "breeze-icons",
+            "tier1/ki18n",
+            "tier1/karchive",
+            "tier1/kcodecs",
+            "tier1/kcoreaddons",
+            "tier1/kconfig",
+            "tier1/kwidgetsaddons",
+            "tier1/kguiaddons",
+            "tier1/solid",
+            "tier1/breeze-icons",
+            "tier2/kfilemetadata",
+            "tier2/kcrash",
+            "tier2/kdoctools",
+            "tier3/kbookmarks",
+            "tier3/kconfigwidgets",
+            "tier3/kio",
+            "tier3/knotifyconfig",
+            "tier3/knewstuff",
+            "tier3/kxmlgui",
+            "tier3/knotifications",
+            "tier3/ktextwidgets",
+            "tier3/kiconthemes",
+            "tier3/purpose",
         ):
             self.runtimeDependencies[f"kde/frameworks/{framework}"] = None
 
         # Everything else the editor links
-        self.runtimeDependencies["kde/thirdparty/kddockwidgets"] = None
+        self.runtimeDependencies["qt-libs/kddockwidgets"] = None
         self.runtimeDependencies["libs/mlt"] = None
         self.runtimeDependencies["libs/ffmpeg"] = None
-        self.runtimeDependencies["libs/opencv"] = None
+        self.runtimeDependencies["libs/opencv/opencv"] = None
         self.runtimeDependencies["libs/opentimelineio"] = None
+        # find_package(Imath REQUIRED) in CMakeLists.txt, for the OTIO header workaround
+        self.runtimeDependencies["libs/imath"] = None
         self.runtimeDependencies["libs/frei0r-plugins"] = None
 
 
 class Package(CMakePackageBase):
-    def __init__(self):
-        CMakePackageBase.__init__(self)
+    # Craft instantiates recipes as `Package(package=<CraftPackageObject>)`, so
+    # the constructor has to pass its keyword arguments through.
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         # RELEASE_BUILD strips the git revision from the version string; tests
         # are not run on the packaging runner, and they pull extra dependencies.
         self.subinfo.options.configure.args += [
             "-DRELEASE_BUILD=ON",
             "-DBUILD_TESTING=OFF",
         ]
+        # AppImagePackager looks for <appname>.desktop unless told otherwise, and
+        # data/CMakeLists.txt installs the file under its reverse-DNS name.
+        self.defines["appname"] = "wunjo"
+        self.defines["desktopFile"] = "online.wunjo.make"
+
+    def setDefaults(self, defines: dict) -> dict:
+        defines = super().setDefaults(defines)
+        if CraftCore.compiler.isLinux and isinstance(self, AppImagePackager):
+            # MLT resolves its modules, profiles and presets through the
+            # environment. Inside an AppImage the build-time paths do not exist,
+            # so point them back into the bundle or the app starts with no
+            # producers and no consumers. Mirrors kdenlive's recipe.
+            defines["runenv"] += [
+                "PACKAGE_TYPE=appimage",
+                "MLT_REPOSITORY=$this_dir/usr/lib/mlt-7/",
+                "MLT_DATA=$this_dir/usr/share/mlt-7/",
+                "MLT_ROOT_DIR=$this_dir/usr/",
+                "MLT_APPDIR=$this_dir/usr/",
+                "MLT_PROFILES_PATH=$this_dir/usr/share/mlt-7/profiles/",
+                "MLT_PRESETS_PATH=$this_dir/usr/share/mlt-7/presets/",
+                "LADSPA_PATH=$this_dir/usr/lib/ladspa",
+                "FREI0R_PATH=$this_dir/usr/lib/frei0r-1",
+                "SDL_AUDIODRIVER=pulseaudio",
+                "ALSA_CONFIG_DIR=/usr/share/alsa",
+                "ALSA_PLUGIN_DIR=/usr/lib/x86_64-linux-gnu/alsa-lib",
+                "LIBVA_DRIVERS_PATH=/usr/lib/dri:/usr/lib64/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/aarch64-linux-gnu/dri",
+            ]
+        return defines

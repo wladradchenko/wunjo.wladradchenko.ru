@@ -28,19 +28,24 @@ on:
 
 env:
   CRAFT_ROOT: /home/runner/CraftRoot
-  CRAFT_TARGET: linux-64-gcc
+  CRAFT_ABI: linux-gcc-x86_64
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 350
 
+    permissions:
+      contents: read
+      # Dropping a cache entry is a write to the Actions API, not to the repo.
+      actions: write
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       # Craft builds Qt and KF6 itself, but it still needs the system's X11,
       # OpenGL and audio headers to build them against.
@@ -54,30 +59,55 @@ jobs:
             libasound2-dev libpulse-dev libfuse2 \
             libssl-dev libdbus-1-dev
 
+      # GitHub cache entries are immutable: saving under a key that already
+      # exists is refused with a warning, not an overwrite. So skipping the
+      # restore is only half a rebuild — without dropping the old entries the
+      # save at the end is a no-op and the next run reads back exactly the tree
+      # this one was meant to replace. --key matches by prefix, which is also
+      # what restore-keys falls back to, so every stale entry has to go.
+      - name: Drop the Craft cache
+        if: ${{ inputs.rebuild-deps }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ids=$(gh cache list --repo "$GITHUB_REPOSITORY" \
+                              --key "craft-$CRAFT_ABI-" \
+                              --limit 100 --json id --jq '.[].id')
+          for id in $ids; do
+            echo "deleting cache entry $id"
+            gh cache delete "$id" --repo "$GITHUB_REPOSITORY"
+          done
+
       - name: Restore Craft cache
         if: ${{ !inputs.rebuild-deps }}
         uses: actions/cache/restore@v4
         id: craft-cache
         with:
-          path: ${{ env.CRAFT_ROOT }}
-          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
-          restore-keys: craft-${{ env.CRAFT_TARGET }}-
+          path: |
+            ${{ env.CRAFT_ROOT }}
+            !${{ env.CRAFT_ROOT }}/build
+            !${{ env.CRAFT_ROOT }}/download
+          key: craft-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          restore-keys: craft-${{ env.CRAFT_ABI }}-
 
+      # CraftBootstrap.py takes no --target: it asks for platform, architecture
+      # and compiler interactively. --use-defaults answers those prompts, and on
+      # a 64-bit Linux runner the answers are linux / x86_64 / gcc — the ABI in
+      # CRAFT_ABI above, which is also the one KDE publishes a binary cache for.
       - name: Bootstrap Craft
         if: steps.craft-cache.outputs.cache-matched-key == ''
         run: |
           curl -sSLo CraftBootstrap.py https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py
-          python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --target "$CRAFT_TARGET" --branch master
+          python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --branch master --use-defaults
+          grep -E '^ABI' "$CRAFT_ROOT/etc/CraftSettings.ini"
 
       - name: Register the Wunjo blueprint
-        run: |
-          source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --add-blueprint-repository "$GITHUB_WORKSPACE/portable/packaging/craft/blueprints"
+        run: python3 portable/packaging/craft/register-blueprint.py
 
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --install-deps wunjo
+          craft --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       - name: Build Wunjo Make
         run: |
@@ -94,9 +124,11 @@ jobs:
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
           dir=$(craft -q --get "packageDestinationDir()" virtual/base)
-          mkdir -p packages
-          find "$dir" \( -name '*.AppImage' -o -name '*.sha256' \) -exec cp {} packages/ \;
-          ls -la packages/
+          # craftenv.sh cds into CraftRoot when sourced, so spell the workspace out.
+          mkdir -p "$GITHUB_WORKSPACE/packages"
+          find "$dir" \( -name '*.AppImage' -o -name '*.sha256' \) \
+               -exec cp {} "$GITHUB_WORKSPACE/packages/" \;
+          ls -la "$GITHUB_WORKSPACE/packages/"
 
       # No signing: Linux has no equivalent of SmartScreen or Gatekeeper, so a
       # checksum published next to the download is what people can actually
@@ -108,8 +140,11 @@ jobs:
           retention-days: 14
 
       - name: Save Craft cache
-        if: always()
+        if: always() && steps.craft-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: ${{ env.CRAFT_ROOT }}
-          key: craft-${{ env.CRAFT_TARGET }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          path: |
+            ${{ env.CRAFT_ROOT }}
+            !${{ env.CRAFT_ROOT }}/build
+            !${{ env.CRAFT_ROOT }}/download
+          key: craft-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
