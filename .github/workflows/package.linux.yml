@@ -234,48 +234,46 @@ jobs:
                -exec cp {} "$GITHUB_WORKSPACE/packages/" \;
           ls -la "$GITHUB_WORKSPACE/packages/"
 
-      # Reproduce the failure rather than go looking for it. CMakeCache.txt in
-      # the build directory already holds every -D Craft passed, so re-running
-      # cmake against that directory repeats the identical configure with
-      # nothing in between to swallow or reorder the output.
+      # Craft writes one stage log per package and one per action, so the
+      # newest log under logs/apps/wunjo is whichever action failed, and the
+      # package log has all of them concatenated.
       #
-      # This matters because the error is not where it looks like it should be:
-      # when cmake's stdout is a pipe it is block-buffered while its stderr is
-      # not, so "CMake Error" surfaces hundreds of lines above the point it
-      # actually happened. Capture to a file and grep, instead of reading.
+      # Grep rather than read: when a subprocess writes to a pipe its stdout is
+      # block-buffered while its stderr is not, so the error surfaces hundreds
+      # of lines away from the point it happened. No ::group:: either — a
+      # collapsed error is one nobody reads.
       - name: Show the failure
         if: failure()
         run: |
-          source "$CRAFT_ROOT/craft/craftenv.sh"
-          build="$CRAFT_ROOT/build/apps/wunjo/work/build"
-          rerun=/tmp/cmake-rerun.log
-          if [ -f "$build/CMakeCache.txt" ]; then
-            echo "===== re-running the configure in $build"
-            "$CRAFT_ROOT/dev-utils/bin/cmake" "$build" > "$rerun" 2>&1 || true
-            if grep -qE '^CMake (Error|Warning \(dev\))' "$rerun"; then
-              grep -n -B 3 -A 30 -E '^CMake (Error|Warning \(dev\))' "$rerun"
-            else
-              echo "(no CMake Error on the re-run — printing the tail)"
-              tail -n 150 "$rerun"
-            fi
-          else
-            echo "(no CMakeCache.txt at $build — the configure did not get that far)"
+          logs=$(find "$CRAFT_ROOT/logs/apps/wunjo" -name '*.log' -printf '%T@ %p\n' 2>/dev/null |
+                 sort -rn | cut -d' ' -f2-)
+          if [ -z "$logs" ]; then
+            logs=$(find "$CRAFT_ROOT/logs" -name '*.log' -printf '%T@ %p\n' 2>/dev/null |
+                   sort -rn | head -3 | cut -d' ' -f2-)
+          fi
+
+          for log in $logs; do
+            echo "===== errors in $log"
+            grep -n -B 3 -A 20 -E \
+              '^FAILED:|^CMake Error|^ninja: |error:|failed with exit code|No such file or directory|cannot find|Permission denied' \
+              "$log" | tail -n 250 || echo "(no error lines matched)"
+            echo
+          done
+
+          newest=$(printf '%s\n' $logs | head -1)
+          if [ -n "$newest" ]; then
+            echo "===== tail of $newest"
+            tail -n 250 "$newest"
           fi
 
           # The detail behind a failed compiler or library check never reaches
           # cmake's own output, only this file.
-          errlog="$build/CMakeFiles/CMakeError.log"
+          errlog="$CRAFT_ROOT/build/apps/wunjo/work/build/CMakeFiles/CMakeError.log"
           if [ -f "$errlog" ]; then
             echo
             echo "===== $errlog"
-            tail -n 200 "$errlog"
+            tail -n 150 "$errlog"
           fi
-
-          # Craft's own stage logs, if it wrote any for this package.
-          echo
-          echo "===== Craft logs, newest first"
-          find "$CRAFT_ROOT/logs" -name '*.log' -printf '%T@ %p\n' 2>/dev/null |
-            sort -rn | head -20 | cut -d' ' -f2- || true
           exit 0
 
       # No signing: Linux has no equivalent of SmartScreen or Gatekeeper, so a
