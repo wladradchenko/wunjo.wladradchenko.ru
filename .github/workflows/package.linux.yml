@@ -121,6 +121,27 @@ jobs:
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
+      # KDE builds its Linux binary cache on a distro whose libxcrypt provides
+      # libcrypt.so.2. Ubuntu ships libcrypt.so.1 and packages no other SONAME,
+      # so the prebuilt perl cannot start here at all — and perl is what
+      # pulseaudio, intltool and the perl-modules run at build time. Everything
+      # else in the cache runs fine, so rebuild just this one package against
+      # the system libcrypt and leave the rest of the cache in use. perl depends
+      # only on virtual/base, which the bootstrap already installed, so
+      # --no-cache here does not cascade into building anything else from
+      # source. -i is required: without it Craft sees perl installed and
+      # up to date and does nothing.
+      - name: Build perl against the system libcrypt
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          if "$CRAFT_ROOT/bin/perl" --version >/dev/null 2>&1; then
+            echo "Craft's perl runs, leaving it alone"
+          else
+            echo "Craft's perl does not run here, rebuilding it from source"
+            craft --ci-mode -i --no-cache dev-utils/perl
+            "$CRAFT_ROOT/bin/perl" --version
+          fi
+
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
