@@ -1,7 +1,6 @@
 venv/
 .idea/
 __pycache__/
-icons/
 dataset/
 portable/src/linux
 portable/src/win
