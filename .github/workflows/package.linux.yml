@@ -6,9 +6,21 @@
 # format that does that with one file and no install step — which is what
 # "download from the site and run it" needs.
 #
-# Runs on ubuntu-22.04 on purpose: an AppImage works on the glibc it was built
-# against and anything newer, so building on the oldest supported runner is what
-# makes it run on the widest range of machines.
+# Runs inside AlmaLinux 9 rather than on the runner's own Ubuntu, for two
+# reasons that turn out to be the same reason.
+#
+# KDE builds the Linux half of its Craft binary cache in
+# storage.kde.org/vm-images/craft-appimage-alma9, whose recipe is public at
+# sysadmin/ci-images/craft-appimage-alma9/Dockerfile: almalinux:9.8 plus a dnf
+# list plus gcc-toolset-14. Those prebuilt packages are what makes this job take
+# half an hour instead of a working day, and they only run on that base — on
+# Ubuntu, Craft's own perl cannot even start, because Alma links it against
+# libcrypt.so.2 and Debian and Ubuntu ship no such SONAME.
+#
+# And an AppImage runs on the glibc it was built against and anything newer, so
+# the oldest practical base is what reaches the most machines. Alma 9 carries
+# glibc 2.34 against Ubuntu 22.04's 2.35, so building here also reaches RHEL 9
+# and its clones, which a build on any GitHub-hosted Ubuntu image would miss.
 #
 # UNVERIFIED. Written from the project's dependency list and Craft's documented
 # interface, not from a green run. Expect the first attempts to fail on package
@@ -27,12 +39,17 @@ on:
       - 'v*'
 
 env:
-  CRAFT_ROOT: /home/runner/CraftRoot
+  CRAFT_ROOT: /opt/CraftRoot
   CRAFT_ABI: linux-gcc-x86_64
+  # Part of the cache key, not of Craft's own naming: a tree built on one base
+  # is useless on another, and the ABI alone does not say which base it was.
+  CRAFT_BASE: alma9
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: almalinux:9.8
     timeout-minutes: 350
 
     permissions:
@@ -41,43 +58,96 @@ jobs:
       actions: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      # Craft builds Qt and KF6 itself, but it still needs the system's X11,
-      # OpenGL and audio headers to build them against.
-      - name: Install system build dependencies
+      # First, before the checkout: the base image has no git, and without it
+      # actions/checkout falls back to fetching a tarball over the API.
+      # zstd is here for actions/cache rather than for the build — without it
+      # the action falls back to gzip, which on a tree this size is slow
+      # enough to notice on every run.
+      #
+      # The list is KDE's, from the Dockerfile named at the top of this file,
+      # minus the parts that only serve their own GitLab runners (powershell,
+      # gitlab-runner, the CI Python modules). Keeping the rest verbatim is
+      # deliberate: it is the environment their binary cache was built in, and
+      # guessing at a shorter list is how a package fails to configure three
+      # hours from now.
+      - name: Install build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            build-essential cmake ninja-build git \
-            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libxkbcommon-x11-dev \
-            libx11-dev libxcb1-dev libxcb-*-dev libwayland-dev \
-            libasound2-dev libpulse-dev libfuse2 \
-            libssl-dev libdbus-1-dev
+          dnf install -y 'dnf-command(config-manager)'
+          # CodeReady Builder carries several of the xcb-util-*-devel packages.
+          dnf config-manager --set-enabled crb
+          dnf update -y
+          dnf install -y \
+            git-core cmake gcc-toolset-14 \
+            python3.11 python3.11-devel python3.11-pip \
+            sqlite zlib tar xz bzip2 gzip unzip which diffutils findutils file patch \
+            zstd \
+            fuse fuse-libs \
+            at-spi2-atk-devel \
+            mesa-vulkan-drivers vulkan-headers wayland-devel mesa-libGL-devel \
+            mesa-libEGL-devel mesa-libgbm-devel \
+            libX11-devel libX11-xcb libxcb-devel libxkbcommon-x11-devel \
+            libxkbcommon-devel libXi-devel libXcomposite-devel libXcursor-devel \
+            libXrandr-devel libXtst-devel libxkbfile-devel libdrm-devel \
+            libXdamage-devel libxshmfence-devel \
+            xcb-util-devel xcb-util-cursor xcb-util-cursor-devel \
+            xcb-util-keysyms xcb-util-keysyms-devel \
+            xcb-util-renderutil xcb-util-renderutil-devel \
+            xcb-util-wm xcb-util-wm-devel \
+            xcb-util-image xcb-util-image-devel \
+            xorg-x11-util-macros xorg-x11-proto-devel \
+            flex bison gperf libicu-devel ruby \
+            alsa-lib-devel nspr-devel nss-devel \
+            systemd-devel libmount-devel appstream-devel
+          dnf clean all
+
+      # gcc-toolset-14 is the compiler KDE built the cache with, and it lives
+      # behind a shell script rather than on PATH. Sourcing it here and copying
+      # the result into $GITHUB_ENV is what carries it into every later step;
+      # sourcing it inside one step would reach only that step. PKG_CONFIG_PATH
+      # is set for the same reason KDE sets it: the toolset shadows the system
+      # pkg-config path, and xcb stops being found.
+      - name: Enable gcc-toolset-14
+        run: |
+          source /opt/rh/gcc-toolset-14/enable
+          {
+            echo "PATH=$PATH"
+            echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}"
+            echo "PKG_CONFIG_PATH=$(/usr/bin/pkg-config --variable pc_path pkg-config)"
+          } >> "$GITHUB_ENV"
+          gcc --version | head -1
+
+      - uses: actions/checkout@v4
 
       # GitHub cache entries are immutable: saving under a key that already
       # exists is refused with a warning, not an overwrite. So skipping the
       # restore is only half a rebuild — without dropping the old entries the
       # save at the end is a no-op and the next run reads back exactly the tree
-      # this one was meant to replace. --key matches by prefix, which is also
+      # this one was meant to replace. The key filter is a prefix, which is also
       # what restore-keys falls back to, so every stale entry has to go.
+      #
+      # Done over the REST API rather than with `gh`, which the macOS and
+      # Windows jobs use: the GitHub CLI is not in this image and is not worth a
+      # third-party dnf repository for one call.
       - name: Drop the Craft cache
         if: ${{ inputs.rebuild-deps }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ids=$(gh cache list --repo "$GITHUB_REPOSITORY" \
-                              --key "craft-$CRAFT_ABI-" \
-                              --limit 100 --json id --jq '.[].id')
-          for id in $ids; do
-            echo "deleting cache entry $id"
-            gh cache delete "$id" --repo "$GITHUB_REPOSITORY"
+          api="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/caches"
+          auth=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json")
+          keys=$(curl -sS "${auth[@]}" "$api?key=craft-$CRAFT_BASE-$CRAFT_ABI-&per_page=100" |
+                 python3.11 -c 'import json,sys; [print(c["key"]) for c in json.load(sys.stdin).get("actions_caches", [])]')
+          for key in $keys; do
+            echo "deleting cache entry $key"
+            curl -sS -X DELETE "${auth[@]}" "$api?key=$key" >/dev/null
           done
 
+      # The whole Craft tree, dependencies included. Keyed on the blueprint so a
+      # dependency change invalidates it; restore-keys let an unrelated change
+      # start from the last good tree instead of from nothing. build/ and
+      # download/ are excluded: they hold source and object trees that are not
+      # needed to reuse an installed prefix, and they are what would push the
+      # entry past GitHub's 10 GB per-repository limit.
       - name: Restore Craft cache
         if: ${{ !inputs.rebuild-deps }}
         uses: actions/cache/restore@v4
@@ -87,23 +157,25 @@ jobs:
             ${{ env.CRAFT_ROOT }}
             !${{ env.CRAFT_ROOT }}/build
             !${{ env.CRAFT_ROOT }}/download
-          key: craft-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
-          restore-keys: craft-${{ env.CRAFT_ABI }}-
+          key: craft-${{ env.CRAFT_BASE }}-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          restore-keys: craft-${{ env.CRAFT_BASE }}-${{ env.CRAFT_ABI }}-
 
       # CraftBootstrap.py takes no --target: it asks for platform, architecture
       # and compiler interactively. --use-defaults answers those prompts, and on
-      # a 64-bit Linux runner the answers are linux / x86_64 / gcc — the ABI in
-      # CRAFT_ABI above, which is also the one KDE publishes a binary cache for.
+      # 64-bit Linux the answers are linux / x86_64 / gcc — the ABI in CRAFT_ABI
+      # above, which is the one KDE publishes a binary cache for. Bootstrapping
+      # with python3.11 matches the version KDE uses and is what Craft records
+      # in Paths/Python for every later run.
       - name: Bootstrap Craft
         if: steps.craft-cache.outputs.cache-matched-key == ''
         run: |
           curl -sSLo CraftBootstrap.py https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py
           # CraftBootstrap decides the platform before anything else, and its
-          # test for Android is literally `"ANDROID_SDK_ROOT" in os.environ` —
-          # which every hosted runner image sets, because it ships the Android
-          # SDK. Left alone, --use-defaults picks android-clang-arm64 here.
+          # test for Android is literally `"ANDROID_SDK_ROOT" in os.environ`.
+          # This image does not set it, but a base image that does would send
+          # --use-defaults to android-clang-arm64 without a word.
           unset ANDROID_SDK_ROOT
-          python3 CraftBootstrap.py --prefix "$CRAFT_ROOT" --branch master --use-defaults
+          python3.11 CraftBootstrap.py --prefix "$CRAFT_ROOT" --branch master --use-defaults
 
       # Craft derives everything from the ABI stored in CraftSettings.ini: which
       # binary cache it downloads from and which toolchain it configures. A
@@ -119,37 +191,21 @@ jobs:
           fi
 
       - name: Register the Wunjo blueprint
-        run: python3 portable/packaging/craft/register-blueprint.py
+        run: python3.11 portable/packaging/craft/register-blueprint.py
 
-      # KDE builds its Linux binary cache on a distro whose libxcrypt provides
-      # libcrypt.so.2. Ubuntu ships libcrypt.so.1 and packages no other SONAME,
-      # so the prebuilt perl cannot start here at all — and perl is what
-      # pulseaudio, intltool and the perl-modules run at build time. Everything
-      # else in the cache runs fine, so rebuild just this one package against
-      # the system libcrypt and leave the rest of the cache in use. perl depends
-      # only on virtual/base, which the bootstrap already installed, so
-      # --no-cache here does not cascade into building anything else from
-      # source. -i is required: without it Craft sees perl installed and
-      # up to date and does nothing.
-      - name: Build perl against the system libcrypt
-        run: |
-          source "$CRAFT_ROOT/craft/craftenv.sh"
-          if "$CRAFT_ROOT/bin/perl" --version >/dev/null 2>&1; then
-            echo "Craft's perl runs, leaving it alone"
-          else
-            echo "Craft's perl does not run here, rebuilding it from source"
-            craft --ci-mode -i --no-cache dev-utils/perl
-            "$CRAFT_ROOT/bin/perl" --version
-          fi
-
+      # --ci-mode on every Craft call: it sends Craft's own messages and the
+      # merged stderr of every subprocess to stdout. Without it a compiler error
+      # lands somewhere else entirely in the log, because GitHub interleaves the
+      # two streams as it pleases.
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
           craft --ci-mode --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
-      # Craft's own binary cache covers all but one package, so the tree is
-      # mostly downloaded rather than compiled — but pulseaudio does build from
-      # source, and a runner that fills its disk fails without saying so.
+      # Craft's binary cache covers all but one package, so the tree is mostly
+      # downloaded rather than compiled — but pulseaudio sets disableBinaryCache
+      # in its recipe and always builds from source, and a runner that fills its
+      # disk fails without saying so.
       - name: Report disk space
         if: always()
         run: df -h / "$CRAFT_ROOT" 2>/dev/null || df -h
@@ -159,6 +215,9 @@ jobs:
           source "$CRAFT_ROOT/craft/craftenv.sh"
           craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
+      # linuxdeploy is itself an AppImage and there is no FUSE inside a
+      # container. Craft handles that on its own: AppImagePackager checks for
+      # /.dockerenv and sets APPIMAGE_EXTRACT_AND_RUN when it finds one.
       - name: Package as AppImage
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
@@ -192,4 +251,4 @@ jobs:
             ${{ env.CRAFT_ROOT }}
             !${{ env.CRAFT_ROOT }}/build
             !${{ env.CRAFT_ROOT }}/download
-          key: craft-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
+          key: craft-${{ env.CRAFT_BASE }}-${{ env.CRAFT_ABI }}-${{ hashFiles('portable/packaging/craft/blueprints/apps/wunjo/wunjo.py') }}
