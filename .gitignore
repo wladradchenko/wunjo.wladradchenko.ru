@@ -10,5 +10,6 @@ NOTE.md
 .flatpak-builder/
 portable/repo
 portable/build-flatpak/
+portable/data/icons-wunjo/preview.py
 .cursor/
 .claude/
