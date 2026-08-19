@@ -103,6 +103,13 @@ class subinfo(info.infoclass):
         # python version". Craft's build is 3.11, which satisfies that manifest.
         self.runtimeDependencies["libs/python"] = None
 
+        # uv builds those plugin environments in pip's place, and the flatpak
+        # manifest installs it as a module of its own. Craft has no recipe for
+        # it, so this repository carries one — without it the packaged editor
+        # silently falls back to pip and every plugin environment keeps its own
+        # copy of every wheel.
+        self.runtimeDependencies["dev-utils/uv"] = None
+
         # Everything else the editor links
         self.runtimeDependencies["qt-libs/kddockwidgets"] = None
         self.runtimeDependencies["libs/mlt"] = None
