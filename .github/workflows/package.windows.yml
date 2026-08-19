@@ -35,7 +35,21 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    # Pinned, not windows-latest. That label now resolves to an image carrying
+    # only Visual Studio 2026 (18.x), and the ABI above asks for msvc2022, whose
+    # toolset lives in Visual Studio 2022 (17.x) — Craft's vswhere query is
+    # -version [17,18), so on the newer image it matches nothing and the
+    # bootstrap aborts with "Unable to locate Visual Studio".
+    #
+    # The pin is also what keeps the build fast: KDE publishes its binary cache
+    # per ABI, and windows/cl/msvc2022 is the one this workflow reads.
+    #
+    # When this image is retired, moving to msvc2026 is the way out rather than
+    # a newer VS 2022: KDE publishes a windows/cl/msvc2026 cache too. It needs
+    # more than a label change — CraftBootstrap does not offer that ABI to
+    # --use-defaults yet (commented out upstream as "neither ready nor tested"),
+    # so the ABI has to be written into CraftSettings.ini after bootstrapping.
+    runs-on: windows-2022
     timeout-minutes: 350   # the hosted limit is 6 h
 
     permissions:
