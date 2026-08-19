@@ -144,6 +144,34 @@ jobs:
           Set-Content $tpl $lines
           Select-String -Path $tpl -Pattern '^Enabled' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
 
+          # Local patch to Craft's own gettext recipe, applied to this checkout
+          # only. gettext-tools builds its bundled libxml2 and links it into
+          # libgettextlib without -liconv, so the DLL fails on iconv_open,
+          # iconv_close and iconv. Craft already carries the same one-line fix
+          # in its pulseaudio recipe:
+          #     self.subinfo.options.configure.ldflags += " -lintl -liconv"
+          # and AutoToolsBuildSystem folds configure.ldflags into LDFLAGS, so
+          # this reaches the link exactly the same way.
+          #
+          # This is a workaround, not the answer: the Windows binary cache lists
+          # libs/gettext 0.22.3-3 for this very ABI, so the package should never
+          # be compiled here at all. Drop the patch once the cache is used.
+          $recipe = "craft-src\blueprints\libs\gettext\gettext.py"
+          if (-not (Get-Content $recipe | Select-String -SimpleMatch '-liconv')) {
+            $out = @()
+            foreach ($line in Get-Content $recipe) {
+              $out += $line
+              if ($line -eq '        self.shell.useMSVCCompatEnv = True') {
+                $out += '        self.subinfo.options.configure.ldflags += " -liconv"'
+              }
+            }
+            Set-Content $recipe $out
+            Write-Host "  patched Craft's gettext recipe with -liconv"
+          } else {
+            Write-Host "  gettext recipe already mentions -liconv, left alone"
+          }
+          Select-String -Path $recipe -Pattern 'ldflags' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
+
           # Craft warns that a gcc on PATH breaks its configuration, and the
           # runner image ships two: C:\mingw64\bin and Strawberry Perl's
           # C:\Strawberry\c\bin. Selecting the MSVC ABI and then leaving other
