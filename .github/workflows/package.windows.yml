@@ -91,12 +91,31 @@ jobs:
       # and compiler interactively. --use-defaults answers those prompts, and on
       # Windows the default compiler is Visual Studio 2022 — the ABI in
       # CRAFT_ABI above.
+      # Craft is fetched from its GitHub mirror and handed to the bootstrap with
+      # --localDev, instead of letting the bootstrap download it itself. Its own
+      # path is invent.kde.org's /-/archive/master/craft-master.zip, which
+      # GitLab generates on demand and which returns 502 under load even when
+      # the rest of the site is healthy. The mirror is the same code from the
+      # same host we already take CraftBootstrap.py from.
       - name: Bootstrap Craft
         if: steps.craft-cache.outputs.cache-matched-key == ''
         shell: pwsh
         run: |
           Invoke-WebRequest -Uri https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile CraftBootstrap.py
-          python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults
+          git clone --depth 1 --branch master https://github.com/KDE/craft.git craft-src
+
+          # Craft warns that a gcc on PATH breaks its configuration, and the
+          # runner image ships one in C:\mingw64\bin. Selecting the MSVC ABI and
+          # then leaving a second C++ toolchain ahead of it on PATH is asking
+          # for trouble, so take it out for the rest of the job.
+          $env:PATH = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'mingw' }) -join ';'
+          "PATH=$env:PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+          # --verbose makes CraftBootstrap pass -vvv to Craft, which logs the
+          # vswhere command it runs to locate Visual Studio and what came back.
+          # This step only runs on a cold cache, so the noise costs nothing and
+          # "Unable to locate Visual Studio" stops being a dead end.
+          python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults --verbose --localDev craft-src
 
       # Craft derives everything from the ABI stored in CraftSettings.ini: which
       # binary cache it downloads from and which toolchain it configures. A
