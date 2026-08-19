@@ -93,6 +93,16 @@ class subinfo(info.infoclass):
         ):
             self.runtimeDependencies[f"kde/frameworks/{framework}"] = None
 
+        # The Python plugins run against an interpreter found on PATH; the
+        # manifest of the built-in ones asks for python3.11 or newer. The
+        # flatpak gets one from the KDE SDK, and inside an AppImage there is
+        # only what this package pulls in. Craft has libs/python as a *build*
+        # dependency of virtual/base, and the packager collects the runtime
+        # closure only — so without naming it here the image ships no
+        # interpreter at all and every plugin reports "Cannot find a compatible
+        # python version". Craft's build is 3.11, which satisfies that manifest.
+        self.runtimeDependencies["libs/python"] = None
+
         # Everything else the editor links
         self.runtimeDependencies["qt-libs/kddockwidgets"] = None
         self.runtimeDependencies["libs/mlt"] = None
