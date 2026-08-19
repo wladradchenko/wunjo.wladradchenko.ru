@@ -71,6 +71,34 @@ jobs:
       # save at the end is a no-op and the next run reads back exactly the tree
       # this one was meant to replace. --key matches by prefix, which is also
       # what restore-keys falls back to, so every stale entry has to go.
+      # Craft names three things on this image as breaking its configuration and
+      # asks for them to be taken off PATH: gcc from C:\mingw64\bin, gcc from
+      # Strawberry Perl, and sh.exe from Git's bin directory.
+      #
+      # The last one is not cosmetic. craftenv.ps1 builds the environment with
+      #     ConvertFrom-Json (& python CraftSetupHelper.py --setup --format=json)
+      # and that JSON is a single line, so the value has to be a single string.
+      # Craft prints its "Found sh in your PATH" warning on the same stream in CI
+      # mode, PowerShell then hands ConvertFrom-Json a string[], and it fails
+      # with "Cannot convert System.Object[] to System.String".
+      #
+      # Only Git\bin goes: git.exe lives in Git\cmd, which stays on PATH.
+      #
+      # This runs unconditionally. Folding it into the bootstrap step would skip
+      # it on a warm cache, which is exactly when everything else still runs.
+      - name: Clean the PATH
+        shell: pwsh
+        run: |
+          $env:PATH = ($env:PATH -split ';' | Where-Object {
+            $_ -notmatch 'mingw' -and $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\bin'
+          }) -join ';'
+          "PATH=$env:PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          foreach ($t in 'sh','gcc','g++','cpp') {
+            $c = Get-Command $t -ErrorAction SilentlyContinue
+            Write-Host ("  {0,-4} {1}" -f $t, $(if ($c) { "still on PATH: $($c.Source)" } else { "gone" }))
+          }
+          Write-Host ("  git  " + (Get-Command git -ErrorAction SilentlyContinue).Source)
+
       - name: Drop the Craft cache
         if: ${{ inputs.rebuild-deps }}
         # bash, not pwsh: the gh invocation is the same on every runner.
@@ -171,15 +199,6 @@ jobs:
             Write-Host "  gettext recipe already mentions -liconv, left alone"
           }
           Select-String -Path $recipe -Pattern 'ldflags' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
-
-          # Craft warns that a gcc on PATH breaks its configuration, and the
-          # runner image ships two: C:\mingw64\bin and Strawberry Perl's
-          # C:\Strawberry\c\bin. Selecting the MSVC ABI and then leaving other
-          # C++ toolchains ahead of it on PATH is asking for trouble, so take
-          # them out for the rest of the job.
-          $env:PATH = ($env:PATH -split ';' |
-                        Where-Object { $_ -notmatch 'mingw' -and $_ -notmatch 'Strawberry' }) -join ';'
-          "PATH=$env:PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
 
       # Craft aborts with "Unable to locate Visual Studio" and says nothing more:
       # it builds the compiler environment while CraftSetupHelper is being

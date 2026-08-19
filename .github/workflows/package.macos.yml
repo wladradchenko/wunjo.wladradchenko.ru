@@ -235,10 +235,17 @@ jobs:
                    --sign "${{ steps.signing.outputs.identity }}" "$bundle"
           codesign --verify --deep --strict --verbose=2 "$bundle"
 
+      # --output-on-failure is what makes a failed package step say anything.
+      # CraftCommands runs the package action under a buffered StageLogger and
+      # only dumps that buffer when this is set, so without it the run ends at
+      # "Checking for absolute library paths in package..." and the reason —
+      # whether a bad dylib reference or the ad-hoc codesign that follows it —
+      # never reaches the log. KDE's own CI sets the same thing.
       - name: Package
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --package --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --output-on-failure --package \
+                --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       - name: Collect the disk image
         run: |
