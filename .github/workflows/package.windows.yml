@@ -123,6 +123,27 @@ jobs:
           Invoke-WebRequest -Uri https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile CraftBootstrap.py
           git clone --depth 1 --branch master https://github.com/KDE/craft.git craft-src
 
+          # The bootstrap runs "craft craft" itself and gives us no way to pass
+          # --ci-mode to it, so its output arrives as interleaved fragments wrapped
+          # in terminal-title escapes and the lines that matter — which package is
+          # being handled, whether fetch-binary found it in the cache — are lost.
+          # Craft reads that switch from CraftSettings.ini, and the bootstrap
+          # generates that file from the template in this checkout, so turning it
+          # on here reaches the bootstrap's own run. Section-aware on purpose:
+          # "Enabled = False" also appears under [CodeSigning].
+          $tpl = "craft-src\CraftSettings.ini.template"
+          $lines = Get-Content $tpl
+          $section = ""
+          for ($i = 0; $i -lt $lines.Count; $i++) {
+            if ($lines[$i] -match '^\[(.+)\]\s*$') { $section = $matches[1] }
+            elseif ($section -eq 'ContinuousIntegration' -and $lines[$i] -match '^Enabled\s*=') {
+              $lines[$i] = 'Enabled = True'
+              break
+            }
+          }
+          Set-Content $tpl $lines
+          Select-String -Path $tpl -Pattern '^Enabled' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
+
           # Craft warns that a gcc on PATH breaks its configuration, and the
           # runner image ships two: C:\mingw64\bin and Strawberry Perl's
           # C:\Strawberry\c\bin. Selecting the MSVC ABI and then leaving other
