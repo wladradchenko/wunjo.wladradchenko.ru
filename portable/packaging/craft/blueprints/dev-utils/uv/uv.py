@@ -50,8 +50,14 @@ class subinfo(info.infoclass):
                 triple, ext = "x86_64-unknown-linux-gnu", "tar.gz"
 
             self.targets[ver] = f"https://github.com/astral-sh/uv/releases/download/{ver}/uv-{triple}.{ext}"
-            # Every archive unpacks into a directory named after the triple.
-            self.targetInstSrc[ver] = f"uv-{triple}"
+            # The two archive kinds are laid out differently, and upstream does
+            # not document it: the tarballs carry a top-level directory named
+            # after the triple, the Windows zip puts uv.exe, uvx.exe and uvw.exe
+            # straight at the root. Naming a source directory that is not there
+            # fails the install with "copyDir called. srcdir: ... does not
+            # exists", so only the tarballs get one.
+            if ext == "tar.gz":
+                self.targetInstSrc[ver] = f"uv-{triple}"
             self.targetInstallPath[ver] = "bin"
             if triple in digests:
                 self.targetDigests[ver] = ([digests[triple]], CraftHash.HashAlgorithm.SHA256)
