@@ -207,10 +207,13 @@ public:
     static double driverCudaVersion();
     /** @brief Video memory of the first GPU in GB, or 0 when there is none.
      *  Decides which variant of a plugin's weights is offered: a model ships in
-     *  two quantisations and only one of them fits this machine. */
+     *  two quantisations and only one of them fits this machine. On Apple
+     *  Silicon there is no separate video memory and a share of the machine's
+     *  own is reported instead. */
     static double gpuVramGb();
     /** @brief Which llama.cpp-style runtime build this machine wants:
      *  "cuda" when the driver is new enough, "vulkan" for any other GPU,
+     *  "metal" on a Mac, where the platform's own build already carries it,
      *  "cpu" when there is none. */
     static QString gpuBackend();
 

@@ -53,6 +53,10 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <algorithm>
 #include <memory>
 
+#if defined(Q_OS_MACOS)
+#include <sys/sysctl.h>
+#endif
+
 PluginManager &PluginManager::instance()
 {
     static PluginManager manager;
@@ -1152,13 +1156,51 @@ double PluginManager::driverCudaVersion()
     return cached;
 }
 
+namespace {
+/** @brief What a model may take of an Apple Silicon machine's memory, in GB.
+ *
+ *  Zero anywhere else, so the caller falls through to the ways of asking that
+ *  suit the platform it is actually on.
+ *
+ *  There is no video memory to report on this hardware: the GPU works out of
+ *  the same pool as everything else. Every way of asking below this — NVML,
+ *  sysfs, nvidia-smi — can only see an NVIDIA card, so on a Mac they all answer
+ *  zero, zero is read as "no GPU at all", and the model goes to the CPU cores
+ *  with Metal sitting idle beside them. That is not a missing feature; it is a
+ *  detection that was only ever taught one vendor.
+ *
+ *  A share rather than the whole: the editor is holding video frames in that
+ *  same memory, and a model told it may have everything takes the machine down
+ *  with it instead of loading a size smaller.
+ *
+ *  Intel Macs are left out on purpose. llama.cpp's Metal path is not worth
+ *  having there, and they fall through to the code below, find nothing, and
+ *  settle on the CPU build — which is the right answer for them.
+ */
+double appleUnifiedMemoryGb()
+{
+#if defined(Q_OS_MACOS) && defined(Q_PROCESSOR_ARM)
+    quint64 bytes = 0;
+    size_t length = sizeof(bytes);
+    if (sysctlbyname("hw.memsize", &bytes, &length, nullptr, 0) == 0 && bytes > 0) {
+        return double(bytes) / (1024.0 * 1024.0 * 1024.0) * 0.7;
+    }
+#endif
+    return 0;
+}
+} // namespace
+
 double PluginManager::gpuVramGb()
 {
     static double cached = -1;
     if (cached >= 0) {
         return cached;
     }
-    cached = 0;
+    cached = appleUnifiedMemoryGb();
+    if (cached > 0) {
+        qDebug() << "::: GPU memory (GB, unified)" << cached;
+        return cached;
+    }
     // NVML is the only way to ask NVIDIA from inside the sandbox: nvidia-smi
     // belongs to the host and is not mounted, but the driver's own library is
     // reachable under /run/host thanks to --filesystem=host. Loaded by name
@@ -1226,9 +1268,18 @@ QString PluginManager::gpuBackend()
     if (gpuVramGb() <= 0) {
         return QStringLiteral("cpu");
     }
+#if defined(Q_OS_MACOS)
+    // The macOS builds of llama.cpp carry Metal inside them, so there is no
+    // separate runtime to pick and nothing in the manifest to match — those
+    // entries name no backend at all. The name still has to be something other
+    // than "cpu", because that single comparison is the whole of what the
+    // plugin reads to decide whether to offload a layer.
+    return QStringLiteral("metal");
+#else
     // CUDA builds are the fastest, but only where the driver can load them;
     // Vulkan covers the rest (AMD, Intel, and NVIDIA on an older driver).
     return driverCudaVersion() >= 11.8 ? QStringLiteral("cuda") : QStringLiteral("vulkan");
+#endif
 }
 
 QString PluginManager::venvDir(const QString &venvName)

@@ -121,6 +121,27 @@ def _python() -> str:
     return sys.executable
 
 
+def _speech_python() -> str:
+    """The editor's shared interpreter, the one Whisper was installed into.
+
+    Both layouts are tried rather than chosen by platform: a virtual environment
+    keeps its interpreter in ``bin`` on Linux and macOS and in ``Scripts`` on
+    Windows, and an environment can be carried between machines. Naming only the
+    first leaves transcription quietly broken on Windows — the tool is handed a
+    path to nothing and the failure surfaces as speech simply never working.
+    PluginManager::venvPython answers the same question the same way.
+    """
+    venv = os.path.normpath(os.path.join(MODELS_DIR, os.pardir, os.pardir, os.pardir, "venv"))
+    for parts in (("bin", "python3"), ("Scripts", "python.exe"),
+                  ("bin", "python"), ("Scripts", "python3.exe")):
+        candidate = os.path.join(venv, *parts)
+        if os.path.isfile(candidate):
+            return candidate
+    # Nothing installed there yet. The Unix spelling stands in, so whatever
+    # complains names the place the interpreter is meant to be.
+    return os.path.join(venv, "bin", "python3")
+
+
 def _guidance(editor) -> str:
     """The user's own skills and loop, as text to put in front of the model.
 
@@ -202,8 +223,7 @@ def write_recipe(work_dir: str, message: str, guidance: str = "", tool_set: str 
                     "WUNJO_FFMPEG": ffmpeg,
                     # Whisper lives in the editor's shared environment, one copy
                     # for everything that needs speech.
-                    "WUNJO_SPEECH_PYTHON": os.path.normpath(
-                        os.path.join(MODELS_DIR, os.pardir, os.pardir, os.pardir, "venv", "bin", "python3")),
+                    "WUNJO_SPEECH_PYTHON": _speech_python(),
                     "WUNJO_SPEECH_MODELS": os.path.join(
                         os.path.expanduser("~"), ".cache", "whisper"),
                 },

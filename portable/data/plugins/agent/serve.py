@@ -28,6 +28,11 @@ MODELS_DIR = os.environ.get("WUNJO_MODELS_DIR") or os.path.join(PLUGIN_DIR, "mod
 RECORD = os.path.join(MODELS_DIR, "llama-server.json")
 #: Where the model server's own output is kept, so a death has an explanation.
 SERVER_LOG = os.path.join(MODELS_DIR, "llama-server.log")
+#: Windows opens a console for every process a windowed application starts. The
+#: model server, the watchdog and the device query would each flash one up over
+#: the editor, and the server's stays for as long as the model is loaded. Zero
+#: everywhere else, which is what the flag already is when nobody passes it.
+_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 
 def log(message: str) -> None:
@@ -72,11 +77,17 @@ def _binary() -> str:
     Release tarballs put it under a folder of their own and the name of that
     folder changes with every build, so it is searched for rather than spelled
     out — otherwise a routine version bump breaks the plugin.
+
+    Windows publishes the same tool under a name of its own, so both spellings
+    are looked for. Matching only the bare one there finds nothing, and "not
+    found" is reported to the user as the runtime not being installed — about
+    a file sitting in the folder it was downloaded to.
     """
     root = os.path.join(MODELS_DIR, "llama-server")
     for base, _dirs, files in os.walk(root):
-        if "llama-server" in files:
-            return os.path.join(base, "llama-server")
+        for name in ("llama-server", "llama-server.exe"):
+            if name in files:
+                return os.path.join(base, name)
     return ""
 
 
@@ -128,7 +139,8 @@ def _pick_device(binary: str) -> str:
     memory.
     """
     try:
-        listing = subprocess.run([binary, "--list-devices"], capture_output=True, text=True, timeout=60).stdout
+        listing = subprocess.run([binary, "--list-devices"], capture_output=True, text=True, timeout=60,
+                                 creationflags=_NO_WINDOW).stdout
     except (OSError, subprocess.SubprocessError) as error:
         log(f"could not list devices: {error}")
         return ""
@@ -153,27 +165,109 @@ def _pick_device(binary: str) -> str:
     return best
 
 
+def _is_ours(command: str, model: str) -> bool:
+    """Whether a command line belongs to a model server this plugin started.
+
+    Both marks have to be there: somebody else's llama.cpp is not ours to stop,
+    and neither is a llama-server running somebody else's weights.
+    """
+    if "llama-server" not in command:
+        return False
+    if os.name == "nt":
+        # The system reports back a path it has spelled its own way — a
+        # different case, or the other slash — and compared literally that
+        # never matches the one we passed, so no leftover is ever found.
+        return model.replace("/", "\\").lower() in command.replace("/", "\\").lower()
+    return model in command
+
+
+def _pids_from_listing(listing: str, model: str) -> list:
+    """Our servers' process ids out of a "<pid> <command line>" listing."""
+    found = []
+    for line in listing.splitlines():
+        head, _, command = line.strip().partition(" ")
+        if not head.isdigit() or int(head) == os.getpid():
+            continue
+        if _is_ours(command, model):
+            found.append(int(head))
+    return found
+
+
+def _server_pids(model: str) -> list:
+    """Every llama-server of ours that is running, however this system says so.
+
+    Each platform is asked in its own way: /proc where there is one, ``ps`` on
+    macOS, a process query on Windows. None of them may raise. This used to read
+    /proc unconditionally, and on a system that has no /proc the FileNotFoundError
+    travelled all the way up to the plugin's "the model is not installed" branch
+    — so the first thing the assistant ever said on macOS and on Windows was
+    that the user should download weights they had already downloaded.
+
+    A listing that cannot be had means "no leftovers", which is the same answer
+    a healthy machine gives and costs nothing worse than a second server failing
+    to start for want of memory — a far better failure than never starting at all.
+    """
+    try:
+        if os.name == "nt":
+            listing = subprocess.run(
+                ["powershell", "-NoProfile", "-NonInteractive", "-Command",
+                 # No quotes anywhere in the command: it travels through Windows'
+                 # own argument quoting on the way to the shell, and a filter with
+                 # quotes in it arrives mangled. Cheaper to sift the lines here.
+                 #
+                 # Written straight to the console rather than returned as a
+                 # value: PowerShell folds what it prints to a fixed width, and a
+                 # command line is comfortably longer than that. Folded, the model
+                 # path lands on a second line with no process id in front of it,
+                 # and every line of the pair fails to be recognised — one for
+                 # having no path, the other for having no id.
+                 "Get-CimInstance Win32_Process | ForEach-Object { "
+                 "[Console]::Out.WriteLine($_.ProcessId.ToString() + ' ' + $_.CommandLine) }"],
+                capture_output=True, text=True, timeout=60, creationflags=_NO_WINDOW).stdout
+            return _pids_from_listing(listing, model)
+        if sys.platform == "darwin":
+            # -ww, or macOS cuts every line to the width of a terminal that is
+            # not even there — and what falls off the end is the tail of the
+            # command line, which is exactly the model path being looked for.
+            listing = subprocess.run(["ps", "-ax", "-ww", "-o", "pid=,command="],
+                                     capture_output=True, text=True, timeout=30).stdout
+            return _pids_from_listing(listing, model)
+        found = []
+        for entry in os.listdir("/proc"):
+            if not entry.isdigit() or int(entry) == os.getpid():
+                continue
+            try:
+                with open(f"/proc/{entry}/cmdline", "rb") as handle:
+                    command = handle.read().decode("utf-8", "replace")
+            except OSError:
+                continue
+            if _is_ours(command, model):
+                found.append(int(entry))
+        return found
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        log(f"could not look for leftover model servers: {error}")
+        return []
+
+
 def _kill_orphans(model: str) -> None:
     """Stop any llama-server of ours that no record accounts for.
 
     Identified by the model path on its command line, so only servers this
     plugin started are touched — never somebody else's llama.cpp.
     """
-    for entry in os.listdir("/proc"):
-        if not entry.isdigit() or int(entry) == os.getpid():
-            continue
+    stopped = False
+    for pid in _server_pids(model):
+        log(f"stopping a leftover model server (pid {pid})")
         try:
-            with open(f"/proc/{entry}/cmdline", "rb") as handle:
-                command = handle.read().decode("utf-8", "replace")
+            # On Windows this is a TerminateProcess rather than a signal, which
+            # is all that platform offers and enough: the server holds nothing
+            # that needs unwinding.
+            os.kill(pid, signal.SIGTERM)
+            stopped = True
         except OSError:
-            continue
-        if "llama-server" in command and model in command:
-            log(f"stopping a leftover model server (pid {entry})")
-            try:
-                os.kill(int(entry), signal.SIGTERM)
-            except OSError:
-                pass
-    time.sleep(2)  # let the graphics memory come back before asking for it
+            pass
+    if stopped:
+        time.sleep(2)  # let the graphics memory come back before asking for it
 
 
 def ensure(context_tokens: int = 65536, idle_minutes: int = 10) -> str:
@@ -236,7 +330,11 @@ def ensure(context_tokens: int = 65536, idle_minutes: int = 10) -> str:
         command,
         stdout=server_log,
         stderr=subprocess.STDOUT,
-        start_new_session=True,  # outlives the plugin process that started it
+        # Outlives the plugin process that started it. On Windows a child
+        # already survives its parent and this flag is ignored there, so the
+        # detaching that matters is the same one line on both.
+        start_new_session=True,
+        creationflags=_NO_WINDOW,
     )
     with open(RECORD, "w", encoding="utf-8") as handle:
         json.dump({"port": port, "pid": process.pid, "idle_minutes": idle_minutes}, handle)
@@ -266,7 +364,15 @@ def stop() -> None:
     pid = int(record.get("pid", 0))
     if pid:
         try:
-            os.killpg(os.getpgid(pid), signal.SIGTERM)
+            # The server runs in a session of its own, so on Unix the whole
+            # group goes at once — llama.cpp starts helpers, and taking only
+            # the leader leaves them holding the card. Windows has no process
+            # group to signal and no killpg to call it with; there the process
+            # itself is all there is to stop.
+            if hasattr(os, "killpg"):
+                os.killpg(os.getpgid(pid), signal.SIGTERM)
+            else:
+                os.kill(pid, signal.SIGTERM)
         except OSError:
             pass
     _kill_orphans(_model_file())
@@ -340,6 +446,7 @@ def _start_watchdog() -> None:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         start_new_session=True,
+        creationflags=_NO_WINDOW,
     )
 
 
