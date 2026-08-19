@@ -97,7 +97,12 @@ jobs:
       # GitLab generates on demand and which returns 502 under load even when
       # the rest of the site is healthy. The mirror is the same code from the
       # same host we already take CraftBootstrap.py from.
-      - name: Bootstrap Craft
+      # Craft is fetched from its GitHub mirror and handed to the bootstrap with
+      # --localDev rather than letting the bootstrap fetch it: its own path is
+      # invent.kde.org's /-/archive/master/craft-master.zip, which GitLab builds
+      # on demand and which returns 502 under load. Having the checkout here
+      # also puts Craft's own vswhere.exe within reach of the probe below.
+      - name: Fetch Craft
         if: steps.craft-cache.outputs.cache-matched-key == ''
         shell: pwsh
         run: |
@@ -105,17 +110,52 @@ jobs:
           git clone --depth 1 --branch master https://github.com/KDE/craft.git craft-src
 
           # Craft warns that a gcc on PATH breaks its configuration, and the
-          # runner image ships one in C:\mingw64\bin. Selecting the MSVC ABI and
-          # then leaving a second C++ toolchain ahead of it on PATH is asking
-          # for trouble, so take it out for the rest of the job.
-          $env:PATH = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'mingw' }) -join ';'
+          # runner image ships two: C:\mingw64\bin and Strawberry Perl's
+          # C:\Strawberry\c\bin. Selecting the MSVC ABI and then leaving other
+          # C++ toolchains ahead of it on PATH is asking for trouble, so take
+          # them out for the rest of the job.
+          $env:PATH = ($env:PATH -split ';' |
+                        Where-Object { $_ -notmatch 'mingw' -and $_ -notmatch 'Strawberry' }) -join ';'
           "PATH=$env:PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
 
-          # --verbose makes CraftBootstrap pass -vvv to Craft, which logs the
-          # vswhere command it runs to locate Visual Studio and what came back.
-          # This step only runs on a cold cache, so the noise costs nothing and
-          # "Unable to locate Visual Studio" stops being a dead end.
-          python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults --verbose --localDev craft-src
+      # Craft aborts with "Unable to locate Visual Studio" and says nothing more:
+      # it builds the compiler environment while CraftSetupHelper is being
+      # imported, which happens before craft.py parses -vvv, so no amount of
+      # verbosity ever reaches that code. Ask its own vswhere the same questions
+      # instead. Costs seconds, and turns a dead end into an answer.
+      - name: Probe for Visual Studio
+        if: steps.craft-cache.outputs.cache-matched-key == ''
+        shell: pwsh
+        run: |
+          $vswhere = "craft-src\bin\3rdparty\vswhere\vswhere.exe"
+          Write-Host "=== every install vswhere can see"
+          & $vswhere -all -products '*' -format json |
+            ConvertFrom-Json |
+            ForEach-Object { "  {0} | {1} | {2}" -f $_.displayName, $_.installationVersion, $_.installationPath }
+
+          Write-Host "=== the query Craft makes for the msvc2022 ABI"
+          $hit = & $vswhere -property installationPath -nologo -latest -products '*' `
+                            -version '[17,18)' `
+                            -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+          if ($hit) { Write-Host "  found: $hit" } else { Write-Host "  NOTHING - this is what aborts Craft" }
+
+          Write-Host "=== same query without the -requires filter"
+          $any = & $vswhere -property installationPath -nologo -latest -products '*' -version '[17,18)'
+          if ($any) { Write-Host "  found: $any" } else { Write-Host "  nothing" }
+
+          Write-Host "=== VC toolset components present"
+          & $vswhere -all -products '*' -format json |
+            ConvertFrom-Json |
+            ForEach-Object { $_.packages } |
+            Where-Object { $_.id -like 'Microsoft.VisualStudio.Component.VC.*' } |
+            ForEach-Object { "  " + $_.id } | Sort-Object -Unique
+
+      - name: Bootstrap Craft
+        if: steps.craft-cache.outputs.cache-matched-key == ''
+        shell: pwsh
+        run: |
+          python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults `
+                                   --localDev craft-src
 
       # Craft derives everything from the ABI stored in CraftSettings.ini: which
       # binary cache it downloads from and which toolchain it configures. A
