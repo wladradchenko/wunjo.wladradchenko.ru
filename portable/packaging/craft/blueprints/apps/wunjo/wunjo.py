@@ -147,6 +147,11 @@ class Package(CMakePackageBase):
         self.defines["appname"] = "wunjo"
         self.defines["desktopFile"] = "online.wunjo.make"
 
+    def createPackage(self):
+        if CraftCore.compiler.isMacOS:
+            self.blacklist_file.append(self.blueprintDir() / "exclude_macos.list")
+        return super().createPackage()
+
     def setDefaults(self, defines: dict) -> dict:
         defines = super().setDefaults(defines)
         if CraftCore.compiler.isLinux and isinstance(self, AppImagePackager):

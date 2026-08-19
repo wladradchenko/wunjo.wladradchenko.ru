@@ -243,6 +243,35 @@ jobs:
       # binary cache it downloads from and which toolchain it configures. A
       # restored cache carries whatever ABI it was built with, so check it here
       # rather than an hour into fetching packages for the wrong compiler.
+      # CI mode is wanted for the bootstrap, whose own "craft craft" run we
+      # cannot pass flags to, and unwanted afterwards. It routes messages that
+      # normally go to stderr onto stdout, and craftenv.ps1 does
+      #     ConvertFrom-Json (& python CraftSetupHelper.py --setup --format=json)
+      # binding the result positionally, which needs one string. The JSON is a
+      # single line, so any extra chatter on stdout turns the value into a
+      # string[] and the whole environment setup dies with "Cannot convert
+      # System.Object[] to System.String".
+      #
+      # Turning it off in the settings costs nothing: every craft call in this
+      # workflow passes --ci-mode explicitly, and a command-line flag overrides
+      # the file. Unconditional because the settings arrive from the cache too.
+      - name: Take Craft out of CI mode
+        shell: pwsh
+        run: |
+          $ini = "$env:CRAFT_ROOT\etc\CraftSettings.ini"
+          if (-not (Test-Path $ini)) { Write-Host "  no settings yet, nothing to do"; exit 0 }
+          $lines = Get-Content $ini
+          $section = ""
+          for ($i = 0; $i -lt $lines.Count; $i++) {
+            if ($lines[$i] -match '^\[(.+)\]\s*$') { $section = $matches[1] }
+            elseif ($section -eq 'ContinuousIntegration' -and $lines[$i] -match '^Enabled\s*=') {
+              $lines[$i] = 'Enabled = False'
+              break
+            }
+          }
+          Set-Content $ini $lines
+          Select-String -Path $ini -Pattern '^Enabled' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
+
       - name: Check the Craft ABI
         shell: pwsh
         run: |
