@@ -104,6 +104,47 @@ jobs:
             exit 1
           fi
 
+      # KDE's macOS binary cache lags its blueprints — at the time of writing it
+      # carries KF 6.28.0 while the recipes ask for 6.29.0 — so the frameworks
+      # are compiled here rather than downloaded, and that is where this bites.
+      #
+      # Craft defaults MacDeploymentTarget to 13, but libc++ in the macOS 14 SDK
+      # marks the floating-point std::to_chars as "introduced in macOS 13.3".
+      # kcodecs 6.29 uses std::format on floats, so with a target below 13.3
+      # every translation unit that reaches <format> fails to compile. Raising
+      # it costs nothing against the cache: a deployment target is a minimum-OS
+      # check, not an ABI, so a 13.3 build links against the prebuilt 13.0 Qt
+      # exactly as before. It does mean the .dmg wants macOS 13.3 rather than
+      # 13.0.
+      - name: Raise the macOS deployment target
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          ini = Path(os.environ["CRAFT_ROOT"]) / "etc" / "CraftSettings.ini"
+          lines = ini.read_text(encoding="utf-8").splitlines()
+          section = None
+          header = None
+          for i, line in enumerate(lines):
+              match = re.match(r"^\[(.+)\]\s*$", line)
+              if match:
+                  section = match.group(1)
+                  if section == "General":
+                      header = i
+              elif section == "General" and re.match(r"^[#;]?\s*MacDeploymentTarget\s*=", line, re.I):
+                  lines[i] = "MacDeploymentTarget = 13.3"
+                  break
+          else:
+              if header is None:
+                  raise SystemExit("no [General] section in CraftSettings.ini")
+              lines.insert(header + 1, "MacDeploymentTarget = 13.3")
+
+          ini.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+          grep -n "MacDeploymentTarget" "$CRAFT_ROOT/etc/CraftSettings.ini"
+
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
