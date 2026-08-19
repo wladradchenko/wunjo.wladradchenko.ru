@@ -42,6 +42,17 @@ class subinfo(info.infoclass):
         # Build-only
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
         self.buildDependencies["dev-utils/pkgconf"] = None
+
+        # qttools is a build tool here, not a runtime library: ki18n_install(po)
+        # needs lrelease and nothing in this application links Qt Help, UiTools
+        # or Designer. Every KDE framework we depend on declares it the same way.
+        #
+        # As a runtime dependency it also drags Assistant.app, Designer.app and
+        # Linguist.app into the package, and on macOS that is fatal rather than
+        # merely wasteful: the packager rewrites their rpaths, which invalidates
+        # the signatures they arrive with, and the ad-hoc `codesign --deep` that
+        # follows walks into those nested bundles and fails.
+        self.buildDependencies["libs/qt6/qttools"] = None
         if CraftCore.compiler.isLinux:
             # AppImagePackager shells out to linuxdeploy; without it the package
             # step aborts with "Craft requires linuxdeploy to create an AppImage".
@@ -58,7 +69,6 @@ class subinfo(info.infoclass):
             "qtsvg",
             "qtmultimedia",
             "qtnetworkauth",
-            "qttools",
             "qt5compat",
             "qtimageformats",
         ):
