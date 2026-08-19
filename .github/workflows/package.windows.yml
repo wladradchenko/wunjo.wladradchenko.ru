@@ -243,6 +243,12 @@ jobs:
       - name: Build dependencies
         shell: pwsh
         run: |
+          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
+          # that writes through $RawUI.CursorPosition, and a runner step has no
+          # console handle to write to, so it throws "The handle is invalid" and
+          # takes the step with it. Shadowing it with a no-op costs nothing:
+          # there is no screen here to clear.
+          function Clear-Host {}
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
           craft --ci-mode --install-deps --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
@@ -254,6 +260,12 @@ jobs:
       - name: Build Wunjo Make
         shell: pwsh
         run: |
+          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
+          # that writes through $RawUI.CursorPosition, and a runner step has no
+          # console handle to write to, so it throws "The handle is invalid" and
+          # takes the step with it. Shadowing it with a no-op costs nothing:
+          # there is no screen here to clear.
+          function Clear-Host {}
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
           craft --ci-mode --no-cache --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
 
@@ -270,6 +282,12 @@ jobs:
         if: ${{ inputs.sign }}
         shell: pwsh
         run: |
+          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
+          # that writes through $RawUI.CursorPosition, and a runner step has no
+          # console handle to write to, so it throws "The handle is invalid" and
+          # takes the step with it. Shadowing it with a no-op costs nothing:
+          # there is no screen here to clear.
+          function Clear-Host {}
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
           $found = Get-ChildItem -Path $env:CRAFT_ROOT -Recurse -Include wunjo.exe, wunjo_render.exe -ErrorAction SilentlyContinue |
                    Where-Object { $_.FullName -notmatch '\\build\\' }
@@ -319,6 +337,12 @@ jobs:
       - name: Package
         shell: pwsh
         run: |
+          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
+          # that writes through $RawUI.CursorPosition, and a runner step has no
+          # console handle to write to, so it throws "The handle is invalid" and
+          # takes the step with it. Shadowing it with a no-op costs nothing:
+          # there is no screen here to clear.
+          function Clear-Host {}
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
           craft --ci-mode --install-deps nsis
           craft --ci-mode --package --options "wunjo.srcDir=$env:GITHUB_WORKSPACE\portable" wunjo
@@ -326,6 +350,12 @@ jobs:
       - name: Collect installers
         shell: pwsh
         run: |
+          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
+          # that writes through $RawUI.CursorPosition, and a runner step has no
+          # console handle to write to, so it throws "The handle is invalid" and
+          # takes the step with it. Shadowing it with a no-op costs nothing:
+          # there is no screen here to clear.
+          function Clear-Host {}
           & "$env:CRAFT_ROOT\craft\craftenv.ps1"
           $dir = craft -q --get "packageDestinationDir()" virtual/base
           # craftenv.ps1 cds out of the workspace, so spell the workspace out.
