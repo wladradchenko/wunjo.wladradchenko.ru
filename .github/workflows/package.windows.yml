@@ -236,6 +236,15 @@ jobs:
         if: steps.craft-cache.outputs.cache-matched-key == ''
         shell: pwsh
         run: |
+          # CraftBootstrap tests for Android twice, and the second test is not the
+          # one that picks the platform. Beyond choosing the ABI it also does
+          #     if isAndroid(): setSettingsValue("Compile", "BuildType", "MinSizeRel")
+          # and isAndroid() is literally `"ANDROID_SDK_ROOT" in os.environ`, which
+          # this image sets because it ships the Android SDK. Windows keeps the
+          # right ABI — isWin() is checked first — and silently gets Android's
+          # build type, which points the binary cache lookup at a directory KDE
+          # does not publish. Every package then builds from source.
+          Remove-Item Env:ANDROID_SDK_ROOT -ErrorAction SilentlyContinue
           python CraftBootstrap.py --prefix $env:CRAFT_ROOT --branch master --use-defaults `
                                    --localDev craft-src
 
@@ -243,34 +252,43 @@ jobs:
       # binary cache it downloads from and which toolchain it configures. A
       # restored cache carries whatever ABI it was built with, so check it here
       # rather than an hour into fetching packages for the wrong compiler.
-      # CI mode is wanted for the bootstrap, whose own "craft craft" run we
-      # cannot pass flags to, and unwanted afterwards. It routes messages that
-      # normally go to stderr onto stdout, and craftenv.ps1 does
-      #     ConvertFrom-Json (& python CraftSetupHelper.py --setup --format=json)
-      # binding the result positionally, which needs one string. The JSON is a
-      # single line, so any extra chatter on stdout turns the value into a
-      # string[] and the whole environment setup dies with "Cannot convert
-      # System.Object[] to System.String".
+      # Two settings have to be corrected after the bootstrap, and both arrive
+      # from the cache as well, so this runs unconditionally.
       #
-      # Turning it off in the settings costs nothing: every craft call in this
-      # workflow passes --ci-mode explicitly, and a command-line flag overrides
-      # the file. Unconditional because the settings arrive from the cache too.
-      - name: Take Craft out of CI mode
+      # Compile/BuildType: see the Android note above. KDE publishes its Windows
+      # cache under RelWithDebInfo, and Craft appends the build type to the
+      # cache URL, so MinSizeRel turns every lookup into a 404 and every package
+      # into a source build.
+      #
+      # ContinuousIntegration/Enabled: wanted for the bootstrap, whose own
+      # "craft craft" run takes no flags from us, and harmful afterwards. It
+      # moves messages from stderr onto stdout, and craftenv.ps1 does
+      #     ConvertFrom-Json (& python CraftSetupHelper.py --setup --format=json)
+      # binding positionally, which needs one string; the JSON is a single line,
+      # so any extra chatter makes it a string[] and the environment setup dies.
+      # Turning it off costs nothing here: every craft call below passes
+      # --ci-mode explicitly, and the flag overrides the file.
+      - name: Fix up the Craft settings
         shell: pwsh
         run: |
           $ini = "$env:CRAFT_ROOT\etc\CraftSettings.ini"
           if (-not (Test-Path $ini)) { Write-Host "  no settings yet, nothing to do"; exit 0 }
+          $want = @{ 'ContinuousIntegration' = @{ 'Enabled' = 'False' }
+                     'Compile'               = @{ 'BuildType' = 'RelWithDebInfo' } }
           $lines = Get-Content $ini
           $section = ""
           for ($i = 0; $i -lt $lines.Count; $i++) {
-            if ($lines[$i] -match '^\[(.+)\]\s*$') { $section = $matches[1] }
-            elseif ($section -eq 'ContinuousIntegration' -and $lines[$i] -match '^Enabled\s*=') {
-              $lines[$i] = 'Enabled = False'
-              break
+            if ($lines[$i] -match '^\[(.+)\]\s*$') { $section = $matches[1]; continue }
+            if (-not $want.ContainsKey($section)) { continue }
+            foreach ($key in $want[$section].Keys) {
+              if ($lines[$i] -match "^[#;]?\s*$key\s*=") {
+                $lines[$i] = "$key = $($want[$section][$key])"
+              }
             }
           }
           Set-Content $ini $lines
-          Select-String -Path $ini -Pattern '^Enabled' | ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
+          Select-String -Path $ini -Pattern '^(Enabled|BuildType|ABI)\s*=' |
+            ForEach-Object { "  $($_.LineNumber): $($_.Line)" }
 
       - name: Check the Craft ABI
         shell: pwsh
