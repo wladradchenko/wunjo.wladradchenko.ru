@@ -148,10 +148,26 @@ jobs:
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
+      # "/.buildTests=False" switches off -DBUILD_TESTING for every package, the
+      # leading "/" being the root of the blueprint tree: Craft looks an option
+      # up on a package and walks to its parent when unset (options.py:413), so
+      # setting it there reaches all of them. It is what KDE's own CI config
+      # does, and for the same two reasons.
+      #
+      # It is needed, not merely faster: KIO 6.29's autotests do not compile —
+      # kfilewidgettest.cpp constructs LocationTestItem with two arguments and
+      # the struct has no such constructor — and a framework's test suite
+      # failing takes the whole dependency build with it. We do not run these
+      # tests and have no reason to compile them.
+      #
+      # It also cannot cost a cache hit: buildTests is registered with
+      # compatible=True, so the binary cache lookup skips it entirely.
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --install-deps \
+                --options "/.buildTests=False" \
+                --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       # Craft's own binary cache covers all but one package, so the tree is
       # mostly downloaded rather than compiled — but pulseaudio does build from
