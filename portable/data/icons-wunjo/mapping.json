@@ -891,6 +891,18 @@
     "source": "custom",
     "file": "timeline-lift.svg"
   },
+  "timeline-mode-insert": {
+    "source": "alias",
+    "of": "wunjo-insert-edit"
+  },
+  "timeline-mode-normal": {
+    "source": "alias",
+    "of": "wunjo-normal-edit"
+  },
+  "timeline-mode-overwrite": {
+    "source": "alias",
+    "of": "wunjo-overwrite-edit"
+  },
   "timeline-overwrite": {
     "source": "custom",
     "file": "timeline-overwrite.svg"
@@ -1067,6 +1079,10 @@
   "visibility": {
     "source": "lucide",
     "id": "eye"
+  },
+  "waveform": {
+    "source": "alias",
+    "of": "wunjo-show-audiothumb"
   },
   "window-close": {
     "source": "lucide",
