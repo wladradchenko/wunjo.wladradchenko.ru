@@ -1,0 +1,42 @@
+Drop std::pmr from KRecentFilesAction so the build runs on macOS 13.
+
+std::pmr lives in the libc++ dylib and Apple only shipped it in macOS 14, so a
+binary that references it dies at launch on anything older with
+
+    Symbol not found: __ZNSt3__13pmr15memory_resourceD2Ev
+    Referenced from: libKF6ConfigWidgets.6.29.0.dylib
+    Expected in:     /usr/lib/libc++.1.dylib
+
+The deployment target is set to 13.3 and did not prevent this, so libc++'s
+availability annotations are switched off somewhere up the toolchain — which
+means the compiler will not catch the next one of these either. tests/macos-abi
+checks the built bundle for exactly that.
+
+Nothing is lost by the change: the arena existed to keep a de-duplication set of
+at most m_maxItems URLs off the heap while the recent-files list is read. The
+insert() call is untouched, std::set returns the same pair<iterator, bool>, and
+<set> was already included.
+
+Present in 6.28.0 as well, so pinning the framework a version back does not help.
+
+--- a/src/krecentfilesaction.cpp
++++ b/src/krecentfilesaction.cpp
+@@ -35,7 +35,6 @@
+ #include <KLocalizedString>
+ #include <KShell>
+ 
+-#include <memory_resource>
+ #include <set>
+ 
+ KRecentFilesAction::KRecentFilesAction(QObject *parent)
+@@ -342,9 +341,7 @@
+         cg = KConfigGroup(cg.config(), QStringLiteral("RecentFiles"));
+     }
+ 
+-    std::byte memory[sizeof(QUrl) * 32];
+-    std::pmr::monotonic_buffer_resource resource(memory, sizeof(memory));
+-    std::pmr::set<QUrl> seenUrls(&resource);
++    std::set<QUrl> seenUrls;
+ 
+     bool thereAreEntries = false;
+     // read file list
