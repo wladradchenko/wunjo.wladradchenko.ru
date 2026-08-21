@@ -18,6 +18,8 @@
         <string>6.0</string>
         <key>CFBundleLongVersionString</key>
         <string>${MACOSX_BUNDLE_LONG_VERSION_STRING}</string>
+        <key>CFBundleDisplayName</key>
+        <string>Wunjo Make</string>
         <key>CFBundleName</key>
         <string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
         <key>CFBundlePackageType</key>

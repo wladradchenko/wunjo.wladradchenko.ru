@@ -148,6 +148,33 @@ jobs:
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
+      # ── kconfigwidgets without std::pmr ────────────────────────────────
+      # KRecentFilesAction uses a std::pmr arena to de-duplicate the recent
+      # files list. std::pmr lives in the libc++ dylib and Apple shipped it in
+      # macOS 14, so the framework built here references a symbol that does not
+      # exist on the 13.3 this build targets: the application then dies in dyld
+      # before main() on any Mac older than 14, which is the whole thing a
+      # deployment target is set to prevent. It shipped exactly that way once —
+      # "Symbol not found: __ZNSt3__13pmr15memory_resourceD2Ev".
+      #
+      # The compiler did not object, so libc++'s availability annotations are
+      # switched off somewhere in this toolchain and it will not object to the
+      # next one either. That is what the bundle check after the build is for.
+      #
+      # Built before --install-deps, so everything that links against the
+      # framework links against the patched one. --no-cache because the point is
+      # to compile our source: a kconfigwidgets taken ready-made out of the
+      # binary cache would bring the bug straight back.
+      - name: Build kconfigwidgets from patched source
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --ci-mode --no-cache --fetch --unpack kconfigwidgets
+          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/apply-source-patch.py" \
+                  src/krecentfilesaction.cpp \
+                  "$GITHUB_WORKSPACE/portable/packaging/craft/patches/kconfigwidgets-no-pmr.patch" \
+                  --gone pmr
+          craft --ci-mode --no-cache --compile --install --qmerge kconfigwidgets
+
       # "/.buildTests=False" switches off -DBUILD_TESTING for every package, the
       # leading "/" being the root of the blueprint tree: Craft looks an option
       # up on a package and walks to its parent when unset (options.py:413), so
@@ -180,6 +207,18 @@ jobs:
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
           craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      # The check that was missing when a .dmg went out declaring macOS 13.3 and
+      # referencing a macOS 14 symbol. It reads every Mach-O in the bundle and
+      # fails the build when one asks for something newer than the minimum it
+      # itself declares. Placed before signing on purpose: a bundle that cannot
+      # start should not cost a notarisation round trip, and should never reach
+      # the artifacts where somebody would install it.
+      - name: Check the bundle against its deployment target
+        run: |
+          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
+          if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
+          python3 "$GITHUB_WORKSPACE/tests/macos-abi/check_symbols.py" "$bundle"
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still

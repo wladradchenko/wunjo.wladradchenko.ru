@@ -217,9 +217,14 @@ if (APPLE)
 # Apple app package
 set_target_properties(wunjo PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/../data/Info.plist)
 set_target_properties(wunjo PROPERTIES
-    MACOSX_BUNDLE_DISPLAY_NAME "Wunjo"
-    MACOSX_BUNDLE_BUNDLE_NAME "Wunjo"
-    MACOSX_BUNDLE_LONG_VERSION_STRING "Wunjo ${WUNJO_VERSION}"
+    # CFBundleName is what the menu bar shows. Apple asks for 15 characters or
+    # fewer there and "Wunjo Make" is ten. The Finder name is CFBundleDisplayName,
+    # which is spelled out in data/Info.plist: MACOSX_BUNDLE_DISPLAY_NAME below is
+    # not one of the properties CMake substitutes into a plist, so setting it here
+    # alone put the name nowhere at all.
+    MACOSX_BUNDLE_DISPLAY_NAME "Wunjo Make"
+    MACOSX_BUNDLE_BUNDLE_NAME "Wunjo Make"
+    MACOSX_BUNDLE_LONG_VERSION_STRING "Wunjo Make ${WUNJO_VERSION}"
     MACOSX_BUNDLE_SHORT_VERSION_STRING "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}"
     MACOSX_BUNDLE_BUNDLE_VERSION "${WUNJO_VERSION}"
     MACOSX_BUNDLE_GUI_IDENTIFIER "online.wunjo.make"
