@@ -9,7 +9,7 @@ binary that references it dies at launch on anything older with
 
 The deployment target is set to 13.3 and did not prevent this, so libc++'s
 availability annotations are switched off somewhere up the toolchain — which
-means the compiler will not catch the next one of these either. tests/macos-abi
+means the compiler will not catch the next one of these either. portable/packaging/craft/check-bundle-abi.py
 checks the built bundle for exactly that.
 
 Nothing is lost by the change: the arena existed to keep a de-duplication set of

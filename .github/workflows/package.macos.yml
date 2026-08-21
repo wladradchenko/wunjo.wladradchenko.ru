@@ -218,7 +218,7 @@ jobs:
         run: |
           bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
           if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
-          python3 "$GITHUB_WORKSPACE/tests/macos-abi/check_symbols.py" "$bundle"
+          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/check-bundle-abi.py" "$bundle"
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still
