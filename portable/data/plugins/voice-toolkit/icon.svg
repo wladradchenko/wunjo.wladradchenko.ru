@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- a microphone between two levels: the voice this works on, and what sits
+       either side of it — one effect replaces it, the other takes it out -->
+  <rect x="10" y="2" width="4" height="8" rx="2" />
+  <path d="M16 10a4 4 0 0 1-8 0" />
+  <path d="M12 14v4" />
+  <path d="M9.5 18h5" />
+  <path d="M3 9.5v4" />
+  <path d="M6 7.5v8" />
+  <path d="M18 7.5v8" />
+  <path d="M21 9.5v4" />
+</svg>

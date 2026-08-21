@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<!--
+  Face Swap — the replacement itself, bonded to a Face Region effect.
+
+  The model cannot run while MLT plays, so this effect carries the setup and the
+  Generate button renders it into the project bin. There is no keyframe timeline
+  here on purpose: a swap has nothing that changes over time — which face to take
+  is one photo, and where it goes is the Face Region above.
+
+  "Face source" is a preset: the pen opens the panel where a photo is registered
+  once, and the list then offers it in every clip. When the photo holds several
+  faces, the first one is used.
+-->
+<effect xmlns="https://www.wunjo.online" tag="brightness" id="face-toolkit.swap" type="customVideo" wunjo_requires="face-toolkit.region">
+    <name>Face Swap</name>
+    <description>Replace the face of a Face Region with the face from a photo</description>
+    <author>Wunjo</author>
+
+    <parameter type="readonly" name="fs_region" default="" wunjo_fill="region">
+        <name>Face region</name>
+        <comment>The Face Region effect this swap replaces.</comment>
+    </parameter>
+    <parameter type="urllist" paramlist="%pluginSets:face" name="fs_set" filter="Face presets (*.json)">
+        <name>Face source</name>
+        <comment>A photo registered as a preset. The pen opens the panel that registers one.</comment>
+    </parameter>
+    <parameter type="hidden" name="fs_result" default=""/>
+    <parameter type="pluginjob" name="fs_generate">
+        <name conditional="Generate again">Generate into the bin</name>
+        <jobparam name="key">fs_result</jobparam>
+        <jobparam name="conditionalinfo">Nothing is rendered yet. Generate puts a new clip in the project bin — the clip on the timeline is left alone</jobparam>
+    </parameter>
+
+    <parameter type="fixed" name="level" default="1"/>
+</effect>

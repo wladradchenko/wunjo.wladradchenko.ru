@@ -1,0 +1,68 @@
+{
+    "manifest_version": 1,
+    "id": "cut-finder",
+    "name": "Cut Finder",
+    "version": "0.1.0",
+    "author": "Wlad Radchenko",
+    "author_email": "i@wladradchenko.ru",
+    "description": "Where the cuts are, found instead of scrubbed for: shot changes in the picture, speaker turns in the sound. Nothing is rendered and nothing is re-encoded \u2014 it reports the timings and the clip is cut where they fall.",
+    "license": "MIT",
+    "homepage": "https://github.com/wladradchenko/wunjo.wladradchenko.ru",
+    "icon": "icon.svg",
+    "kind": "local",
+    "venv": "private",
+    "target": [
+        "video",
+        "audio"
+    ],
+    "entry": "main.py",
+    "python": "python3.11",
+    "requirements": "requirements.txt",
+    "bundle_models": true,
+    "models": [
+        {
+            "name": "segmentation.onnx",
+            "url": "https://huggingface.co/onnx-community/pyannote-segmentation-3.0/resolve/main/onnx/model.onnx?download=true",
+            "size_mb": 6,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "embedding.onnx",
+            "url": "https://huggingface.co/onnx-community/wespeaker-voxceleb-resnet34-LM/resolve/main/onnx/model.onnx?download=true",
+            "size_mb": 25,
+            "auto_download": false,
+            "group": ""
+        }
+    ],
+    "params": [
+        {
+            "key": "use_gpu",
+            "type": "bool",
+            "label": "Use the graphics card when it is free",
+            "default": false,
+            "group": ""
+        }
+    ],
+    "hardware": {
+        "min_vram_gb": 0,
+        "cpu_ok": true
+    },
+    "os": [
+        "linux",
+        "windows"
+    ],
+    "effects": [
+        "effects/cut-finder-speakers.xml",
+        "effects/cut-finder-scenes.xml"
+    ],
+    "input": {
+        "clip": "video",
+        "multiple": false,
+        "zone": false
+    },
+    "result": {
+        "type": "none",
+        "place": "none"
+    }
+}

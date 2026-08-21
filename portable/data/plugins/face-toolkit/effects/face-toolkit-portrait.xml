@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<!--
+  Live Portrait — the animation itself, bonded to a Head Region effect.
+
+  LivePortrait runs a model, so it cannot be computed while MLT plays the
+  timeline. The effect is a carrier, built on `brightness` pinned to level = 1:
+  it never changes the image, it holds the setup per clip and the generation
+  step reads it.
+
+  "Expression source" works like Shape Alpha's resource: the list holds the
+  expression sets recorded in this project, and the pen next to it opens the
+  panel where a video or photo is analysed into a new set. A set plays exactly
+  as it was recorded, frame by frame — it is never folded into the keyframes
+  below, which would mean either a point on every frame or losing the fast moves
+  (a blink lasts two frames). The keyframe timeline stays the user's own: what
+  is set there is added on top of the recording, so an untouched timeline simply
+  means "play the recording".
+-->
+<effect xmlns="https://www.wunjo.online" tag="brightness" id="face-toolkit.portrait" type="customVideo" wunjo_requires="face-toolkit.region">
+    <name>Live Portrait</name>
+    <description>Animate the head of a Head Region effect with a recorded expression, plus anything keyframed here on top</description>
+    <author>Wunjo</author>
+
+    <parameter type="readonly" name="lp_region" default="" wunjo_fill="region">
+        <name>Head region</name>
+        <comment>The Head Region effect this animation follows.</comment>
+    </parameter>
+    <parameter type="urllist" paramlist="%pluginSets:expression" name="lp_set" filter="Expression sets (*.json)">
+        <name>Expression source</name>
+        <comment>A set recorded from a video or a photo, played as recorded. The pen opens the panel that records one.</comment>
+    </parameter>
+
+    <parameter type="animated" name="lp_smile" min="-0.3" max="1.3" default="0" decimals="2">
+        <name>Smile</name>
+    </parameter>
+    <parameter type="animated" name="lp_wink" min="0" max="39" default="0" decimals="0">
+        <name>Wink</name>
+    </parameter>
+    <parameter type="animated" name="lp_eyebrow" min="-30" max="30" default="0" decimals="0">
+        <name>Eyebrow</name>
+    </parameter>
+    <parameter type="animated" name="lp_grin" min="0" max="15" default="0" decimals="1">
+        <name>Grin</name>
+    </parameter>
+    <parameter type="animated" name="lp_pursing" min="-20" max="15" default="0" decimals="1">
+        <name>Pursing</name>
+    </parameter>
+    <parameter type="animated" name="lp_pouting" min="-0.09" max="0.09" default="0" decimals="2">
+        <name>Pouting</name>
+    </parameter>
+    <parameter type="animated" name="lp_lip_expression" min="-90" max="90" default="0" decimals="0">
+        <name>Lip expression</name>
+    </parameter>
+    <parameter type="animated" name="lp_lip_ratio" min="-0.8" max="0.8" default="0" decimals="2">
+        <name>Lips open</name>
+    </parameter>
+    <parameter type="animated" name="lp_eye_ratio" min="-0.8" max="0.8" default="0" decimals="2">
+        <name>Eyes open</name>
+    </parameter>
+    <parameter type="animated" name="lp_eyeball_direction_x" min="-30" max="30" default="0" decimals="0">
+        <name>Eyeball X</name>
+    </parameter>
+    <parameter type="animated" name="lp_eyeball_direction_y" min="-60" max="60" default="0" decimals="0">
+        <name>Eyeball Y</name>
+    </parameter>
+    <parameter type="animated" name="lp_pitch" min="-90" max="90" default="0" decimals="0" suffix="°">
+        <name>Head pitch</name>
+    </parameter>
+    <parameter type="animated" name="lp_yaw" min="-90" max="90" default="0" decimals="0" suffix="°">
+        <name>Head yaw</name>
+    </parameter>
+    <parameter type="animated" name="lp_roll" min="-90" max="90" default="0" decimals="0" suffix="°">
+        <name>Head roll</name>
+    </parameter>
+    <parameter type="animated" name="lp_x" min="-0.19" max="0.19" default="0" decimals="2">
+        <name>Head X</name>
+    </parameter>
+    <parameter type="animated" name="lp_y" min="-0.19" max="0.19" default="0" decimals="2">
+        <name>Head Y</name>
+    </parameter>
+    <parameter type="animated" name="lp_z" min="0.9" max="1.2" default="1" decimals="2">
+        <name>Head scale</name>
+    </parameter>
+
+    <!--
+      No "source size" control. Frames already arrive fitted to the project's
+      own frame, and this engine reads no more than 1920 across, so the only
+      sensible value is the smaller of those two — which is not a decision the
+      user has anything to base on.
+    -->
+    <parameter type="bool" name="lp_force_cpu" default="0" min="0" max="1">
+        <name>Force CPU</name>
+    </parameter>
+
+    <parameter type="hidden" name="lp_result" default=""/>
+    <parameter type="pluginjob" name="lp_generate">
+        <name conditional="Generate again">Generate into the bin</name>
+        <jobparam name="key">lp_result</jobparam>
+        <jobparam name="conditionalinfo">Nothing is rendered yet. Generate puts a new clip in the project bin — the clip on the timeline is left alone</jobparam>
+    </parameter>
+
+    <parameter type="fixed" name="level" default="1"/>
+</effect>

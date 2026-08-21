@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<!--
+  Separator — the voice on its own, or everything except the voice.
+
+  One checkbox, because one model answers both: it was trained to find the
+  music, and the voice is what is left of the mix once the music is taken out.
+  Clearing the box therefore costs nothing at render time — it hands back the
+  other half of the same separation.
+
+  The model cannot run while MLT plays, so the Generate button renders it into
+  the project bin and onto a track of its own; the clip it came from is left
+  alone, which is what makes it safe to try both ways round.
+
+  Built on `volume` pinned to level = 0 dB, which is unity gain: the effect
+  carries data and leaves the sound it sits on exactly as it was.
+-->
+<effect xmlns="https://www.wunjo.online" tag="volume" id="voice-toolkit.separator" type="customAudio">
+    <name>Separator</name>
+    <description>Take the voice out of a clip on its own, or keep everything except the voice</description>
+    <author>Wunjo</author>
+
+    <parameter type="bool" name="sp_voice" default="1">
+        <name>Extract voice</name>
+        <comment>On: the voice alone, without what was behind it. Off: what was behind it, without the voice.</comment>
+    </parameter>
+
+    <parameter type="hidden" name="sp_result" default=""/>
+    <parameter type="pluginjob" name="sp_generate">
+        <name conditional="Generate again">Generate into the bin</name>
+        <jobparam name="key">sp_result</jobparam>
+        <jobparam name="conditionalinfo">Nothing is separated yet. Generate puts a new audio clip in the project bin and on a track of its own — the clip on the timeline is left alone</jobparam>
+    </parameter>
+
+    <parameter type="fixed" name="level" default="0"/>
+</effect>

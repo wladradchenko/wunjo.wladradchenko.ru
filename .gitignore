@@ -11,5 +11,7 @@ NOTE.md
 portable/repo
 portable/build-flatpak/
 portable/data/icons-wunjo/preview.py
+portable/data/plugins/lip-sync-latent
+plugins/dist/lip-sync-latent-1.0.0.wmplugin
 .cursor/
 .claude/

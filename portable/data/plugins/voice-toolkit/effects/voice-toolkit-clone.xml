@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<!--
+  Clone Voice — the clip says the same thing, in somebody else's voice.
+
+  The model cannot run while MLT plays, so this effect carries the setup and the
+  Generate button renders it into the project bin and onto a track of its own.
+  There is no keyframe timeline here on purpose: which voice to wear is one
+  choice for the whole clip, and what is said is already on the timeline.
+
+  "Voice" is a preset: the pen opens the panel where a recording is registered
+  once, and the list then offers that voice in every clip.
+
+  Built on `volume` pinned to level = 0 dB, which is unity gain: the effect
+  carries data and leaves the sound it sits on exactly as it was.
+-->
+<effect xmlns="https://www.wunjo.online" tag="volume" id="voice-toolkit.clone" type="customAudio">
+    <name>Clone Voice</name>
+    <description>Say what this clip says, in a registered voice</description>
+    <author>Wunjo</author>
+
+    <parameter type="urllist" paramlist="%pluginSets" name="cv_set" filter="Voice presets (*.json)">
+        <name>Voice</name>
+        <comment>A voice registered from a recording. The pen opens the panel that registers one.</comment>
+    </parameter>
+
+    <parameter type="hidden" name="cv_result" default=""/>
+    <parameter type="pluginjob" name="cv_generate">
+        <name conditional="Generate again">Generate into the bin</name>
+        <jobparam name="key">cv_result</jobparam>
+        <jobparam name="conditionalinfo">Nothing is rendered yet. Generate puts a new audio clip in the project bin and on a track of its own — the clip on the timeline is left alone</jobparam>
+    </parameter>
+
+    <parameter type="fixed" name="level" default="0"/>
+</effect>

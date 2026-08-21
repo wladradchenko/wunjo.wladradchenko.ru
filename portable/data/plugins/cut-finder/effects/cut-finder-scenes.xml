@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<!--
+  Scene Cuts — shot boundaries from ffmpeg's own scene score.
+
+  No model, nothing to download, and the cuts stay on the track the clip is
+  already on: this is a shot list, not a layer cake.
+-->
+<effect xmlns="https://www.wunjo.online" tag="brightness" id="cut-finder.scenes" type="customVideo">
+    <name>Scene Cuts</name>
+    <description>Find where the shot changes, and cut the clip there on its own track</description>
+    <author>Wunjo</author>
+
+    <parameter type="constant" name="sc_threshold" min="0.05" max="0.95" default="0.30" decimals="2">
+        <name>Sensitivity</name>
+        <comment>How much of the frame must change to count as a new shot. Lower finds more cuts, and starts calling a pan one.</comment>
+    </parameter>
+    <parameter type="constant" name="sc_min_shot" min="0" max="10" default="1.0" decimals="1" suffix="s">
+        <name>Shortest shot</name>
+        <comment>Cuts closer together than this are read as one — a dissolve scores twice otherwise.</comment>
+    </parameter>
+
+    <parameter type="bool" name="sc_cut" default="1">
+        <name>Cut Clip</name>
+    </parameter>
+
+    <parameter type="hidden" name="sc_result" default=""/>
+    <parameter type="pluginjob" name="sc_generate">
+        <name>Analyse</name>
+        <jobparam name="key">sc_result</jobparam>
+        <jobparam name="conditionalinfo">Nothing analysed yet. This looks for shot changes and reports where they fall — the clip itself is not touched</jobparam>
+    </parameter>
+
+    <parameter type="fixed" name="level" default="1"/>
+</effect>

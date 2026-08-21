@@ -1,0 +1,149 @@
+{
+    "manifest_version": 1,
+    "id": "face-toolkit",
+    "name": "Face Toolkit",
+    "version": "1.0.0",
+    "author": "Wlad Radchenko",
+    "author_email": "i@wladradchenko.ru",
+    "description": "Two ways to work on a face in a clip, sharing one environment: animate it from a recorded expression, or replace it with the face from a photo. Each is its own effect; both work inside the same Face Region.",
+    "license": "MIT",
+    "homepage": "https://github.com/wladradchenko/wunjo.wladradchenko.ru",
+    "icon": "icon.svg",
+    "kind": "local",
+    "venv": "private",
+    "target": "face",
+    "entry": "main.py",
+    "python": "python3.11",
+    "requirements": "requirements.txt",
+    "requirements_cuda": [
+        {
+            "min_driver_cuda": 12.4,
+            "file": "requirements-cu124.txt"
+        },
+        {
+            "min_driver_cuda": 11.8,
+            "file": "requirements-cu118.txt"
+        }
+    ],
+    "models": [
+        {
+            "name": "landmark.onnx",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/landmark.onnx?download=true",
+            "size_mb": 150,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "appearance_feature_extractor.pth",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/base_models/appearance_feature_extractor.pth?download=true",
+            "size_mb": 5,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "motion_extractor.pth",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/base_models/motion_extractor.pth?download=true",
+            "size_mb": 110,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "spade_generator.pth",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/base_models/spade_generator.pth?download=true",
+            "size_mb": 220,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "warping_module.pth",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/base_models/warping_module.pth?download=true",
+            "size_mb": 180,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "stitching_retargeting_module.pth",
+            "url": "https://huggingface.co/KwaiVGI/LivePortrait/resolve/main/liveportrait/retargeting_models/stitching_retargeting_module.pth?download=true",
+            "size_mb": 2,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "faceswap.onnx",
+            "url": "https://huggingface.co/wladradchenko/wunjo.wladradchenko.ru/resolve/main/deepfake/faceswap.onnx?download=true",
+            "size_mb": 530,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "w600k_r50.onnx",
+            "url": "https://huggingface.co/deepghs/insightface/resolve/main/buffalo_l/w600k_r50.onnx?download=true",
+            "size_mb": 166,
+            "auto_download": false,
+            "group": ""
+        },
+        {
+            "name": "buffalo_l/det_10g.onnx",
+            "url": "https://huggingface.co/deepghs/insightface/resolve/main/buffalo_l/det_10g.onnx?download=true",
+            "size_mb": 17,
+            "auto_download": false,
+            "group": ""
+        }
+    ],
+    "params": [
+        {
+            "key": "nsfw_filter",
+            "type": "bool",
+            "label": "Refuse explicit frames",
+            "default": true,
+            "group": "Face Swap"
+        },
+        {
+            "key": "batch_size",
+            "type": "number",
+            "label": "Frames per batch (0 = choose by free memory)",
+            "min": 0,
+            "max": 512,
+            "step": 8,
+            "default": 0,
+            "group": ""
+        }
+    ],
+    "hardware": {
+        "min_vram_gb": 6,
+        "cpu_ok": true
+    },
+    "os": [
+        "linux",
+        "windows"
+    ],
+    "effects": [
+        "effects/face-toolkit-region.xml",
+        "effects/face-toolkit-portrait.xml",
+        "effects/face-toolkit-swap.xml"
+    ],
+    "effects_apply": "together",
+    "sets": {
+        "expression": {
+            "label": "recorded expressions. Analyse a video or a photo to record how it moves, then choose the set in the effect.",
+            "action": "Analyse",
+            "filter": "Video and photo (*.mp4 *.mov *.avi *.webm *.mkv *.png *.jpg *.jpeg *.webp);;All files (*)",
+            "detail": "Frames"
+        },
+        "face": {
+            "label": "registered faces. Pick a photo and register the face to swap in, then choose it in the effect.",
+            "action": "Register face",
+            "filter": "Photos (*.png *.jpg *.jpeg *.webp *.bmp);;All files (*)",
+            "detail": "Faces"
+        }
+    },
+    "input": {
+        "clip": "video",
+        "multiple": false,
+        "zone": false
+    },
+    "result": {
+        "type": "video",
+        "place": "bin"
+    }
+}
