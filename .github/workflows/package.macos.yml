@@ -19,6 +19,10 @@ on:
         description: 'Rebuild the dependency cache from scratch'
         type: boolean
         default: false
+      chat-with-model:
+        description: 'Also download a small model and talk to it (adds ~400 MB)'
+        type: boolean
+        default: false
   push:
     tags:
       - 'v*'
@@ -208,17 +212,49 @@ jobs:
           source "$CRAFT_ROOT/craft/craftenv.sh"
           craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
-      # The check that was missing when a .dmg went out declaring macOS 13.3 and
-      # referencing a macOS 14 symbol. It reads every Mach-O in the bundle and
-      # fails the build when one asks for something newer than the minimum it
-      # itself declares. Placed before signing on purpose: a bundle that cannot
-      # start should not cost a notarisation round trip, and should never reach
-      # the artifacts where somebody would install it.
-      - name: Check the bundle against its deployment target
+      # ── is the bundle any good? ────────────────────────────────────────
+      # All three run before signing on purpose: a bundle that cannot start
+      # should not cost a notarisation round trip and should never reach the
+      # artifacts, where somebody would install it and lose an evening.
+      #
+      # They answer different questions and none replaces another. The ABI check
+      # is the one that catches what actually shipped — this runner is newer than
+      # the macOS being targeted, so a symbol introduced after the target
+      # resolves here and dies on a user's machine. Starting the application
+      # cannot see that. Reading the declared minimum can.
+      - name: Locate the built bundle
+        id: bundle
         run: |
           bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
           if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
-          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/check-bundle-abi.py" "$bundle"
+          echo "path=$bundle" >> "$GITHUB_OUTPUT"
+          echo "found $bundle"
+
+      - name: Check the bundle against its deployment target
+        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_abi.py" "${{ steps.bundle.outputs.path }}"
+
+      - name: Check what the bundle says it is
+        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_identity.py" "${{ steps.bundle.outputs.path }}"
+
+      - name: Check that it starts
+        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_launch.py" "${{ steps.bundle.outputs.path }}"
+
+      # The assistant's own code, run on a real Mac for the first time. It
+      # listed processes by reading /proc — which macOS does not have, so the
+      # failure reached the user as "the model is not installed" about weights
+      # that were sitting on disk. The macOS path uses ps instead, and this is
+      # where that is actually exercised rather than reasoned about.
+      - name: Check the assistant on macOS
+        run: |
+          python3 "$GITHUB_WORKSPACE/tests/agent/check_platform.py"
+          python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py"
+
+      # Off by default: it fetches a runtime and a small model. Worth turning on
+      # when anything about the model server changes, since nothing else here
+      # proves a server can be started on this platform at all.
+      - name: Talk to a real model
+        if: ${{ github.event.inputs.chat-with-model == 'true' }}
+        run: python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --with-model
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still
