@@ -330,10 +330,21 @@ jobs:
           # -plist and not the plain output: the mount point carries the volume
           # name, the volume is going to be called "Wunjo Make", and a name with
           # a space in it is not the last field of anything.
+          #
+          # loads() on bytes already read, not load() on the pipe: plistlib
+          # rewinds the stream to sniff the format, and a pipe cannot be
+          # rewound.
           mount=$(hdiutil attach -nobrowse -readonly -mountrandom /tmp -plist "$dmg" | \
-                  python3 -c "import plistlib,sys; print(next(e['mount-point'] for e in plistlib.load(sys.stdin.buffer)['system-entities'] if e.get('mount-point')))")
+                  python3 -c "import plistlib,sys; p=[e['mount-point'] for e in plistlib.loads(sys.stdin.buffer.read())['system-entities'] if e.get('mount-point')]; print(p[0] if p else '')")
           if [ -z "$mount" ]; then echo "::error::could not mount $dmg"; exit 1; fi
+          # The image holds a folder with the bundle inside it, so two levels.
           bundle=$(find "$mount" -maxdepth 2 -name 'wunjo.app' -type d | head -1)
+          if [ -z "$bundle" ]; then
+            echo "::error::no wunjo.app on the image; it holds:"
+            ls -la "$mount"
+            hdiutil detach "$mount" -quiet || true
+            exit 1
+          fi
           echo "checking $bundle"
           status=0
           python3 "$GITHUB_WORKSPACE/tests/macos/check_abi.py"      "$bundle" || status=1
