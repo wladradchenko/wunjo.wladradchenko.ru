@@ -34,21 +34,51 @@ from pathlib import Path
 def find_source(marker: str) -> list[Path]:
     """Every unpacked source tree that has this file, newest first.
 
-    Craft keeps its working copies under CRAFT_ROOT/build/<category>/<package>/
-    work/<version>/, and the version in that path changes with every release, so
-    the tree is searched rather than spelled out. Directories Craft installs
-    into are skipped: the same header can sit in both, and patching the
-    installed copy changes nothing that will be compiled.
+    The tree is walked rather than matched against a pattern. Craft's layout is
+    CRAFT_ROOT/build/<category path>/<package>/work/<version>/, and neither half
+    of that is fixed: the category path is as deep as the blueprint tree happens
+    to be — kconfigwidgets sits at kde/frameworks/tier3/kconfigwidgets, four
+    levels — and the version directory changes with every release. A glob written
+    to a guessed depth finds nothing the day the guess is wrong, and reports it
+    as "Craft did not unpack it", which is the opposite of what happened.
+
+    Directories Craft installs into are skipped. A source file has no business
+    being in one, but patching an installed copy would change nothing that gets
+    compiled, and silently doing nothing is the failure this script exists to
+    prevent.
     """
     root = Path(os.environ.get("CRAFT_ROOT", "")) / "build"
     if not root.is_dir():
         sys.exit(f"no Craft build directory at {root} — is CRAFT_ROOT set?")
-    found = [path.parent for path in root.glob(f"*/*/work/*/{marker}")]
-    found += [path.parent for path in root.glob(f"*/*/*/work/*/{marker}")]
-    # Strip the marker's own subdirectories back to the source root.
-    depth = len(Path(marker).parts) - 1
-    roots = {p.parents[depth - 1] if depth else p for p in found}
-    return sorted(roots, key=lambda p: p.stat().st_mtime, reverse=True)
+
+    wanted = Path(marker).parts
+    found = []
+    for base, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if not d.startswith("image") and d != "install"]
+        if files and wanted[-1] in files:
+            here = Path(base) / wanted[-1]
+            if here.parts[-len(wanted):] == wanted:
+                found.append(Path(*here.parts[:-len(wanted)]))
+    return sorted(set(found), key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+def describe(root: Path) -> str:
+    """What is actually under the build directory, for a failure worth reading.
+
+    Without this the only way to learn why the source was not found is another
+    push and another twenty-minute CI run.
+    """
+    lines = []
+    for base, dirs, _files in os.walk(root):
+        depth = len(Path(base).relative_to(root).parts)
+        if depth > 5:
+            dirs[:] = []
+            continue
+        lines.append("  " + str(Path(base).relative_to(root)))
+        if len(lines) > 40:
+            lines.append("  ...")
+            break
+    return "\n".join(lines) if lines else "  (empty)"
 
 
 def main() -> int:
@@ -64,9 +94,11 @@ def main() -> int:
 
     candidates = find_source(arguments.marker)
     if not candidates:
-        sys.exit(f"no unpacked source containing {arguments.marker} under $CRAFT_ROOT/build.\n"
-                 f"Craft did not unpack it, or it came ready-built out of the binary cache — "
-                 f"in which case this patch would never have been compiled in.")
+        root = Path(os.environ["CRAFT_ROOT"]) / "build"
+        sys.exit(f"no unpacked source containing {arguments.marker} under {root}.\n"
+                 f"Either Craft did not unpack it, or it came ready-built out of the binary "
+                 f"cache — in which case this patch would never have been compiled in.\n"
+                 f"What is there:\n{describe(root)}")
     source = candidates[0]
     print(f"patching {source}")
 
