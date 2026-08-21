@@ -232,6 +232,7 @@ jobs:
         run: |
           python3 "$GITHUB_WORKSPACE/tests/agent/check_platform.py"
           python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py"
+          python3 "$GITHUB_WORKSPACE/tests/mcp/check_socket.py"
 
       # Off by default: it fetches a runtime and a small model. Worth turning on
       # when anything about the model server changes, since nothing else here
@@ -286,8 +287,10 @@ jobs:
         if: ${{ steps.signing.outputs.identity != '' }}
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
-          if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
+          # Named exactly, not '*.app': CraftRoot carries dev-utils/cmake-base/
+          # CMake.app, and a wildcard here signs the wrong thing.
+          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'Wunjo Make.app' -type d | head -1)
+          if [ -z "$bundle" ]; then echo "::error::'Wunjo Make.app' not found under $CRAFT_ROOT"; exit 1; fi
           echo "signing $bundle"
           # Hardened runtime is a notarisation requirement, not an option.
           codesign --deep --force --timestamp --options runtime \
@@ -349,9 +352,9 @@ jobs:
                   python3 -c "import plistlib,sys; p=[e['mount-point'] for e in plistlib.loads(sys.stdin.buffer.read())['system-entities'] if e.get('mount-point')]; print(p[0] if p else '')")
           if [ -z "$mount" ]; then echo "::error::could not mount $dmg"; exit 1; fi
           # The image holds a folder with the bundle inside it, so two levels.
-          bundle=$(find "$mount" -maxdepth 2 -name 'wunjo.app' -type d | head -1)
+          bundle=$(find "$mount" -maxdepth 2 -name 'Wunjo Make.app' -type d | head -1)
           if [ -z "$bundle" ]; then
-            echo "::error::no wunjo.app on the image; it holds:"
+            echo "::error::no 'Wunjo Make.app' on the image; it holds:"
             ls -la "$mount"
             hdiutil detach "$mount" -quiet || true
             exit 1

@@ -101,6 +101,54 @@ def check_payload(bundle: Path) -> None:
             fail(f"{why} is missing: Contents/{relative}{hint}")
 
 
+def check_bundle_name(bundle: Path) -> None:
+    """Is the bundle's own filename the product name?
+
+    Finder, /Applications, the Dock and the Force Quit list all show the .app's
+    filename. Not CFBundleName, not CFBundleDisplayName — the filename. Left as
+    the CMake target name it read "wunjo" on a user's Mac while every other
+    platform said Wunjo Make, and no plist key could have fixed it.
+    """
+    if bundle.name == "Wunjo Make.app":
+        ok(f"the bundle is called {bundle.name!r}")
+    else:
+        fail(f"the bundle is called {bundle.name!r}, so Finder shows {bundle.stem!r} — "
+             f"set OUTPUT_NAME in src/CMakeLists.txt")
+
+
+def check_icons(bundle: Path) -> None:
+    """Is the icon theme in the bundle at all?
+
+    This is not a question about how the application looks. Craft's macOS
+    blacklist opens with "share/icons/.*" — correct for a KDE application, whose
+    icons are compiled into a library, and fatal for this one, whose icons are
+    files. Packaged without them, the theme is simply not there: every
+    QIcon::fromTheme falls through to the platform icon engine, that engine
+    resolves names as SF Symbols, and AppKit aborts inside
+    NSImageSymbolRepProvider the first time a toolbar is painted.
+
+    That is not a hypothetical either. The application opened, and died on the
+    first new project with "abort() called" and a stack ending in
+    QAppleIconEngine::paint. Nothing about the crash mentioned icons.
+
+    packaging/craft/blueprints/apps/wunjo/keep_macos.list is what carries the
+    theme past the blacklist. This is the check that it still does.
+    """
+    icons = bundle / "Contents" / "Resources" / "icons"
+    for theme in ("wunjo", "wunjo-light"):
+        index = icons / theme / "index.theme"
+        if not index.is_file():
+            fail(f"the {theme} icon theme is not in the bundle ({index.relative_to(bundle)} "
+                 f"is missing) — Craft's blacklist ate it, see keep_macos.list")
+            continue
+        drawings = list((icons / theme).rglob("*.svg"))
+        if len(drawings) < 100:
+            fail(f"the {theme} theme has only {len(drawings)} icons in it, which is too few "
+                 f"to be the whole theme")
+        else:
+            ok(f"the {theme} theme is in the bundle with {len(drawings)} icons")
+
+
 def check_executable(bundle: Path) -> None:
     path = bundle / "Contents" / "Info.plist"
     with open(path, "rb") as handle:
@@ -122,9 +170,11 @@ def main(argument: str) -> int:
     if not bundle.is_dir():
         sys.exit(f"no bundle at {bundle}")
     print(f"checking {bundle}")
+    check_bundle_name(bundle)
     check_plist(bundle)
     check_executable(bundle)
     check_payload(bundle)
+    check_icons(bundle)
     print(f"\n{len(failures)} problem(s)")
     return 1 if failures else 0
 

@@ -13,9 +13,39 @@ from __future__ import annotations
 import json
 import os
 import socket
+import sys
+import tempfile
 from typing import Any
 
 from api.constants import SOCKET_ENV_VAR, SOCKET_NAME
+
+
+def _runtime_dir() -> str:
+    """The directory the editor's RuntimeLocation resolves to on this platform.
+
+    This has to agree with ScriptingServer::defaultSocketName(), which builds the
+    path out of QStandardPaths::RuntimeLocation, and that is a different place on
+    every system:
+
+      * macOS maps RuntimeLocation to NSApplicationSupportDirectory — in
+        qstandardpaths_mac.mm it shares a case with GenericDataLocation — so the
+        socket lands in ~/Library/Application Support, nowhere near a temp
+        directory.
+      * Linux and the other Unixes give XDG_RUNTIME_DIR.
+      * When Qt has no answer at all the editor passes a bare name to
+        QLocalServer, which turns it into a file in QDir::tempPath().
+
+    Only the middle case used to be handled, by reading XDG_RUNTIME_DIR — an XDG
+    notion that exists on Linux and nowhere else. On macOS the variable is unset,
+    so this fell through to the bare socket name, and connecting to a bare name
+    means a path relative to the working directory. No agent outside the editor
+    could reach it, and the failure arrived as "the editor is not answering on
+    its scripting socket" with nothing to suggest the address was wrong.
+    """
+    if sys.platform == "darwin":
+        return os.path.expanduser("~/Library/Application Support")
+    runtime = os.environ.get("XDG_RUNTIME_DIR")
+    return runtime if runtime else tempfile.gettempdir()
 
 
 def _socket_candidates() -> list[str]:
@@ -23,20 +53,19 @@ def _socket_candidates() -> list[str]:
 
     The first instance takes the plain name; further ones append their pid. An
     explicit path in the environment wins over both, which is what makes it
-    possible to talk to a particular copy while debugging.
+    possible to talk to a particular copy while debugging — and it is how the
+    editor tells a plugin it started which copy to answer to.
     """
     override = os.environ.get(SOCKET_ENV_VAR)
     if override:
         return [override]
 
-    runtime = os.environ.get("XDG_RUNTIME_DIR")
     if os.name == "nt":
         # Named pipes are not filesystem paths and cannot be enumerated the
         # same way; the plain name is the only one that can be guessed.
         return [SOCKET_NAME]
-    if not runtime:
-        return [SOCKET_NAME]
 
+    runtime = _runtime_dir()
     plain = os.path.join(runtime, SOCKET_NAME)
     found = [plain] if os.path.exists(plain) else []
     try:

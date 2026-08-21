@@ -7,9 +7,10 @@ that prints what it looked at and exits non-zero when something is wrong.
 tests/
   agent/check_platform.py    process handling on whichever OS runs it
   agent/check_chat.py        the assistant's chat, without a graphics card
+  mcp/check_socket.py        can an agent outside the editor find it
   macos/check_abi.py         does the bundle ask macOS for too much
   macos/check_identity.py    is the bundle the application it claims to be
-  macos/check_launch.py      does the bundle start
+  macos/check_launch.py      does the bundle start, and did MLT come along
 ```
 
 Run any of them directly:
@@ -44,6 +45,13 @@ is the only way the question can be asked from a newer Mac.
 the build machine, a Qt platform plugin that did not get packaged. Both are
 needed and neither substitutes for the other.
 
+It then asks the application what it is built out of, through `--setup-report`.
+The entry that matters is MLT, whose version comes from a live
+`mlt_version_get_string()` call — a version in that file is proof the media
+framework loaded inside the packaged bundle, not proof that something linked at
+build time. An editor whose MLT did not come along starts, draws its entire
+interface, and fails at the first clip.
+
 The compiler did not warn about the `pmr` call, so libc++'s availability
 annotations are switched off somewhere in this toolchain and it will not warn
 about the next one either. Until that is understood, `check_abi.py` is what
@@ -51,6 +59,21 @@ stands between that class of mistake and a user's Mac. Its `INTRODUCED` table is
 a denylist, not a proof — it prints every standard-library symbol it did not
 recognise so a new one can be added on purpose rather than discovered by
 somebody who downloaded a release.
+
+## Why check_identity.py looks for icons
+
+Craft's macOS blacklist opens with `share/icons/.*`. That is right for a KDE
+application — those carry breeze compiled into a library — and fatal for this
+one, whose icons are 612 files. Packaged without them the theme is not in the
+bundle at all, every `QIcon::fromTheme` falls through to the platform icon
+engine, that engine resolves names as SF Symbols, and AppKit aborts inside
+`NSImageSymbolRepProvider` the first time a toolbar is painted.
+
+The application opened and died on the first new project, with `abort() called`
+and a stack ending in `QAppleIconEngine::paint`. Nothing in the crash mentioned
+icons. `packaging/craft/blueprints/apps/wunjo/keep_macos.list` carries the theme
+past the blacklist — a whitelisted path outranks a blacklisted one — and this
+check is what notices if it ever stops working.
 
 ## What the chat test does and does not reach
 
@@ -70,6 +93,25 @@ The stand-in is a 0.5B model rather than the 2.5 GB one the plugin ships,
 because what is under test is that a server starts, answers and can be stopped —
 not how well a model writes. It has a chat template, which matters: the server
 is started with `--jinja` and a model without one does not load.
+
+## Why check_socket.py exists
+
+The editor listens on a socket whose path comes from
+QStandardPaths::RuntimeLocation, and the client has to name the same path or
+nothing connects. The client read XDG_RUNTIME_DIR — an XDG notion that exists on
+Linux alone. On macOS that variable is unset, the client fell back to the bare
+socket name, and a bare name resolves against the working directory; the socket
+was in ~/Library/Application Support all along, because that is where macOS maps
+RuntimeLocation.
+
+So every agent outside the editor — Claude Code, Cursor, anything over MCP — was
+told "the editor is not answering on its scripting socket" on macOS, with
+nothing in the message to suggest the address was wrong. The bundled assistant
+kept working and hid it: the editor hands its own plugins the exact path in
+WUNJO_SOCKET.
+
+Each platform is reached by pretending to be it, which is the only way one
+machine can check an arrangement that differs on all of them.
 
 ## Where the platform checks came from
 

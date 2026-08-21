@@ -216,6 +216,16 @@ target_include_directories(wunjo
 if (APPLE)
 # Apple app package
 set_target_properties(wunjo PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/../data/Info.plist)
+# The bundle's own filename, which is what Finder and /Applications show — the
+# plist keys below never touch it. Left as the target name it read "wunjo" on a
+# user's Mac while every other platform said Wunjo Make. It renames the
+# executable inside Contents/MacOS too, which is right: CFBundleExecutable is
+# filled from this and the two have to agree.
+#
+# The name reaches two other places that must move with it: Craft finds the
+# bundle by globbing "<appname>.app" (PackagerBase.getMacAppPath), so the
+# blueprint sets appname to match, and the workflow looks for it by name.
+set_target_properties(wunjo PROPERTIES OUTPUT_NAME "Wunjo Make")
 set_target_properties(wunjo PROPERTIES
     # CFBundleName is what the menu bar shows. Apple asks for 15 characters or
     # fewer there and "Wunjo Make" is ten. The Finder name is CFBundleDisplayName,

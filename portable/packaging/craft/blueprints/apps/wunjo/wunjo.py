@@ -144,12 +144,21 @@ class Package(CMakePackageBase):
         ]
         # AppImagePackager looks for <appname>.desktop unless told otherwise, and
         # data/CMakeLists.txt installs the file under its reverse-DNS name.
-        self.defines["appname"] = "wunjo"
+        # PackagerBase.getMacAppPath globs for "<appname>.app", and on macOS the
+        # bundle is built as "Wunjo Make.app" (see src/CMakeLists.txt) because
+        # that filename is what Finder shows. Everywhere else appname is the
+        # executable's own name and the AppImage packager needs it lowercase.
+        self.defines["appname"] = "Wunjo Make" if CraftCore.compiler.isMacOS else "wunjo"
         self.defines["desktopFile"] = "online.wunjo.make"
 
     def createPackage(self):
         if CraftCore.compiler.isMacOS:
             self.blacklist_file.append(self.blueprintDir() / "exclude_macos.list")
+            # Craft's macOS blacklist throws away share/icons wholesale, which
+            # takes this application's entire icon theme with it. A whitelisted
+            # path outranks a blacklisted one, so this is what carries the theme
+            # into the bundle — see keep_macos.list for what breaks without it.
+            self.whitelist_file.append(self.blueprintDir() / "keep_macos.list")
         return super().createPackage()
 
     def setDefaults(self, defines: dict) -> dict:

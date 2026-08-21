@@ -36,10 +36,12 @@ failure fails hard, because that is the thing being tested.
 """
 from __future__ import annotations
 
+import json
 import os
 import plistlib
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 #: Text dyld puts on stderr when it cannot put the program together. Any of it
@@ -68,6 +70,53 @@ def executable_of(bundle: Path) -> Path:
     if not name:
         sys.exit("Info.plist does not name an executable")
     return bundle / "Contents" / "MacOS" / name
+
+
+def check_components(binary: Path, environment: dict) -> int:
+    """Ask the application what it is built out of, and believe only itself.
+
+    --setup-report writes the component list KAboutData was given, and the entry
+    that matters is MLT: its version comes from a live mlt_version_get_string()
+    call, so a version in that file is proof the media framework loaded inside
+    the packaged bundle rather than proof that something linked at build time.
+
+    An editor whose MLT did not come along starts, draws its whole interface and
+    fails at the first clip — a failure that looks nothing like a packaging one
+    and gets reported as "video does not work". Cheap to rule out here.
+
+    FFmpeg is listed too but registered with no version string at all (see
+    main.cpp), so only its presence can be asked about, not its version.
+    """
+    # It refuses to overwrite, so hand it a path that cannot exist yet.
+    report = Path(tempfile.mkdtemp()) / "setup-report.json"
+    finished = subprocess.run([str(binary), "--setup-report", str(report)],
+                              capture_output=True, text=True, timeout=180, env=environment)
+    if not report.is_file():
+        print(f"\nFAIL: --setup-report wrote nothing (exit {finished.returncode}).")
+        print("\n".join("    " + line for line in
+                        ((finished.stdout or "") + (finished.stderr or "")).splitlines()[-15:]))
+        return 1
+
+    try:
+        data = json.loads(report.read_text(encoding="utf-8"))
+    except ValueError as error:
+        print(f"\nFAIL: the report is not valid JSON: {error}")
+        return 1
+
+    components = {c.get("name", ""): c.get("version", "") for c in data.get("components", [])}
+    print(f"\npackaged as {data.get('packageType', '(unstated)')!r}, built out of:")
+    for name, version in components.items():
+        print(f"    {name} {version}".rstrip())
+
+    if "MLT" not in components:
+        print("\nFAIL: MLT is not in the report at all.")
+        return 1
+    if not components["MLT"].strip():
+        print("\nFAIL: MLT reports no version, so the framework did not load in the bundle.")
+        print("Every clip would fail on a machine that has no MLT of its own.")
+        return 1
+    print(f"\nPASS: MLT {components['MLT']} answered from inside the bundle.")
+    return 0
 
 
 def main(argument: str) -> int:
@@ -113,7 +162,8 @@ def main(argument: str) -> int:
         print("\nNote: this machine is newer than the deployment target, so a symbol\n"
               "introduced after that target resolves here and would not on a user's Mac.\n"
               "tests/macos/check_abi.py is the check for that; this one cannot see it.")
-        return 0
+        # It starts; now ask it what it is made of.
+        return check_components(binary, environment)
 
     if any(mark in lowered for mark in QT_TROUBLE):
         print(f"\nINCONCLUSIVE: Qt could not start on this machine (exit {finished.returncode}).")
