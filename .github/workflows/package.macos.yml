@@ -152,33 +152,6 @@ jobs:
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
-      # ── kconfigwidgets without std::pmr ────────────────────────────────
-      # KRecentFilesAction uses a std::pmr arena to de-duplicate the recent
-      # files list. std::pmr lives in the libc++ dylib and Apple shipped it in
-      # macOS 14, so the framework built here references a symbol that does not
-      # exist on the 13.3 this build targets: the application then dies in dyld
-      # before main() on any Mac older than 14, which is the whole thing a
-      # deployment target is set to prevent. It shipped exactly that way once —
-      # "Symbol not found: __ZNSt3__13pmr15memory_resourceD2Ev".
-      #
-      # The compiler did not object, so libc++'s availability annotations are
-      # switched off somewhere in this toolchain and it will not object to the
-      # next one either. That is what the bundle check after the build is for.
-      #
-      # Built before --install-deps, so everything that links against the
-      # framework links against the patched one. --no-cache because the point is
-      # to compile our source: a kconfigwidgets taken ready-made out of the
-      # binary cache would bring the bug straight back.
-      - name: Build kconfigwidgets from patched source
-        run: |
-          source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --no-cache --fetch --unpack kconfigwidgets
-          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/apply-source-patch.py" \
-                  src/krecentfilesaction.cpp \
-                  "$GITHUB_WORKSPACE/portable/packaging/craft/patches/kconfigwidgets-no-pmr.patch" \
-                  --gone pmr
-          craft --ci-mode --no-cache --compile --install --qmerge kconfigwidgets
-
       # "/.buildTests=False" switches off -DBUILD_TESTING for every package, the
       # leading "/" being the root of the blueprint tree: Craft looks an option
       # up on a package and walks to its parent when unset (options.py:413), so
@@ -199,6 +172,44 @@ jobs:
           craft --ci-mode --install-deps \
                 --options "/.buildTests=False" \
                 --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      # ── kconfigwidgets without std::pmr ────────────────────────────────
+      # KRecentFilesAction uses a std::pmr arena to de-duplicate the recent
+      # files list. std::pmr lives in the libc++ dylib and Apple shipped it in
+      # macOS 14, so the framework references a symbol that does not exist on
+      # the 13.3 this build targets: the application dies in dyld before main()
+      # on any older Mac, which is the whole thing a deployment target is set to
+      # prevent. It shipped exactly that way once — "Symbol not found:
+      # __ZNSt3__13pmr15memory_resourceD2Ev" on a user's macOS 13.4.
+      #
+      # The compiler did not object, so libc++'s availability annotations are
+      # switched off somewhere in this toolchain and it will not object to the
+      # next one either. That is what the disk image check is for.
+      #
+      # AFTER --install-deps, not before, and the reason is worth keeping: these
+      # are explicit phases, and naming a phase bypasses the dependency
+      # resolution that would otherwise build what this needs first. Run before
+      # the tree exists, configure stops at "Could NOT find ECM" — nothing is in
+      # the prefix yet. Run here, everything it links against is already there
+      # and this simply replaces the cached copy.
+      #
+      # Rebuilding it afterwards is safe: the change is inside one .cpp, no
+      # header and no ABI moves, so anything already linked against the cached
+      # copy stays correct.
+      #
+      # --no-cache so it is our source that gets compiled rather than the same
+      # ready-made binary being pulled again, and buildTests off to match the
+      # step above.
+      - name: Build kconfigwidgets from patched source
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --ci-mode --no-cache --fetch --unpack kconfigwidgets
+          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/apply-source-patch.py" \
+                  src/krecentfilesaction.cpp \
+                  "$GITHUB_WORKSPACE/portable/packaging/craft/patches/kconfigwidgets-no-pmr.patch" \
+                  --gone pmr
+          craft --ci-mode --no-cache --options "/.buildTests=False" \
+                --compile --install --qmerge kconfigwidgets
 
       # Craft's own binary cache covers all but one package, so the tree is
       # mostly downloaded rather than compiled — but pulseaudio does build from
