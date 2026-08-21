@@ -212,33 +212,6 @@ jobs:
           source "$CRAFT_ROOT/craft/craftenv.sh"
           craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
-      # ── is the bundle any good? ────────────────────────────────────────
-      # All three run before signing on purpose: a bundle that cannot start
-      # should not cost a notarisation round trip and should never reach the
-      # artifacts, where somebody would install it and lose an evening.
-      #
-      # They answer different questions and none replaces another. The ABI check
-      # is the one that catches what actually shipped — this runner is newer than
-      # the macOS being targeted, so a symbol introduced after the target
-      # resolves here and dies on a user's machine. Starting the application
-      # cannot see that. Reading the declared minimum can.
-      - name: Locate the built bundle
-        id: bundle
-        run: |
-          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
-          if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
-          echo "path=$bundle" >> "$GITHUB_OUTPUT"
-          echo "found $bundle"
-
-      - name: Check the bundle against its deployment target
-        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_abi.py" "${{ steps.bundle.outputs.path }}"
-
-      - name: Check what the bundle says it is
-        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_identity.py" "${{ steps.bundle.outputs.path }}"
-
-      - name: Check that it starts
-        run: python3 "$GITHUB_WORKSPACE/tests/macos/check_launch.py" "${{ steps.bundle.outputs.path }}"
-
       # The assistant's own code, run on a real Mac for the first time. It
       # listed processes by reading /proc — which macOS does not have, so the
       # failure reached the user as "the model is not installed" about weights
@@ -331,6 +304,43 @@ jobs:
           find "$dir" \( -name '*.dmg' -o -name '*.7z' -o -name '*.sha256' \) \
                -exec cp {} "$GITHUB_WORKSPACE/packages/" \;
           ls -la "$GITHUB_WORKSPACE/packages/"
+
+      # ── is the disk image any good? ────────────────────────────────────
+      # Checked here, on the image itself, and not on the bundle sitting in
+      # CraftRoot after the build. Those are not the same thing: until the
+      # package step runs, the application's own data — the plugins, the MCP
+      # server — is still in Craft's prefix and not inside Contents/Resources,
+      # so a check run earlier reads a bundle no user will ever have. It reports
+      # missing files that are not missing, and worse, passes an ABI check
+      # against a set of libraries that is not the shipped one.
+      #
+      # Before notarisation, so an image that cannot start does not go to Apple,
+      # and before the upload, so nobody installs it and loses an evening.
+      #
+      # The three answer different questions. The ABI check is the one that
+      # catches what actually shipped: this runner is newer than the macOS being
+      # targeted, so a symbol introduced after that target resolves here and
+      # dies on a user's Mac. Starting the application cannot see that. Reading
+      # the minimum each binary declares can.
+      - name: Check the disk image
+        run: |
+          dmg=$(ls "$GITHUB_WORKSPACE"/packages/*.dmg | head -1)
+          if [ -z "$dmg" ]; then echo "::error::no .dmg in packages/"; exit 1; fi
+          echo "mounting $dmg"
+          # -plist and not the plain output: the mount point carries the volume
+          # name, the volume is going to be called "Wunjo Make", and a name with
+          # a space in it is not the last field of anything.
+          mount=$(hdiutil attach -nobrowse -readonly -mountrandom /tmp -plist "$dmg" | \
+                  python3 -c "import plistlib,sys; print(next(e['mount-point'] for e in plistlib.load(sys.stdin.buffer)['system-entities'] if e.get('mount-point')))")
+          if [ -z "$mount" ]; then echo "::error::could not mount $dmg"; exit 1; fi
+          bundle=$(find "$mount" -maxdepth 2 -name 'wunjo.app' -type d | head -1)
+          echo "checking $bundle"
+          status=0
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_abi.py"      "$bundle" || status=1
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_identity.py" "$bundle" || status=1
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_launch.py"   "$bundle" || status=1
+          hdiutil detach "$mount" -quiet || true
+          exit $status
 
       # Signing proves who built it; notarisation is Apple confirming they
       # scanned it. Gatekeeper wants both, and they are separate operations —
