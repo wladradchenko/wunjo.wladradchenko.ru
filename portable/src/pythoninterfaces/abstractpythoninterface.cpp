@@ -353,6 +353,50 @@ AbstractPythonInterface::PythonExec AbstractPythonInterface::venvPythonExecs(boo
     return {pythonExe, pipExe};
 }
 
+
+namespace {
+
+/** @brief @p path if an interpreter there actually runs, empty otherwise.
+ *
+ *  Existing is not enough. Contents/MacOS holds a Craft shim named like the
+ *  interpreter that redirects to ../lib/Python.framework — a directory the
+ *  packager never creates, because it puts the framework in Contents/Frameworks
+ *  instead. The shim is a real Mach-O of the right name that exits 255 with
+ *  "KShimgen: Failed to locate", and taking it on trust broke every plugin with
+ *  an error about creating a virtual environment.
+ */
+QString runnablePython(const QString &path)
+{
+    if (path.isEmpty() || !QFileInfo::exists(path)) {
+        return {};
+    }
+    QProcess probe;
+    probe.start(path, {QStringLiteral("-c"), QString()});
+    if (!probe.waitForFinished(10000) || probe.exitStatus() != QProcess::NormalExit || probe.exitCode() != 0) {
+        return {};
+    }
+    return path;
+}
+
+/** @brief Where an interpreter called @p name might be, best first. */
+QStringList pythonCandidates(const QString &name)
+{
+    QStringList candidates;
+    const QString appDir = QCoreApplication::applicationDirPath();
+    // The interpreter the application ships, at its real location. Newest
+    // version first, since the directory names sort that way.
+    const QDir versions(appDir + QStringLiteral("/../Frameworks/Python.framework/Versions"));
+    const QStringList found = versions.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed);
+    for (const QString &version : found) {
+        candidates << QDir::cleanPath(versions.absoluteFilePath(version + QStringLiteral("/bin/") + name));
+    }
+    candidates << QDir::cleanPath(appDir + QLatin1Char('/') + name);
+    candidates << QStandardPaths::findExecutable(name);
+    return candidates;
+}
+
+} // namespace
+
 QString AbstractPythonInterface::systemPythonExec()
 {
 #ifdef Q_OS_WIN
@@ -368,19 +412,16 @@ QString AbstractPythonInterface::systemPythonExec()
                 if (line.startsWith(QStringLiteral("#python"))) {
                     QStringList compatiblePython = line.section(QLatin1Char('#'), 1).split(QLatin1Char(','), Qt::SkipEmptyParts);
                     for (auto &p : compatiblePython) {
-                        // Next to the application first. On macOS the interpreter
-                        // Craft ships sits in Contents/MacOS and is never on PATH,
-                        // so a bundle carrying python3.11 still answered "Cannot
-                        // find a compatible python version" and every plugin that
-                        // needs Python was dead on arrival. It is also the build
-                        // the wheels were resolved against, which makes it the
-                        // right one to prefer even where PATH offers another.
-                        QString compatPath = QStandardPaths::findExecutable(p, {QCoreApplication::applicationDirPath()});
-                        if (compatPath.isEmpty()) {
-                            compatPath = QStandardPaths::findExecutable(p);
-                        }
-                        if (!compatPath.isEmpty()) {
-                            return compatPath;
+                        // The interpreter the application ships comes first —
+                        // it is the build the plugin environments are made from,
+                        // and inside a bundle it is on nobody's PATH — but only
+                        // if it runs. See runnablePython above for what is
+                        // otherwise picked up and why it is worse than nothing.
+                        for (const QString &candidate : pythonCandidates(p)) {
+                            const QString working = runnablePython(candidate);
+                            if (!working.isEmpty()) {
+                                return working;
+                            }
                         }
                     }
                     setStatus(Broken);

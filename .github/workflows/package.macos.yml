@@ -19,8 +19,8 @@ on:
         description: 'Rebuild the dependency cache from scratch'
         type: boolean
         default: false
-      chat-with-model:
-        description: 'Also download a small model and talk to it (adds ~400 MB)'
+      full-model:
+        description: 'Load the real Qwen weights, projector included (adds ~3.6 GB)'
         type: boolean
         default: false
   push:
@@ -218,10 +218,22 @@ jobs:
         if: always()
         run: df -h / "$CRAFT_ROOT" 2>/dev/null || df -h
 
+      # Named phases, not just the package. --no-cache turns off the binary
+      # cache — where prebuilt packages are downloaded from — and says nothing
+      # about a package Craft already considers installed. With a restored cache
+      # that is exactly what wunjo is, so it was skipped and every source change
+      # quietly failed to reach the image: builds kept producing 3.0.0 after the
+      # version had been raised to 3.0.1, and the only way through was dropping
+      # the whole dependency cache and waiting an hour for it to rebuild.
+      #
+      # Asking for compile, install and qmerge by name does the work regardless
+      # of what is installed, which is what the patched kconfigwidgets step above
+      # relies on too.
       - name: Build Wunjo Make
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" \
+                --compile --install --qmerge wunjo
 
       # The assistant's own code, run on a real Mac for the first time. It
       # listed processes by reading /proc — which macOS does not have, so the
@@ -234,12 +246,24 @@ jobs:
           python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py"
           python3 "$GITHUB_WORKSPACE/tests/mcp/check_socket.py"
 
-      # Off by default: it fetches a runtime and a small model. Worth turning on
-      # when anything about the model server changes, since nothing else here
-      # proves a server can be started on this platform at all.
+      # On by default, and it earns the minute it costs. Nothing else here proves
+      # a model server can be started at all, and the flags serve.py builds differ
+      # once layers are offloaded — so a build could pass every other check while
+      # the assistant refused to load its model on a user's Mac, which is exactly
+      # what happened. It fetches a runtime and a small stand-in model, then runs
+      # the server twice: once on the processor and once on Metal.
       - name: Talk to a real model
-        if: ${{ github.event.inputs.chat-with-model == 'true' }}
-        run: python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --with-model
+        run: |
+          # The small stand-in every time; the weights the plugin actually ships
+          # when asked for. The difference is the vision projector: --mmproj is
+          # passed whenever that file is there, so the short run exercises a
+          # command no user ever gets, and the server can start on one pair of
+          # weights and die on the other.
+          if [ "${{ github.event.inputs.full-model }}" = "true" ]; then
+            python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --full-model
+          else
+            python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --with-model
+          fi
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still

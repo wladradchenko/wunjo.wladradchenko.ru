@@ -208,6 +208,56 @@ def check_icons_are_reachable(data: dict) -> int:
     return 0
 
 
+def check_bundled_python(bundle: Path) -> int:
+    """Does the interpreter the plugins are built from actually run?
+
+    Existing is not enough, and that is the entire point of this check.
+    Contents/MacOS holds a Craft shim named like the interpreter which redirects
+    to ../lib/Python.framework — a directory the packager never creates, because
+    it puts the framework in Contents/Frameworks instead. The shim is a real
+    Mach-O of the right name and a plausible size that exits 255 with
+    "KShimgen: Failed to locate".
+
+    So every check that looked for a file passed, and every plugin needing Python
+    failed on the user's Mac with "Cannot create the python virtual environment".
+    Running it is the only question worth asking.
+    """
+    contents = bundle / "Contents"
+    candidates = sorted((contents / "Frameworks" / "Python.framework" / "Versions").glob("*/bin/python3*"),
+                        reverse=True)
+    candidates += sorted(contents.glob("MacOS/python3*"))
+    candidates = [p for p in candidates if not p.name.endswith("-config")]
+
+    if not candidates:
+        print("\nFAIL: the bundle carries no Python interpreter at all.")
+        print("Every plugin that needs one is unusable.")
+        return 1
+
+    working = []
+    for path in candidates:
+        try:
+            done = subprocess.run([str(path), "-c", ""], capture_output=True, text=True, timeout=60)
+        except (OSError, subprocess.SubprocessError) as error:
+            print(f"    {path.relative_to(bundle)} — could not be run ({error})")
+            continue
+        if done.returncode == 0:
+            working.append(path)
+            print(f"    {path.relative_to(bundle)} — runs")
+        else:
+            detail = ((done.stderr or done.stdout or "").strip().splitlines() or [""])[0]
+            print(f"    {path.relative_to(bundle)} — exits {done.returncode}: {detail[:100]}")
+
+    if not working:
+        print("\nFAIL: the bundle carries Python but none of it runs.")
+        print("A plugin handed one of these gets 'Failed to inspect Python interpreter' and")
+        print("cannot build its environment. Check that Python.framework was packaged and that")
+        print("whatever sits in Contents/MacOS points at where it actually landed.")
+        return 1
+
+    print(f"\nPASS: {len(working)} of {len(candidates)} bundled interpreters run.")
+    return 0
+
+
 def main(argument: str) -> int:
     bundle = Path(argument)
     binary = executable_of(bundle)
@@ -224,7 +274,9 @@ def main(argument: str) -> int:
         "DYLD_BIND_AT_LAUNCH": "1",
     })
 
-    print(f"starting {binary}")
+    python_status = check_bundled_python(bundle)
+
+    print(f"\nstarting {binary}")
     try:
         finished = subprocess.run([str(binary), "--version"], capture_output=True,
                                   text=True, timeout=180, env=environment)
@@ -252,7 +304,7 @@ def main(argument: str) -> int:
               "introduced after that target resolves here and would not on a user's Mac.\n"
               "tests/macos/check_abi.py is the check for that; this one cannot see it.")
         # It starts; now ask it what it is made of.
-        return check_components(binary, environment)
+        return check_components(binary, environment) or python_status
 
     if any(mark in lowered for mark in QT_TROUBLE):
         print(f"\nINCONCLUSIVE: Qt could not start on this machine (exit {finished.returncode}).")

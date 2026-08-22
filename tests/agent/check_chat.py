@@ -293,7 +293,32 @@ def server_log_tail(lines: int = 25) -> str:
                       log.read_text(errors="replace").splitlines()[-lines:])
 
 
-def test_metal_server() -> None:
+def install_manifest_model() -> bool:
+    """Fetch the weights the plugin actually ships, projector and all.
+
+    The stand-in used elsewhere is a plain text model. The one the plugin
+    downloads comes with a vision projector, and --mmproj is passed whenever that
+    file is present — so a run without it exercises a shorter command than any
+    user ever gets. That gap matters: a model server can start perfectly on the
+    stand-in and die on the real pair.
+
+    The smaller of the two variants is taken. What is under test is that the
+    weights load on this backend, and the larger one only makes the download
+    longer.
+    """
+    manifest = json.loads((PLUGIN / "plugin.json").read_text(encoding="utf-8"))
+    for name in ("model.gguf", "mmproj.gguf"):
+        entries = [m for m in manifest["models"] if m["name"] == name]
+        # max_vram_gb marks the variant meant for the smaller cards.
+        entries.sort(key=lambda m: (0 if m.get("max_vram_gb") else 1, m.get("size_mb", 0)))
+        if not entries:
+            check(f"the manifest offers {name}", False)
+            return False
+        fetch(entries[0]["url"], MODELS / name)
+    return True
+
+
+def test_metal_server(full_model: bool = False) -> None:
     """The same model server, this time on the GPU.
 
     Only reachable on a Mac, and only worth running there: the flags serve.py
@@ -318,6 +343,13 @@ def test_metal_server() -> None:
 
     serve.stop()
     time.sleep(2)
+    if full_model:
+        sys.stderr.write("  using the weights from plugin.json, projector included\n")
+        if not install_manifest_model():
+            return
+    else:
+        sys.stderr.write("  using the small stand-in; it carries no vision projector, so the\n"
+                         "  --mmproj the plugin passes is not exercised here\n")
     os.environ["WUNJO_GPU_BACKEND"] = "metal"
     try:
         check("serve.py asks for the layers to be offloaded", serve._gpu_layers() == 99)
@@ -345,15 +377,17 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--with-model", action="store_true",
                         help="also download a runtime and a small model and talk to it")
+    parser.add_argument("--full-model", action="store_true",
+                        help="use the weights named in plugin.json, projector and all (~3.6 GB)")
     arguments = parser.parse_args()
 
     sys.stderr.write(f"python {sys.version.split()[0]} on {sys.platform}, no GPU assumed\n")
     test_reply_parsing()
     test_recipe()
     test_lifecycle()
-    if arguments.with_model:
+    if arguments.with_model or arguments.full_model:
         test_real_server()
-        test_metal_server()
+        test_metal_server(full_model=arguments.full_model)
     else:
         section("4. The real model server")
         sys.stderr.write("  skipped — pass --with-model to download one and talk to it\n")

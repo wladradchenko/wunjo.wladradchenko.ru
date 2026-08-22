@@ -717,23 +717,34 @@ QString PluginManager::interpreterFor(const PluginManifest &m) const
         // environment not built yet — fall back so the stub still runs; the
         // real venv build lands with the plugin-task work
     }
-    // Next to the application before PATH. The interpreter Craft ships sits in
-    // Contents/MacOS inside a bundle and is on nobody's PATH, so a package that
-    // carries Python still found none and every plugin was unusable. It is also
-    // the build the plugin environments are made from, which makes it the right
-    // one to prefer wherever it exists.
-    const QStringList beside{QCoreApplication::applicationDirPath()};
+    // The interpreter the application ships, then whatever is on PATH — and only
+    // one that runs. Inside a bundle the real interpreter lives in
+    // Contents/Frameworks/Python.framework, while Contents/MacOS holds a Craft
+    // shim of the same name pointing at ../lib/Python.framework, a directory the
+    // packager never creates. The shim is a genuine executable that exits 255,
+    // so existence proves nothing and has to be tested by running it.
+    const QString appDir = QCoreApplication::applicationDirPath();
+    const QDir versions(appDir + QStringLiteral("/../Frameworks/Python.framework/Versions"));
     for (const QString &name : {QStringLiteral("python3"), QStringLiteral("python")}) {
-        const QString py = QStandardPaths::findExecutable(name, beside);
-        if (!py.isEmpty()) {
-            return py;
+        QStringList candidates;
+        const QStringList found = versions.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed);
+        for (const QString &version : found) {
+            candidates << QDir::cleanPath(versions.absoluteFilePath(version + QStringLiteral("/bin/") + name));
+        }
+        candidates << QDir::cleanPath(appDir + QLatin1Char('/') + name);
+        candidates << QStandardPaths::findExecutable(name);
+        for (const QString &candidate : candidates) {
+            if (candidate.isEmpty() || !QFileInfo::exists(candidate)) {
+                continue;
+            }
+            QProcess probe;
+            probe.start(candidate, {QStringLiteral("-c"), QString()});
+            if (probe.waitForFinished(10000) && probe.exitStatus() == QProcess::NormalExit && probe.exitCode() == 0) {
+                return candidate;
+            }
         }
     }
-    QString py = QStandardPaths::findExecutable(QStringLiteral("python3"));
-    if (py.isEmpty()) {
-        py = QStandardPaths::findExecutable(QStringLiteral("python"));
-    }
-    return py;
+    return {};
 }
 
 namespace {
