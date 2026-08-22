@@ -382,15 +382,19 @@ QString runnablePython(const QString &path)
 QStringList pythonCandidates(const QString &name)
 {
     QStringList candidates;
+#ifdef Q_OS_MACOS
+    // The interpreter the application ships, at its real location inside the
+    // bundle. Newest version first, since the directory names sort that way.
+    // Only here: this is a macOS packaging problem, and everywhere else the
+    // search that has always worked is left exactly as it was.
     const QString appDir = QCoreApplication::applicationDirPath();
-    // The interpreter the application ships, at its real location. Newest
-    // version first, since the directory names sort that way.
     const QDir versions(appDir + QStringLiteral("/../Frameworks/Python.framework/Versions"));
     const QStringList found = versions.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed);
     for (const QString &version : found) {
         candidates << QDir::cleanPath(versions.absoluteFilePath(version + QStringLiteral("/bin/") + name));
     }
     candidates << QDir::cleanPath(appDir + QLatin1Char('/') + name);
+#endif
     candidates << QStandardPaths::findExecutable(name);
     return candidates;
 }

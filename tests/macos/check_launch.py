@@ -249,9 +249,18 @@ def check_bundled_python(bundle: Path) -> int:
 
     if not working:
         print("\nFAIL: the bundle carries Python but none of it runs.")
-        print("A plugin handed one of these gets 'Failed to inspect Python interpreter' and")
-        print("cannot build its environment. Check that Python.framework was packaged and that")
-        print("whatever sits in Contents/MacOS points at where it actually landed.")
+        print("The framework's own interpreter records its library as")
+        print("@executable_path/../Frameworks/..., which resolves only when it is launched from")
+        print("Contents/MacOS — and the shim that lives there looks for the framework under")
+        print("lib/, where the packager does not put it. The two halves point past each other.")
+        print("")
+        print("Falling back to an interpreter on PATH is not an answer: macOS has shipped no")
+        print("Python since 12.3, and /usr/bin/python3 is a stub that offers to install the")
+        print("Command Line Tools. On a machine without them every plugin is dead.")
+        print("")
+        print("Package::preArchive in the wunjo blueprint puts the framework's real binary")
+        print("where the shim was, which is what makes its own load command resolve. If this")
+        print("check is failing, that step did not run or did not find the framework.")
         return 1
 
     print(f"\nPASS: {len(working)} of {len(candidates)} bundled interpreters run.")

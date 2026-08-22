@@ -22,6 +22,9 @@ its directory. `apps` is the category, the same way KDE's own repository uses
 `kde/kdemultimedia/kdenlive/kdenlive.py`.
 """
 
+import shutil
+from pathlib import Path
+
 import info
 from CraftCore import CraftCore
 from Package.CMakePackageBase import CMakePackageBase
@@ -169,6 +172,53 @@ class Package(CMakePackageBase):
         # executable's own name and the AppImage packager needs it lowercase.
         self.defines["appname"] = "Wunjo Make" if CraftCore.compiler.isMacOS else "wunjo"
         self.defines["desktopFile"] = "online.wunjo.make"
+
+    def preArchive(self):
+        """Make the interpreter in the bundle runnable before it is sealed in.
+
+        Neither copy of Python works as packaged, and they fail for opposite
+        reasons. The one inside the framework records its library as
+        ``@executable_path/../Frameworks/Python.framework/.../Python``, which
+        only resolves when the running executable sits in ``Contents/MacOS`` —
+        from its own ``bin`` directory it points at a Frameworks folder that
+        does not exist, and dyld aborts. What does sit in ``Contents/MacOS`` is
+        a Craft shim of the right name that redirects to
+        ``../lib/Python.framework``, a directory the packager never creates:
+        it puts the framework in ``Contents/Frameworks``. So the two halves
+        point past each other and the bundle carries a Python that cannot start.
+
+        Nothing about that is visible from outside. Every plugin needing an
+        interpreter fell back to whatever was on PATH, and macOS has shipped no
+        Python since 12.3 — ``/usr/bin/python3`` is a stub that offers to install
+        the Command Line Tools. On a machine without them the plugins simply do
+        not work.
+
+        The fix is the copy itself: put the framework's real binary where the
+        shim was. Run from ``Contents/MacOS`` its own load command resolves, and
+        it needs no further patching.
+        """
+        status = super().preArchive()
+        if not CraftCore.compiler.isMacOS:
+            return status
+
+        app = self.getMacAppPath(self.defines)
+        if not app:
+            return status
+        macos = Path(app) / "Contents" / "MacOS"
+        versions = Path(app) / "Contents" / "Frameworks" / "Python.framework" / "Versions"
+        if not versions.is_dir():
+            CraftCore.log.warning(f"no Python.framework in {app}; leaving its interpreters alone")
+            return status
+
+        for real in sorted(versions.glob("*/bin/python3*")):
+            if real.name.endswith("-config") or not real.is_file():
+                continue
+            target = macos / real.name
+            CraftCore.log.info(f"replacing {target} with the interpreter from {real.parent}")
+            target.unlink(missing_ok=True)
+            shutil.copy2(real, target)
+            target.chmod(0o755)
+        return status
 
     def createPackage(self):
         if CraftCore.compiler.isMacOS:

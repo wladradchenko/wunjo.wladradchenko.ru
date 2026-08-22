@@ -723,15 +723,20 @@ QString PluginManager::interpreterFor(const PluginManifest &m) const
     // shim of the same name pointing at ../lib/Python.framework, a directory the
     // packager never creates. The shim is a genuine executable that exits 255,
     // so existence proves nothing and has to be tested by running it.
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QDir versions(appDir + QStringLiteral("/../Frameworks/Python.framework/Versions"));
     for (const QString &name : {QStringLiteral("python3"), QStringLiteral("python")}) {
         QStringList candidates;
+#ifdef Q_OS_MACOS
+        // Only on macOS, where the bundled interpreter is not on any PATH and
+        // the thing that is named like it does not run. Elsewhere the search
+        // that has always worked is untouched.
+        const QString appDir = QCoreApplication::applicationDirPath();
+        const QDir versions(appDir + QStringLiteral("/../Frameworks/Python.framework/Versions"));
         const QStringList found = versions.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed);
         for (const QString &version : found) {
             candidates << QDir::cleanPath(versions.absoluteFilePath(version + QStringLiteral("/bin/") + name));
         }
         candidates << QDir::cleanPath(appDir + QLatin1Char('/') + name);
+#endif
         candidates << QStandardPaths::findExecutable(name);
         for (const QString &candidate : candidates) {
             if (candidate.isEmpty() || !QFileInfo::exists(candidate)) {

@@ -274,6 +274,22 @@ def test_real_server() -> None:
           "a server still holding the weights would hold the memory too")
 
 
+def looks_like_language(text: str) -> bool:
+    """Is this a reply, or is it noise?
+
+    A model whose arithmetic is wrong still answers — it answers rubbish. On
+    Metal one produced 83D0/%)59&#"=G?+H-:;+4G; and every check that asked only
+    whether something came back was satisfied. Letters and spaces against the
+    total is a crude measure and a sufficient one: prose clears it comfortably,
+    a broken sampler does not come close.
+    """
+    stripped = text.strip()
+    if len(stripped) < 3:
+        return False
+    readable = sum(1 for c in stripped if c.isalpha() or c.isspace())
+    return readable / len(stripped) >= 0.7
+
+
 def ask(base: str, prompt: str) -> str:
     request = urllib.request.Request(
         f"{base}/v1/chat/completions",
@@ -362,9 +378,14 @@ def test_metal_server(full_model: bool = False) -> None:
         check("llama-server starts with Metal", True)
         try:
             text = ask(base, "Reply with the word ready.")
+            sys.stderr.write(f"          it said: {text.strip()[:120]!r}\n")
             check("it answers with the model on the GPU", bool(text and text.strip()),
                   f"got {text!r}")
-            sys.stderr.write(f"          it said: {text.strip()[:120]!r}\n")
+            # Loading is not the same as computing. See looks_like_language.
+            check("and the answer is language rather than noise",
+                  looks_like_language(text),
+                  "the model loaded but its output is not text — the weights are being "
+                  "run wrongly on this backend")
         except Exception as error:  # noqa: BLE001
             check("it answers with the model on the GPU", False, str(error))
             sys.stderr.write(server_log_tail() + "\n")

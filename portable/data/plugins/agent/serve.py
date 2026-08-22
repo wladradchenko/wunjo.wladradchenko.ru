@@ -303,7 +303,14 @@ def ensure(context_tokens: int = 65536, idle_minutes: int = 10) -> str:
         # "text part not found" and shows the user nothing. Reasoning also costs
         # tokens this size of context cannot spare.
         "--reasoning", "off",
-        "--flash-attn", "on",
+        # Forced on everywhere it has always been, and left to llama.cpp on
+        # Metal. Forced on there, the backend loaded the weights and answered
+        # 83D0/%)59&#"=G?+H-:;+4G; — arithmetic gone wrong rather than a failure,
+        # which no check that asked only whether a reply arrived would catch.
+        # Whether the kernel exists for a given head size is llama.cpp's
+        # judgement; where it does, auto takes it. Linux and Windows keep the
+        # setting they were tested with.
+        "--flash-attn", "auto" if sys.platform == "darwin" else "on",
         "--ctx-size", str(int(context_tokens)),
         "--n-gpu-layers", str(_gpu_layers()),
         "--alias", "wunjo-local",
