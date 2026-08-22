@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -44,8 +45,11 @@ PLUGIN = REPO / "portable" / "data" / "plugins" / "agent"
 STAND_IN_MODEL = ("https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/"
                   "resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf")
 
-MODELS = Path(tempfile.mkdtemp()) / "models"
-MODELS.mkdir(parents=True)
+# A caller may point this at somewhere that survives between runs — CI keeps the
+# weights in the Actions cache rather than fetching gigabytes on every build.
+# Left unset it is a temp directory, which is what a laptop wants.
+MODELS = Path(os.environ.get("WUNJO_MODELS_DIR") or (Path(tempfile.mkdtemp()) / "models"))
+MODELS.mkdir(parents=True, exist_ok=True)
 os.environ["WUNJO_MODELS_DIR"] = str(MODELS)
 os.environ.pop("WUNJO_GPU_BACKEND", None)  # no card, and none pretended
 
@@ -188,12 +192,35 @@ def platform_key() -> str:
     return f"{system}-{machine}"
 
 
+class DownloadFailed(Exception):
+    """The weights could not be fetched. Nothing about the build is wrong."""
+
+
 def fetch(url: str, into: Path) -> Path:
-    sys.stderr.write(f"    downloading {url.split('/')[-1].split('?')[0]}\n")
+    """Download @p url to @p into, with curl.
+
+    These files run to gigabytes and come from a public mirror that throttles,
+    so a stall in the middle is ordinary. Read straight through by hand, one
+    stall raises TimeoutError and the whole download starts again from nothing —
+    which is how a build came to fail on a socket having tested the application
+    perfectly well.
+
+    curl already solves this and is on every machine this runs on: -C - carries
+    on from whatever arrived, --retry covers the transient failures, and it
+    moves the bytes faster than a Python loop besides.
+    """
+    name = url.split("/")[-1].split("?")[0]
+    sys.stderr.write(f"    downloading {name}\n")
     sys.stderr.flush()
-    with urllib.request.urlopen(url, timeout=600) as response, open(into, "wb") as handle:
-        while chunk := response.read(1 << 20):
-            handle.write(chunk)
+    finished = subprocess.run(
+        ["curl", "--location", "--fail", "--silent", "--show-error",
+         "--retry", "5", "--retry-delay", "5", "--retry-all-errors",
+         "--connect-timeout", "30", "--continue-at", "-",
+         "--output", str(into), url],
+        capture_output=True, text=True, timeout=3600)
+    if finished.returncode != 0:
+        raise DownloadFailed(f"{name}: curl exited {finished.returncode} "
+                             f"{(finished.stderr or '').strip()[:200]}")
     return into
 
 
@@ -219,7 +246,13 @@ def install_runtime() -> bool:
             bundle.extractall(target)
     else:
         with tarfile.open(archive) as bundle:
-            bundle.extractall(target)
+            # Python 3.14 filters extracted archives by default and warns until
+            # then. These come from a release page, so "data" is the right rule
+            # and saying so keeps the behaviour the same across versions.
+            try:
+                bundle.extractall(target, filter="data")
+            except TypeError:  # older Python has no filter argument
+                bundle.extractall(target)
     # Archives lose the executable bit; the application restores it after
     # unpacking and so must this, or the server cannot be started.
     for path in target.rglob("*"):
@@ -324,13 +357,25 @@ def install_manifest_model() -> bool:
     """
     manifest = json.loads((PLUGIN / "plugin.json").read_text(encoding="utf-8"))
     for name in ("model.gguf", "mmproj.gguf"):
+        target = MODELS / name
         entries = [m for m in manifest["models"] if m["name"] == name]
         # max_vram_gb marks the variant meant for the smaller cards.
         entries.sort(key=lambda m: (0 if m.get("max_vram_gb") else 1, m.get("size_mb", 0)))
         if not entries:
             check(f"the manifest offers {name}", False)
             return False
-        fetch(entries[0]["url"], MODELS / name)
+        # Already the full size from a previous run, most likely out of the CI
+        # cache. curl would work it out from a Range request anyway; skipping
+        # saves the round trip.
+        expected = int(entries[0].get("size_mb", 0)) * 1024 * 1024
+        if target.exists() and expected and target.stat().st_size >= expected * 0.95:
+            sys.stderr.write(f"    {name} is already here ({target.stat().st_size >> 20} MB)\n")
+            continue
+        try:
+            fetch(entries[0]["url"], target)
+        except DownloadFailed as error:
+            check(f"{name} could be downloaded", False, str(error))
+            return False
     return True
 
 
