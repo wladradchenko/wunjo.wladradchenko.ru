@@ -190,7 +190,13 @@ void WunjoTheme::applyIconTheme()
     // QIcon (no palette recoloring), so a light theme needs a dark-stroke copy.
     // "wunjo-light" is generated from "wunjo" at build time (data/icons-wunjo).
     const QString iconTheme = m_dark ? QStringLiteral("wunjo") : QStringLiteral("wunjo-light");
-    if (QIcon::themeName() == iconTheme) {
+    // On macOS the Qt theme name holds KDE's icon engine rather than a theme
+    // name (see main.cpp), and the theme actually in force is KIconTheme's.
+    // Overwriting the name here would take that engine back out of the path and
+    // let the platform one in, which is what kills the application at the first
+    // icon it draws — so there the switch is made on the KDE side alone.
+    const bool kdeIconEngine = QIcon::themeName() == QLatin1String("KIconEngine");
+    if ((kdeIconEngine ? KIconTheme::current() : QIcon::themeName()) == iconTheme) {
         return;
     }
     // Only "breeze" exists on macOS: Craft's breeze-icons is a resource library
@@ -201,8 +207,10 @@ void WunjoTheme::applyIconTheme()
 #else
     QIcon::setFallbackThemeName(m_dark ? QStringLiteral("breeze-dark") : QStringLiteral("breeze"));
 #endif
-    QIcon::setThemeName(iconTheme);
     KIconTheme::forceThemeForTests(iconTheme);
+    if (!kdeIconEngine) {
+        QIcon::setThemeName(iconTheme);
+    }
     QPixmapCache::clear();
     // Prod already-created windows to re-resolve their icons (no-op at startup
     // when none exist yet — icons then load with the correct theme directly).

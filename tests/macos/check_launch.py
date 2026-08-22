@@ -149,6 +149,20 @@ def check_icons_are_reachable(data: dict) -> int:
     for path in icons.get("searchPaths", []):
         print(f"    looked for themes in {path}")
 
+    # The healthy macOS arrangement: the Qt theme name holds KDE's icon engine,
+    # which answers every name itself, so Qt never reaches the platform engine
+    # that resolves names as SF Symbols and aborts in AppKit. The theme actually
+    # in force is KIconTheme's, reported separately.
+    if icons.get("theme") == "KIconEngine":
+        kde = str(icons.get("kdeTheme", ""))
+        if kde.startswith("wunjo"):
+            print(f"\nPASS: icons go through KDE's engine with the {kde!r} theme in force,")
+            print("so a name this application does not have cannot reach SF Symbols.")
+            return 0
+        print(f"\nFAIL: KDE's icon engine is in use but the theme in force is {kde!r},")
+        print("not one of this application's. The icons would be whatever KDE defaults to.")
+        return 1
+
     if not icons.get("themeFound"):
         print(f"\nFAIL: the application cannot find its icon theme {icons.get('theme')!r}.")
         print("It has no icons at all in this state, and dies in AppKit at the first one it")
