@@ -1,153 +1,162 @@
 {
-    "version": "3.0.0",
+    "version": "3.0.1",
     "history": {
+        "3.0.1": [
+            "Fixed macOS launch failure caused by a std::pmr symbol from macOS 14 in a framework built for 13.3",
+            "Shipped the application icon theme inside the macOS bundle and told Qt where to find it",
+            "Drawn the interface with the Breeze widget style on macOS instead of the native one",
+            "Named the macOS bundle and its menu entry Wunjo Make",
+            "Found the bundled Python interpreter, so plugins work on macOS",
+            "Loaded the assistant's model on Metal without the flags meant for discrete cards",
+            "Let agents outside the editor find its scripting socket on macOS"
+        ],
         "1.4.0": [
-          "Introduced deepfake synchronization with source video for lip movements",
-          "Implemented video segment selection for deepfake based on audio track length",
-          "Enabled customization of .wunjo cache directory",
-          "Added multi-language support for application interface",
-          "Trained and integrated TTS models for English",
-          "Implemented model language identification in the user interface",
-          "Enabled cross-language speech synthesis for Russian and English TTS models",
-          "Included update notifications within the application",
-          "Integrated training videos and wiki page links"
+            "Introduced deepfake synchronization with source video for lip movements",
+            "Implemented video segment selection for deepfake based on audio track length",
+            "Enabled customization of .wunjo cache directory",
+            "Added multi-language support for application interface",
+            "Trained and integrated TTS models for English",
+            "Implemented model language identification in the user interface",
+            "Enabled cross-language speech synthesis for Russian and English TTS models",
+            "Included update notifications within the application",
+            "Integrated training videos and wiki page links"
         ],
         "1.5.1": [
-          "Added voice translation features with encoder and vocoder support for English and Russian",
-          "Implemented voice cloning synthesis from text",
-          "Established a centralized hub for voice cloning language models",
-          "Introduced face and background enchantment for photos and videos without deepfake technology",
-          "Released a comprehensive version including all extensions",
-          "Enhanced real-time progress indication and translation",
-          "Integrated a debug module with Python console",
-          "Transitioned to native language translation for real-time updates",
-          "Improved GPU availability notifications for users",
-          "Launched a deepfake emotion module for experimental research",
-          "Updated the application guide",
-          "Implemented AI-powered retouching of video frames",
-          "Enhanced Chinese language support for voice cloning",
-          "Addressed Windows-specific bugs in Wunjo AI"
+            "Added voice translation features with encoder and vocoder support for English and Russian",
+            "Implemented voice cloning synthesis from text",
+            "Established a centralized hub for voice cloning language models",
+            "Introduced face and background enchantment for photos and videos without deepfake technology",
+            "Released a comprehensive version including all extensions",
+            "Enhanced real-time progress indication and translation",
+            "Integrated a debug module with Python console",
+            "Transitioned to native language translation for real-time updates",
+            "Improved GPU availability notifications for users",
+            "Launched a deepfake emotion module for experimental research",
+            "Updated the application guide",
+            "Implemented AI-powered retouching of video frames",
+            "Enhanced Chinese language support for voice cloning",
+            "Addressed Windows-specific bugs in Wunjo AI"
         ],
         "1.5.2": [
-          "Resolved the model auto-loading issue on Windows",
-          "Accelerated application startup",
-          "Enhanced performance of speech synthesis and deepfakes on CPU",
-          "Fixed GIF processing errors in face replacement and retouching",
-          "Corrected the frame-audio merging issue"
+            "Resolved the model auto-loading issue on Windows",
+            "Accelerated application startup",
+            "Enhanced performance of speech synthesis and deepfakes on CPU",
+            "Fixed GIF processing errors in face replacement and retouching",
+            "Corrected the frame-audio merging issue"
         ],
         "1.5.3": [
-          "Automated ffmpeg installation for Windows"
+            "Automated ffmpeg installation for Windows"
         ],
         "1.5.4": [
-          "Corrected the Russian voice model training from checkpoint issue",
-          "Introduced a similarity coefficient parameter for Face Swapping and Mouth Animation",
-          "Enhanced English voice cloning for extended phrases"
+            "Corrected the Russian voice model training from checkpoint issue",
+            "Introduced a similarity coefficient parameter for Face Swapping and Mouth Animation",
+            "Enhanced English voice cloning for extended phrases"
         ],
         "1.5.5": [
-          "Enabled voice cloning in Russian",
-          "Optimized facial animation and improved error handling for GIF processing",
-          "Improved log display within the console",
-          "Added a disk space indicator for output from speech synthesis and deepfakes"
+            "Enabled voice cloning in Russian",
+            "Optimized facial animation and improved error handling for GIF processing",
+            "Improved log display within the console",
+            "Added a disk space indicator for output from speech synthesis and deepfakes"
         ],
         "1.6.0": [
-          "Advanced the object removal tool for images and videos",
-          "Enhanced video editing capabilities",
-          "Implemented automatic segmentation mask saving",
-          "Introduced Video2Video and InpaintVideoMask2Video with ControlNet via text prompts",
-          "Optimized memory usage for face swapping and object removal in lengthy videos"
+            "Advanced the object removal tool for images and videos",
+            "Enhanced video editing capabilities",
+            "Implemented automatic segmentation mask saving",
+            "Introduced Video2Video and InpaintVideoMask2Video with ControlNet via text prompts",
+            "Optimized memory usage for face swapping and object removal in lengthy videos"
         ],
         "1.6.1": [
-          "Resolved issues with the enhancer and upgraded its capabilities for videos and drawings",
-          "Refined vocoder performance for voice cloning",
-          "Introduced variable speech cloning speeds",
-          "Added models for isolating background sound in deepfakes and purifying voice tracks",
-          "Incorporated a feature to extract background noise from media",
-          "Enhanced the encoder for more accurate voice cloning",
-          "Improved overall voice cloning fidelity",
-          "Implemented multilingual speech synthesis from a single text input",
-          "Added a new interactive tool for user-defined mask creation that tracks and moves with segmented objects",
-          "Launched a music generation feature"
+            "Resolved issues with the enhancer and upgraded its capabilities for videos and drawings",
+            "Refined vocoder performance for voice cloning",
+            "Introduced variable speech cloning speeds",
+            "Added models for isolating background sound in deepfakes and purifying voice tracks",
+            "Incorporated a feature to extract background noise from media",
+            "Enhanced the encoder for more accurate voice cloning",
+            "Improved overall voice cloning fidelity",
+            "Implemented multilingual speech synthesis from a single text input",
+            "Added a new interactive tool for user-defined mask creation that tracks and moves with segmented objects",
+            "Launched a music generation feature"
         ],
         "1.6.2": [
-          "Custom browser for WebGUI to solve trouble with opening additional tabs",
-          "Added select browser to run",
-          "Added check between offline and online mode",
-          "Added a message for the user about missing models and how to download manually"
+            "Custom browser for WebGUI to solve trouble with opening additional tabs",
+            "Added select browser to run",
+            "Added check between offline and online mode",
+            "Added a message for the user about missing models and how to download manually"
         ],
         "2.0.0": [
-          "New generation of Wunjo v2",
-          "Big update features https://youtu.be/-MGow5zCZUQ",
-          "Completely redesigned interface for desktop and mobile devices",
-          "Enhanced performance with simultaneous task handling, stability, and faster processing",
-          "Improved face swap functionality now supports multiple face swap at different timings via API",
-          "Introducing generator of non-existent people face",
-          "Deepfake analyzer added to discern authentic content from manipulated media",
-          "Enhanced lip sync for smoother animations and elimination of chin defects",
-          "Real-time mask selection for seamless editing experience",
-          "Added select area to remove text",
-          "Now you can create chroma key video",
-          "Custom file manager introduced for efficient file management within the application",
-          "Improved interaction with neural network models, including seamless downloading from the internet",
-          "Easy switch from client to server application and back",
-          "Multi-user support with customizable limits on simultaneous tasks and memory usage",
-          "Internal tips provided for optimizing content quality",
-          "Smart generator of prompts for video and object restyling"
+            "New generation of Wunjo v2",
+            "Big update features https://youtu.be/-MGow5zCZUQ",
+            "Completely redesigned interface for desktop and mobile devices",
+            "Enhanced performance with simultaneous task handling, stability, and faster processing",
+            "Improved face swap functionality now supports multiple face swap at different timings via API",
+            "Introducing generator of non-existent people face",
+            "Deepfake analyzer added to discern authentic content from manipulated media",
+            "Enhanced lip sync for smoother animations and elimination of chin defects",
+            "Real-time mask selection for seamless editing experience",
+            "Added select area to remove text",
+            "Now you can create chroma key video",
+            "Custom file manager introduced for efficient file management within the application",
+            "Improved interaction with neural network models, including seamless downloading from the internet",
+            "Easy switch from client to server application and back",
+            "Multi-user support with customizable limits on simultaneous tasks and memory usage",
+            "Internal tips provided for optimizing content quality",
+            "Smart generator of prompts for video and object restyling"
         ],
         "2.0.1": [
-          "Fix bugs"
+            "Fix bugs"
         ],
         "2.0.2": [
-          "Added functionality to clone voice in any language from text and audio",
-          "Improved audio separator to remove noise before clone voice",
-          "Enhanced processing speed"
+            "Added functionality to clone voice in any language from text and audio",
+            "Improved audio separator to remove noise before clone voice",
+            "Enhanced processing speed"
         ],
         "2.0.3": [
-          "Added control restyling (This work with 8 GB VRAM)",
-          "Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image",
-          "Improved quality of restyling"
+            "Added control restyling (This work with 8 GB VRAM)",
+            "Added generation text-to-video, image-to-video, text-to-image, outpaint and inpaint image",
+            "Improved quality of restyling"
         ],
         "2.0.4": [
-          "Speed boost 1.5x",
-          "Manual and automatic portrait animation",
-          "Retarget face",
-          "Enhanced video generation",
-          "Transformation in portable version",
-          "Anonymous login",
-          "Clearer model settings",
-          "Face detection fix",
-          "Faster small model loading",
-          "Unlimited file uploads",
-          "Automatic face interface detection",
-          "Progress bar about status"
+            "Speed boost 1.5x",
+            "Manual and automatic portrait animation",
+            "Retarget face",
+            "Enhanced video generation",
+            "Transformation in portable version",
+            "Anonymous login",
+            "Clearer model settings",
+            "Face detection fix",
+            "Faster small model loading",
+            "Unlimited file uploads",
+            "Automatic face interface detection",
+            "Progress bar about status"
         ],
         "2.0.5": [
-          "Quick tips",
-          "Smart search",
-          "Revamped interface",
-          "Unified login system",
-          "Bug fixes",
-          "Translation tooltip for multilanguage"
+            "Quick tips",
+            "Smart search",
+            "Revamped interface",
+            "Unified login system",
+            "Bug fixes",
+            "Translation tooltip for multilanguage"
         ],
         "2.0.6": [
-          "Identity-preserving generation",
-          "Multi-language interface: English, Russian, Spanish, Chinese, Korean",
-          "Multi-GPU support",
-          "API for developers",
-          "Zoom for images",
-          "Fast start"
+            "Identity-preserving generation",
+            "Multi-language interface: English, Russian, Spanish, Chinese, Korean",
+            "Multi-GPU support",
+            "API for developers",
+            "Zoom for images",
+            "Fast start"
         ],
         "2.0.7": [
-          "History day tasks",
-          "Automatic video editing based on visual content and speech (e.g. for podcasts or long videos)",
-          "New video generator methods (only for flash-attn version)",
-          "More generators parameters",
-          "Metadata"
+            "History day tasks",
+            "Automatic video editing based on visual content and speech (e.g. for podcasts or long videos)",
+            "New video generator methods (only for flash-attn version)",
+            "More generators parameters",
+            "Metadata"
         ],
         "2.0.8": [
-          "Smart Crop a feature that automatically adapts any video to any aspect ratio",
-          "Loading and processing times are about twice as quick",
-          "Word-based editing with Smart Cut",
-          "Memory optimization and fix bugs"
+            "Smart Crop a feature that automatically adapts any video to any aspect ratio",
+            "Loading and processing times are about twice as quick",
+            "Word-based editing with Smart Cut",
+            "Memory optimization and fix bugs"
         ],
         "3.0.0": [
             "Rebuilt as a desktop nonlinear editor on the MLT framework, replacing the web interface",

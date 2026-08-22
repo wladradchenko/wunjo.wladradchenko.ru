@@ -1,4 +1,4 @@
-#python3.11,python3.12,python3.13
+#python3.11,python3.12,python3.13,python3.10
 # No torch: both models run on onnxruntime, and ffmpeg finds the scene cuts.
 numpy
 scipy

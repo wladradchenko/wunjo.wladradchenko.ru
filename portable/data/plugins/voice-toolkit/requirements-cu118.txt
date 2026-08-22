@@ -1,4 +1,4 @@
-#python3.11,python3.12,python3.13
+#python3.11,python3.12,python3.13,python3.10
 # CUDA 11.8 wheels — for drivers reporting CUDA 11.8 up to 12.3.
 # Ranges, not exact pins: which build exists depends on the interpreter the app
 # runs (the runtime ships one, and it changes with it), while the upper bound is

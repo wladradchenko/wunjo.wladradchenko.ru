@@ -115,7 +115,8 @@
     },
     "os": [
         "linux",
-        "windows"
+        "windows",
+        "macos"
     ],
     "effects": [
         "effects/face-toolkit-region.xml",

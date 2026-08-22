@@ -32,6 +32,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <KTar>
 #include <KZip>
 
+#include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDebug>
@@ -715,6 +716,18 @@ QString PluginManager::interpreterFor(const PluginManifest &m) const
         }
         // environment not built yet — fall back so the stub still runs; the
         // real venv build lands with the plugin-task work
+    }
+    // Next to the application before PATH. The interpreter Craft ships sits in
+    // Contents/MacOS inside a bundle and is on nobody's PATH, so a package that
+    // carries Python still found none and every plugin was unusable. It is also
+    // the build the plugin environments are made from, which makes it the right
+    // one to prefer wherever it exists.
+    const QStringList beside{QCoreApplication::applicationDirPath()};
+    for (const QString &name : {QStringLiteral("python3"), QStringLiteral("python")}) {
+        const QString py = QStandardPaths::findExecutable(name, beside);
+        if (!py.isEmpty()) {
+            return py;
+        }
     }
     QString py = QStandardPaths::findExecutable(QStringLiteral("python3"));
     if (py.isEmpty()) {

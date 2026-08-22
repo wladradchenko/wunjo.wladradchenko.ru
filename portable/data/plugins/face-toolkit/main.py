@@ -273,6 +273,14 @@ def pick_device(force_cpu: bool = False) -> str:
 
         if torch.cuda.is_available():
             return "cuda"
+        # Apple's GPU. torch on macOS ships with the Metal backend built in, so
+        # asking only about CUDA left every Mac on its processor cores while the
+        # graphics chip sat idle. Guarded because the attribute does not exist
+        # in builds without it, and checked twice over: is_built() says the
+        # backend was compiled in, is_available() that this machine has one.
+        mps = getattr(torch.backends, "mps", None)
+        if mps is not None and mps.is_built() and mps.is_available():
+            return "mps"
     except Exception:
         pass
     return "cpu"
@@ -358,7 +366,10 @@ def frames_per_batch(requested: int, device: str, per_frame_mb: int = 48) -> int
     """
     if requested > 0:
         return requested
-    if device == "cpu":
+    # Apple's GPU works out of the machine's own memory, so there is no separate
+    # figure to divide up and torch.cuda.mem_get_info does not exist to ask. The
+    # modest fixed batch the processor gets is the right answer there too.
+    if device in ("cpu", "mps"):
         return 16
     try:
         import torch
@@ -723,7 +734,16 @@ def analyse_face(job: dict, work: str) -> dict:
     from regionface import ArcFace, RegionFaces
 
     device = pick_device(force_cpu=False)
-    providers = ["CUDAExecutionProvider"] if device != "cpu" else ["CPUExecutionProvider"]
+    # onnxruntime has no Metal provider. CoreML is the Apple one and is only
+    # present in some builds, so the processor stays behind it rather than the
+    # session failing to open — and asking for CUDA on a Mac, which is what
+    # "anything but cpu" used to do, finds a provider that is not there at all.
+    if device == "cuda":
+        providers = ["CUDAExecutionProvider"]
+    elif device == "mps":
+        providers = ["CoreMLExecutionProvider", "CPUExecutionProvider"]
+    else:
+        providers = ["CPUExecutionProvider"]
     # No box comes with a registered photo, so the landmark model works from the
     # middle of the picture — where the face of a portrait chosen for a swap is.
     faces = RegionFaces(landmark_model=os.path.join(MODELS_DIR, "landmark.onnx"), device=device, refine=True)

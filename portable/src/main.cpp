@@ -294,45 +294,8 @@ int main(int argc, char *argv[])
     // there.
     QIcon::setFallbackThemeName(QStringLiteral("breeze"));
 
-    // Hand icons to KDE's icon engine instead of Qt's plain theme loader.
-    //
-    // Coverage cannot fix this on its own. Qt consults the platform icon engine
-    // whenever a themed name is not found — qiconloader.cpp, right after "Icon
-    // is not available from theme or fallback theme" — and on macOS that engine
-    // resolves names as SF Symbols. AppKit then aborts inside
-    // NSImageSymbolRepProvider for a symbol it cannot draw at the requested
-    // configuration, and the application dies at the first toolbar it paints.
-    // There is no flag that turns that fallback off, and no icon set large
-    // enough to guarantee it is never reached. Linux is safe only because its
-    // platform theme offers no icon engine at all, so a miss stays a miss.
-    //
-    // KIconThemes already solves this: it sets the Qt theme name to
-    // "KIconEngine", which makes Qt load KIconEnginePlugin and ask it for every
-    // name. A plugin engine is never null, so the platform engine is never
-    // reached. Naming the theme "wunjo" here is precisely what undid that.
-    //
-    // The theme still applies. KIconLoader follows KIconTheme::current(), which
-    // forceThemeForTests sets, and KIconTheme looks for themes under
-    // QStandardPaths::GenericDataLocation — which inside a bundle includes
-    // Contents/Resources, where the theme is installed. That is a different and
-    // more forgiving search than QIcon's, and it is the reason this route
-    // works where the other one needed the search path added above.
-    //
-    // Qt looks for icon engine plugins in <library path>/iconengines, and the
-    // bundle keeps them one level further down, so the directory has to be
-    // added by hand — nothing in Qt or KIconThemes finds it on macOS.
-    //
-    // Only taken when the plugin is really there: naming an engine that cannot
-    // be loaded would leave every icon unresolved, which is worse than the
-    // problem being fixed.
-    const QString iconEnginePlugins = QDir::cleanPath(QCoreApplication::applicationDirPath()
-                                                      + QStringLiteral("/../PlugIns/kiconthemes6"));
-    const bool kdeIconEngine = QFileInfo::exists(iconEnginePlugins + QStringLiteral("/iconengines"));
-    if (kdeIconEngine) {
-        QCoreApplication::addLibraryPath(iconEnginePlugins);
-    }
+    QIcon::setThemeName(QStringLiteral("wunjo"));
     KIconTheme::forceThemeForTests(QStringLiteral("wunjo"));
-    QIcon::setThemeName(kdeIconEngine ? QStringLiteral("KIconEngine") : QStringLiteral("wunjo"));
 #else
     QIcon::setFallbackThemeName(QStringLiteral("breeze-dark"));
     QIcon::setThemeName(QStringLiteral("wunjo"));

@@ -47,11 +47,6 @@ REQUIRED = {
     "Resources/plugins/agent/plugin.json": "the assistant plugin",
     "Resources/plugins/agent/main.py": "the assistant's entry point",
     "Resources/mcp/run.py": "the MCP server the assistant speaks through",
-    # main.cpp routes icons through this engine on macOS and falls back to Qt's
-    # plain theme loader when it is absent — and that loader hands any name it
-    # cannot resolve to the platform engine, which resolves names as SF Symbols
-    # and aborts in AppKit. The exact directory main.cpp tests for.
-    "PlugIns/kiconthemes6/iconengines": "KDE's icon engine, which keeps icons away from SF Symbols",
 }
 
 failures: list[str] = []

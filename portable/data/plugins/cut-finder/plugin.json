@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "author": "Wlad Radchenko",
     "author_email": "i@wladradchenko.ru",
-    "description": "Where the cuts are, found instead of scrubbed for: shot changes in the picture, speaker turns in the sound. Nothing is rendered and nothing is re-encoded \u2014 it reports the timings and the clip is cut where they fall.",
+    "description": "Where the cuts are, found instead of scrubbed for: shot changes in the picture, speaker turns in the sound. Nothing is rendered and nothing is re-encoded — it reports the timings and the clip is cut where they fall.",
     "license": "MIT",
     "homepage": "https://github.com/wladradchenko/wunjo.wladradchenko.ru",
     "icon": "icon.svg",
@@ -50,7 +50,8 @@
     },
     "os": [
         "linux",
-        "windows"
+        "windows",
+        "macos"
     ],
     "effects": [
         "effects/cut-finder-speakers.xml",

@@ -144,6 +144,14 @@ def pick_device(force_cpu: bool = False) -> str:
 
         if torch.cuda.is_available():
             return "cuda"
+        # Apple's GPU. torch on macOS ships with the Metal backend built in, so
+        # asking only about CUDA left every Mac on its processor cores while the
+        # graphics chip sat idle. Guarded because the attribute does not exist
+        # in builds without it, and checked twice over: is_built() says the
+        # backend was compiled in, is_available() that this machine has one.
+        mps = getattr(torch.backends, "mps", None)
+        if mps is not None and mps.is_built() and mps.is_available():
+            return "mps"
     except Exception:
         pass
     return "cpu"

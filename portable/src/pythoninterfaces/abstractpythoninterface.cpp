@@ -368,7 +368,17 @@ QString AbstractPythonInterface::systemPythonExec()
                 if (line.startsWith(QStringLiteral("#python"))) {
                     QStringList compatiblePython = line.section(QLatin1Char('#'), 1).split(QLatin1Char(','), Qt::SkipEmptyParts);
                     for (auto &p : compatiblePython) {
-                        const QString compatPath = QStandardPaths::findExecutable(p);
+                        // Next to the application first. On macOS the interpreter
+                        // Craft ships sits in Contents/MacOS and is never on PATH,
+                        // so a bundle carrying python3.11 still answered "Cannot
+                        // find a compatible python version" and every plugin that
+                        // needs Python was dead on arrival. It is also the build
+                        // the wheels were resolved against, which makes it the
+                        // right one to prefer even where PATH offers another.
+                        QString compatPath = QStandardPaths::findExecutable(p, {QCoreApplication::applicationDirPath()});
+                        if (compatPath.isEmpty()) {
+                            compatPath = QStandardPaths::findExecutable(p);
+                        }
                         if (!compatPath.isEmpty()) {
                             return compatPath;
                         }

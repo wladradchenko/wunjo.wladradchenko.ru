@@ -274,6 +274,73 @@ def test_real_server() -> None:
           "a server still holding the weights would hold the memory too")
 
 
+def ask(base: str, prompt: str) -> str:
+    request = urllib.request.Request(
+        f"{base}/v1/chat/completions",
+        data=json.dumps({"model": "wunjo-local",
+                         "messages": [{"role": "user", "content": prompt}],
+                         "max_tokens": 24}).encode(),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(request, timeout=300) as response:
+        return json.load(response)["choices"][0]["message"]["content"]
+
+
+def server_log_tail(lines: int = 25) -> str:
+    log = Path(serve.SERVER_LOG)
+    if not log.is_file():
+        return "      (no server log)"
+    return "\n".join("      " + l for l in
+                      log.read_text(errors="replace").splitlines()[-lines:])
+
+
+def test_metal_server() -> None:
+    """The same model server, this time on the GPU.
+
+    Only reachable on a Mac, and only worth running there: the flags serve.py
+    builds differ once layers are offloaded, and the ones that differ are
+    exactly the ones that broke. With WUNJO_GPU_BACKEND unset the server runs on
+    the CPU, none of that code is reached, and a run can pass while the real
+    thing refuses to start.
+
+    It did refuse. The server died loading the model on
+
+        ggml-metal-context.m: GGML_ASSERT(buf_dst) failed
+
+    which reached the user as the assistant declining to start with a line of C
+    where the reason should be. The cause was flags meant for a laptop with a
+    discrete card — naming a device, and squeezing the attention cache to eight
+    bits — asked of a backend that wants neither.
+    """
+    section("5. The same server on Metal (macOS only)")
+    if sys.platform != "darwin":
+        sys.stderr.write("  skipped — not a Mac, there is no Metal to ask for\n")
+        return
+
+    serve.stop()
+    time.sleep(2)
+    os.environ["WUNJO_GPU_BACKEND"] = "metal"
+    try:
+        check("serve.py asks for the layers to be offloaded", serve._gpu_layers() == 99)
+        try:
+            base = serve.ensure(context_tokens=16384, idle_minutes=10)
+        except Exception as error:  # noqa: BLE001
+            check("llama-server starts with Metal", False, str(error))
+            sys.stderr.write(server_log_tail() + "\n")
+            return
+        check("llama-server starts with Metal", True)
+        try:
+            text = ask(base, "Reply with the word ready.")
+            check("it answers with the model on the GPU", bool(text and text.strip()),
+                  f"got {text!r}")
+            sys.stderr.write(f"          it said: {text.strip()[:120]!r}\n")
+        except Exception as error:  # noqa: BLE001
+            check("it answers with the model on the GPU", False, str(error))
+            sys.stderr.write(server_log_tail() + "\n")
+        serve.stop()
+    finally:
+        os.environ.pop("WUNJO_GPU_BACKEND", None)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--with-model", action="store_true",
@@ -286,6 +353,7 @@ def main() -> int:
     test_lifecycle()
     if arguments.with_model:
         test_real_server()
+        test_metal_server()
     else:
         section("4. The real model server")
         sys.stderr.write("  skipped — pass --with-model to download one and talk to it\n")

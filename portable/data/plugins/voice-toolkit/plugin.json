@@ -73,7 +73,8 @@
     },
     "os": [
         "linux",
-        "windows"
+        "windows",
+        "macos"
     ],
     "effects": [
         "effects/voice-toolkit-clone.xml",

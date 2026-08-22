@@ -308,7 +308,17 @@ def ensure(context_tokens: int = 65536, idle_minutes: int = 10) -> str:
         "--n-gpu-layers", str(_gpu_layers()),
         "--alias", "wunjo-local",
     ]
-    device = _pick_device(binary) if _gpu_layers() else ""
+    # Metal is asked for none of this. There is one GPU on a Mac, so naming a
+    # device says nothing, and the memory it works out of is the machine's own,
+    # so the cache does not need squeezing. Both flags exist for a laptop with a
+    # discrete card and a fixed, small amount of video memory.
+    #
+    # They are not merely pointless there — with them the server died loading
+    # the model on "ggml-metal-context.m: GGML_ASSERT(buf_dst) failed", which
+    # reaches the user as the assistant refusing to start with a line of C in
+    # place of a reason.
+    metal = sys.platform == "darwin"
+    device = _pick_device(binary) if (_gpu_layers() and not metal) else ""
     if device:
         command += ["--device", device]
     projector = _projector_file()
@@ -318,7 +328,7 @@ def ensure(context_tokens: int = 65536, idle_minutes: int = 10) -> str:
         # Keep the attention cache at eight bits. At a context this size it is
         # gigabytes at full width, and on a laptop card that is the difference
         # between running and dying part way through an answer — which the user
-        # only ever sees as the reply breaking off.
+        # only ever sees as the reply breaking off. Not on Metal: see above.
         command += ["--cache-type-k", "q8_0", "--cache-type-v", "q8_0"]
     log(f"starting llama-server on port {port}")
     # Its output goes to a file, not to nowhere. When the model server dies —
