@@ -122,6 +122,15 @@ public:
 
         width = viewportSize.width() * devicePixelRatio;
         height = viewportSize.height() * devicePixelRatio;
+        // A monitor that has not been laid out yet reports 0x0, and the scale
+        // below then divides by zero: the matrix fills with infinities, every
+        // vertex multiplied through it becomes NaN, and the viewport is handed
+        // a width and height of zero. Nothing can be drawn at that size, so
+        // leave rather than pass the mess on — the next frame arrives with real
+        // dimensions once the layout has run.
+        if (!(width > 0.0f) || !(height > 0.0f)) {
+            return;
+        }
         modelView.scale(2.0f / width, 2.0f / height);
 
         // Set model-view

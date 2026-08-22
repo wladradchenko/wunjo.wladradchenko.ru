@@ -59,6 +59,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QJsonObject>
 #include <QProcess>
 #include <QQuickStyle>
+#include <QStyleFactory>
 #include <QQuickWindow>
 #include <QResource>
 
@@ -352,11 +353,36 @@ int main(int argc, char *argv[])
     // leaves objectName empty, and the guard on that silently skipped the wrap
     // altogether — which is why the dock tabs still underlined their first
     // letter.
+    QString widgetStyleName;
     if (QStyle *baseStyle = qApp->style()) {
         QString baseName = baseStyle->objectName();
         if (baseName.isEmpty()) {
             baseName = QStringLiteral("breeze");
         }
+#ifdef Q_OS_MACOS
+        // The bundle ships no Breeze widget style — Contents/PlugIns/styles holds
+        // libqmacstyle and nothing else — so KStyleManager leaves the native
+        // macOS style in place, and the brand stylesheet, written for Breeze,
+        // lands on top of a style it was never meant for. A native style takes
+        // its metrics from AppKit rather than from the sheet, which is why a
+        // combo box put its text in a corner with no padding around it and the
+        // welcome screen drew one icon at several times its size.
+        //
+        // It also draws through AppKit's NSCell path, and that is where the
+        // application died: an assertion inside NSCrackRect, AppKit's own
+        // geometry, with nothing of ours on the stack.
+        //
+        // Breeze is a runtime dependency of the macOS package for exactly this
+        // reason, so it should be here. Fusion stands in if a build ever lacks
+        // it: compiled into QtWidgets rather than shipped as a plugin, so it is
+        // always available, and the same non-native footing Breeze is built on.
+        // Either is right; the native style is the one thing that is not.
+        // Linux is not touched — there Breeze is present and already chosen.
+        baseName = QStyleFactory::keys().contains(QStringLiteral("Breeze"), Qt::CaseInsensitive)
+                       ? QStringLiteral("Breeze")
+                       : QStringLiteral("Fusion");
+#endif
+        widgetStyleName = baseName;
         qApp->setStyle(new WunjoProxyStyle(baseName));
     }
 
@@ -562,6 +588,10 @@ int main(int argc, char *argv[])
         icons[QStringLiteral("themeFound")] = themeFound;
         icons[QStringLiteral("searchPaths")] = QJsonArray::fromStringList(iconSearchPaths);
         report[QStringLiteral("icons")] = icons;
+        // Which widget style the brand stylesheet is sitting on. A native style
+        // here means the sheet is decorating something it was not written for,
+        // and the interface comes out wrong in ways no packaging check can see.
+        report[QStringLiteral("widgetStyle")] = widgetStyleName;
         const QString outputFilename = parser.value(saveDebugOption);
         if (!outputFilename.isEmpty()) {
             QFile file(outputFilename);

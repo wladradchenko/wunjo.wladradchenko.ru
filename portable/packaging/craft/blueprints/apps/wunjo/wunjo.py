@@ -130,6 +130,25 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/imath"] = None
         self.runtimeDependencies["libs/frei0r-plugins"] = None
 
+        # The widget style the brand stylesheet is written against.
+        #
+        # Without it macOS runs on the native style — the bundle's
+        # PlugIns/styles held libqmacstyle and nothing else — and a native style
+        # takes its metrics from AppKit rather than from src/assets/style.qss.
+        # Combo boxes put their text in a corner with no padding, the welcome
+        # screen drew one icon several times its size, and AppKit's own geometry
+        # crashed the application from that same drawing path.
+        #
+        # Craft does build it for macOS: kde/plasma/breeze drops
+        # frameworkintegration and kdecoration there, which are the only pieces
+        # that want a Linux desktop. The Breeze colour schemes come with it.
+        #
+        # macOS only on purpose. Linux resolves Breeze through its own packaging
+        # already, and adding it here would change a dependency closure that
+        # works.
+        if CraftCore.compiler.isMacOS:
+            self.runtimeDependencies["kde/plasma/breeze"] = None
+
 
 class Package(CMakePackageBase):
     # Craft instantiates recipes as `Package(package=<CraftPackageObject>)`, so

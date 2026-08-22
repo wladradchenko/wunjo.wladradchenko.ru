@@ -117,7 +117,40 @@ def check_components(binary: Path, environment: dict) -> int:
         return 1
     print(f"\nPASS: MLT {components['MLT']} answered from inside the bundle.")
 
-    return check_icons_are_reachable(data)
+    status = check_icons_are_reachable(data)
+    return check_widget_style(data) or status
+
+
+def check_widget_style(data: dict) -> int:
+    """Is the brand stylesheet sitting on a style it was written for?
+
+    The sheet in src/assets/style.qss is written against Breeze. The bundle
+    ships no Breeze widget style — Contents/PlugIns/styles holds libqmacstyle
+    and nothing else — so unless something says otherwise the application runs
+    on the native macOS style and the sheet decorates a style with entirely
+    different metrics. Seen on a user's screen: a combo box with its text in a
+    corner and no padding, and one welcome-screen icon several times its proper
+    size. A native style also draws through AppKit's NSCell path, which is where
+    the application died — an assertion inside NSCrackRect with nothing of ours
+    on the stack.
+
+    None of that is visible from outside: the package is correct either way.
+    """
+    style = data.get("widgetStyle")
+    if style is None:
+        print("\nNote: the report does not name a widget style, so this bundle predates the check.")
+        return 0
+
+    native = {"macos", "macintosh", "mac"}
+    if str(style).strip().lower() in native:
+        print(f"\nFAIL: the interface is drawn by the native {style!r} style.")
+        print("The brand stylesheet is written for Breeze and will not fit it — padding, icon")
+        print("sizes and combo boxes all come out wrong, and AppKit's own geometry has crashed")
+        print("the application from this path. main.cpp chooses Fusion on macOS for that reason.")
+        return 1
+
+    print(f"\nPASS: the interface is drawn by {style!r}, which the stylesheet is written for.")
+    return 0
 
 
 def check_icons_are_reachable(data: dict) -> int:
