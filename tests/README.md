@@ -94,6 +94,26 @@ because what is under test is that a server starts, answers and can be stopped â
 not how well a model writes. It has a chat template, which matters: the server
 is started with `--jinja` and a model without one does not load.
 
+## Carrying a thing and finding it are different questions
+
+`check_identity.py` asks whether the icon theme is in the bundle.
+`check_launch.py` asks whether the application can find it. The first passed
+while the second would have failed, and that gap cost a release.
+
+Qt searches for icon themes only in the directories its platform theme names,
+and the Cocoa one names none â€” there is no XDG icon directory on macOS. So the
+theme shipped correctly, every file present, and the search list held exactly
+one entry: ":/icons", the Qt resource. The theme sat on disk beside it, unread.
+
+An application in that state has no icons at all. Every lookup falls through to
+the platform icon engine, which resolves names as SF Symbols, and AppKit aborts
+inside NSImageSymbolRepProvider at the first symbol it cannot draw. From the
+shipped build: 158 lookups, 158 misses, 53 answered by SF Symbols, dead on the
+first new project.
+
+The application answers this about itself through `--setup-report`, because
+nothing outside it can: the files are all in the right place either way.
+
 ## Why check_socket.py exists
 
 The editor listens on a socket whose path comes from

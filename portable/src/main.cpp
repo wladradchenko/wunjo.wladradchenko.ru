@@ -53,6 +53,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QFont>
 #include <QFontDatabase>
 #include <QIcon>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -488,6 +489,35 @@ int main(int argc, char *argv[])
         qDebug() << "Packaging = " << packageName;
         report["components"] = properties;
         report["packageType"] = packageName;
+
+        // Where icons come from, and whether they can be found at all.
+        //
+        // This belongs in the report because it cannot be seen from outside the
+        // application. Qt searches only the directories its platform theme
+        // names, and the Cocoa one names none — so the icon theme was installed
+        // into the bundle, every file present and correct, and Qt never looked
+        // at the directory holding them. Nothing about the package is wrong in
+        // that state; the application simply has no icons, each miss goes to
+        // the platform engine, and AppKit aborts on the first SF Symbol it
+        // cannot draw. Asking the application itself is the only way to tell.
+        //
+        // QFileInfo answers for ":/icons/..." as readily as for a filesystem
+        // path, so a theme carried in a Qt resource counts as found.
+        const QString themeName = QIcon::themeName();
+        const QStringList iconSearchPaths = QIcon::themeSearchPaths();
+        bool themeFound = false;
+        for (const QString &path : iconSearchPaths) {
+            if (QFileInfo::exists(path + QLatin1Char('/') + themeName + QStringLiteral("/index.theme"))) {
+                themeFound = true;
+                break;
+            }
+        }
+        QJsonObject icons;
+        icons[QStringLiteral("theme")] = themeName;
+        icons[QStringLiteral("fallbackTheme")] = QIcon::fallbackThemeName();
+        icons[QStringLiteral("themeFound")] = themeFound;
+        icons[QStringLiteral("searchPaths")] = QJsonArray::fromStringList(iconSearchPaths);
+        report[QStringLiteral("icons")] = icons;
         const QString outputFilename = parser.value(saveDebugOption);
         if (!outputFilename.isEmpty()) {
             QFile file(outputFilename);

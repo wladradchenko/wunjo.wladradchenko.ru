@@ -116,6 +116,48 @@ def check_components(binary: Path, environment: dict) -> int:
         print("Every clip would fail on a machine that has no MLT of its own.")
         return 1
     print(f"\nPASS: MLT {components['MLT']} answered from inside the bundle.")
+
+    return check_icons_are_reachable(data)
+
+
+def check_icons_are_reachable(data: dict) -> int:
+    """Can the application find its icon theme, not merely carry it?
+
+    Having the files in the bundle is not the same as Qt looking at them, and the
+    difference is invisible from outside. Qt searches only the directories its
+    platform theme names and the Cocoa one names none, so the theme shipped
+    correctly, every file present, and was never found: the search list held one
+    entry, ":/icons", and the theme was on disk beside it.
+
+    What follows is not a cosmetic problem. Each miss falls through to the
+    platform icon engine, which resolves names as SF Symbols, and AppKit aborts
+    inside NSImageSymbolRepProvider on the first symbol it cannot draw. Measured
+    on the build that shipped: 158 icon lookups, 158 misses, 53 answered by SF
+    Symbols, and the application dead on the first new project.
+
+    tests/macos/check_identity.py asks whether the theme is in the bundle; this
+    asks whether it is anywhere the application will look. Both are needed and
+    the first one passed while this was broken.
+    """
+    icons = data.get("icons")
+    if not isinstance(icons, dict):
+        print("\nNote: the report has no icon section, so this bundle predates the check.")
+        print("Nothing is asserted about icons here.")
+        return 0
+
+    print(f"\nicon theme {icons.get('theme')!r}, falling back to {icons.get('fallbackTheme')!r}")
+    for path in icons.get("searchPaths", []):
+        print(f"    looked for themes in {path}")
+
+    if not icons.get("themeFound"):
+        print(f"\nFAIL: the application cannot find its icon theme {icons.get('theme')!r}.")
+        print("It has no icons at all in this state, and dies in AppKit at the first one it")
+        print("is asked to draw. The theme is very likely installed in the bundle and simply")
+        print("not on any path listed above — QIcon::setThemeSearchPaths in main.cpp is what")
+        print("puts it there.")
+        return 1
+
+    print(f"\nPASS: the icon theme {icons.get('theme')!r} is on a path the application searches.")
     return 0
 
 
