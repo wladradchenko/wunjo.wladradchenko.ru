@@ -193,7 +193,14 @@ void WunjoTheme::applyIconTheme()
     if (QIcon::themeName() == iconTheme) {
         return;
     }
+    // Only "breeze" exists on macOS: Craft's breeze-icons is a resource library
+    // carrying a single theme of that name, so asking for "breeze-dark" there
+    // leaves the fallback stage with nothing — see main.cpp for what that costs.
+#ifdef Q_OS_MACOS
+    QIcon::setFallbackThemeName(QStringLiteral("breeze"));
+#else
     QIcon::setFallbackThemeName(m_dark ? QStringLiteral("breeze-dark") : QStringLiteral("breeze"));
+#endif
     QIcon::setThemeName(iconTheme);
     KIconTheme::forceThemeForTests(iconTheme);
     QPixmapCache::clear();

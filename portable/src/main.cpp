@@ -264,7 +264,36 @@ int main(int argc, char *argv[])
     // and would overwrite an earlier setThemeName. KIconLoader (file and
     // mimetype icons in Bin/Media Browser) follows KIconTheme::current()
     // rather than QIcon::themeName, hence the extra force call.
+#ifdef Q_OS_MACOS
+    // Qt asks the platform theme where icon themes live, and the Cocoa one has
+    // nothing to say — there is no XDG icon directory on macOS. So the only
+    // place searched is ":/icons", the Qt resource, and the theme installed
+    // into the bundle is never looked at. With qt.gui.icon.loader.debug on, the
+    // whole application reads:
+    //
+    //     Probing theme file at ":/icons/wunjo/index.theme" false
+    //     Theme "wunjo" not found
+    //
+    // Every one of those misses then goes to the platform icon engine, which on
+    // macOS resolves names as SF Symbols, and AppKit aborts inside
+    // NSImageSymbolRepProvider on macOS 13 the first time one is drawn. The
+    // application opened and died on the first new project.
+    //
+    // Linux needs none of this: its platform theme hands Qt the XDG directories
+    // and the theme is found where it was installed.
+    QIcon::setThemeSearchPaths(QStringList(QDir::cleanPath(QCoreApplication::applicationDirPath()
+                                                          + QStringLiteral("/../Resources/icons")))
+                               + QIcon::themeSearchPaths());
+    // Craft builds breeze-icons as a resource library, and that resource holds
+    // exactly one theme — "breeze". There is no "breeze-dark" to fall back to
+    // here, so naming it leaves the fallback stage finding nothing at all;
+    // every lookup in the log probed ":/icons/breeze-dark/index.theme" and gave
+    // up. Linux installs both as files and the darker one is the right choice
+    // there.
+    QIcon::setFallbackThemeName(QStringLiteral("breeze"));
+#else
     QIcon::setFallbackThemeName(QStringLiteral("breeze-dark"));
+#endif
     QIcon::setThemeName(QStringLiteral("wunjo"));
     KIconTheme::forceThemeForTests(QStringLiteral("wunjo"));
 
