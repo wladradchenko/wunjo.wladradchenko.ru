@@ -9,7 +9,6 @@ set(wunjo_SRCS
     plugins/pluginmanager.cpp
     plugins/plugineffects.cpp
     plugins/pluginpythonenv.cpp
-    plugins/pluginmanagerwidget.cpp
     plugins/pluginsetpanel.cpp
     plugins/pluginsetstore.cpp
     plugins/pluginsettingstab.cpp

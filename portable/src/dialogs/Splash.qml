@@ -292,7 +292,7 @@ Window {
                                 // lopsided.
                                 anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
-                                icon.name: "edit-delete"
+                                icon.name: "document-open-recent"
                                 hoverEnabled: true
                                 ToolTip.text: KI18n.i18n("Clear History of Recent Projects")
                                 ToolTip.delay: 1000
@@ -467,7 +467,7 @@ Window {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10 // see clearHistoryButton
                                 anchors.verticalCenter: parent.verticalCenter
-                                icon.name: "edit-delete"
+                                icon.name: "document-open-recent"
                                 enabled: splash.actionsEnabled
                                 hoverEnabled: true
                                 ToolTip.text: KI18n.i18n("Clear History of Recent Profiles")

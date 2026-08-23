@@ -16,6 +16,8 @@ class SamInterface;
 class McpPythonEnv;
 class PythonDependencyMessage;
 class KJob;
+class QLineEdit;
+class QListWidget;
 
 class SpeechList : public QListWidget
 {
@@ -68,6 +70,31 @@ private:
     /** @brief One settings tab per installed plugin, rebuilt on change. */
     QList<QWidget *> m_pluginTabs;
     void rebuildPluginTabs();
+
+    // ── navigation ──────────────────────────────────────────────────────
+    // The pages still live in `tabWidget`; what changed is how one is chosen.
+    // Its tab bar is hidden and this list drives it instead, because the bar
+    // held two different kinds of thing — sections and plugins — and overflowed
+    // once there were more than a handful.
+    QListWidget *m_navList{nullptr};
+    QLineEdit *m_navSearch{nullptr};
+    QWidget *m_chipRow{nullptr};
+    /** @brief The chosen `target` filter, empty for "All". */
+    QString m_navFilter;
+    /** @brief Ask for a plugin file, show what is in it, and install it if the
+     *  person says so. There is no page behind this: picking a file and
+     *  approving what was found are two moments, not a place to be. */
+    void addPluginFromFile();
+    /** @brief Build the search field, filters, import button and list. */
+    void buildNavigation();
+    /** @brief Refill the list from whatever pages `tabWidget` now holds. */
+    void rebuildPluginList();
+    /** @brief Show or hide rows to match the search text and the filter. */
+    void applyNavFilter();
+    /** @brief Right-click on an installed plugin: open its folder, or delete
+     *  it. Both live here and nowhere else — the plugin's own page is about
+     *  setting it up, not about getting rid of it. */
+    void showPluginRowMenu(const QPoint &pos);
 
     /** @brief Check folder size */
     void checkWhisperFolderSize();

@@ -10,7 +10,6 @@
 #include "wunjosettings.h"
 #include "mainwindow.h"
 #include "plugins/pluginmanager.h"
-#include "plugins/pluginmanagerwidget.h"
 #include "plugins/pluginsettingstab.h"
 #include "pythoninterfaces/dialogs/modeldownloadwidget.h"
 #include "pythoninterfaces/saminterface.h"
@@ -29,11 +28,26 @@
 #include <KUrlRequesterDialog>
 #include <KZip>
 
+#include <QAction>
 #include <QButtonGroup>
+#include <QDir>
+#include <QFileDialog>
+#include <QDesktopServices>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QListWidgetItem>
+#include <QPushButton>
 #include <QScrollArea>
+#include <QMenu>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QMimeDatabase>
+#include <QSignalBlocker>
+#include <QTabBar>
 #include <QTimer>
+#include <QToolButton>
+#include <QUrl>
+#include <QVBoxLayout>
 #include <QtConcurrent/QtConcurrentRun>
 
 SpeechList::SpeechList(QWidget *parent)
@@ -387,10 +401,360 @@ PluginsSettings::PluginsSettings(QWidget *parent)
     // [Wunjo] Plugin loading comes first: import .wmplugin archives or plugin
     // folders. Each installed plugin then gets its own tab (built below and
     // kept in sync), exactly like the built-in Speech / Object Detection tabs.
-    tabWidget->insertTab(0, new PluginManagerWidget(this), i18n("Load Plugins"));
     tabWidget->setCurrentIndex(0);
     rebuildPluginTabs();
     connect(&PluginManager::instance(), &PluginManager::pluginsChanged, this, &PluginsSettings::rebuildPluginTabs);
+    buildNavigation();
+}
+
+void PluginsSettings::buildNavigation()
+{
+    // The pages stay exactly where they are. Only the way one is picked
+    // changes: the bar mixed sections with plugins and had already started
+    // scrolling, and a list neither overflows nor makes anybody hunt.
+    tabWidget->tabBar()->hide();
+    tabWidget->setDocumentMode(true);
+
+    auto *panel = new QWidget(this);
+    panel->setFixedWidth(228);
+    auto *column = new QVBoxLayout(panel);
+    column->setContentsMargins(0, 0, 8, 0);
+    column->setSpacing(8);
+
+    m_navSearch = new QLineEdit(panel);
+    m_navSearch->setClearButtonEnabled(true);
+    m_navSearch->setPlaceholderText(i18n("Search plugins"));
+    connect(m_navSearch, &QLineEdit::textChanged, this, &PluginsSettings::applyNavFilter);
+    column->addWidget(m_navSearch);
+
+    // The filters are the manifest's own `target` values, so a new plugin lands
+    // in the right one without anybody maintaining a list here.
+    m_chipRow = new QWidget(panel);
+    auto *chips = new QHBoxLayout(m_chipRow);
+    chips->setContentsMargins(0, 0, 0, 0);
+    chips->setSpacing(4);
+    auto *chipGroup = new QButtonGroup(m_chipRow);
+    chipGroup->setExclusive(true);
+    const QList<QPair<QString, QString>> filters = {{QString(), i18nc("no filter on what a plugin works on", "All")},
+                                                    {QStringLiteral("video"), i18n("Video")},
+                                                    {QStringLiteral("audio"), i18n("Audio")},
+                                                    {QStringLiteral("face"), i18n("Face")},
+                                                    {QStringLiteral("agent"), i18n("Agent")}};
+    for (const auto &filter : filters) {
+        auto *chip = new QToolButton(m_chipRow);
+        chip->setText(filter.second);
+        chip->setCheckable(true);
+        chip->setAutoRaise(true);
+        chip->setCursor(Qt::PointingHandCursor);
+        chip->setChecked(filter.first.isEmpty());
+        chipGroup->addButton(chip);
+        connect(chip, &QToolButton::clicked, this, [this, key = filter.first]() {
+            m_navFilter = key;
+            applyNavFilter();
+        });
+        chips->addWidget(chip);
+    }
+    chips->addStretch();
+    column->addWidget(m_chipRow);
+
+    // Importing is the only way a plugin arrives, so it is a button in plain
+    // sight rather than one more row to find among the installed ones.
+    //
+    // It does not say "archive". A .wmplugin is an archive to whoever built it
+    // and a plugin file to whoever downloaded one, and the button is read by
+    // the second of those. What kind of file it is belongs in the file chooser,
+    // which is about to say so anyway.
+    auto *importButton = new QPushButton(QIcon::fromTheme(QStringLiteral("list-add")), i18n("Add plugin…"), panel);
+    connect(importButton, &QPushButton::clicked, this, &PluginsSettings::addPluginFromFile);
+    column->addWidget(importButton);
+
+    m_navList = new QListWidget(panel);
+    m_navList->setFrameShape(QFrame::NoFrame);
+    m_navList->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_navList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    m_navList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_navList, &QListWidget::customContextMenuRequested, this, &PluginsSettings::showPluginRowMenu);
+    connect(m_navList, &QListWidget::currentItemChanged, this, [this](QListWidgetItem *current) {
+        if (current == nullptr) {
+            return;
+        }
+        const int page = current->data(Qt::UserRole).toInt();
+        if (page >= 0) {
+            tabWidget->setCurrentIndex(page);
+        }
+    });
+    column->addWidget(m_navList, 1);
+
+    // Anything else that opens a page — showPluginTab() from the chat panel,
+    // setActiveTab() from the dialog — moves the selection too, without either
+    // of them having to know this list exists.
+    connect(tabWidget, &QTabWidget::currentChanged, this, [this](int page) {
+        if (m_navList == nullptr) {
+            return;
+        }
+        const QSignalBlocker block(m_navList);
+        for (int i = 0; i < m_navList->count(); ++i) {
+            if (m_navList->item(i)->data(Qt::UserRole).toInt() == page) {
+                m_navList->setCurrentRow(i);
+                return;
+            }
+        }
+        m_navList->clearSelection(); // the import page, which has no row
+    });
+
+    // The dialog's own layout holds the tab widget and nothing else; take it
+    // out, put the two side by side, and hand the row back.
+    if (auto *outer = qobject_cast<QVBoxLayout *>(layout())) {
+        outer->removeWidget(tabWidget);
+        auto *row = new QHBoxLayout;
+        row->setContentsMargins(0, 0, 0, 0);
+        row->setSpacing(0);
+        row->addWidget(panel);
+        row->addWidget(tabWidget, 1);
+        outer->addLayout(row);
+    }
+
+    rebuildPluginList();
+}
+
+void PluginsSettings::rebuildPluginList()
+{
+    if (m_navList == nullptr) {
+        return;
+    }
+    const QSignalBlocker blocker(m_navList);
+    m_navList->clear();
+
+    // A heading is an item that cannot be picked. Two of them, because the only
+    // difference that matters to somebody reading the list is whether a thing
+    // can be removed.
+    const auto addHeading = [this](const QString &text) {
+        auto *item = new QListWidgetItem(text, m_navList);
+        item->setFlags(Qt::NoItemFlags);
+        item->setData(Qt::UserRole, -1);
+        QFont font = item->font();
+        font.setPointSizeF(font.pointSizeF() * 0.82);
+        font.setCapitalization(QFont::AllUppercase);
+        item->setFont(font);
+        item->setForeground(palette().color(QPalette::Disabled, QPalette::WindowText));
+    };
+
+    // No icons. The shipped pages have theme icons and the plugins have whatever
+    // their author drew, and the two sets never look like one list. The id is
+    // empty for the shipped pages, which is what tells the context menu there is
+    // nothing to act on.
+    const auto addRow = [this](const QString &name, const QString &targets, int page, const QString &id) {
+        auto *item = new QListWidgetItem(name, m_navList);
+        item->setData(Qt::UserRole, page);
+        item->setData(Qt::UserRole + 1, targets);
+        item->setData(Qt::UserRole + 2, id);
+        item->setSizeHint(QSize(0, 30));
+    };
+
+    QList<QPair<QWidget *, int>> installed;
+    QList<QPair<QWidget *, int>> builtIn;
+    for (int page = 0; page < tabWidget->count(); ++page) {
+        QWidget *widget = tabWidget->widget(page);
+        // A plugin page is not automatically an added plugin: some plugins ship
+        // with the application, and Cut Finder is one. Grouping them by "has a
+        // page" put it under Installed and offered to delete it, which then did
+        // half a job — the user copy went, the shipped one came back on the next
+        // scan, and the plugin appeared to survive its own removal.
+        bool shipped = !m_pluginTabs.contains(widget);
+        if (!shipped) {
+            shipped = PluginManager::instance().isBundled(widget->property("wunjoPluginId").toString());
+        }
+        (shipped ? builtIn : installed).append({widget, page});
+    }
+
+    if (!builtIn.isEmpty()) {
+        addHeading(i18nc("plugins that ship with the application", "Built in"));
+        for (const auto &entry : std::as_const(builtIn)) {
+            // Two kinds of thing sit here. A shipped plugin has a manifest and
+            // a folder of its own; the three pages that come with the
+            // application have neither, so what they work on is stated below —
+            // this is the only place that has to know, and it changes only when
+            // a page is added.
+            const QString id = entry.first->property("wunjoPluginId").toString();
+            if (!id.isEmpty()) {
+                const PluginManifest manifest = PluginManager::instance().plugin(id);
+                addRow(tabWidget->tabText(entry.second), manifest.targets().join(QLatin1Char(' ')), entry.second, id);
+                continue;
+            }
+            QString targets = QStringLiteral("video audio face agent");
+            if (entry.first == tab) {
+                targets = QStringLiteral("audio");
+            } else if (entry.first == tab_2) {
+                targets = QStringLiteral("video");
+            } else if (entry.first == tab_3) {
+                targets = QStringLiteral("agent");
+            }
+            addRow(tabWidget->tabText(entry.second), targets, entry.second, QString());
+        }
+    }
+
+    if (!installed.isEmpty()) {
+        addHeading(i18nc("plugins the user added", "Installed"));
+        for (const auto &entry : std::as_const(installed)) {
+            const QString id = entry.first->property("wunjoPluginId").toString();
+            const PluginManifest manifest = PluginManager::instance().plugin(id);
+            addRow(tabWidget->tabText(entry.second), manifest.targets().join(QLatin1Char(' ')), entry.second, id);
+        }
+    }
+
+    applyNavFilter();
+
+    // Keep the list showing whichever page is open, including the one restored
+    // from the previous session.
+    for (int i = 0; i < m_navList->count(); ++i) {
+        if (m_navList->item(i)->data(Qt::UserRole).toInt() == tabWidget->currentIndex()) {
+            m_navList->setCurrentRow(i);
+            break;
+        }
+    }
+}
+
+void PluginsSettings::addPluginFromFile()
+{
+    const QString path =
+        QFileDialog::getOpenFileName(this, i18n("Select a plugin file"), QDir::homePath(), i18n("Wunjo plugin (*.wmplugin *.zip)"));
+    if (path.isEmpty()) {
+        return;
+    }
+
+    const PluginManager::ImportCandidate candidate = PluginManager::instance().inspect(path);
+    // Every way this can fail says so and stops. A page used to hold the reason
+    // in a red banner and wait, which left the person looking at a form with
+    // nothing to do on it.
+    if (candidate.sourceDir.isEmpty()) {
+        QMessageBox::warning(this, i18n("Add plugin"), i18n("This file is not a readable plugin."));
+        return;
+    }
+    if (!candidate.valid()) {
+        QMessageBox::warning(this, i18n("Add plugin"),
+                             i18n("This plugin cannot be installed:<ul><li>%1</li></ul>",
+                                  candidate.manifest.errors().join(QStringLiteral("</li><li>"))));
+        return;
+    }
+    if (!candidate.manifest.osSupported()) {
+        QMessageBox::warning(this, i18n("Add plugin"),
+                             i18n("This plugin does not support %1 and cannot be installed here.", PluginManifest::currentOs()));
+        return;
+    }
+
+    // What was found, and the one decision to make about it. The same summary
+    // the import page used to show, in the shape a question belongs in.
+    QMessageBox question(this);
+    question.setWindowTitle(i18n("Add plugin"));
+    question.setIcon(QMessageBox::NoIcon);
+    question.setTextFormat(Qt::RichText);
+    question.setText(candidate.manifest.summaryHtml());
+    QPushButton *importButton = question.addButton(i18n("Import"), QMessageBox::AcceptRole);
+    question.addButton(QMessageBox::Cancel);
+    question.setDefaultButton(importButton);
+    question.exec();
+    if (question.clickedButton() != importButton) {
+        return;
+    }
+
+    const QString id = candidate.manifest.id();
+    const QList<PluginManifest> installed = PluginManager::instance().installedPlugins();
+    for (const PluginManifest &existing : installed) {
+        if (existing.id() != id) {
+            continue;
+        }
+        if (QMessageBox::question(this, i18n("Replace plugin"), i18n("A plugin '%1' is already installed. Replace it?", id)) != QMessageBox::Yes) {
+            return;
+        }
+        break;
+    }
+
+    QString error;
+    if (!PluginManager::instance().install(candidate, &error)) {
+        QMessageBox::warning(this, i18n("Add plugin"), i18n("Import failed: %1", error));
+    }
+    // Nothing to report on success: the plugin appears in the list by itself,
+    // which is the answer to "did it work" that needed no dialog.
+}
+
+void PluginsSettings::showPluginRowMenu(const QPoint &pos)
+{
+    QListWidgetItem *item = m_navList->itemAt(pos);
+    if (item == nullptr) {
+        return;
+    }
+    // Headings carry no id, and neither do the shipped pages — nothing there
+    // has a folder of its own or can be deleted, so there is no menu to show.
+    const QString id = item->data(Qt::UserRole + 2).toString();
+    // Nothing here for a heading, for the pages that come with the application,
+    // or for a shipped plugin. The last of those had a menu of one entry for a
+    // while, and a menu that offers a single thing is worse than none: it looks
+    // like the other entries failed to load. Deleting a shipped plugin is not
+    // among them because it cannot honestly be done — the copy goes, the
+    // shipped one is found again on the next scan, and the row comes back.
+    if (id.isEmpty() || PluginManager::instance().isBundled(id)) {
+        return;
+    }
+    const PluginManifest manifest = PluginManager::instance().plugin(id);
+
+    QMenu menu(this);
+    QAction *openFolder = menu.addAction(QIcon::fromTheme(QStringLiteral("folder-open")), i18n("Open plugin folder"));
+    QAction *remove = menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18n("Delete plugin"));
+    QAction *chosen = menu.exec(m_navList->viewport()->mapToGlobal(pos));
+
+    if (chosen == openFolder) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(manifest.rootDir()));
+        return;
+    }
+    if (chosen != remove) {
+        return;
+    }
+    // The same question and the same call the Load Plugins page makes, so a
+    // plugin removed from here and one removed from there end the same way.
+    const auto answer = QMessageBox::question(this, i18n("Delete plugin"),
+                                              i18n("Delete '%1' and all its files, downloaded models and environment? "
+                                                   "This cannot be undone.",
+                                                   manifest.name()));
+    if (answer != QMessageBox::Yes) {
+        return;
+    }
+    QString error;
+    if (!PluginManager::instance().uninstall(id, &error)) {
+        QMessageBox::warning(this, i18n("Delete plugin"), error);
+    }
+}
+
+void PluginsSettings::applyNavFilter()
+{
+    if (m_navList == nullptr) {
+        return;
+    }
+    const QString needle = m_navSearch ? m_navSearch->text().trimmed() : QString();
+    QListWidgetItem *heading = nullptr;
+    int shownUnderHeading = 0;
+    for (int i = 0; i < m_navList->count(); ++i) {
+        QListWidgetItem *item = m_navList->item(i);
+        if (item->data(Qt::UserRole).toInt() < 0) {
+            // A heading with nothing left under it says a group exists when it
+            // does not, so its fate is decided once its rows have been counted.
+            if (heading != nullptr) {
+                heading->setHidden(shownUnderHeading == 0);
+            }
+            heading = item;
+            shownUnderHeading = 0;
+            continue;
+        }
+        const bool byName = needle.isEmpty() || item->text().contains(needle, Qt::CaseInsensitive);
+        const bool byTarget = m_navFilter.isEmpty() || item->data(Qt::UserRole + 1).toString().contains(m_navFilter);
+        const bool show = byName && byTarget;
+        item->setHidden(!show);
+        if (show) {
+            ++shownUnderHeading;
+        }
+    }
+    if (heading != nullptr) {
+        heading->setHidden(shownUnderHeading == 0);
+    }
 }
 
 void PluginsSettings::rebuildPluginTabs()
@@ -417,9 +781,13 @@ void PluginsSettings::rebuildPluginTabs()
         scroll->setWidget(tab);
         scroll->setWidgetResizable(true);
         scroll->setFrameShape(QFrame::NoFrame);
+        // The navigation list needs the manifest behind a page and has only the
+        // page to go on; the id is the one thing that survives a rebuild.
+        scroll->setProperty("wunjoPluginId", manifest.id());
         tabWidget->addTab(scroll, manifest.name());
         m_pluginTabs.append(scroll);
     }
+    rebuildPluginList();
 }
 
 PluginsSettings::~PluginsSettings()
@@ -1022,9 +1390,10 @@ void PluginsSettings::checkSpeechDependencies()
 
 void PluginsSettings::setActiveTab(int index)
 {
-    // index is the historical option (0 = Speech To Text, 1 = Object Detection);
-    // the Load Plugins tab now sits before them at position 0.
-    tabWidget->setCurrentIndex(index + 1);
+    // index is the historical option: 0 = Speech To Text, 1 = Object Detection.
+    // They are the first pages again now that importing is a dialog and no
+    // longer occupies the first one.
+    tabWidget->setCurrentIndex(index);
 }
 
 void PluginsSettings::showPluginTab(const QString &pluginId)

@@ -288,14 +288,30 @@ public:
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(10, 6, 10, 6);
         layout->setSpacing(8);
-        auto *name = new QLabel(title, this);
-        name->setObjectName(enabled ? QStringLiteral("chatSuggestionName") : QStringLiteral("chatSuggestionNameOff"));
-        layout->addWidget(name, 1);
+        m_name = new QLabel(title, this);
+        layout->addWidget(m_name, 1);
         if (!shortcut.isEmpty()) {
             auto *keys = new QLabel(shortcut, this);
             keys->setObjectName(QStringLiteral("chatSuggestionKeys"));
             layout->addWidget(keys);
         }
+        setActionEnabled(enabled);
+    }
+
+    /** @brief Follow the action's own availability.
+     *
+     * Whether a command can run depends on what is selected, and that changes
+     * while the strip is on screen — type "cut" with nothing selected, then
+     * click a clip. Built once, the row would go on saying no after the answer
+     * became yes, which is worse than saying nothing.
+     */
+    void setActionEnabled(bool enabled)
+    {
+        m_name->setObjectName(enabled ? QStringLiteral("chatSuggestionName") : QStringLiteral("chatSuggestionNameOff"));
+        // The object name is what the stylesheet matches on, and Qt does not
+        // re-evaluate it by itself.
+        m_name->style()->unpolish(m_name);
+        m_name->style()->polish(m_name);
     }
 
     std::function<void()> onClick;
@@ -308,6 +324,9 @@ protected:
         }
         QFrame::mouseReleaseEvent(event);
     }
+
+private:
+    QLabel *m_name{nullptr};
 };
 
 } // namespace
@@ -798,8 +817,15 @@ void ChatWidget::refreshSuggestions()
     if (m_suggestionLayout == nullptr) {
         return;
     }
+    // deleteLater, not delete: this runs from the field's textChanged, and one
+    // of the things that changes the field is a row's own click handler. Freeing
+    // the row there destroys the object whose mouse event is still on the stack,
+    // and it returns into memory that is gone.
     while (QLayoutItem *item = m_suggestionLayout->takeAt(0)) {
-        delete item->widget();
+        if (QWidget *widget = item->widget()) {
+            widget->hide();
+            widget->deleteLater();
+        }
         delete item;
     }
     const QString needle = m_input->toPlainText().trimmed();
@@ -833,11 +859,29 @@ void ChatWidget::refreshSuggestions()
         }
         seen.insert(text);
         auto *row = new SuggestionRow(text, action->shortcut().toString(QKeySequence::NativeText), action->isEnabled(), m_suggestions);
-        // trigger() is a no-op on a disabled action, so a greyed row costs a
-        // click and does nothing rather than needing a guard of its own.
+        // The row follows its action for as long as it exists; the connection
+        // goes with the row, so a rebuilt strip leaves nothing behind.
+        connect(action, &QAction::changed, row, [row, action]() { row->setActionEnabled(action->isEnabled()); });
+        // Two things have to happen before the action runs, and neither can
+        // happen inside this handler.
+        //
+        // The field must lose the focus first. Half the editor's actions work
+        // on whatever is focused, and with the caret still in this text box a
+        // Cut cuts the text box — which is how clicking "cut" here once ate a
+        // clip and left it one frame long.
+        //
+        // And the action itself is queued rather than called, because clearing
+        // the field rebuilds this very strip. Everything the click touches is
+        // then out of the row's own mouse handler and safely on the event loop.
         row->onClick = [this, action]() {
-            action->trigger();
             m_input->clear();
+            m_input->clearFocus();
+            QTimer::singleShot(0, this, [action]() {
+                if (auto *window = pCore ? pCore->window() : nullptr) {
+                    window->setFocus(Qt::OtherFocusReason);
+                }
+                action->trigger();
+            });
         };
         m_suggestionLayout->addWidget(row);
         ++shown;
