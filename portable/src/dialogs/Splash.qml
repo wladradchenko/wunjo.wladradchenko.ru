@@ -285,8 +285,14 @@ Window {
                             ToolButton {
                                 id: clearHistoryButton
                                 anchors.right: parent.right
+                                // Matches the heading's leftPadding on the other
+                                // side of the same row: anchored flush to the
+                                // edge, the button sat against the panel border
+                                // while the text had room, and the row read as
+                                // lopsided.
+                                anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
-                                icon.name: "edit-clear-history"
+                                icon.name: "edit-delete"
                                 hoverEnabled: true
                                 ToolTip.text: KI18n.i18n("Clear History of Recent Projects")
                                 ToolTip.delay: 1000
@@ -391,6 +397,7 @@ Window {
                                     ToolButton {
                                         id: listButton
                                         anchors.right: parent.right
+                                        anchors.rightMargin: 4 // the row's leftPadding, mirrored
                                         anchors.verticalCenter: parent.verticalCenter
                                         height: listLabel.height
                                         width: height
@@ -458,8 +465,9 @@ Window {
                             ToolButton {
                                 id: templatesClearButton
                                 anchors.right: parent.right
+                                anchors.rightMargin: 10 // see clearHistoryButton
                                 anchors.verticalCenter: parent.verticalCenter
-                                icon.name: "edit-clear-history"
+                                icon.name: "edit-delete"
                                 enabled: splash.actionsEnabled
                                 hoverEnabled: true
                                 ToolTip.text: KI18n.i18n("Clear History of Recent Profiles")
@@ -550,6 +558,7 @@ Window {
                                     ToolButton {
                                         id: tlistButton
                                         anchors.right: parent.right
+                                        anchors.rightMargin: 4 // the row's leftPadding, mirrored
                                         anchors.verticalCenter: parent.verticalCenter
                                         height: tlistLabel.height
                                         width: height

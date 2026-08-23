@@ -15,6 +15,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "plugins/pluginmanager.h"
 #include "theme.h"
 
+#include <KActionCollection>
 #include <KIconEffect>
 #include <KLocalizedString>
 #include <KMessageWidget>
@@ -34,6 +35,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QKeyEvent>
+#include <QKeySequence>
 #include <QMouseEvent>
 #include <QLabel>
 #include <QLineEdit>
@@ -46,6 +48,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QSet>
 #include <QStackedWidget>
 #include <QStyle>
 #include <QTimer>
@@ -199,6 +202,14 @@ static const char CHAT_STYLE[] = R"(
     background: #0D0D0D; border: 1px solid #2D2D2D; border-radius: 8px;
     color: #C8EDD2; padding: 6px;
 }
+#chatSuggestion {
+    background: #1F1F1F; border: 1px solid #2D2D2D; border-radius: 8px;
+}
+#chatSuggestion:hover { border-color: #C8EDD2; background: #2B3A32; }
+#chatSuggestion QLabel { background: transparent; }
+#chatSuggestionName { color: #FFFFFF; }
+#chatSuggestionNameOff { color: #696969; }
+#chatSuggestionKeys { color: #C8EDD2; }
 )";
 
 namespace {
@@ -241,6 +252,57 @@ protected:
     {
         // On release, not press: a click begun here and dragged away should not
         // count, the same way a button behaves.
+        if (event->button() == Qt::LeftButton && rect().contains(event->position().toPoint()) && onClick) {
+            onClick();
+        }
+        QFrame::mouseReleaseEvent(event);
+    }
+};
+
+/** @brief How many suggestions the strip may show at once.
+ *
+ * Five, and the rest are simply not shown. A scrolling list of everything that
+ * matched would be a second panel above the panel, and the point of the strip
+ * is to be glanced at, not read.
+ */
+constexpr int kMaxSuggestions = 5;
+
+/** @brief One line of that strip: what the action is called, and the key that
+ *  does the same thing without opening this panel at all.
+ *
+ * The key is the reason the strip earns its space. Finding the command is worth
+ * one use; seeing its shortcut is worth every use after that, and after a week
+ * the strip is not needed for that command any more. Disabled actions are shown
+ * too, greyed — "you cannot do this right now" is an answer, and hiding them
+ * would fail exactly the person who is searching because nothing is selected.
+ */
+class SuggestionRow : public QFrame
+{
+public:
+    SuggestionRow(const QString &title, const QString &shortcut, bool enabled, QWidget *parent)
+        : QFrame(parent)
+    {
+        setObjectName(QStringLiteral("chatSuggestion"));
+        setAttribute(Qt::WA_Hover); // so the :hover rule in the stylesheet fires
+        setCursor(Qt::PointingHandCursor);
+        auto *layout = new QHBoxLayout(this);
+        layout->setContentsMargins(10, 6, 10, 6);
+        layout->setSpacing(8);
+        auto *name = new QLabel(title, this);
+        name->setObjectName(enabled ? QStringLiteral("chatSuggestionName") : QStringLiteral("chatSuggestionNameOff"));
+        layout->addWidget(name, 1);
+        if (!shortcut.isEmpty()) {
+            auto *keys = new QLabel(shortcut, this);
+            keys->setObjectName(QStringLiteral("chatSuggestionKeys"));
+            layout->addWidget(keys);
+        }
+    }
+
+    std::function<void()> onClick;
+
+protected:
+    void mouseReleaseEvent(QMouseEvent *event) override
+    {
         if (event->button() == Qt::LeftButton && rect().contains(event->position().toPoint()) && onClick) {
             onClick();
         }
@@ -350,10 +412,17 @@ ChatWidget::ChatWidget(QWidget *parent)
     m_tabChat = makeTab(i18n("Chat"));
     m_tabSkills = makeTab(i18n("Skills"));
     m_tabLoops = makeTab(i18n("Loops"));
+    // Plugins sits with them because being seen is the whole point: an entry in
+    // the slash menu is found by people who already know it exists, which is
+    // not who needs it. It opens the plugins page rather than showing one of
+    // its own, so it is a tab in looks and a button in behaviour — it never
+    // stays pressed and never takes the panel away from the conversation.
+    m_tabPlugins = makeTab(i18n("Plugins"));
     m_tabChat->setChecked(true);
     tabRow->addWidget(m_tabChat);
     tabRow->addWidget(m_tabSkills);
     tabRow->addWidget(m_tabLoops);
+    tabRow->addWidget(m_tabPlugins);
     tabRow->addStretch();
     rootLayout->addLayout(tabRow);
 
@@ -494,6 +563,23 @@ ChatWidget::ChatWidget(QWidget *parent)
     m_thinkingLabel->setVisible(false);
     rootLayout->addWidget(m_thinkingLabel);
 
+    // What the editor itself can do, matched against whatever is being typed and
+    // offered above the field. It never takes Enter: what somebody wrote was
+    // written for the assistant, and a panel that quietly did something else to
+    // their timeline instead would be unusable after the first surprise. A
+    // suggestion is taken by clicking it, and nothing about it reaches the
+    // conversation — pressing a button is not a thing worth transcribing.
+    //
+    // With no model chosen this is the whole of what the panel does, and it
+    // needs no environment, no agent and no network to do it.
+    m_suggestions = new QWidget(this);
+    m_suggestionLayout = new QVBoxLayout(m_suggestions);
+    m_suggestionLayout->setContentsMargins(0, 0, 0, 4);
+    m_suggestionLayout->setSpacing(4);
+    m_suggestions->setVisible(false);
+    rootLayout->addWidget(m_suggestions);
+    connect(m_input, &QPlainTextEdit::textChanged, this, &ChatWidget::refreshSuggestions);
+
     rootLayout->addWidget(m_inputShell);
 
     // Shown in place of the input while an outside agent is driving: typing here
@@ -539,6 +625,15 @@ ChatWidget::ChatWidget(QWidget *parent)
     connect(m_tabChat, &QToolButton::clicked, this, [this]() { switchTab(0); });
     connect(m_tabSkills, &QToolButton::clicked, this, [this]() { switchTab(2); });
     connect(m_tabLoops, &QToolButton::clicked, this, [this]() { switchTab(3); });
+    connect(m_tabPlugins, &QToolButton::clicked, this, [this]() {
+        if (auto *window = pCore ? pCore->window() : nullptr) {
+            window->showPluginSettings(QString());
+        }
+        // Put the pressed state back where it was: the panel did not move, a
+        // window opened in front of it, and a tab left looking selected would
+        // say otherwise.
+        switchTab(m_stack->currentIndex());
+    });
     connect(m_historyList, &QListWidget::itemActivated, this, &ChatWidget::openSession);
     connect(m_historyList, &QListWidget::itemClicked, this, &ChatWidget::openSession);
     connect(deleteAction, &QAction::triggered, this, [this]() {
@@ -636,6 +731,7 @@ void ChatWidget::switchTab(int page)
     m_tabChat->setChecked(page == 0);
     m_tabSkills->setChecked(page == 2);
     m_tabLoops->setChecked(page == 3);
+    m_tabPlugins->setChecked(false); // never a page of its own — see its connect
     m_stack->setCurrentIndex(page);
     updateHintBar();
     // Which of the two sits under the conversation depends on who answers, so
@@ -695,6 +791,58 @@ void ChatWidget::refreshBrainPage()
         card->onClick = [this, id = option.id]() { chooseBrain(id); };
         m_brainLayout->addWidget(card);
     }
+}
+
+void ChatWidget::refreshSuggestions()
+{
+    if (m_suggestionLayout == nullptr) {
+        return;
+    }
+    while (QLayoutItem *item = m_suggestionLayout->takeAt(0)) {
+        delete item->widget();
+        delete item;
+    }
+    const QString needle = m_input->toPlainText().trimmed();
+    auto *window = pCore ? pCore->window() : nullptr;
+    // Two characters before anything is offered: one letter matches most of the
+    // application and turns the strip into noise on the way to a sentence.
+    if (needle.size() < 2 || window == nullptr) {
+        m_suggestions->setVisible(false);
+        return;
+    }
+
+    // The editor's own actions are the catalogue, and it maintains itself:
+    // whatever is added to the application anywhere shows up here with no
+    // change to this function. Their text is already in the user's language,
+    // which is why a plain substring match works across languages.
+    int shown = 0;
+    QSet<QString> seen;
+    const QList<QAction *> actions = window->actionCollection()->actions();
+    for (QAction *action : actions) {
+        if (shown >= kMaxSuggestions) {
+            break;
+        }
+        if (action == nullptr || action->isSeparator()) {
+            continue;
+        }
+        // "&Split" is how a menu spells its keyboard accelerator; nobody types
+        // the ampersand, and it must not be matched against or displayed.
+        const QString text = KLocalizedString::removeAcceleratorMarker(action->text());
+        if (text.isEmpty() || !text.contains(needle, Qt::CaseInsensitive) || seen.contains(text)) {
+            continue;
+        }
+        seen.insert(text);
+        auto *row = new SuggestionRow(text, action->shortcut().toString(QKeySequence::NativeText), action->isEnabled(), m_suggestions);
+        // trigger() is a no-op on a disabled action, so a greyed row costs a
+        // click and does nothing rather than needing a guard of its own.
+        row->onClick = [this, action]() {
+            action->trigger();
+            m_input->clear();
+        };
+        m_suggestionLayout->addWidget(row);
+        ++shown;
+    }
+    m_suggestions->setVisible(shown > 0);
 }
 
 void ChatWidget::refreshBrains()

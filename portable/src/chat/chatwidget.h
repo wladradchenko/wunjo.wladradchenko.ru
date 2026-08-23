@@ -140,6 +140,9 @@ private:
     void chooseBrain(const QString &id);
     /** @brief Bring the panel in line with the chosen way of talking. */
     void applyBrain();
+    /** @brief Match what is being typed against the editor's own actions and
+     *  offer up to five of them above the field. Never intercepts Enter. */
+    void refreshSuggestions();
     /** @brief Tell an assistant plugin which conversation it is now in. */
     void noteSessionChanged();
     /** @brief Opens the create/edit dialog for a guidance document. */
@@ -167,6 +170,9 @@ private:
     QToolButton *m_tabChat{nullptr};
     QToolButton *m_tabSkills{nullptr};
     QToolButton *m_tabLoops{nullptr};
+    /** @brief Looks like a tab, behaves like a button: opens the plugins page
+     *  in Settings and leaves the panel where it was. */
+    QToolButton *m_tabPlugins{nullptr};
     /** @brief The one square beside the field: commands, model, who answers. */
     QToolButton *m_slashButton{nullptr};
     /** @brief Filter over the saved chats, shown with the history list. */
@@ -179,6 +185,10 @@ private:
     QWidget *m_externalCard{nullptr};     ///< shown instead of the input field
                                           ///< while an outside agent is driving
     QWidget *m_inputShell{nullptr};
+    /** @brief The strip of matching editor actions above the input, hidden
+     *  whenever nothing matches. */
+    QWidget *m_suggestions{nullptr};
+    QVBoxLayout *m_suggestionLayout{nullptr};
     bool m_updatingGuidance{false};
     ChatInputEdit *m_input;
     QToolButton *m_sendButton{nullptr};
