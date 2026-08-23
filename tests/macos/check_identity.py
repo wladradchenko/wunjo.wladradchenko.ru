@@ -44,9 +44,11 @@ EXPECTED = {
 REQUIRED = {
     # DATA_INSTALL_PREFIX is empty on macOS and "/wunjo" everywhere else, so
     # these sit one level higher inside the bundle than they do on Linux.
-    "Resources/plugins/agent/plugin.json": "the assistant plugin",
-    "Resources/plugins/agent/main.py": "the assistant's entry point",
-    "Resources/mcp/run.py": "the MCP server the assistant speaks through",
+    # No model plugin is listed here on purpose: local models are published
+    # separately and none ships in the bundle. The server is what every
+    # assistant speaks through, whichever end is driving, so it is the one
+    # thing whose absence breaks all of them.
+    "Resources/mcp/run.py": "the MCP server every assistant speaks through",
 }
 
 failures: list[str] = []

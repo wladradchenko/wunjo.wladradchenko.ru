@@ -30,7 +30,12 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 namespace {
 const QStringList kKinds = {QStringLiteral("api"), QStringLiteral("local")};
-const QStringList kVenvs = {QStringLiteral("private"), QStringLiteral("shared")};
+// "shared" is gone: a plugin used to be able to install into the application's
+// own venv, which put unrelated stacks in one place and made whichever plugin
+// pinned hardest the one everybody else had to live with. uv builds a private
+// environment fast enough, and from a cache, that sharing bought nothing but
+// the coupling. Every plugin owns its own now.
+const QStringList kVenvs = {QStringLiteral("private")};
 const QStringList kTargets = {QStringLiteral("video"), QStringLiteral("audio"), QStringLiteral("face"), QStringLiteral("generator"),
                               QStringLiteral("agent")};
 const QStringList kKnownOs = {QStringLiteral("linux"), QStringLiteral("windows"), QStringLiteral("macos")};
@@ -290,7 +295,7 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         m.m_errors << i18n("kind must be 'api' or 'local'");
     }
     if (!kVenvs.contains(m.m_venv)) {
-        m.m_errors << i18n("venv must be 'private' or 'shared'");
+        m.m_errors << i18n("venv must be 'private'");
     }
     if (m.m_targets.isEmpty()) {
         m.m_errors << i18n("missing required field 'target'");
@@ -418,9 +423,6 @@ QString PluginManifest::venvName() const
 {
     if (!hasDependencies()) {
         return {};
-    }
-    if (m_venv == QLatin1String("shared")) {
-        return QStringLiteral("venv");
     }
     return QStringLiteral("venv-") + m_id;
 }

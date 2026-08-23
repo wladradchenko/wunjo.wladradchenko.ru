@@ -227,6 +227,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 add_subdirectory(src)
 add_subdirectory(renderer)
 add_subdirectory(thumbnailer)
+add_subdirectory(opener)
 add_subdirectory(data)
 
 # Install

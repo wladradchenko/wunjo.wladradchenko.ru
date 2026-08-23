@@ -11,8 +11,9 @@ PluginPythonEnv::PluginPythonEnv(const PluginManifest &manifest, QObject *parent
     : AbstractPythonInterface(parent)
 {
     m_featureName = manifest.name();
-    // Private by default; a plugin uses the shared env only if it says so.
-    m_venvPath = manifest.venv() == QLatin1String("shared") ? QStringLiteral("venv") : QStringLiteral("venv-") + manifest.id();
+    // Always its own. Sharing the application's venv was allowed once and only
+    // ever coupled plugins to each other's pins — see kVenvs in pluginmanifest.
+    m_venvPath = QStringLiteral("venv-") + manifest.id();
     if (manifest.hasDependencies()) {
         // requirements-file-as-dependency-key: the base class parses the file
         // and honours a leading "#python3.x,..." interpreter-pin line, exactly

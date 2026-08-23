@@ -24,7 +24,11 @@ import zipfile
 MANIFEST = "plugin.json"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,63}$")
 KINDS = {"api", "local"}
-VENVS = {"private", "shared"}
+# Private only. Installing into the application's own venv used to be allowed
+# and bought nothing but coupling: whichever plugin pinned hardest decided for
+# the rest. uv builds a private environment from cache fast enough that there
+# is no reason to share one.
+VENVS = {"private"}
 TARGETS = {"video", "audio", "face", "generator", "agent"}
 # What a downloaded weight may be wrapped in. Runtimes ship as release archives
 # — tarballs on Linux, zips on Windows — so a weight is not always one file.

@@ -5,6 +5,7 @@
  */
 
 #include "pluginssettings.h"
+#include "chat/mcppythonenv.h"
 #include "core.h"
 #include "wunjosettings.h"
 #include "mainwindow.h"
@@ -67,6 +68,7 @@ PluginsSettings::PluginsSettings(QWidget *parent)
     m_sttVosk = new SpeechToTextVosk(this);
     m_sttWhisper = new SpeechToTextWhisper(this);
     m_samInterface = new SamInterface(this);
+    m_mcpEnv = new McpPythonEnv(this);
     // Contextual help
     whisper_device_info->setContextualHelpText(i18n("CPU processing is very slow, GPU is recommended for faster processing"));
     seamless_device_info->setContextualHelpText(i18n("Text translation is performed by the SeamlessM4T model. This requires downloading "
@@ -332,6 +334,19 @@ PluginsSettings::PluginsSettings(QWidget *parent)
         sam_rebuild->setEnabled(true);
     });
 
+    // Tool server (MCP). The same banner every other environment uses, on a tab
+    // of its own: it belongs to no plugin, and every way of talking needs it.
+    m_msgMcp = new PythonDependencyMessage(this, m_mcpEnv, false);
+    message_layout_mcp->addWidget(m_msgMcp);
+    connect(m_mcpEnv, &AbstractPythonInterface::gotPythonSize, this, [this](const QString &label) {
+        mcp_venv_size->setText(label);
+        deleteMcpVenv->setEnabled(!label.isEmpty());
+    });
+    m_mcpEnv->checkVenv(true);
+    connect(m_mcpEnv, &AbstractPythonInterface::scriptFinished, this,
+            [this]() { QMetaObject::invokeMethod(m_msgMcp, "checkAfterInstall", Qt::QueuedConnection); });
+    connect(deleteMcpVenv, &QPushButton::clicked, this, &PluginsSettings::doDeleteMcpVenv);
+
     if (modelBox->isEnabled()) {
         m_samInterface->runConcurrentScript(QStringLiteral("checkgpu.py"), {});
     }
@@ -567,6 +582,20 @@ void PluginsSettings::doDeleteSamVenv()
             return;
         }
         m_samInterface->deleteVenv();
+    }
+}
+
+void PluginsSettings::doDeleteMcpVenv()
+{
+    QDir pluginDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
+    if (pluginDir.cd(m_mcpEnv->getVenvPath())) {
+        if (KMessageBox::warningContinueCancel(this,
+                                               i18n("This will delete the MCP python environment from:<br/><b>%1</b><br/>Without it no assistant can drive the "
+                                                    "editor, neither one running here nor an agent in a terminal. It is rebuilt when you install it again.",
+                                                    pluginDir.absolutePath())) != KMessageBox::Continue) {
+            return;
+        }
+        m_mcpEnv->deleteVenv();
     }
 }
 

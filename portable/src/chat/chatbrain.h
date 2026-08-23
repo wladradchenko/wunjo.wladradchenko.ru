@@ -39,9 +39,10 @@ struct Option {
 /** @brief Every way of talking available on this machine, external first. */
 QList<Option> options();
 
-/** @brief The plugin whose environment holds the MCP server. Both ways of
- *  talking need it built, so it is also where the user is sent to build it. */
-QString serverPluginId();
+/** @brief True once the MCP server can actually be started: it is installed and
+ *  its own environment (`venv-mcp`) is built. Nothing here depends on a model
+ *  plugin — an agent in a terminal is a complete way of working on its own. */
+bool serverReady();
 
 /** @brief The chosen mode, or empty when the user has not chosen yet — which
  *  is what makes the chat show the picker instead of an input field. */

@@ -41,6 +41,14 @@ install(DIRECTORY fonts DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
 # share/wunjo/plugins/<id>/, a read-only AppLocalData root PluginManager::rescan()
 # scans as "bundled" — optional (the app runs without them), not compiled in.
 # Put further default plugins in this directory and they ship with no change here.
+#
+# Only what is meant to ship belongs in this directory — everything in it goes
+# into the installer. Plugin sources that are published separately (the local
+# language models, anything sold) live in the repository's top-level plugins/
+# and are packed with plugins/pack.py instead. A model plugin especially: it is
+# a few hundred kilobytes of code in front of several gigabytes it downloads on
+# first use, and nobody needs one to drive the editor — that is the MCP server
+# below, which is always installed.
 install(DIRECTORY plugins DESTINATION ${KDE_INSTALL_DATADIR}${DATA_INSTALL_PREFIX}
         PATTERN "__pycache__" EXCLUDE
         PATTERN ".venv" EXCLUDE)

@@ -13,6 +13,7 @@
 #include <QWidget>
 
 class SamInterface;
+class McpPythonEnv;
 class PythonDependencyMessage;
 class KJob;
 
@@ -54,6 +55,11 @@ private:
     PythonDependencyMessage *m_msgVosk;
     PythonDependencyMessage *m_pythonSamLabel;
     SamInterface *m_samInterface;
+    /** @brief The MCP server's environment. Its own, and not a model plugin's:
+     *  driving the editor from an outside agent must not wait on weights that
+     *  agent never loads. Every way of talking goes through this one server. */
+    McpPythonEnv *m_mcpEnv;
+    PythonDependencyMessage *m_msgMcp;
     SpeechList *m_speechListWidget;
     QAction *m_downloadModelAction;
     /** @brief The model offered when none is installed: turbo on a card, small
@@ -97,6 +103,8 @@ private Q_SLOTS:
     /** @brief Get ready to delete the venv */
     void doDeleteSamVenv();
     void doDeleteWrVenv();
+    /** @brief Get ready to delete the tool server's venv */
+    void doDeleteMcpVenv();
     /** @brief Get ready to delete the models */
     void doDeleteSamModels();
     /** @brief Check if SAM is correctly setup */

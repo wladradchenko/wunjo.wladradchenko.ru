@@ -100,6 +100,11 @@ Background and the manual checks for each piece: `dev-docs/dbus-removal-checklis
   since the last point (cap 2000). Per-frame keyframes freeze the app on long clips (MLT's
   animation parser and the KeyframeModel are quadratic); smoothing/Douglas-Peucker passes
   degraded tracking and were reverted. Tune the `spacing` constant only.
-- Python-based AI plugins share one venv at `<AppData>/venv`; heavy isolated stacks override
-  `getVenvPath()` (SAM uses `venv-sam`). Small ONNX models (<10 MB) go directly into the
-  build via OpenCV DNN instead of a venv plugin.
+- Every Python environment is its own: a plugin gets `venv-<id>` (the manifest's `venv` field
+  accepts only `private`), SAM uses `venv-sam`, the MCP server uses `venv-mcp`, and
+  `<AppData>/venv` is speech-to-text alone. Sharing one was allowed once and only coupled
+  unrelated stacks to each other's pins; uv builds a private one from cache instead. Small
+  ONNX models (<10 MB) go directly into the build via OpenCV DNN instead of a venv plugin.
+- The MCP server is installed on its own settings tab (Settings ▸ Plugins ▸ MCP,
+  `McpPythonEnv`), never as part of a model plugin. Driving the editor from Claude Code or
+  Cursor must not depend on weights that agent never loads.

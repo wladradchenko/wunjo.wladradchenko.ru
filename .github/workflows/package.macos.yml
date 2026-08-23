@@ -19,10 +19,6 @@ on:
         description: 'Rebuild the dependency cache from scratch'
         type: boolean
         default: false
-      full-model:
-        description: 'Load the real Qwen weights, projector included (adds ~3.6 GB)'
-        type: boolean
-        default: false
   push:
     tags:
       - 'v*'
@@ -235,52 +231,13 @@ jobs:
           craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" \
                 --compile --install --qmerge wunjo
 
-      # The assistant's own code, run on a real Mac for the first time. It
-      # listed processes by reading /proc — which macOS does not have, so the
-      # failure reached the user as "the model is not installed" about weights
-      # that were sitting on disk. The macOS path uses ps instead, and this is
-      # where that is actually exercised rather than reasoned about.
-      - name: Check the assistant on macOS
+      # What ships is the MCP server, so this is what there is to check: can an
+      # agent outside the editor find it and talk to it on this machine. The
+      # model-side checks that used to run here went with the model — it is a
+      # plugin now, published separately, and nothing in this build contains it.
+      - name: Check MCP on macOS
         run: |
-          python3 "$GITHUB_WORKSPACE/tests/agent/check_platform.py"
-          python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py"
           python3 "$GITHUB_WORKSPACE/tests/mcp/check_socket.py"
-
-      # On by default, and it earns the minute it costs. Nothing else here proves
-      # a model server can be started at all, and the flags serve.py builds differ
-      # once layers are offloaded — so a build could pass every other check while
-      # the assistant refused to load its model on a user's Mac, which is exactly
-      # what happened. It fetches a runtime and a small stand-in model, then runs
-      # the server twice: once on the processor and once on Metal.
-      # The weights are gigabytes and never change between builds — they are
-      # named by URL in plugin.json, so the manifest's own hash is the right key.
-      # Without this every run with full-model fetches 3.6 GB from a mirror that
-      # throttles, and a stall in the middle used to take the whole build with it.
-      - name: Restore the test weights
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/wunjo-test-models
-          # The v2 is deliberate. A run resumed one model's download onto another
-          # and produced a file of the right size with the wrong header, and the
-          # size check would happily accept it forever. Restoring by prefix would
-          # bring it back, so the prefix moves with it.
-          key: agent-models-v2-${{ hashFiles('portable/data/plugins/agent/plugin.json') }}
-          restore-keys: agent-models-v2-
-
-      - name: Talk to a real model
-        env:
-          WUNJO_MODELS_DIR: /Users/runner/.cache/wunjo-test-models
-        run: |
-          # The small stand-in every time; the weights the plugin actually ships
-          # when asked for. The difference is the vision projector: --mmproj is
-          # passed whenever that file is there, so the short run exercises a
-          # command no user ever gets, and the server can start on one pair of
-          # weights and die on the other.
-          if [ "${{ github.event.inputs.full-model }}" = "true" ]; then
-            python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --full-model
-          else
-            python3 "$GITHUB_WORKSPACE/tests/agent/check_chat.py" --with-model
-          fi
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still

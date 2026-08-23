@@ -8,19 +8,20 @@
 # the environment this server needs is built by the app, inside the sandbox, and
 # its interpreter is the runtime's own — a path that does not exist outside.
 #
-# The environment belongs to the Assistant plugin, which is also what the
-# built-in assistant runs in. One environment, one server, whichever end is
-# driving.
+# The environment is the server's own (venv-mcp) and holds the one package it
+# imports. It used to be a local model plugin's, which meant an agent in a
+# terminal could not start until the user had installed several gigabytes of
+# weights it would never call.
 set -eu
 
 data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
-python="$data_home/wunjo/venv-agent/bin/python3"
+python="$data_home/wunjo/venv-mcp/bin/python3"
 server="$(dirname "$0")/run.py"
 
 if [ ! -x "$python" ]; then
-    echo "The Wunjo assistant environment is not installed yet." >&2
-    echo "Open Wunjo Make ▸ Settings ▸ Plugins ▸ Assistant and install it," >&2
-    echo "or pick a way of talking in the Chat panel, then try again." >&2
+    echo "Wunjo MCP is not set up yet." >&2
+    echo "Open Wunjo Make and install it in Settings > Plugins > MCP," >&2
+    echo "then try again." >&2
     exit 1
 fi
 

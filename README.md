@@ -48,11 +48,13 @@ This separation ensures clarity for users and compliance with open-source licens
 
 Wunjo harnesses the power of advanced neural networks to transform video, image, and audio content in unprecedented ways. It allows you to seamlessly replace faces, control facial motion, and enhance lip-sync animation, while also generating videos from text, photos, or multiple images. Intelligent video editing automates cropping to any aspect ratio, selects the most interesting moments, and enables text-based montage. Wunjo can remove objects, improve video quality, restyle images and videos, clone speech, and even separate music from spoken words, giving you full creative control over every element of your media. Official website <a href="https://wunjo.online">wunjo.online</a>.
 
-The program is a full-fledged video editor based on the [Kdenlive by KDE License GPL v3](https://github.com/KDE/kdenlive) codebase. Integration with MSP Cloud Code, Cursor, and Codex for content editing and generation has been added, and it also has a local model based on Qwen 3.5 for managing the editor. Loop and skills are also available for AI Agents. 
+The program is a full-fledged video editor based on the [Kdenlive by KDE License GPL v3](https://github.com/KDE/kdenlive) codebase. It ships an MCP server, so the agent you already use — Claude Code, Cursor, Codex — drives the editor directly: the Chat panel writes a folder with the tool registration and the instructions, you open it in a terminal, and what the agent does appears in the panel while you watch the timeline. Loop and skills are also available for AI Agents.
 
-The new version incorporates the concept of Python plugins. You can freely create plugins using vibecoding and use them within the program for working with faces, video, and audio or content generation local or remotly by API. Additionally, you can use plugins to replace the default Qwen model with a more advanced one.
+Driving the editor needs no model on your machine. If you want one anyway, a local model is a plugin you add: Qwen 3.5 is published as one, and any other can be packaged the same way. One plugin, one model — install several and pick between them in the Chat panel, or leave it empty and work from your own agent.
 
-The program runs on Linux, Windows, and MacOS, but to use local models, you'll need 8GB of video memory and CUDA 12.x. Otherwise, consider using MCP via Cloud Code or Cursor and plugins with API services.
+The new version incorporates the concept of Python plugins. You can freely create plugins using vibecoding and use them within the program for working with faces, video, and audio or content generation local or remotly by API.
+
+The program runs on Linux, Windows, and MacOS. The MCP server itself is small and needs nothing but Python; a local model plugin is what asks for the hardware — 8GB of video memory and CUDA 12.x. Otherwise, consider using MCP via Claude Code or Cursor and plugins with API services.
 
 <div align="center">
   <table>
@@ -118,7 +120,7 @@ A graphics card is optional for editing and recommended for the AI plugins. Plug
 
 # Plugins
 
-The `plugins` directory contains the agent plugin and the following list of plugins:
+Plugins are installed from a `.wmplugin` archive; none of them is required for the editor or for driving it from an agent. The following are published for it:
 
 | Installable plugin        | What it does                                                                             |
 |---------------------------|------------------------------------------------------------------------------------------|
@@ -131,7 +133,6 @@ In order to install the plugin `Settings` > `Configure Wunjo Make` > `Plugins` >
 
 | Built-in plugin      | What it does                                     |
 |----------------------|--------------------------------------------------|
-| **Agent (Qwen 3.5)** | The local model behind the chat panel            |
 | **Whisper**          | Microphone and audio transcription and subtitling |
 | **SAM**              | Object masks by pointing at a thing on one frame |
 

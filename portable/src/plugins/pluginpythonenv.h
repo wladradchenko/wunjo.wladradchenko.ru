@@ -14,7 +14,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
     A thin AbstractPythonInterface driven by the plugin's manifest, so a plugin
     reuses the exact venv machinery the built-in Speech/SAM tabs use: the
     PythonDependencyMessage banner, venv size, install and delete. The venv is
-    private (`venv-<id>`) unless the manifest opts into the shared `venv`.
+    always private (`venv-<id>`); plugins cannot install into another's.
  */
 class PluginPythonEnv : public AbstractPythonInterface
 {

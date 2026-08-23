@@ -685,16 +685,13 @@ void ChatWidget::refreshBrainPage()
         delete item->widget();
         delete item;
     }
-    const QString chosen = ChatBrain::current();
     const QList<ChatBrain::Option> options = ChatBrain::options();
     for (const ChatBrain::Option &option : options) {
-        QString heading = option.name;
-        if (option.id == chosen) {
-            heading = i18nc("the way of talking currently in use", "%1 — in use", option.name);
-        } else if (!option.ready) {
-            heading = i18nc("a way of talking that still needs installing", "%1 — needs setting up", option.name);
-        }
-        auto *card = new BrainCard(heading, option.description, m_brainLayout->parentWidget());
+        // The name, and nothing appended to it. Which one is in use is what the
+        // tick in the model menu is for, and whether one still needs setting up
+        // is the model's own business to say on its settings page — a card that
+        // spells both out is repeating what two other places already show.
+        auto *card = new BrainCard(option.name, option.description, m_brainLayout->parentWidget());
         card->onClick = [this, id = option.id]() { chooseBrain(id); };
         m_brainLayout->addWidget(card);
     }
@@ -703,6 +700,18 @@ void ChatWidget::refreshBrainPage()
 void ChatWidget::refreshBrains()
 {
     refreshBrainPage();
+    // The slash menu lists the models too and was built once, in the
+    // constructor. That went unnoticed while a model shipped with the
+    // application: it existed before the menu was made, so the menu was never
+    // wrong. Now that a model arrives as an install, one done with the window
+    // open would only appear under "Switch model" after a restart.
+    if (m_slashButton != nullptr) {
+        QMenu *stale = m_slashButton->menu();
+        m_slashButton->setMenu(buildSlashMenu());
+        if (stale != nullptr) {
+            stale->deleteLater();
+        }
+    }
     applyBrain();
 }
 
@@ -727,19 +736,17 @@ void ChatWidget::chooseBrain(const QString &id)
         m_model.appendText(ChatMessage::Author::Assistant,
                            i18n("Everything Claude Code needs is in %1. Open a terminal there and run the claude command.", folder));
         // The folder is written either way, but the tool server it names cannot
-        // start until the assistant's environment exists — so finish that now
-        // rather than let the first question fail in the agent's terminal.
-        const QList<ChatBrain::Option> ways = ChatBrain::options();
-        for (const ChatBrain::Option &way : ways) {
-            if (way.id == ChatBrain::External() && !way.ready) {
-                if (auto *window = pCore ? pCore->window() : nullptr) {
-                    window->showPluginSettings(ChatBrain::serverPluginId());
-                }
-                m_model.appendText(ChatMessage::Author::Assistant,
-                                   i18n("First install the assistant environment in the settings that just opened — the tool "
-                                        "server your agent talks to runs in it."));
-                break;
+        // start until its environment exists. Said here rather than built here:
+        // it installs on its own settings tab, the way every other environment
+        // in the application does, so there is one place that knows how to
+        // build one and one banner that reports what pip said.
+        if (!ChatBrain::serverReady()) {
+            if (auto *window = pCore ? pCore->window() : nullptr) {
+                window->showPluginSettings(QString());
             }
+            m_model.appendText(ChatMessage::Author::Assistant,
+                               i18n("MCP is not installed yet — install it in Settings, Plugins, on the MCP tab. Until then the "
+                                    "agent's first question will fail in its terminal."));
         }
         switchTab(0);
         return;
@@ -747,6 +754,17 @@ void ChatWidget::chooseBrain(const QString &id)
 
     ChatBrain::setCurrent(id);
     applyBrain();
+    // A model on this machine reaches the editor by the same tools an agent in
+    // a terminal does, so it needs the tool server just as much. It has its own
+    // environment rather than joining the shared venv: that one carries whisper
+    // and torch, and the server would then wait on a multi-gigabyte install to
+    // answer "what is on the timeline". Where the server does need the heavy
+    // stack it borrows it by path — see WUNJO_SPEECH_PYTHON in data/mcp_start.
+    if (!ChatBrain::serverReady()) {
+        m_model.appendText(ChatMessage::Author::Assistant,
+                           i18n("This model drives the editor through MCP, which is not installed yet. Install it in Settings, "
+                                "Plugins, on the MCP tab."));
+    }
     const QString blocker = PluginManager::instance().runBlocker(id);
     const QList<ChatBrain::Option> options = ChatBrain::options();
     for (const ChatBrain::Option &option : options) {
@@ -767,24 +785,35 @@ void ChatWidget::chooseBrain(const QString &id)
 void ChatWidget::applyBrain()
 {
     QString mode = ChatBrain::current();
-    // "external" is no longer a way of talking but a folder one opens, so a
-    // session saved in that state is put back on the assistant instead of
-    // showing a card with no way out of it.
-    if (mode == ChatBrain::External()) {
-        mode = ChatBrain::serverPluginId();
-        ChatBrain::setCurrent(mode);
+    // A mode naming a model that is not here any more — uninstalled, or renamed
+    // between versions, as "agent" became "qwen35" when it stopped shipping by
+    // default — points at nothing. Empty is the honest state for that, and the
+    // panel knows how to explain it; a backend built on a missing plugin would
+    // instead fail on every message with the reason buried in a blocker string.
+    if (!mode.isEmpty() && mode != ChatBrain::External()) {
+        bool installed = false;
+        const QList<ChatBrain::Option> ways = ChatBrain::options();
+        for (const ChatBrain::Option &way : ways) {
+            if (way.id == mode) {
+                installed = true;
+                break;
+            }
+        }
+        if (!installed) {
+            mode.clear();
+            ChatBrain::setCurrent(mode);
+        }
     }
-    if (mode.isEmpty()) {
-        // Nothing chosen yet — but there is nothing to choose any more: the
-        // assistant answers here, and handing the keys outside is an entry in
-        // the slash menu. So the panel opens on the conversation, as it does
-        // every other time, instead of on a page asking a question that no
-        // longer has two answers.
-        mode = ChatBrain::serverPluginId();
-        ChatBrain::setCurrent(mode);
-    }
+    // Three states, and empty is a real one rather than a gap to be filled in.
+    // A fresh install ships no model at all — the editor is driven from Claude
+    // Code or Cursor, and a model on this machine is a plugin somebody adds if
+    // they want one. Choosing on the user's behalf here is what used to send
+    // people to install several gigabytes to answer a question they had not
+    // asked. What is typed with nothing chosen gets an answer saying how to
+    // choose; see submitInput().
+    const bool driveHere = !mode.isEmpty() && mode != ChatBrain::External();
 
-    if (m_ownedBackend != nullptr && (mode == ChatBrain::External() || m_backend != m_ownedBackend)) {
+    if (m_ownedBackend != nullptr && (!driveHere || m_backend != m_ownedBackend)) {
         if (auto *plugin = qobject_cast<PluginChatBackend *>(m_ownedBackend)) {
             plugin->release(); // hand back the graphics card before letting go
         }
@@ -792,7 +821,7 @@ void ChatWidget::applyBrain()
         m_ownedBackend = nullptr;
         m_backend = nullptr;
     }
-    if (mode != ChatBrain::External() && m_ownedBackend == nullptr) {
+    if (driveHere && m_ownedBackend == nullptr) {
         auto *backend = new PluginChatBackend(mode, this);
         backend->setSession(m_sessionId);
         m_ownedBackend = backend;
@@ -1167,9 +1196,19 @@ void ChatWidget::submitInput()
     Q_EMIT messageSent(sent);
     if (m_backend) {
         m_backend->sendMessage(sent);
-    } else {
+    } else if (ChatBrain::current() == ChatBrain::External()) {
+        // Not a failure — the mode working as intended. The request was typed
+        // in the wrong window, so the answer names the right one instead of
+        // saying that nothing happened.
         m_model.appendText(ChatMessage::Author::Assistant,
-                           i18n("Nobody is answering here yet. Pick a way of talking with the button at the top of this panel."));
+                           i18n("Your own agent is driving. Ask it in the terminal you opened in %1, and what it does appears here.",
+                                ChatBrain::agentFolder()));
+    } else {
+        // Nothing chosen, which is how a fresh install starts. Both ways out
+        // are named, because neither is obvious from an empty panel.
+        m_model.appendText(ChatMessage::Author::Assistant,
+                           i18n("No model is selected. Press / to choose one, or pick \"External MCP\" to drive the editor from an "
+                                "agent you already use, such as Claude Code or Cursor."));
     }
     persistSession();
 }
@@ -1258,8 +1297,8 @@ QMenu *ChatWidget::buildSlashMenu()
     Q_UNUSED(settings)
     // The one switch that matters: keep answering here, or hand the keys to an
     // agent outside and let this panel mirror it.
-    auto *external = menu->addAction(QIcon::fromTheme(QStringLiteral("folder")), i18n("External MCP (Claude Code, Cursor)…"));
-    external->setToolTip(i18n("Write the folder an outside agent works in, and open it"));
+    auto *external = menu->addAction(QIcon::fromTheme(QStringLiteral("folder")), i18n("External MCP…"));
+    external->setToolTip(i18n("Write the folder an outside agent works in — Claude Code, Cursor, Codex — and open it"));
     connect(external, &QAction::triggered, this, [this]() {
         // Not a mode — an action. The folder is written and opened; the files in
         // it explain themselves, this panel goes on working, and an outside
@@ -1285,11 +1324,11 @@ QMenu *ChatWidget::buildSlashMenu()
         if (option.id == ChatBrain::External()) {
             continue; // that one is a folder to open, not a model
         }
-        QString label = option.name;
-        if (!option.ready) {
-            label = i18nc("a model that still has to be downloaded", "%1 — not installed", option.name);
-        }
-        auto *action = models->addAction(label);
+        // The name alone. Whether it still needs setting up is not something to
+        // label a menu entry with — picking one that is not ready says so in
+        // the conversation, with what to do about it, which is the moment the
+        // answer is of any use.
+        auto *action = models->addAction(option.name);
         action->setCheckable(true);
         action->setChecked(ChatBrain::current() == option.id);
         action->setToolTip(option.description);

@@ -143,7 +143,7 @@ public:
     QString license() const { return m_license; }
     QString homepage() const { return m_homepage; }
     QString kind() const { return m_kind; }
-    /** @brief "private" (own `venv-<id>`) or "shared" (global `venv`). */
+    /** @brief "private" — the plugin's own `venv-<id>`, the only value there is. */
     QString venv() const { return m_venv; }
     /** @brief What kind of clip this plugin works on. The first of its targets,
      *  kept for callers that only ever expect one. */

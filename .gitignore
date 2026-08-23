@@ -14,8 +14,14 @@ portable/data/icons-wunjo/preview.py
 portable/data/plugins/lip-sync-latent
 portable/data/plugins/face-toolkit
 portable/data/plugins/voice-toolkit
+plugins/lip-sync-latent
+plugins/face-toolkit
+plugins/voice-toolkit
+plugins/qwen35
 plugins/dist/lip-sync-latent-1.0.0.wmplugin
 plugins/dist/face-toolkit-1.0.0.wmplugin
 plugins/dist/voice-toolkit-1.0.0.wmplugin
+plugins/dist/qwen35-1.0.0.wmplugin
+rebuild.sh
 .cursor/
 .claude/

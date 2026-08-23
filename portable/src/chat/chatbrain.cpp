@@ -7,6 +7,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "core.h"
 #include "doc/wunjodoc.h"
+#include "mcppythonenv.h"
 #include "plugins/pluginmanager.h"
 #include "wunjosettings.h"
 
@@ -39,13 +40,17 @@ bool environmentBuilt(const PluginManifest &manifest)
     return !PluginManager::venvPython(venv).isEmpty();
 }
 
-/** @brief The plugin whose environment carries the MCP server. Both ways of
- *  talking lean on it: the built-in assistant runs in it, and the server an
- *  outside agent starts is launched with its interpreter. */
-PluginManifest serverPlugin()
+/** @brief True once the MCP server has somewhere to run.
+ *
+ * The server used to be launched with the interpreter of whichever plugin
+ * declared `target: agent`. That made driving the editor from Claude Code
+ * depend on having installed a local model the outside agent never touches,
+ * and "whichever plugin" became meaningless as soon as there could be several
+ * of them. It has its own environment now, holding the one package it imports.
+ */
+bool serverInstalled()
 {
-    const QList<PluginManifest> agents = PluginManager::instance().pluginsForTarget(QStringLiteral("agent"));
-    return agents.isEmpty() ? PluginManifest() : agents.first();
+    return !PluginManager::mcpServerDir().isEmpty() && !McpPythonEnv::python().isEmpty();
 }
 
 /** @brief Running inside the flatpak sandbox, where an agent on the host cannot
@@ -87,7 +92,7 @@ QJsonObject serverInvocation()
         server.insert(QStringLiteral("args"), arguments);
         return server;
     }
-    const QString python = PluginManager::instance().pythonFor(serverPlugin().id());
+    const QString python = McpPythonEnv::python();
     arguments.append(QString(PluginManager::mcpServerDir() + QStringLiteral("/run.py")));
     server.insert(QStringLiteral("command"), python.isEmpty() ? QStringLiteral("python3") : python);
     server.insert(QStringLiteral("args"), arguments);
@@ -198,17 +203,14 @@ namespace ChatBrain {
 QList<Option> options()
 {
     QList<Option> list;
-    const PluginManifest server = serverPlugin();
     Option external;
     external.id = External();
-    external.name = i18n("Claude Code or Cursor");
-    external.description = i18n("Keep your own agent. Wunjo hands it the keys to the editor in a folder you open with "
-                                "Claude Code or Cursor; this panel then shows what it does.");
-    // Even this way needs the assistant's environment: it is where the tool
-    // server that the outside agent starts actually lives.
-    // Asked by id, not by isValid(): a manifest nobody filled in has collected
-    // no errors and so reports itself valid.
-    external.ready = !server.id().isEmpty() && environmentBuilt(server) && !PluginManager::mcpServerDir().isEmpty();
+    external.name = i18n("External MCP");
+    external.description = i18n("Keep your own agent. Wunjo hands it the keys to the editor in a folder you open in a terminal; "
+                                "this panel then shows what it does.");
+    // Only the tool server has to be there. This way of working is complete
+    // without a model on this machine — that is the point of it.
+    external.ready = serverInstalled();
     list << external;
 
     const QList<PluginManifest> agents = PluginManager::instance().pluginsForTarget(QStringLiteral("agent"));
@@ -223,9 +225,9 @@ QList<Option> options()
     return list;
 }
 
-QString serverPluginId()
+bool serverReady()
 {
-    return serverPlugin().id();
+    return serverInstalled();
 }
 
 QString current()
@@ -263,7 +265,7 @@ QString prepareAgentFolder(QString *errorOut)
     }
     if (PluginManager::mcpServerDir().isEmpty()) {
         if (errorOut) {
-            *errorOut = i18n("This build does not ship the tool server an outside agent needs.");
+            *errorOut = i18n("This build does not ship the MCP server an outside agent needs.");
         }
         return {};
     }
