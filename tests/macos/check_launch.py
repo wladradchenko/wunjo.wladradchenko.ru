@@ -244,8 +244,18 @@ def check_bundled_python(bundle: Path) -> int:
             working.append(path)
             print(f"    {path.relative_to(bundle)} — runs")
         else:
-            detail = ((done.stderr or done.stdout or "").strip().splitlines() or [""])[0]
-            print(f"    {path.relative_to(bundle)} — exits {done.returncode}: {detail[:100]}")
+            # Every line of it, and none of them shortened. dyld says "Library
+            # not loaded: <path>" first and puts why on the lines after —
+            # whether the file is missing, is the wrong architecture, or has a
+            # signature that no longer matches. Those are three different bugs
+            # with three different fixes, and a report that keeps only the first
+            # line and cuts it at a hundred characters tells them apart for
+            # nobody. This check runs once per build and its failure costs an
+            # hour to reproduce; it can afford ten lines of output.
+            detail = (done.stderr or done.stdout or "").strip()
+            print(f"    {path.relative_to(bundle)} — exits {done.returncode}")
+            for line in detail.splitlines()[:10] or ["(it printed nothing)"]:
+                print(f"        {line}")
 
     if not working:
         print("\nFAIL: the bundle carries Python but none of it runs.")
