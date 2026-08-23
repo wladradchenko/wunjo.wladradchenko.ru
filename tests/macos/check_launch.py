@@ -258,9 +258,12 @@ def check_bundled_python(bundle: Path) -> int:
         print("Python since 12.3, and /usr/bin/python3 is a stub that offers to install the")
         print("Command Line Tools. On a machine without them every plugin is dead.")
         print("")
-        print("Package::preArchive in the wunjo blueprint puts the framework's real binary")
-        print("where the shim was, which is what makes its own load command resolve. If this")
-        print("check is failing, that step did not run or did not find the framework.")
+        print("Package::internalCreatePackage in the wunjo blueprint puts the framework's real")
+        print("binary where the shim was, which is what makes its own load command resolve.")
+        print("It hangs off that method and not off preArchive for a reason: preArchive runs")
+        print("before MacDylibBundler brings the framework in, so it found nothing and said so")
+        print("in the package log. If this check fails again, read that log for 'replacing' —")
+        print("its absence, and which warning came instead, says which half went wrong.")
         return 1
 
     print(f"\nPASS: {len(working)} of {len(candidates)} bundled interpreters run.")

@@ -29,6 +29,7 @@ import info
 from CraftCore import CraftCore
 from Package.CMakePackageBase import CMakePackageBase
 from Packager.AppImagePackager import AppImagePackager
+from Utils import CodeSign
 
 
 class subinfo(info.infoclass):
@@ -173,8 +174,8 @@ class Package(CMakePackageBase):
         self.defines["appname"] = "Wunjo Make" if CraftCore.compiler.isMacOS else "wunjo"
         self.defines["desktopFile"] = "online.wunjo.make"
 
-    def preArchive(self):
-        """Make the interpreter in the bundle runnable before it is sealed in.
+    def internalCreatePackage(self, defines=None, **kwargs) -> bool:
+        """Make the interpreter in the bundle runnable, after it is in there.
 
         Neither copy of Python works as packaged, and they fail for opposite
         reasons. The one inside the framework records its library as
@@ -196,10 +197,27 @@ class Package(CMakePackageBase):
         The fix is the copy itself: put the framework's real binary where the
         shim was. Run from ``Contents/MacOS`` its own load command resolves, and
         it needs no further patching.
+
+        This hangs off ``internalCreatePackage`` and not off ``preArchive``,
+        which is where it lived first and never once ran. ``preArchive`` is
+        called by ``CollectionPackagerBase`` at the very top of
+        ``MacBasePackager.internalCreatePackage``, and the framework does not
+        arrive until ``MacDylibBundler`` runs some forty seconds later — so the
+        copy looked for a Python.framework that was not there yet, logged that
+        it had found none, and left. Craft offers no hook between the bundling
+        and the end, so the whole of the parent runs first and this comes after.
+
+        Which means the bundle has already been signed by the time anything is
+        copied into it, and a changed binary voids that signature. So it is
+        signed again here. Nothing on a CI machine without a Developer ID would
+        ever show that omission: an unsigned build packages and tests exactly
+        the same, and only a user's Gatekeeper would refuse it.
         """
-        status = super().preArchive()
+        if not super().internalCreatePackage(defines, **kwargs):
+            return False
         if not CraftCore.compiler.isMacOS:
-            return status
+            return True
+        status = True
 
         # Found by looking rather than through getMacAppPath: that reads
         # defines["apppath"] with a plain subscript, and the key is put there by
@@ -217,6 +235,7 @@ class Package(CMakePackageBase):
             CraftCore.log.warning(f"no Python.framework in {app}; leaving its interpreters alone")
             return status
 
+        replaced = False
         for real in sorted(versions.glob("*/bin/python3*")):
             if real.name.endswith("-config") or not real.is_file():
                 continue
@@ -225,7 +244,15 @@ class Package(CMakePackageBase):
             target.unlink(missing_ok=True)
             shutil.copy2(real, target)
             target.chmod(0o755)
-        return status
+            replaced = True
+
+        if not replaced:
+            CraftCore.log.warning(f"no interpreter under {versions}; the bundle's Python will not start")
+            return status
+        # The parent signed the bundle before returning, and what was just
+        # copied in is unsigned — sign the whole thing again rather than the
+        # new files alone, because the seal covers the bundle as a whole.
+        return CodeSign.signMacApp(app)
 
     def createPackage(self):
         if CraftCore.compiler.isMacOS:
