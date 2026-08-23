@@ -12,6 +12,10 @@ portable/repo
 portable/build-flatpak/
 portable/data/icons-wunjo/preview.py
 portable/data/plugins/lip-sync-latent
+portable/data/plugins/face-toolkit
+portable/data/plugins/voice-toolkit
 plugins/dist/lip-sync-latent-1.0.0.wmplugin
+plugins/dist/face-toolkit-1.0.0.wmplugin
+plugins/dist/voice-toolkit-1.0.0.wmplugin
 .cursor/
 .claude/
