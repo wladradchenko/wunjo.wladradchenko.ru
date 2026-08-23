@@ -368,9 +368,18 @@ def install_manifest_model() -> bool:
         # cache. curl would work it out from a Range request anyway; skipping
         # saves the round trip.
         expected = int(entries[0].get("size_mb", 0)) * 1024 * 1024
-        if target.exists() and expected and target.stat().st_size >= expected * 0.95:
-            sys.stderr.write(f"    {name} is already here ({target.stat().st_size >> 20} MB)\n")
-            continue
+        if target.exists() and expected:
+            have = target.stat().st_size
+            if have >= expected * 0.95:
+                sys.stderr.write(f"    {name} is already here ({have >> 20} MB)\n")
+                continue
+            # Something else is under this name — the small stand-in from the run
+            # above uses it too. curl would resume onto it and produce a file
+            # that is one model's header followed by another's weights, which
+            # llama.cpp reports as an mmproj that does not match the text model.
+            sys.stderr.write(f"    {name} is here but {have >> 20} MB, not {expected >> 20} — "
+                             f"starting over\n")
+            target.unlink()
         try:
             fetch(entries[0]["url"], target)
         except DownloadFailed as error:

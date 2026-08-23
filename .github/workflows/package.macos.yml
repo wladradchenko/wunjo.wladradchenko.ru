@@ -260,8 +260,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/wunjo-test-models
-          key: agent-models-${{ hashFiles('portable/data/plugins/agent/plugin.json') }}
-          restore-keys: agent-models-
+          # The v2 is deliberate. A run resumed one model's download onto another
+          # and produced a file of the right size with the wrong header, and the
+          # size check would happily accept it forever. Restoring by prefix would
+          # bring it back, so the prefix moves with it.
+          key: agent-models-v2-${{ hashFiles('portable/data/plugins/agent/plugin.json') }}
+          restore-keys: agent-models-v2-
 
       - name: Talk to a real model
         env:

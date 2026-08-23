@@ -201,11 +201,18 @@ class Package(CMakePackageBase):
         if not CraftCore.compiler.isMacOS:
             return status
 
-        app = self.getMacAppPath(self.defines)
-        if not app:
+        # Found by looking rather than through getMacAppPath: that reads
+        # defines["apppath"] with a plain subscript, and the key is put there by
+        # the packager itself, not by the recipe — asking for it here raises
+        # KeyError and takes the whole package step with it.
+        name = f"{self.defines['appname']}.app"
+        apps = [p for p in Path(self.archiveDir()).glob(f"**/{name}") if p.is_dir()]
+        if not apps:
+            CraftCore.log.warning(f"no {name} under {self.archiveDir()}; leaving Python alone")
             return status
-        macos = Path(app) / "Contents" / "MacOS"
-        versions = Path(app) / "Contents" / "Frameworks" / "Python.framework" / "Versions"
+        app = apps[0]
+        macos = app / "Contents" / "MacOS"
+        versions = app / "Contents" / "Frameworks" / "Python.framework" / "Versions"
         if not versions.is_dir():
             CraftCore.log.warning(f"no Python.framework in {app}; leaving its interpreters alone")
             return status
