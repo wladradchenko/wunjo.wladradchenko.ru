@@ -351,8 +351,15 @@ int main(int argc, char *argv[])
 
     // Load bundled Wunjo brand fonts and set the default UI font
     {
+        // AppDataLocation, and no "wunjo/" in front of it — see modelPath() in
+        // ai/facedetector.cpp, which had the same two faults. GenericDataLocation
+        // works on Linux, where it lists /app/share and the fonts really are
+        // installed at share/wunjo/fonts, and finds nothing on macOS: it names
+        // ~/Library/Application Support and never the bundle, and inside the
+        // bundle the directory is Contents/Resources/fonts with no wunjo in it.
+        // The failure is silent — the interface simply draws in the system font.
         const QString wunjoFontsDir =
-            QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("wunjo/fonts"), QStandardPaths::LocateDirectory);
+            QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("fonts"), QStandardPaths::LocateDirectory);
         if (!wunjoFontsDir.isEmpty()) {
             QDirIterator fontIt(wunjoFontsDir, {QStringLiteral("*.ttf"), QStringLiteral("*.otf")}, QDir::Files, QDirIterator::Subdirectories);
             while (fontIt.hasNext()) {
