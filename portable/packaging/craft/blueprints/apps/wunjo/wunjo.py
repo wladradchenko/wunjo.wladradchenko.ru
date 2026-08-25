@@ -22,7 +22,9 @@ its directory. `apps` is the category, the same way KDE's own repository uses
 `kde/kdemultimedia/kdenlive/kdenlive.py`.
 """
 
+import os
 import shutil
+import subprocess
 from pathlib import Path
 
 import info
@@ -235,6 +237,10 @@ class Package(CMakePackageBase):
             CraftCore.log.warning(f"no Python.framework in {app}; leaving its interpreters alone")
             return status
 
+        fixed = self._repointPythonLibrary(versions)
+        if not fixed:
+            CraftCore.log.warning(f"nothing under {versions} referenced the framework's library; leaving it alone")
+
         replaced = False
         for real in sorted(versions.glob("*/bin/python3*")):
             if real.name.endswith("-config") or not real.is_file():
@@ -253,6 +259,65 @@ class Package(CMakePackageBase):
         # copied in is unsigned — sign the whole thing again rather than the
         # new files alone, because the seal covers the bundle as a whole.
         return CodeSign.signMacApp(app)
+
+
+    @staticmethod
+    def _repointPythonLibrary(versions: Path) -> int:
+        """Make every Mach-O in the framework find ``Python`` from where it sits.
+
+        The framework records its library as
+        ``@executable_path/../Frameworks/Python.framework/Versions/X/Python``.
+        ``@executable_path`` is the path of whatever process is running, not of
+        the file holding the load command, so the reference only ever resolved
+        for a binary sitting in ``Contents/MacOS`` — and not even then.
+
+        ``bin/python3`` is not the interpreter. It is a stub that execs
+        ``Resources/Python.app/Contents/MacOS/Python``, which python.org ships
+        so the process gets a bundle identity. Copying the stub into
+        ``Contents/MacOS`` therefore moved nothing that mattered: the exec
+        handed control to a binary two directories deeper whose own load command
+        then resolved against *its* location and found nothing. That is what the
+        package test reported as
+        ``tried: .../Resources/Python.app/Contents/Frameworks//Python.framework/...``.
+
+        ``@loader_path`` is measured from the file that carries the load command,
+        so it is right wherever the binary is run from and whatever exec'd it.
+        Each binary needs its own number of ``..`` — four for the one inside
+        Python.app, one for the stub in ``bin`` — so the path is computed rather
+        than written down.
+
+        Rewriting a Mach-O voids its signature, and on Apple Silicon an invalid
+        one is refused outright, so each file is signed again as it is changed.
+        Ad-hoc (``-``) because CI has no Developer ID; the bundle is signed
+        properly afterwards where there is one.
+        """
+        changed = 0
+        for version in sorted(versions.iterdir()):
+            if version.is_symlink() or not version.is_dir():
+                continue  # "Current" points at a real version already handled
+            library = version / "Python"
+            if not library.is_file():
+                continue
+            for binary in version.rglob("*"):
+                if binary.is_symlink() or not binary.is_file() or binary == library:
+                    continue
+                if not os.access(binary, os.X_OK):
+                    continue
+                listing = subprocess.run(["otool", "-L", str(binary)], capture_output=True, text=True)
+                if listing.returncode != 0:
+                    continue  # not a Mach-O; otool says so on stderr
+                for line in listing.stdout.splitlines():
+                    reference = line.strip().split(" (")[0]
+                    if not reference.startswith("@executable_path/") or not reference.endswith("/Python"):
+                        continue
+                    relative = os.path.relpath(library, binary.parent)
+                    replacement = f"@loader_path/{relative}"
+                    CraftCore.log.info(f"repointing {binary} at {replacement}")
+                    subprocess.run(["install_name_tool", "-change", reference, replacement, str(binary)], check=True)
+                    subprocess.run(["codesign", "--force", "--sign", "-", str(binary)], check=False)
+                    changed += 1
+                    break
+        return changed
 
     def createPackage(self):
         if CraftCore.compiler.isMacOS:
