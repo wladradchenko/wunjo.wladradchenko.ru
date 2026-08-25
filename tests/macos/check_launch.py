@@ -208,75 +208,75 @@ def check_icons_are_reachable(data: dict) -> int:
     return 0
 
 
-def check_bundled_python(bundle: Path) -> int:
-    """Does the interpreter the plugins are built from actually run?
+def check_bundled_uv(bundle: Path) -> int:
+    """Can the bundle build a Python environment on a Mac that has no Python?
 
-    Existing is not enough, and that is the entire point of this check.
-    Contents/MacOS holds a Craft shim named like the interpreter which redirects
-    to ../lib/Python.framework — a directory the packager never creates, because
-    it puts the framework in Contents/Frameworks instead. The shim is a real
-    Mach-O of the right name and a plausible size that exits 255 with
-    "KShimgen: Failed to locate".
+    No interpreter is packaged, on purpose. Apple has shipped none since 12.3
+    and /usr/bin/python3 is a stub that offers to install the Command Line
+    Tools, so the honest options were to package one or to fetch one. Packaging
+    was tried: the packager rewrites the framework's load commands to
+    @executable_path, which resolves only for a binary sitting in
+    Contents/MacOS, and bin/python3 is not that binary — it execs
+    Resources/Python.app/Contents/MacOS/Python. Every interpreter in the bundle
+    aborted before it started, and making them start meant editing Mach-O files
+    belonging to somebody else at package time.
 
-    So every check that looked for a file passed, and every plugin needing Python
-    failed on the user's Mac with "Cannot create the python virtual environment".
-    Running it is the only question worth asking.
+    uv fetches instead. It is one static binary that needs no Python to run,
+    and given a version rather than a path it uses an interpreter already on the
+    machine when one matches and downloads a standalone build when none does.
+    Kdenlive, which this application is built on, ships no Python either.
+
+    What is checked here is the part that packaging can break: that uv is in the
+    bundle, that it starts from there, and that it can produce an environment
+    whose interpreter runs. Whether uv's downloader works is uv's own business
+    and is not worth thirty megabytes on every build — and could not be
+    exercised here anyway, since the runner has a Python for uv to reuse.
     """
-    contents = bundle / "Contents"
-    candidates = sorted((contents / "Frameworks" / "Python.framework" / "Versions").glob("*/bin/python3*"),
-                        reverse=True)
-    candidates += sorted(contents.glob("MacOS/python3*"))
-    candidates = [p for p in candidates if not p.name.endswith("-config")]
-
-    if not candidates:
-        print("\nFAIL: the bundle carries no Python interpreter at all.")
-        print("Every plugin that needs one is unusable.")
+    uv = bundle / "Contents" / "MacOS" / "uv"
+    print(f"\nlooking for uv in {uv.relative_to(bundle)}")
+    if not uv.is_file():
+        print("\nFAIL: the bundle carries no uv.")
+        print("Without it there is no way to build a plugin environment: no interpreter is")
+        print("packaged either, and uv is what finds or fetches one. Check that the blueprint")
+        print("still lists dev-utils/uv as a runtime dependency.")
         return 1
 
-    working = []
-    for path in candidates:
-        try:
-            done = subprocess.run([str(path), "-c", ""], capture_output=True, text=True, timeout=60)
-        except (OSError, subprocess.SubprocessError) as error:
-            print(f"    {path.relative_to(bundle)} — could not be run ({error})")
-            continue
-        if done.returncode == 0:
-            working.append(path)
-            print(f"    {path.relative_to(bundle)} — runs")
-        else:
-            # Every line of it, and none of them shortened. dyld says "Library
-            # not loaded: <path>" first and puts why on the lines after —
-            # whether the file is missing, is the wrong architecture, or has a
-            # signature that no longer matches. Those are three different bugs
-            # with three different fixes, and a report that keeps only the first
-            # line and cuts it at a hundred characters tells them apart for
-            # nobody. This check runs once per build and its failure costs an
-            # hour to reproduce; it can afford ten lines of output.
-            detail = (done.stderr or done.stdout or "").strip()
-            print(f"    {path.relative_to(bundle)} — exits {done.returncode}")
-            for line in detail.splitlines()[:10] or ["(it printed nothing)"]:
-                print(f"        {line}")
-
-    if not working:
-        print("\nFAIL: the bundle carries Python but none of it runs.")
-        print("The framework's own interpreter records its library as")
-        print("@executable_path/../Frameworks/..., which resolves only when it is launched from")
-        print("Contents/MacOS — and the shim that lives there looks for the framework under")
-        print("lib/, where the packager does not put it. The two halves point past each other.")
-        print("")
-        print("Falling back to an interpreter on PATH is not an answer: macOS has shipped no")
-        print("Python since 12.3, and /usr/bin/python3 is a stub that offers to install the")
-        print("Command Line Tools. On a machine without them every plugin is dead.")
-        print("")
-        print("Package::internalCreatePackage in the wunjo blueprint puts the framework's real")
-        print("binary where the shim was, which is what makes its own load command resolve.")
-        print("It hangs off that method and not off preArchive for a reason: preArchive runs")
-        print("before MacDylibBundler brings the framework in, so it found nothing and said so")
-        print("in the package log. If this check fails again, read that log for 'replacing' —")
-        print("its absence, and which warning came instead, says which half went wrong.")
+    done = subprocess.run([str(uv), "--version"], capture_output=True, text=True, timeout=60)
+    if done.returncode != 0:
+        print("\nFAIL: uv is in the bundle but does not run.")
+        for line in (done.stderr or done.stdout or "").strip().splitlines()[:10]:
+            print(f"    {line}")
         return 1
+    print(f"    {done.stdout.strip()}")
 
-    print(f"\nPASS: {len(working)} of {len(candidates)} bundled interpreters run.")
+    # The application's own call, with its own environment variables, so what
+    # is exercised is the code path a user takes and not an approximation.
+    with tempfile.TemporaryDirectory() as scratch:
+        room = Path(scratch)
+        environment = dict(os.environ)
+        environment["UV_CACHE_DIR"] = str(room / "cache")
+        environment["UV_PYTHON_INSTALL_DIR"] = str(room / "python")
+        done = subprocess.run(
+            [str(uv), "venv", "--seed", "--python", "3.11", str(room / "venv")],
+            capture_output=True, text=True, timeout=600, env=environment,
+        )
+        if done.returncode != 0:
+            print("\nFAIL: uv could not build an environment.")
+            for line in (done.stderr or done.stdout or "").strip().splitlines()[:15]:
+                print(f"    {line}")
+            return 1
+
+        interpreter = room / "venv" / "bin" / "python3"
+        done = subprocess.run([str(interpreter), "-c", "import sys; print(sys.version.split()[0])"],
+                              capture_output=True, text=True, timeout=60)
+        if done.returncode != 0:
+            print("\nFAIL: the environment uv built has an interpreter that does not run.")
+            for line in (done.stderr or done.stdout or "").strip().splitlines()[:10]:
+                print(f"    {line}")
+            return 1
+        print(f"    built an environment on Python {done.stdout.strip()}")
+
+    print("\nPASS: uv is in the bundle and builds a working Python environment.")
     return 0
 
 
@@ -296,7 +296,7 @@ def main(argument: str) -> int:
         "DYLD_BIND_AT_LAUNCH": "1",
     })
 
-    python_status = check_bundled_python(bundle)
+    python_status = check_bundled_uv(bundle)
 
     print(f"\nstarting {binary}")
     try:

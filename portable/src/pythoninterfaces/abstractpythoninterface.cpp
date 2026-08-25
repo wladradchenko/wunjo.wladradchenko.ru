@@ -475,6 +475,29 @@ QString AbstractPythonInterface::uvCacheDir()
     return dir;
 }
 
+QString AbstractPythonInterface::uvPythonDir()
+{
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QStringLiteral("/uv-python");
+    QDir().mkpath(dir);
+    return dir;
+}
+
+QString AbstractPythonInterface::wantedPythonVersion()
+{
+    // One version for every platform, and deliberately not "whatever is
+    // installed". Asked for nothing in particular uv takes the newest it can
+    // find — 3.14 at the time of writing — and the wheels these plugins need do
+    // not exist for it. The plugins themselves declare 3.10 or 3.11 in their
+    // manifests, so 3.11 is the one they are all built against.
+    //
+    // Given a version rather than a path, uv uses a matching interpreter that
+    // is already on the machine and downloads a standalone build only when
+    // there is none. On a Linux runtime carrying a different version that means
+    // one download of about thirty megabytes, once, in exchange for every
+    // platform building environments against the same interpreter.
+    return QStringLiteral("3.11");
+}
+
 bool AbstractPythonInterface::useSystemPython()
 {
     return false;
@@ -595,16 +618,31 @@ bool AbstractPythonInterface::checkSetup(bool requestInstall, bool *newInstall)
 
 bool AbstractPythonInterface::setupVenv()
 {
-    // First check if python and venv are available
-    QString pythonExec = systemPythonExec();
-    // Check that the system python is found
-    if (pythonExec.isEmpty() || installInProgress) {
-        if (m_installStatus != Broken) {
-            Q_EMIT setupError(i18n("Cannot find system python"));
-        }
+    if (installInProgress) {
         return false;
     }
-    // Use system python to check for venv
+    // uv first, and asked for a *version* rather than for a path. Given one it
+    // uses an interpreter already on the machine when it matches and fetches a
+    // standalone build when none does, so there is nothing to find beforehand
+    // and nothing to ship. That is what makes the macOS bundle possible at all:
+    // Apple has shipped no Python since 12.3, /usr/bin/python3 is a stub that
+    // offers to install the Command Line Tools, and packaging a Python
+    // framework instead meant rewriting load commands inside somebody else's
+    // binaries at package time — see the blueprint's history for how that went.
+    //
+    // Only when this build has no uv does it fall back to hunting for a system
+    // interpreter, which is what every version before uv did.
+    const QString uv = uvExec();
+    QString pythonExec;
+    if (uv.isEmpty()) {
+        pythonExec = systemPythonExec();
+        if (pythonExec.isEmpty()) {
+            if (m_installStatus != Broken) {
+                Q_EMIT setupError(i18n("Cannot find system python"));
+            }
+            return false;
+        }
+    }
     installInProgress = true;
     // Ensure the message is displayed before starting the busy work
     qApp->processEvents();
@@ -616,16 +654,18 @@ bool AbstractPythonInterface::setupVenv()
     // No workaround found yet for AppImage
     QStringList args = {QStringLiteral("-m"), QStringLiteral("venv"), pluginDir.absoluteFilePath(getVenvPath())};
     QString creator = pythonExec;
-    const QString uv = uvExec();
     if (!uv.isEmpty()) {
-        // Same environment, made by uv against the very same interpreter. It is
-        // asked for the seed packages because everything downstream — the
+        // The seed packages are asked for because everything downstream — the
         // dependency check, the settings pages — looks for a pip inside the
         // environment and would call it broken without one.
         creator = uv;
-        args = {QStringLiteral("venv"), QStringLiteral("--seed"), QStringLiteral("--python"), pythonExec, pluginDir.absoluteFilePath(getVenvPath())};
+        args = {QStringLiteral("venv"), QStringLiteral("--seed"), QStringLiteral("--python"), wantedPythonVersion(),
+                pluginDir.absoluteFilePath(getVenvPath())};
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert(QStringLiteral("UV_CACHE_DIR"), uvCacheDir());
+        // Anything uv fetches lands beside the environments rather than in the
+        // user's home, so uninstalling the application takes it with it.
+        env.insert(QStringLiteral("UV_PYTHON_INSTALL_DIR"), uvPythonDir());
         envProcess.setProcessEnvironment(env);
     }
     envProcess.start(creator, args);

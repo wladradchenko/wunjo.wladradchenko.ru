@@ -94,6 +94,20 @@ public:
      *  own data, beside the environments. It has to be the same filesystem, or
      *  there is nothing to hard-link to and uv silently copies instead. */
     static QString uvCacheDir();
+    /** @brief Where uv keeps interpreters it fetched itself.
+     *
+     * Inside the application's own data, so it is removed with the application
+     * and never touches a Python the user installed. */
+    static QString uvPythonDir();
+    /** @brief The Python version every environment is built against, as uv
+     *  understands it — "3.11", not a path.
+     *
+     * Given a version rather than a path, uv uses an interpreter already on the
+     * machine when one matches and downloads a standalone build when none does.
+     * That is what lets the macOS bundle ship no interpreter at all: Apple has
+     * shipped none since 12.3, and packaging a Python framework instead meant
+     * rewriting load commands inside somebody else's binaries at package time. */
+    QString wantedPythonVersion();
     void proposeMaybeUpdate(const QString &dependency, const QString &minVersion);
     void runConcurrentScript(const QString &script, QStringList args, bool feedback = false);
     /** @brief Python venv setup in progress. */
