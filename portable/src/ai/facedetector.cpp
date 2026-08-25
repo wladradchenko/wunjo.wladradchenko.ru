@@ -30,7 +30,17 @@ struct FaceProposal
 
 QString modelPath()
 {
-    return QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("wunjo/ai/mnet.25_v2.simplify.onnx"));
+    // AppDataLocation, and no "wunjo/" in front of it — the way every other
+    // lookup in this application is written. GenericDataLocation happens to
+    // work on Linux, where it lists /app/share and the installed path really is
+    // share/wunjo/ai/, and cannot work on macOS for two separate reasons: it
+    // names ~/Library/Application Support and never the application bundle, and
+    // inside the bundle the file sits at Contents/Resources/ai/ with no wunjo
+    // component at all, because DATA_INSTALL_PREFIX is empty there.
+    //
+    // AppDataLocation resolves to share/wunjo on Linux and to the bundle's
+    // Resources on macOS, so the same relative path finds the model on both.
+    return QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("ai/mnet.25_v2.simplify.onnx"));
 }
 
 cv::dnn::Net &network(bool &ok)
