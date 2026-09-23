@@ -4,6 +4,7 @@
 add_subdirectory(ai)
 add_subdirectory(effects)
 add_subdirectory(generators)
+add_subdirectory(guidance)
 add_subdirectory(layouts)
 add_subdirectory(transitions)
 add_subdirectory(icons)

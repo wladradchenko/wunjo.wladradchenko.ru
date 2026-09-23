@@ -11,6 +11,7 @@ tests/
   macos/check_abi.py         does the bundle ask macOS for too much
   macos/check_identity.py    is the bundle the application it claims to be
   macos/check_launch.py      does the bundle start, and did MLT come along
+  macos/check_plugin_gpu.py  what Metal can run, and whether the plugins know
 ```
 
 Run any of them directly:
@@ -20,6 +21,7 @@ python3 tests/agent/check_platform.py
 python3 tests/agent/check_chat.py                 # seconds, no network
 python3 tests/agent/check_chat.py --with-model    # ~400 MB, talks to a real model
 python3 tests/macos/check_abi.py path/to/wunjo.app
+python3 tests/macos/check_plugin_gpu.py           # source half runs anywhere
 ```
 
 ## One of these is load-bearing

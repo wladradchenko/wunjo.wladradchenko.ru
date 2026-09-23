@@ -1168,6 +1168,24 @@ void ChatWidget::refreshGuidance()
         return;
     }
     m_updatingGuidance = true;
+    // Documents that ship with the app read as italic, so the user can tell the
+    // craft they were given from the notes they wrote themselves.
+    auto markOrigin = [](QListWidgetItem *item, ChatGuidanceStore::Kind kind, const QString &name) {
+        switch (ChatGuidanceStore::origin(kind, name)) {
+        case ChatGuidanceStore::Origin::Builtin: {
+            QFont font = item->font();
+            font.setItalic(true);
+            item->setFont(font);
+            item->setToolTip(i18n("Built in. Editing it keeps your version; deleting it hides it."));
+            break;
+        }
+        case ChatGuidanceStore::Origin::BuiltinEdited:
+            item->setToolTip(i18n("Built in, edited by you — your version is the one used."));
+            break;
+        case ChatGuidanceStore::Origin::User:
+            break;
+        }
+    };
     const QStringList selectedSkills = ChatGuidanceStore::selectedSkills();
     m_skillsList->clear();
     const QStringList skills = ChatGuidanceStore::list(ChatGuidanceStore::Kind::Skill);
@@ -1175,6 +1193,7 @@ void ChatWidget::refreshGuidance()
         auto *item = new QListWidgetItem(name, m_skillsList);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(selectedSkills.contains(name) ? Qt::Checked : Qt::Unchecked);
+        markOrigin(item, ChatGuidanceStore::Kind::Skill, name);
     }
     const QString selectedLoop = ChatGuidanceStore::selectedLoop();
     m_loopsList->clear();
@@ -1183,6 +1202,7 @@ void ChatWidget::refreshGuidance()
         auto *item = new QListWidgetItem(name, m_loopsList);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(name == selectedLoop ? Qt::Checked : Qt::Unchecked);
+        markOrigin(item, ChatGuidanceStore::Kind::Loop, name);
     }
     m_updatingGuidance = false;
 }

@@ -25,6 +25,12 @@ SPDX-FileCopyrightText = "none"
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
+path = ["data/guidance/**.md"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
 path = "data/effects/README.md"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Julius Künzel"

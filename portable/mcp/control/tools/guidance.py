@@ -1,20 +1,96 @@
 """Assistant guidance: skills (how to work) and loops (pipeline scenarios).
 
-Skills are reusable notes the user writes; several can be selected per
-project. A loop is a start-to-finish scenario (script -> characters ->
-locations -> video -> edit -> voiceover ...) that names which tools and
-plugins to use at every step; at most one loop is selected per project.
+A skill is a short note on how to do one part of the job well — where to cut
+spoken footage, how to keep subtitles readable, what makes a grade look
+processed. The editor ships a library of them (editing craft, so that an agent
+driving the timeline produces an edit rather than an assembly), and the user
+adds their own; several can be active per project. A loop is a start-to-finish
+scenario (script -> characters -> locations -> video -> edit -> voiceover ...)
+naming which tools and plugins to use at every step; at most one per project.
 
-The library and selection live in the editor (same storage the chat UI
-uses), so everything here is a thin D-Bus wrapper.
+The library and the selection live in the editor (same storage the chat UI
+uses), reached over its local scripting socket, so everything here is a thin
+wrapper.
 
-AT SESSION START call get_selected_skills and get_selected_loop and follow
-what they return; when both are empty, work without extra guidance.
+AT SESSION START:
+  1. call get_selected_skills and get_selected_loop — what the user pinned for
+     this project outranks your own judgement;
+  2. call list_skills and read (get_skill) the ones whose description fits the
+     task in front of you. The library is there to be used, not only the pinned
+     subset; reading three relevant skills before an edit is the difference
+     between a competent edit and a mechanical one.
 """
 
 from __future__ import annotations
 
 from mcp.server.fastmcp import Context
+
+_MAX_DESCRIPTION = 160
+
+
+def _split_front_matter(text: str) -> tuple[dict[str, str], str]:
+    """Split a document into its metadata and its body.
+
+    Documents may open with a small YAML-ish header:
+
+        ---
+        name: editing-cuts
+        description: one line the agent judges relevance by
+        ---
+
+    A document without one is still valid — the user writes these by hand in
+    the chat panel and must not be punished for a missing header.
+    """
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}, text
+    for index in range(1, len(lines)):
+        if lines[index].strip() == "---":
+            meta: dict[str, str] = {}
+            for line in lines[1:index]:
+                key, separator, value = line.partition(":")
+                if separator:
+                    meta[key.strip().lower()] = value.strip()
+            return meta, "\n".join(lines[index + 1:]).lstrip("\n")
+    return {}, text  # unterminated header: treat the whole thing as body
+
+
+def _body(text: str) -> str:
+    """The document without its metadata header — what the model should read."""
+    return _split_front_matter(text)[1]
+
+
+def _titled(label: str, name: str, text: str) -> str:
+    """One document under a heading that names it as the library does.
+
+    The document's own title goes: the agent needs the library name to talk
+    about the skill or save it back, and two headings in a row is noise.
+    """
+    body = _body(text).lstrip()
+    lines = body.splitlines()
+    if lines and lines[0].startswith("# "):
+        body = "\n".join(lines[1:]).lstrip("\n")
+    return f"# {label}: {name}\n\n{body}"
+
+
+def _description(text: str) -> str:
+    """One line saying what this document is for, for the library listing.
+
+    Falls back to the first line of prose when there is no header, so a
+    hand-written note still says something about itself in the table.
+    """
+    meta, body = _split_front_matter(text)
+    description = meta.get("description", "")
+    if not description:
+        for line in body.splitlines():
+            stripped = line.strip()
+            if stripped and not stripped.startswith("#"):
+                description = stripped
+                break
+    description = " ".join(description.split()).replace("|", r"\|")
+    if len(description) > _MAX_DESCRIPTION:
+        description = description[: _MAX_DESCRIPTION - 1].rstrip() + "…"
+    return description
 
 
 def register(mcp, helpers):
@@ -22,39 +98,62 @@ def register(mcp, helpers):
     def _app(ctx: Context):
         return helpers.get_resolve(ctx)._app
 
+    def _library(app, call_list: str, call_get: str) -> list[tuple[str, str]]:
+        """Every document's name and description (one read per document)."""
+        names = list(app._call(call_list) or [])
+        return [(name, _description(app._call(call_get, name) or "")) for name in names]
+
     # ── Skills ──────────────────────────────────────────────────────────
 
     @mcp.tool()
     def list_skills(ctx: Context) -> str:
-        """List all skills in the library, marking the ones selected for this project."""
+        """The skill library: what each one is for, and which are pinned to this project.
+
+        Call this at session start. Then read (get_skill) the ones whose
+        description matches the work — an edit, subtitles, a grade, narration.
+        Pinned skills are the user's standing instructions; the rest are craft
+        you should reach for yourself.
+        """
         try:
             app = _app(ctx)
-            names = list(app._call("scriptListSkills") or [])
             selected = set(app._call("scriptGetSelectedSkills") or [])
-            if not names:
+            library = _library(app, "scriptListSkills", "scriptGetSkill")
+            if not library:
                 return "No skills in the library."
-            lines = ["| skill | selected |", "|-------|----------|"]
-            lines += [f"| {n} | {'yes' if n in selected else 'no'} |" for n in names]
+            lines = ["| skill | what it is for | pinned |", "|-------|----------------|--------|"]
+            lines += [f"| {name} | {about} | {'yes' if name in selected else 'no'} |" for name, about in library]
             return "\n".join(lines)
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
 
     @mcp.tool()
     def get_skill(ctx: Context, name: str) -> str:
-        """Read one skill's full text.
+        """Read one skill's full text. Do this for every skill relevant to the task.
 
         Args:
             name: Skill name from list_skills.
         """
         try:
             content = _app(ctx)._call("scriptGetSkill", name)
-            return content or f"ERROR: skill '{name}' not found or empty."
+            if not content:
+                return f"ERROR: skill '{name}' not found or empty."
+            return _titled("Skill", name, content)
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
 
     @mcp.tool()
     def save_skill(ctx: Context, name: str, content: str) -> str:
         """Create or overwrite a skill in the library.
+
+        Open with a header so the library stays browsable:
+
+            ---
+            name: <same as the name argument>
+            description: <one line: when to use this>
+            ---
+
+        Editing a skill the editor ships keeps your version and leaves the
+        original intact underneath.
 
         Args:
             name: Skill name (also the file name; no slashes).
@@ -69,6 +168,9 @@ def register(mcp, helpers):
     @mcp.tool()
     def delete_skill(ctx: Context, name: str) -> str:
         """Delete a skill from the library (deselects it everywhere).
+
+        A skill the editor ships is hidden rather than erased; saving one under
+        the same name brings it back.
 
         Args:
             name: Skill name.
@@ -95,13 +197,14 @@ def register(mcp, helpers):
 
     @mcp.tool()
     def get_selected_skills(ctx: Context) -> str:
-        """Full text of every skill selected for this project (call at session start)."""
+        """Full text of every skill pinned to this project (call at session start)."""
         try:
             app = _app(ctx)
             names = list(app._call("scriptGetSelectedSkills") or [])
             if not names:
-                return "No skills selected — work without extra guidance."
-            parts = [f"# Skill: {n}\n\n{app._call('scriptGetSkill', n)}" for n in names]
+                return ("No skills pinned to this project. Call list_skills and read the ones "
+                        "the task needs.")
+            parts = [_titled("Skill", n, app._call("scriptGetSkill", n) or "") for n in names]
             return "\n\n---\n\n".join(parts)
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
@@ -110,15 +213,15 @@ def register(mcp, helpers):
 
     @mcp.tool()
     def list_loops(ctx: Context) -> str:
-        """List all loops in the library, marking the one selected for this project."""
+        """The loop library: what each scenario produces, and which one this project uses."""
         try:
             app = _app(ctx)
-            names = list(app._call("scriptListLoops") or [])
             selected = app._call("scriptGetSelectedLoop") or ""
-            if not names:
+            library = _library(app, "scriptListLoops", "scriptGetLoop")
+            if not library:
                 return "No loops in the library."
-            lines = ["| loop | selected |", "|------|----------|"]
-            lines += [f"| {n} | {'yes' if n == selected else 'no'} |" for n in names]
+            lines = ["| loop | what it produces | selected |", "|------|------------------|----------|"]
+            lines += [f"| {name} | {about} | {'yes' if name == selected else 'no'} |" for name, about in library]
             return "\n".join(lines)
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
@@ -132,7 +235,9 @@ def register(mcp, helpers):
         """
         try:
             content = _app(ctx)._call("scriptGetLoop", name)
-            return content or f"ERROR: loop '{name}' not found or empty."
+            if not content:
+                return f"ERROR: loop '{name}' not found or empty."
+            return _titled("Loop", name, content)
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
 
@@ -140,10 +245,13 @@ def register(mcp, helpers):
     def save_loop(ctx: Context, name: str, content: str) -> str:
         """Create or overwrite a loop scenario in the library.
 
+        Open with the same header as a skill (`name`, `description`) so the
+        library listing says what the loop produces.
+
         Args:
             name: Loop name (also the file name; no slashes).
-            content: The scenario: numbered steps from source material to the
-                finished product, naming the tools/plugins for each step.
+            content: Full scenario text (markdown), numbered steps naming the
+                tools and plugins to use.
         """
         try:
             ok = _app(ctx)._call("scriptSaveLoop", name, content)
@@ -188,6 +296,6 @@ def register(mcp, helpers):
             name = app._call("scriptGetSelectedLoop") or ""
             if not name:
                 return "No loop selected — no pipeline scenario for this project."
-            return f"# Loop: {name}\n\n{app._call('scriptGetLoop', name)}"
+            return _titled("Loop", name, app._call("scriptGetLoop", name) or "")
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
