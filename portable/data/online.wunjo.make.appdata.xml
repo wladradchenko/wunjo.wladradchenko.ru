@@ -404,12 +404,11 @@
       </description>
     </release>
   </releases>
-  <url type="homepage">https://wunjo.online</url>
+  <url type="homepage">https://wunjo.online/product/make</url>
   <url type="bugtracker">https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues</url>
-  <url type="help">https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki</url>
-  <url type="donation">https://wunjo.online/fund</url>
-  <url type="contact">https://wunjo.online/support</url>
-  <url type="contribute">https://github.com/wladradchenko/wunjo.wladradchenko.ru</url>
+  <url type="help">https://docs.wunjo.online/make/</url>
+  <url type="donation">https://boosty.to/wunjo</url>
+  <url type="contact">https://wunjo.online/about</url>
   <url type="vcs-browser">https://github.com/wladradchenko/wunjo.wladradchenko.ru</url>
   <screenshots>
     <screenshot type="default">
@@ -447,7 +446,7 @@
       <caption xml:lang="uk">Темна тема</caption>
       <caption xml:lang="zh-CN">深色主题</caption>
       <caption xml:lang="zh-TW">暗色主題</caption>
-      <image type="source">https://wunjo.online/404</image>
+      <image type="source">https://wunjo.online/media/make/webp/interface_dark.webp</image>
     </screenshot>
     <screenshot type="source">
       <caption>Default interface</caption>
@@ -483,148 +482,23 @@
       <caption xml:lang="uk">Типовий інтерфейс</caption>
       <caption xml:lang="zh-CN">默认界面</caption>
       <caption xml:lang="zh-TW">預設介面</caption>
-      <image>https://wunjo.online/404</image>
+      <image type="source">https://wunjo.online/media/make/webp/interface_light.webp</image>
     </screenshot>
     <screenshot type="source">
-      <caption>Color correction</caption>
-      <caption xml:lang="ar">تصحيح الألوان</caption>
-      <caption xml:lang="ca">Correcció del color</caption>
-      <caption xml:lang="ca-valencia">Correcció del color</caption>
-      <caption xml:lang="cs">Barevná úprava</caption>
-      <caption xml:lang="de">Farbkorrektur</caption>
-      <caption xml:lang="en-GB">Colour correction</caption>
-      <caption xml:lang="eo">Kolorkorektado</caption>
-      <caption xml:lang="es">Corrección de color</caption>
-      <caption xml:lang="eu">Kolore zuzenketa</caption>
-      <caption xml:lang="fi">Värinkorjaus</caption>
-      <caption xml:lang="fr">Correction de couleurs</caption>
-      <caption xml:lang="ga">Ceartú datha</caption>
-      <caption xml:lang="gl">Corrección de cor.</caption>
-      <caption xml:lang="he">תיקון צבע</caption>
-      <caption xml:lang="hi">रंग सुधार</caption>
-      <caption xml:lang="id">Koreksi warna</caption>
-      <caption xml:lang="it">Correzione del colore</caption>
-      <caption xml:lang="ka">ფერების კორექცია</caption>
-      <caption xml:lang="lo">ການປັບແກ້ສີ</caption>
-      <caption xml:lang="lv">Krāsu korekcija</caption>
-      <caption xml:lang="nl">Kleurcorrectie</caption>
-      <caption xml:lang="pl">Poprawki barw</caption>
-      <caption xml:lang="pt-BR">Correção de cores</caption>
-      <caption xml:lang="ru">Цветокоррекция</caption>
-      <caption xml:lang="sa">वर्णशुद्धिकरणम्</caption>
-      <caption xml:lang="sk">Farebné rozsahy</caption>
-      <caption xml:lang="sl">Korekcija barv</caption>
-      <caption xml:lang="sv">Färgkorrektion</caption>
-      <caption xml:lang="tr">Renk düzeltmesi</caption>
-      <caption xml:lang="ug">رەڭ تۈزىتىش</caption>
-      <caption xml:lang="uk">Виправлення кольорів</caption>
-      <caption xml:lang="zh-CN">色彩校正</caption>
-      <caption xml:lang="zh-TW">顏色校正</caption>
-      <image>https://wunjo.online/404</image>
+      <caption>Timeline</caption>
+      <image type="source">https://wunjo.online/media/make/webp/timeline_dark.webp</image>
     </screenshot>
     <screenshot type="source">
-      <caption>Configurable interface</caption>
-      <caption xml:lang="ar">واجهة قابلة للتخصيص</caption>
-      <caption xml:lang="ca">Interfície configurable</caption>
-      <caption xml:lang="ca-valencia">Interfície configurable</caption>
-      <caption xml:lang="de">Konfigurierbares Interface</caption>
-      <caption xml:lang="en-GB">Configurable interface</caption>
-      <caption xml:lang="eo">Agordebla interfaco</caption>
-      <caption xml:lang="es">Interfaz configurable</caption>
-      <caption xml:lang="eu">Interfaze konfiguragarria</caption>
-      <caption xml:lang="fi">Mukautettava käyttöliittymä</caption>
-      <caption xml:lang="fr">Interface configurable</caption>
-      <caption xml:lang="ga">Comhéadan inchumraithe</caption>
-      <caption xml:lang="gl">Interface configurábel.</caption>
-      <caption xml:lang="he">ממשק גמיש</caption>
-      <caption xml:lang="hi">कॉन्फ़िगर करने योग्य इंटरफ़ेस</caption>
-      <caption xml:lang="id">Antarmuka dapat dikonfigurasi</caption>
-      <caption xml:lang="it">Interfaccia configurabile</caption>
-      <caption xml:lang="ka">მორგებადი ინტერფეისი</caption>
-      <caption xml:lang="lo">ໜ້າຕ່າງທີ່ປັບແຕ່ງໄດ້</caption>
-      <caption xml:lang="lv">Konfigurējama saskarne</caption>
-      <caption xml:lang="nl">Te configureren interface</caption>
-      <caption xml:lang="pl">Interfejs dający się dostosować</caption>
-      <caption xml:lang="pt-BR">Interface configurável</caption>
-      <caption xml:lang="ru">Настраиваемый интерфейс</caption>
-      <caption xml:lang="sa">विन्यासयोग्यं अन्तरफलकं</caption>
-      <caption xml:lang="sk">Configurable interface</caption>
-      <caption xml:lang="sl">Nastavljiv vmesnik</caption>
-      <caption xml:lang="sv">Anpassningsbart gränssnitt</caption>
-      <caption xml:lang="tr">Yapılandırılabilir arayüz</caption>
-      <caption xml:lang="uk">Придатний до налаштовування інтерфейс</caption>
-      <caption xml:lang="zh-CN">可定制的界面</caption>
-      <caption xml:lang="zh-TW">可自訂的介面</caption>
-      <image>https://wunjo.online/404</image>
+      <caption>Project files</caption>
+      <image type="source">https://wunjo.online/media/make/webp/files_dark.webp</image>
     </screenshot>
     <screenshot type="source">
-      <caption>Titling</caption>
-      <caption xml:lang="ar">العنونة</caption>
-      <caption xml:lang="ca">Titulació</caption>
-      <caption xml:lang="ca-valencia">Titulació</caption>
-      <caption xml:lang="de">Titelgebung</caption>
-      <caption xml:lang="en-GB">Titling</caption>
-      <caption xml:lang="eo">Titolado</caption>
-      <caption xml:lang="es">Titulación</caption>
-      <caption xml:lang="eu">Tituluak ipintzea</caption>
-      <caption xml:lang="fi">Väliotsikot</caption>
-      <caption xml:lang="fr">Titrage</caption>
-      <caption xml:lang="ga">Teidealú</caption>
-      <caption xml:lang="gl">Titulación.</caption>
-      <caption xml:lang="he">מתן כותרות</caption>
-      <caption xml:lang="hi">शीर्षक</caption>
-      <caption xml:lang="id">Pemberian teks</caption>
-      <caption xml:lang="it">Titolazione</caption>
-      <caption xml:lang="ka">დასათაურება</caption>
-      <caption xml:lang="lo">ການສ້າງຫົວຂໍ້</caption>
-      <caption xml:lang="lv">Titri</caption>
-      <caption xml:lang="nl">Titels toevoegen</caption>
-      <caption xml:lang="pl">Nadawanie tytułów</caption>
-      <caption xml:lang="pt-BR">Gerador de caracteres</caption>
-      <caption xml:lang="ru">Наложение субтитров</caption>
-      <caption xml:lang="sa">उपाधिकरणम्</caption>
-      <caption xml:lang="sk">Titling</caption>
-      <caption xml:lang="sl">Naslavljanje</caption>
-      <caption xml:lang="sv">Textning</caption>
-      <caption xml:lang="tr">Başlıklandırma</caption>
-      <caption xml:lang="uk">Титрування</caption>
-      <caption xml:lang="zh-CN">字幕功能</caption>
-      <caption xml:lang="zh-TW">傾斜</caption>
-      <image>https://wunjo.online/404</image>
+      <caption>Plugins</caption>
+      <image type="source">https://wunjo.online/media/make/webp/plugins_dark.webp</image>
     </screenshot>
     <screenshot type="source">
-      <caption>Time remapping and same-track transitions</caption>
-      <caption xml:lang="ar">انتقالات و إعادة رسم خرائط الوقت  في نفسه المسار</caption>
-      <caption xml:lang="ca">Reassignació del temps i transicions de la mateixa pista</caption>
-      <caption xml:lang="ca-valencia">Reassignació del temps i transicions de la mateixa pista</caption>
-      <caption xml:lang="de">Zeit-Neuzuordnung und Übergänge innerhalb der selben Spur</caption>
-      <caption xml:lang="en-GB">Time remapping and same-track transitions</caption>
-      <caption xml:lang="eo">Tempa remapado kaj samtrakaj transiroj</caption>
-      <caption xml:lang="es">Remapeo de tiempo y transiciones en una misma pista</caption>
-      <caption xml:lang="eu">Denboraren mapa berregitea eta pista bereko trantsizioak</caption>
-      <caption xml:lang="fr">Nouvelle cartographie du temps et transitions sur la même piste</caption>
-      <caption xml:lang="ga">Athmhapáil ama agus aistrithe ar an rian céanna</caption>
-      <caption xml:lang="gl">Cambio de asociación de tempos e transicións nunha mesma pista.</caption>
-      <caption xml:lang="he">מיפוי זמן מחדש ומעברונים באותה הרצועה</caption>
-      <caption xml:lang="hi">समय पुनर्निर्धारण और समान-ट्रैक संक्रमण</caption>
-      <caption xml:lang="id">Pemetaan ulang waktu dan transisi trek yang sama</caption>
-      <caption xml:lang="it">Modifica del tempo e transizioni nella stessa traccia</caption>
-      <caption xml:lang="ka">დროის თავიდან ასახვა და გადასვლები იგივე ტრეკში</caption>
-      <caption xml:lang="lo">ການປັບຄວາມໄວເວລາ ແລະ ການປ່ຽນຜ່ານໃນແທຣັກດຽວກັນ</caption>
-      <caption xml:lang="lv">Laika pārkartēšana ar viena celiņa pārejām</caption>
-      <caption xml:lang="nl">Snelheid van video wijzigen (time remapping) en overgangen in dezelfde track</caption>
-      <caption xml:lang="pl">Przemapowywanie czasu oraz przejścia w obrębie jednej ścieżki</caption>
-      <caption xml:lang="pt-BR">Remapeamento de tempo e transições na mesma trilha</caption>
-      <caption xml:lang="ru">Переназначение времени и переходы в одной и той же дорожке</caption>
-      <caption xml:lang="sa">समयस्य पुनः मानचित्रणं तथा समान-पट्टिका-संक्रमणम्</caption>
-      <caption xml:lang="sk">Time remapping and same-track transitions</caption>
-      <caption xml:lang="sl">Preslikava časa in prehodi na isti stezi</caption>
-      <caption xml:lang="sv">Tidsomvandling och övergångar i samma spår</caption>
-      <caption xml:lang="tr">Zaman eşlemlemesi ve aynı izde geçişler</caption>
-      <caption xml:lang="uk">Переприв'язка за часом та переходи на одній доріжці</caption>
-      <caption xml:lang="zh-CN">时间重新映射和同轨转场功能</caption>
-      <caption xml:lang="zh-TW">時間重映射與單軌道轉場特效</caption>
-      <image>https://wunjo.online/404</image>
+      <caption>Chat with the assistant</caption>
+      <image type="source">https://wunjo.online/media/make/webp/chat_dark.webp</image>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">online.wunjo.make.desktop</launchable>
