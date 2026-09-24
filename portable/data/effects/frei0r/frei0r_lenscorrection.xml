@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.lenscorrection" id="frei0r.lenscorrection">
+    <name>Lens Correction (frei0r)</name>
+    <description>Allows compensation of lens distortion</description>
+    <author>Richard Spindler</author>
+    <parameter type="animated" name="xcenter" default="0.5" min="0" max="100" factor="100" decimals="1">
+        <name>Horizontal Center</name>
+    </parameter>
+    <parameter type="animated" name="ycenter" default="0.5" min="0" max="100" factor="100" decimals="1">
+        <name>Vertical Center</name>
+    </parameter>
+    <parameter type="animated" name="correctionnearcenter" default="0.5" min="0" max="100" factor="100" decimals="1">
+        <name>Center Correction</name>
+    </parameter>
+    <parameter type="animated" name="correctionnearedges" default="0.5" min="0" max="100" factor="100" decimals="1">
+        <name>Edges Correction</name>
+    </parameter>
+    <parameter type="animated" name="brightness" default="0.5" min="0" max="100" factor="100" decimals="1">
+        <name>Brightness</name>
+    </parameter>
+</effect>

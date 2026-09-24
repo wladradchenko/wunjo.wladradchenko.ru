@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.median" id="avfilter.median">
+    <name>Median</name>
+    <description>Pick median pixel from certain rectangle defined by radius.</description>
+    <author>libavfilter</author>
+    <parameter type="animated" name="av.radius" min="1" max="127" default="1">
+        <name>Horizontal radius</name>
+       	<comment><![CDATA[Set median radius]]></comment>
+    </parameter>
+    <parameter type="animated" name="av.radiusV" min="0" max="127" default="0">
+        <name>Vertical radius</name>
+       	<comment><![CDATA[Set median vertical radius.<br>
+       	If it is 0, value will be picked from <em>Horizontal radius<em> parameter.]]></comment>
+    </parameter>
+    <parameter type="animated" name="av.percentile" min="0" max="100" default="0.5" factor="100">
+        <name>Median percentile</name>
+       	<comment><![CDATA[Default value of 50 will pick always median values,<br>
+       	while 0 will pick minimum values, and 100 maximum values.]]></comment>
+    </parameter>
+    <parameter type="list" name="av.planes" default="7" paramlist="0;1;2;3;4;5;6;7">
+        <name>Planes</name>
+       	<comment><![CDATA[Select which planes to process]]></comment>
+        <paramlistdisplay>None,Y,U,YU,V,YV,UV,All</paramlistdisplay>
+    </parameter>
+</effect>

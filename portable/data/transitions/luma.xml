@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<transition tag="luma" id="luma">
+    <name context="Luma Transition Name">Luma</name>
+    <description>Applies a stationary transition between the current and next frames.</description>
+    <author>Dan Dennedy</author>
+    <parameter type="urllist" name="resource" paramlist="%lumaPaths" filter="Luma files (*.png *.pgm);;Videos (*.mp4 *.mov *.avi *.mpeg)" newstuff=":data/wunjo_wipes.knsrc" optional="1">
+        <name>Wipe Method</name>
+    </parameter>
+    <parameter type="double" name="softness" max="100" min="0" default="0" factor="100">
+        <name>Softness</name>
+    </parameter>
+    <parameter type="bool" name="alpha_over" max="1" min="0" default="1">
+        <name>Use transparency</name>
+    </parameter>
+    <parameter type="bool" name="fix_background_alpha" max="1" min="0" default="1">
+        <name>Make padding transparent</name>
+    </parameter>
+    <parameter type="bool" name="invert" max="1" min="0" default="0">
+        <name>Invert</name>
+    </parameter>
+    <parameter type="bool" name="reverse" max="1" min="0" default="0">
+        <name>Reverse</name>
+    </parameter>
+</transition>

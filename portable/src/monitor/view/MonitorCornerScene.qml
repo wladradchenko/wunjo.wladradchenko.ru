@@ -1,0 +1,293 @@
+/*
+    SPDX-FileCopyrightText: 2016 Jean-Baptiste Mardelle <jb@kdenlive.org>
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+pragma ComponentBehavior: Bound
+
+import QtQuick 2.15
+
+import online.wunjo.make as K
+import "SnappingLogic.js" as SnappingLogic
+
+Item {
+    id: root
+    objectName: "rootcornerscene"
+    SystemPalette { id: activePalette }
+
+    // default size, but scalable by user
+    height: 300; width: 400
+    required property K.MonitorProxy controller
+    property int viewType: K.SceneType.MonitorSceneCorners
+    property string comment
+    property string framenum
+    property rect framesize
+    property point profile: controller.profile
+    property int overlayType: controller.overlayType
+    property point center
+    property double scalex
+    property double scaley
+    property double stretch : 1
+    property double sourcedar : 1
+    onScalexChanged: canvas.requestPaint()
+    onScaleyChanged: canvas.requestPaint()
+    property double offsetx : 0
+    property double offsety : 0
+    onOffsetxChanged: canvas.requestPaint()
+    onOffsetyChanged: canvas.requestPaint()
+    onSourcedarChanged: refreshdar()
+    property bool cursorOutsideEffect: controller.cursorOutsideEffect
+    property int requestedKeyFrame
+    property int duration: 300
+    property var centerPoints: []
+    signal effectPolygonChanged()
+    Component.onCompleted: {
+        controller.rulerHeight = 0
+    }
+
+    function updatePoints(types, points) {
+        if (global.pressed) {
+            return
+        }
+        root.centerPoints = points
+        canvas.requestPaint()
+    }
+
+    function getSnappedPos(position) {
+        if (!K.WunjoSettings.showMonitorGrid) {
+            return position
+        }
+        return SnappingLogic.getSnappedPoint(position, K.WunjoSettings.monitorGridH, K.WunjoSettings.monitorGridV)
+    }
+
+    function refreshdar() {
+        canvas.darOffset = root.sourcedar < root.profile.x * root.stretch / root.profile.y ? (root.profile.x * root.stretch - root.profile.y * root.sourcedar) / (2 * root.profile.x * root.stretch) :(root.profile.y - root.profile.x * root.stretch / root.sourcedar) / (2 * root.profile.y);
+        canvas.requestPaint()
+    }
+
+    onCursorOutsideEffectChanged: {
+        canvas.requestPaint()
+    }
+
+    Canvas {
+      id: canvas
+      property double handleSize: K.UiUtils.baseSizeMedium * 0.5
+      property double darOffset : 0
+      property color fillColor: Qt.rgba(1, 1, 1, 0.5)
+      property color selectedColor: activePalette.highlight
+      width: root.width
+      height: root.height
+      anchors.centerIn: root
+      contextType: "2d";
+      renderTarget: Canvas.FramebufferObject
+      renderStrategy: Canvas.Cooperative
+      onPaint:
+      {
+        var ctx = getContext('2d')
+        //if (context) {
+            ctx.clearRect(0,0, width, height);
+            ctx.beginPath()
+            ctx.strokeStyle = Qt.rgba(1, 0, 0, 0.5)
+            ctx.fillStyle = canvas.fillColor
+            ctx.lineWidth = 2
+            var p1 = convertPoint(root.centerPoints[0])
+            var p2 = convertPoint(root.centerPoints[1])
+            var p3 = convertPoint(root.centerPoints[2])
+            var p4 = convertPoint(root.centerPoints[3])
+            //console.log('paint' + p1);
+
+          // Handles
+          if ((root.controller.isKeyframe || K.WunjoSettings.autoKeyframe) && !root.cursorOutsideEffect) {
+            if (root.requestedKeyFrame == 0) {
+                ctx.fillStyle = canvas.selectedColor
+                ctx.fillRect(p1.x - handleSize, p1.y - handleSize, 2 * handleSize, 2 * handleSize);
+                ctx.fillStyle = canvas.fillColor
+            } else {
+                ctx.fillRect(p1.x - handleSize, p1.y - handleSize, 2 * handleSize, 2 * handleSize);
+            }
+            ctx.strokeRect(p1.x - handleSize, p1.y - handleSize, 2 * handleSize, 2 * handleSize);
+            if (root.requestedKeyFrame == 1) {
+                ctx.fillStyle = canvas.selectedColor
+                ctx.fillRect(p2.x - handleSize, p2.y - handleSize, 2 * handleSize, 2 * handleSize);
+                ctx.fillStyle = canvas.fillColor
+            } else {
+                ctx.fillRect(p2.x - handleSize, p2.y - handleSize, 2 * handleSize, 2 * handleSize);
+            }
+            ctx.strokeRect(p2.x - handleSize, p2.y - handleSize, 2 * handleSize, 2 * handleSize);
+            if (root.requestedKeyFrame == 2) {
+                ctx.fillStyle = canvas.selectedColor
+                ctx.fillRect(p3.x - handleSize, p3.y - handleSize, 2 * handleSize, 2 * handleSize);
+                ctx.fillStyle = canvas.fillColor
+            } else {
+                ctx.fillRect(p3.x - handleSize, p3.y - handleSize, 2 * handleSize, 2 * handleSize);
+            }
+            ctx.strokeRect(p3.x - handleSize, p3.y - handleSize, 2 * handleSize, 2 * handleSize);
+            if (root.requestedKeyFrame == 3) {
+                ctx.fillStyle = canvas.selectedColor
+                ctx.fillRect(p4.x - handleSize, p4.y - handleSize, 2 * handleSize, 2 * handleSize);
+                ctx.fillStyle = canvas.fillColor
+            } else {
+                ctx.fillRect(p4.x - handleSize, p4.y - handleSize, 2 * handleSize, 2 * handleSize);
+            }
+            ctx.strokeRect(p4.x - handleSize, p4.y - handleSize, 2 * handleSize, 2 * handleSize);
+          }
+          // Rect
+          if (root.cursorOutsideEffect) {
+            ctx.setLineDash([4]);
+          } else {
+            ctx.setLineDash([]);
+          }
+          ctx.moveTo(p1.x, p1.y)
+          ctx.lineTo(p2.x, p2.y)
+          ctx.lineTo(p3.x, p3.y)
+          ctx.lineTo(p4.x, p4.y)
+          ctx.lineTo(p1.x, p1.y)
+
+          // Source rect
+          if (canvas.darOffset != 0 && root.sourcedar > 0) {
+              if (root.sourcedar < root.profile.x / root.profile.y) {
+                  // vertical bars
+                  ctx.moveTo(p1.x + (darOffset * (p2.x - p1.x)), p1.y + (darOffset * (p2.y - p1.y)))
+                  ctx.lineTo(p4.x + (darOffset * (p3.x - p4.x)), p4.y + (darOffset * (p3.y-p4.y)))
+                  ctx.moveTo(p2.x + (darOffset * (p1.x - p2.x)), p2.y + (darOffset * (p1.y - p2.y)))
+                  ctx.lineTo(p3.x + (darOffset * (p4.x - p3.x)), p3.y + (darOffset * (p4.y-p3.y)))
+              } else {
+                  // horizontal bars
+                  ctx.moveTo(p1.x + (darOffset * (p4.x - p1.x)), p1.y + (darOffset * (p4.y - p1.y)))
+                  ctx.lineTo(p2.x + (darOffset * (p3.x - p2.x)), p2.y + (darOffset * (p3.y-p2.y)))
+                  ctx.moveTo(p4.x + (darOffset * (p1.x - p4.x)), p4.y + (darOffset * (p1.y - p4.y)))
+                  ctx.lineTo(p3.x + (darOffset * (p2.x - p3.x)), p3.y + (darOffset * (p2.y-p3.y)))
+              }
+          }
+          ctx.stroke()
+            //ctx.restore()
+        //}
+    }
+
+    function convertPoint(p)
+    {
+        var x = frame.x + p.x * root.scalex
+        var y = frame.y + p.y * root.scaley
+        return Qt.point(x,y);
+    }
+  }
+
+    Rectangle {
+        id: frame
+        objectName: "referenceframe"
+        property color hoverColor: "#ff0000"
+        width: root.profile.x * root.scalex
+        height: root.profile.y * root.scaley
+        x: root.center.x - width / 2 - root.offsetx
+        y: root.center.y - height / 2 - root.offsety
+        color: "transparent"
+        border.color: "#ffffff00"
+
+        Repeater {
+            model: K.WunjoSettings.showMonitorGrid ? Math.floor(root.profile.x / K.WunjoSettings.monitorGridH) : 0
+            Rectangle {
+                required property int index
+                opacity: 0.3
+                color: K.WunjoSettings.overlayColor
+                height: frame.height - 1
+                width: 1
+                x: ((index + 1) * K.WunjoSettings.monitorGridH * root.scalex)
+            }
+        }
+        Repeater {
+            model: K.WunjoSettings.showMonitorGrid ? Math.floor(root.profile.y / K.WunjoSettings.monitorGridV) : 0
+            Rectangle {
+                required property int index
+                opacity: 0.3
+                color: K.WunjoSettings.overlayColor
+                height: 1
+                width: frame.width - 1
+                y: ((index + 1) * K.WunjoSettings.monitorGridV * root.scaley)
+            }
+        }
+
+        K.MonitorOverlay {
+            anchors.fill: frame
+            color: K.WunjoSettings.overlayColor
+            overlayType: root.overlayType
+        }
+        K.MonitorSafeZone {
+            id: safeZone
+            anchors.fill: frame
+            color: K.WunjoSettings.safeColor
+            showSafeZone: root.controller.showSafezone
+            profile: root.controller.profile
+        }
+    }
+    MouseArea {
+        id: global
+        objectName: "global"
+        property bool kfrContainsMouse: false
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: kfrContainsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+        onWheel: wheel => {
+            root.controller.seek(wheel.angleDelta.x + wheel.angleDelta.y, wheel.modifiers)
+        }
+        onDoubleClicked: {
+            root.controller.addRemoveKeyframe()
+        }
+
+        onPositionChanged: {
+            if (root.controller.isKeyframe == false && !K.WunjoSettings.autoKeyframe) return;
+            if (pressed && root.requestedKeyFrame >= 0) {
+                var mousePos = Qt.point(mouseX - frame.x, mouseY - frame.y)
+                var logicalMousePos = Qt.point(mousePos.x / root.scalex, mousePos.y / root.scaley)
+                var adjustedMouse = root.getSnappedPos(logicalMousePos)
+                root.centerPoints[root.requestedKeyFrame].x = adjustedMouse.x;
+                root.centerPoints[root.requestedKeyFrame].y = adjustedMouse.y;
+                canvas.requestPaint()
+                root.effectPolygonChanged()
+            } else {
+              for(var i = 0; i < root.centerPoints.length; i++)
+              {
+                var p1 = canvas.convertPoint(root.centerPoints[i])
+                if (Math.abs(p1.x - mouseX) <= canvas.handleSize && Math.abs(p1.y - mouseY) <= canvas.handleSize) {
+                    if (i == root.requestedKeyFrame) {
+                        kfrContainsMouse = true;
+                        return;
+                    }
+                    root.requestedKeyFrame = i
+                    canvas.requestPaint()
+                    kfrContainsMouse = true;
+                    return;
+                }
+              }
+              if (root.requestedKeyFrame == -1) {
+                  return;
+              }
+              root.requestedKeyFrame = -1
+              kfrContainsMouse = false;
+              canvas.requestPaint()
+            }
+        }
+    }
+    EffectToolBar {
+        id: effectToolBar
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+            rightMargin: 4
+            leftMargin: 4
+        }
+        monitorController: root.controller
+        isClipMonitor: false
+    }
+    MonitorRuler {
+        id: clipMonitorRuler
+        anchors {
+            left: root.left
+            right: root.right
+            bottom: root.bottom
+        }
+        height: root.controller.rulerHeight
+        monitorController: root.controller
+        duration: root.duration
+    }
+}

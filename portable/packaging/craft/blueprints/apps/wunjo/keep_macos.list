@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 Vladislav Radchenko <i@wladradchenko.ru>
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Paths the macOS packager must keep even though Craft's own blacklist drops
+# them. Craft reads this as a whitelist, and a whitelisted path outranks a
+# blacklisted one — utils.filterDirectoryContent skips a file only when it is
+# blacklisted AND not whitelisted. Craft's default whitelist is re.compile("^$")
+# and matches nothing, so adding to it takes nothing away.
+#
+# Craft's macOS blacklist opens with "share/icons/.*". That is right for a KDE
+# application: those carry breeze compiled into a library and loose icon files
+# are dead weight. Ours are not dead weight — the entire interface is drawn with
+# this theme, and it exists only as files.
+#
+# Without it the theme is absent from the bundle, every QIcon::fromTheme falls
+# through to the platform icon engine, and on macOS that engine resolves names
+# as SF Symbols. AppKit aborts inside NSImageSymbolRepProvider the first time a
+# toolbar is painted: the application opened, then died on the first new project
+# with "abort() called" and no other explanation. tests/macos/check_identity.py
+# fails the build if the theme goes missing again.
+#
+# Only this application's own themes are rescued. Every other icon directory
+# stays excluded, so the image does not grow by the whole of breeze.
+share/icons/wunjo.*

@@ -1,0 +1,297 @@
+/*
+    SPDX-FileCopyrightText: 2008 Jean-Baptiste Mardelle <jb@kdenlive.org>
+
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#include "../src/lib/localeHandling.h"
+#include "wunjo_renderer_debug.h"
+#include "mlt++/Mlt.h"
+#include "renderjob.h"
+
+#include <../config-wunjo.h>
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QDebug>
+#include <QDir>
+#include <QDomDocument>
+#include <QImageReader>
+#include <QTemporaryFile>
+#include <QtGlobal>
+
+QString getCIMltRepositoryPath()
+{
+    for (auto varname : {"CRAFT_ROOT", "KDEROOT"}) {
+        if (!qEnvironmentVariableIsSet(varname)) {
+            continue;
+        }
+
+        qDebug() << varname << "envvar is set, try to use it for MLT repository path";
+        QString repositoryPath = QDir::cleanPath(qgetenv(varname) + QDir::separator() + QStringLiteral("lib/mlt"));
+        if (!QFile::exists(repositoryPath)) {
+            qDebug() << repositoryPath << "does not exist ($" << varname << "/lib/mlt)";
+            QString repositoryPath = QDir::cleanPath(qgetenv(varname) + QDir::separator() + QStringLiteral("lib/mlt-7"));
+        }
+        if (!QFile::exists(repositoryPath)) {
+            qDebug() << repositoryPath << "does not exist ($" << varname << "/lib/mlt-7)";
+            return {};
+        }
+
+        qDebug() << "Using this path as MLT repository path:" << repositoryPath;
+
+        return repositoryPath;
+    }
+    return {};
+}
+
+int main(int argc, char **argv)
+{
+    // wunjo_render needs to be a full QApplication since some MLT modules
+    // like wunjo_title require a full App to launch a QGraphicsView.
+    // If you need to render on a headless server, you must start rendering using a
+    // virtual server, like xvfb-run...
+    QApplication app(argc, argv);
+    QCoreApplication::setApplicationName("wunjo_render");
+    QCoreApplication::setApplicationVersion(WUNJO_VERSION);
+    QImageReader::setAllocationLimit(1024);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Wunjo video renderer for MLT");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.addPositionalArgument("mode", "Render mode. Either \"delivery\" or \"preview-chunks\".");
+    parser.parse(QCoreApplication::arguments());
+    QStringList args = parser.positionalArguments();
+    const QString mode = args.isEmpty() ? QString() : args.first();
+
+    if (mode == "preview-chunks") {
+
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("preview-chunks", "Mode: Render split into multiple files for timeline preview.");
+        parser.addPositionalArgument("source", "Source file (usually MLT XML).");
+        parser.addPositionalArgument("destination", "Destination directory.");
+        parser.addPositionalArgument("chunks", "Chunks to render.");
+        parser.addPositionalArgument("chunk_size", "Size of chunks to render.");
+        parser.addPositionalArgument("profile_path", "Path to profile.");
+        parser.addPositionalArgument("file_extension", "Rendered file extension.");
+        parser.addPositionalArgument("args", "Space separated libavformat arguments.", "[arg1 arg2 ...]");
+
+        parser.process(app);
+        args = parser.positionalArguments();
+        if (args.count() < 7) {
+            qCCritical(WUNJO_RENDERER_LOG) << "Error: not enough arguments specified\n";
+            parser.showHelp(1);
+            // the command above will quit the app with return 1;
+        }
+
+        QString repoPath = getCIMltRepositoryPath();
+        if (!repoPath.isEmpty() && !qEnvironmentVariableIsSet("MLT_DATA")) {
+            QString dataPath = QDir::cleanPath(repoPath + QStringLiteral("/../../share/mlt"));
+            if (QFile::exists(dataPath)) {
+                qDebug() << "Setting MLT_DATA to" << dataPath;
+                qputenv("MLT_DATA", dataPath.toUtf8());
+            }
+        }
+
+        // After initialising the MLT factory, set the locale back from user default to C
+        // to ensure numbers are always serialised with . as decimal point.
+        Mlt::Factory::init(repoPath.isEmpty() ? NULL : repoPath.toUtf8().constData());
+        LocaleHandling::resetAllLocale();
+
+        // mode
+        args.removeFirst();
+        // Source playlist path
+        QString playlist = args.takeFirst();
+        // destination - where to save result
+        QDir baseFolder(args.takeFirst());
+        // chunks to render
+        QStringList chunks = args.takeFirst().split(QLatin1Char(','), Qt::SkipEmptyParts);
+        // chunk size in frames
+        int chunkSize = args.takeFirst().toInt();
+        // path to profile
+        Mlt::Profile profile(args.takeFirst().toUtf8().constData());
+        // rendered file extension
+        QString extension = args.takeFirst();
+        // avformat consumer params
+        QStringList consumerParams = args.takeFirst().split(QLatin1Char(' '), Qt::SkipEmptyParts);
+
+        profile.set_explicit(1);
+        Mlt::Producer prod(profile, nullptr, playlist.toUtf8().constData());
+        if (!prod.is_valid()) {
+            fprintf(stderr, "INVALID playlist: %s \n", playlist.toUtf8().constData());
+            return 1;
+        }
+        const char *localename = prod.get_lcnumeric();
+        QLocale::setDefault(QLocale(localename));
+
+        int currentFrame = 0;
+        int rangeStart = 0;
+        int rangeEnd = 0;
+        QString frame;
+        while (!chunks.isEmpty()) {
+            if (rangeEnd == 0) {
+                // We are not processing a range
+                frame = chunks.first();
+            }
+            if (rangeEnd > 0) {
+                // We are processing a range
+                currentFrame += chunkSize + 1;
+                frame = QString::number(currentFrame);
+                if (currentFrame >= rangeEnd) {
+                    // End of range
+                    rangeStart = 0;
+                    rangeEnd = 0;
+                    // Range is processed, remove from stack
+                    chunks.removeFirst();
+                }
+            } else if (frame.contains(QLatin1Char('-'))) {
+                rangeStart = frame.section(QLatin1Char('-'), 0, 0).toInt();
+                rangeEnd = frame.section(QLatin1Char('-'), 1, 1).toInt();
+                currentFrame = rangeStart;
+                frame = QString::number(currentFrame);
+            } else {
+                // Frame will be processed, remove from stack
+                chunks.removeFirst();
+            }
+            fprintf(stderr, "START:%d \n", frame.toInt());
+            QString fileName = QStringLiteral("%1.%2").arg(frame, extension);
+            if (baseFolder.exists(fileName)) {
+                // Don't overwrite an existing file
+                fprintf(stderr, "DONE:%d \n", frame.toInt());
+                continue;
+            }
+            QScopedPointer<Mlt::Producer> playlst(prod.cut(frame.toInt(), frame.toInt() + chunkSize));
+            QScopedPointer<Mlt::Consumer> cons(
+                new Mlt::Consumer(profile, QStringLiteral("avformat:%1").arg(baseFolder.absoluteFilePath(fileName)).toUtf8().constData()));
+            for (const QString &param : std::as_const(consumerParams)) {
+                if (param.contains(QLatin1Char('='))) {
+                    cons->set(param.section(QLatin1Char('='), 0, 0).toUtf8().constData(), param.section(QLatin1Char('='), 1).toUtf8().constData());
+                }
+            }
+            if (!cons->is_valid()) {
+                fprintf(stderr, " = =  = INVALID CONSUMER\n\n");
+                return 1;
+            }
+            cons->set("terminate_on_pause", 1);
+            cons->connect(*playlst);
+            playlst.reset();
+            cons->run();
+            cons->stop();
+            cons->purge();
+            fprintf(stderr, "DONE:%d \n", frame.toInt());
+        }
+        // Mlt::Factory::close();
+        fprintf(stderr, "+ + + RENDERING FINISHED + + + \n");
+        return 0;
+    }
+
+    if (mode == "delivery") {
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("delivery", "Mode: Render to a final output file.");
+        parser.addPositionalArgument("renderer", "Path to MLT melt renderer.");
+        parser.addPositionalArgument("source", "Source file (usually MLT XML).");
+
+        QCommandLineOption outputOption({"o", "output"},
+                                        "The destination file, optional. If no set the destination will be retrieved from the \"target\" property of the "
+                                        "consumer in the source file. If set it overrides the consumers \"target\" property.",
+                                        "file");
+        parser.addOption(outputOption);
+
+        QCommandLineOption pidOption("pid", "Process ID to send back progress.", "pid", QString::number(-1));
+        parser.addOption(pidOption);
+
+        QCommandLineOption subtitleOption("subtitle", "Subtitle file.", "file");
+        parser.addOption(subtitleOption);
+
+        QCommandLineOption debugOption("debug", "Enable debug mode, doesn't delete log file on render success.");
+        parser.addOption(debugOption);
+
+        parser.process(app);
+        args = parser.positionalArguments();
+
+        if (args.count() != 3) {
+            qCritical() << "Error: wrong number of arguments specified\n";
+            int pid = parser.value(pidOption).toInt();
+            RenderJob r(QStringLiteral("Error: wrong number of arguments specified\n"), pid, &app);
+            parser.showHelp(1);
+            // the command above will quit the app with return 1;
+        }
+
+        // mode
+        args.removeFirst();
+        // renderer path (melt)
+        QString render = args.takeFirst();
+        // Source playlist path
+        QString playlist = args.takeFirst();
+
+        LocaleHandling::resetAllLocale();
+        QFile f(playlist);
+        QDomDocument doc;
+        if (!f.open(QIODevice::ReadOnly)) {
+            qCWarning(WUNJO_RENDERER_LOG) << "Failed to open file" << f.fileName() << "for reading";
+            int pid = parser.value(pidOption).toInt();
+            RenderJob r(QStringLiteral("Failed to open file %1").arg(f.fileName()), pid, &app);
+            return 1;
+        }
+        if (!doc.setContent(&f)) {
+            qCWarning(WUNJO_RENDERER_LOG) << "Failed to parse file" << f.fileName() << "to QDomDocument";
+            int pid = parser.value(pidOption).toInt();
+            RenderJob r(QStringLiteral("Failed to parse file %1").arg(f.fileName()), pid, &app);
+            f.close();
+            return 1;
+        }
+        f.close();
+        QDomElement consumer = doc.documentElement().firstChildElement(QStringLiteral("consumer"));
+        int in = -1;
+        int out = -1;
+        QString target;
+        // get in and out point, we need them to calculate the progress in some cases
+        if (!consumer.isNull()) {
+            in = consumer.attribute(QStringLiteral("in"), QString::number(-1)).toInt();
+            out = consumer.attribute(QStringLiteral("out"), QString::number(-1)).toInt();
+            target = consumer.attribute(QStringLiteral("target"));
+            QString output = parser.value(outputOption);
+            if (!output.isEmpty()) {
+                // A custom output target was set.
+                // To apply it we store a copy of the source file with the modified target
+                // in a temporary file and use this file instead of the original source file.
+                consumer.setAttribute(QStringLiteral("target"), output);
+                QTemporaryFile tmp(QDir::temp().absoluteFilePath(QStringLiteral("wunjo-XXXXXX.mlt")));
+                tmp.setAutoRemove(false);
+                if (tmp.open()) {
+                    tmp.close();
+                    QFile file(tmp.fileName());
+                    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                        qCDebug(WUNJO_RENDERER_LOG) << "Failed to set custom output destination, falling back to target set in source file: " << target;
+                    } else {
+                        playlist = tmp.fileName();
+                        target = output;
+                        QTextStream outStream(&file);
+                        outStream << doc.toString();
+                    }
+                    file.close();
+                } else {
+                    qCDebug(WUNJO_RENDERER_LOG) << "Failed to set custom output destination, falling back to target set in source file: " << target;
+                }
+                tmp.close();
+            }
+        }
+        int pid = parser.value(pidOption).toInt();
+        QString subtitleFile = parser.value(subtitleOption);
+        bool debugMode = parser.isSet(debugOption);
+
+        auto *rJob = new RenderJob(render, playlist, target, pid, in, out, subtitleFile, debugMode, &app);
+        QObject::connect(rJob, &RenderJob::renderingFinished, rJob, [&]() {
+            rJob->deleteLater();
+            qApp->quit();
+        });
+        // app.setQuitOnLastWindowClosed(false);
+        QMetaObject::invokeMethod(rJob, "start", Qt::QueuedConnection);
+        return app.exec();
+    }
+
+    qCritical() << "Error: unknown mode" << mode << "\n";
+    parser.showHelp(1);
+    // the command above will quit the app with return 1;
+}

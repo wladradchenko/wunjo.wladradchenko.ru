@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: none
+# SPDX-License-Identifier: CC0-1.0
+
+Active Kdenlive authors
+
+    Jean-Baptiste Mardelle <jb@kdenlive.org>
+        Main developer and maintainer, MLT and KDE SC 4 / KF5 port, 
+        2005-present
+    Nicolas Carion <french.ebook.lover@gmail.com>
+        Code re-architecture & timeline rewrite
+        2016-present
+    Dan Dennedy <dan@dennedy.org>
+        MLT, Bug fixing
+        2009(-2011)-present
+    Vincent Pinon <vpinon@kde.org>
+        KF5 port, Windows cross-build, bugs fixing
+        2012-present
+    Julius Künzel <julius.kuenzel@kde.org>
+        Bugs fixing
+        2020-present
+    Sashmita Raghav
+        Subtitle feature (GSoC), timeline colours
+        2020-present
+
+Former Kdenlive authors
+
+    Laurent Montel <montel@kde.org>
+        Bugs fixing, code clean up, review
+        2013-2017
+    Till Theato <root@ttill.de>
+        Rotoscoping, bug fixing, etc.
+        2009-2015
+    Steve Guilford <s.guilford@dbplugins.com>
+        Bug fixing
+        2014
+    Simon A. Eugster (Granjow) <simon.eu@gmail.com>
+        Colour and audio scopes, titler, manual, bug fixing, etc.
+        2009-2012
+    Marco Gittler <g.marco@freenet.de>
+        MLT transitions and effects, timeline, audio thumbs
+        2009-2012
+    Alberto Villa <avilla@FreeBSD.org>
+        Bug fixing, logo, etc.
+        2009-2013
+    Jean-Michel Poure <jm@poure.com>
+        Rendering profiles customization
+        2004-2009
+    Ray Lehtiniemi <rayl@mail.com>
+        Bug fixing, etc.
+        2009
+    Jason Wood <jasonwood@blueyonder.co.uk>
+        Original KDE 3 version author
+        2002-2005

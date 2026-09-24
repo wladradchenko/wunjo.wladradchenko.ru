@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="dust" id="dust" type="video" requires_in_out="1" unique="1">
+    <name>Dust</name>
+    <description>Add dust and specks to the video, as in old movies</description>
+    <author>Marco Gittler</author>
+    <parameter type="animated" name="maxdiameter" max="100" min="0" default="2" suffix="%">
+        <name>Maximum diameter</name>
+    </parameter>
+    <parameter type="animated" name="maxcount" max="400" min="0" default="10">
+        <name>Maximum number of particles</name>
+    </parameter>
+</effect>

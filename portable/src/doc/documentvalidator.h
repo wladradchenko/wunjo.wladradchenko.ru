@@ -1,0 +1,60 @@
+/*
+    SPDX-FileCopyrightText: 2009 Jean-Baptiste Mardelle <jb@kdenlive.org>
+
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include <QColor>
+#include <QDomDocument>
+
+#include <QMap>
+#include <QUrl>
+#include <QtCore/QLocale>
+
+class DocumentValidator
+{
+
+public:
+    DocumentValidator(const QDomDocument &doc, QUrl documentUrl);
+    bool isProject() const;
+    /** @brief Check if the document is a valid Wunjo project
+     * @param currentVersion The version of the document, with the current
+     * version defined as DOCUMENTVERSION and DOCUMENTPATCHVERSION in wunjodoc.cpp.
+     * @return A QPair with the first value true if the document is valid, and
+     * the second value the original decimal point string only if upgradeTo100
+     * changed the decimal point.
+     */
+    QPair<bool, QString> validate(const double currentVersion, const int currentPatchVersion);
+    bool isModified() const;
+    /** @brief Check if the project contains references to Movit stuff (GLSL), and try to convert if wanted. */
+    bool checkMovit();
+
+private:
+    QDomDocument m_doc;
+    QUrl m_url;
+    bool m_modified;
+    /** @brief Upgrade from a previous Wunjo document version. */
+    bool upgrade(double version, int patchVersion, const double currentVersion, int currentPatchVersion);
+    bool upgradePatchVersion(double version, int patchVersion);
+
+    /**
+     * Changes the decimal separator to . if it is something else.
+     * @param documentLocale Locale which is used by the document
+     * @return the original decimal point, if it was something else than “.”, or an empty string otherwise.
+     */
+    QString upgradeTo100(const QLocale &documentLocale);
+
+    /** @brief Pass producer properties from previous Wunjo versions. */
+    void updateProducerInfo(const QDomElement &prod, const QDomElement &source);
+    /** @brief Make sur we don't have orphaned producers (that are not in Bin). */
+    void checkOrphanedProducers();
+    QStringList getInfoFromEffectName(const QString &oldName);
+    QString colorToString(const QColor &c);
+    QString factorizeGeomValue(const QString &value, double factor);
+    /** @brief Wunjo <= 0.9.10 saved title clip item position/opacity with locale which was wrong, fix. */
+    void fixTitleProducerLocale(QDomElement &producer);
+    void convertKeyframeEffect_093(const QDomElement &effect, const QStringList &params, QMap<int, double> &values, int offset);
+    void convertSubtitles();
+};

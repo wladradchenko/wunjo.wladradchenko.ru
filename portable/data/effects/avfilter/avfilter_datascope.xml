@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.datascope" id="avfilter.datascope">
+    <name>Data Scope</name>
+    <description>Video data analysis</description>
+    <author>libavfilter</author>
+    <parameter type="list" name="av.s" default="hd720" paramlist="sqcif;film;pal;ntsc;hd480;hd720;hd1080;2k;4k">
+        <name>Size</name>
+        <paramlistdisplay>128p,360p,PAL SD,NTSC SD,480p,720 HD,1080 Full HD,2K,4K</paramlistdisplay>
+    </parameter>
+    <parameter type="constant" name="av.x" max="%width" min="0" default="0" factor="1">
+        <name>X offset</name>
+    </parameter>
+    <parameter type="constant" name="av.y" max="%height" min="0" default="0" factor="1">
+        <name>Y offset</name>
+    </parameter>
+    <parameter type="list" name="av.components" default="7" paramlist="0;1;2;3;4;5;6;7;8">
+        <name>Components</name>
+        <paramlistdisplay>None,Y (Luminance),U (Chroma red-diff),YU,V (Chroma blue-diff),YV,UV,All,Alpha</paramlistdisplay>
+    </parameter>
+    <parameter type="list" name="av.m" default="mono" paramlist="mono;color;color2">
+        <name>Mode</name>
+        <paramlistdisplay>Mono,Color,Color2</paramlistdisplay>
+    </parameter>
+    <parameter type="bool" name="av.axis" default="0" min="0" max="1">
+        <name>Show Axis</name>
+    </parameter>
+    <parameter type="constant" name="av.o" max="1" min="0" default="0.75" decimals="2">
+        <name>Opacity</name>
+    </parameter>
+    <parameter type="list" name="av.f" default="hex" paramlist="hex;dec">
+        <name>Format</name>
+        <paramlistdisplay>Hex,Dec</paramlistdisplay>
+    </parameter>
+</effect>

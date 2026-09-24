@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 Vladislav Radchenko <i@wladradchenko.ru>
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Extra blacklist for the macOS package, applied on top of Craft's default one.
+# Entries are regular expressions matched against the path inside the image.
+
+# LV2 plugin bundles. A .lv2 "bundle" is a plain directory of .ttl files and a
+# shared object — a convention from the LV2 spec, unrelated to macOS bundles.
+# codesign --deep walks Contents/Frameworks, decides these directories are
+# subcomponents, and stops with "bundle format unrecognized, invalid, or
+# unsuitable", which fails the whole .dmg.
+#
+# Nothing is lost by leaving them out: this application's flatpak build already
+# compiles MLT with -DUSE_LV2=OFF, so LV2 audio plugins are not a feature we
+# ship on any platform. Craft's MLT is built with LV2 on and drags lilv, serd,
+# sord and sratom in as a side effect; excluding the data here keeps the binary
+# cache hit that building MLT ourselves would throw away.
+lib/lv2/.*

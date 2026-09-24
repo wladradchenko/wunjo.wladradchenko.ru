@@ -1,0 +1,243 @@
+/*
+    SPDX-FileCopyrightText: 2017 Nicolas Carion
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#include "transitionsrepository.hpp"
+#include "core.h"
+#include "wunjosettings.h"
+#include "xml/xml.hpp"
+#include <QFile>
+#include <QStandardPaths>
+
+#include <mlt++/Mlt.h>
+
+std::unique_ptr<TransitionsRepository> TransitionsRepository::instance;
+std::once_flag TransitionsRepository::m_onceFlag;
+
+TransitionsRepository::TransitionsRepository()
+    : AbstractAssetsRepository<AssetListType::AssetType>()
+{
+    init();
+}
+
+Mlt::Properties *TransitionsRepository::retrieveListFromMlt() const
+{
+    return pCore->getMltRepository()->transitions();
+}
+
+void TransitionsRepository::checkFavorites()
+{
+    QStringList invalidTransition;
+    for (const QString &effect : WunjoSettings::favorite_transitions()) {
+        if (!exists(effect)) {
+            invalidTransition << effect;
+        }
+    }
+    if (!invalidTransition.isEmpty()) {
+        pCore->displayMessage(i18n("Some of your favorite compositions are invalid and were removed: %1", invalidTransition.join(QLatin1Char(','))),
+                              ErrorMessage);
+        QStringList newFavorites = WunjoSettings::favorite_transitions();
+        for (const QString &effect : std::as_const(invalidTransition)) {
+            newFavorites.removeAll(effect);
+        }
+        WunjoSettings::setFavorite_transitions(newFavorites);
+    }
+}
+
+Mlt::Properties *TransitionsRepository::getMetadata(const QString &assetId) const
+{
+    return pCore->getMltRepository()->metadata(mlt_service_transition_type, assetId.toLatin1().data());
+}
+
+void TransitionsRepository::addLuma(const QString &name, const QString &path)
+{
+    Info info;
+    info.id = path;
+    info.mltId = QStringLiteral("luma");
+    info.description = i18n("Luma file :");
+    info.name = name;
+    info.type = AssetListType::AssetType::LumaTransition;
+    m_assets[path] = info;
+}
+
+void TransitionsRepository::parseCustomAssetFile(const QString &file_name, std::unordered_map<QString, Info> &customAssets) const
+{
+    QDomDocument doc;
+    if (!Xml::docContentFromFile(doc, file_name, false)) {
+        return;
+    }
+
+    QDomElement base = doc.documentElement();
+    QDomNodeList transitions = doc.elementsByTagName(QStringLiteral("transition"));
+
+    int nbr_transition = transitions.count();
+    if (nbr_transition == 0) {
+        qWarning() << "broken transition" << file_name;
+        return;
+    }
+
+    for (int i = 0; i < nbr_transition; ++i) {
+        QDomNode currentNode = transitions.item(i);
+        if (currentNode.isNull()) {
+            continue;
+        }
+        Info result;
+        // Remove preview tag
+        QDomElement preview = currentNode.firstChildElement(QStringLiteral("preview"));
+        if (!preview.isNull()) {
+            currentNode.removeChild(preview);
+        }
+        bool ok = parseInfoFromXml(currentNode.toElement(), result);
+        if (!ok) {
+            continue;
+        }
+        QString type = currentNode.toElement().attribute(QStringLiteral("type"), QString());
+        if (type == QLatin1String("hidden")) {
+            result.type = AssetListType::AssetType::Hidden;
+        } else if (type == QLatin1String("short")) {
+            result.type = AssetListType::AssetType::VideoShortComposition;
+        } else if (type == QLatin1String("videotransition")) {
+            result.type = AssetListType::AssetType::VideoTransition;
+        } else if (type == QLatin1String("audiotransition")) {
+            result.type = AssetListType::AssetType::AudioTransition;
+        } else if (getSingleTrackTransitions().contains(result.id)) {
+            if (type == QLatin1String("audio")) {
+                result.type = AssetListType::AssetType::AudioTransition;
+            } else {
+                result.type = AssetListType::AssetType::VideoTransition;
+            }
+        }
+        if (customAssets.count(result.id) > 0) {
+            // qDebug() << "duplicate transition" << result.id;
+        }
+        if (m_hiddenList.contains(result.mltId)) {
+            result.type = AssetListType::AssetType::Hidden;
+        }
+        customAssets[result.id] = result;
+    }
+}
+
+std::unique_ptr<TransitionsRepository> &TransitionsRepository::get()
+{
+    std::call_once(m_onceFlag, [] { instance.reset(new TransitionsRepository()); });
+    return instance;
+}
+
+QStringList TransitionsRepository::assetDirs() const
+{
+    QStringList dirs = QStandardPaths::locateAll(QStandardPaths::AppDataLocation, QStringLiteral("transitions"), QStandardPaths::LocateDirectory);
+
+    dirs << qtDataDir(QStringLiteral("transitions"));
+
+    return dirs;
+}
+
+void TransitionsRepository::parseType(Mlt::Properties *metadata, Info &res)
+{
+    Mlt::Properties tags(mlt_properties(metadata->get_data("tags")));
+    bool audio = QString(tags.get(0)) == QLatin1String("Audio");
+
+    if (getSingleTrackTransitions().contains(res.id)) {
+        if (audio) {
+            res.type = AssetListType::AssetType::AudioTransition;
+        } else {
+            res.type = AssetListType::AssetType::VideoTransition;
+        }
+    } else {
+        if (audio) {
+            res.type = AssetListType::AssetType::AudioComposition;
+        } else {
+            res.type = AssetListType::AssetType::VideoComposition;
+        }
+    }
+}
+
+QSet<QString> TransitionsRepository::getSingleTrackTransitions()
+{
+    // Disabled until same track transitions is implemented
+    return {QStringLiteral("slide"), QStringLiteral("dissolve"), QStringLiteral("wipe"), QStringLiteral("mix")};
+}
+
+QStringList TransitionsRepository::assetIncludedPath() const
+{
+    QStringList results = {QStringLiteral(":data/included_transitions.txt")};
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/effects/"));
+    if (dir.exists() && dir.exists(QStringLiteral("included_transitions.txt"))) {
+        results << dir.absoluteFilePath(QStringLiteral("included_transitions.txt"));
+    }
+    return results;
+}
+
+QStringList TransitionsRepository::assetExcludedPath() const
+{
+    return {QStringLiteral(":data/excluded_transitions.txt")};
+}
+
+QStringList TransitionsRepository::assetHiddenPath() const
+{
+    return {QStringLiteral(":data/hidden_transitions.txt")};
+}
+
+QString TransitionsRepository::assetPreferredListPath() const
+{
+    // Transitions do not have "Main" filter implemented, so we return an empty
+    // string instead of path to a file with that list
+    return QLatin1String("");
+}
+
+std::unique_ptr<Mlt::Transition> TransitionsRepository::getTransition(const QString &transitionId) const
+{
+    qDebug() << "===== QUERYING TRANSITION: " << transitionId;
+    Q_ASSERT(exists(transitionId));
+    QString service_name = m_assets.at(transitionId).mltId;
+    // We create the Mlt element from its name
+    auto transition = std::make_unique<Mlt::Transition>(pCore->getProjectProfile(), service_name.toUtf8().constData());
+    transition->set("wunjo_id", transitionId.toUtf8().constData());
+    return transition;
+}
+
+bool TransitionsRepository::isAudio(const QString &transitionId) const
+{
+    auto type = getType(transitionId);
+    return type == AssetListType::AssetType::AudioComposition || type == AssetListType::AssetType::AudioTransition;
+}
+
+bool TransitionsRepository::isComposition(const QString &transitionId) const
+{
+    auto type = getType(transitionId);
+    return type == AssetListType::AssetType::AudioComposition || type == AssetListType::AssetType::VideoComposition ||
+           type == AssetListType::AssetType::VideoShortComposition;
+}
+
+bool TransitionsRepository::isLuma(const QString &transitionId) const
+{
+    auto type = getType(transitionId);
+    return type == AssetListType::AssetType::LumaTransition;
+}
+
+const QString TransitionsRepository::getCompositingTransition()
+{
+    if (WunjoSettings::gpu_accel()) {
+        return QStringLiteral("movit.overlay");
+    }
+    if (WunjoSettings::preferredcomposite().isEmpty() || WunjoSettings::preferredcomposite() == i18n("auto")) {
+        // If auto, default to qtblend
+        QString qtblendTransiton = QStringLiteral("qtblend");
+        if (exists(qtblendTransiton)) {
+            return qtblendTransiton;
+        }
+    } else if (exists(WunjoSettings::preferredcomposite())) {
+        return WunjoSettings::preferredcomposite();
+    }
+    QStringList trackComposites = WunjoSettings::compositingList();
+    while (!trackComposites.isEmpty()) {
+        const QString &cmp = trackComposites.takeFirst();
+        if (exists(cmp)) {
+            qDebug() << ":::: USING TRACK COMPOSITING: " << cmp;
+            return cmp;
+        }
+    }
+    qWarning() << "no compositing found";
+    return QString();
+}

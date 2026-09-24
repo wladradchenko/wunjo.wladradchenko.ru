@@ -1,0 +1,5 @@
+#pragma once
+
+// define your version_libinterface
+#define MLT_DATADIR "@MLT_DATADIR@"
+#define MLT_MELTBIN "@MLT_MELTBIN@"

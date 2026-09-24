@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.elbg" id="avfilter.elbg">
+    <name>Posterize (ELBG)</name>
+    <description>Apply posterize effect using the ELBG algorithm</description>
+    <author>libavfilter</author>
+    <parameter type="constant" name="av.l" min="1" max="50" default="9" suffix="colors">
+        <name>Codebook Length</name>
+    </parameter>
+    <parameter type="constant" name="av.n" min="1" max="10" default="1">
+        <name>Steps</name>
+    </parameter>
+    <parameter type="bool" name="av.pal8" min="0" max="1" default="0">
+        <name>Pal8 Output</name>
+    </parameter>
+    <parameter type="bool" name="av.use_alpha" min="0" max="1" default="0">
+        <name>Include Alpha Values</name>
+    </parameter>
+</effect>

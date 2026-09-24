@@ -1,0 +1,203 @@
+/*
+    SPDX-FileCopyrightText: 2017 Nicolas Carion
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#include "effectlistwidget.hpp"
+#include "../model/effectfilter.hpp"
+#include "../model/effecttreemodel.hpp"
+#include "utils/uiutils.h"
+
+#include <KActionCategory>
+#include <KIO/FileCopyJob>
+#include <KMessageBox>
+#include <KRecentDirs>
+
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHeaderView>
+#include <QLineEdit>
+#include <QMenu>
+#include <QStandardPaths>
+#include <QTextEdit>
+
+#include <memory>
+#include <qsplitter.h>
+#include <qstackedwidget.h>
+
+EffectListWidget::EffectListWidget(QAction *includeList, QAction *tenBit, QWidget *parent)
+    : AssetListWidget(true, includeList, tenBit, parent)
+{
+    QString effectCategory = QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("effectscategory.rc"));
+    m_model = EffectTreeModel::construct(effectCategory, this);
+    m_proxyModel = std::make_unique<EffectFilter>(this);
+    m_proxyModel->setSourceModel(m_model.get());
+    m_proxyModel->setSortRole(EffectTreeModel::NameRole);
+    setFilterType(QString());
+    m_proxyModel->sort(0, Qt::AscendingOrder);
+    m_effectsTree->setModel(m_proxyModel.get());
+    m_effectsTree->setColumnHidden(1, true);
+    m_effectsTree->setColumnHidden(2, true);
+    m_effectsTree->setColumnHidden(3, true);
+    m_effectsTree->setColumnHidden(4, true);
+    m_effectsTree->setColumnHidden(5, true);
+    m_effectsTree->header()->setStretchLastSection(true);
+    QItemSelectionModel *sel = m_effectsTree->selectionModel();
+    connect(sel, &QItemSelectionModel::currentChanged, this, &AssetListWidget::updateAssetInfo);
+
+    if (!WunjoSettings::showEffectsInfo()) {
+        m_viewSplitter->setSizes({50, 0});
+    } else {
+        const QByteArray restoreData = WunjoSettings::effectsInfoHeight().toLatin1();
+        if (restoreData.isEmpty()) {
+            m_viewSplitter->setSizes({50, 20});
+            const QByteArray splitterData = m_viewSplitter->saveState();
+            WunjoSettings::setEffectsInfoHeight(QString::fromLatin1(splitterData));
+        } else {
+            // Use a single-shot timer to restore the state
+            QTimer::singleShot(0, this, [this, restoreData]() { m_viewSplitter->restoreState(restoreData); });
+        }
+    }
+    connect(m_viewSplitter, &QSplitter::splitterMoved, this, [this]() {
+        const QByteArray splitterData = m_viewSplitter->saveState();
+        WunjoSettings::setEffectsInfoHeight(QString::fromLatin1(splitterData));
+    });
+}
+
+EffectListWidget::~EffectListWidget() {}
+
+void EffectListWidget::switchSplitter(bool enable)
+{
+    WunjoSettings::setShowEffectsInfo(enable);
+    if (enable) {
+        const QByteArray restoreData = WunjoSettings::effectsInfoHeight().toLatin1();
+        if (restoreData.isEmpty()) {
+            m_viewSplitter->setSizes({50, 20});
+            const QByteArray saveData = m_viewSplitter->saveState();
+            WunjoSettings::setEffectsInfoHeight(QString::fromLatin1(saveData));
+        } else {
+            m_viewSplitter->restoreState(restoreData);
+        }
+    } else {
+        m_viewSplitter->setSizes({50, 0});
+    }
+}
+
+void EffectListWidget::setFilterType(const QString &type)
+{
+    if (type == QLatin1String("video")) {
+        static_cast<EffectFilter *>(m_proxyModel.get())->setFilterType(true, AssetListType::AssetType::Video);
+    } else if (type == QLatin1String("audio")) {
+        static_cast<EffectFilter *>(m_proxyModel.get())->setFilterType(true, AssetListType::AssetType::Audio);
+    } else if (type == QLatin1String("custom")) {
+        static_cast<EffectFilter *>(m_proxyModel.get())->setFilterType(true, AssetListType::AssetType::Custom);
+    } else if (type == QLatin1String("favorites")) {
+        static_cast<EffectFilter *>(m_proxyModel.get())->setFilterType(true, AssetListType::AssetType::Favorites);
+    } else {
+        static_cast<EffectFilter *>(m_proxyModel.get())->setFilterType(false, AssetListType::AssetType::Preferred);
+    }
+}
+
+bool EffectListWidget::isAudio(const QString &assetId) const
+{
+    return EffectsRepository::get()->isAudioEffect(assetId);
+}
+
+QString EffectListWidget::getMimeType(const QString &assetId) const
+{
+    Q_UNUSED(assetId);
+    return QStringLiteral("wunjo/effect");
+}
+
+void EffectListWidget::reloadCustomEffectIx(const QModelIndex &index)
+{
+    static_cast<EffectTreeModel *>(m_model.get())->reloadEffectFromIndex(m_proxyModel->mapToSource(index));
+    m_proxyModel->sort(0, Qt::AscendingOrder);
+}
+
+void EffectListWidget::reloadCustomEffect(const QString &path)
+{
+    static_cast<EffectTreeModel *>(m_model.get())->reloadEffect(path);
+    m_proxyModel->sort(0, Qt::AscendingOrder);
+}
+
+void EffectListWidget::removePluginEffect(const QString &id)
+{
+    static_cast<EffectTreeModel *>(m_model.get())->removeEffect(id);
+}
+
+void EffectListWidget::reloadTemplates()
+{
+    static_cast<EffectTreeModel *>(m_model.get())->reloadTemplates();
+    m_proxyModel->sort(0, Qt::AscendingOrder);
+}
+
+void EffectListWidget::reloadEffectMenu(QMenu *effectsMenu, KActionCategory *effectActions)
+{
+    m_model->reloadAssetMenu(effectsMenu, effectActions);
+}
+
+void EffectListWidget::editCustomAsset(const QModelIndex &index)
+{
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    QString currentName = getName(index);
+    QString desc = getDescription(index);
+    // Strip effect Name
+    if (desc.contains(QLatin1Char('('))) {
+        desc = desc.section(QLatin1Char('('), 0, -2).simplified();
+    }
+    auto *effectName = new QLineEdit(currentName, &dialog);
+    auto *descriptionBox = new QTextEdit(desc, &dialog);
+    form.addRow(i18n("Name : "), effectName);
+    form.addRow(i18n("Comments : "), descriptionBox);
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    if (dialog.exec() == QDialog::Accepted) {
+        QString name = effectName->text();
+        QString enteredDescription = descriptionBox->toPlainText();
+        if (name.trimmed().isEmpty() && enteredDescription.trimmed().isEmpty()) {
+            return;
+        }
+        m_model->editCustomAsset(name, enteredDescription, m_proxyModel->mapToSource(index));
+    }
+}
+
+void EffectListWidget::exportCustomEffect(const QModelIndex &index)
+{
+    const QString assetId = m_model->data(m_proxyModel->mapToSource(index), AssetTreeModel::IdRole).toString();
+    if (assetId.isEmpty()) {
+        return;
+    }
+
+    QString filter = QStringLiteral("%1 (*.xml);;%2 (*)").arg(i18n("Wunjo Effect definitions"), i18n("All Files"));
+    QString startFolder = KRecentDirs::dir(QStringLiteral(":WunjoExportCustomEffect"));
+    QUrl source = QUrl::fromLocalFile(EffectsRepository::get()->getCustomPath(assetId));
+    startFolder.append(source.fileName());
+
+    QString filename = UiUtils::getSaveFileName(this, i18nc("@title:window", "Export Custom Effect"), startFolder, filter, QStringLiteral(".xml"));
+    QUrl target = QUrl::fromLocalFile(filename);
+
+    if (source.isValid() && target.isValid()) {
+        KRecentDirs::add(QStringLiteral(":WunjoExportCustomEffect"), target.adjusted(QUrl::RemoveFilename).toLocalFile());
+        KIO::FileCopyJob *copyjob = KIO::file_copy(source, target);
+        if (!copyjob->exec()) {
+            KMessageBox::error(this, i18n("Unable to write to file %1", target.toLocalFile()));
+        }
+    }
+}
+
+bool EffectListWidget::isMasterOnly(const QString &assetId) const
+{
+    return static_cast<EffectTreeModel *>(m_model.get())->isMasterOnly(assetId);
+}
+
+void EffectListWidget::switchTenBitFilter()
+{
+    WunjoSettings::setEffectsFilter(m_filterButton->isChecked());
+    m_proxyModel->invalidate();
+}

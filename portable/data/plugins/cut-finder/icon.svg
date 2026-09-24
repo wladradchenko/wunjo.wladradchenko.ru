@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- a strip of film cut in two: the plugin finds where the cut belongs -->
+  <path d="M3 6h6v12H3z" />
+  <path d="M15 6h6v12h-6z" />
+  <path d="M12 3v3" />
+  <path d="M12 10.5v3" />
+  <path d="M12 18v3" />
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.tmix" id="avfilter.tmix">
+    <name>Temporal frames Mixer</name>
+    <description>Mix successive video frames</description>
+    <author>libavfilter</author>
+    <parameter type="constant" name="av.frames" default="3" min="1" max="128" factor="1" suffix="frames">
+        <name>Frames to mix</name>
+    </parameter>
+</effect>

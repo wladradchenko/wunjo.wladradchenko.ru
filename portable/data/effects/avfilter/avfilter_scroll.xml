@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.scroll" id="avfilter.scroll">
+    <name>Scroll</name>
+    <description>Pick median pixel from certain rectangle defined by radius.</description>
+    <author>libavfilter</author>
+    <parameter type="animated" name="av.h" min="-1000" max="1000" default="0" factor="1000">
+        <name>Horizontal Scrolling Speed</name>
+    </parameter>
+    <parameter type="animated" name="av.v" min="-1000" max="1000" default="0" factor="1000">
+        <name>Vertical Scrolling Speed</name>
+    </parameter>
+    <parameter type="constant" name="av.hpos" min="0" max="%width" default="0" factor="%width">
+        <name>Initial Horizontal Position</name>
+    </parameter>
+    <parameter type="constant" name="av.vpos" min="0" max="%height" default="0" factor="%height">
+        <name>Initial Vertical Position</name>
+    </parameter>
+</effect>

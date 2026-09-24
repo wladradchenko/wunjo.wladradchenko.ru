@@ -104,13 +104,108 @@ jobs:
             exit 1
           fi
 
+      # KDE's macOS binary cache lags its blueprints — at the time of writing it
+      # carries KF 6.28.0 while the recipes ask for 6.29.0 — so the frameworks
+      # are compiled here rather than downloaded, and that is where this bites.
+      #
+      # Craft defaults MacDeploymentTarget to 13, but libc++ in the macOS 14 SDK
+      # marks the floating-point std::to_chars as "introduced in macOS 13.3".
+      # kcodecs 6.29 uses std::format on floats, so with a target below 13.3
+      # every translation unit that reaches <format> fails to compile. Raising
+      # it costs nothing against the cache: a deployment target is a minimum-OS
+      # check, not an ABI, so a 13.3 build links against the prebuilt 13.0 Qt
+      # exactly as before. It does mean the .dmg wants macOS 13.3 rather than
+      # 13.0.
+      - name: Raise the macOS deployment target
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          ini = Path(os.environ["CRAFT_ROOT"]) / "etc" / "CraftSettings.ini"
+          lines = ini.read_text(encoding="utf-8").splitlines()
+          section = None
+          header = None
+          for i, line in enumerate(lines):
+              match = re.match(r"^\[(.+)\]\s*$", line)
+              if match:
+                  section = match.group(1)
+                  if section == "General":
+                      header = i
+              elif section == "General" and re.match(r"^[#;]?\s*MacDeploymentTarget\s*=", line, re.I):
+                  lines[i] = "MacDeploymentTarget = 13.3"
+                  break
+          else:
+              if header is None:
+                  raise SystemExit("no [General] section in CraftSettings.ini")
+              lines.insert(header + 1, "MacDeploymentTarget = 13.3")
+
+          ini.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+          grep -n "MacDeploymentTarget" "$CRAFT_ROOT/etc/CraftSettings.ini"
+
       - name: Register the Wunjo blueprint
         run: python3 portable/packaging/craft/register-blueprint.py
 
+      # "/.buildTests=False" switches off -DBUILD_TESTING for every package, the
+      # leading "/" being the root of the blueprint tree: Craft looks an option
+      # up on a package and walks to its parent when unset (options.py:413), so
+      # setting it there reaches all of them. It is what KDE's own CI config
+      # does, and for the same two reasons.
+      #
+      # It is needed, not merely faster: KIO 6.29's autotests do not compile —
+      # kfilewidgettest.cpp constructs LocationTestItem with two arguments and
+      # the struct has no such constructor — and a framework's test suite
+      # failing takes the whole dependency build with it. We do not run these
+      # tests and have no reason to compile them.
+      #
+      # It also cannot cost a cache hit: buildTests is registered with
+      # compatible=True, so the binary cache lookup skips it entirely.
       - name: Build dependencies
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --install-deps --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --install-deps \
+                --options "/.buildTests=False" \
+                --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+
+      # ── kconfigwidgets without std::pmr ────────────────────────────────
+      # KRecentFilesAction uses a std::pmr arena to de-duplicate the recent
+      # files list. std::pmr lives in the libc++ dylib and Apple shipped it in
+      # macOS 14, so the framework references a symbol that does not exist on
+      # the 13.3 this build targets: the application dies in dyld before main()
+      # on any older Mac, which is the whole thing a deployment target is set to
+      # prevent. It shipped exactly that way once — "Symbol not found:
+      # __ZNSt3__13pmr15memory_resourceD2Ev" on a user's macOS 13.4.
+      #
+      # The compiler did not object, so libc++'s availability annotations are
+      # switched off somewhere in this toolchain and it will not object to the
+      # next one either. That is what the disk image check is for.
+      #
+      # AFTER --install-deps, not before, and the reason is worth keeping: these
+      # are explicit phases, and naming a phase bypasses the dependency
+      # resolution that would otherwise build what this needs first. Run before
+      # the tree exists, configure stops at "Could NOT find ECM" — nothing is in
+      # the prefix yet. Run here, everything it links against is already there
+      # and this simply replaces the cached copy.
+      #
+      # Rebuilding it afterwards is safe: the change is inside one .cpp, no
+      # header and no ABI moves, so anything already linked against the cached
+      # copy stays correct.
+      #
+      # --no-cache so it is our source that gets compiled rather than the same
+      # ready-made binary being pulled again, and buildTests off to match the
+      # step above.
+      - name: Build kconfigwidgets from patched source
+        run: |
+          source "$CRAFT_ROOT/craft/craftenv.sh"
+          craft --ci-mode --no-cache --fetch --unpack kconfigwidgets
+          python3 "$GITHUB_WORKSPACE/portable/packaging/craft/apply-source-patch.py" \
+                  src/krecentfilesaction.cpp \
+                  "$GITHUB_WORKSPACE/portable/packaging/craft/patches/kconfigwidgets-no-pmr.patch" \
+                  --gone pmr
+          craft --ci-mode --no-cache --options "/.buildTests=False" \
+                --compile --install --qmerge kconfigwidgets
 
       # Craft's own binary cache covers all but one package, so the tree is
       # mostly downloaded rather than compiled — but pulseaudio does build from
@@ -119,10 +214,30 @@ jobs:
         if: always()
         run: df -h / "$CRAFT_ROOT" 2>/dev/null || df -h
 
+      # Named phases, not just the package. --no-cache turns off the binary
+      # cache — where prebuilt packages are downloaded from — and says nothing
+      # about a package Craft already considers installed. With a restored cache
+      # that is exactly what wunjo is, so it was skipped and every source change
+      # quietly failed to reach the image: builds kept producing 3.0.0 after the
+      # version had been raised to 3.0.1, and the only way through was dropping
+      # the whole dependency cache and waiting an hour for it to rebuild.
+      #
+      # Asking for compile, install and qmerge by name does the work regardless
+      # of what is installed, which is what the patched kconfigwidgets step above
+      # relies on too.
       - name: Build Wunjo Make
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --no-cache --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" \
+                --compile --install --qmerge wunjo
+
+      # What ships is the MCP server, so this is what there is to check: can an
+      # agent outside the editor find it and talk to it on this machine. The
+      # model-side checks that used to run here went with the model — it is a
+      # plugin now, published separately, and nothing in this build contains it.
+      - name: Check MCP on macOS
+        run: |
+          python3 "$GITHUB_WORKSPACE/tests/mcp/check_socket.py"
 
       # ── signing ────────────────────────────────────────────────────────
       # Skipped entirely without an Apple Developer ID, and the build still
@@ -170,18 +285,27 @@ jobs:
         if: ${{ steps.signing.outputs.identity != '' }}
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'wunjo.app' -type d | head -1)
-          if [ -z "$bundle" ]; then echo "::error::wunjo.app not found under $CRAFT_ROOT"; exit 1; fi
+          # Named exactly, not '*.app': CraftRoot carries dev-utils/cmake-base/
+          # CMake.app, and a wildcard here signs the wrong thing.
+          bundle=$(find "$CRAFT_ROOT" -maxdepth 4 -name 'Wunjo Make.app' -type d | head -1)
+          if [ -z "$bundle" ]; then echo "::error::'Wunjo Make.app' not found under $CRAFT_ROOT"; exit 1; fi
           echo "signing $bundle"
           # Hardened runtime is a notarisation requirement, not an option.
           codesign --deep --force --timestamp --options runtime \
                    --sign "${{ steps.signing.outputs.identity }}" "$bundle"
           codesign --verify --deep --strict --verbose=2 "$bundle"
 
+      # --output-on-failure is what makes a failed package step say anything.
+      # CraftCommands runs the package action under a buffered StageLogger and
+      # only dumps that buffer when this is set, so without it the run ends at
+      # "Checking for absolute library paths in package..." and the reason —
+      # whether a bad dylib reference or the ad-hoc codesign that follows it —
+      # never reaches the log. KDE's own CI sets the same thing.
       - name: Package
         run: |
           source "$CRAFT_ROOT/craft/craftenv.sh"
-          craft --ci-mode --package --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
+          craft --ci-mode --output-on-failure --package \
+                --options "wunjo.srcDir=$GITHUB_WORKSPACE/portable" wunjo
 
       - name: Collect the disk image
         run: |
@@ -192,6 +316,54 @@ jobs:
           find "$dir" \( -name '*.dmg' -o -name '*.7z' -o -name '*.sha256' \) \
                -exec cp {} "$GITHUB_WORKSPACE/packages/" \;
           ls -la "$GITHUB_WORKSPACE/packages/"
+
+      # ── is the disk image any good? ────────────────────────────────────
+      # Checked here, on the image itself, and not on the bundle sitting in
+      # CraftRoot after the build. Those are not the same thing: until the
+      # package step runs, the application's own data — the plugins, the MCP
+      # server — is still in Craft's prefix and not inside Contents/Resources,
+      # so a check run earlier reads a bundle no user will ever have. It reports
+      # missing files that are not missing, and worse, passes an ABI check
+      # against a set of libraries that is not the shipped one.
+      #
+      # Before notarisation, so an image that cannot start does not go to Apple,
+      # and before the upload, so nobody installs it and loses an evening.
+      #
+      # The three answer different questions. The ABI check is the one that
+      # catches what actually shipped: this runner is newer than the macOS being
+      # targeted, so a symbol introduced after that target resolves here and
+      # dies on a user's Mac. Starting the application cannot see that. Reading
+      # the minimum each binary declares can.
+      - name: Check the disk image
+        run: |
+          dmg=$(ls "$GITHUB_WORKSPACE"/packages/*.dmg | head -1)
+          if [ -z "$dmg" ]; then echo "::error::no .dmg in packages/"; exit 1; fi
+          echo "mounting $dmg"
+          # -plist and not the plain output: the mount point carries the volume
+          # name, the volume is going to be called "Wunjo Make", and a name with
+          # a space in it is not the last field of anything.
+          #
+          # loads() on bytes already read, not load() on the pipe: plistlib
+          # rewinds the stream to sniff the format, and a pipe cannot be
+          # rewound.
+          mount=$(hdiutil attach -nobrowse -readonly -mountrandom /tmp -plist "$dmg" | \
+                  python3 -c "import plistlib,sys; p=[e['mount-point'] for e in plistlib.loads(sys.stdin.buffer.read())['system-entities'] if e.get('mount-point')]; print(p[0] if p else '')")
+          if [ -z "$mount" ]; then echo "::error::could not mount $dmg"; exit 1; fi
+          # The image holds a folder with the bundle inside it, so two levels.
+          bundle=$(find "$mount" -maxdepth 2 -name 'Wunjo Make.app' -type d | head -1)
+          if [ -z "$bundle" ]; then
+            echo "::error::no 'Wunjo Make.app' on the image; it holds:"
+            ls -la "$mount"
+            hdiutil detach "$mount" -quiet || true
+            exit 1
+          fi
+          echo "checking $bundle"
+          status=0
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_abi.py"      "$bundle" || status=1
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_identity.py" "$bundle" || status=1
+          python3 "$GITHUB_WORKSPACE/tests/macos/check_launch.py"   "$bundle" || status=1
+          hdiutil detach "$mount" -quiet || true
+          exit $status
 
       # Signing proves who built it; notarisation is Apple confirming they
       # scanned it. Gatekeeper wants both, and they are separate operations —

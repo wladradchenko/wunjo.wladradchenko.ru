@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.threshold0r" id="frei0r.threshold0r">
+    <name>Threshold</name>
+    <description>Thresholds a source image</description>
+    <author>Jean-Sebastien Senecal</author>
+    <parameter type="animated" name="Threshold" min="0" max="255" default="0.2" factor="255">
+        <name>Threshold</name>
+    </parameter>
+</effect>

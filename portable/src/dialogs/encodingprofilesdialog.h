@@ -1,0 +1,89 @@
+/*
+    SPDX-FileCopyrightText: 2008 Jean-Baptiste Mardelle <jb@kdenlive.org>
+
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include <KConfigGroup>
+
+#include "definitions.h"
+#include "ui_manageencodingprofile_ui.h"
+
+class KMessageWidget;
+
+class EncodingProfilesManager
+{
+
+public:
+    enum ProfileType { ProxyClips = 0, ProxyAlphaClips, TimelinePreview, V4LCapture, ScreenCapture, DecklinkCapture };
+
+    static QString configGroupName(ProfileType type);
+};
+
+class EncodingProfilesDialog : public QDialog, Ui::ManageEncodingProfile_UI
+{
+    Q_OBJECT
+
+public:
+    explicit EncodingProfilesDialog(EncodingProfilesManager::ProfileType profileType, QWidget *parent = nullptr);
+    ~EncodingProfilesDialog() override;
+
+private Q_SLOTS:
+    void slotLoadProfiles();
+    void slotShowParams();
+    void slotDeleteProfile();
+    void slotAddProfile();
+    void slotEditProfile();
+
+private:
+    KConfig *m_configFile;
+    KConfigGroup *m_configGroup;
+};
+
+class EncodingProfilesChooser : public QWidget
+{
+    Q_OBJECT
+
+public:
+    EncodingProfilesChooser(QWidget *parent, EncodingProfilesManager::ProfileType, bool showAutoItem = false, const QString &configname = {},
+                            bool native = true);
+    QString currentExtension();
+    QString currentParams();
+    void hideMessage();
+    /** @brief Only enable preview profiles with matching framerate */
+    virtual void filterPreviewProfiles(const QString & /*profile*/);
+
+public Q_SLOTS:
+    void slotUpdateProfile(int ix);
+
+protected:
+    QComboBox *m_profilesCombo;
+    EncodingProfilesManager::ProfileType m_type;
+    bool m_showAutoItem;
+    KMessageWidget *m_messageWidget;
+
+private:
+    QPlainTextEdit *m_info;
+
+private Q_SLOTS:
+    void slotManageEncodingProfile();
+    virtual void loadEncodingProfiles();
+};
+
+class EncodingTimelinePreviewProfilesChooser : public EncodingProfilesChooser
+{
+    Q_OBJECT
+
+public:
+    EncodingTimelinePreviewProfilesChooser(QWidget *parent, bool showAutoItem = false, const QString &defaultValue = {}, bool selectFromConfig = false);
+    /** @brief Only enable preview profiles with matching framerate */
+    void filterPreviewProfiles(const QString &profile) override;
+
+private Q_SLOTS:
+    void loadEncodingProfiles() override;
+
+Q_SIGNALS:
+    void currentIndexChanged();
+};

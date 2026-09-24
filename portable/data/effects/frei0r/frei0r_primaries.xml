@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="frei0r.primaries" id="frei0r.primaries">
+    <name context="Primaries Effect Name">Primaries</name>
+    <description>Reduce image to primary colors</description>
+    <author>Hedde Bosman</author>
+    <parameter type="animated" name="Factor" max="32" min="0" default="9" decimals="0">
+        <name>Factor</name>
+        <comment><![CDATA[Influence of mean pixel value]]></comment>
+    </parameter>
+</effect>

@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>
+SPDX-FileCopyrightText: none
+SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+ </author>
+ <class>ConfigEnv_UI</class>
+ <widget class="QWidget" name="ConfigEnv_UI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>582</width>
+    <height>782</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Proxy and Transcode Jobs</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="kcfg_nice_tasks">
+        <property name="text">
+         <string>Use lower CPU priority for proxy and transcode tasks</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="kcfg_proxythreads">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Concurrent threads:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Cached Data</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Wunjo will check this limit every 2 weeks. Set to zero to disable checking.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="kcfg_maxcachesize">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="suffix">
+         <string> MiB</string>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Warn if cached data exceeds:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="kcfg_showWelcome">
+     <property name="text">
+      <string>Show Welcome screen at startup</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="kcfg_checkForUpdate">
+     <property name="text">
+      <string>Check for updates</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="kcfg_usePowerManagement">
+     <property name="text">
+      <string>Prevent sleep when playing and rendering</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QCheckBox" name="dragFromTitlebarOnly">
+       <property name="text">
+        <string>Drag window from titlebar only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="KContextualHelpButton" name="kcontextualhelpbutton">
+       <property name="contextualHelpText">
+        <string>This will apply to all KDE applications using the Breeze style.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>MLT Environment</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>FFmpeg:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="KUrlRequester" name="ffmpegurl"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>FFplay:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="KUrlRequester" name="ffplayurl"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>FFprobe:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="KUrlRequester" name="ffprobeurl"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>MLT profiles folder:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="KUrlRequester" name="mltpathurl"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Melt path:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="KUrlRequester" name="rendererpathurl"/>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Default Folders</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Temporary files:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="KUrlRequester" name="tmppathurl"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>Capture folder:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="kcfg_capturetoprojectfolder">
+         <item>
+          <property name="text">
+           <string>Use default folder</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always use project folder</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always use custom folder</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always use a custom subfolder of project folder</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="kcfg_captureprojectsubfolder">
+           <property name="placeholderText">
+            <string>Subfolder of project folder</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KUrlRequester" name="capturefolderurl"/>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_15">
+         <property name="text">
+          <string>Library folder:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="kcfg_librarytodefaultfolder">
+         <property name="text">
+          <string>Use default folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="KUrlRequester" name="libraryfolderurl"/>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_16">
+         <property name="text">
+          <string>Folder for rendering, titles, scripts:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QComboBox" name="kcfg_videotodefaultfolder">
+         <item>
+          <property name="text">
+           <string>Use default folder</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always use project folder</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always use custom folder</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="KUrlRequester" name="videofolderurl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Default Apps</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Image editing:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="kcfg_defaultimageapp">
+           <property name="placeholderText">
+            <string>Path to image editing application</string>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="kp_image">
+           <property name="text">
+            <string>Change…</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="kcfg_defaultaudioapp">
+           <property name="placeholderText">
+            <string>Path to audio editing application</string>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="kp_audio">
+           <property name="text">
+            <string>Change…</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Audio editing:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="kcfg_glaxnimatePath">
+           <property name="placeholderText">
+            <string>Path to Glaxnimate executable</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="kp_anim">
+           <property name="text">
+            <string>Change…</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Animation editing:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLineEdit" name="kcfg_defaultvideoapp">
+           <property name="placeholderText">
+            <string>Path to video editor executable</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="kp_video">
+           <property name="text">
+            <string>Change…</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Video editing:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Mime types</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Additional clip MIME types</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="kcfg_addedExtensions">
+         <property name="placeholderText">
+          <string notr="true">*.mp4 *.mov</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Supported clip MIME types</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPlainTextEdit" name="supportedmimes">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QWidget</extends>
+   <header>kurlrequester.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KContextualHelpButton</class>
+   <extends>QToolButton</extends>
+   <header>kcontextualhelpbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>kcfg_proxythreads</tabstop>
+  <tabstop>kcfg_nice_tasks</tabstop>
+  <tabstop>kcfg_maxcachesize</tabstop>
+  <tabstop>tmppathurl</tabstop>
+  <tabstop>kcfg_showWelcome</tabstop>
+  <tabstop>kcfg_checkForUpdate</tabstop>
+  <tabstop>kcfg_usePowerManagement</tabstop>
+  <tabstop>dragFromTitlebarOnly</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>ffmpegurl</tabstop>
+  <tabstop>ffplayurl</tabstop>
+  <tabstop>ffprobeurl</tabstop>
+  <tabstop>mltpathurl</tabstop>
+  <tabstop>rendererpathurl</tabstop>
+  <tabstop>kcfg_captureprojectsubfolder</tabstop>
+  <tabstop>capturefolderurl</tabstop>
+  <tabstop>kcfg_librarytodefaultfolder</tabstop>
+  <tabstop>libraryfolderurl</tabstop>
+  <tabstop>kcfg_videotodefaultfolder</tabstop>
+  <tabstop>videofolderurl</tabstop>
+  <tabstop>kcfg_defaultimageapp</tabstop>
+  <tabstop>kp_image</tabstop>
+  <tabstop>kcfg_defaultaudioapp</tabstop>
+  <tabstop>kp_audio</tabstop>
+  <tabstop>kcfg_glaxnimatePath</tabstop>
+  <tabstop>kp_anim</tabstop>
+  <tabstop>kcfg_defaultvideoapp</tabstop>
+  <tabstop>kp_video</tabstop>
+  <tabstop>kcfg_addedExtensions</tabstop>
+  <tabstop>supportedmimes</tabstop>
+  <tabstop>kcfg_capturetoprojectfolder</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

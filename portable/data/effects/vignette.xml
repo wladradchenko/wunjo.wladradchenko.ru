@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="vignette" id="vignette">
+    <name>Vignette Effect</name>
+    <description>Adjustable Vignette</description>
+    <author>Marco Gittler</author>
+    <parameter type="bool" name="mode" default="0">
+        <name>Use cos instead of linear</name>
+    </parameter>
+    <parameter type="animatedfakepoint" name="wunjo:point">
+        <name>Center</name>
+        <parammap target="x" source="x" min="-%width" max="%width" default="0.5" factor="%width" />
+        <parammap target="y" source="y" min="-%height" max="%height" default="0.5" factor="%height" />
+
+    </parameter>
+    <parameter type="animated" name="radius" default="0.5" min="0" max="%width" factor="%width" intimeline="1">
+        <name>Radius</name>
+    </parameter>
+    <parameter type="animated" name="smooth" default="0.8" min="0" max="100" factor="100" decimals="1" suffix="%">
+        <name>Smooth</name>
+    </parameter>
+    <parameter type="animated" name="opacity" default="0" min="0" max="100" factor="100" decimals="1" suffix="%">
+        <name>Transparency</name>
+    </parameter>
+</effect>

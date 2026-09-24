@@ -1,0 +1,326 @@
+/*
+    SPDX-FileCopyrightText: 2011-2014 Meltytech LLC
+    SPDX-FileCopyrightText: 2011-2014 Dan Dennedy <dan@dennedy.org>
+
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include <QFont>
+#include <QMutex>
+#include <QOffscreenSurface>
+#include <QOpenGLContext>
+
+#include <QQuickWidget>
+#include <QRect>
+#include <QSemaphore>
+#include <QThread>
+#include <QTimer>
+
+#include "scopes/sharedframe.h"
+
+#include <mlt++/MltEvent.h>
+#include <mlt++/MltFilter.h>
+#include <mlt++/MltProfile.h>
+
+namespace Mlt {
+class Producer;
+class Consumer;
+} // namespace Mlt
+
+class RenderThread;
+class FrameRenderer;
+class MonitorProxy;
+class MarkerSortModel;
+
+typedef void *(*thread_function_t)(void *);
+
+/** @class VideoWidget
+ *  @brief QQuickView that renders an .
+ *
+ * Creates an MLT consumer and renders a GL view from the consumer. This pipeline is one of:
+ *
+ *    A. YUV gl texture w/o GPU filter acceleration
+ *    B. YUV gl texture multithreaded w/o GPU filter acceleration
+ *    C. RGB gl texture multithreaded w/ GPU filter acceleration and no sync
+ *    D. RGB gl texture multithreaded w/ GPU filter acceleration and sync
+ */
+class VideoWidget : public QQuickWidget
+{
+    Q_OBJECT
+    Q_PROPERTY(float zoom READ zoom NOTIFY zoomChanged)
+
+public:
+    friend class MonitorController;
+    friend class Monitor;
+    friend class MonitorProxy;
+
+    VideoWidget(int id, QObject *parent = nullptr);
+    virtual ~VideoWidget();
+
+    int requestedSeekPosition;
+    void createThread(RenderThread **thread, thread_function_t function, void *data);
+    void startGlsl();
+    void stopGlsl();
+    void clear();
+    void stopCapture();
+
+    int displayWidth() const { return m_rect.width(); }
+    void updateAudioForAnalysis();
+    int displayHeight() const { return m_rect.height(); }
+
+    QObject *videoWidget() { return this; }
+    QRectF rect() const { return m_rect; }
+    QRect effectRect() const { return m_effectRect; }
+    float zoom() const;
+    QPoint offset() const;
+    std::shared_ptr<Mlt::Consumer> consumer();
+    Mlt::Producer *producer();
+    QSize profileSize() const;
+    QRect displayRect() const;
+    /** @brief set to true if we want to emit a QImage of the frame for analysis */
+    bool sendFrameForAnalysis;
+    /** @brief delete and rebuild consumer, for example when external display is switched */
+    void resetConsumer(bool fullReset);
+    int droppedFrames() const;
+    void resetDrops();
+    bool checkFrameNumber(int pos, bool isPlaying);
+    /** @brief Return current timeline position */
+    int getCurrentPos() const;
+    /** @brief Requests a monitor refresh */
+    void requestRefresh(bool slowRefresh = false);
+    void setRulerInfo(int duration, const std::shared_ptr<MarkerSortModel> &model = nullptr);
+    MonitorProxy *getControllerProxy();
+    bool playZone(bool startFromIn = true, bool loop = false);
+    bool loopClip(std::pair<int, int> inOut);
+    void startConsumer();
+    void stop();
+    int rulerHeight() const;
+    /** @brief return current play producer's playing speed */
+    double playSpeed() const;
+    /** @brief Purge and restart consumer */
+    void restart();
+    /** @brief Returns current audio volume */
+    int volume() const;
+    /** @brief Set audio volume on consumer */
+    void setVolume(double volume);
+    /** @brief Returns current producer's duration in frames */
+    int duration() const;
+    /** @brief Set a property on the MLT consumer */
+    void setConsumerProperty(const QString &name, const QString &value);
+    /** @brief Clear consumer cache */
+    void purgeCache();
+    /** @brief Show / hide monitor ruler */
+    void switchRuler(bool show);
+    /** @brief Returns true if consumer is initialized */
+    bool isReady() const;
+    virtual const QStringList getGPUInfo();
+    /** @brief Returns the current frame as image */
+    QImage image() const;
+    /** @brief Enforce fixed image size */
+    void setFixedImageSize(const QSize fixedSize);
+    /** @brief Ensure image position on fixed size */
+    void updateImagePosition();
+    /** @brief Enable/disable timer to hide mouse cursor in fullscreen */
+    void enableMouseTimer(bool enable);
+
+protected:
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    /** @brief Update producer, should ONLY be called from monitor
+     * @param producer
+     * @param isActive
+     * @param position If == 0 producer position will be used.
+     * If == -1 consumer position will be used if possible.
+     * If == -2 position will not be set.
+     */
+    int setProducer(const std::shared_ptr<Mlt::Producer> &producer, bool isActive, int position);
+    int setProducer(const QString &file);
+    /** @brief Prevent monitor refresh while processing a change in the displayed clip */
+    void refreshRect();
+    QString frameToTime(int frames) const;
+
+public Q_SLOTS:
+    virtual void initialize();
+    virtual void beforeRendering(){};
+    virtual void renderVideo();
+    virtual void onFrameDisplayed(const SharedFrame &frame);
+    void requestSeek(int position, bool noAudioScrub = false);
+    void setZoom(float zoom, bool force = false);
+    void setOffsetX(int horizontalScrollValue, int horizontalScrollMaximum, int verticalScrollBarWidth);
+    void setOffsetY(int verticalScrollValue, int verticalScrollMaximum, int horizontalScrollBarHeight);
+    void slotZoom(bool zoomIn);
+    void slotZoomReset();
+    void releaseAnalyse();
+    bool switchPlay(bool play, double speed = 1.0);
+    void reloadProfile();
+    /** @brief Update MLT's consumer scaling
+     *  @returns true is scaling was changed
+     */
+    bool updateScaling();
+    /** @brief Update aspect ration and colorspace from current project, to be used for mirror monitor */
+    void resetAspect();
+
+Q_SIGNALS:
+    void frameDisplayed(const SharedFrame &frame);
+    void frameRendered(int pos);
+    void imageReady();
+    void dragStarted();
+    void seekTo(int x);
+    void gpuNotSupported();
+    void started();
+    void paused();
+    void playing();
+    void zoomChanged(float zoomRatio);
+    void monitorPlay();
+    void switchFullScreen(bool minimizeOnly = false);
+    void mouseSeek(int eventDelta, uint modifiers);
+    void startDrag();
+    void analyseFrame(const QImage &);
+    void showContextMenu(const QPoint &);
+    void lockMonitor(bool);
+    void passKeyEvent(QKeyEvent *);
+    void panView(const QPoint &diff);
+    void reconnectWindow();
+
+protected:
+    // TODO: MTL has lock/unlock of individual nodes. Use those.
+    // keeping this for refactoring ease.
+    QMutex m_mltMutex;
+    std::shared_ptr<Mlt::Consumer> m_consumer;
+    std::shared_ptr<Mlt::Producer> m_producer;
+    int m_id;
+    /** @brief The height of the qml ruler */
+    int m_rulerHeight;
+    /** @brief The height of the qml ruler and audio thumbs */
+    int m_displayRulerHeight;
+    int m_maxTextureSize;
+    /** @brief For some reason on Qt6 fullscreen switch, image position is not correctly updated, so use this to track state */
+    bool refreshZoom{false};
+    bool m_fullScreen{false};
+    SharedFrame m_sharedFrame;
+    bool m_sendFrame;
+    QSemaphore m_analyseSem;
+    float m_zoom;
+    QRectF m_rect;
+    QPointF m_monitorOffset;
+    QSize m_profileSize;
+    QMutex m_mutex;
+    bool m_isInitialized{false};
+    int m_maxProducerPosition{0};
+    bool m_nearestNeighborInterpolation{false};
+
+    /** @brief adjust monitor ruler size (for example if we want to display audio thumbs permanently) */
+    virtual void updateRulerHeight(int addedHeight);
+
+private:
+    QRect m_effectRect;
+    QPoint m_panStart;
+    QPoint m_dragStart;
+    QSemaphore m_initSem;
+    QTimer m_mouseTimer;
+    bool m_qmlEvent;
+    bool m_swallowDrop{false};
+    int m_bckpMax;
+    QSize m_fixedSize;
+    std::unique_ptr<Mlt::Filter> m_glslManager;
+    std::unique_ptr<Mlt::Event> m_threadStartEvent;
+    std::unique_ptr<Mlt::Event> m_threadStopEvent;
+    std::unique_ptr<Mlt::Event> m_threadCreateEvent;
+    std::unique_ptr<Mlt::Event> m_threadJoinEvent;
+    std::unique_ptr<Mlt::Event> m_displayEvent;
+    FrameRenderer *m_frameRenderer;
+    QTimer m_refreshTimer;
+    int m_colorSpace;
+    double m_dar;
+    bool m_isZoneMode;
+    bool m_isLoopMode;
+    int m_loopIn;
+    int m_loopOut;
+    QPoint m_offset;
+    MonitorProxy *m_proxy;
+    std::unique_ptr<RenderThread> m_renderThread;
+    std::shared_ptr<Mlt::Producer> m_blackClip;
+    static void on_frame_show(mlt_consumer, VideoWidget *widget, mlt_event_data);
+    static void on_frame_render(mlt_consumer, VideoWidget *widget, mlt_frame frame);
+    /*static void on_gl_frame_show(mlt_consumer, VideoWidget *widget, mlt_event_data data);
+    static void on_gl_nosync_frame_show(mlt_consumer, VideoWidget *widget, mlt_event_data data);*/
+
+    void refreshSceneLayout();
+    void resetZoneMode();
+    bool initGPUAccel();
+    void disableGPUAccel();
+    /** @brief Restart consumer, keeping preview scaling settings */
+    bool restartConsumer();
+    /** @brief Play between in and out
+     *  @param in the in point for loop
+     *  @param out the out point for loop
+     *  @param startFromIn if true, we will seek to in before starting to play
+     *  @param loop if true, we loop the zone until user pauses it
+     *  @param loop if true, we seek to zone start when reaching end
+     */
+    bool playZone(int in, int out, bool startFromIn, bool loop, bool zoneMode);
+    bool isPaused() const;
+    void pause();
+    /** @brief Update the producer speed, and sync the monitorproxy's speed */
+    void setProducerSpeed(double speed);
+
+private Q_SLOTS:
+    void resizeVideo(int width, int height);
+    int reconfigure();
+    void refresh();
+    void switchRecordState(bool on);
+    /** @brief Enforce a zoom refresh, can be useful when switching to/from fullscreen to adjust image size/position */
+    void forceRefreshZoom();
+    /** @brief Hide cursor on inactivity over monitor */
+    void blankCursor();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+};
+
+class RenderThread : public QThread
+{
+    Q_OBJECT
+public:
+    RenderThread(thread_function_t function, void *data);
+    ~RenderThread();
+
+protected:
+    void run() override;
+
+private:
+    thread_function_t m_function;
+    void *m_data;
+    std::unique_ptr<QOpenGLContext> m_context;
+    std::unique_ptr<QOffscreenSurface> m_surface;
+};
+
+class FrameRenderer : public QThread
+{
+    Q_OBJECT
+public:
+    explicit FrameRenderer();
+    ~FrameRenderer();
+    QSemaphore *semaphore() { return &m_semaphore; }
+    SharedFrame getDisplayFrame();
+    Q_INVOKABLE void showFrame(Mlt::Frame frame);
+    void requestImage();
+    QImage image() const { return m_image; }
+
+Q_SIGNALS:
+    void frameDisplayed(const SharedFrame &frame);
+    void imageReady();
+
+private:
+    QSemaphore m_semaphore;
+    SharedFrame m_displayFrame;
+    bool m_imageRequested;
+    QImage m_image;
+};

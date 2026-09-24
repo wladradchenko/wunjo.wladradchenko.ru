@@ -1,0 +1,35 @@
+/*
+    SPDX-FileCopyrightText: 2017 Nicolas Carion
+    SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
+
+#pragma once
+
+#include "assets/assetlist/model/assettreemodel.hpp"
+
+#include <QReadWriteLock>
+
+/** @brief This class represents a transition hierarchy to be displayed as a tree
+ */
+class TreeItem;
+class TransitionTreeModel : public AssetTreeModel
+{
+
+protected:
+    explicit TransitionTreeModel(QObject *parent);
+
+public:
+    /** @param flat if true, then the categories are not created */
+    static std::shared_ptr<TransitionTreeModel> construct(bool flat = false, QObject *parent = nullptr);
+    void reloadAssetMenu(QMenu *effectsMenu, KActionCategory *effectActions) override;
+    void setFavorite(const QModelIndex &index, bool favorite, bool isEffect) override;
+    void deleteEffect(const QModelIndex &index) override;
+    void editCustomAsset(const QString &newName, const QString &newDescription, const QModelIndex &index) override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+
+public Q_SLOTS:
+    void reparseUpdatedAssets() override;
+
+private:
+    mutable QReadWriteLock m_lock; // This is a lock that ensures safety in case of concurrent access
+};

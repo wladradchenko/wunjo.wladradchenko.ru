@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE kpartgui>
+<effect xmlns="https://www.wunjo.online" tag="avfilter.yadif" id="avfilter.yadif">
+    <name>Yadif Deinterlacer</name>
+    <description>Deinterlace the input video ("yadif" means "yet another deinterlacing filter")</description>
+    <author>libavfilter</author>
+    <parameter type="list" name="av.mode" default="0" paramlist="0;1;2;3">
+        <name>Mode</name>
+        <paramlistdisplay>Send frame,Send field,Send frame nospatial,Send field nospatial</paramlistdisplay>
+    </parameter>
+    <parameter type="list" name="av.parity" default="-1" paramlist="0;1;-1">
+        <name>Parity</name>
+        <paramlistdisplay>Top field first,Bottom field first,Auto</paramlistdisplay>
+    </parameter>
+    <parameter type="list" name="av.deint" default="0" paramlist="0;1">
+        <name>Deinterlace</name>
+        <paramlistdisplay>Deint all frames,Deint interlaced frames only</paramlistdisplay>
+    </parameter>
+</effect>

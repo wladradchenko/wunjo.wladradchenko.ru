@@ -1,0 +1,498 @@
+/*
+ * SPDX-FileCopyrightText: 2017 Nicolas Carion
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+ */
+
+#include "xml/xml.hpp"
+#include "wunjosettings.h"
+#include "core.h"
+
+#include <QDir>
+#include <QFile>
+#include <QStandardPaths>
+#include <QString>
+#include <QTextStream>
+#include <KLocalizedString>
+
+template <typename AssetType> AbstractAssetsRepository<AssetType>::AbstractAssetsRepository() = default;
+
+template <typename AssetType> void AbstractAssetsRepository<AssetType>::init()
+{
+    // Parse include/exclude lists
+    if (!pCore->debugMode) {
+        parseAssetList(assetHiddenPath(), m_hiddenList);
+        parseAssetList(assetExcludedPath(), m_excludedList);
+        parseAssetList(assetIncludedPath(), m_includedList);
+    }
+
+    // Parse preferred list
+    parseAssetList({assetPreferredListPath()}, m_preferred_list);
+
+    // Retrieve the list of MLT's available assets.
+    QScopedPointer<Mlt::Properties> assets(retrieveListFromMlt());
+    QStringList emptyMetaAssets;
+    int max = assets->count();
+    const QString sox = QStringLiteral("sox.");
+    const QString avPrefix = QStringLiteral("avfilter.");
+    for (int i = 0; i < max; ++i) {
+        Info info;
+        QString name = assets->get_name(i);
+        info.id = name;
+        if (name.startsWith(sox)) {
+            // sox effects are not used directly (parameters not available)
+            continue;
+        }
+        if (!m_excludedList.contains(name)) {
+            if (parseInfoFromMlt(name, info)) {
+                if (m_includedList.contains(name)) {
+                    info.included = true;
+                }
+                if (m_hiddenList.contains(name)) {
+                    info.type = AssetListType::AssetType::Hidden;
+                }
+                if (info.xml.isNull()) {
+                    // Metadata was invalid
+                    emptyMetaAssets << name;
+                }
+                m_assets[name] = info;
+            } else {
+                qWarning() << "Failed to parse" << name;
+            }
+        }
+    }
+
+    // We now parse custom effect xml
+    // Set the directories to look into for effects.
+    QStringList asset_dirs = assetDirs();
+    qDebug() << "Loading asset xml files from the following locations" << asset_dirs;
+
+    /* Parsing of custom xml works as follows: we parse all custom files.
+       Each of them contains a tag, which is the corresponding mlt asset, and an id that is the name of the asset. Note that several custom files can correspond
+       to the same tag, and in that case they must have different ids. We do the parsing in a map from ids to parse info, and then we add them to the asset
+       list, while discarding the bare version of each tag (the one with no file associated)
+    */
+    std::unordered_map<QString, Info> customAssets;
+    // reverse order to prioritize local install
+    QListIterator<QString> dirs_it(asset_dirs);
+    for (dirs_it.toBack(); dirs_it.hasPrevious();) { auto dir=dirs_it.previous();
+        QDir current_dir(dir);
+        QStringList filter {QStringLiteral("*.xml")};
+        QStringList fileList = current_dir.entryList(filter, QDir::Files);
+        for (const auto &file : std::as_const(fileList)) {
+            QString path = current_dir.absoluteFilePath(file);
+            parseCustomAssetFile(path, customAssets);
+        }
+    }
+
+    // We add the custom assets
+    QStringList missingDependency;
+    for (const auto &custom : customAssets) {
+        // Custom assets should override default ones
+        if (emptyMetaAssets.contains(custom.second.mltId)) {
+            // We didn't find MLT's metadata for this assed, but have an xml definition, so validate
+            emptyMetaAssets.removeAll(custom.second.mltId);
+        }
+        m_assets[custom.first] = custom.second;
+        const QString dependency = custom.second.xml.attribute(QStringLiteral("dependency"), QString());
+        if(!dependency.isEmpty()) {
+            bool found = false;
+            QScopedPointer<Mlt::Properties> effects(pCore->getMltRepository()->filters());
+            for(int i = 0; i < effects->count(); ++i) {
+                if(effects->get_name(i) == dependency) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if(!found) {
+                QScopedPointer<Mlt::Properties> transitions(pCore->getMltRepository()->transitions());
+                for(int i = 0; i < transitions->count(); ++i) {
+                    if(transitions->get_name(i) == dependency) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!found) {
+                // asset depends on another asset that is invalid so remove this asset too
+                missingDependency << custom.first;
+                qDebug() << "Asset" << custom.first << "has invalid dependency" << dependency << "and is going to be removed";
+            }
+        }
+
+    }
+    // Remove really invalid assets
+    emptyMetaAssets << missingDependency;
+    emptyMetaAssets.removeDuplicates();
+    for (const auto &invalid : std::as_const(emptyMetaAssets)) {
+        m_assets.erase(invalid);
+    }
+}
+
+template <typename AssetType> void AbstractAssetsRepository<AssetType>::parseAssetList(const QStringList &filePaths, QSet<QString> &destination)
+{
+    for (auto &filePath : filePaths) {
+        if (filePath.isEmpty())
+            continue;
+        QFile assetFile(filePath);
+        if (assetFile.open(QIODevice::ReadOnly)) {
+            QTextStream stream(&assetFile);
+            QString line;
+            while (stream.readLineInto(&line)) {
+                line = line.simplified();
+                if (!line.isEmpty() && !line.startsWith('#')) {
+                    destination.insert(line);
+                }
+            }
+        }
+    }
+}
+
+template <typename AssetType> bool AbstractAssetsRepository<AssetType>::parseInfoFromMlt(const QString &assetId, Info &res)
+{
+    std::unique_ptr<Mlt::Properties> metadata(getMetadata(assetId));
+    if (metadata && metadata->is_valid()) {
+        if (metadata->property_exists("title") && metadata->property_exists("identifier") && strlen(metadata->get("title")) > 0) {
+            QString id = metadata->get("identifier");
+            res.name = i18n(metadata->get("title"));
+            res.name[0] = res.name[0].toUpper();
+            res.author = metadata->get("creator");
+            res.version_str = metadata->get("version");
+            res.version = int(ceil(100 * metadata->get_double("version")));
+            res.id = res.mltId = assetId;
+            parseType(metadata.get(), res);
+            if (metadata->property_exists("description")) {
+                res.description = i18n(metadata->get("description"));
+            }
+            // Create params
+            QDomDocument doc;
+            QDomElement eff = doc.createElement(QStringLiteral("effect"));
+            eff.setAttribute(QStringLiteral("tag"), id);
+            eff.setAttribute(QStringLiteral("id"), id);
+
+            Mlt::Properties param_props(mlt_properties(metadata->get_data("parameters")));
+            for (int j = 0; param_props.is_valid() && j < param_props.count(); ++j) {
+                QDomElement params = doc.createElement(QStringLiteral("parameter"));
+
+                Mlt::Properties paramdesc(mlt_properties(param_props.get_data(param_props.get_name(j))));
+                params.setAttribute(QStringLiteral("name"), paramdesc.get("identifier"));
+                if (params.attribute(QStringLiteral("name")) == QLatin1String("argument")) {
+                    // This parameter has to be given as attribute when using command line, do not show it in Wunjo
+                    continue;
+                }
+
+                if (paramdesc.get("readonly") && (strcmp(paramdesc.get("readonly"), "yes") == 0)) {
+                    // Do not expose readonly parameters
+                    continue;
+                }
+                QString paramType = paramdesc.get("type");
+
+                if (paramType == QLatin1String("float")) {
+                    // Float must be converted using correct locale
+                    if (paramdesc.get("maximum")) {
+                        params.setAttribute(QStringLiteral("max"), QString::number(paramdesc.get_double("maximum"), 'f'));
+                    }
+                    if (paramdesc.get("minimum")) {
+                        params.setAttribute(QStringLiteral("min"), QString::number(paramdesc.get_double("minimum"), 'f'));
+                    }
+                } else {
+                    if (paramdesc.get("maximum")) {
+                        params.setAttribute(QStringLiteral("max"), paramdesc.get("maximum"));
+                    }
+                    if (paramdesc.get("minimum")) {
+                        params.setAttribute(QStringLiteral("min"), paramdesc.get("minimum"));
+                    }
+                }
+
+
+		if (paramType == QLatin1String("string") && paramdesc.get_data("values")) {
+		  Mlt::Properties param_list_values(mlt_properties(paramdesc.get_data("values")));
+
+		  if (param_list_values.count() > 1)
+		    {
+		      QString paramlist_str(param_list_values.get(0));
+		      QString paramlistdisplay_str(param_list_values.get_name(0));
+
+		      for (int jff = 1; jff < param_list_values.count(); ++jff) {
+			paramlist_str += QLatin1String(",")+QLatin1String(param_list_values.get(jff));
+			paramlistdisplay_str += QLatin1String(";")+QLatin1String(param_list_values.get_name(jff));
+		      }
+
+		      params.setAttribute(QStringLiteral("paramlist"), paramlistdisplay_str);
+
+		      QDomElement pname = doc.createElement(QStringLiteral("paramlistdisplay"));
+		      pname.appendChild(doc.createTextNode(paramlist_str));
+		      params.appendChild(pname);
+
+		      QDomElement pnamez = doc.createElement(QStringLiteral("name"));
+		      if (paramdesc.property_exists("title"))
+			pnamez.appendChild(doc.createTextNode(paramdesc.get("title")));
+		      else
+			pnamez.appendChild(doc.createTextNode(paramdesc.get("identifier")));
+		      params.appendChild(pnamez);
+
+		    }
+		}
+
+                if (paramType == QLatin1String("integer")) {
+                    if (params.attribute(QStringLiteral("min")) == QLatin1String("0") && params.attribute(QStringLiteral("max")) == QLatin1String("1")) {
+                        params.setAttribute(QStringLiteral("type"), QStringLiteral("bool"));
+                    } else {
+                        params.setAttribute(QStringLiteral("type"), QStringLiteral("constant"));
+                    }
+                } else if (paramType == QLatin1String("float")) {
+                    params.setAttribute(QStringLiteral("type"), QStringLiteral("constant"));
+                    // param type is float, set default decimals to 3
+                    params.setAttribute(QStringLiteral("decimals"), QStringLiteral("3"));
+                } else if (paramType == QLatin1String("boolean")) {
+                    params.setAttribute(QStringLiteral("type"), QStringLiteral("bool"));
+
+                } else if (paramType == QLatin1String("geometry")) {
+                    params.setAttribute(QStringLiteral("type"), QStringLiteral("geometry"));
+                } else if (paramType == QLatin1String("string") && paramdesc.get_data("values")) {
+		    params.setAttribute(QStringLiteral("type"), QStringLiteral("list"));
+		} else if (paramType == QLatin1String("string")) {
+                    // string parameter are not really supported, so if we have a default value, enforce it
+                    params.setAttribute(QStringLiteral("type"), QStringLiteral("fixed"));
+                    if (paramdesc.get("default")) {
+                        QString stringDefault = paramdesc.get("default");
+                        stringDefault.remove(QLatin1Char('\''));
+                        params.setAttribute(QStringLiteral("value"), stringDefault);
+                    } else {
+                        // String parameter without default, skip it completely
+                        continue;
+                    }
+                } else {
+                    params.setAttribute(QStringLiteral("type"), paramType);
+                    if (!QString(paramdesc.get("format")).isEmpty()) {
+                        params.setAttribute(QStringLiteral("format"), paramdesc.get("format"));
+                    }
+                }
+                if (!params.hasAttribute(QStringLiteral("value"))) {
+                    if (paramType == QLatin1String("float")) {
+                        // floats have to be converted using correct locale
+                        if (paramdesc.get("default")) {
+                            params.setAttribute(QStringLiteral("default"), QString::number(paramdesc.get_double("default"), 'f'));
+                        }
+                        if (paramdesc.get("value")) {
+                            params.setAttribute(QStringLiteral("value"), QString::number(paramdesc.get_double("value"), 'f'));
+                        } else {
+                            params.setAttribute(QStringLiteral("value"), QString::number(paramdesc.get_double("default"), 'f'));
+                        }
+                    } else {
+                        if (paramdesc.get("default")) {
+                            params.setAttribute(QStringLiteral("default"), paramdesc.get("default"));
+                        }
+                        if (paramdesc.get("value")) {
+                            params.setAttribute(QStringLiteral("value"), paramdesc.get("value"));
+                        } else {
+                            params.setAttribute(QStringLiteral("value"), paramdesc.get("default"));
+                        }
+                    }
+                }
+                QString paramName = paramdesc.get("title");
+                if (paramName.isEmpty()) {
+                    paramName = paramdesc.get("identifier");
+                }
+                if (!paramName.isEmpty()) {
+                    QDomElement pname = doc.createElement(QStringLiteral("name"));
+                    pname.appendChild(doc.createTextNode(paramName));
+                    params.appendChild(pname);
+                }
+                if (paramdesc.get("description")) {
+                    QDomElement comment = doc.createElement(QStringLiteral("comment"));
+                    comment.appendChild(doc.createTextNode(paramdesc.get("description")));
+                    params.appendChild(comment);
+                }
+
+                eff.appendChild(params);
+            }
+            doc.appendChild(eff);
+            res.xml = eff;
+            return true;
+        } else {
+            res.id = res.mltId = assetId;
+            qWarning() << "Empty metadata for " << assetId;
+            return true;
+        }
+    } else {
+        qWarning() << "Invalid metadata for " << assetId;
+    }
+    return false;
+}
+
+template <typename AssetType> bool AbstractAssetsRepository<AssetType>::exists(const QString &assetId) const
+{
+    return m_assets.count(assetId) > 0;
+}
+
+template <typename AssetType> QVector<QPair<QString, QString>> AbstractAssetsRepository<AssetType>::getNames() const
+{
+    QVector<QPair<QString, QString>> res;
+    res.reserve(int(m_assets.size()));
+    for (const auto &asset : m_assets) {
+        if ((int(asset.second.type) == -1) || (!WunjoSettings::gpu_accel() && asset.first.contains(QLatin1String("movit.")))) {
+            // Hide GPU effects/compositions when movit disabled
+            continue;
+        }
+        res.push_back({asset.first, asset.second.name});
+    }
+    std::sort(res.begin(), res.end(), [](const QPair<QString, QString> &a, const QPair<QString, QString> &b) { return a.second < b.second; });
+    return res;
+}
+
+template <typename AssetType> AssetType AbstractAssetsRepository<AssetType>::getType(const QString &assetId) const
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    return m_assets.at(assetId).type;
+}
+
+template <typename AssetType> bool AbstractAssetsRepository<AssetType>::isIncludedInList(const QString &assetId) const
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    return m_assets.at(assetId).included;
+}
+
+template <typename AssetType> void AbstractAssetsRepository<AssetType>::getAttributes(const QString &assetId, bool *isPreferred, bool *isIncluded, bool *supportsTenBit)
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    *isPreferred = m_preferred_list.contains(assetId);
+    const Info asset = m_assets.at(assetId);
+    *isIncluded = asset.included;
+    *supportsTenBit = asset.features.contains(QLatin1String("tenbit")) && asset.features.value(QLatin1String("tenbit")).toBool();
+}
+
+template <typename AssetType> bool AbstractAssetsRepository<AssetType>::isUnique(const QString &assetId) const
+{
+    if (m_assets.count(assetId) > 0) {
+        return m_assets.at(assetId).xml.hasAttribute(QStringLiteral("unique"));
+    }
+    return false;
+}
+
+template <typename AssetType> QString AbstractAssetsRepository<AssetType>::getName(const QString &assetId) const
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    return m_assets.at(assetId).name;
+}
+
+template <typename AssetType> QString AbstractAssetsRepository<AssetType>::getDescription(const QString &assetId) const
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    return m_assets.at(assetId).description;
+}
+
+template <typename AssetType> int AbstractAssetsRepository<AssetType>::getVersion(const QString &assetId) const
+{
+    Q_ASSERT(m_assets.count(assetId) > 0);
+    return m_assets.at(assetId).version;
+}
+
+template <typename AssetType> bool AbstractAssetsRepository<AssetType>::parseInfoFromXml(const QDomElement &assetXml, Info &res) const
+{
+    QString tag = assetXml.attribute(QStringLiteral("tag"), QString());
+    QString id = assetXml.attribute(QStringLiteral("id"), QString());
+    qDebug()<<"::: FOUND EFFECT TAG: "<<tag<<" == "<<id;
+    if (id.isEmpty()) {
+        id = tag;
+    }
+
+    if (!exists(tag)) {
+        qDebug() << "plugin not available:" << tag;
+        return false;
+    }
+
+    // Check if there is a maximal version set
+    if (assetXml.hasAttribute(QStringLiteral("version")) && !m_assets.at(tag).xml.isNull()) {
+        // a specific version of the filter is required
+        if (m_assets.at(tag).version < int(100 * assetXml.attribute(QStringLiteral("version")).toDouble())) {
+            qDebug() << "plugin version too low:" << tag;
+            return false;
+        }
+    }
+    res = m_assets.at(tag);
+    res.id = id;
+    res.mltId = tag;
+    res.version = int(100 * assetXml.attribute(QStringLiteral("version")).toDouble());
+    res.xml = assetXml;
+
+    // Update name if the xml provide one
+    std::pair<QString, QString> nameAndCtx = Xml::getSubTagContentAndContext(assetXml, QStringLiteral("name"));
+    if (!nameAndCtx.first.isEmpty()) {
+        if (!nameAndCtx.second.isEmpty()) {
+            res.name = i18nc(nameAndCtx.second.toUtf8().constData(), nameAndCtx.first.toUtf8().constData());
+        } else {
+            res.name = i18n(nameAndCtx.first.toUtf8().constData());
+        }
+    }
+    // Update description if the xml provide one
+    const QString description = Xml::getSubTagContent(assetXml, QStringLiteral("description"));
+    if (!description.isEmpty()) {
+        res.description = i18n(description.toUtf8().constData());
+    }
+    // Check supported features
+    setDefaultFeatures(res);
+    QDomNode features = assetXml.firstChildElement(QLatin1String("features"));
+    if (!features.isNull()) {
+        qDebug()<<"=============\n\nFOUND FEATURES FOR ASSET: "<<res.name;
+        QDomNodeList featuresList = features.childNodes();
+        for (int i = 0; i < featuresList.count(); i++) {
+            const QDomElement &e = featuresList.at(i).toElement();
+            qDebug()<<"=============\n\nFOUND EFFECT FEATURE: "<<e.attribute(QLatin1String("name"))<<"\n\n=================";
+            res.features.insert(e.attribute(QLatin1String("name")), e.attribute(QLatin1String("supported")).toLower() == QLatin1String("true"));
+        }
+    }
+    if (m_includedList.contains(res.mltId)) {
+        res.included = true;
+    }
+    if (m_hiddenList.contains(res.mltId)) {
+        res.type = AssetListType::AssetType::Hidden;
+    }
+    return true;
+}
+
+template <typename AssetType> void AbstractAssetsRepository<AssetType>::setDefaultFeatures(Info &res) const
+{
+    //Ten bit support
+    switch (res.type) {
+        case AssetListType::AssetType::Video:
+        case AssetListType::AssetType::Custom:
+        case AssetListType::AssetType::Template:
+        case AssetListType::AssetType::TemplateCustom:
+        case AssetListType::AssetType::VideoShortComposition:
+        case AssetListType::AssetType::VideoComposition:
+        case AssetListType::VideoTransition:
+            res.features.insert(QStringLiteral("tenbit"), res.mltId.startsWith(QLatin1String("avfilter.")));
+            break;
+        default:
+            // Audio effects should be set to true
+            res.features.insert(QStringLiteral("tenbit"), true);
+            break;
+    }
+}
+
+template <typename AssetType> QDomElement AbstractAssetsRepository<AssetType>::getXml(const QString &assetId) const
+{
+    if (m_assets.count(assetId) == 0) {
+        qWarning() << "Unknown transition" << assetId;
+        return QDomElement();
+    }
+    return m_assets.at(assetId).xml.cloneNode().toElement();
+}
+
+template <typename AssetType> QStringList AbstractAssetsRepository<AssetType>::qtDataDir(const QString &assetLocation) const
+{
+    QStringList dirs;
+    QString qtDataDirsEnv = qEnvironmentVariable("QT_DATA_DIRS");
+#ifdef Q_OS_WIN
+    auto separator = u';';
+#else
+    auto separator = u':';
+#endif
+    for (const auto dir : qTokenize(qtDataDirsEnv, separator)) {
+        dirs.push_back(QDir::cleanPath(dir.toString() + "/wunjo/" + assetLocation));
+    }
+    return dirs;
+}
+
