@@ -32,16 +32,30 @@
 </div>
 
 <!-- WUNJO V3 -->
-## Project vs Commercial Product
+## Project
 
-This repository contains the open-source project **Wunjo Make** v3.x. 
+The `main` branch contains **Wunjo Make v3**, a free and open-source video editor. Features such as video generation, face swap and lip sync now come as plugins that you install only when you need them: Video Generation, Depth Map, Face Swap, Live Portrait, Lip Sync, Voice Conversion, Audio Separator and an MCP agent. Plugins are available at [wunjo.online/product/plugins](https://wunjo.online/product/plugins), and the documentation lives at [docs.wunjo.online](https://docs.wunjo.online).
 
-Please note that the commercial product v2.x available at [https://wunjo.online](https://wunjo.online) is a completely separate product:
-- It has a different codebase.
-- It does not use or derive from this open-source repository.
-- It may include commercial features not available in this repository.
+Wunjo CE v2 and Pro v2 has been discontinued. Wunjo Make is now the single edition of Wunjo, free for everyone.
 
-This separation ensures clarity for users and compliance with open-source licensing.
+This is a big change from v2, and it was made on purpose. Moving these tools into plugins keeps the editor light, lets each model be updated on its own schedule, and makes it possible for anyone to add new tools. And it opens up the possibility of macOS support.
+
+### Looking for Wunjo v2 Community Edition?
+
+Wunjo v2 CE is not a full video editor. It is a standalone toolkit built on neural networks, with Face Swap, Lip Sync, Live Portrait, removal of objects, text and backgrounds, Restyling, Audio Separator, Voice Cloning, video and image generation and Highlight Moments.
+
+Previous versions of the product are available. If you rely on it, you can still use it.
+
+| Version | Branch | Get it |
+|---|---|---|
+| v2.0.8 CE | [`v2.0.8`](../../tree/v2.0.8) | Build from source or download from [Releases](https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases) |
+| v2.0.3 CE | [`v2.0.3`](../../tree/v2.0.3) | Build from source or download from [Releases](https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases) |
+
+Ready-made builds of older versions are also available at [wunjo.online/product/downloads](https://wunjo.online/product/downloads). The v2 branches stay available, but new features are developed only in v3.
+
+### What comes next
+
+Over time, v3 will receive everything v2 could do and more, as plugins. You can also build your own plugins and share them with the community. If a v2 feature matters to you and is not in v3 yet, open an issue so we know what to bring over first.
 
 <!-- ABOUT THE PROJECT -->
 ## About
