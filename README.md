@@ -15,7 +15,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru">
-    <img src="https://wunjo.online/static/basic/icon/round/logo-512.png" alt="Logo" width="165" height="165">
+    <img src="https://wunjo.online/static/icon/square/white/logo-512.png" alt="Logo" width="165" height="165">
   </a>
 
   <h3 align="center">Wunjo Make</h3>
