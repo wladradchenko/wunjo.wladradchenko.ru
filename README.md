@@ -34,7 +34,7 @@
 <!-- WUNJO V3 -->
 ## Versions
 
-The `main` branch contains **Wunjo Make v3**, a free and open-source video editor. Features such as video generation, face swap and lip sync now come as plugins that you install only when you need them: Video Generation, Depth Map, Face Swap, Live Portrait, Lip Sync, Voice Conversion, Audio Separator and an MCP agent. Plugins are available at [wunjo.online/product/plugins](https://wunjo.online/product/plugins), and the documentation lives at [docs.wunjo.online](https://docs.wunjo.online).
+The `main` branch contains **Wunjo Make v3**, a free and open-source video editor. Features such as video generation, face swap and lip sync now come as plugins that you install only when you need them: Video Generation, Depth Map, Face Swap and Live Portrait (Face Toolkit), Lip Sync, Voice Conversion and Audio Separator (Voice Toolkit) and an MCP agent. Plugins are available at [wunjo.online/product/plugins](https://wunjo.online/product/plugins), and the documentation lives at [docs.wunjo.online](https://docs.wunjo.online).
 
 Wunjo CE v2 and Pro v2 has been discontinued. Wunjo Make is now the single edition of Wunjo, free for everyone.
 
