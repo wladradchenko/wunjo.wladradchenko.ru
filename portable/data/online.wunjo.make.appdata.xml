@@ -446,7 +446,7 @@
       <caption xml:lang="uk">Темна тема</caption>
       <caption xml:lang="zh-CN">深色主题</caption>
       <caption xml:lang="zh-TW">暗色主題</caption>
-      <image type="source">https://wunjo.online/media/make/webp/interface_dark.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/interface-dark.png</image>
     </screenshot>
     <screenshot type="source">
       <caption>Default interface</caption>
@@ -482,23 +482,23 @@
       <caption xml:lang="uk">Типовий інтерфейс</caption>
       <caption xml:lang="zh-CN">默认界面</caption>
       <caption xml:lang="zh-TW">預設介面</caption>
-      <image type="source">https://wunjo.online/media/make/webp/interface_light.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/interface-light.png</image>
     </screenshot>
     <screenshot type="source">
       <caption>Timeline</caption>
-      <image type="source">https://wunjo.online/media/make/webp/timeline_dark.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/timeline.png</image>
     </screenshot>
     <screenshot type="source">
       <caption>Project files</caption>
-      <image type="source">https://wunjo.online/media/make/webp/files_dark.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/files.png</image>
     </screenshot>
     <screenshot type="source">
       <caption>Plugins</caption>
-      <image type="source">https://wunjo.online/media/make/webp/plugins_dark.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/plugins.png</image>
     </screenshot>
     <screenshot type="source">
       <caption>Chat with the assistant</caption>
-      <image type="source">https://wunjo.online/media/make/webp/chat_dark.webp</image>
+      <image type="source">https://raw.githubusercontent.com/wladradchenko/wunjo.wladradchenko.ru/main/portable/data/screenshots/chat.png</image>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">online.wunjo.make.desktop</launchable>

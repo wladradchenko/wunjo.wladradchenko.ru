@@ -271,3 +271,11 @@ path = ".well-known/funding-manifest-urls"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Farid Abdelnour"
 SPDX-License-Identifier = "GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL"
+
+# Screenshots of the application for its AppStream listing: taken by the
+# author, released with the metadata they belong to.
+[[annotations]]
+path = ["data/screenshots/**.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vladislav Radchenko <i@wladradchenko.ru>"
+SPDX-License-Identifier = "CC0-1.0"
