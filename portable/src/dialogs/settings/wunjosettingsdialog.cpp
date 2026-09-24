@@ -708,8 +708,8 @@ void WunjoSettingsDialog::initJogShuttlePage()
     m_pageJog = addPage(p6, i18n("JogShuttle"), QStringLiteral("dialog-input-devices"));
 #if defined(Q_OS_WIN)
     m_configShuttle.shuttledisabled->setText(i18n("For device configuration see <a "
-                                                  "href=\"https://docs.wunjo.online/getting_started/configure_wunjo/configuration_jogshuttle.html"
-                                                  "#windows?mtm_campaign=wunjo_inapp&mtm_kwd=jogshuttle_settings\">our "
+                                                  "href=\"https://docs.wunjo.online/make/getting_started/configure_wunjo/configuration_jogshuttle.html"
+                                                  "#windows\">our "
                                                   "documentation</a>."));
     connect(m_configShuttle.shuttledisabled, &QLabel::linkActivated, this, &WunjoSettingsDialog::openBrowserUrl);
 #endif

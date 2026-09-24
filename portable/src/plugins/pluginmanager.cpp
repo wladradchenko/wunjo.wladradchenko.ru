@@ -19,6 +19,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "effects/effectstack/model/effectstackmodel.hpp"
 #include "macros.hpp"
 #include "mainwindow.h"
+#include "monitor/monitormanager.h"
 #include "timeline2/model/timelineitemmodel.hpp"
 #include "wunjosettings.h"
 #include "xml/xml.hpp"
@@ -199,7 +200,43 @@ QString PluginManager::modelsDir(const QString &id) const
 
 QList<PluginModel> PluginManager::applicableModels(const PluginManifest &manifest)
 {
-    return manifest.modelsFor(gpuVramGb(), gpuBackend());
+    return manifest.modelsFor(gpuVramGb(), gpuBackend(), selectedVariant(manifest));
+}
+
+bool PluginManager::variantReady(const PluginManifest &manifest, const QString &variantId) const
+{
+    bool any = false;
+    const QList<PluginModel> models = manifest.modelsFor(gpuVramGb(), gpuBackend(), variantId);
+    for (const PluginModel &model : models) {
+        if (model.variant != variantId) {
+            continue;
+        }
+        any = true;
+        if (modelState(manifest.id(), model) != ModelReady) {
+            return false;
+        }
+    }
+    return any;
+}
+
+QString PluginManager::selectedVariant(const PluginManifest &manifest)
+{
+    const QList<PluginVariant> variants = manifest.variants();
+    if (variants.isEmpty()) {
+        return {};
+    }
+    QString chosen;
+    {
+        KConfig config(QStringLiteral("wunjopluginsrc"), KConfig::SimpleConfig);
+        chosen = KConfigGroup(&config, manifest.id()).readEntry("variant", QString());
+    }
+    // a choice made against an older manifest may name a size that is gone
+    for (const PluginVariant &variant : variants) {
+        if (variant.id == chosen) {
+            return chosen;
+        }
+    }
+    return manifest.defaultVariant(gpuVramGb());
 }
 
 QString PluginManager::modelPath(const QString &id, const PluginModel &model) const
@@ -603,9 +640,28 @@ static void placeResultOnTimeline(const ObjectId &owner, const QString &binId)
     Fun redo = []() { return true; };
     bool placed = false;
 
+    // A new track is spliced into the tractor while the monitor's consumer may
+    // be reading it from its own thread: the result has just been written into
+    // the effect, and that alone asks the monitor for a fresh frame. MLT grows
+    // the track list with realloc and does not lock it (mlt_multitrack_insert),
+    // so a frame fetched mid-insert walked a freed list and took the whole
+    // editor down in mlt_properties_get_int. The consumer holds the tractor's
+    // own lock for as long as it builds a frame — taking it here waits for that
+    // frame to finish and keeps the next one out until the track is in. Only
+    // around the insertion: the lock is not recursive, and placing the clip
+    // takes the playlist's lock of its own.
+    pCore->monitorManager()->pauseActiveMonitor();
+    auto insertTrack = [&timeline, &undo, &redo](int trackPosition, int &trackId, bool audio) {
+        Mlt::Tractor *tractor = timeline->tractor();
+        tractor->lock();
+        const bool ok = timeline->requestTrackInsertion(trackPosition, trackId, QString(), audio, undo, redo);
+        tractor->unlock();
+        return ok;
+    };
+
     if (wantsVideo) {
         int videoTrack = -1;
-        if (timeline->requestTrackInsertion(timeline->getTrackPosition(sourceTrack) + 1, videoTrack, QString(), false, undo, redo)) {
+        if (insertTrack(timeline->getTrackPosition(sourceTrack) + 1, videoTrack, false)) {
             int clipId = -1;
             placed = timeline->requestClipInsertion(QStringLiteral("V") + binId, videoTrack, position, clipId, true, true, false, undo, redo);
         }
@@ -614,7 +670,7 @@ static void placeResultOnTimeline(const ObjectId &owner, const QString &binId)
         // Audio tracks live below the video ones, so the new one belongs on top
         // of the audio stack rather than above the source's video track.
         int audioTrack = -1;
-        if (timeline->requestTrackInsertion(int(timeline->getTracksIds(true).count()), audioTrack, QString(), true, undo, redo)) {
+        if (insertTrack(int(timeline->getTracksIds(true).count()), audioTrack, true)) {
             int clipId = -1;
             const bool ok = timeline->requestClipInsertion(QStringLiteral("A") + binId, audioTrack, position, clipId, true, true, false, undo, redo);
             placed = placed || ok;
@@ -623,8 +679,13 @@ static void placeResultOnTimeline(const ObjectId &owner, const QString &binId)
     if (placed) {
         pCore->pushUndo(undo, redo, i18n("Add the rendered result to the timeline"));
     } else {
-        // half a placement is worse than none: take the tracks back out again
+        // half a placement is worse than none: take the tracks back out again,
+        // under the same lock — removing a track shrinks the list just as
+        // inserting one grows it
+        Mlt::Tractor *tractor = timeline->tractor();
+        tractor->lock();
         undo();
+        tractor->unlock();
     }
 }
 
@@ -652,6 +713,31 @@ static bool copyRecursively(const QString &src, const QString &dst, QString *err
     return true;
 }
 
+/** @brief Put the weights set aside during an install back under the plugin.
+ *
+ *  Entry by entry, so that a weight the new package brought itself — a plugin
+ *  that bundles its models — keeps the package's copy and drops the kept one:
+ *  the package is the newer of the two. Everything else is moved back as it
+ *  was, a rename, whatever its size. */
+static void restoreKeptModels(const QString &kept, const QString &models)
+{
+    QDir().mkpath(models);
+    const QFileInfoList entries = QDir(kept).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
+    for (const QFileInfo &entry : entries) {
+        const QString target = models + QLatin1Char('/') + entry.fileName();
+        if (QFileInfo::exists(target)) {
+            if (entry.isDir()) {
+                QDir(entry.absoluteFilePath()).removeRecursively();
+            } else {
+                QFile::remove(entry.absoluteFilePath());
+            }
+            continue;
+        }
+        QDir().rename(entry.absoluteFilePath(), target);
+    }
+    QDir(kept).removeRecursively();
+}
+
 bool PluginManager::install(const ImportCandidate &candidate, QString *errorOut)
 {
     if (!candidate.valid()) {
@@ -667,12 +753,31 @@ bool PluginManager::install(const ImportCandidate &candidate, QString *errorOut)
         return false;
     }
     const QString dest = userPluginsDir() + QLatin1Char('/') + candidate.manifest.id();
+    // The weights under models/ are the user's downloads — gigabytes of them,
+    // fetched for this plugin's id and not for one version of it. Replacing the
+    // plugin with a newer package used to throw them away along with the old
+    // files, and the new version then asked for every one of them again. They
+    // are set aside first (a rename next door: instant whatever their size)
+    // and put back once the new files are in.
+    const QString models = dest + QStringLiteral("/models");
+    const QString kept = userPluginsDir() + QStringLiteral("/.") + candidate.manifest.id() + QStringLiteral(".models-kept");
+    QDir(kept).removeRecursively();
+    const bool keptModels = QFileInfo::exists(models) && QDir().rename(models, kept);
     if (QFileInfo::exists(dest)) {
         QDir(dest).removeRecursively();
     }
     if (!copyRecursively(candidate.sourceDir, dest, errorOut)) {
         QDir(dest).removeRecursively();
+        if (keptModels) {
+            // the install failed, the weights did not: give them back for the
+            // next attempt
+            QDir().mkpath(dest);
+            QDir().rename(kept, models);
+        }
         return false;
+    }
+    if (keptModels) {
+        restoreKeptModels(kept, models);
     }
     rescan();
     syncEffects();
@@ -907,6 +1012,13 @@ QProcess *PluginManager::startProcess(const PluginManifest &manifest, const QJso
         // the user pointed this plugin at. Empty means they left it to decide.
         device = group.readEntry("device", QString());
     }
+    // Which size of its model to run — not a declared parameter either: the
+    // manifest declares the sizes and the tab offers them, and the plugin has
+    // to be told which one's weights to open.
+    const QString variant = selectedVariant(manifest);
+    if (!variant.isEmpty()) {
+        params.insert(QStringLiteral("variant"), variant);
+    }
     // Per-call params from the caller (e.g. the AI over run_plugin) override the
     // saved settings-tab defaults, so a prompt/model can be passed at call time.
     const QJsonObject callerParams = input.value(QStringLiteral("params")).toObject();
@@ -965,6 +1077,11 @@ QProcess *PluginManager::startProcess(const PluginManifest &manifest, const QJso
             env.insert(QStringLiteral("WUNJO_DEVICE"), device);
             envChanged = true;
         }
+    }
+    // The model size, for a plugin whose runtime starts before it reads job.json.
+    if (!variant.isEmpty()) {
+        env.insert(QStringLiteral("WUNJO_MODEL_VARIANT"), variant);
+        envChanged = true;
     }
 
     // Hand the API key to the plugin through the environment (never argv, never
@@ -1781,7 +1898,7 @@ QString PluginManager::runPlugin(const QString &id, const QJsonObject &input, QW
                 return;
             }
             QString storeError;
-            const PluginSets::Set stored = PluginSets::store(id, QFileInfo(source).completeBaseName(), kind, file, &storeError);
+            const PluginSets::Set stored = PluginSets::store(id, QFileInfo(source).completeBaseName(), kind, outputs, &storeError);
             if (!stored.isValid()) {
                 const QString message = storeError.isEmpty() ? i18n("The set could not be saved.") : storeError;
                 pCore->displayMessage(message, ErrorMessage);

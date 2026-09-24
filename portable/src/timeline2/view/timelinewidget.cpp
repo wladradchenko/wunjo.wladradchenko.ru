@@ -264,7 +264,7 @@ void TimelineWidget::showClipMenu(int cid)
                     aiAction->setVisible(clipHasAudio);
                     continue;
                 }
-                if (m_dynamicAiActions.contains(aiAction)) {
+                if (aiAction->objectName() == QLatin1String("ai_plugin_dynamic")) {
                     continue; // handled in the rebuild below
                 }
                 aiAction->setVisible(!isAudioTrack);
@@ -286,8 +286,23 @@ void TimelineWidget::showClipMenu(int cid)
             // Append user plugins that apply to this clip. Rebuilt every popup
             // so newly imported (or removed) plugins appear without a restart;
             // video plugins are hidden on audio-only clips and vice versa.
-            qDeleteAll(m_dynamicAiActions);
-            m_dynamicAiActions.clear();
+            //
+            // The submenu is one object shared by every timeline tab — each
+            // TimelineWidget copies the actions of the clip menu, not the menu
+            // behind "Artificial Intelligence". So what a closed tab (or another
+            // open project) appended is still in it, and a list kept per widget
+            // cannot remove it: every timeline that ever showed this menu left a
+            // block of its own behind. Clear by the mark instead of by owner.
+            const QList<QAction *> stale = aiMenu->actions();
+            for (QAction *old : stale) {
+                if (old->objectName() == QLatin1String("ai_plugin_dynamic")) {
+                    delete old;
+                }
+            }
+            auto mark = [](QAction *action) {
+                action->setObjectName(QStringLiteral("ai_plugin_dynamic"));
+                return action;
+            };
             QList<PluginManifest> applicable;
             // A plugin that works on both the picture and the sound answers to
             // either list, so it would be offered twice on a clip that has both.
@@ -326,7 +341,7 @@ void TimelineWidget::showClipMenu(int cid)
                     }
                     return model()->getClipEffectStackModel(clipId);
                 };
-                m_dynamicAiActions << aiMenu->addSeparator();
+                mark(aiMenu->addSeparator());
                 for (const PluginManifest &plugin : std::as_const(applicable)) {
                     // A plugin that brings an effect works through it: the entry
                     // drops that effect on the clip, where it is set up and
@@ -336,7 +351,7 @@ void TimelineWidget::showClipMenu(int cid)
                         QAction *setAction = aiMenu->addAction(plugin.icon(), plugin.name());
                         connect(setAction, &QAction::triggered, this,
                                 [this, plugin, cid]() { PluginEffects::applyAll(model()->getClipEffectStackModel(cid), plugin, QString()); });
-                        m_dynamicAiActions << setAction;
+                        mark(setAction);
                         continue;
                     }
                     if (!effects.isEmpty()) {
@@ -346,7 +361,7 @@ void TimelineWidget::showClipMenu(int cid)
                                 // an effect that works inside a region brings that region along
                                 PluginEffects::apply(stackFor(effect.id, cid), plugin, effect, QString());
                             });
-                            m_dynamicAiActions << effectAction;
+                            mark(effectAction);
                         }
                         continue;
                     }
@@ -356,7 +371,7 @@ void TimelineWidget::showClipMenu(int cid)
                     connect(pluginAction, &QAction::triggered, this, [this, pluginId, target, cid]() {
                         PluginManager::instance().runPlugin(pluginId, buildPluginClipInput(target, cid), this);
                     });
-                    m_dynamicAiActions << pluginAction;
+                    mark(pluginAction);
                 }
             }
             break;

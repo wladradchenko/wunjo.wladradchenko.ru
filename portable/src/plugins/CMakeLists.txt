@@ -12,5 +12,7 @@ set(wunjo_SRCS
     plugins/pluginsetpanel.cpp
     plugins/pluginsetstore.cpp
     plugins/pluginsettingstab.cpp
+    plugins/pluginmodelsdialog.cpp
+    plugins/plugincatalog.cpp
     plugins/pluginaboutdialog.cpp
   PARENT_SCOPE)

@@ -21,7 +21,7 @@
   <h3 align="center">Wunjo Make</h3>
 
   <p align="center">
-    <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki">Documentation</a>
+    <a href="https://docs.wunjo.online">Documentation</a>
     <br/>
     <a href="https://github.com/wladradchenko/wunjo.wladradchenko.ru/issues">Issue</a>
     ·

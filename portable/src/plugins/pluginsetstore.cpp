@@ -7,18 +7,24 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "bin/projectclip.h"
 #include "core.h"
+#include "doc/kthumb.h"
 #include "doc/wunjodoc.h"
 
 #include <KLocalizedString>
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QImage>
+#include <QImageReader>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QCryptographicHash>
 #include <QRegularExpression>
+#include <QSet>
+
+#include <mlt++/Mlt.h>
 
 namespace {
 
@@ -51,6 +57,68 @@ bool writeSet(const QDir &dir, const QString &key, QJsonObject set, QString *err
     }
     file.write(QJsonDocument(set).toJson(QJsonDocument::Compact));
     return true;
+}
+
+/** @brief The file that goes with a set's json: same name, another suffix. */
+QString sidecar(const QString &jsonFile, const QString &suffix)
+{
+    const QFileInfo info(jsonFile);
+    return info.dir().absoluteFilePath(info.completeBaseName() + QLatin1Char('.') + suffix);
+}
+
+/** @brief Put a picture next to the set as a png, whatever it arrived as. */
+void keepPicture(const QString &from, const QString &to)
+{
+    QFile::remove(to);
+    if (from.isEmpty() || !QFileInfo::exists(from)) {
+        return;
+    }
+    const QImage image(from);
+    if (!image.isNull()) {
+        image.save(to, "PNG");
+    }
+}
+
+/** @brief Copy a moving preview next to the set, as it is. */
+void keepPreview(const QString &from, const QString &to)
+{
+    QFile::remove(to);
+    if (!from.isEmpty() && QFileInfo::exists(from)) {
+        QFile::copy(from, to);
+    }
+}
+
+/** @brief Move the pictures of a set along with its json — for import, export. */
+void carryPictures(const QString &fromJson, const QString &toJson)
+{
+    for (const char *suffix : {"png", "gif"}) {
+        const QString from = sidecar(fromJson, QLatin1String(suffix));
+        const QString to = sidecar(toJson, QLatin1String(suffix));
+        QFile::remove(to);
+        if (QFileInfo::exists(from)) {
+            QFile::copy(from, to);
+        }
+    }
+}
+
+bool looksLikeImage(const QString &path)
+{
+    static const QStringList suffixes = {QStringLiteral("png"), QStringLiteral("jpg"), QStringLiteral("jpeg"), QStringLiteral("webp"),
+                                         QStringLiteral("bmp"), QStringLiteral("tif"), QStringLiteral("tiff"), QStringLiteral("gif")};
+    return suffixes.contains(QFileInfo(path).suffix().toLower()) || !QImageReader::imageFormat(path).isEmpty();
+}
+
+/** @brief The first frame of a video, through the same producer the bin uses. */
+QImage firstFrame(const QString &path, int size)
+{
+    Mlt::Profile profile(pCore->getCurrentProfilePath().toUtf8().constData());
+    Mlt::Producer producer(profile, path.toUtf8().constData());
+    if (!producer.is_valid()) {
+        return {};
+    }
+    const int width = size;
+    const int height = qMax(1, int(size * double(profile.height()) / qMax(1, profile.width())));
+    return KThumb::getFrame(producer, 0, width, height);
 }
 
 } // namespace
@@ -101,6 +169,15 @@ Set read(const QString &file)
             set.count = qMax(set.count, it.value().toArray().size());
         }
     }
+    // the pictures are optional and live next to the json under its own name
+    const QString thumb = sidecar(file, QStringLiteral("png"));
+    if (QFileInfo::exists(thumb)) {
+        set.thumb = thumb;
+    }
+    const QString preview = sidecar(file, QStringLiteral("gif"));
+    if (QFileInfo::exists(preview)) {
+        set.preview = preview;
+    }
     return set;
 }
 
@@ -122,7 +199,32 @@ QVector<Set> sets(const QString &pluginId, const QString &kind)
     return result;
 }
 
-Set store(const QString &pluginId, const QString &name, const QString &kind, const QString &resultFile, QString *errorOut)
+namespace {
+
+/** @brief @p wanted, or "wanted (2)", "wanted (3)"… when another set of this
+ *  kind already goes by it. Two photos both called portrait.jpg would
+ *  otherwise be one word twice in the list. The set being written (@p key)
+ *  is not counted: analysing the same file again updates it in place and
+ *  must keep its name. */
+QString uniqueName(const QString &pluginId, const QString &kind, const QString &wanted, const QString &key)
+{
+    QSet<QString> taken;
+    const QVector<Set> others = sets(pluginId, kind);
+    for (const Set &other : others) {
+        if (other.sourceHash != key) {
+            taken.insert(other.name.toLower());
+        }
+    }
+    QString name = wanted;
+    for (int number = 2; taken.contains(name.toLower()); ++number) {
+        name = QStringLiteral("%1 (%2)").arg(wanted).arg(number);
+    }
+    return name;
+}
+
+} // namespace
+
+Set store(const QString &pluginId, const QString &name, const QString &kind, const QJsonArray &outputs, QString *errorOut)
 {
     const QString path = folder(pluginId);
     if (path.isEmpty()) {
@@ -130,6 +232,30 @@ Set store(const QString &pluginId, const QString &name, const QString &kind, con
             *errorOut = i18n("Save the project first — sets are stored next to it.");
         }
         return {};
+    }
+    // What the plugin handed back: the set itself, and the pictures of it. The
+    // json is the output that says so, or failing that the first one — the
+    // plugins written before pictures existed sent the json alone.
+    QString resultFile;
+    QString picture;
+    QString moving;
+    for (const QJsonValue &value : outputs) {
+        const QJsonObject output = value.toObject();
+        const QString type = output.value(QStringLiteral("type")).toString();
+        const QString file = output.value(QStringLiteral("path")).toString();
+        if (file.isEmpty()) {
+            continue;
+        }
+        if (type == QLatin1String("image") && picture.isEmpty()) {
+            picture = file;
+        } else if (type == QLatin1String("animation") && moving.isEmpty()) {
+            moving = file;
+        } else if (resultFile.isEmpty() && (type == QLatin1String("data") || type.isEmpty() || file.endsWith(QLatin1String(".json")))) {
+            resultFile = file;
+        }
+    }
+    if (resultFile.isEmpty() && !outputs.isEmpty()) {
+        resultFile = outputs.first().toObject().value(QStringLiteral("path")).toString();
     }
     QJsonObject root = readJson(resultFile);
     // Either a value per frame (a recorded performance) or a plain description
@@ -151,20 +277,65 @@ Set store(const QString &pluginId, const QString &name, const QString &kind, con
     }
     QDir dir(path);
     root.insert(QStringLiteral("plugin"), pluginId);
-    root.insert(QStringLiteral("name"), displayName(name));
-    root.insert(QStringLiteral("source_hash"), key);
     // The plugin may say what it produced; otherwise it is what was asked for.
     if (!kind.isEmpty() && root.value(QStringLiteral("kind")).toString().isEmpty()) {
         root.insert(QStringLiteral("kind"), kind);
     }
+    root.insert(QStringLiteral("name"), uniqueName(pluginId, root.value(QStringLiteral("kind")).toString(), displayName(name), key));
+    root.insert(QStringLiteral("source_hash"), key);
     if (!writeSet(dir, key, root, errorOut)) {
         return {};
     }
-    return read(dir.absoluteFilePath(key + QStringLiteral(".json")));
+    const QString file = dir.absoluteFilePath(key + QStringLiteral(".json"));
+    keepPicture(picture, sidecar(file, QStringLiteral("png")));
+    keepPreview(moving, sidecar(file, QStringLiteral("gif")));
+    return read(file);
+}
+
+bool rename(const QString &file, const QString &name, QString *errorOut)
+{
+    QJsonObject root = readJson(file);
+    if (root.isEmpty()) {
+        if (errorOut) {
+            *errorOut = i18n("%1 is not a set file.", QFileInfo(file).fileName());
+        }
+        return false;
+    }
+    const QFileInfo info(file);
+    const QString kind = root.value(QStringLiteral("kind")).toString();
+    const QString key = root.value(QStringLiteral("source_hash")).toString(info.completeBaseName());
+    root.insert(QStringLiteral("name"), uniqueName(root.value(QStringLiteral("plugin")).toString(), kind, displayName(name), key));
+    return writeSet(info.dir(), info.completeBaseName(), root, errorOut);
+}
+
+QString makeThumbnail(const Set &set, int size)
+{
+    if (!set.thumb.isEmpty() && QFileInfo::exists(set.thumb)) {
+        return set.thumb;
+    }
+    if (!set.isValid() || set.source.isEmpty() || !QFileInfo::exists(set.source)) {
+        return {};
+    }
+    QImage image;
+    if (looksLikeImage(set.source)) {
+        image = QImage(set.source);
+        if (!image.isNull()) {
+            image = image.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        }
+    } else {
+        image = firstFrame(set.source, size);
+    }
+    if (image.isNull()) {
+        return {};
+    }
+    const QString thumb = sidecar(set.file, QStringLiteral("png"));
+    return image.save(thumb, "PNG") ? thumb : QString();
 }
 
 bool remove(const QString &file)
 {
+    QFile::remove(sidecar(file, QStringLiteral("png")));
+    QFile::remove(sidecar(file, QStringLiteral("gif")));
     return QFile::remove(file);
 }
 
@@ -196,18 +367,23 @@ QString importSet(const QString &pluginId, const QString &file, QString *errorOu
     }
     QDir dir(path);
     copy.insert(QStringLiteral("plugin"), pluginId);
-    copy.insert(QStringLiteral("name"), displayName(copy.value(QStringLiteral("name")).toString(QFileInfo(file).completeBaseName())));
+    const QString kind = copy.value(QStringLiteral("kind")).toString();
+    copy.insert(QStringLiteral("name"),
+                uniqueName(pluginId, kind, displayName(copy.value(QStringLiteral("name")).toString(QFileInfo(file).completeBaseName())), key));
     copy.insert(QStringLiteral("source_hash"), key);
     if (!writeSet(dir, key, copy, errorOut)) {
         return {};
     }
-    return dir.absoluteFilePath(key + QStringLiteral(".json"));
+    const QString destination = dir.absoluteFilePath(key + QStringLiteral(".json"));
+    carryPictures(file, destination);
+    return destination;
 }
 
 bool exportSet(const QString &file, const QString &destination, QString *errorOut)
 {
     QFile::remove(destination);
     if (QFile::copy(file, destination)) {
+        carryPictures(file, destination);
         return true;
     }
     if (errorOut) {

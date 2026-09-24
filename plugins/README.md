@@ -46,6 +46,7 @@ install from the `models` URLs (keeps archives small and licensing clean).
 | `requirements` | string | no | Path to a pip requirements file. Empty/absent ⇒ no environment is built and the plugin runs on the system Python (regardless of `venv`). |
 | `provider` | object | if `kind=api` | `{ "name", "key_setting", "signup_url" }`. `name` keys the stored API key; the key reaches the plugin only as env `WUNJO_KEY_<NAME>` (upper-cased), never on the command line, never in the model context. |
 | `models` | array | no | `[{ "name", "url", "sha256", "size_mb", "auto_download" }]`. Downloaded into `models/` on install. A weight may also declare `unpack` (`zip` or `tar.gz` — the download is an archive, extracted into `models/<name>/` with the executable bit restored) and, when it comes in variants, which machine it is for: `platform` (`linux-x64`, `windows-x64`, `macos-arm64`), `backend` (`cuda`, `vulkan`, `cpu`) and `min_vram_gb` / `max_vram_gb`. Only the variants this machine can run are listed and downloaded, so one entry per name may appear several times. |
+| `variants` | array | no | The sizes the model comes in, smallest first, for the user to pick one (see *Model variants*). |
 | `hardware` | object | no | `{ "min_vram_gb", "cpu_ok" }`. Used later by the feasibility check. |
 | `os` | array | no | Subset of `["linux","windows","macos"]`. Import is refused on an unsupported OS. |
 | `min_app_version` | string | no | Oldest Wunjo Make this plugin works with, e.g. `"3.1"` (see *Application version range*). |
@@ -54,6 +55,36 @@ install from the `models` URLs (keeps archives small and licensing clean).
 | `effects` | array | no | Paths of effect XMLs the plugin adds to the effect list (see *Effects*). |
 | `input` | object | yes | What the plugin consumes (see *Targets*). |
 | `result` | object | yes | `{ "type": video\|audio\|image\|subtitle\|none, "place": bin\|timeline\|replace-zone\|none }`. |
+
+### Model variants
+
+A model that comes in several sizes is one plugin, not three: declare the
+sizes and say which weight belongs to which.
+
+```json
+"variants": [
+  {"id": "small", "label": "Small — fastest", "min_vram_gb": 0, "cpu_ok": true},
+  {"id": "large", "label": "Large — best", "min_vram_gb": 6, "cpu_ok": false,
+   "note": "non-commercial use only (CC-BY-NC-4.0)"}
+],
+"models": [
+  {"name": "small/model.safetensors", "variant": "small", "url": "…", "size_mb": 95},
+  {"name": "large/model.safetensors", "variant": "large", "url": "…", "size_mb": 1280},
+  {"name": "shared.onnx", "url": "…", "size_mb": 3}
+]
+```
+
+The plugin's settings tab then gets the row the speech page has — `Model:`
+with the installed sizes to pick from, and a *Manage models* button. The
+window behind it lists every size, marks the installed ones, shows the
+download size of the selected one and greys out the sizes this machine
+cannot run (`min_vram_gb` above the card's memory, or `cpu_ok: false` with
+no card at all) with the reason; `note` becomes the row's tooltip. A size is
+installed as a whole — all of its weights — and removed the same way. Until
+one is installed the tab recommends the largest that fits. A weight without
+`variant` is needed whichever size is chosen and keeps its own row. The
+choice reaches the plugin as `job.json → params.variant` and as the
+environment variable `WUNJO_MODEL_VARIANT`.
 
 ### Targets
 
@@ -171,35 +202,62 @@ plugin.
 A parameter declared as
 
 ```xml
-<parameter type="urllist" paramlist="%pluginSets" name="lp_set">
+<parameter type="urllist" paramlist="%pluginSets:expression" name="lp_set">
     <name>Expression source</name>
 </parameter>
 ```
 
 behaves like Shape Alpha's resource: the list offers the sets recorded for this
 plugin in the current project, and the pen next to it opens the panel where a
-video or a photo is analysed into a new one. Sets are stored in
-`<projectDataFolder>/plugin-sets/<plugin-id>/<name>.json` — they travel with the
-project, and the panel imports and exports them to move one between projects
-instead of analysing the same performance twice.
+video or a photo is analysed into a new one. The word after the colon is the
+*kind* of set the parameter wants; a plugin that records several kinds (a
+face to swap in, an expression to copy) keeps them apart by it, and describes
+each in the manifest's `sets` block (label, button text, file filter, detail
+column). A plugin with one kind writes a single flat `sets` block and leaves
+the colon off.
+
+Sets are stored in `<projectDataFolder>/plugin-sets/<plugin-id>/<source_hash>.json`
+— filed under the hash of the media they were made from, so analysing the
+same file twice updates one set instead of piling up copies. They travel with
+the project, and the panel imports and exports them to move one between
+projects instead of analysing the same performance twice. The name shown in
+lists is the source file's name; the user can rename a set, and a second set
+of the same kind with the same name gets a number.
 
 The editor asks the plugin for a set by running it with
 
 ```json
-"input": { "action": "analyse", "source": "/abs/driving.mp4" }
+"input": { "action": "analyse", "source": "/abs/driving.mp4", "kind": "expression" }
 ```
 
-and expects a json output whose `values` hold one value per frame, keyed by the
-effect's parameter names:
+and expects a json output holding either `values` — one value per frame,
+keyed by the effect's parameter names — or `data`, a plain description of
+what was analysed (a face embedding, a track's length):
 
 ```json
 {"source": "/abs/driving.mp4", "fps": 25.0, "count": 137,
  "values": {"lp_pitch": [0.0, 0.4, …], "lp_yaw": [0.0, -0.2, …]}}
 ```
 
-Picking that set fills those parameters with keyframes (points are kept only
-where a value moves, so a long recording cannot choke the keyframe model), cut
-to the clip's length after a warning. Every keyframe stays editable afterwards.
+Picking that set does not touch the effect's keyframes: the effect stores the
+set file, and the plugin reads it when it renders. Keyframes stay the user's
+own, for motion added on top of the recording.
+
+A set can come with a picture. Two photos both called `portrait.jpg` are the
+same word in a list and two different people in a picture, so the analysis may
+return more than the json:
+
+```json
+{"outputs": [{"type": "data", "path": "/abs/work/face_preset.json"},
+             {"type": "image", "path": "/abs/work/poster.png"},
+             {"type": "animation", "path": "/abs/work/preview.gif"}]}
+```
+
+`image` is shown next to the name in the panel and in the effect's list —
+crop it to what matters (the face, not the room around it); `animation` is
+shown below the panel's list when the set is selected, for a recording that
+moves. Both are optional. When a plugin sends neither, the editor makes a
+still from the source itself (the photo, or the first frame of the video).
 
 A model that cannot run while MLT plays (LivePortrait, diffusion, …) still gets
 an effect: build it on a neutral service (e.g. `brightness` with a fixed

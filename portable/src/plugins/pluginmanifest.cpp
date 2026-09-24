@@ -125,11 +125,41 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         model.backend = obj.value(QStringLiteral("backend")).toString();
         model.minVramGb = obj.value(QStringLiteral("min_vram_gb")).toDouble();
         model.maxVramGb = obj.value(QStringLiteral("max_vram_gb")).toDouble();
+        model.variant = obj.value(QStringLiteral("variant")).toString();
         if (!model.unpack.isEmpty() && model.unpack != QLatin1String("zip") && model.unpack != QLatin1String("tar.gz")) {
             m.m_errors << i18n("model '%1': 'unpack' only understands \"zip\" or \"tar.gz\"", model.name);
         }
         if (!model.name.isEmpty()) {
             m.m_models.append(model);
+        }
+    }
+    // The sizes the model comes in, for the user to choose between. A weight
+    // that names one belongs to it alone; a weight that names none is needed
+    // whichever size is chosen.
+    const QJsonArray variantsArray = root.value(QStringLiteral("variants")).toArray();
+    for (const QJsonValue &value : variantsArray) {
+        const QJsonObject obj = value.toObject();
+        PluginVariant variant;
+        variant.id = obj.value(QStringLiteral("id")).toString();
+        variant.label = obj.value(QStringLiteral("label")).toString(variant.id);
+        variant.note = obj.value(QStringLiteral("note")).toString();
+        variant.minVramGb = obj.value(QStringLiteral("min_vram_gb")).toDouble();
+        variant.cpuOk = obj.value(QStringLiteral("cpu_ok")).toBool(true);
+        if (variant.id.isEmpty()) {
+            m.m_errors << i18n("every 'variants' entry needs an 'id'");
+            continue;
+        }
+        const bool known = std::any_of(m.m_variants.cbegin(), m.m_variants.cend(), [&variant](const PluginVariant &v) { return v.id == variant.id; });
+        if (known) {
+            m.m_errors << i18n("variant '%1' is declared twice", variant.id);
+            continue;
+        }
+        m.m_variants.append(variant);
+    }
+    for (const PluginModel &model : std::as_const(m.m_models)) {
+        const bool declared = std::any_of(m.m_variants.cbegin(), m.m_variants.cend(), [&model](const PluginVariant &v) { return v.id == model.variant; });
+        if (!model.variant.isEmpty() && !declared) {
+            m.m_errors << i18n("model '%1' names the variant '%2', which is not declared", model.name, model.variant);
         }
     }
     const QJsonArray osArray = root.value(QStringLiteral("os")).toArray();
@@ -329,7 +359,7 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
     return m;
 }
 
-QList<PluginModel> PluginManifest::modelsFor(double vramGb, const QString &backend) const
+QList<PluginModel> PluginManifest::modelsFor(double vramGb, const QString &backend, const QString &variant) const
 {
     const QString os = currentOs();
     // How well a variant suits this machine. Lower is better; anything built
@@ -361,6 +391,10 @@ QList<PluginModel> PluginManifest::modelsFor(double vramGb, const QString &backe
         if (!model.platform.isEmpty() && model.platform != platform && model.platform != os) {
             continue;
         }
+        // another size of the model than the one chosen
+        if (!model.variant.isEmpty() && model.variant != variant) {
+            continue;
+        }
         if (model.minVramGb > 0 && vramGb < model.minVramGb) {
             continue;
         }
@@ -381,6 +415,44 @@ QList<PluginModel> PluginManifest::modelsFor(double vramGb, const QString &backe
         }
     }
     return selected;
+}
+
+PluginVariant PluginManifest::variant(const QString &id) const
+{
+    for (const PluginVariant &candidate : m_variants) {
+        if (candidate.id == id) {
+            return candidate;
+        }
+    }
+    return {};
+}
+
+QString PluginManifest::defaultVariant(double vramGb) const
+{
+    // The largest this machine can run. The manifest lists the sizes smallest
+    // first, so the last one that fits is the answer; when none fits — no card,
+    // and every size wants one — the smallest is still the least wrong.
+    QString chosen;
+    for (const PluginVariant &candidate : m_variants) {
+        if (variantBlocker(candidate, vramGb).isEmpty()) {
+            chosen = candidate.id;
+        }
+    }
+    if (chosen.isEmpty() && !m_variants.isEmpty()) {
+        chosen = m_variants.first().id;
+    }
+    return chosen;
+}
+
+QString PluginManifest::variantBlocker(const PluginVariant &variant, double vramGb)
+{
+    if (vramGb <= 0) {
+        return variant.cpuOk ? QString() : i18n("needs a graphics card");
+    }
+    if (variant.minVramGb > vramGb) {
+        return i18n("needs %1 GB of video memory, this card has %2 GB", QString::number(variant.minVramGb, 'g', 3), QString::number(vramGb, 'f', 1));
+    }
+    return {};
 }
 
 QString PluginManifest::requirementsFor(double driverCuda) const

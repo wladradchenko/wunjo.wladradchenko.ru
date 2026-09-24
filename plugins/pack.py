@@ -180,6 +180,24 @@ def validate(plugin_dir):
         if low is not None and high is not None and low >= high:
             errors.append("model '%s': min_vram_gb must be below max_vram_gb" % model.get("name", "?"))
 
+    # Sizes of one model the user chooses between: each names what it asks of
+    # the machine, and every weight that names a size must name a declared one.
+    variant_ids = set()
+    for variant in manifest.get("variants", []) or []:
+        if not isinstance(variant, dict) or not variant.get("id"):
+            errors.append("every 'variants' entry must be an object with an 'id'")
+            continue
+        if variant["id"] in variant_ids:
+            errors.append("variant '%s' is declared twice" % variant["id"])
+        variant_ids.add(variant["id"])
+        if "min_vram_gb" in variant and not isinstance(variant["min_vram_gb"], (int, float)):
+            errors.append("variant '%s': min_vram_gb must be a number" % variant["id"])
+        if "cpu_ok" in variant and not isinstance(variant["cpu_ok"], bool):
+            errors.append("variant '%s': cpu_ok must be true or false" % variant["id"])
+    for model in manifest.get("models", []) or []:
+        if isinstance(model, dict) and model.get("variant") and model["variant"] not in variant_ids:
+            errors.append("model '%s' names the variant '%s', which is not declared" % (model.get("name", "?"), model["variant"]))
+
     # An icon is optional, but a named one that is not there would silently
     # fall back to the generic wand and leave the author wondering why.
     icon = manifest.get("icon")

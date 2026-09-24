@@ -73,6 +73,12 @@ public:
      *  place that lists, checks or downloads weights goes through this, so the
      *  settings page and the run blocker never disagree about what is missing. */
     static QList<PluginModel> applicableModels(const PluginManifest &manifest);
+    /** @brief Which size of its model @p manifest's plugin runs: the one chosen
+     *  on its settings tab, or the one that suits this machine when nothing was
+     *  chosen yet. Empty for a plugin that comes in one size. */
+    static QString selectedVariant(const PluginManifest &manifest);
+    /** @brief True when every weight of size @p variantId is on disk and whole. */
+    bool variantReady(const PluginManifest &manifest, const QString &variantId) const;
     /** @brief Unpack a downloaded archive weight into its folder and restore the
      *  executable bit. Returns false with a user-readable reason in @p errorOut. */
     bool unpackModel(const QString &id, const PluginModel &model, const QString &archivePath, QString *errorOut = nullptr);

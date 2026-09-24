@@ -9,6 +9,7 @@
 #include "ui_urllistparamwidget_ui.h"
 #include <KNSWidgets/Button>
 #include <QFutureWatcher>
+#include <QSet>
 #include <QVariant>
 #include <QWidget>
 
@@ -79,6 +80,9 @@ private:
     QFutureWatcher<void> m_watcher;
     QFuture<void> m_thumbJob;
     bool m_abortJobs{false};
+    /** @brief Plugin sets a picture was already attempted for, so one that
+     *  cannot be made is not tried again on every refresh. */
+    QSet<QString> m_setThumbsTried;
 
     /** @brief Reads the first 30 lines of a .cube LUT file and check for validity
      */

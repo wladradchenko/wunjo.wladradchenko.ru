@@ -13,6 +13,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 class KMessageWidget;
 class FileDownloadJob;
+class QAction;
 class PluginPythonEnv;
 class QLabel;
 class QComboBox;
@@ -59,6 +60,13 @@ private Q_SLOTS:
     void updateInstallLine();
 
 private:
+    /** @brief Build the rows of the weights every size shares. */
+    void buildModelsBlock();
+    /** @brief Fill the model list with the sizes that are on disk, and say what
+     *  to install when none is. */
+    void reloadVariants();
+    /** @brief Open the window where sizes are installed and removed. */
+    void manageModels();
     /** @brief Write one chunk of pip output into the install log, the way a
      *  terminal would: package lines stack up, the download progress overwrites
      *  itself on a single line. */
@@ -96,6 +104,17 @@ private:
         FileDownloadJob *download = nullptr;
     };
     QList<ModelRow> m_modelRows;
+    /** @brief Which size of the model to run, for a plugin that comes in
+     *  several (see PluginVariant): the installed ones, and a way to the
+     *  window that installs the rest. */
+    QComboBox *m_variantCombo = nullptr;
+    QPushButton *m_manageModels = nullptr;
+    KMessageWidget *m_noModelMessage = nullptr;
+    QAction *m_installModelAction = nullptr;
+    /** @brief Where the model rows live; the block inside it is rebuilt when
+     *  the size changes. */
+    QWidget *m_modelsArea = nullptr;
+    QWidget *m_modelsBlock = nullptr;
     /** @brief Anything too long for a row: why a download will not start, what
      *  an unpack choked on, which weight arrived damaged. */
     KMessageWidget *m_modelsMessage = nullptr;

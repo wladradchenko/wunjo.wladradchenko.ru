@@ -18,6 +18,7 @@
 
 #include <QDirIterator>
 #include <QFileDialog>
+#include <QPointer>
 #include <QtConcurrent/QtConcurrentRun>
 
 UrlListParamWidget::UrlListParamWidget(std::shared_ptr<AssetParameterModel> model, QModelIndex index, QWidget *parent)
@@ -335,12 +336,48 @@ void UrlListParamWidget::slotRefresh()
         m_listType = PLUGINSETLIST;
         const QString plugin = PluginManager::instance().pluginForEffect(m_model->getAssetId());
         const QVector<PluginSets::Set> sets = PluginSets::sets(plugin, m_setKind);
+        // A face is one photo, and "(1 frame)" after every name says nothing;
+        // the picture next to the name does — two portraits called the same
+        // are told apart by it, which no label manages.
+        const bool stills = m_setKind == QLatin1String("face");
+        m_list->setIconSize(QSize(32, 32));
         m_list->addItem(i18n("None"), QString());
+        QVector<PluginSets::Set> withoutPicture;
         for (const PluginSets::Set &set : sets) {
-            m_list->addItem(i18np("%2 (%1 frame)", "%2 (%1 frames)", set.count, set.name), set.file);
+            m_list->addItem(stills ? set.name : i18np("%2 (%1 frame)", "%2 (%1 frames)", set.count, set.name), set.file);
+            const int row = m_list->count() - 1;
             if (!set.source.isEmpty()) {
-                m_list->setItemData(m_list->count() - 1, set.source, Qt::ToolTipRole);
+                m_list->setItemData(row, set.source, Qt::ToolTipRole);
             }
+            if (!set.thumb.isEmpty()) {
+                m_list->setItemIcon(row, QIcon(set.thumb));
+            } else if (!set.source.isEmpty() && !m_setThumbsTried.contains(set.file)) {
+                withoutPicture.append(set);
+            }
+        }
+        if (!withoutPicture.isEmpty()) {
+            // Sets recorded before pictures existed get one from their source,
+            // once and off the GUI thread — a video has to be opened for it.
+            for (const PluginSets::Set &set : withoutPicture) {
+                m_setThumbsTried.insert(set.file);
+            }
+            QPointer<UrlListParamWidget> guard(this);
+            const QFuture<void> pictures = QtConcurrent::run([guard, withoutPicture]() {
+                for (const PluginSets::Set &set : withoutPicture) {
+                    PluginSets::makeThumbnail(set);
+                }
+                if (guard) {
+                    QMetaObject::invokeMethod(
+                        guard.data(),
+                        [guard]() {
+                            if (guard) {
+                                guard->slotRefresh();
+                            }
+                        },
+                        Qt::QueuedConnection);
+                }
+            });
+            Q_UNUSED(pictures)
         }
         if (!currentValue.isEmpty() && m_list->findData(currentValue) < 0) {
             // the set was deleted, keep the name visible instead of silently

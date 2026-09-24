@@ -12,27 +12,41 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <KMessageBox>
 #include <KMessageWidget>
 
+#include <QAction>
 #include <QAudioOutput>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDatabase>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QLabel>
+#include <QLineEdit>
+#include <QLocale>
 #include <QMediaPlayer>
 #include <QMenu>
+#include <QMovie>
+#include <QPixmap>
+#include <QPointer>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QUrl>
 #include <QVBoxLayout>
+#include <QtConcurrent/QtConcurrentRun>
 
 namespace {
 constexpr int kFileRole = Qt::UserRole;
 constexpr int kSourceRole = Qt::UserRole + 1;
-}
+constexpr int kThumbRole = Qt::UserRole + 2;
+constexpr int kPreviewRole = Qt::UserRole + 3;
+/** @brief Row pictures in the list, and the larger one below it. */
+constexpr int kListIcon = 48;
+constexpr int kPreviewHeight = 176;
+} // namespace
 
 PluginSetPanel::PluginSetPanel(QWidget *parent)
     : QWidget(parent)
@@ -83,8 +97,16 @@ PluginSetPanel::PluginSetPanel(QWidget *parent)
     m_sets->setRootIsDecorated(false);
     m_sets->setAlternatingRowColors(true);
     m_sets->setAllColumnsShowFocus(true);
+    m_sets->setIconSize(QSize(kListIcon, kListIcon));
     m_sets->setContextMenuPolicy(Qt::CustomContextMenu);
     layout->addWidget(m_sets, 1);
+
+    // ---- and what the selected one looks like ----
+    m_preview = new QLabel(this);
+    m_preview->setAlignment(Qt::AlignCenter);
+    m_preview->setFixedHeight(kPreviewHeight);
+    m_preview->hide();
+    layout->addWidget(m_preview);
 
     auto *buttons = new QHBoxLayout;
     m_delete = new QToolButton(this);
@@ -108,6 +130,15 @@ PluginSetPanel::PluginSetPanel(QWidget *parent)
     buttons->addWidget(close);
     layout->addLayout(buttons);
 
+    // Renaming, from the context menu and from F2 on the list: two photos both
+    // called portrait.jpg arrive under one name, and the name is what the
+    // effect's list shows.
+    auto *renameAction = new QAction(QIcon::fromTheme(QStringLiteral("edit-rename")), i18n("Rename set…"), this);
+    renameAction->setShortcut(Qt::Key_F2);
+    renameAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    m_sets->addAction(renameAction);
+    connect(renameAction, &QAction::triggered, this, &PluginSetPanel::renameSet);
+
     connect(m_choose, &QPushButton::clicked, this, &PluginSetPanel::chooseSource);
     connect(m_analyse, &QPushButton::clicked, this, &PluginSetPanel::analyse);
     connect(m_playSource, &QToolButton::clicked, this, [this]() { togglePlay(m_source); });
@@ -115,10 +146,19 @@ PluginSetPanel::PluginSetPanel(QWidget *parent)
         QTreeWidgetItem *item = m_sets->currentItem();
         togglePlay(item ? item->data(0, kSourceRole).toString() : QString());
     });
-    // A track is unrecognisable by name; double-clicking the row plays it.
+    // A track is unrecognisable by name; double-clicking the row plays it. A
+    // picture is recognisable, and double-clicking opens what it was made from.
     connect(m_sets, &QTreeWidget::itemDoubleClicked, this, [this](QTreeWidgetItem *item) {
-        if (isAudioKind() && item) {
-            togglePlay(item->data(0, kSourceRole).toString());
+        if (item == nullptr) {
+            return;
+        }
+        const QString source = item->data(0, kSourceRole).toString();
+        if (isAudioKind()) {
+            togglePlay(source);
+        } else if (!source.isEmpty() && QFileInfo::exists(source)) {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(source));
+        } else {
+            showStatus(i18n("The file this preset was made from is gone."), true);
         }
     });
     connect(m_delete, &QToolButton::clicked, this, &PluginSetPanel::deleteSet);
@@ -128,17 +168,29 @@ PluginSetPanel::PluginSetPanel(QWidget *parent)
         stopPlayback();
         Q_EMIT closeRequested();
     });
-    connect(m_sets, &QTreeWidget::currentItemChanged, this, [this]() { updateButtons(); });
-    connect(m_sets, &QTreeWidget::customContextMenuRequested, this, [this](const QPoint &pos) {
+    connect(m_sets, &QTreeWidget::currentItemChanged, this, [this]() {
+        updateButtons();
+        updatePreview();
+    });
+    connect(m_sets, &QTreeWidget::customContextMenuRequested, this, [this, renameAction](const QPoint &pos) {
         if (m_sets->itemAt(pos) == nullptr) {
             return;
         }
         QMenu menu(this);
+        menu.addAction(renameAction);
         QAction *exportAction = menu.addAction(QIcon::fromTheme(QStringLiteral("document-export")), i18n("Export set…"));
         connect(exportAction, &QAction::triggered, this, &PluginSetPanel::exportSet);
         menu.exec(m_sets->viewport()->mapToGlobal(pos));
     });
     updateButtons();
+}
+
+PluginSetPanel::~PluginSetPanel()
+{
+    // the picture job holds only copies and a guarded pointer back here, but
+    // it reads the project's media: let it finish rather than pull the project
+    // out from under it
+    m_thumbJob.waitForFinished();
 }
 
 void PluginSetPanel::setPlugin(const QString &pluginId, const QString &kind)
@@ -207,6 +259,8 @@ void PluginSetPanel::analyse()
                 showStatus(error, true);
                 return;
             }
+            // Everything the plugin handed back goes to the store: the set, and
+            // the pictures of it when the plugin drew some.
             const QJsonArray outputs = result.value(QStringLiteral("outputs")).toArray();
             const QString file = outputs.isEmpty() ? QString() : outputs.first().toObject().value(QStringLiteral("path")).toString();
             if (file.isEmpty()) {
@@ -214,7 +268,7 @@ void PluginSetPanel::analyse()
                 return;
             }
             QString storeError;
-            const PluginSets::Set stored = PluginSets::store(m_pluginId, name, m_kind, file, &storeError);
+            const PluginSets::Set stored = PluginSets::store(m_pluginId, name, m_kind, outputs, &storeError);
             if (!stored.isValid()) {
                 showStatus(storeError.isEmpty() ? i18n("The set could not be saved.") : storeError, true);
                 return;
@@ -230,19 +284,89 @@ void PluginSetPanel::refresh()
     const QString current = m_sets->currentItem() ? m_sets->currentItem()->data(0, kFileRole).toString() : QString();
     m_sets->clear();
     const QVector<PluginSets::Set> sets = PluginSets::sets(m_pluginId, m_kind);
+    QVector<PluginSets::Set> withoutPicture;
     for (const PluginSets::Set &set : sets) {
         auto *item = new QTreeWidgetItem(m_sets, {set.name, QString::number(set.count)});
         item->setData(0, kFileRole, set.file);
         item->setData(0, kSourceRole, set.source);
-        if (!set.source.isEmpty()) {
-            item->setToolTip(0, set.source);
+        item->setData(0, kThumbRole, set.thumb);
+        item->setData(0, kPreviewRole, set.preview);
+        if (!set.thumb.isEmpty()) {
+            item->setIcon(0, QIcon(set.thumb));
+        } else if (!set.source.isEmpty() && !m_thumbTried.contains(set.file)) {
+            withoutPicture.append(set);
         }
+        // where it came from, and when: two recordings of one file are told
+        // apart by their dates when their names say the same thing
+        const QString recorded = QLocale().toString(QFileInfo(set.file).lastModified(), QLocale::ShortFormat);
+        item->setToolTip(0, set.source.isEmpty() ? i18n("Recorded %1", recorded) : i18n("%1\nRecorded %2", set.source, recorded));
         if (set.file == current) {
             m_sets->setCurrentItem(item);
         }
     }
     m_sets->resizeColumnToContents(0);
     updateButtons();
+    updatePreview();
+    makeMissingThumbnails(withoutPicture);
+}
+
+void PluginSetPanel::makeMissingThumbnails(const QVector<PluginSets::Set> &sets)
+{
+    if (sets.isEmpty() || m_thumbJob.isRunning()) {
+        return;
+    }
+    for (const PluginSets::Set &set : sets) {
+        m_thumbTried.insert(set.file);
+    }
+    QPointer<PluginSetPanel> guard(this);
+    m_thumbJob = QtConcurrent::run([guard, sets]() {
+        for (const PluginSets::Set &set : sets) {
+            PluginSets::makeThumbnail(set);
+        }
+        if (guard) {
+            QMetaObject::invokeMethod(
+                guard.data(),
+                [guard]() {
+                    if (guard) {
+                        guard->refresh();
+                        Q_EMIT guard->setsChanged();
+                    }
+                },
+                Qt::QueuedConnection);
+        }
+    });
+}
+
+void PluginSetPanel::updatePreview()
+{
+    if (m_movie) {
+        m_movie->stop();
+        m_preview->setMovie(nullptr);
+        delete m_movie;
+        m_movie = nullptr;
+    }
+    m_preview->clear();
+    QTreeWidgetItem *item = m_sets->currentItem();
+    if (item == nullptr || isAudioKind()) {
+        m_preview->hide();
+        return;
+    }
+    const QString preview = item->data(0, kPreviewRole).toString();
+    if (!preview.isEmpty() && QFileInfo::exists(preview)) {
+        m_movie = new QMovie(preview, QByteArray(), this);
+        m_preview->setMovie(m_movie);
+        m_movie->start();
+        m_preview->show();
+        return;
+    }
+    const QString thumb = item->data(0, kThumbRole).toString();
+    const QPixmap picture(thumb);
+    if (thumb.isEmpty() || picture.isNull()) {
+        m_preview->hide();
+        return;
+    }
+    m_preview->setPixmap(picture.scaled(QSize(2 * kPreviewHeight, kPreviewHeight), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    m_preview->show();
 }
 
 void PluginSetPanel::updateButtons()
@@ -323,6 +447,26 @@ void PluginSetPanel::deleteSet()
         refresh();
         Q_EMIT setsChanged();
     }
+}
+
+void PluginSetPanel::renameSet()
+{
+    QTreeWidgetItem *item = m_sets->currentItem();
+    if (item == nullptr) {
+        return;
+    }
+    bool accepted = false;
+    const QString name = QInputDialog::getText(this, i18n("Rename set"), i18n("Name:"), QLineEdit::Normal, item->text(0), &accepted).trimmed();
+    if (!accepted || name.isEmpty() || name == item->text(0)) {
+        return;
+    }
+    QString error;
+    if (!PluginSets::rename(item->data(0, kFileRole).toString(), name, &error)) {
+        showStatus(error.isEmpty() ? i18n("The set could not be renamed.") : error, true);
+        return;
+    }
+    refresh();
+    Q_EMIT setsChanged();
 }
 
 void PluginSetPanel::importSet()

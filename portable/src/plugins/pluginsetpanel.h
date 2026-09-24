@@ -5,6 +5,10 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #pragma once
 
+#include "pluginsetstore.h"
+
+#include <QFuture>
+#include <QSet>
 #include <QString>
 #include <QWidget>
 
@@ -12,6 +16,7 @@ class KMessageWidget;
 class QAudioOutput;
 class QLabel;
 class QMediaPlayer;
+class QMovie;
 class QProgressBar;
 class QPushButton;
 class QToolButton;
@@ -24,14 +29,19 @@ class QTreeWidget;
     It sits where the effect stack is, like the mask panel: choose a video or a
     photo, analyse it (the plugin measures a value per frame), and the result is
     kept as a named set next to the project (see PluginSets). Sets can be
-    deleted, imported from another project and exported, so the same performance
-    never has to be analysed twice.
+    renamed, deleted, imported from another project and exported, so the same
+    performance never has to be analysed twice.
+
+    A set is shown, not only named: a face or a recorded expression gets its
+    picture in the list and a larger one below it, a track gets a listen
+    button — whichever tells the sets apart.
  */
 class PluginSetPanel : public QWidget
 {
     Q_OBJECT
 public:
     explicit PluginSetPanel(QWidget *parent = nullptr);
+    ~PluginSetPanel() override;
 
     /** @brief Show the sets of @p pluginId — the plugin that owns the effect
      *  being edited. */
@@ -52,12 +62,19 @@ private Q_SLOTS:
     void chooseSource();
     void analyse();
     void deleteSet();
+    void renameSet();
     void importSet();
     void exportSet();
 
 private:
     void refresh();
     void updateButtons();
+    /** @brief Show the selected set below the list: its picture, or the
+     *  recording in motion. Nothing for a track — that one is listened to. */
+    void updatePreview();
+    /** @brief Give the sets recorded before pictures existed one, from their
+     *  source, off the GUI thread; the list is refreshed when they are done. */
+    void makeMissingThumbnails(const QVector<PluginSets::Set> &sets);
     void showStatus(const QString &message, bool error);
     /** @brief True when the presets here are sound — a track cannot be told
      *  apart from another by its name alone, so those get a listen button. */
@@ -80,6 +97,8 @@ private:
     QProgressBar *m_progress;
     KMessageWidget *m_status;
     QTreeWidget *m_sets;
+    QLabel *m_preview;
+    QMovie *m_movie{nullptr};
     QToolButton *m_delete;
     QToolButton *m_import;
     QToolButton *m_playSource{nullptr};
@@ -88,4 +107,8 @@ private:
     QMediaPlayer *m_player{nullptr};
     QAudioOutput *m_audioOut{nullptr};
     QString m_playing;
+    /** @brief Sets a picture was already attempted for; one that cannot be
+     *  made (source gone, unreadable) is not tried again on every refresh. */
+    QSet<QString> m_thumbTried;
+    QFuture<void> m_thumbJob;
 };

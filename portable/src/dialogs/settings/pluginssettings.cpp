@@ -9,6 +9,7 @@
 #include "core.h"
 #include "wunjosettings.h"
 #include "mainwindow.h"
+#include "plugins/plugincatalog.h"
 #include "plugins/pluginmanager.h"
 #include "plugins/pluginsettingstab.h"
 #include "pythoninterfaces/dialogs/modeldownloadwidget.h"
@@ -405,6 +406,10 @@ PluginsSettings::PluginsSettings(QWidget *parent)
     rebuildPluginTabs();
     connect(&PluginManager::instance(), &PluginManager::pluginsChanged, this, &PluginsSettings::rebuildPluginTabs);
     buildNavigation();
+    // What the site offers on top of what is installed: asked for once the
+    // list exists, shown under it when the answer comes.
+    connect(&PluginCatalog::instance(), &PluginCatalog::changed, this, &PluginsSettings::rebuildPluginList);
+    PluginCatalog::instance().refresh();
 }
 
 void PluginsSettings::buildNavigation()
@@ -482,6 +487,27 @@ void PluginsSettings::buildNavigation()
         if (page >= 0) {
             tabWidget->setCurrentIndex(page);
         }
+    });
+    // A row for a plugin that is not installed has no page here: it opens the
+    // plugin's page on the site, in the browser, and the list goes back to
+    // whichever page was open. Only a click does that — walking the list with
+    // the keyboard must not open browser windows.
+    connect(m_navList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
+        const QString url = item->data(Qt::UserRole + 3).toString();
+        if (url.isEmpty()) {
+            return;
+        }
+        pCore->openLink(QUrl(url));
+        QTimer::singleShot(0, this, [this]() {
+            const QSignalBlocker block(m_navList);
+            for (int i = 0; i < m_navList->count(); ++i) {
+                if (m_navList->item(i)->data(Qt::UserRole).toInt() == tabWidget->currentIndex()) {
+                    m_navList->setCurrentRow(i);
+                    return;
+                }
+            }
+            m_navList->clearSelection();
+        });
     });
     column->addWidget(m_navList, 1);
 
@@ -599,6 +625,44 @@ void PluginsSettings::rebuildPluginList()
             const QString id = entry.first->property("wunjoPluginId").toString();
             const PluginManifest manifest = PluginManager::instance().plugin(id);
             addRow(tabWidget->tabText(entry.second), manifest.targets().join(QLatin1Char(' ')), entry.second, id);
+        }
+    }
+
+    // What could be added, from the site that offers it — under "Recommended",
+    // after what is installed. The rows are names and a sentence each, and the
+    // search and the filter chips read them like any other row; the page a row
+    // opens is where a plugin is read about, downloaded or bought — nothing is
+    // sold or priced in here.
+    const QString os = PluginManifest::currentOs();
+    const QList<PluginCatalog::Entry> catalogue = PluginCatalog::instance().entries();
+    QList<PluginCatalog::Entry> more;
+    for (const PluginCatalog::Entry &entry : catalogue) {
+        // installed here already, whether added by the user or shipped with
+        // the application. (Not isValid(): an unknown id answers with an empty
+        // manifest, and an empty manifest has no errors to be invalid for.)
+        if (!PluginManager::instance().plugin(entry.id).id().isEmpty()) {
+            continue;
+        }
+        if (!entry.os.isEmpty() && !entry.os.contains(os)) {
+            continue;
+        }
+        more.append(entry);
+    }
+    if (!more.isEmpty()) {
+        addHeading(i18nc("plugins offered on the website, not installed here", "Recommended"));
+        for (const PluginCatalog::Entry &entry : std::as_const(more)) {
+            auto *item = new QListWidgetItem(entry.name, m_navList);
+            item->setData(Qt::UserRole, -2);
+            // the site's own words for what a plugin works on, in the words
+            // the filter chips use
+            QStringList targets = entry.topics;
+            targets.replaceInStrings(QStringLiteral("agents"), QStringLiteral("agent"));
+            targets.replaceInStrings(QStringLiteral("photo"), QStringLiteral("video"));
+            item->setData(Qt::UserRole + 1, targets.join(QLatin1Char(' ')));
+            item->setData(Qt::UserRole + 3, entry.url);
+            item->setToolTip(entry.description.isEmpty() ? i18n("Opens the plugin's page on wunjo.online")
+                                                         : i18n("%1\nOpens the plugin's page on wunjo.online", entry.description));
+            item->setSizeHint(QSize(0, 30));
         }
     }
 
@@ -734,7 +798,9 @@ void PluginsSettings::applyNavFilter()
     int shownUnderHeading = 0;
     for (int i = 0; i < m_navList->count(); ++i) {
         QListWidgetItem *item = m_navList->item(i);
-        if (item->data(Qt::UserRole).toInt() < 0) {
+        // -1 is a heading; a row that opens a page on the site carries -2 and
+        // is searched and filtered like any other row
+        if (item->data(Qt::UserRole).toInt() == -1) {
             // A heading with nothing left under it says a group exists when it
             // does not, so its fate is decided once its rows have been counted.
             if (heading != nullptr) {

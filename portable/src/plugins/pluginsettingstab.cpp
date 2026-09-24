@@ -9,6 +9,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "filedownloadjob.h"
 #include "pluginaboutdialog.h"
 #include "pluginmanager.h"
+#include "pluginmodelsdialog.h"
 #include "pluginpythonenv.h"
 #include "pythoninterfaces/abstractpythoninterface.h"
 
@@ -41,7 +42,9 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
+#include <QAction>
 #include <QScrollBar>
+#include <QSignalBlocker>
 #include <QTextBlock>
 #include <QTimer>
 #include <QToolButton>
@@ -211,70 +214,49 @@ PluginSettingsTab::PluginSettingsTab(const PluginManifest &manifest, QWidget *pa
         m_env->checkDependenciesConcurrently();
     }
 
-    // ---- models ----
-    // A plugin that does several things declares which part each weight belongs
-    // to; the page then reads as sections instead of one long heap of files.
-    const QList<PluginModel> models = PluginManager::applicableModels(manifest);
-    if (!models.isEmpty()) {
-        QStringList groups;
-        for (const PluginModel &model : models) {
-            if (!groups.contains(model.group)) {
-                groups << model.group;
+    // ---- model, for a plugin that comes in several sizes ----
+    // The row the speech page has: which size runs, and the button to the
+    // window where sizes are installed and removed. The list offers only the
+    // sizes that are on disk; the window shows every size and says what each
+    // asks of this machine.
+    if (!manifest.variants().isEmpty()) {
+        auto *modelRow = new QHBoxLayout;
+        modelRow->addWidget(new QLabel(i18n("Model:"), this));
+        m_variantCombo = new QComboBox(this);
+        m_variantCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+        modelRow->addWidget(m_variantCombo);
+        m_manageModels = new QPushButton(i18n("Manage models"), this);
+        modelRow->addWidget(m_manageModels);
+        modelRow->addStretch();
+        layout->addLayout(modelRow);
+        m_noModelMessage = new KMessageWidget(this);
+        m_noModelMessage->setCloseButtonVisible(false);
+        m_noModelMessage->setWordWrap(true);
+        m_noModelMessage->setMessageType(KMessageWidget::Information);
+        m_installModelAction = new QAction(QIcon::fromTheme(QStringLiteral("download")), i18n("Install model"), this);
+        m_noModelMessage->addAction(m_installModelAction);
+        m_noModelMessage->hide();
+        layout->addWidget(m_noModelMessage);
+        connect(m_manageModels, &QPushButton::clicked, this, &PluginSettingsTab::manageModels);
+        connect(m_installModelAction, &QAction::triggered, this, &PluginSettingsTab::manageModels);
+        connect(m_variantCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
+            const QString id = m_variantCombo->itemData(index).toString();
+            if (id.isEmpty()) {
+                return;
             }
-        }
-        for (const QString &group : std::as_const(groups)) {
-            auto *modelsBox = new QGroupBox(group.isEmpty() ? i18n("Models") : i18n("Models — %1", group), this);
-            auto *modelsLayout = new QVBoxLayout(modelsBox);
-            for (int i = 0; i < models.size(); ++i) {
-                if (models.at(i).group != group) {
-                    continue;
-                }
-                auto *row = new QHBoxLayout;
-                const QString sizeText = models.at(i).sizeMb > 0 ? QStringLiteral(" (%1 MB)").arg(models.at(i).sizeMb) : QString();
-                row->addWidget(new QLabel(models.at(i).name + sizeText, modelsBox));
-                auto *status = new QLabel(modelsBox);
-                status->setStyleSheet(QStringLiteral("color:#696969"));
-                // The status takes the free space instead of a stretch, and its
-                // own width counts for nothing: whatever it is given to say, the
-                // row cannot grow past the dialog and push the button off the
-                // screen. Long sentences go to @ref m_modelsMessage anyway.
-                status->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
-                status->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                auto *button = new QPushButton(QIcon::fromTheme(QStringLiteral("download")), i18n("Download"), modelsBox);
-                row->addWidget(status, 1);
-                row->addWidget(button);
-                modelsLayout->addLayout(row);
-                while (m_modelRows.size() <= i) {
-                    m_modelRows.append(ModelRow());
-                }
-                m_modelRows[i] = {status, button, nullptr};
-                connect(button, &QPushButton::clicked, this, [this, i]() { downloadModel(i); });
-            }
-            layout->addWidget(modelsBox);
-        }
-        // Where a sentence goes: why a download will not start, what an unpack
-        // choked on. It spans the page and wraps, so it can be as long as it
-        // needs to be without touching the rows above it.
-        m_modelsMessage = new KMessageWidget(this);
-        m_modelsMessage->setWordWrap(true);
-        m_modelsMessage->setCloseButtonVisible(false);
-        m_modelsMessage->hide();
-        layout->addWidget(m_modelsMessage);
-        // Models folder + delete-all, left-aligned like the Object Detection tab.
-        auto *folderRow = new QHBoxLayout;
-        folderRow->addWidget(new QLabel(i18n("Models folder"), this));
-        auto *openFolder = new QPushButton(QIcon::fromTheme(QStringLiteral("folder")), i18n("Open"), this);
-        auto *deleteModels = new QPushButton(QIcon::fromTheme(QStringLiteral("edit-delete")), i18n("Delete all models"), this);
-        folderRow->addWidget(openFolder);
-        folderRow->addWidget(deleteModels);
-        folderRow->addStretch();
-        layout->addLayout(folderRow);
-        connect(openFolder, &QPushButton::clicked, this, [this]() {
-            QDesktopServices::openUrl(QUrl::fromLocalFile(PluginManager::instance().modelsDir(m_manifest.id())));
+            KConfig config(QStringLiteral("wunjopluginsrc"), KConfig::SimpleConfig);
+            KConfigGroup(&config, m_manifest.id()).writeEntry("variant", id);
+            config.sync();
         });
-        connect(deleteModels, &QPushButton::clicked, this, &PluginSettingsTab::deleteAllModels);
-        refreshModels();
+        reloadVariants();
     }
+
+    // ---- models ----
+    m_modelsArea = new QWidget(this);
+    auto *areaLayout = new QVBoxLayout(m_modelsArea);
+    areaLayout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(m_modelsArea);
+    buildModelsBlock();
 
     // ---- API key ----
     if (manifest.kind() == QLatin1String("api") && !manifest.providerName().isEmpty()) {
@@ -457,6 +439,130 @@ void PluginSettingsTab::updateInstallLine()
     text = m_installBanner->fontMetrics().elidedText(text, Qt::ElideRight, available);
     m_installBanner->setText(text);
     m_installBanner->setToolTip(m_lastInstallLine);
+}
+
+void PluginSettingsTab::buildModelsBlock()
+{
+    // The rows belong to the size chosen right now: when it changes they are
+    // thrown away and made again for the new one, not edited in place.
+    delete m_modelsBlock;
+    m_modelsBlock = nullptr;
+    m_modelRows.clear();
+    m_modelsMessage = nullptr;
+    // A plugin that does several things declares which part each weight belongs
+    // to; the page then reads as sections instead of one long heap of files.
+    // The rows are the weights every size shares. A size's own weights are
+    // handled in the "Manage models" window, as one thing, not file by file.
+    const QList<PluginModel> models = PluginManager::applicableModels(m_manifest);
+    bool anyShared = false;
+    for (const PluginModel &model : models) {
+        anyShared = anyShared || model.variant.isEmpty();
+    }
+    if (anyShared) {
+        m_modelsBlock = new QWidget(m_modelsArea);
+        m_modelsArea->layout()->addWidget(m_modelsBlock);
+        auto *layout = new QVBoxLayout(m_modelsBlock);
+        layout->setContentsMargins(0, 0, 0, 0);
+        QStringList groups;
+        for (const PluginModel &model : models) {
+            if (model.variant.isEmpty() && !groups.contains(model.group)) {
+                groups << model.group;
+            }
+        }
+        for (const QString &group : std::as_const(groups)) {
+            auto *modelsBox = new QGroupBox(group.isEmpty() ? i18n("Models") : i18n("Models — %1", group), m_modelsBlock);
+            auto *modelsLayout = new QVBoxLayout(modelsBox);
+            for (int i = 0; i < models.size(); ++i) {
+                if (models.at(i).group != group || !models.at(i).variant.isEmpty()) {
+                    continue;
+                }
+                auto *row = new QHBoxLayout;
+                const QString sizeText = models.at(i).sizeMb > 0 ? QStringLiteral(" (%1 MB)").arg(models.at(i).sizeMb) : QString();
+                row->addWidget(new QLabel(models.at(i).name + sizeText, modelsBox));
+                auto *status = new QLabel(modelsBox);
+                status->setStyleSheet(QStringLiteral("color:#696969"));
+                // The status takes the free space instead of a stretch, and its
+                // own width counts for nothing: whatever it is given to say, the
+                // row cannot grow past the dialog and push the button off the
+                // screen. Long sentences go to @ref m_modelsMessage anyway.
+                status->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+                status->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                auto *button = new QPushButton(QIcon::fromTheme(QStringLiteral("download")), i18n("Download"), modelsBox);
+                row->addWidget(status, 1);
+                row->addWidget(button);
+                modelsLayout->addLayout(row);
+                while (m_modelRows.size() <= i) {
+                    m_modelRows.append(ModelRow());
+                }
+                m_modelRows[i] = {status, button, nullptr};
+                connect(button, &QPushButton::clicked, this, [this, i]() { downloadModel(i); });
+            }
+            layout->addWidget(modelsBox);
+        }
+        // Where a sentence goes: why a download will not start, what an unpack
+        // choked on. It spans the page and wraps, so it can be as long as it
+        // needs to be without touching the rows above it.
+        m_modelsMessage = new KMessageWidget(m_modelsBlock);
+        m_modelsMessage->setWordWrap(true);
+        m_modelsMessage->setCloseButtonVisible(false);
+        m_modelsMessage->hide();
+        layout->addWidget(m_modelsMessage);
+        // Models folder + delete-all, left-aligned like the Object Detection tab.
+        auto *folderRow = new QHBoxLayout;
+        folderRow->addWidget(new QLabel(i18n("Models folder"), m_modelsBlock));
+        auto *openFolder = new QPushButton(QIcon::fromTheme(QStringLiteral("folder")), i18n("Open"), m_modelsBlock);
+        auto *deleteModels = new QPushButton(QIcon::fromTheme(QStringLiteral("edit-delete")), i18n("Delete all models"), m_modelsBlock);
+        folderRow->addWidget(openFolder);
+        folderRow->addWidget(deleteModels);
+        folderRow->addStretch();
+        layout->addLayout(folderRow);
+        connect(openFolder, &QPushButton::clicked, this, [this]() {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(PluginManager::instance().modelsDir(m_manifest.id())));
+        });
+        connect(deleteModels, &QPushButton::clicked, this, &PluginSettingsTab::deleteAllModels);
+        refreshModels();
+    }
+}
+
+void PluginSettingsTab::reloadVariants()
+{
+    if (m_variantCombo == nullptr) {
+        return;
+    }
+    const QSignalBlocker quiet(m_variantCombo);
+    m_variantCombo->clear();
+    const QList<PluginVariant> variants = m_manifest.variants();
+    for (const PluginVariant &variant : variants) {
+        if (PluginManager::instance().variantReady(m_manifest, variant.id)) {
+            m_variantCombo->addItem(variant.label, variant.id);
+        }
+    }
+    if (m_variantCombo->count() == 0) {
+        const PluginVariant recommended = m_manifest.variant(m_manifest.defaultVariant(PluginManager::gpuVramGb()));
+        m_noModelMessage->setText(i18n("Install a model - we recommend <b>%1</b>", recommended.label));
+        m_noModelMessage->show();
+        m_manageModels->setText(i18n("Install a model"));
+        return;
+    }
+    m_noModelMessage->hide();
+    m_manageModels->setText(i18n("Manage models"));
+    int index = m_variantCombo->findData(PluginManager::selectedVariant(m_manifest));
+    if (index < 0) {
+        // the chosen size is not on disk (any more): run the one that is
+        index = 0;
+        KConfig config(QStringLiteral("wunjopluginsrc"), KConfig::SimpleConfig);
+        KConfigGroup(&config, m_manifest.id()).writeEntry("variant", m_variantCombo->itemData(0).toString());
+        config.sync();
+    }
+    m_variantCombo->setCurrentIndex(index);
+}
+
+void PluginSettingsTab::manageModels()
+{
+    PluginModelsDialog dialog(m_manifest, this);
+    dialog.exec();
+    reloadVariants();
+    refreshModels();
 }
 
 void PluginSettingsTab::deleteAllModels()

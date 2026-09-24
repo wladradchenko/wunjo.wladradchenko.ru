@@ -1050,7 +1050,7 @@ Window {
                         text: KI18n.i18n("Check Online Documentation")
                         enabled: splash.actionsEnabled
                         Layout.alignment: Qt.AlignLeft
-                        onClicked: splash.openLink("https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki")
+                        onClicked: splash.openLink("https://docs.wunjo.online/make/")
                     }
 
                     Button {

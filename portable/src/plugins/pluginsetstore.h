@@ -10,14 +10,22 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QStringList>
 #include <QVector>
 
+class QJsonArray;
+
 /** @namespace PluginSets
     @brief The parameter sets a plugin recorded by analysing a media file.
 
     One set is one analysis pass — a value per frame for every parameter the
-    plugin measured (a head turning, a mouth opening…). Sets live next to the
-    project, in `<projectDataFolder>/plugin-sets/<pluginId>/<name>.json`, so they
+    plugin measured (a head turning, a mouth opening…), or a plain description
+    of what was analysed (a face, a voice). Sets live next to the project, in
+    `<projectDataFolder>/plugin-sets/<pluginId>/<source_hash>.json`, so they
     travel with it like masks do; @ref importSet and @ref exportSet move one
     between projects instead of analysing the same video twice.
+
+    A set may come with a picture: `<source_hash>.png` next to the json, and
+    `<source_hash>.gif` when what was recorded moves. Two photos both called
+    "portrait.jpg" are the same word in a list and two different people in a
+    picture, which is why the panel and the parameter list show it.
 
     An effect points at a set through a `urllist` parameter with
     `paramlist="%pluginSets"`: the list offers what was recorded, the effect
@@ -34,6 +42,8 @@ struct Set
     QString file;       ///< absolute path of the json
     QString source;     ///< the media it was recorded from
     QString sourceHash; ///< identity of that media, and of this set
+    QString thumb;      ///< a small picture of what was recorded (png), when there is one
+    QString preview;    ///< the recording in motion (gif), when there is one
     double fps{0};
     int count{0}; ///< recorded frames
     bool isValid() const { return !file.isEmpty(); }
@@ -57,14 +67,29 @@ QVector<Set> sets(const QString &pluginId, const QString &kind = QString());
 /** @brief Read one set file (values are not loaded, only its description). */
 Set read(const QString &file);
 
-/** @brief Take the json an analysis produced and keep it as a set, filed under
- *  the hash of the media it was recorded from. @p name is only what the list
- *  shows. Returns an invalid set on failure. */
-Set store(const QString &pluginId, const QString &name, const QString &kind, const QString &resultFile, QString *errorOut = nullptr);
+/** @brief Keep what an analysis produced as a set, filed under the hash of the
+ *  media it was recorded from. @p outputs is the job's `outputs` array: the
+ *  json (`type: data`) becomes the set, an `image` its picture, an `animation`
+ *  its moving preview. @p name is only what the list shows; when another set
+ *  of the same kind already goes by it, a number is added. Returns an invalid
+ *  set on failure. */
+Set store(const QString &pluginId, const QString &name, const QString &kind, const QJsonArray &outputs, QString *errorOut = nullptr);
 
+/** @brief Give the set a new name in the list. The effects pointing at it are
+ *  untouched — they hold the file, not the name. */
+bool rename(const QString &file, const QString &name, QString *errorOut = nullptr);
+
+/** @brief A picture for @p set, made from its source when the plugin sent
+ *  none: the photo itself, or the first frame of the video. Written next to
+ *  the json so it is made once. May take a moment for a video — safe to call
+ *  off the GUI thread. Returns the png path, empty when nothing could be made. */
+QString makeThumbnail(const Set &set, int size = 256);
+
+/** @brief Delete the set and the pictures that came with it. */
 bool remove(const QString &file);
-/** @brief Copy a set json from anywhere into this project. Returns its new path. */
+/** @brief Copy a set json (and its pictures) from anywhere into this project. Returns its new path. */
 QString importSet(const QString &pluginId, const QString &file, QString *errorOut = nullptr);
+/** @brief Copy the set json (and its pictures) to @p destination. */
 bool exportSet(const QString &file, const QString &destination, QString *errorOut = nullptr);
 
 } // namespace PluginSets

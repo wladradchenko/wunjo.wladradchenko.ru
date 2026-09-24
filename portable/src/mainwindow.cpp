@@ -6040,10 +6040,7 @@ void MainWindow::appHelpActivated()
 {
     // Don't use default help, show our website
     // QDesktopServices::openUrl(QUrl(QStringLiteral("help:wunjo")));
-    // The handbook lives in the project's own wiki; docs.wunjo.online is the
-    // upstream documentation site this fork inherited the link to, tracking
-    // parameters and all.
-    const QString helpUrl = QStringLiteral("https://github.com/wladradchenko/wunjo.wladradchenko.ru/wiki");
+    const QString helpUrl = QStringLiteral("https://docs.wunjo.online/make/");
     if (pCore->packageType() == LinuxPackageType::AppImage) {
         qDebug() << "::::: LAUNCHING APPIMAGE BROWSER.........";
         QProcessEnvironment env = getCleanEnvironement();

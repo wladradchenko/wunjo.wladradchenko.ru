@@ -113,9 +113,6 @@ private:
     QPoint m_clickPos;
     QMetaObject::Connection m_addMenuConnection;
     QUuid m_uuid;
-    /** @brief Plugin entries appended to the AI submenu, rebuilt on each popup
-     *  so imports/uninstalls show up without a restart. */
-    QList<QAction *> m_dynamicAiActions;
     /** @brief Build a plugin job "input" for @p target over the current clip
      *  selection (or just @p cid when it is not part of a selection). */
     QJsonObject buildPluginClipInput(const QString &target, int cid);

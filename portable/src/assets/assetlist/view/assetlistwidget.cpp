@@ -11,7 +11,6 @@
 #include "wunjosettings.h"
 #include "mltconnection.h"
 
-#include <KAboutData>
 #include <KMessageBox>
 #include <KMessageWidget>
 #include <KNSCore/Entry>
@@ -622,8 +621,7 @@ const QString AssetListWidget::buildLink(const QString &id, AssetListType::Asset
     } else {
         prefix = QStringLiteral("other");
     }
-    return QStringLiteral("https://docs.wunjo.online/%1/%2?mtm_campaign=inapp_asset_link&mtm_kwd=%3&mtm_campaign=%4")
-        .arg(prefix, id, id, KAboutData::applicationData().version());
+    return QStringLiteral("https://docs.wunjo.online/make/%1/%2").arg(prefix, id);
 }
 
 bool AssetListWidget::infoPanelIsFocused()

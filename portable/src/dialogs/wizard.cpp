@@ -710,13 +710,11 @@ bool Wizard::isOk() const
 void Wizard::slotOpenManual()
 {
     auto *job = new KIO::OpenUrlJob(
-        QUrl(QStringLiteral("https://docs.wunjo.online/troubleshooting/installation_troubleshooting.html?mtm_campaign=wunjo_inapp&mtm_kwd=welcome_wizard")));
+        QUrl(QStringLiteral("https://docs.wunjo.online/make/troubleshooting/installation_troubleshooting.html")));
     job->setUiDelegate(KIO::createDefaultJobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, this));
     // methods like setRunExecutables, setSuggestedFilename, setEnableExternalBrowser, setFollowRedirections
     // exist in both classes
     job->start();
-    // KIO::OpenUrlJob(QUrl(QStringLiteral("https://docs.wunjo.online/troubleshooting/installation_troubleshooting.html?mtm_campaign=wunjo_inapp&mtm_kwd=welcome_wizard")),
-    // QStringLiteral("text/html"));
 }
 
 bool Wizard::checkHwEncoder(const QString &name, const QStringList &args, const QTemporaryFile &file)

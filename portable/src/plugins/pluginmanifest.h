@@ -42,6 +42,31 @@ struct PluginModel {
      *  to guess. 0 = no bound on that side. */
     double minVramGb = 0;
     double maxVramGb = 0;
+    /** @brief The size of the model this weight belongs to, when the plugin
+     *  comes in several and the user picks one (see PluginVariant). Empty =
+     *  needed whichever size is chosen. */
+    QString variant;
+};
+
+/** @brief One size of a plugin's model, for the user to choose between.
+
+    A plugin such as a depth estimator ships the same network at several sizes:
+    the small one runs anywhere, the large one is worth its weight only on a
+    card with room for it. The manifest lists them smallest first; the settings
+    tab offers them with what each asks of the machine, greys out the ones this
+    machine cannot run, and downloads only the chosen one. The choice reaches
+    the plugin as `params.variant`.
+ */
+struct PluginVariant {
+    QString id;
+    QString label;
+    /** @brief A caveat shown next to it — a licence that forbids commercial
+     *  use, a quality it trades away. */
+    QString note;
+    /** @brief Video memory it needs, in GB; 0 = any card will do. */
+    double minVramGb = 0;
+    /** @brief Whether it is worth running with no card at all. */
+    bool cpuOk = true;
 };
 
 /** @brief An effect a plugin brings along.
@@ -176,10 +201,23 @@ public:
     QString providerSignupUrl() const { return m_providerSignupUrl; }
     QList<PluginModel> models() const { return m_models; }
     /** @brief The weights that apply to a machine with @p vramGb of video
-     *  memory (0 = none usable) running @p backend. Variants meant for other
+     *  memory (0 = none usable) running @p backend, for the model size
+     *  @p variant when the plugin comes in several. Variants meant for other
      *  hardware are left out entirely rather than shown greyed out: a download
-     *  the user must not start is noise on the settings page. */
-    QList<PluginModel> modelsFor(double vramGb, const QString &backend) const;
+     *  the user must not start is noise on the settings page. Weights of the
+     *  other sizes are left out the same way — the size itself is the one
+     *  choice the user is offered, on the settings tab. */
+    QList<PluginModel> modelsFor(double vramGb, const QString &backend, const QString &variant = QString()) const;
+    /** @brief The sizes this plugin's model comes in, smallest first; empty for
+     *  a plugin that comes in one. */
+    QList<PluginVariant> variants() const { return m_variants; }
+    PluginVariant variant(const QString &id) const;
+    /** @brief The size to start from on a machine with @p vramGb of video
+     *  memory: the largest that runs on it, or the smallest when none does. */
+    QString defaultVariant(double vramGb) const;
+    /** @brief Why @p variant cannot run on a machine with @p vramGb of video
+     *  memory (0 = no card), or empty when it can. */
+    static QString variantBlocker(const PluginVariant &variant, double vramGb);
     /** @brief True for a plugin that drives the editor from the chat dock
      *  instead of processing a clip ("MCP control"). It appears in the chat's
      *  way-of-talking picker and nowhere else. */
@@ -271,6 +309,7 @@ private:
     QString m_providerKeySetting;
     QString m_providerSignupUrl;
     QList<PluginModel> m_models;
+    QList<PluginVariant> m_variants;
     QList<PluginParam> m_params;
     QList<PluginEffect> m_effects;
     QHash<QString, PluginSetsUi> m_setsUi;
