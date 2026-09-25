@@ -51,7 +51,7 @@ Previous versions of the product are available. If you rely on it, you can still
 | v2.0.8 CE | [`v2.0.8`](../../tree/v2.0.8) | Build from source or download from [Releases](https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases) |
 | v2.0.3 CE | [`v2.0.3`](../../tree/v2.0.3) | Build from source or download from [Releases](https://github.com/wladradchenko/wunjo.wladradchenko.ru/releases) |
 
-Ready-made builds of older versions are also available at [wunjo.online/product/downloads](https://wunjo.online/product/downloads). The v2 branches stay available, but new features are developed only in v3.
+Ready-made builds of older versions are also available at [wunjo.online/product/downloads](https://wunjo.online/product/make/download/other). The v2 branches stay available, but new features are developed only in v3.
 
 ### What comes next
 
