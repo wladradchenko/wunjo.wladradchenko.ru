@@ -65,7 +65,7 @@ Wunjo harnesses the power of advanced neural networks to transform video, image,
 The program is a full-fledged video editor based on the [Kdenlive by KDE License GPL v3](https://github.com/KDE/kdenlive) codebase. It ships an MCP server, so the agent you already use — Claude Code, Cursor, Codex — drives the editor directly: the Chat panel writes a folder with the tool registration and the instructions, you open it in a terminal, and what the agent does appears in the panel while you watch the timeline. It also ships a library of editing skills — how to cut spoken footage, time subtitles, grade a sequence, direct narration — that the agent reads before it starts, so the result is an edit rather than clips laid end to end; you can edit any of them or add your own, and a loop turns a whole scenario into steps the agent follows.
 
 <video
-  src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/raw/refs/heads/main/example/mcp_dark.mp4"
+  src="https://github.com/user-attachments/assets/3823a176-e699-4f65-b106-adcd550069f8"
   controls
   width="800">
 </video>
