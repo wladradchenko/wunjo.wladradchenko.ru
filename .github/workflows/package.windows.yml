@@ -348,13 +348,11 @@ jobs:
         if: ${{ inputs.sign }}
         shell: pwsh
         run: |
-          # craftenv.ps1 opens with "cls". Clear-Host is a function in PowerShell 7
-          # that writes through $RawUI.CursorPosition, and a runner step has no
-          # console handle to write to, so it throws "The handle is invalid" and
-          # takes the step with it. Shadowing it with a no-op costs nothing:
-          # there is no screen here to clear.
-          function Clear-Host {}
-          & "$env:CRAFT_ROOT\craft\craftenv.ps1"
+          # No craftenv here: nothing below calls craft, and craftenv.ps1 moves
+          # the shell into CraftRoot — which is where "unsigned/" and the path
+          # list then landed, while upload-artifact looked for them in the
+          # workspace and uploaded nothing. Everything is written under the
+          # workspace by its full path.
           $found = Get-ChildItem -Path $env:CRAFT_ROOT -Recurse -Include wunjo.exe, wunjo_render.exe -ErrorAction SilentlyContinue |
                    Where-Object { $_.FullName -notmatch '\\build\\' }
           if ($found.Count -lt 2) {
@@ -362,12 +360,16 @@ jobs:
             $found | ForEach-Object { Write-Host "  $($_.FullName)" }
             exit 1
           }
-          New-Item -ItemType Directory -Force -Path unsigned | Out-Null
+          $unsigned = Join-Path $env:GITHUB_WORKSPACE unsigned
+          $list = Join-Path $env:GITHUB_WORKSPACE exe-paths.txt
+          New-Item -ItemType Directory -Force -Path $unsigned | Out-Null
+          Remove-Item $list -ErrorAction SilentlyContinue
           $found | ForEach-Object {
-            Copy-Item $_.FullName -Destination unsigned
+            Copy-Item $_.FullName -Destination $unsigned
             Write-Host "to sign: $($_.FullName)"
-            "$($_.Name)=$($_.FullName)" | Out-File -Append -Encoding utf8 exe-paths.txt
+            "$($_.Name)=$($_.FullName)" | Out-File -Append -Encoding utf8 $list
           }
+          Get-ChildItem $unsigned
 
       - name: Upload unsigned executables
         id: upload-unsigned-exes
@@ -394,9 +396,9 @@ jobs:
         if: ${{ inputs.sign }}
         shell: pwsh
         run: |
-          Get-Content exe-paths.txt | ForEach-Object {
+          Get-Content (Join-Path $env:GITHUB_WORKSPACE exe-paths.txt) | ForEach-Object {
             $name, $path = $_ -split '=', 2
-            Copy-Item "./signed-exes/$name" -Destination $path -Force
+            Copy-Item (Join-Path $env:GITHUB_WORKSPACE "signed-exes/$name") -Destination $path -Force
             Write-Host "replaced $path"
           }
 
