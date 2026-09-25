@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="wunjo" version="251" translationDomain="wunjo">
+<kpartgui name="wunjo" version="252" translationDomain="wunjo">
   <MenuBar>
     <Menu name="file">
       <Action name="file_new"/>
@@ -340,6 +340,8 @@
       <Separator/>
     </Menu>
     <Menu name="settings">
+      <Action name="app_language"/>
+      <Separator/>
       <Action name="manage_cache"/>
       <Action name="run_wizard"/>
       <Action name="reset_config"/>

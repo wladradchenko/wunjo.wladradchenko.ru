@@ -732,6 +732,13 @@ void MainWindow::init()
         connect(WunjoTheme::instance(), &WunjoTheme::themeChanged, this, applyAboutIcon);
     }
 
+    // The language is chosen in Settings > Appearance, which main() applies at
+    // start. KDE's own "Configure Language…" writes a different file that the
+    // application setting then overrides, so two places would disagree.
+    if (QAction *langAction = actionCollection()->action(QStringLiteral("switch_application_language"))) {
+        langAction->setVisible(false);
+    }
+
     // Only start saving config once all GUI setup is done.
     connect(pCore.get(), &Core::GUISetupDone, this, &MainWindow::finishUiSetup, Qt::DirectConnection);
 
@@ -1797,6 +1804,58 @@ void MainWindow::setupActions()
 #endif
 
     addAction(QStringLiteral("run_wizard"), i18n("Run Config Wizard…"), this, SLOT(slotRunWizard()), QIcon::fromTheme(QStringLiteral("tools-wizard")));
+
+    // Settings > Language. main() applies the choice ([Language] ui) before the
+    // first i18n() call, so it takes a restart. Only catalogs translated in
+    // full, Wunjo's own strings included, are listed; the other po/ folders
+    // still cover only what came from Kdenlive. Names are in their own
+    // language, so someone who cannot read the current one finds theirs.
+    {
+        auto *languageMenu = new KActionMenu(QIcon::fromTheme(QStringLiteral("internet-services")), i18n("Language"), this);
+        languageMenu->setPopupMode(QToolButton::InstantPopup);
+        auto *languageGroup = new QActionGroup(languageMenu);
+        const QString current = KSharedConfig::openConfig()->group(QStringLiteral("Language")).readEntry("ui", QString());
+        const QList<QPair<QString, QString>> languages = {
+            {i18n("System language"), QString()},
+            {QStringLiteral("English"), QStringLiteral("en_US")},
+            {QStringLiteral("Русский"), QStringLiteral("ru")},
+            {QStringLiteral("Español"), QStringLiteral("es")},
+            {QStringLiteral("Français"), QStringLiteral("fr")},
+            {QStringLiteral("Italiano"), QStringLiteral("it")},
+            {QStringLiteral("Nederlands"), QStringLiteral("nl")},
+            {QStringLiteral("Polski"), QStringLiteral("pl")},
+            {QStringLiteral("Português (Brasil)"), QStringLiteral("pt_BR")},
+            {QStringLiteral("Türkçe"), QStringLiteral("tr")},
+            {QStringLiteral("Українська"), QStringLiteral("uk")},
+            {QStringLiteral("العربية"), QStringLiteral("ar")},
+            {QStringLiteral("简体中文"), QStringLiteral("zh_CN")},
+        };
+        for (const auto &language : languages) {
+            QAction *a = languageMenu->menu()->addAction(language.first);
+            a->setCheckable(true);
+            a->setChecked(language.second == current);
+            languageGroup->addAction(a);
+            const QString code = language.second;
+            connect(a, &QAction::triggered, this, [this, code]() {
+                KConfigGroup group(KSharedConfig::openConfig(), QStringLiteral("Language"));
+                if (group.readEntry("ui", QString()) == code) {
+                    return;
+                }
+                group.writeEntry("ui", code);
+                group.sync();
+                if (KMessageBox::questionTwoActions(this, i18n("The new language is used after Wunjo Make restarts."), i18n("Language"),
+                                                    KGuiItem(i18n("Restart Now"), QStringLiteral("view-refresh")),
+                                                    KGuiItem(i18n("Later"))) == KMessageBox::PrimaryAction) {
+                    slotRestart(false);
+                }
+            });
+        }
+        if (languageGroup->checkedAction() == nullptr && !languageGroup->actions().isEmpty()) {
+            languageGroup->actions().constFirst()->setChecked(true);
+        }
+        addAction(QStringLiteral("app_language"), languageMenu);
+    }
+
     addAction(QStringLiteral("project_settings"), i18n("Project Settings…"), this, SLOT(slotEditProjectSettings()),
               QIcon::fromTheme(QStringLiteral("configure")));
 
@@ -2394,9 +2453,6 @@ void MainWindow::setupActions()
     // Keep the Settings-menu icons monochrome/outline like the rest of the brand
     // theme (Breeze fallbacks for these are multi-color).
     configNotifAction->setIcon(QIcon::fromTheme(QStringLiteral("settings-configure")));
-    if (QAction *langAction = actionCollection()->action(QStringLiteral("switch_application_language"))) {
-        langAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
-    }
     KStandardAction::fullScreen(this, &MainWindow::slotFullScreen, this, actionCollection());
 
     // cppcheck-suppress legacyUninitvar

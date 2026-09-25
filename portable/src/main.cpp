@@ -57,7 +57,10 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLibraryInfo>
+#include <QLocale>
 #include <QProcess>
+#include <QTranslator>
 #include <QQuickStyle>
 #include <QStyleFactory>
 #include <QQuickWindow>
@@ -406,6 +409,25 @@ int main(int argc, char *argv[])
     // Apply the persisted color theme (dark default / light) and primary accent
     // now that the config file name is set — before any window is shown.
     WunjoTheme::instance()->init();
+
+    // Interface language picked in Settings > Appearance, empty for the
+    // system one. Read here, after the config file name is known and before
+    // the first i18n() call. LANGUAGE is set too so that KDE's own catalogs
+    // and anything started from here follow the same choice; Qt's standard
+    // dialog strings (OK, Cancel, file dialogs) come from qtbase_<lang>.qm.
+    {
+        const QString uiLanguage = KSharedConfig::openConfig()->group(QStringLiteral("Language")).readEntry("ui", QString());
+        if (!uiLanguage.isEmpty()) {
+            qputenv("LANGUAGE", uiLanguage.toUtf8());
+            KLocalizedString::setLanguages({uiLanguage});
+            auto *qtTranslator = new QTranslator(qApp);
+            if (qtTranslator->load(QLocale(uiLanguage), QStringLiteral("qtbase"), QStringLiteral("_"), QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+                QCoreApplication::installTranslator(qtTranslator);
+            } else {
+                delete qtTranslator;
+            }
+        }
+    }
 
     KLocalizedString::setApplicationDomain("wunjo");
 

@@ -1490,7 +1490,7 @@ void ChatWidget::updateHintBar()
         text = i18n("A loop is a set of steps the assistant follows to complete a task using the tools or plugins you choose.");
         break;
     case 0:
-        text = i18n("Use local model or external MSP for third-party agents to automatically generate and edit content and mix effects from plugins.");
+        text = i18n("Use local model or external MCP for third-party agents to automatically generate and edit content and mix effects from plugins.");
         break;
     default:
         m_hintBar->hide();

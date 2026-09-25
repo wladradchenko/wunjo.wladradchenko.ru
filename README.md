@@ -64,6 +64,12 @@ Wunjo harnesses the power of advanced neural networks to transform video, image,
 
 The program is a full-fledged video editor based on the [Kdenlive by KDE License GPL v3](https://github.com/KDE/kdenlive) codebase. It ships an MCP server, so the agent you already use — Claude Code, Cursor, Codex — drives the editor directly: the Chat panel writes a folder with the tool registration and the instructions, you open it in a terminal, and what the agent does appears in the panel while you watch the timeline. It also ships a library of editing skills — how to cut spoken footage, time subtitles, grade a sequence, direct narration — that the agent reads before it starts, so the result is an edit rather than clips laid end to end; you can edit any of them or add your own, and a loop turns a whole scenario into steps the agent follows.
 
+<video
+  src="https://github.com/wladradchenko/wunjo.wladradchenko.ru/raw/refs/heads/main/example/mcp_dark.mp4"
+  controls
+  width="800">
+</video>
+
 Driving the editor needs no model on your machine. If you want one anyway, a local model is a plugin you add: Qwen 3.5 is published as one, and any other can be packaged the same way. One plugin, one model — install several and pick between them in the Chat panel, or leave it empty and work from your own agent.
 
 The new version incorporates the concept of Python plugins. You can freely create plugins using vibecoding and use them within the program for working with faces, video, and audio or content generation local or remotly by API.
