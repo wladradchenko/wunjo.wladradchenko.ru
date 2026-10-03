@@ -5,6 +5,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "chatmessagemodel.h"
 
+#include <KLocalizedString>
 #include <QJsonObject>
 
 #include <algorithm>
@@ -43,6 +44,8 @@ QVariant ChatMessageModel::data(const QModelIndex &index, int role) const
         return m.toolProgress;
     case TimestampRole:
         return m.timestamp;
+    case PayloadRole:
+        return m.payload;
     }
     return {};
 }
@@ -51,7 +54,7 @@ QHash<int, QByteArray> ChatMessageModel::roleNames() const
 {
     return {{TextRole, "text"},         {AuthorRole, "author"},         {KindRole, "kind"},
             {ToolIdRole, "toolId"},     {ToolNameRole, "toolName"},     {ToolStatusRole, "toolStatus"},
-            {ToolProgressRole, "toolProgress"}, {TimestampRole, "timestamp"}};
+            {ToolProgressRole, "toolProgress"}, {TimestampRole, "timestamp"}, {PayloadRole, "payload"}};
 }
 
 void ChatMessageModel::appendText(ChatMessage::Author author, const QString &text)
@@ -91,6 +94,60 @@ void ChatMessageModel::appendToolCard(const QString &id, const QString &name)
     beginInsertRows(QModelIndex(), m_messages.size(), m_messages.size());
     m_messages.append(m);
     endInsertRows();
+}
+
+void ChatMessageModel::appendGenerator(const QString &id, const QString &name, const QJsonObject &payload)
+{
+    ChatMessage m;
+    m.author = ChatMessage::Author::Assistant;
+    m.kind = ChatMessage::Kind::Generator;
+    m.toolId = id;
+    m.toolName = name;
+    m.toolStatus = ChatMessage::ToolStatus::Done; // a form is never "running"
+    m.payload = payload;
+    m.timestamp = QDateTime::currentDateTime();
+    beginInsertRows(QModelIndex(), m_messages.size(), m_messages.size());
+    m_messages.append(m);
+    endInsertRows();
+}
+
+void ChatMessageModel::updatePayload(const QString &id, const QJsonObject &payload, bool notify)
+{
+    for (int row = m_messages.size() - 1; row >= 0; --row) {
+        ChatMessage &m = m_messages[row];
+        if (m.kind == ChatMessage::Kind::Generator && m.toolId == id) {
+            m.payload = payload;
+            if (notify) {
+                const QModelIndex ix = index(row);
+                Q_EMIT dataChanged(ix, ix, {PayloadRole});
+            }
+            return;
+        }
+    }
+}
+
+QJsonObject ChatMessageModel::payload(const QString &id) const
+{
+    for (const ChatMessage &m : m_messages) {
+        if (m.kind == ChatMessage::Kind::Generator && m.toolId == id) {
+            return m.payload;
+        }
+    }
+    return {};
+}
+
+QJsonArray ChatMessageModel::generators() const
+{
+    QJsonArray list;
+    for (const ChatMessage &m : m_messages) {
+        if (m.kind == ChatMessage::Kind::Generator) {
+            QJsonObject entry = m.payload;
+            entry.insert(QStringLiteral("id"), m.toolId);
+            entry.insert(QStringLiteral("name"), m.toolName);
+            list.append(entry);
+        }
+    }
+    return list;
 }
 
 void ChatMessageModel::endRunningTools(const QString &statusText, const QStringList &keptPrefixes)
@@ -146,6 +203,11 @@ QJsonArray ChatMessageModel::toJson() const
         o.insert(QStringLiteral("author"), int(m.author));
         o.insert(QStringLiteral("kind"), int(m.kind));
         o.insert(QStringLiteral("text"), m.text);
+        if (m.kind == ChatMessage::Kind::Generator) {
+            o.insert(QStringLiteral("toolId"), m.toolId);
+            o.insert(QStringLiteral("toolName"), m.toolName);
+            o.insert(QStringLiteral("payload"), m.payload);
+        }
         if (m.kind == ChatMessage::Kind::ToolCard) {
             o.insert(QStringLiteral("toolId"), m.toolId);
             o.insert(QStringLiteral("toolName"), m.toolName);
@@ -173,6 +235,13 @@ void ChatMessageModel::loadJson(const QJsonArray &array)
         m.toolStatus = ChatMessage::ToolStatus(o.value(QStringLiteral("toolStatus")).toInt());
         m.toolProgress = o.value(QStringLiteral("toolProgress")).toInt(-1);
         m.timestamp = QDateTime::fromString(o.value(QStringLiteral("timestamp")).toString(), Qt::ISODate);
+        m.payload = o.value(QStringLiteral("payload")).toObject();
+        // A job does not survive the application closing. A card saved while
+        // it ran would otherwise say "running" for ever.
+        if (m.kind == ChatMessage::Kind::ToolCard && m.toolStatus == ChatMessage::ToolStatus::Running) {
+            m.toolStatus = ChatMessage::ToolStatus::Failed;
+            m.text = i18n("interrupted");
+        }
         m_messages.append(m);
     }
     endResetModel();

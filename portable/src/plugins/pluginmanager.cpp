@@ -208,6 +208,8 @@ bool PluginManager::variantReady(const PluginManifest &manifest, const QString &
     bool any = false;
     const QList<PluginModel> models = manifest.modelsFor(gpuVramGb(), gpuBackend(), variantId);
     for (const PluginModel &model : models) {
+        // a size is ready when its own weights are, optional or not: what is
+        // optional is the size itself, not a part of it
         if (model.variant != variantId) {
             continue;
         }
@@ -687,6 +689,102 @@ static void placeResultOnTimeline(const ObjectId &owner, const QString &binId)
         undo();
         tractor->unlock();
     }
+}
+
+/** @brief Put a generated clip at @p frame of the timeline @p uuid.
+ *
+ * A voiceover belongs where the playhead was when it was asked for, so the
+ * existing audio tracks are tried first, top down: the timeline refuses an
+ * insertion where something already lies, and the first track that takes it
+ * keeps the project from growing a new track per sentence. Only when none has
+ * room is a track added, on top of the audio stack. */
+static void placeAtFrame(const QUuid &uuid, int frame, const QString &binId)
+{
+    WunjoDoc *doc = pCore->currentDoc();
+    if (binId.isEmpty() || frame < 0 || !doc) {
+        return;
+    }
+    std::shared_ptr<TimelineItemModel> timeline = doc->getTimeline(uuid.isNull() ? pCore->currentTimelineId() : uuid);
+    std::shared_ptr<ProjectClip> master = pCore->projectItemModel()->getClipByBinID(binId);
+    if (!timeline || !master) {
+        return;
+    }
+    const bool audio = master->clipType() == ClipType::Audio;
+    const QString prefix = audio ? QStringLiteral("A") : QStringLiteral("V");
+    Fun undo = []() { return true; };
+    Fun redo = []() { return true; };
+    pCore->monitorManager()->pauseActiveMonitor();
+    QList<int> tracks = timeline->getTracksIds(audio);
+    std::reverse(tracks.begin(), tracks.end());
+    for (int trackId : std::as_const(tracks)) {
+        if (timeline->trackIsLocked(trackId)) {
+            continue;
+        }
+        int clipId = -1;
+        if (timeline->requestClipInsertion(prefix + binId, trackId, frame, clipId, true, true, false, undo, redo)) {
+            pCore->pushUndo(undo, redo, i18n("Add the generated clip to the timeline"));
+            return;
+        }
+    }
+    int trackId = -1;
+    Mlt::Tractor *tractor = timeline->tractor();
+    tractor->lock();
+    const bool inserted = timeline->requestTrackInsertion(audio ? int(timeline->getTracksIds(true).count()) : int(timeline->getTracksIds(true).count() + timeline->getTracksIds(false).count()),
+                                                          trackId, QString(), audio, undo, redo);
+    tractor->unlock();
+    int clipId = -1;
+    if (inserted && timeline->requestClipInsertion(prefix + binId, trackId, frame, clipId, true, true, false, undo, redo)) {
+        pCore->pushUndo(undo, redo, i18n("Add the generated clip to the timeline"));
+        return;
+    }
+    tractor->lock();
+    undo();
+    tractor->unlock();
+}
+
+/** @brief File the presets a run returned under `sets`, as an analysis would. */
+static QStringList storeReturnedSets(const QString &pluginId, const QJsonObject &result)
+{
+    QStringList kept;
+    const QJsonArray sets = result.value(QStringLiteral("sets")).toArray();
+    for (const QJsonValue &value : sets) {
+        const QJsonObject set = value.toObject();
+        QString storeError;
+        const PluginSets::Set stored = PluginSets::store(pluginId, set.value(QStringLiteral("name")).toString(), set.value(QStringLiteral("kind")).toString(),
+                                                         set.value(QStringLiteral("outputs")).toArray(), &storeError);
+        if (stored.isValid()) {
+            kept << stored.name;
+        } else if (!storeError.isEmpty()) {
+            pCore->displayMessage(storeError, ErrorMessage);
+        }
+    }
+    if (!kept.isEmpty()) {
+        PluginManager::instance().noteSetsChanged(pluginId);
+    }
+    return kept;
+}
+
+/** @brief Move a result out of the job's scratch folder into the project's own,
+ *  under a name that says what made it and when. */
+static QString keepResult(const QString &label, const QString &produced)
+{
+    QString destination = produced;
+    if (auto *doc = pCore->currentDoc()) {
+        const QString folder = doc->projectDataFolder() + QStringLiteral("/plugin-results");
+        if (QDir().mkpath(folder)) {
+            const QString stamp = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd HH-mm-ss"));
+            QString base = QStringLiteral("%1 %2").arg(label, stamp);
+            base.replace(QRegularExpression(QStringLiteral("[/\\\\:*?\"<>|]")), QStringLiteral("-"));
+            destination = QStringLiteral("%1/%2.%3").arg(folder, base, QFileInfo(produced).suffix());
+            if (QFile::exists(destination)) {
+                destination = QStringLiteral("%1/%2 %3.%4").arg(folder, base, QUuid::createUuid().toString(QUuid::WithoutBraces).left(8), QFileInfo(produced).suffix());
+            }
+            if (!QFile::rename(produced, destination) && !QFile::copy(produced, destination)) {
+                destination = produced;
+            }
+        }
+    }
+    return destination;
 }
 
 static bool copyRecursively(const QString &src, const QString &dst, QString *errorOut)
@@ -1465,7 +1563,7 @@ qint64 PluginManager::pendingDownloadBytes(const PluginManifest &manifest)
     qint64 bytes = 0;
     const QList<PluginModel> models = applicableModels(manifest);
     for (const PluginModel &model : models) {
-        if (model.url.isEmpty()) {
+        if (model.url.isEmpty() || model.optional) {
             continue;
         }
         if (instance().modelState(manifest.id(), model) != ModelReady) {
@@ -1543,6 +1641,10 @@ QString PluginManager::runBlocker(const QString &id) const
     }
     const QList<PluginModel> models = applicableModels(manifest);
     for (const PluginModel &model : models) {
+        // what only one of its features needs is asked for by the plugin itself
+        if (model.optional) {
+            continue;
+        }
         switch (modelState(id, model)) {
         case ModelMissing:
             return i18n("%1 needs the model %2 — download it in the plugin's settings.", manifest.name(), model.name);
@@ -1566,7 +1668,7 @@ void PluginManager::fetchModels(const PluginManifest &manifest, const std::funct
     const QList<PluginModel> models = applicableModels(manifest);
     for (const PluginModel &model : models) {
         const QString key = id + QLatin1Char('/') + model.name;
-        if (modelState(id, model) == ModelReady || model.url.isEmpty() || m_failedDownloads.contains(key)) {
+        if (model.optional || modelState(id, model) == ModelReady || model.url.isEmpty() || m_failedDownloads.contains(key)) {
             continue;
         }
         const bool archived = !model.unpack.isEmpty();
@@ -1762,6 +1864,12 @@ void PluginManager::startEffectJob(const QueuedJob &job)
                 noteJobEnded(card, true, error);
                 return;
             }
+            // A render may leave a preset behind as well as media: Voiceover
+            // keeps the voice it made up from a description, so that the next
+            // clip can be spoken by the same person instead of a new one. Each
+            // entry is filed exactly as an analysis would file it.
+            const QStringList keptSets = storeReturnedSets(job.pluginId, result);
+            const QString keptNote = keptSets.isEmpty() ? QString() : QLatin1Char(' ') + i18n("Saved as the preset '%1'.", keptSets.join(QStringLiteral("', '")));
             const QJsonArray outputs = result.value(QStringLiteral("outputs")).toArray();
             const QJsonObject first = outputs.isEmpty() ? QJsonObject() : outputs.first().toObject();
             const QString produced = first.value(QStringLiteral("path")).toString();
@@ -1792,7 +1900,7 @@ void PluginManager::startEffectJob(const QueuedJob &job)
                     }
                 }
                 const QString note = result.value(QStringLiteral("message")).toString();
-                const QString message = note.isEmpty() ? i18n("%1 finished.", name) : note;
+                const QString message = (note.isEmpty() ? i18n("%1 finished.", name) : note) + keptNote;
                 pCore->displayMessage(message, OperationCompletedMessage);
                 noteJobEnded(card, false, message);
                 return;
@@ -1800,27 +1908,7 @@ void PluginManager::startEffectJob(const QueuedJob &job)
             // Out of the job's scratch folder and into the project's own, under a
             // name of its own: rendering the same effect twice must not overwrite
             // what the bin already points at.
-            QString destination = produced;
-            if (auto *doc = pCore->currentDoc()) {
-                const QString folder = doc->projectDataFolder() + QStringLiteral("/plugin-results");
-                if (QDir().mkpath(folder)) {
-                    // The name is what the user reads in the bin, so it says which
-                    // effect made this and when: a row of identical UUIDs answers
-                    // neither, and the newest one cannot be told from last week's.
-                    const QString stamp = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd HH-mm-ss"));
-                    QString base = QStringLiteral("%1 %2").arg(label, stamp);
-                    base.replace(QRegularExpression(QStringLiteral("[/\\\\:*?\"<>|]")), QStringLiteral("-"));
-                    destination = QStringLiteral("%1/%2.%3").arg(folder, base, QFileInfo(produced).suffix());
-                    if (QFile::exists(destination)) {
-                        destination = QStringLiteral("%1/%2 %3.%4")
-                                          .arg(folder, base, QUuid::createUuid().toString(QUuid::WithoutBraces).left(8),
-                                               QFileInfo(produced).suffix());
-                    }
-                    if (!QFile::rename(produced, destination) && !QFile::copy(produced, destination)) {
-                        destination = produced;
-                    }
-                }
-            }
+            const QString destination = keepResult(label, produced);
             if (!job.resultParam.isEmpty()) {
                 // tell the effect it has a result, wherever its widget is now
                 std::shared_ptr<EffectStackModel> stack = pCore->getItemEffectStack(job.owner.uuid, int(job.owner.type), job.owner.itemId);
@@ -1855,10 +1943,71 @@ void PluginManager::startEffectJob(const QueuedJob &job)
                         [owner](const QString &binId) { placeResultOnTimeline(owner, binId); });
                 },
                 Qt::QueuedConnection);
-            const QString done = i18n("%1 finished — on a new track, and in the '%2' bin folder", name, label);
+            const QString done = i18n("%1 finished — on a new track, and in the '%2' bin folder", name, label) + keptNote;
             pCore->displayMessage(done, OperationCompletedMessage);
             noteJobEnded(card, false, done);
         });
+}
+
+QString PluginManager::registerSet(const QString &pluginId, const QString &source, const QString &kind)
+{
+    QJsonObject input;
+    input.insert(QStringLiteral("action"), QStringLiteral("analyse"));
+    input.insert(QStringLiteral("source"), source);
+    input.insert(QStringLiteral("kind"), kind);
+    return runPlugin(pluginId, input, nullptr);
+}
+
+QString PluginManager::runGenerator(const QString &pluginId, const QJsonObject &fields, const QUuid &timelineUuid, int frame)
+{
+    const PluginManifest manifest = m_plugins.value(pluginId);
+    if (!manifest.isValid()) {
+        return {};
+    }
+    const QString label = manifest.generateTitle();
+    const QString card = QStringLiteral("plugin:") + QUuid::createUuid().toString(QUuid::WithoutBraces).left(8);
+    noteJobStarted(card, label);
+    const QString blocker = runBlocker(pluginId);
+    if (!blocker.isEmpty()) {
+        noteJobEnded(card, true, blocker);
+        return card;
+    }
+    QJsonObject input;
+    input.insert(QStringLiteral("action"), QStringLiteral("generate"));
+    input.insert(QStringLiteral("fields"), fields);
+    input.insert(QStringLiteral("clips"), QJsonArray());
+    runPluginJob(
+        pluginId, input, this, [this, card](int percent) { noteJobProgress(card, percent); },
+        [this, pluginId, label, card, timelineUuid, frame](const QJsonObject &result, const QString &error) {
+            if (!error.isEmpty()) {
+                noteJobEnded(card, true, error);
+                return;
+            }
+            const QStringList keptSets = storeReturnedSets(pluginId, result);
+            const QString keptNote = keptSets.isEmpty() ? QString() : QLatin1Char(' ') + i18n("Saved to the library as '%1'.", keptSets.join(QStringLiteral("', '")));
+            const QJsonArray outputs = result.value(QStringLiteral("outputs")).toArray();
+            const QString produced = outputs.isEmpty() ? QString() : outputs.first().toObject().value(QStringLiteral("path")).toString();
+            if (produced.isEmpty() || !QFile::exists(produced)) {
+                noteJobEnded(card, true, i18n("%1 produced nothing.", label));
+                return;
+            }
+            const QString destination = keepResult(label, produced);
+            const QString folderId = effectResultsFolder(label);
+            QMetaObject::invokeMethod(
+                pCore->window(),
+                [destination, folderId, timelineUuid, frame]() {
+                    Fun undo = []() { return true; };
+                    Fun redo = []() { return true; };
+                    ClipCreator::createClipFromFile(destination, folderId, pCore->projectItemModel(), undo, redo,
+                                                    [timelineUuid, frame](const QString &binId) { placeAtFrame(timelineUuid, frame, binId); });
+                },
+                Qt::QueuedConnection);
+            const QString done = frame < 0 ? i18n("%1 is ready in the '%2' bin folder.", label, label)
+                                           : i18n("%1 is ready on the timeline and in the '%2' bin folder.", label, label);
+            pCore->displayMessage(done + keptNote, OperationCompletedMessage);
+            noteJobEnded(card, false, done + keptNote);
+        });
+    return card;
 }
 
 QString PluginManager::runPlugin(const QString &id, const QJsonObject &input, QWidget *messageParent)
@@ -1905,6 +2054,7 @@ QString PluginManager::runPlugin(const QString &id, const QJsonObject &input, QW
                 noteJobEnded(card, true, message);
                 return;
             }
+            noteSetsChanged(id);
             pCore->displayMessage(i18n("%1 recorded '%2'.", name, stored.name), InformationMessage);
             noteJobEnded(card, false, i18n("recorded '%1'", stored.name));
             return;

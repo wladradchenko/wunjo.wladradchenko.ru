@@ -117,6 +117,12 @@ CORE_TOOLS = {
     "list_plugin_sets",
     "generate_effect",
     "plugin_job_status",
+    # generator cards: the form the user and the assistant fill in together
+    "generator_cards",
+    "generator_card_create",
+    "generator_card_set",
+    "generator_card_fold",
+    "generator_card_run",
     # taking it back
     "undo",
     "redo",

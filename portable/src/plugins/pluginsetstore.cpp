@@ -88,10 +88,12 @@ void keepPreview(const QString &from, const QString &to)
     }
 }
 
-/** @brief Move the pictures of a set along with its json — for import, export. */
+/** @brief Move the pictures of a set along with its json — for import, export.
+ *  The sound a voice set keeps (the stretch of speech a voice is copied from)
+ *  travels the same way. */
 void carryPictures(const QString &fromJson, const QString &toJson)
 {
-    for (const char *suffix : {"png", "gif"}) {
+    for (const char *suffix : {"png", "gif", "wav"}) {
         const QString from = sidecar(fromJson, QLatin1String(suffix));
         const QString to = sidecar(toJson, QLatin1String(suffix));
         QFile::remove(to);
@@ -239,6 +241,7 @@ Set store(const QString &pluginId, const QString &name, const QString &kind, con
     QString resultFile;
     QString picture;
     QString moving;
+    QString sound;
     for (const QJsonValue &value : outputs) {
         const QJsonObject output = value.toObject();
         const QString type = output.value(QStringLiteral("type")).toString();
@@ -250,6 +253,8 @@ Set store(const QString &pluginId, const QString &name, const QString &kind, con
             picture = file;
         } else if (type == QLatin1String("animation") && moving.isEmpty()) {
             moving = file;
+        } else if (type == QLatin1String("audio") && sound.isEmpty()) {
+            sound = file;
         } else if (resultFile.isEmpty() && (type == QLatin1String("data") || type.isEmpty() || file.endsWith(QLatin1String(".json")))) {
             resultFile = file;
         }
@@ -289,6 +294,9 @@ Set store(const QString &pluginId, const QString &name, const QString &kind, con
     const QString file = dir.absoluteFilePath(key + QStringLiteral(".json"));
     keepPicture(picture, sidecar(file, QStringLiteral("png")));
     keepPreview(moving, sidecar(file, QStringLiteral("gif")));
+    // a voice set keeps the speech it was measured from, for the plugin to read
+    // back next to the json — copied, since the job's folder is not kept
+    keepPreview(sound, sidecar(file, QStringLiteral("wav")));
     return read(file);
 }
 
@@ -336,6 +344,7 @@ bool remove(const QString &file)
 {
     QFile::remove(sidecar(file, QStringLiteral("png")));
     QFile::remove(sidecar(file, QStringLiteral("gif")));
+    QFile::remove(sidecar(file, QStringLiteral("wav")));
     return QFile::remove(file);
 }
 

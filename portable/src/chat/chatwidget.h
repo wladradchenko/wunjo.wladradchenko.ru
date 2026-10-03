@@ -7,11 +7,14 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "chatmessagemodel.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QMap>
 #include <QPlainTextEdit>
 #include <QWidget>
 
 class AbstractChatBackend;
+class GeneratorCard;
 class ChatHistoryStore;
 class ChatVoiceInput;
 class QLabel;
@@ -25,6 +28,7 @@ class QMenu;
 class QLineEdit;
 class QToolButton;
 class QHBoxLayout;
+class QTimer;
 class QVBoxLayout;
 
 /** @brief Input field: Enter sends, Shift+Enter inserts a newline,
@@ -75,6 +79,19 @@ public:
     void externalToolProgress(const QString &id, int percent, const QString &message);
     void externalToolEnd(const QString &id, bool isError, const QString &result);
 
+    // Generators: the form a generator plugin puts in the chat. The user and an
+    // assistant fill the same card; a run is a job card of its own below it.
+    /** @brief Add the form of @p pluginId with @p values filled in, unfolded and
+     *  with the cursor in it. @return The card id, empty if it is no generator. */
+    QString addGeneratorCard(const QString &pluginId, const QJsonObject &values = {}, bool byAssistant = false);
+    /** @brief Change fields of a card, as an assistant does. */
+    bool setGeneratorValues(const QString &cardId, const QJsonObject &values, bool byAssistant = true);
+    bool foldGeneratorCard(const QString &cardId, bool collapsed);
+    /** @brief Press Generate on a card. @return The id of the run's own card. */
+    QString runGeneratorCard(const QString &cardId);
+    /** @brief Every card of the session: id, plugin, values, folded. */
+    QJsonArray generatorCards() const { return m_model.generators(); }
+
 public Q_SLOTS:
     /** @brief Called when a project (re)connects; points history at it. */
     void setProjectFolder(const QString &projectDataFolder);
@@ -106,6 +123,7 @@ private:
     /** @brief Put the line for the open tab on the strip, unless it was closed. */
     void updateHintBar();
     QWidget *buildToolCard(const ChatMessage &message);
+    QWidget *buildGeneratorCard(const ChatMessage &message);
     void refreshToolCard(const QModelIndex &index);
     void rebuildMessageArea();
     void refreshHistoryList();
@@ -202,4 +220,8 @@ private:
     QMap<QString, QProgressBar *> m_toolBars;
     QMap<QString, QLabel *> m_toolStatusLabels;
     QMap<QString, QLabel *> m_toolIcons;
+    QMap<QString, GeneratorCard *> m_generatorCards;
+    /** @brief Typing in a card saves the session a moment after the last key,
+     *  not on every one. */
+    QTimer *m_persistTimer{nullptr};
 };

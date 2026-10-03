@@ -162,6 +162,27 @@ void TimelineWidget::setTimelineMenu(QMenu *clipMenu, QMenu *compositionMenu, QM
     m_timelineClipMenu->addMenu(m_favCompositions);
     m_timelineMenu->addMenu(m_favCompositions);
     m_timelineMenu->addMenu(m_addClipMenu);
+    m_generateMenu = new QMenu(i18n("Artificial Intelligence"), this);
+    m_generateMenu->setIcon(QIcon::fromTheme(QStringLiteral("tools-wizard")));
+    m_timelineMenu->addMenu(m_generateMenu);
+}
+
+void TimelineWidget::addGeneratorEntries(QMenu *menu, bool marked)
+{
+    // A generator makes something from nothing, so it is offered wherever the
+    // user right-clicks. Its result goes where the playhead is when Generate
+    // is pressed; the card it opens is only where it is set up.
+    for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("generator"))) {
+        if (!plugin.isGenerator()) {
+            continue;
+        }
+        QAction *action = menu->addAction(plugin.icon(), i18n(plugin.generateTitle().toUtf8().constData()));
+        if (marked) {
+            action->setObjectName(QStringLiteral("ai_plugin_dynamic"));
+        }
+        const QString pluginId = plugin.id();
+        connect(action, &QAction::triggered, this, [pluginId]() { pCore->window()->openGeneratorCard(pluginId); });
+    }
 }
 
 const QUuid &TimelineWidget::getUuid() const
@@ -323,6 +344,12 @@ void TimelineWidget::showClipMenu(int cid)
                     offer(plugin);
                 }
             }
+            // generators belong on any clip's menu too: right-clicking a clip is
+            // as good a way as any to ask for something new
+            if (!PluginManager::instance().pluginsForTarget(QStringLiteral("generator")).isEmpty()) {
+                mark(aiMenu->addSeparator());
+                addGeneratorEntries(aiMenu, true);
+            }
             if (!applicable.isEmpty()) {
                 // An audio effect belongs on the sound, and the sound of an A/V
                 // clip is a clip of its own on an audio track: the video half
@@ -356,6 +383,15 @@ void TimelineWidget::showClipMenu(int cid)
                     }
                     if (!effects.isEmpty()) {
                         for (const PluginEffect &effect : effects) {
+                            // A plugin that works on both kinds of clip still
+                            // brings each effect for one of them: a sound effect
+                            // needs a clip that has sound, a picture effect a clip
+                            // on a video track (a voiceover belongs on silent
+                            // footage too).
+                            const bool audioEffect = EffectsRepository::get()->isAudioEffect(effect.id);
+                            if ((audioEffect && !clipHasAudio) || (!audioEffect && isAudioTrack)) {
+                                continue;
+                            }
                             QAction *effectAction = aiMenu->addAction(plugin.icon(), effect.name);
                             connect(effectAction, &QAction::triggered, this, [this, plugin, effect, cid, stackFor]() {
                                 // an effect that works inside a region brings that region along
@@ -565,6 +601,11 @@ void TimelineWidget::showTimelineMenu()
         });
         QObject::disconnect(m_addMenuConnection);
     });
+    if (m_generateMenu) {
+        m_generateMenu->clear();
+        addGeneratorEntries(m_generateMenu, false);
+        m_generateMenu->menuAction()->setVisible(!m_generateMenu->isEmpty());
+    }
     m_timelineMenu->popup(m_clickPos);
 }
 

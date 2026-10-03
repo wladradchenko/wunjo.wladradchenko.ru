@@ -92,6 +92,10 @@ def register(mcp, helpers):
             voice, a face to swap in). Record it with
             run_plugin(action="analyse", source="/abs/file"), then name the set
             in the effect's parameter with set_effect_param.
+          - a plugin with target "generator" and a "generate" block makes
+            something from nothing (a voiceover from a text): it works through a
+            card in the chat. generator_card_create puts one there filled in,
+            generator_card_run presses its Generate.
           - only a plugin without effects is launched with run_plugin.
         """
         try:
@@ -161,6 +165,95 @@ def register(mcp, helpers):
                 return (f"'{plugin_id}' has nothing recorded yet. Use "
                         "run_plugin(action=\"analyse\", source=..., kind=...) first.")
             return json.dumps([dict(s) for s in sets], indent=2, default=str)
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def generator_cards(ctx: Context) -> str:
+        """The generator cards in this chat (Voiceover and the like), with what
+        is filled in each.
+
+        A generator plugin makes something from nothing — a voiceover from a
+        text. Its form is a card in the chat that the user and you fill in
+        together. Read the cards before asking the user for what they already
+        typed. Each entry: id, name, plugin, values, collapsed, author.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            return app._call("scriptGeneratorCards") or "[]"
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def generator_card_create(ctx: Context, plugin_id: str, values: dict | None = None) -> str:
+        """Put a generator's card in the chat, filled in, WITHOUT running it.
+
+        The user sees every parameter before anything is made. Tell them what
+        you put in it, then run it with generator_card_run when they agree (or
+        straight away if they already asked for the result). list_plugins shows
+        each generator's fields under "generate".
+
+        Args:
+            plugin_id: A plugin with target "generator", e.g. "voice-toolkit".
+            values: Field values by key, e.g. {"text": "...", "voice": "design",
+                "design": "a calm older man"} or {"voice": "registered",
+                "set": "<preset file from list_plugin_sets>"}.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            card = app._call("scriptGeneratorCardCreate", plugin_id, json.dumps(values or {}))
+            if not card:
+                return f"ERROR: '{plugin_id}' is not an installed generator."
+            return f"Card {card} is in the chat with these values. Run it with generator_card_run(\"{card}\")."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def generator_card_set(ctx: Context, card_id: str, values: dict) -> str:
+        """Change fields of a generator card; the user sees the change.
+
+        Args:
+            card_id: From generator_cards or generator_card_create.
+            values: Only the fields to change.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            ok = app._call("scriptGeneratorCardSet", card_id, json.dumps(values or {}))
+            return "Updated." if ok else f"ERROR: no card {card_id} in this chat."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def generator_card_fold(ctx: Context, card_id: str, collapsed: bool = True) -> str:
+        """Fold a generator card to one line, or open it again."""
+        try:
+            app = helpers.get_resolve(ctx)._app
+            ok = app._call("scriptGeneratorCardFold", card_id, bool(collapsed))
+            return "Done." if ok else f"ERROR: no card {card_id} in this chat."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def generator_card_run(ctx: Context, card_id: str) -> str:
+        """Press Generate on a card, exactly as the user would.
+
+        The run is a job card of its own below the form. The result goes into
+        the project bin and onto the timeline at the playhead, on an audio track
+        with room there or a new one. Move the playhead first (seek_to) if
+        it should start somewhere else.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            job_id = app._call("scriptGeneratorCardRun", card_id)
+            if not job_id:
+                return f"ERROR: no card {card_id} in this chat."
+            state = _await_job(app, job_id, timeout=5)
+            if state["state"] == "failed":
+                return f"ERROR: {state['message']}"
+            if state["state"] == "done":
+                return state["message"] or "Finished."
+            return (f"Generating (job {job_id}). Follow it with plugin_job_status(\"{job_id}\") "
+                    "and tell the user it has started.")
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
 

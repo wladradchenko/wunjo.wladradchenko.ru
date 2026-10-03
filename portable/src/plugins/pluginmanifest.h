@@ -46,6 +46,12 @@ struct PluginModel {
      *  comes in several and the user picks one (see PluginVariant). Empty =
      *  needed whichever size is chosen. */
     QString variant;
+    /** @brief Not needed to run the plugin, only for one of the things it can
+     *  do (a voice design model next to the voice cloning one). Installing the
+     *  plugin does not fetch it and running it does not wait for it; the
+     *  settings page offers the whole group as one download, and the plugin
+     *  asks for it with `need:` when it is the part that is missing. */
+    bool optional = false;
 };
 
 /** @brief One size of a plugin's model, for the user to choose between.
@@ -137,6 +143,24 @@ struct PluginParam {
     double step = 1;
 };
 
+/** @brief One field of a generator's form, the card a `generator` plugin puts in
+ *  the chat. The types are the settings' own plus `text` (several lines) and
+ *  `set` (a voice, a face… from the plugin's library of presets). */
+struct PluginField {
+    QString key;
+    QString label;
+    QString type; // text | string | enum | set | number | bool
+    QVariant defaultValue;
+    QStringList options; ///< for enum: the values the plugin receives
+    QStringList labels;  ///< for enum: what the user reads, one per option
+    QString placeholder; ///< greyed text in an empty text field
+    bool compact = false; ///< a text field two lines tall instead of five
+    QString kind;        ///< for set: which kind of preset
+    /** @brief Shown only while another field has a given value: {key, value}. */
+    QString showIfKey;
+    QString showIfValue;
+};
+
 /** @class PluginManifest
     @brief Parsed and validated `plugin.json` of a Wunjo Make plugin.
 
@@ -223,6 +247,10 @@ public:
      *  way-of-talking picker and nowhere else. */
     bool isAgent() const { return hasTarget(QStringLiteral("agent")); }
     QList<PluginParam> params() const { return m_params; }
+    /** @brief The card a generator brings to the chat: its title and its form. */
+    QString generateTitle() const { return m_generateTitle.isEmpty() ? m_name : m_generateTitle; }
+    QList<PluginField> generateFields() const { return m_generateFields; }
+    bool isGenerator() const { return hasTarget(QStringLiteral("generator")) && !m_generateFields.isEmpty(); }
     /** @brief Effects this plugin adds to the editor while it is installed. */
     QList<PluginEffect> effects() const { return m_effects; }
     /** @brief True when its effects belong together (`"effects_apply": "together"`).
@@ -312,6 +340,8 @@ private:
     QList<PluginVariant> m_variants;
     QList<PluginParam> m_params;
     QList<PluginEffect> m_effects;
+    QString m_generateTitle;
+    QList<PluginField> m_generateFields;
     QHash<QString, PluginSetsUi> m_setsUi;
     bool m_effectsTogether{false};
     QString m_inputClip;

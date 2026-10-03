@@ -390,6 +390,15 @@
     </ul>
   </description>
   <releases>
+    <release version="3.1.0" date="2026-10-03">
+      <description>
+        <p>Interface languages and groundwork for new plugins.</p>
+        <ul>
+          <li>The interface in 11 languages, chosen in Settings &gt; Language</li>
+          <li>Plugin effects can take a multi-line text, and plugins can offer optional models downloaded on demand</li>
+        </ul>
+      </description>
+    </release>
     <release version="3.0.0" date="2026-08-14">
       <description>
         <p>First release of Wunjo Make, a nonlinear video editor built on the MLT framework.</p>

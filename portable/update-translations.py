@@ -11,7 +11,8 @@ locally, with nothing but xgettext and msgmerge (gettext) and Python:
 
   1. collects the strings of .ui/.rc files, effect/transition XML and layout
      names into a temporary rc.cpp, as extractrc would;
-  2. also collects the effect XML of the first-party plugins in ../plugins:
+  2. also collects the effect XML and the generator cards (`generate` in
+     plugin.json) of the first-party plugins in ../plugins:
      the host translates an effect's name, description and parameter labels
      through the "wunjo" domain when it loads them, so a plugin's effects are
      translated by the application's own catalog;
@@ -94,6 +95,19 @@ def write_rc(path):
                     lines += [f"// i18n: file: {os.path.relpath(f, HERE)}", f"i18n({c_string(info['displayName'])});"]
         except (OSError, ValueError, AttributeError):
             pass
+    # The card a generator plugin puts in the chat reads its title, labels and
+    # placeholders through the same catalog as the plugin's effects.
+    for f in sorted(glob.glob(os.path.join(HERE, "..", "plugins", "*", "plugin.json"))):
+        try:
+            generate = json.load(open(f, encoding="utf-8")).get("generate") or {}
+        except (OSError, ValueError):
+            continue
+        texts = [generate.get("title", "")]
+        for field in generate.get("fields", []):
+            texts += [field.get("label", ""), field.get("placeholder", "")] + list(field.get("labels", []))
+        for text in texts:
+            if text:
+                lines += [f"// i18n: file: {os.path.relpath(f, HERE)}", f"i18n({c_string(text)});"]
     for f in collect_files():
         for ctx, text in xml_strings(f):
             lines.append(f"// i18n: file: {os.path.relpath(f, HERE)}")

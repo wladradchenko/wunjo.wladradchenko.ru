@@ -9,6 +9,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "chatguidancestore.h"
 #include "chathistorystore.h"
 #include "chatvoiceinput.h"
+#include "generatorcard.h"
 #include "core.h"
 #include "mainwindow.h"
 #include "pluginchatbackend.h"
@@ -55,6 +56,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QTextCursor>
 #include <QToolButton>
 #include <QUrl>
+#include <QUuid>
 #include <QVBoxLayout>
 
 // Bubble/card styling is scoped by objectName; global rules live in
@@ -147,6 +149,42 @@ static const char CHAT_STYLE[] = R"(
     background: #2D2D2D; border: none; border-radius: 2px; max-height: 4px;
 }
 #chatToolCard QProgressBar::chunk { background: #A2E0B2; border-radius: 2px; }
+/* A generator's form: the same card, with fields in it. Only colours the
+   theme knows how to turn light are used here (see WunjoTheme::applyTokens). */
+#chatToolCard QPlainTextEdit, #chatToolCard QLineEdit {
+    background: transparent; border: 1px solid #2D2D2D; border-radius: 8px; padding: 4px 6px;
+}
+#chatToolCard QPlainTextEdit:focus, #chatToolCard QLineEdit:focus { border-color: #C8EDD2; }
+#chatGeneratorTabs { border: 1px solid #2D2D2D; border-radius: 8px; }
+#chatGeneratorTabs QToolButton {
+    background: transparent; border: none; border-radius: 6px; padding: 4px 8px; color: #696969;
+}
+#chatGeneratorTabs QToolButton:checked { background: #2B3A32; color: #FFFFFF; }
+#chatLibraryButton {
+    background: transparent; border: 1px solid #2D2D2D; border-radius: 8px; padding: 4px 8px; text-align: left;
+}
+#chatLibraryButton:hover { border-color: #C8EDD2; }
+/* Generate is an ordinary button, like "Generate into the bin" on a plugin
+   effect: the send button stays the one accent in the panel, and a history
+   of cards does not turn into a column of green. */
+#chatLibraryPopup { background: #1F1F1F; border: 1px solid #2D2D2D; border-radius: 10px; }
+#chatLibraryPopup QListWidget { background: transparent; }
+#chatLibraryRow { text-align: left; border: none; padding: 2px 4px; border-radius: 6px; }
+#chatLibraryRow:checked { background: #2B3A32; }
+#chatLibraryRow:hover { background: #2D2D2D; }
+#chatLibraryPopup QToolButton[armed="true"] { background: #3A181D; border-radius: 6px; }
+/* Thin scroll bars in the card and the library, as everywhere else in the
+   editor: a styled card otherwise falls back to the platform's heavy bar. */
+#chatToolCard QScrollBar:vertical, #chatLibraryPopup QScrollBar:vertical { background: transparent; width: 6px; margin: 2px 1px; }
+#chatToolCard QScrollBar::handle:vertical, #chatLibraryPopup QScrollBar::handle:vertical {
+    background: #2D2D2D; border-radius: 2px; min-height: 20px;
+}
+#chatToolCard QScrollBar::handle:vertical:hover, #chatLibraryPopup QScrollBar::handle:vertical:hover { background: #696969; }
+#chatToolCard QScrollBar::add-line, #chatToolCard QScrollBar::sub-line,
+#chatLibraryPopup QScrollBar::add-line, #chatLibraryPopup QScrollBar::sub-line { width: 0; height: 0; }
+#chatToolCard QScrollBar::add-page, #chatToolCard QScrollBar::sub-page,
+#chatLibraryPopup QScrollBar::add-page, #chatLibraryPopup QScrollBar::sub-page { background: transparent; }
+#chatLibraryUpload { text-align: left; padding: 8px 10px; border: none; border-top: 1px solid #2D2D2D; color: #C8EDD2; }
 #chatInputShell {
     background: #1F1F1F; border: 1px solid #2D2D2D; border-radius: 12px;
 }
@@ -372,6 +410,10 @@ ChatWidget::ChatWidget(QWidget *parent)
     : QWidget(parent)
     , m_store(new ChatHistoryStore(this))
 {
+    m_persistTimer = new QTimer(this);
+    m_persistTimer->setSingleShot(true);
+    m_persistTimer->setInterval(1000);
+    connect(m_persistTimer, &QTimer::timeout, this, &ChatWidget::persistSession);
     // The bubble/card palette + accent follow the active Wunjo theme; re-apply
     // whenever the theme or primary color changes.
     const auto applyChatStyle = [this]() {
@@ -743,6 +785,75 @@ void ChatWidget::externalToolEnd(const QString &id, bool isError, const QString 
 {
     m_model.updateTool(id, isError ? ChatMessage::ToolStatus::Failed : ChatMessage::ToolStatus::Done, 100, result);
     persistSession();
+}
+
+QString ChatWidget::addGeneratorCard(const QString &pluginId, const QJsonObject &values, bool byAssistant)
+{
+    const PluginManifest manifest = PluginManager::instance().plugin(pluginId);
+    if (!manifest.isGenerator()) {
+        return {};
+    }
+    if (m_stack->currentIndex() != 0) {
+        switchTab(0);
+    }
+    const QString id = QStringLiteral("generate:") + QUuid::createUuid().toString(QUuid::WithoutBraces).left(8);
+    QJsonObject payload;
+    payload.insert(QStringLiteral("plugin"), pluginId);
+    payload.insert(QStringLiteral("values"), values);
+    payload.insert(QStringLiteral("collapsed"), false);
+    payload.insert(QStringLiteral("author"), byAssistant ? QStringLiteral("assistant") : QStringLiteral("user"));
+    m_model.appendGenerator(id, manifest.generateTitle(), payload);
+    if (GeneratorCard *card = m_generatorCards.value(id)) {
+        // the defaults the form filled in belong to the saved card too
+        m_model.updatePayload(id, card->payload(), false);
+        if (!byAssistant) {
+            QTimer::singleShot(0, card, [card]() { card->focusFirstField(); });
+        }
+    }
+    persistSession();
+    return id;
+}
+
+bool ChatWidget::setGeneratorValues(const QString &cardId, const QJsonObject &values, bool byAssistant)
+{
+    QJsonObject payload = m_model.payload(cardId);
+    if (payload.isEmpty()) {
+        return false;
+    }
+    QJsonObject merged = payload.value(QStringLiteral("values")).toObject();
+    for (auto it = values.constBegin(); it != values.constEnd(); ++it) {
+        merged.insert(it.key(), it.value());
+    }
+    payload.insert(QStringLiteral("values"), merged);
+    if (byAssistant) {
+        payload.insert(QStringLiteral("author"), QStringLiteral("assistant"));
+    }
+    m_model.updatePayload(cardId, payload);
+    persistSession();
+    return true;
+}
+
+bool ChatWidget::foldGeneratorCard(const QString &cardId, bool collapsed)
+{
+    QJsonObject payload = m_model.payload(cardId);
+    if (payload.isEmpty()) {
+        return false;
+    }
+    payload.insert(QStringLiteral("collapsed"), collapsed);
+    m_model.updatePayload(cardId, payload);
+    persistSession();
+    return true;
+}
+
+QString ChatWidget::runGeneratorCard(const QString &cardId)
+{
+    const QJsonObject payload = m_model.payload(cardId);
+    if (payload.isEmpty()) {
+        return {};
+    }
+    // Where the playhead is now: that is where the result is meant to go.
+    return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("values")).toObject(),
+                                                  pCore->currentTimelineId(), pCore->getMonitorPosition());
 }
 
 void ChatWidget::switchTab(int page)
@@ -1269,7 +1380,22 @@ void ChatWidget::setProjectFolder(const QString &projectDataFolder)
 {
     refreshGuidance(); // per-project selection may differ
     m_store->setProjectFolder(projectDataFolder);
-    startNewSession();
+    // The project's last conversation comes back with it: the cards in it are
+    // the voiceovers and the rest that were set up there, and a fresh chat on
+    // every open would leave them in the history list where nobody looks.
+    const QList<ChatSessionInfo> sessions = m_store->sessions();
+    if (sessions.isEmpty()) {
+        startNewSession();
+        return;
+    }
+    QString title;
+    const QJsonArray messages = m_store->loadSession(sessions.first().id, &title);
+    m_sessionId = sessions.first().id;
+    m_sessionTitle = title;
+    m_titleLabel->setText(title.isEmpty() ? i18n("New chat") : title);
+    m_model.loadJson(messages);
+    noteSessionChanged();
+    applyBrain();
 }
 
 void ChatWidget::startNewSession()
@@ -1674,6 +1800,31 @@ QWidget *ChatWidget::buildToolCard(const ChatMessage &message)
     return row;
 }
 
+QWidget *ChatWidget::buildGeneratorCard(const ChatMessage &message)
+{
+    const QString pluginId = message.payload.value(QStringLiteral("plugin")).toString();
+    const PluginManifest manifest = PluginManager::instance().plugin(pluginId);
+    if (!manifest.isGenerator()) {
+        // the plugin is gone: say what the card was, rather than drop it
+        auto *gone = new QLabel(i18n("%1 is not installed.", message.toolName), this);
+        gone->setObjectName(QStringLiteral("chatToolStatus"));
+        return gone;
+    }
+    auto *card = new GeneratorCard(message.toolId, manifest, message.payload, this);
+    m_generatorCards.insert(message.toolId, card);
+    connect(card, &GeneratorCard::edited, this, [this](const QString &id, const QJsonObject &payload) {
+        m_model.updatePayload(id, payload, false);
+        m_persistTimer->start();
+    });
+    connect(card, &GeneratorCard::generateRequested, this, [this](const QString &id) {
+        m_persistTimer->stop();
+        persistSession();
+        runGeneratorCard(id);
+    });
+    connect(card, &QObject::destroyed, this, [this, id = message.toolId]() { m_generatorCards.remove(id); });
+    return card;
+}
+
 void ChatWidget::refreshToolCard(const QModelIndex &index)
 {
     const QString id = index.data(ChatMessageModel::ToolIdRole).toString();
@@ -1711,9 +1862,19 @@ void ChatWidget::onRowsInserted(const QModelIndex &parent, int first, int last)
         message.toolId = index.data(ChatMessageModel::ToolIdRole).toString();
         message.toolName = index.data(ChatMessageModel::ToolNameRole).toString();
         message.toolProgress = index.data(ChatMessageModel::ToolProgressRole).toInt();
+        message.payload = index.data(ChatMessageModel::PayloadRole).toJsonObject();
         // insert before the trailing stretch
         const int position = m_messagesLayout->count() - 1;
-        m_messagesLayout->insertWidget(position, message.kind == ChatMessage::Kind::ToolCard ? buildToolCard(message) : buildBubble(message));
+        QWidget *widget = nullptr;
+        if (message.kind == ChatMessage::Kind::ToolCard) {
+            widget = buildToolCard(message);
+            refreshToolCard(index); // a card read back from disk shows how it ended
+        } else if (message.kind == ChatMessage::Kind::Generator) {
+            widget = buildGeneratorCard(message);
+        } else {
+            widget = buildBubble(message);
+        }
+        m_messagesLayout->insertWidget(position, widget);
     }
     scrollToBottom();
 }
@@ -1722,8 +1883,13 @@ void ChatWidget::onDataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 {
     for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
         const QModelIndex index = m_model.index(row);
-        if (ChatMessage::Kind(index.data(ChatMessageModel::KindRole).toInt()) == ChatMessage::Kind::ToolCard) {
+        const auto kind = ChatMessage::Kind(index.data(ChatMessageModel::KindRole).toInt());
+        if (kind == ChatMessage::Kind::ToolCard) {
             refreshToolCard(index);
+        } else if (kind == ChatMessage::Kind::Generator) {
+            if (GeneratorCard *card = m_generatorCards.value(index.data(ChatMessageModel::ToolIdRole).toString())) {
+                card->setPayload(index.data(ChatMessageModel::PayloadRole).toJsonObject());
+            }
         }
     }
 }
@@ -1733,6 +1899,7 @@ void ChatWidget::rebuildMessageArea()
     m_toolBars.clear();
     m_toolStatusLabels.clear();
     m_toolIcons.clear();
+    m_generatorCards.clear();
     while (m_messagesLayout->count() > 1) {
         QLayoutItem *item = m_messagesLayout->takeAt(0);
         if (QWidget *w = item->widget()) {

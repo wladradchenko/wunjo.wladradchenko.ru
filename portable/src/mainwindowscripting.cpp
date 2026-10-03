@@ -3449,6 +3449,43 @@ bool MainWindow::scriptChatToolEnd(const QString &id, bool isError, const QStrin
     return true;
 }
 
+QString MainWindow::openGeneratorCard(const QString &pluginId, const QJsonObject &values, bool byAssistant)
+{
+    if (!m_chatWidget) {
+        return {};
+    }
+    if (m_chatDock) {
+        m_chatDock->show();
+        m_chatDock->setAsCurrentTab();
+    }
+    return m_chatWidget->addGeneratorCard(pluginId, values, byAssistant);
+}
+
+QString MainWindow::scriptGeneratorCards()
+{
+    return m_chatWidget ? QString::fromUtf8(QJsonDocument(m_chatWidget->generatorCards()).toJson(QJsonDocument::Compact)) : QStringLiteral("[]");
+}
+
+QString MainWindow::scriptGeneratorCardCreate(const QString &pluginId, const QString &valuesJson)
+{
+    return openGeneratorCard(pluginId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);
+}
+
+bool MainWindow::scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson)
+{
+    return m_chatWidget && m_chatWidget->setGeneratorValues(cardId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);
+}
+
+bool MainWindow::scriptGeneratorCardFold(const QString &cardId, bool collapsed)
+{
+    return m_chatWidget && m_chatWidget->foldGeneratorCard(cardId, collapsed);
+}
+
+QString MainWindow::scriptGeneratorCardRun(const QString &cardId)
+{
+    return m_chatWidget ? m_chatWidget->runGeneratorCard(cardId) : QString();
+}
+
 // ── Assistant guidance: skills & loops (backed by ChatGuidanceStore) ──
 
 QStringList MainWindow::scriptListSkills()
@@ -3931,14 +3968,18 @@ QVariantMap MainWindow::scriptPluginStatus(const QString &id)
     // models the plugin declares (downloaded on demand into its models/ dir)
     QVariantList models;
     const QString modelsDir = pm.modelsDir(m.id());
-    const QList<PluginModel> declaredModels = m.models();
+    // The weights this machine would run: one size of a model, not every size,
+    // and the optional ones listed but never counted as missing. Counting all
+    // of them sent an assistant off to download every size there is.
+    const QList<PluginModel> declaredModels = PluginManager::applicableModels(m);
     for (const PluginModel &model : declaredModels) {
         QVariantMap mm;
         mm.insert(QStringLiteral("name"), model.name);
         const bool present = QFile::exists(modelsDir + QLatin1Char('/') + model.name);
         mm.insert(QStringLiteral("present"), present);
+        mm.insert(QStringLiteral("optional"), model.optional);
         models.append(mm);
-        if (!present && !missing.contains(QStringLiteral("models"))) {
+        if (!present && !model.optional && !missing.contains(QStringLiteral("models"))) {
             missing << QStringLiteral("models");
         }
     }

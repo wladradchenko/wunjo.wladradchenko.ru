@@ -995,7 +995,9 @@ ParamType AssetParameterModel::paramTypeFromStr(const QString &type)
         return ParamType::Wipe;
     } else if (type == QLatin1String("url")) {
         return ParamType::Url;
-    } else if (type == QLatin1String("keywords")) {
+    } else if (type == QLatin1String("keywords") || type == QLatin1String("text")) {
+        // "text" is a keywords field without the keywords: a plain multi-line
+        // box, for a plugin effect that takes what to say or what to make.
         return ParamType::Keywords;
     } else if (type == QLatin1String("fontfamily")) {
         return ParamType::Fontfamily;

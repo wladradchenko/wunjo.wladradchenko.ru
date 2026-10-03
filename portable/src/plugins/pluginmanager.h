@@ -148,6 +148,15 @@ public:
      *  The produced file is filed under the project, written into @p resultParam
      *  of the effect and added to the bin. */
     QString runEffectJob(const QString &pluginId, const ObjectId &owner, int effectItemId, const QString &resultParam, const QJsonObject &input);
+    /** @brief Run a generator's form (the card in the chat). The run is a card
+     *  of its own below the form; what it makes goes into the bin and onto the
+     *  timeline @p timelineUuid at @p frame, on an audio track with room there
+     *  or a new one. @p frame -1 keeps it in the bin.
+     *  @return The id of the run's card, which is also its job id. */
+    QString runGenerator(const QString &pluginId, const QJsonObject &fields, const QUuid &timelineUuid, int frame);
+    /** @brief Register @p source as a preset of @p pluginId (a voice from a
+     *  recording); the library follows through @ref setsChanged. */
+    QString registerSet(const QString &pluginId, const QString &source, const QString &kind);
     /** @brief Progress of that job in percent, @ref JobQueued while it waits for
      *  the plugin to be free, or @ref JobNone when there is nothing. */
     int effectJobProgress(const ObjectId &owner, int effectItemId) const;
@@ -156,6 +165,8 @@ public:
     /** @brief Why @p id cannot run right now (a model missing or half
      *  downloaded), or empty when nothing is in the way. */
     QString runBlocker(const QString &id) const;
+    /** @brief Tell whoever lists @p pluginId's presets that they changed. */
+    void noteSetsChanged(const QString &pluginId) { Q_EMIT setsChanged(pluginId); }
 
     /** @brief Bytes still to be fetched before @p manifest can work: the
      *  weights this machine needs and does not have, plus a reserve for the
@@ -249,6 +260,8 @@ Q_SIGNALS:
     void pluginEffectsChanged(const QStringList &addedFiles, const QStringList &removedIds);
     /** @brief A render started by an effect moved on (percent) or ended (-1). */
     void effectJobProgressChanged(const ObjectId &owner, int effectItemId, int progress);
+    /** @brief The presets of @p pluginId were added to or removed from. */
+    void setsChanged(const QString &pluginId);
 
 private:
     PluginManager();

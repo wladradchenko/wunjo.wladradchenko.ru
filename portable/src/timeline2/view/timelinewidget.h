@@ -98,6 +98,12 @@ private:
     QActionGroup *m_targetsGroup{nullptr};
     QMenu *m_thumbsMenu;
     QMenu *m_addClipMenu;
+    /** @brief "Artificial Intelligence" on an empty spot: the generators, each
+     *  opening its card in the chat. Rebuilt on every show, hidden when no
+     *  generator is installed. */
+    QMenu *m_generateMenu{nullptr};
+    /** @brief Fill @p menu with an entry per installed generator. */
+    void addGeneratorEntries(QMenu *menu, bool marked);
     QMenu *m_favEffects;
     QMenu *m_favCompositions;
     QAction *m_editGuideAcion;

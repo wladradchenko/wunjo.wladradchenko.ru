@@ -448,6 +448,7 @@ void PluginSettingsTab::buildModelsBlock()
     delete m_modelsBlock;
     m_modelsBlock = nullptr;
     m_modelRows.clear();
+    m_optionalRows.clear();
     m_modelsMessage = nullptr;
     // A plugin that does several things declares which part each weight belongs
     // to; the page then reads as sections instead of one long heap of files.
@@ -464,16 +465,18 @@ void PluginSettingsTab::buildModelsBlock()
         auto *layout = new QVBoxLayout(m_modelsBlock);
         layout->setContentsMargins(0, 0, 0, 0);
         QStringList groups;
+        QStringList optionalGroups;
         for (const PluginModel &model : models) {
-            if (model.variant.isEmpty() && !groups.contains(model.group)) {
-                groups << model.group;
+            QStringList &into = model.optional ? optionalGroups : groups;
+            if (model.variant.isEmpty() && !into.contains(model.group)) {
+                into << model.group;
             }
         }
         for (const QString &group : std::as_const(groups)) {
             auto *modelsBox = new QGroupBox(group.isEmpty() ? i18n("Models") : i18n("Models — %1", group), m_modelsBlock);
             auto *modelsLayout = new QVBoxLayout(modelsBox);
             for (int i = 0; i < models.size(); ++i) {
-                if (models.at(i).group != group || !models.at(i).variant.isEmpty()) {
+                if (models.at(i).group != group || !models.at(i).variant.isEmpty() || models.at(i).optional) {
                     continue;
                 }
                 auto *row = new QHBoxLayout;
@@ -498,6 +501,39 @@ void PluginSettingsTab::buildModelsBlock()
                 connect(button, &QPushButton::clicked, this, [this, i]() { downloadModel(i); });
             }
             layout->addWidget(modelsBox);
+        }
+        if (!optionalGroups.isEmpty()) {
+            // What only one feature of the plugin needs: the plugin runs without
+            // it and says so when that feature is asked for.
+            auto *optionalBox = new QGroupBox(i18n("Optional models"), m_modelsBlock);
+            auto *optionalLayout = new QVBoxLayout(optionalBox);
+            for (const QString &group : std::as_const(optionalGroups)) {
+                qint64 sizeMb = 0;
+                for (const PluginModel &model : models) {
+                    if (model.optional && model.group == group && model.variant.isEmpty()) {
+                        sizeMb += model.sizeMb;
+                    }
+                }
+                auto *row = new QHBoxLayout;
+                const QString label = group.isEmpty() ? i18n("Optional") : group;
+                row->addWidget(new QLabel(sizeMb > 0 ? i18n("%1 (%2)", label, KIO::convertSize(KIO::filesize_t(sizeMb) * 1024 * 1024)) : label, optionalBox));
+                auto *status = new QLabel(optionalBox);
+                status->setStyleSheet(QStringLiteral("color:#696969"));
+                status->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+                status->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                auto *button = new QPushButton(QIcon::fromTheme(QStringLiteral("download")), i18n("Download"), optionalBox);
+                row->addWidget(status, 1);
+                row->addWidget(button);
+                optionalLayout->addLayout(row);
+                const int index = m_optionalRows.size();
+                OptionalRow entry;
+                entry.group = group;
+                entry.status = status;
+                entry.button = button;
+                m_optionalRows.append(entry);
+                connect(button, &QPushButton::clicked, this, [this, index]() { downloadOptional(index); });
+            }
+            layout->addWidget(optionalBox);
         }
         // Where a sentence goes: why a download will not start, what an unpack
         // choked on. It spans the page and wraps, so it can be as long as it
@@ -539,7 +575,7 @@ void PluginSettingsTab::reloadVariants()
     }
     if (m_variantCombo->count() == 0) {
         const PluginVariant recommended = m_manifest.variant(m_manifest.defaultVariant(PluginManager::gpuVramGb()));
-        m_noModelMessage->setText(i18n("Install a model - we recommend <b>%1</b>", recommended.label));
+        m_noModelMessage->setText(i18n("Install a model. <b>%1</b> is recommended.", recommended.label));
         m_noModelMessage->show();
         m_manageModels->setText(i18n("Install a model"));
         return;
@@ -591,6 +627,22 @@ void PluginSettingsTab::saveKey()
 void PluginSettingsTab::refreshModels()
 {
     const QList<PluginModel> models = PluginManager::applicableModels(m_manifest);
+    for (OptionalRow &row : m_optionalRows) {
+        if (row.download != nullptr) {
+            continue;
+        }
+        bool ready = true;
+        for (const PluginModel &model : models) {
+            if (model.optional && model.group == row.group && model.variant.isEmpty()
+                && PluginManager::instance().modelState(m_manifest.id(), model) != PluginManager::ModelReady) {
+                ready = false;
+                break;
+            }
+        }
+        row.status->setText(ready ? i18n("installed") : QString());
+        row.button->setText(i18n("Download"));
+        row.button->setEnabled(!ready);
+    }
     for (int i = 0; i < m_modelRows.size() && i < models.size(); ++i) {
         if (m_modelRows.at(i).status == nullptr || m_modelRows.at(i).download != nullptr) {
             // A row that is downloading writes its own line — several times a
@@ -622,6 +674,89 @@ void PluginSettingsTab::refreshModels()
         m_modelRows.at(i).button->setEnabled(state != PluginManager::ModelReady);
         m_modelRows.at(i).button->setText(partial > 0 ? i18n("Continue") : i18n("Download"));
     }
+}
+
+void PluginSettingsTab::downloadOptional(int index)
+{
+    if (index < 0 || index >= m_optionalRows.size()) {
+        return;
+    }
+    OptionalRow &row = m_optionalRows[index];
+    if (row.download != nullptr) {
+        row.download->kill(KJob::EmitResult);
+        return;
+    }
+    m_modelsMessage->hide();
+    row.queue.clear();
+    row.done = 0;
+    qint64 bytes = 0;
+    const QList<PluginModel> models = PluginManager::applicableModels(m_manifest);
+    for (const PluginModel &model : models) {
+        if (model.optional && model.group == row.group && model.variant.isEmpty() && !model.url.isEmpty()
+            && PluginManager::instance().modelState(m_manifest.id(), model) != PluginManager::ModelReady) {
+            row.queue.append(model);
+            bytes += model.sizeMb * 1024 * 1024;
+        }
+    }
+    const QString blocker = PluginManager::downloadBlocker(bytes);
+    if (!blocker.isEmpty()) {
+        m_modelsMessage->setMessageType(KMessageWidget::Warning);
+        m_modelsMessage->setText(blocker);
+        m_modelsMessage->animatedShow();
+        return;
+    }
+    row.button->setText(i18n("Cancel"));
+    continueOptional(index);
+}
+
+void PluginSettingsTab::continueOptional(int index)
+{
+    OptionalRow &row = m_optionalRows[index];
+    if (row.done >= row.queue.size()) {
+        row.download = nullptr;
+        refreshModels();
+        return;
+    }
+    const PluginModel model = row.queue.at(row.done);
+    const QString dest = PluginManager::instance().downloadTarget(m_manifest.id(), model);
+    if (!QDir().mkpath(QFileInfo(dest).absolutePath())) {
+        row.status->setText(i18n("cannot create the model folder"));
+        row.download = nullptr;
+        row.button->setText(i18n("Download"));
+        return;
+    }
+    const int count = row.queue.size();
+    const int done = row.done;
+    row.download = new FileDownloadJob(QUrl(model.url), dest, this);
+    row.status->setText(i18n("downloading…"));
+    connect(row.download, &KJob::percentChanged, this, [this, index, count, done](KJob *, unsigned long percent) {
+        m_optionalRows.at(index).status->setText(i18n("%1%", int((done * 100.0 + double(percent)) / count)));
+    });
+    connect(row.download, &KJob::result, this, [this, index, model, dest](KJob *job) {
+        OptionalRow &row = m_optionalRows[index];
+        row.download = nullptr;
+        if (job->error() != 0) {
+            // what came down stays as a fragment; the next press continues it
+            if (job->error() != KJob::KilledJobError) {
+                m_modelsMessage->setMessageType(KMessageWidget::Error);
+                m_modelsMessage->setText(i18n("Could not download %1: %2", QFileInfo(dest).fileName(), job->errorText()));
+                m_modelsMessage->animatedShow();
+            }
+            refreshModels();
+            return;
+        }
+        if (PluginManager::instance().modelState(m_manifest.id(), model, true) != PluginManager::ModelReady) {
+            QFile::remove(dest);
+            m_modelsMessage->setMessageType(KMessageWidget::Error);
+            m_modelsMessage->setText(i18n("%1 arrived damaged and was removed — please download it again.", model.name));
+            m_modelsMessage->animatedShow();
+            refreshModels();
+            return;
+        }
+        ++row.done;
+        continueOptional(index);
+    });
+    row.download->start();
 }
 
 void PluginSettingsTab::downloadModel(int index)

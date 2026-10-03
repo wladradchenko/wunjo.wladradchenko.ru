@@ -45,7 +45,7 @@ install from the `models` URLs (keeps archives small and licensing clean).
 | `python` | string | no | Minimum interpreter, e.g. `python3.10`. Informational for now. |
 | `requirements` | string | no | Path to a pip requirements file. Empty/absent ⇒ no environment is built and the plugin runs on the system Python (regardless of `venv`). |
 | `provider` | object | if `kind=api` | `{ "name", "key_setting", "signup_url" }`. `name` keys the stored API key; the key reaches the plugin only as env `WUNJO_KEY_<NAME>` (upper-cased), never on the command line, never in the model context. |
-| `models` | array | no | `[{ "name", "url", "sha256", "size_mb", "auto_download" }]`. Downloaded into `models/` on install. A weight may also declare `unpack` (`zip` or `tar.gz` — the download is an archive, extracted into `models/<name>/` with the executable bit restored) and, when it comes in variants, which machine it is for: `platform` (`linux-x64`, `windows-x64`, `macos-arm64`), `backend` (`cuda`, `vulkan`, `cpu`) and `min_vram_gb` / `max_vram_gb`. Only the variants this machine can run are listed and downloaded, so one entry per name may appear several times. |
+| `models` | array | no | `[{ "name", "url", "sha256", "size_mb", "auto_download" }]`. Downloaded into `models/` on install. A weight may also declare `unpack` (`zip` or `tar.gz` — the download is an archive, extracted into `models/<name>/` with the executable bit restored) and, when it comes in variants, which machine it is for: `platform` (`linux-x64`, `windows-x64`, `macos-arm64`), `backend` (`cuda`, `vulkan`, `cpu`) and `min_vram_gb` / `max_vram_gb`. Only the variants this machine can run are listed and downloaded, so one entry per name may appear several times. `optional: true` marks a weight only one feature needs: install does not fetch it and running does not wait for it — the plugin asks with `need:` when that feature is used. Optional weights of a size (`variant`) come with the size in *Manage models*; the rest are offered per `group`, as one download, under *Optional models* (since 3.1). |
 | `variants` | array | no | The sizes the model comes in, smallest first, for the user to pick one (see *Model variants*). |
 | `hardware` | object | no | `{ "min_vram_gb", "cpu_ok" }`. Used later by the feasibility check. |
 | `os` | array | no | Subset of `["linux","windows","macos"]`. Import is refused on an unsupported OS. |
@@ -93,7 +93,7 @@ environment variable `WUNJO_MODEL_VARIANT`.
 | `video` | Right-click a timeline clip → **Artificial Intelligence** submenu | `video` | Set `input.multiple: true` to run over every selected video clip at once. |
 | `audio` | Same submenu, but only on clips that carry sound | `audio` | |
 | `face` | The little menu that pops from a **detected-face box** in the monitor | `video` | Receives the face rectangle + frame position in the job (see below). |
-| `generator` | **Media ▸ Generate with Artificial Intelligence** (and the bin context menu) | `none` | Creates media from nothing (text→audio/image/video). |
+| `generator` | Right-click on the timeline (an empty spot or a clip) → **Artificial Intelligence**, which opens the plugin's card in the **Chat** | `none` | Creates media from nothing (text→audio/image/video). Needs a `generate` block (see *Generators*). |
 | `agent` | The **Chat** panel, as a way of talking | `none` | Drives the whole editor instead of processing a clip. Cannot be combined with another target. |
 
 ### Assistant plugins (`target: agent`)
@@ -122,6 +122,59 @@ says the turn is over.
 Two rules the editor enforces rather than trusting: an assistant plugin is never
 offered to a model through `list_plugins`/`run_plugin` (it would call itself),
 and it never appears in a clip menu.
+
+### Generators (`target: generator`, since 3.1)
+
+A generator makes something from nothing: a voiceover from a text, music from a
+description. It has no clip to sit on, so it works through a **card in the
+chat**: right-click the timeline → *Artificial Intelligence* → the generator,
+and its card appears in the conversation, ready to fill in. The card is only the
+form and its Generate button. Each run is a job card of its own below it, with
+its progress and its end, so the form stays editable and every run keeps its
+line. Cards are saved with the project's chat and come back when it is opened.
+
+The form is the manifest's `generate` block:
+
+```json
+"generate": {
+  "title": "Voiceover",
+  "fields": [
+    { "key": "text",   "type": "text", "label": "Text", "placeholder": "What to say." },
+    { "key": "voice",  "type": "enum", "label": "Voice", "options": ["design", "registered"],
+      "labels": ["Describe", "Library"], "default": "design" },
+    { "key": "design", "type": "text", "label": "Describe the voice", "compact": true, "show_if": {"voice": "design"} },
+    { "key": "set",    "type": "set",  "label": "Library", "kind": "", "show_if": {"voice": "registered"} }
+  ]
+}
+```
+
+| Type | Shows as | Value |
+|---|---|---|
+| `text` | a box five lines tall, two with `compact` | the text |
+| `string` | one line | the text |
+| `enum` | tabs, one per option, labelled by `labels` | the chosen option |
+| `set` | the plugin's library of presets of `kind`: a list over the card with listen and delete on every row, and **Upload** at the bottom, which registers a file (`action: "analyse"`) | the preset's json path |
+| `number`, `bool` | a spin box, a check box | the number, true/false |
+
+`show_if` shows a field only while another field has the given value. Title,
+labels and placeholders go through the application's catalog, so a first-party
+plugin's card is translated with the editor.
+
+Generate runs the entry script with
+
+```json
+"input": { "action": "generate", "fields": { "text": "…", "voice": "design", "design": "…" }, "clips": [] }
+```
+
+and expects the usual `result:` with the media in `outputs`, optionally `sets`
+(see *Recorded sets*). The result goes into the bin under a folder named after
+the card, and onto the timeline at the playhead as it was when Generate was
+pressed: on the first audio (or video) track with room there, or on a new one.
+
+An assistant uses the same cards over MCP: `generator_cards` reads what is
+filled in, `generator_card_create` adds a card filled in without running it,
+`generator_card_set` changes fields, `generator_card_run` presses Generate. The
+card says when the assistant filled it in.
 
 ### Parameters (auto-generated dialog)
 
@@ -169,6 +222,26 @@ edited or deleted from there — they belong to the plugin.
 adds the effect instead of launching the entry script: the user sets it up and
 keyframes it on the clip, and the plugin renders from those values later. Only a
 plugin without effects runs its script straight from the menu.
+
+Each effect is offered on the clips it can sit on (since 3.1): a sound effect
+(`type="customAudio"`) on a clip that has sound, a picture effect on a clip on a
+video track — so a plugin with `target: ["audio", "video"]` can bring effects of
+both kinds, each offered only where it can work.
+
+Besides the usual parameter types an effect may take `type="text"` (since 3.1):
+a plain multi-line box for what the plugin should say or make, with the
+`<comment>` as its placeholder. `compact="1"` makes it two lines tall, for a
+phrase rather than a script.
+
+Where an effect's render lands depends on what comes back, not on the clip it
+sits on. The file goes into a bin folder named after the effect, and, for an
+effect on a timeline clip, also onto a new track at the clip's position: a
+video result on a new video track above the clip, an audio result on a new
+audio track on top of the audio tracks, a file with both on one of each. So an
+effect on a video clip may return `{"type": "audio"}` (Foley does): the sound
+starts where the clip starts and the clip itself is left alone. Make the
+result as long as the clip, `(out - in + 1) / project.fps` seconds; the editor
+does not trim or pad it.
 
 For a `face` plugin, mark the parameter that holds the face with
 `wunjo_fill="face"` and the editor fills it with that face's track (the same
@@ -258,6 +331,27 @@ crop it to what matters (the face, not the room around it); `animation` is
 shown below the panel's list when the set is selected, for a recording that
 moves. Both are optional. When a plugin sends neither, the editor makes a
 still from the source itself (the photo, or the first frame of the video).
+
+An `audio` output is kept next to the set as `<source_hash>.wav` (since 3.1):
+the stretch of speech a voice set was measured from, for a plugin that needs
+the sound itself later and not only the numbers. The plugin finds it beside
+the set file it is given (`os.path.splitext(set)[0] + ".wav"`); it moves with
+the set on export and import and goes with it on delete.
+
+A render can leave a set behind too (since 3.1). Next to its `outputs`, the
+result of an effect's Generate or of a generator's run may carry `sets` — each entry what an analysis
+would have returned, with the name to show:
+
+```json
+{"outputs": [{"type": "audio", "path": "/abs/work/voiceover.wav"}],
+ "sets": [{"name": "calm older man", "kind": "",
+           "outputs": [{"type": "data", "path": "/abs/work/voice.json"},
+                       {"type": "audio", "path": "/abs/work/voice.wav"}]}]}
+```
+
+The editor files each one exactly as it files an analysis, and says so in the
+message. Voiceover uses it to keep a voice it made up from a description, so
+the next clip can be spoken by the same person.
 
 A model that cannot run while MLT plays (LivePortrait, diffusion, …) still gets
 an effect: build it on a neutral service (e.g. `brightness` with a fixed

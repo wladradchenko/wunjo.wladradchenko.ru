@@ -11,5 +11,6 @@ set(wunjo_SRCS
     chat/chathistorystore.cpp
     chat/chatvoiceinput.cpp
     chat/chatwidget.cpp
+    chat/generatorcard.cpp
     chat/mcppythonenv.cpp
   PARENT_SCOPE)

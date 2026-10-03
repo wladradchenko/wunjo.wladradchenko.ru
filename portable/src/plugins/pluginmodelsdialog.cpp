@@ -25,6 +25,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QListWidgetItem>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QSet>
 #include <QVBoxLayout>
 
 PluginModelsDialog::PluginModelsDialog(const PluginManifest &manifest, QWidget *parent)
@@ -297,7 +298,20 @@ void PluginModelsDialog::removeVariant(int row)
     }
     const QString variantId = item->data(VariantRole).toString();
     const QList<PluginModel> weights = weightsOf(variantId);
+    // A file several sizes list under the same name (a tokenizer they all
+    // load) stays while another size that needs it is installed.
+    QSet<QString> stillNeeded;
+    for (const PluginVariant &other : m_manifest.variants()) {
+        if (other.id != variantId && PluginManager::instance().variantReady(m_manifest, other.id)) {
+            for (const PluginModel &model : weightsOf(other.id)) {
+                stillNeeded.insert(model.name);
+            }
+        }
+    }
     for (const PluginModel &model : weights) {
+        if (stillNeeded.contains(model.name)) {
+            continue;
+        }
         const QString path = PluginManager::instance().modelPath(m_manifest.id(), model);
         if (QFileInfo(path).isDir()) {
             QDir(path).removeRecursively();

@@ -126,6 +126,7 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         model.minVramGb = obj.value(QStringLiteral("min_vram_gb")).toDouble();
         model.maxVramGb = obj.value(QStringLiteral("max_vram_gb")).toDouble();
         model.variant = obj.value(QStringLiteral("variant")).toString();
+        model.optional = obj.value(QStringLiteral("optional")).toBool();
         if (!model.unpack.isEmpty() && model.unpack != QLatin1String("zip") && model.unpack != QLatin1String("tar.gz")) {
             m.m_errors << i18n("model '%1': 'unpack' only understands \"zip\" or \"tar.gz\"", model.name);
         }
@@ -189,6 +190,37 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
             m.m_params.append(param);
         }
     }
+    // The form a generator puts in the chat. A generator without one would have
+    // nothing to ask, and no card to be run from.
+    const QJsonObject generate = root.value(QStringLiteral("generate")).toObject();
+    m.m_generateTitle = generate.value(QStringLiteral("title")).toString();
+    const QJsonArray fieldsArray = generate.value(QStringLiteral("fields")).toArray();
+    for (const QJsonValue &value : fieldsArray) {
+        const QJsonObject obj = value.toObject();
+        PluginField field;
+        field.key = obj.value(QStringLiteral("key")).toString();
+        field.label = obj.value(QStringLiteral("label")).toString();
+        field.type = obj.value(QStringLiteral("type")).toString(QStringLiteral("string"));
+        field.defaultValue = obj.value(QStringLiteral("default")).toVariant();
+        for (const QJsonValue &option : obj.value(QStringLiteral("options")).toArray()) {
+            field.options << option.toString();
+        }
+        for (const QJsonValue &label : obj.value(QStringLiteral("labels")).toArray()) {
+            field.labels << label.toString();
+        }
+        field.placeholder = obj.value(QStringLiteral("placeholder")).toString();
+        field.compact = obj.value(QStringLiteral("compact")).toBool();
+        field.kind = obj.value(QStringLiteral("kind")).toString();
+        const QJsonObject showIf = obj.value(QStringLiteral("show_if")).toObject();
+        if (!showIf.isEmpty()) {
+            field.showIfKey = showIf.constBegin().key();
+            field.showIfValue = showIf.constBegin().value().toVariant().toString();
+        }
+        if (!field.key.isEmpty()) {
+            m.m_generateFields.append(field);
+        }
+    }
+
     // Effects the plugin brings along. They are read here rather than at install
     // time so a broken XML shows up as a manifest error in the importer, next to
     // the other format violations.
@@ -341,6 +373,9 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         // cannot do anything.
         if (m.m_targets.contains(QLatin1String("agent")) && m.m_targets.count() > 1) {
             m.m_errors << i18n("target 'agent' cannot be combined with another target");
+        }
+        if (m.m_targets.contains(QLatin1String("generator")) && m.m_generateFields.isEmpty()) {
+            m.m_errors << i18n("a generator needs a 'generate' block with its fields");
         }
     }
     if (m.m_entry.isEmpty()) {

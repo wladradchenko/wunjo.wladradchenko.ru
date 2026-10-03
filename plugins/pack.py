@@ -194,6 +194,25 @@ def validate(plugin_dir):
             errors.append("variant '%s': min_vram_gb must be a number" % variant["id"])
         if "cpu_ok" in variant and not isinstance(variant["cpu_ok"], bool):
             errors.append("variant '%s': cpu_ok must be true or false" % variant["id"])
+    # A generator is run from a card in the chat, and the card is its form.
+    targets = manifest.get("target") if isinstance(manifest.get("target"), list) else [manifest.get("target")]
+    generate = manifest.get("generate")
+    if "generator" in targets and not (isinstance(generate, dict) and generate.get("fields")):
+        errors.append("a generator needs a 'generate' block with its 'fields'")
+    if isinstance(generate, dict):
+        field_types = {"text", "string", "enum", "set", "number", "bool"}
+        keys = [f.get("key") for f in generate.get("fields", []) if isinstance(f, dict)]
+        for field in generate.get("fields", []):
+            if not isinstance(field, dict) or not field.get("key"):
+                errors.append("every 'generate.fields' entry needs a 'key'")
+                continue
+            if field.get("type", "string") not in field_types:
+                errors.append("field '%s': type must be one of %s" % (field["key"], ", ".join(sorted(field_types))))
+            if field.get("type") == "enum" and field.get("labels") and len(field["labels"]) != len(field.get("options", [])):
+                errors.append("field '%s': 'labels' must name every option" % field["key"])
+            show_if = field.get("show_if")
+            if show_if is not None and (not isinstance(show_if, dict) or len(show_if) != 1 or next(iter(show_if)) not in keys):
+                errors.append("field '%s': 'show_if' must name one other field" % field["key"])
     for model in manifest.get("models", []) or []:
         if isinstance(model, dict) and model.get("variant") and model["variant"] not in variant_ids:
             errors.append("model '%s' names the variant '%s', which is not declared" % (model.get("name", "?"), model["variant"]))

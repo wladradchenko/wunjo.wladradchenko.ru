@@ -18,11 +18,37 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include <QMutex>
+#include <QFileInfo>
+#include <QHash>
+
+#include <optional>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QtConcurrent/QtConcurrentRun>
 
 static QMutex mutex;
+
+namespace {
+/** @brief One lock per environment, for the whole application.
+ *
+ * A plugin's environment can be asked to install from two places at once: its
+ * settings page keeps an interface of its own, and the plugin manager makes
+ * another when a plugin is imported or an assistant asks for it. Each guarded
+ * itself and not the other, so two installers ran uv into one venv side by
+ * side; one pulled packages out from under the other, and the application went
+ * down with them. The lock is keyed by the interpreter, which names the venv. */
+QMutex *venvInstallLock(const QString &python)
+{
+    static QMutex guard;
+    static QHash<QString, QMutex *> locks;
+    QMutexLocker locker(&guard);
+    QMutex *&lock = locks[QFileInfo(python).absolutePath()];
+    if (lock == nullptr) {
+        lock = new QMutex;
+    }
+    return lock;
+}
+} // namespace
 static bool installInProgress;
 
 PythonDependencyMessage::PythonDependencyMessage(QWidget *parent, AbstractPythonInterface *interface, bool setupErrorOnly)
@@ -1072,6 +1098,12 @@ QString AbstractPythonInterface::runScript(const QString &script, QStringList ar
         });
     }
 
+    // An install waits for any other install into the same environment to end
+    // first; the second then finds most of its work already done.
+    std::optional<QMutexLocker<QMutex>> venvLocker;
+    if (installAction) {
+        venvLocker.emplace(venvInstallLock(pythonExe));
+    }
     scriptJob.start(pythonExe, args);
     // Don't timeout
     qDebug() << "::: RUNNING SCRIPT: " << pythonExe << " = " << args;

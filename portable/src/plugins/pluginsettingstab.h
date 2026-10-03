@@ -40,6 +40,9 @@ public:
 private Q_SLOTS:
     void saveKey();
     void downloadModel(int index);
+    /** @brief Fetch every missing file of one optional group, one after the
+     *  other; the same button cancels. */
+    void downloadOptional(int row);
     void refreshModels();
     void deleteAllModels();
     /** @brief Remove only the installed environment (venv), like the built-in
@@ -62,6 +65,8 @@ private Q_SLOTS:
 private:
     /** @brief Build the rows of the weights every size shares. */
     void buildModelsBlock();
+    /** @brief The next file of an optional group's download, or its end. */
+    void continueOptional(int row);
     /** @brief Fill the model list with the sizes that are on disk, and say what
      *  to install when none is. */
     void reloadVariants();
@@ -104,6 +109,17 @@ private:
         FileDownloadJob *download = nullptr;
     };
     QList<ModelRow> m_modelRows;
+    /** @brief A group of optional weights, offered as one thing: a model that
+     *  comes as a dozen files is one download to the user, not twelve rows. */
+    struct OptionalRow {
+        QString group;
+        QLabel *status = nullptr;
+        QPushButton *button = nullptr;
+        FileDownloadJob *download = nullptr;
+        QList<PluginModel> queue;
+        int done = 0;
+    };
+    QList<OptionalRow> m_optionalRows;
     /** @brief Which size of the model to run, for a plugin that comes in
      *  several (see PluginVariant): the installed ones, and a way to the
      *  window that installs the rest. */

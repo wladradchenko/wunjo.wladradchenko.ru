@@ -24,6 +24,16 @@ KeywordParamWidget::KeywordParamWidget(std::shared_ptr<AssetParameterModel> mode
     }
     comboboxwidget->insertItem(0, i18n("Insert a Keyword…"));
     comboboxwidget->setCurrentIndex(0);
+    // A "text" parameter has no keywords to offer: just the box, a few lines
+    // tall, with the comment as the hint of what goes in it.
+    if (kwrdValues.isEmpty()) {
+        comboboxwidget->hide();
+        lineeditwidget->setPlaceholderText(m_model->data(m_index, AssetParameterModel::CommentRole).toString());
+        // compact="1" for a phrase (a style, a description), the full height
+        // for something that is read out
+        const int lines = m_model->data(m_index, AssetParameterModel::CompactRole).toBool() ? 2 : 5;
+        lineeditwidget->setFixedHeight(lineeditwidget->fontMetrics().lineSpacing() * lines + 12);
+    }
 
     label->setText(m_model->data(m_index, Qt::DisplayRole).toString());
     // set check state
@@ -48,5 +58,10 @@ void KeywordParamWidget::slotShowComment(bool show)
 
 void KeywordParamWidget::slotRefresh()
 {
-    lineeditwidget->setPlainText(m_model->data(m_index, AssetParameterModel::ValueRole).toString());
+    // Every keystroke goes to the model and comes back here; setting the same
+    // text again would throw the cursor to the start of the box mid-sentence.
+    const QString value = m_model->data(m_index, AssetParameterModel::ValueRole).toString();
+    if (value != lineeditwidget->toPlainText()) {
+        lineeditwidget->setPlainText(value);
+    }
 }
