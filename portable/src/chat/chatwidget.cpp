@@ -847,11 +847,53 @@ bool ChatWidget::foldGeneratorCard(const QString &cardId, bool collapsed)
     return true;
 }
 
+int ChatWidget::askGeneratorCard(const QString &cardId, const QString &action)
+{
+    const QJsonObject payload = m_model.payload(cardId);
+    if (payload.isEmpty()) {
+        return 0;
+    }
+    const QString pluginId = payload.value(QStringLiteral("plugin")).toString();
+    const QJsonObject asked = payload.value(QStringLiteral("values")).toObject();
+    QJsonObject input;
+    input.insert(QStringLiteral("action"), action);
+    input.insert(QStringLiteral("generator"), payload.value(QStringLiteral("generator")).toString());
+    input.insert(QStringLiteral("fields"), asked);
+    input.insert(QStringLiteral("clips"), QJsonArray());
+    if (GeneratorCard *card = m_generatorCards.value(cardId)) {
+        card->showAsking(action, asked);
+    }
+    const int seq = ++m_answerSeq;
+    PluginManager::instance().queryPlugin(pluginId, input, this, [this, cardId, action, asked, seq](bool ok, const QString &message) {
+        if (GeneratorCard *card = m_generatorCards.value(cardId)) {
+            card->showAnswer(action, asked, ok, message);
+        }
+        QJsonObject answer;
+        answer.insert(QStringLiteral("seq"), seq);
+        answer.insert(QStringLiteral("action"), action);
+        answer.insert(QStringLiteral("ok"), ok);
+        answer.insert(QStringLiteral("message"), message);
+        m_cardAnswers.insert(cardId, answer);
+    });
+    return seq;
+}
+
 QString ChatWidget::runGeneratorCard(const QString &cardId)
 {
     const QJsonObject payload = m_model.payload(cardId);
     if (payload.isEmpty()) {
         return {};
+    }
+    // the same rule as the button: a card that has to be priced first is not
+    // run behind the user's back by anyone
+    if (GeneratorCard *card = m_generatorCards.value(cardId)) {
+        const QString gate = card->gateAction();
+        if (!gate.isEmpty()) {
+            return QStringLiteral("gate:") + gate;
+        }
+    }
+    if (GeneratorCard *card = m_generatorCards.value(cardId)) {
+        card->clearAnswer();
     }
     // Where the playhead is now: that is where the result is meant to go.
     return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("generator")).toString(),
@@ -1820,6 +1862,7 @@ QWidget *ChatWidget::buildGeneratorCard(const ChatMessage &message)
         m_model.updatePayload(id, payload, false);
         m_persistTimer->start();
     });
+    connect(card, &GeneratorCard::actionRequested, this, [this](const QString &id, const QString &action) { askGeneratorCard(id, action); });
     connect(card, &GeneratorCard::generateRequested, this, [this](const QString &id) {
         m_persistTimer->stop();
         persistSession();

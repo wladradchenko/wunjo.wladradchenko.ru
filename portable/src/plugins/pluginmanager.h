@@ -166,6 +166,29 @@ public:
     /** @brief Why @p id cannot run right now (a model missing or half
      *  downloaded), or empty when nothing is in the way. */
     QString runBlocker(const QString &id) const;
+
+    /** @brief Ask @p pluginId something that is not a run: what a job would
+     *  cost, what is left on an account. The plugin gets @p input (with its
+     *  `action`) like any job, but no job card appears and its working folder
+     *  is removed afterwards. @p onAnswer gets the plugin's `ok` and its
+     *  sentence, or false and the reason it could not answer. */
+    void queryPlugin(const QString &pluginId, const QJsonObject &input, QObject *context,
+                     const std::function<void(bool ok, const QString &message)> &onAnswer);
+
+    /** @brief What an effect's action button last heard back (see
+     *  PluginJobParamWidget): kept here because the button that asks and the
+     *  Generate button it opens are separate widgets, and both are rebuilt
+     *  whenever the effect stack is. */
+    struct EffectAnswer {
+        bool ok = false;
+        QString message;
+        /** @brief The effect's job as it was asked about: the answer holds only
+         *  while the effect still describes the same job. */
+        QByteArray asked;
+        bool pending = false;
+    };
+    EffectAnswer effectAnswer(const ObjectId &owner, int effectItemId, const QString &action) const;
+    void setEffectAnswer(const ObjectId &owner, int effectItemId, const QString &action, const EffectAnswer &answer);
     /** @brief Tell whoever lists @p pluginId's presets that they changed. */
     void noteSetsChanged(const QString &pluginId) { Q_EMIT setsChanged(pluginId); }
 
@@ -241,7 +264,7 @@ public:
      *  belong to @p context and are dropped with it.
      *  @return A handle for @ref cancelPluginJob, or empty if it never started. */
     QString runPluginJob(const QString &id, const QJsonObject &input, QObject *context, const std::function<void(int)> &onProgress,
-                         const std::function<void(const QJsonObject &result, const QString &error)> &onFinished);
+                         const std::function<void(const QJsonObject &result, const QString &error)> &onFinished, bool scratch = false);
     /** @brief Stop the job @p handle names. False when it has already ended. */
     bool cancelPluginJob(const QString &handle);
     /** @brief The MCP server shipped with the app (`share/wunjo/mcp`), or empty
@@ -263,6 +286,8 @@ Q_SIGNALS:
     void effectJobProgressChanged(const ObjectId &owner, int effectItemId, int progress);
     /** @brief The presets of @p pluginId were added to or removed from. */
     void setsChanged(const QString &pluginId);
+    /** @brief An action button of the effect @p effectItemId was answered or asked again. */
+    void effectAnswerChanged(const ObjectId &owner, int effectItemId);
 
 private:
     PluginManager();
@@ -328,6 +353,7 @@ private:
     QHash<QString, QProcess *> m_runningJobs;
     /** @brief Renders in flight or waiting: "owner/effect" -> percent. */
     QHash<QString, int> m_effectJobs;
+    QHash<QString, EffectAnswer> m_effectAnswers;
     /** @brief One heavy model at a time per plugin: two of them on the same GPU
      *  only take each other's memory. */
     QSet<QString> m_busyPlugins;

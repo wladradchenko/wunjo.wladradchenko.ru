@@ -229,6 +229,36 @@ def register(mcp, helpers):
             return f"ERROR: {e}"
 
     @mcp.tool()
+    def generator_card_action(ctx: Context, card_id: str, action: str) -> str:
+        """Press one of a card's own buttons (its "actions" under "generate"),
+        such as "price" or "credits", and read what the plugin answered.
+
+        Nothing is made and nothing is charged. A card whose action says
+        "gate": true cannot be run until that action has answered yes for the
+        values now on the card; change a field and it has to be asked again.
+
+        Args:
+            card_id: From generator_cards or generator_card_create.
+            action: The action's "id", e.g. "price".
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            seq = app._call("scriptGeneratorCardAction", card_id, action)
+            if not seq:
+                return f"ERROR: no card {card_id} in this chat."
+            deadline = time.monotonic() + 90
+            while time.monotonic() < deadline:
+                raw = app._call("scriptGeneratorCardAnswer", card_id) or "{}"
+                answer = json.loads(raw) if isinstance(raw, str) else dict(raw)
+                if answer.get("seq") == seq:
+                    head = "OK" if answer.get("ok") else "NO"
+                    return f"{head}: {answer.get('message') or ''}".strip()
+                time.sleep(1.0)
+            return "ERROR: the plugin did not answer in time."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
     def generator_card_fold(ctx: Context, card_id: str, collapsed: bool = True) -> str:
         """Fold a generator card to one line, or open it again."""
         try:
@@ -252,6 +282,9 @@ def register(mcp, helpers):
             job_id = app._call("scriptGeneratorCardRun", card_id)
             if not job_id:
                 return f"ERROR: no card {card_id} in this chat."
+            if str(job_id).startswith("gate:"):
+                return (f"ERROR: Generate is closed until '{job_id[5:]}' answers yes for these values. "
+                        "Call generator_card_action with that action first.")
             state = _await_job(app, job_id, timeout=5)
             if state["state"] == "failed":
                 return f"ERROR: {state['message']}"

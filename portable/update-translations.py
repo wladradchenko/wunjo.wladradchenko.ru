@@ -105,8 +105,10 @@ def write_rc(path):
         texts = []
         for card in cards if isinstance(cards, list) else []:
             texts.append(card.get("title", ""))
+            texts += [action.get("label", "") for action in card.get("actions", []) or []]
             for field in card.get("fields", []):
                 texts += [field.get("label", ""), field.get("placeholder", "")] + list(field.get("labels", []))
+                texts += [item.get("label", "") for item in field.get("items", []) or []]
         for text in texts:
             if text:
                 lines += [f"// i18n: file: {os.path.relpath(f, HERE)}", f"i18n({c_string(text)});"]

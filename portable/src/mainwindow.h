@@ -726,6 +726,11 @@ public Q_SLOTS:
      *  of its job card, so plugin_job_status follows it. */
     Q_SCRIPTABLE QString scriptGeneratorCards();
     Q_SCRIPTABLE QString scriptGeneratorCardCreate(const QString &pluginId, const QString &generatorId, const QString &valuesJson);
+    /** @brief Press an action button of a card; the answer is read with
+     *  @ref scriptGeneratorCardAnswer. @return Its number, 0 for no such card. */
+    Q_SCRIPTABLE int scriptGeneratorCardAction(const QString &cardId, const QString &action);
+    /** @brief The last answer an action of the card gave, as JSON {seq, action, ok, message}. */
+    Q_SCRIPTABLE QString scriptGeneratorCardAnswer(const QString &cardId);
     Q_SCRIPTABLE bool scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson);
     Q_SCRIPTABLE bool scriptGeneratorCardFold(const QString &cardId, bool collapsed);
     Q_SCRIPTABLE QString scriptGeneratorCardRun(const QString &cardId);

@@ -227,8 +227,35 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
                 field.showIfKey = showIf.constBegin().key();
                 field.showIfValue = showIf.constBegin().value().toVariant().toString();
             }
+            field.min = obj.value(QStringLiteral("min")).toDouble(0);
+            field.max = obj.value(QStringLiteral("max")).toDouble(0);
+            field.step = obj.value(QStringLiteral("step")).toDouble(1);
+            field.accept = obj.value(QStringLiteral("accept")).toString(QStringLiteral("image"));
+            for (const QJsonValue &item : obj.value(QStringLiteral("items")).toArray()) {
+                const QJsonObject kindObj = item.toObject();
+                PluginMediaKind kind;
+                kind.key = kindObj.value(QStringLiteral("key")).toString();
+                kind.accept = kindObj.value(QStringLiteral("accept")).toString(QStringLiteral("image"));
+                kind.label = kindObj.value(QStringLiteral("label")).toString(kind.key);
+                kind.max = qMax(1, kindObj.value(QStringLiteral("max")).toInt(1));
+                if (!kind.key.isEmpty()) {
+                    field.kinds.append(kind);
+                }
+            }
+            const bool fillable = field.type == QLatin1String("text") || field.type == QLatin1String("set");
+            field.required = obj.value(QStringLiteral("required")).toBool(fillable);
             if (!field.key.isEmpty()) {
                 generator.fields.append(field);
+            }
+        }
+        for (const QJsonValue &value : card.value(QStringLiteral("actions")).toArray()) {
+            const QJsonObject obj = value.toObject();
+            PluginAction action;
+            action.id = obj.value(QStringLiteral("id")).toString();
+            action.label = obj.value(QStringLiteral("label")).toString(action.id);
+            action.gate = obj.value(QStringLiteral("gate")).toBool();
+            if (!action.id.isEmpty() && action.id != QLatin1String("generate")) {
+                generator.actions.append(action);
             }
         }
         if (!generatorIdRx.match(generator.id).hasMatch()) {

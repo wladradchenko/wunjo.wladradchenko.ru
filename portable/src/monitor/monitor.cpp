@@ -40,6 +40,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "bin/model/markersortmodel.h"
 #include "monitormanager.h"
 #include "monitorproxy.h"
+#include "effects/effectsrepository.hpp"
 #include "profiles/profilemodel.hpp"
 #include "project/projectmanager.h"
 #include "qmlmanager.h"
@@ -752,7 +753,8 @@ void Monitor::showFaceMenu(int index)
                 entries.append(PluginEffects::MenuEntry{plugin.name(), [this, index, plugin]() { applyPluginFaceEffect(index, plugin, {}); }});
             } else if (!effects.isEmpty()) {
                 for (const PluginEffect &effect : effects) {
-                    entries.append(PluginEffects::MenuEntry{effect.name, [this, index, plugin, effect]() { applyPluginFaceEffect(index, plugin, effect); }});
+                    entries.append(PluginEffects::MenuEntry{EffectsRepository::get()->getName(effect.id),
+                                                            [this, index, plugin, effect]() { applyPluginFaceEffect(index, plugin, effect); }});
                 }
             } else {
                 const QString pluginId = plugin.id();

@@ -388,7 +388,8 @@ void TimelineWidget::showClipMenu(int cid)
                             if ((audioEffect && !clipHasAudio) || (!audioEffect && isAudioTrack)) {
                                 continue;
                             }
-                            entries.append(PluginEffects::MenuEntry{effect.name, [this, plugin, effect, cid, stackFor]() {
+                            // the effect list's own, translated name
+                            entries.append(PluginEffects::MenuEntry{EffectsRepository::get()->getName(effect.id), [this, plugin, effect, cid, stackFor]() {
                                                 // an effect that works inside a region brings that region along
                                                 PluginEffects::apply(stackFor(effect.id, cid), plugin, effect, QString());
                                             }});

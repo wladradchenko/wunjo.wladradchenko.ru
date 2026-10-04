@@ -161,13 +161,39 @@ has an `id` (lowercase letters, digits and dashes, unique in the plugin), a
 |---|---|---|
 | `text` | a box five lines tall, two with `compact` | the text |
 | `string` | one line | the text |
-| `enum` | tabs, one per option, labelled by `labels` | the chosen option |
+| `enum` | tabs, one per option, labelled by `labels`; a drop-down list from five options up | the chosen option |
 | `set` | the plugin's library of presets of `kind`: a list over the card with listen and delete on every row, and **Upload** at the bottom, which registers a file (`action: "analyse"`) | the preset's json path |
-| `number`, `bool` | a spin box, a check box | the number, true/false |
+| `number` | a slider from `min` to `max` in steps of `step`, with the value beside it; a spin box when no range is given | the number |
+| `bool` | a check box | true/false |
+| `media` | a slot with a thumbnail. `accept: "image"` takes a file or the current frame of the project monitor (saved as PNG in the project's `plugin-frames/<id>/`); `accept: "video"` takes a file or the clip selected on the timeline | a path, or `{"path", "in", "out"}` for a timeline clip, `in`/`out` in project frames |
+| `media_list` | entries the user adds one by one: an add button per kind in `items` (`{"key", "accept", "max", "label"}`), each gone once its kind is full. Entries are named key + number (`image1`, `video1`) and keep the name when another is removed, so a text that mentions `@image2` stays right | `{"image1": path, "video1": {"path", "in", "out"}}` |
 
-`show_if` shows a field only while another field has the given value. Title,
-labels and placeholders go through the application's catalog, so a first-party
-plugin's card is translated with the editor.
+`show_if` shows a field only while another field has the given value.
+`required` keeps Generate shut while the field is empty; `text` and `set`
+fields are required unless they say `false`, a `media` field only when it says
+`true`. Title, labels, placeholders and action labels go through the
+application's catalog, so a first-party plugin's card is translated with the
+editor.
+
+A card can also offer **actions**: buttons next to Generate that ask the plugin
+something and show its answer on the card, without making anything and without
+a job in the chat. The price of a paid run is the usual one:
+
+```json
+"actions": [
+  { "id": "price", "label": "Price", "gate": true },
+  { "id": "credits", "label": "Credits" }
+]
+```
+
+The entry script gets `input.action` set to the action's `id` (with
+`generator` and `fields` as for a run) and answers with
+`result:{"ok": true|false, "message": "…", "outputs": [], "place": "none"}`. The
+`message` is shown on the card while the values it was asked about stay the
+same. A card with a `gate: true` action goes in two steps: the action's button
+first (Calculate); once it has answered `ok`, its sentence shows with Cancel
+and Generate. Changing a field, pressing Cancel or running the card brings the
+first step back.
 
 Generate runs the entry script with
 
@@ -175,18 +201,18 @@ Generate runs the entry script with
 "input": { "action": "generate", "generator": "voiceover", "fields": { "text": "…", "voice": "design", "design": "…" }, "clips": [] }
 ```
 
-`generator` is the `id` of the card that was run.
-
-and expects the usual `result:` with the media in `outputs`, optionally `sets`
-(see *Recorded sets*). The result goes into the bin under a folder named after
+where `generator` is the `id` of the card that was run, and expects the usual
+`result:` with the media in `outputs`, optionally `sets` (see *Recorded sets*).
+A `message` in the result is added to the line that says the job is done. The result goes into the bin under a folder named after
 the card, and onto the timeline at the playhead as it was when Generate was
 pressed: on the first audio (or video) track with room there, or on a new one.
 
 An assistant uses the same cards over MCP: `generator_cards` reads what is
 filled in, `generator_card_create` adds a card filled in without running it
 (its `generator` argument picks the card by `id`, the first one when empty),
-`generator_card_set` changes fields, `generator_card_run` presses Generate. The
-card says when the assistant filled it in.
+`generator_card_set` changes fields, `generator_card_action` presses one of
+the card's actions and returns its answer, `generator_card_run` presses
+Generate. The card says when the assistant filled it in.
 
 ### Parameters (auto-generated dialog)
 
@@ -255,6 +281,29 @@ starts where the clip starts and the clip itself is left alone. Make the
 result as long as the clip, `(out - in + 1) / project.fps` seconds; the editor
 does not trim or pad it.
 
+The render button is a `pluginjob` parameter. The same parameter can instead
+ask the plugin a question and show the answer under itself, and a render
+button can wait for that answer:
+
+```xml
+<parameter type="pluginjob" name="vv_price">
+    <name>Price</name>
+    <jobparam name="action">price</jobparam>
+</parameter>
+<parameter type="hidden" name="vv_result" default=""/>
+<parameter type="pluginjob" name="vv_generate">
+    <name conditional="Generate again">Generate into the bin</name>
+    <jobparam name="key">vv_result</jobparam>
+    <jobparam name="gate">price</jobparam>
+</parameter>
+```
+
+The question runs the entry script with the effect's usual job plus
+`input.action`, and the plugin answers with
+`result:{"ok": true|false, "message": "…", "outputs": [], "place": "none"}`.
+With `gate`, Generate stays shut until that action has answered `ok` for the
+effect as it is now; changing a parameter or the clip's length shuts it again.
+
 For a `face` plugin, mark the parameter that holds the face with
 `wunjo_fill="face"` and the editor fills it with that face's track (the same
 animated rectangle Hide Face uses) when the effect is applied from a face box:
@@ -272,7 +321,7 @@ Keep "where it happens" apart from "what happens". An effect that declares
 
 ```xml
 <effect … id="liveportrait" wunjo_requires="liveportrait.region">
-    <parameter type="readonly" name="lp_region" wunjo_fill="region"><name>Head region</name></parameter>
+    <parameter type="hidden" name="lp_region" wunjo_fill="region"><name>Head region</name></parameter>
 ```
 
 is applied together with `liveportrait.region`: the region effect gets the face
@@ -280,7 +329,10 @@ track, both get the same id in their `wunjo_fill="region"` parameter, and each
 keeps its own keyframe timeline — the region can be corrected without touching
 the animation. The required effect is never offered on its own in the menus (it
 stays in the effect list for manual use), and it must be shipped by the same
-plugin.
+plugin. Removing either half removes the other in the same undo step; a region
+another effect still works inside stays. When a clip carries more than one pair
+of the same plugin, the effect stack adds the first four characters of the
+shared id to both names ("Face Region a3f9", "Face Swap a3f9").
 
 #### Recorded sets
 

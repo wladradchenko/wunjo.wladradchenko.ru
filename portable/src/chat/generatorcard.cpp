@@ -5,15 +5,29 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "generatorcard.h"
 
+#include "bin/projectclip.h"
+#include "bin/projectitemmodel.h"
+#include "core.h"
+#include "doc/wunjodoc.h"
+#include "mainwindow.h"
+#include "monitor/monitor.h"
 #include "plugins/pluginmanager.h"
 #include "plugins/pluginsetstore.h"
+#include "timeline2/model/timelineitemmodel.hpp"
+#include "timeline2/view/timelinewidget.h"
 
 #include <KLocalizedString>
 
 #include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QDateTime>
+#include <QDir>
 #include <QDoubleSpinBox>
+#include <QMenu>
+#include <QSlider>
+#include <QStandardPaths>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
@@ -194,6 +208,21 @@ void GeneratorCard::buildForm()
             });
             rowLayout->addWidget(edit);
             w.input = edit;
+        } else if (field.type == QLatin1String("enum") && field.options.size() >= 5) {
+            // Twenty voices do not fit in a row of tabs: past a handful, a list.
+            auto *combo = new QComboBox(row);
+            for (int i = 0; i < field.options.size(); ++i) {
+                combo->addItem(tr8(field.labels.value(i, field.options.at(i))), field.options.at(i));
+            }
+            combo->setCurrentIndex(qMax(0, combo->findData(current.toString())));
+            connect(combo, &QComboBox::currentIndexChanged, this, [this, key = field.key, combo](int) {
+                if (!m_applying) {
+                    setValue(key, combo->currentData().toString());
+                    refreshVisibility();
+                }
+            });
+            rowLayout->addWidget(combo);
+            w.input = combo;
         } else if (field.type == QLatin1String("enum")) {
             // A handful of choices reads as tabs: every option in view, one tap away.
             auto *tabs = new QWidget(row);
@@ -226,6 +255,11 @@ void GeneratorCard::buildForm()
             m_setKind = field.kind;
             rowLayout->addWidget(buildLibrary(field));
             w.input = m_libraryLine;
+        } else if (field.type == QLatin1String("media")) {
+            rowLayout->addWidget(buildMedia(field, w));
+        } else if (field.type == QLatin1String("media_list")) {
+            rowLayout->addWidget(buildMediaList(field));
+            w.input = m_lists.value(field.key).items;
         } else if (field.type == QLatin1String("bool")) {
             auto *box = new QCheckBox(tr8(field.label), row);
             box->setChecked(current.toBool());
@@ -236,6 +270,33 @@ void GeneratorCard::buildForm()
             });
             rowLayout->addWidget(box);
             w.input = box;
+        } else if (field.type == QLatin1String("number") && field.max > field.min) {
+            // A range reads as a slider: both ends in view, and nothing outside
+            // them can be typed. The slider counts steps, the value is worked out.
+            const double step = field.step > 0 ? field.step : 1;
+            const int steps = qMax(1, qRound((field.max - field.min) / step));
+            const int decimals = step >= 1 ? 0 : (step >= 0.1 ? 1 : 2);
+            auto *holder = new QWidget(row);
+            auto *line = new QHBoxLayout(holder);
+            line->setContentsMargins(0, 0, 0, 0);
+            auto *slider = new QSlider(Qt::Horizontal, holder);
+            slider->setRange(0, steps);
+            slider->setValue(qBound(0, qRound((current.toDouble() - field.min) / step), steps));
+            auto *shown = new QLabel(holder);
+            shown->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            shown->setMinimumWidth(shown->fontMetrics().horizontalAdvance(QStringLiteral("000.00")));
+            shown->setText(QString::number(field.min + slider->value() * step, 'f', decimals));
+            connect(slider, &QSlider::valueChanged, this, [this, key = field.key, min = field.min, step, decimals, shown](int index) {
+                const double v = qRound((min + index * step) * 1000.0) / 1000.0;
+                shown->setText(QString::number(v, 'f', decimals));
+                if (!m_applying) {
+                    setValue(key, v);
+                }
+            });
+            line->addWidget(slider, 1);
+            line->addWidget(shown);
+            rowLayout->addWidget(holder);
+            w.input = slider;
         } else if (field.type == QLatin1String("number")) {
             auto *spin = new QDoubleSpinBox(row);
             spin->setRange(-1e9, 1e9);
@@ -260,16 +321,322 @@ void GeneratorCard::buildForm()
         }
         m_form->addWidget(row);
         m_fields.insert(field.key, w);
+        if (field.type == QLatin1String("media")) {
+            refreshMedia(field.key);
+        } else if (field.type == QLatin1String("media_list")) {
+            refreshMediaList(field.key);
+        }
     }
 
+    m_answerLabel = new QLabel(m_body);
+    m_answerLabel->setObjectName(QStringLiteral("chatToolStatus"));
+    m_answerLabel->setWordWrap(true);
+    m_answerLabel->setVisible(false);
+    m_form->addWidget(m_answerLabel);
+
+    // A card with a gate goes in two steps: its gate action first (Calculate),
+    // then Cancel or Generate for what it answered. Other actions stay aside.
     auto *foot = new QHBoxLayout;
+    for (const PluginAction &action : std::as_const(m_generator.actions)) {
+        auto *button = new QPushButton(tr8(action.label), m_body);
+        button->setCursor(Qt::PointingHandCursor);
+        connect(button, &QPushButton::clicked, this, [this, id = action.id]() { Q_EMIT actionRequested(m_cardId, id); });
+        if (action.gate && m_gateId.isEmpty()) {
+            m_gateId = action.id;
+            m_gateButton = button;
+            button->setObjectName(QStringLiteral("chatGenerateButton"));
+            continue;
+        }
+        foot->addWidget(button);
+        m_actionButtons << button;
+    }
     foot->addStretch();
+    if (m_gateButton) {
+        m_cancel = new QPushButton(i18nc("@action:button drop the calculated price", "Cancel"), m_body);
+        m_cancel->setCursor(Qt::PointingHandCursor);
+        connect(m_cancel, &QPushButton::clicked, this, [this]() { clearAnswer(); });
+        foot->addWidget(m_cancel);
+        foot->addWidget(m_gateButton);
+    }
     m_generate = new QPushButton(i18nc("@action:button make what the card describes", "Generate"), m_body);
     m_generate->setObjectName(QStringLiteral("chatGenerateButton"));
     m_generate->setCursor(Qt::PointingHandCursor);
     connect(m_generate, &QPushButton::clicked, this, [this]() { Q_EMIT generateRequested(m_cardId); });
     foot->addWidget(m_generate);
     m_form->addLayout(foot);
+}
+
+QWidget *GeneratorCard::buildMedia(const PluginField &field, FieldWidgets &w)
+{
+    // A slot on the card: what is in it, and the ways to put something there.
+    // Only the path is kept, the file stays where it is.
+    auto *slot = new QWidget(m_body);
+    auto *layout = new QHBoxLayout(slot);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(6);
+    w.thumb = new QLabel(slot);
+    w.thumb->setFixedSize(64, 40);
+    w.thumb->setAlignment(Qt::AlignCenter);
+    w.thumb->setObjectName(QStringLiteral("chatAttachThumb"));
+    w.name = new QLabel(slot);
+    w.name->setObjectName(QStringLiteral("chatToolStatus"));
+    w.name->setTextInteractionFlags(Qt::NoTextInteraction);
+    layout->addWidget(w.thumb);
+    layout->addWidget(w.name, 1);
+    auto tool = [slot, layout](const QString &icon, const QString &tip) {
+        auto *button = new QToolButton(slot);
+        button->setIcon(QIcon::fromTheme(icon));
+        button->setToolTip(tip);
+        button->setAutoRaise(true);
+        layout->addWidget(button);
+        return button;
+    };
+    auto *add = tool(field.accept == QLatin1String("video") ? QStringLiteral("video-x-generic") : QStringLiteral("insert-image"), tr8(field.label));
+    offerSources(add, field.accept, tr8(field.label), [this, key = field.key](const QJsonValue &got) {
+        setValue(key, got);
+        refreshMedia(key);
+    });
+    connect(tool(QStringLiteral("edit-clear"), i18n("Remove")), &QToolButton::clicked, this, [this, key = field.key]() {
+        setValue(key, QJsonValue());
+        refreshMedia(key);
+    });
+    w.input = slot;
+    return slot;
+}
+
+void GeneratorCard::offerSources(QToolButton *button, const QString &accept, const QString &title, const std::function<void(const QJsonValue &)> &take)
+{
+    // one button, its ways in a menu: a file, or what the editor shows now
+    auto *menu = new QMenu(button);
+    connect(menu->addAction(QIcon::fromTheme(QStringLiteral("document-open")), i18n("Choose a file")), &QAction::triggered, this,
+            [this, accept, title, take]() {
+                const QJsonValue got = chooseFile(accept, title);
+                if (!got.isNull()) {
+                    take(got);
+                }
+            });
+    if (accept == QLatin1String("video")) {
+        connect(menu->addAction(QIcon::fromTheme(QStringLiteral("video-x-generic")), i18n("Selected clip on the timeline")), &QAction::triggered,
+                this, [this, take]() {
+                    const QJsonValue got = selectedClip();
+                    if (!got.isNull()) {
+                        take(got);
+                    }
+                });
+    } else {
+        connect(menu->addAction(QIcon::fromTheme(QStringLiteral("camera-photo")), i18n("Current frame of the monitor")), &QAction::triggered,
+                this, [this, take]() {
+                    const QJsonValue got = monitorFrame();
+                    if (!got.isNull()) {
+                        take(got);
+                    }
+                });
+    }
+    button->setMenu(menu);
+    button->setPopupMode(QToolButton::InstantPopup);
+}
+
+QJsonValue GeneratorCard::chooseFile(const QString &accept, const QString &title)
+{
+    const bool video = accept == QLatin1String("video");
+    const QString filter = video ? i18n("Videos (*.mp4 *.mov *.mkv *.webm *.avi)") : i18n("Images (*.png *.jpg *.jpeg *.webp *.bmp)");
+    const QString file = QFileDialog::getOpenFileName(this, title, QString(), filter);
+    return file.isEmpty() ? QJsonValue() : QJsonValue(file);
+}
+
+QJsonValue GeneratorCard::monitorFrame()
+{
+    Monitor *monitor = pCore->getMonitor(Wunjo::ProjectMonitor);
+    if (!monitor || !pCore->currentDoc()) {
+        return {};
+    }
+    // into the project, beside what the plugins make: a frame is only worth
+    // something to the card it was taken for, but it must outlive the run
+    QString folder = pCore->currentDoc()->projectDataFolder();
+    if (folder.isEmpty()) {
+        folder = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    }
+    folder += QStringLiteral("/plugin-frames/") + m_manifest.id();
+    QDir().mkpath(folder);
+    const QString path = folder + QStringLiteral("/frame-%1.png").arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmss-zzz")));
+    monitor->extractFrame(path);
+    if (!QFileInfo::exists(path)) {
+        pCore->displayMessage(i18n("The frame could not be saved."), ErrorMessage);
+        return {};
+    }
+    return path;
+}
+
+QJsonValue GeneratorCard::selectedClip()
+{
+    TimelineWidget *timeline = pCore->window()->getCurrentTimeline();
+    if (!timeline || !timeline->model()) {
+        return {};
+    }
+    const auto model = timeline->model();
+    for (int id : model->getCurrentSelection()) {
+        if (!model->isClip(id) || model->isAudioTrack(model->getClipTrackId(id))) {
+            continue;
+        }
+        std::shared_ptr<ProjectClip> clip = pCore->projectItemModel()->getClipByBinID(model->getClipBinId(id));
+        if (!clip) {
+            continue;
+        }
+        // the part of the source that is on the timeline, in project frames
+        const int in = model->getClipIn(id);
+        QJsonObject value;
+        value.insert(QStringLiteral("path"), clip->url());
+        value.insert(QStringLiteral("in"), in);
+        value.insert(QStringLiteral("out"), in + qMax(0, model->getClipPlaytime(id) - 1));
+        return value;
+    }
+    pCore->displayMessage(i18n("Select a video clip on the timeline first."), ErrorMessage);
+    return {};
+}
+
+namespace {
+QString mediaPath(const QJsonValue &v)
+{
+    return v.isObject() ? v.toObject().value(QStringLiteral("path")).toString() : v.toString();
+}
+
+/** @brief A picture of what is on a slot, or the kind of thing it holds. */
+void showThumb(QLabel *thumb, const QJsonValue &v)
+{
+    const QString path = mediaPath(v);
+    QPixmap picture;
+    if (!path.isEmpty() && QFileInfo::exists(path)) {
+        picture = QPixmap(path);
+    }
+    if (!picture.isNull()) {
+        thumb->setPixmap(picture.scaled(thumb->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    } else {
+        thumb->setPixmap(QIcon::fromTheme(path.isEmpty() ? QStringLiteral("insert-image") : QStringLiteral("video-x-generic")).pixmap(24, 24));
+    }
+}
+
+/** @brief The file's name, and how long the stretch is for a timeline clip. */
+QString describeMedia(const QJsonValue &v)
+{
+    const QString path = mediaPath(v);
+    if (path.isEmpty() || !QFileInfo::exists(path)) {
+        return {};
+    }
+    QString name = QFileInfo(path).fileName();
+    if (v.isObject()) {
+        const double fps = pCore->getCurrentFps() > 0 ? pCore->getCurrentFps() : 25.0;
+        const int frames = v.toObject().value(QStringLiteral("out")).toInt() - v.toObject().value(QStringLiteral("in")).toInt() + 1;
+        name = i18n("%1, %2 s", name, QString::number(frames / fps, 'f', 1));
+    }
+    return name;
+}
+} // namespace
+
+QWidget *GeneratorCard::buildMediaList(const PluginField &field)
+{
+    // References the user adds one by one, up to what each kind allows. Each
+    // keeps its name (@image2) for good: the text may already mention it, so
+    // taking one away leaves a gap rather than renaming the rest.
+    auto *holder = new QWidget(m_body);
+    auto *layout = new QVBoxLayout(holder);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(4);
+    MediaList list;
+    list.field = field;
+    list.items = new QWidget(holder);
+    auto *itemsLayout = new QVBoxLayout(list.items);
+    itemsLayout->setContentsMargins(0, 0, 0, 0);
+    itemsLayout->setSpacing(4);
+    layout->addWidget(list.items);
+    auto *adds = new QHBoxLayout;
+    adds->setContentsMargins(0, 0, 0, 0);
+    for (const PluginMediaKind &kind : field.kinds) {
+        auto *add = new QToolButton(holder);
+        add->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
+        add->setText(tr8(kind.label));
+        add->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        add->setAutoRaise(true);
+        offerSources(add, kind.accept, tr8(kind.label), [this, key = field.key, kind](const QJsonValue &got) {
+            QJsonObject entries = value(key).toObject();
+            for (int n = 1; n <= kind.max; ++n) {
+                const QString name = kind.key + QString::number(n);
+                if (!entries.contains(name)) {
+                    entries.insert(name, got);
+                    break;
+                }
+            }
+            setValue(key, entries);
+            refreshMediaList(key);
+        });
+        adds->addWidget(add);
+        list.adds.insert(kind.key, add);
+    }
+    adds->addStretch();
+    layout->addLayout(adds);
+    m_lists.insert(field.key, list);
+    return holder;
+}
+
+void GeneratorCard::refreshMediaList(const QString &key)
+{
+    const MediaList list = m_lists.value(key);
+    if (!list.items) {
+        return;
+    }
+    const QList<QWidget *> old = list.items->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+    qDeleteAll(old);
+    const QJsonObject entries = value(key).toObject();
+    QStringList names = entries.keys();
+    std::sort(names.begin(), names.end());
+    for (const QString &name : std::as_const(names)) {
+        auto *row = new QWidget(list.items);
+        auto *line = new QHBoxLayout(row);
+        line->setContentsMargins(0, 0, 0, 0);
+        line->setSpacing(6);
+        auto *thumb = new QLabel(row);
+        thumb->setFixedSize(64, 40);
+        thumb->setAlignment(Qt::AlignCenter);
+        thumb->setObjectName(QStringLiteral("chatAttachThumb"));
+        showThumb(thumb, entries.value(name));
+        auto *label = new QLabel(QStringLiteral("@") + name + QStringLiteral("  ") + describeMedia(entries.value(name)), row);
+        label->setToolTip(mediaPath(entries.value(name)));
+        auto *remove = new QToolButton(row);
+        remove->setIcon(QIcon::fromTheme(QStringLiteral("edit-clear")));
+        remove->setToolTip(i18n("Remove"));
+        remove->setAutoRaise(true);
+        connect(remove, &QToolButton::clicked, this, [this, key, name]() {
+            QJsonObject now = value(key).toObject();
+            now.remove(name);
+            setValue(key, now);
+            refreshMediaList(key);
+        });
+        line->addWidget(thumb);
+        line->addWidget(label, 1);
+        line->addWidget(remove);
+        list.items->layout()->addWidget(row);
+    }
+    // an add button goes once its kind is full
+    for (const PluginMediaKind &kind : list.field.kinds) {
+        int count = 0;
+        for (const QString &name : std::as_const(names)) {
+            count += name.startsWith(kind.key) ? 1 : 0;
+        }
+        if (QToolButton *add = list.adds.value(kind.key)) {
+            add->setVisible(count < kind.max);
+        }
+    }
+}
+
+void GeneratorCard::refreshMedia(const QString &key)
+{
+    const FieldWidgets w = m_fields.value(key);
+    if (!w.thumb) {
+        return;
+    }
+    const QJsonValue v = value(key);
+    showThumb(w.thumb, v);
+    w.name->setText(describeMedia(v));
+    w.name->setToolTip(mediaPath(v));
 }
 
 QWidget *GeneratorCard::buildLibrary(const PluginField &field)
@@ -562,7 +929,22 @@ QString GeneratorCard::missing() const
         if (!field.showIfKey.isEmpty() && value(field.showIfKey).toVariant().toString() != field.showIfValue) {
             continue;
         }
-        if ((field.type == QLatin1String("text") || field.type == QLatin1String("set")) && value(field.key).toString().trimmed().isEmpty()) {
+        if (field.type == QLatin1String("media_list")) {
+            if (field.required && value(field.key).toObject().isEmpty()) {
+                return i18n("Add %1", tr8(field.label).toLower());
+            }
+            continue;
+        }
+        if (field.type == QLatin1String("media")) {
+            const QJsonValue v = value(field.key);
+            const QString path = v.isObject() ? v.toObject().value(QStringLiteral("path")).toString() : v.toString();
+            if (field.required && (path.isEmpty() || !QFileInfo::exists(path))) {
+                return i18n("Add %1", tr8(field.label));
+            }
+            continue;
+        }
+        if (field.required && (field.type == QLatin1String("text") || field.type == QLatin1String("set")) &&
+            value(field.key).toString().trimmed().isEmpty()) {
             return field.type == QLatin1String("set") ? i18n("Upload a voice first") : i18n("Fill in %1", tr8(field.label).toLower());
         }
     }
@@ -571,11 +953,78 @@ QString GeneratorCard::missing() const
 
 void GeneratorCard::refreshFoot()
 {
-    if (m_generate) {
-        const QString why = missing();
-        m_generate->setEnabled(why.isEmpty());
-        m_generate->setToolTip(why);
+    if (!m_generate) {
+        return;
     }
+    const QString why = missing();
+    // the gate answered yes for exactly what is on the card
+    const bool open = m_gateId.isEmpty() || gateAction().isEmpty();
+    m_generate->setVisible(open);
+    m_generate->setEnabled(why.isEmpty() && open);
+    m_generate->setToolTip(why);
+    if (m_gateButton) {
+        m_gateButton->setVisible(!open);
+        m_gateButton->setEnabled(why.isEmpty() && !m_answer.pending);
+        m_gateButton->setToolTip(why);
+        m_cancel->setVisible(open);
+    }
+    for (QPushButton *button : std::as_const(m_actionButtons)) {
+        button->setEnabled(!m_answer.pending);
+    }
+    if (m_answerLabel) {
+        // an answer about values that have changed since says nothing any more
+        const bool current = !m_answer.message.isEmpty() && !m_answer.pending && m_answer.asked == values();
+        m_answerLabel->setText(m_answer.message);
+        m_answerLabel->setVisible(current);
+    }
+}
+
+void GeneratorCard::clearAnswer()
+{
+    m_answer = Answer();
+    refreshFoot();
+}
+
+QJsonObject GeneratorCard::values() const
+{
+    return m_payload.value(QStringLiteral("values")).toObject();
+}
+
+QString GeneratorCard::gateAction() const
+{
+    for (const PluginAction &action : m_generator.actions) {
+        if (!action.gate) {
+            continue;
+        }
+        const bool open = m_answer.action == action.id && m_answer.ok && !m_answer.pending && m_answer.asked == values();
+        if (!open) {
+            return action.id;
+        }
+    }
+    return {};
+}
+
+QString GeneratorCard::gateBlocker() const
+{
+    const QString id = gateAction();
+    for (const PluginAction &action : m_generator.actions) {
+        if (action.id == id) {
+            return tr8(action.label);
+        }
+    }
+    return {};
+}
+
+void GeneratorCard::showAsking(const QString &action, const QJsonObject &asked)
+{
+    m_answer = Answer{action, asked, false, true, QString()};
+    refreshFoot();
+}
+
+void GeneratorCard::showAnswer(const QString &action, const QJsonObject &asked, bool ok, const QString &message)
+{
+    m_answer = Answer{action, asked, ok, false, message};
+    refreshFoot();
 }
 
 void GeneratorCard::refreshHeader()
@@ -621,6 +1070,16 @@ void GeneratorCard::setPayload(const QJsonObject &payload)
             box->setChecked(v.toBool());
         } else if (auto *spin = qobject_cast<QDoubleSpinBox *>(w.input)) {
             spin->setValue(v.toDouble());
+        } else if (auto *combo = qobject_cast<QComboBox *>(w.input)) {
+            combo->setCurrentIndex(qMax(0, combo->findData(v.toString())));
+        } else if (auto *slider = qobject_cast<QSlider *>(w.input)) {
+            const double step = field.step > 0 ? field.step : 1;
+            slider->setValue(qRound((v.toDouble() - field.min) / step));
+        }
+        if (field.type == QLatin1String("media")) {
+            refreshMedia(field.key);
+        } else if (field.type == QLatin1String("media_list")) {
+            refreshMediaList(field.key);
         }
         for (int i = 0; i < w.choices.size(); ++i) {
             w.choices.at(i)->setChecked(field.options.value(i) == v.toString());

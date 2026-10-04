@@ -25,6 +25,11 @@ class QPushButton;
     An effect whose model cannot play while the timeline does is otherwise mute:
     the parameters sit there and nothing happens. This is where the user says
     "now", and where the wait is visible.
+
+    With `<jobparam name="action">price</jobparam>` the button asks the plugin
+    a question instead (what the render would cost) and shows the answer under
+    itself. With `<jobparam name="gate">price</jobparam>` a render button stays
+    shut until that question has been answered yes for the effect as it is now.
  */
 class PluginJobParamWidget : public AbstractParamWidget
 {
@@ -42,6 +47,12 @@ public Q_SLOTS:
 
 private:
     void runJob();
+    void ask();
+    /** @brief Ask the panel for room for the answer under the button. */
+    void fitHeight();
+    void resizeEvent(QResizeEvent *event) override;
+    /** @brief The effect's job as it stands, to tell whether an answer still holds. */
+    QByteArray asked() const;
     /** @brief Label, tooltip and progress: whether a render is in flight is
      *  asked of the manager, never remembered here — this widget is destroyed
      *  and rebuilt every time the playhead moves or the clip is reselected. */
@@ -49,6 +60,11 @@ private:
 
     QPushButton *m_button;
     QProgressBar *m_progress;
+    QLabel *m_answer{nullptr};
+    /** @brief The question this button asks, when it is not a render. */
+    QString m_action;
+    /** @brief The question that must have been answered yes before this render. */
+    QString m_gate;
     QString m_pluginId;
     /** @brief Parameter that receives the produced file, so the effect knows
      *  whether it has a result at all. */

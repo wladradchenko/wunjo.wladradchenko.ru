@@ -7,6 +7,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "chatmessagemodel.h"
 
+#include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMap>
@@ -87,8 +88,17 @@ public:
     /** @brief Change fields of a card, as an assistant does. */
     bool setGeneratorValues(const QString &cardId, const QJsonObject &values, bool byAssistant = true);
     bool foldGeneratorCard(const QString &cardId, bool collapsed);
-    /** @brief Press Generate on a card. @return The id of the run's own card. */
+    /** @brief Press Generate on a card. @return The id of the run's own card,
+     *  empty when there is no such card, or "gate:<action>" when Generate waits
+     *  for that action to answer yes first. */
     QString runGeneratorCard(const QString &cardId);
+    /** @brief Press an action button of a card (Price, Credits). The answer
+     *  comes back on the card and through @ref generatorCardAnswer.
+     *  @return A number that the answer will carry, 0 when there is no such card. */
+    int askGeneratorCard(const QString &cardId, const QString &action);
+    /** @brief The last answer an action of @p cardId gave: {seq, action, ok,
+     *  message}, empty while there is none. */
+    QJsonObject generatorCardAnswer(const QString &cardId) const { return m_cardAnswers.value(cardId); }
     /** @brief Every card of the session: id, plugin, values, folded. */
     QJsonArray generatorCards() const { return m_model.generators(); }
 
@@ -221,6 +231,10 @@ private:
     QMap<QString, QLabel *> m_toolStatusLabels;
     QMap<QString, QLabel *> m_toolIcons;
     QMap<QString, GeneratorCard *> m_generatorCards;
+    /** @brief The last answer to an action of each card, for an assistant that
+     *  pressed it and has to read what it said. Not saved: prices change. */
+    QHash<QString, QJsonObject> m_cardAnswers;
+    int m_answerSeq = 0;
     /** @brief Typing in a card saves the session a moment after the last key,
      *  not on every one. */
     QTimer *m_persistTimer{nullptr};

@@ -20,9 +20,11 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QFileInfo>
 #include <QLabel>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QUuid>
 #include <QVBoxLayout>
 
@@ -44,6 +46,10 @@ PluginJobParamWidget::PluginJobParamWidget(std::shared_ptr<AssetParameterModel> 
             m_resultParam = pair.at(1);
         } else if (pair.at(0) == QLatin1String("conditionalinfo")) {
             m_pendingHint = pair.at(1);
+        } else if (pair.at(0) == QLatin1String("action")) {
+            m_action = pair.at(1);
+        } else if (pair.at(0) == QLatin1String("gate")) {
+            m_gate = pair.at(1);
         }
     }
     m_pluginId = PluginManager::instance().pluginForEffect(m_model->getAssetId());
@@ -66,9 +72,28 @@ PluginJobParamWidget::PluginJobParamWidget(std::shared_ptr<AssetParameterModel> 
     m_progress->setStyleSheet(QStringLiteral("QProgressBar::chunk {background-color: %1;}").arg(m_progress->palette().highlight().color().name()));
     m_progress->setVisible(false);
     layout->addWidget(m_progress);
+    if (!m_action.isEmpty()) {
+        m_answer = new QLabel(this);
+        m_answer->setWordWrap(true);
+        m_answer->setVisible(false);
+        layout->addWidget(m_answer);
+    }
     setMinimumHeight(m_button->sizeHint().height());
 
-    connect(m_button, &QPushButton::clicked, this, &PluginJobParamWidget::runJob);
+    connect(m_button, &QPushButton::clicked, this, [this]() { m_action.isEmpty() ? runJob() : ask(); });
+    if (!m_action.isEmpty() || !m_gate.isEmpty()) {
+        // an answer holds for the effect as it was asked about: any change to
+        // it, here or in the other button, is a reason to look again
+        connect(&PluginManager::instance(), &PluginManager::effectAnswerChanged, this, [this](const ObjectId &owner, int effectItemId) {
+            if (owner == m_owner && effectItemId == m_effectItemId) {
+                updateState();
+            }
+        });
+        connect(m_model.get(), &QAbstractItemModel::dataChanged, this, [this]() { updateState(); });
+        // an edit made in this very panel does not come back as dataChanged
+        // (the panel already shows it), only as updateChildren
+        connect(m_model.get(), &AssetParameterModel::updateChildren, this, [this]() { updateState(); });
+    }
     // A render outlives this widget, so pick up whatever is already going on and
     // keep following it.
     connect(&PluginManager::instance(), &PluginManager::effectJobProgressChanged, this, [this](const ObjectId &owner, int effectItemId, int progress) {
@@ -80,8 +105,77 @@ PluginJobParamWidget::PluginJobParamWidget(std::shared_ptr<AssetParameterModel> 
     updateState();
 }
 
+void PluginJobParamWidget::fitHeight()
+{
+    // The panel gives every parameter the height it asked for when it was
+    // built; a sentence that appears later has to ask for more, or it is cut.
+    int height = m_button->sizeHint().height();
+    if (m_answer && m_answer->isVisible()) {
+        height += layout()->spacing() + m_answer->heightForWidth(qMax(120, width()));
+    }
+    if (height != minimumHeight()) {
+        setMinimumHeight(height);
+        Q_EMIT updateHeight();
+    }
+}
+
+void PluginJobParamWidget::resizeEvent(QResizeEvent *event)
+{
+    AbstractParamWidget::resizeEvent(event);
+    fitHeight();
+}
+
+QByteArray PluginJobParamWidget::asked() const
+{
+    QJsonObject job = PluginEffects::buildJob(m_model, m_pluginId);
+    job.remove(QStringLiteral("action"));
+    return QJsonDocument(job).toJson(QJsonDocument::Compact);
+}
+
+void PluginJobParamWidget::ask()
+{
+    if (m_pluginId.isEmpty()) {
+        return;
+    }
+    QJsonObject input = PluginEffects::buildJob(m_model, m_pluginId);
+    if (input.isEmpty()) {
+        pCore->displayMessage(i18n("This effect is not on a clip that can be rendered."), ErrorMessage);
+        return;
+    }
+    input.insert(QStringLiteral("action"), m_action);
+    PluginManager::EffectAnswer pending;
+    pending.pending = true;
+    pending.asked = asked();
+    PluginManager::instance().setEffectAnswer(m_owner, m_effectItemId, m_action, pending);
+    // The answer belongs to the effect, not to this widget, which the stack
+    // rebuilds at will: the manager keeps it and tells whoever shows it now.
+    const ObjectId owner = m_owner;
+    const int itemId = m_effectItemId;
+    const QString action = m_action;
+    const QByteArray question = pending.asked;
+    PluginManager::instance().queryPlugin(m_pluginId, input, &PluginManager::instance(),
+                                          [owner, itemId, action, question](bool ok, const QString &message) {
+                                              PluginManager::EffectAnswer answer;
+                                              answer.ok = ok;
+                                              answer.message = message;
+                                              answer.asked = question;
+                                              PluginManager::instance().setEffectAnswer(owner, itemId, action, answer);
+                                          });
+}
+
 void PluginJobParamWidget::updateState()
 {
+    if (!m_action.isEmpty()) {
+        const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(m_owner, m_effectItemId, m_action);
+        const bool current = !answer.asked.isEmpty() && answer.asked == asked();
+        m_button->setText(m_runLabel);
+        m_button->setEnabled(!answer.pending && !m_pluginId.isEmpty());
+        m_answer->setText(answer.message);
+        m_answer->setVisible(current && !answer.pending && !answer.message.isEmpty());
+        m_progress->setVisible(false);
+        fitHeight();
+        return;
+    }
     const int progress = PluginManager::instance().effectJobProgress(m_owner, m_effectItemId);
     const bool queued = progress == PluginManager::JobQueued;
     const bool running = progress >= 0;
@@ -94,16 +188,27 @@ void PluginJobParamWidget::updateState()
     } else {
         m_button->setText(hasResult ? m_rerunLabel : m_runLabel);
     }
-    m_button->setEnabled(!running && !queued && !m_pluginId.isEmpty());
+    bool gateOpen = true;
+    if (!m_gate.isEmpty() && !running && !queued) {
+        const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(m_owner, m_effectItemId, m_gate);
+        gateOpen = answer.ok && !answer.pending && answer.asked == asked();
+    }
+    m_button->setEnabled(!running && !queued && gateOpen && !m_pluginId.isEmpty());
     m_progress->setVisible(running);
     m_progress->setValue(qMax(0, progress));
-    setToolTip(running || queued ? QString() : (hasResult ? QString() : m_pendingHint));
+    setToolTip(running || queued ? QString() : (!gateOpen ? i18n("Check the price first") : (hasResult ? QString() : m_pendingHint)));
 }
 
 void PluginJobParamWidget::runJob()
 {
     if (m_pluginId.isEmpty() || PluginManager::instance().effectJobProgress(m_owner, m_effectItemId) != PluginManager::JobNone) {
         return;
+    }
+    if (!m_gate.isEmpty()) {
+        const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(m_owner, m_effectItemId, m_gate);
+        if (!answer.ok || answer.asked != asked()) {
+            return;
+        }
     }
     const QJsonObject input = PluginEffects::buildJob(m_model, m_pluginId);
     if (input.isEmpty()) {

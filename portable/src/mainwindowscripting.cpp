@@ -3471,6 +3471,17 @@ QString MainWindow::scriptGeneratorCardCreate(const QString &pluginId, const QSt
     return openGeneratorCard(pluginId, generatorId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);
 }
 
+int MainWindow::scriptGeneratorCardAction(const QString &cardId, const QString &action)
+{
+    return m_chatWidget ? m_chatWidget->askGeneratorCard(cardId, action) : 0;
+}
+
+QString MainWindow::scriptGeneratorCardAnswer(const QString &cardId)
+{
+    const QJsonObject answer = m_chatWidget ? m_chatWidget->generatorCardAnswer(cardId) : QJsonObject();
+    return QString::fromUtf8(QJsonDocument(answer).toJson(QJsonDocument::Compact));
+}
+
 bool MainWindow::scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson)
 {
     return m_chatWidget && m_chatWidget->setGeneratorValues(cardId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);

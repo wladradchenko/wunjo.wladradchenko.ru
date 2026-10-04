@@ -1239,7 +1239,7 @@ QProcess *PluginManager::startProcess(const PluginManifest &manifest, const QJso
 }
 
 QString PluginManager::runPluginJob(const QString &id, const QJsonObject &input, QObject *context, const std::function<void(int)> &onProgress,
-                                    const std::function<void(const QJsonObject &, const QString &)> &onFinished)
+                                    const std::function<void(const QJsonObject &, const QString &)> &onFinished, bool scratch)
 {
     const auto it = m_plugins.constFind(id);
     if (it == m_plugins.constEnd()) {
@@ -1283,7 +1283,7 @@ QString PluginManager::runPluginJob(const QString &id, const QJsonObject &input,
             newline = state->buffer.indexOf(QLatin1Char('\n'));
         }
     });
-    connect(process, &QProcess::finished, owner, [process, state, workDir, name, onProgress, onFinished](int exitCode, QProcess::ExitStatus) {
+    connect(process, &QProcess::finished, owner, [process, state, workDir, name, onProgress, onFinished, scratch](int exitCode, QProcess::ExitStatus) {
         // the last line may arrive without its newline
         const QString tail = QString::fromUtf8(process->readAllStandardOutput());
         appendJobLog(workDir, tail);
@@ -1310,6 +1310,10 @@ QString PluginManager::runPluginJob(const QString &id, const QJsonObject &input,
         }
         if (onFinished) {
             onFinished(resolveOutputs(state->result, workDir), error);
+        }
+        // a question leaves nothing worth keeping, and is asked often
+        if (scratch) {
+            QDir(workDir).removeRecursively();
         }
         process->deleteLater();
     });
@@ -1943,10 +1947,50 @@ void PluginManager::startEffectJob(const QueuedJob &job)
                         [owner](const QString &binId) { placeResultOnTimeline(owner, binId); });
                 },
                 Qt::QueuedConnection);
-            const QString done = i18n("%1 finished — on a new track, and in the '%2' bin folder", name, label) + keptNote;
+            QString done = i18n("%1 finished — on a new track, and in the '%2' bin folder", name, label) + keptNote;
+            const QString note = result.value(QStringLiteral("message")).toString().trimmed();
+            if (!note.isEmpty()) {
+                done += QStringLiteral(". ") + note;
+            }
             pCore->displayMessage(done, OperationCompletedMessage);
             noteJobEnded(card, false, done);
         });
+}
+
+void PluginManager::queryPlugin(const QString &pluginId, const QJsonObject &input, QObject *context,
+                                const std::function<void(bool, const QString &)> &onAnswer)
+{
+    const QString blocker = runBlocker(pluginId);
+    if (!blocker.isEmpty()) {
+        if (onAnswer) {
+            onAnswer(false, blocker);
+        }
+        return;
+    }
+    runPluginJob(
+        pluginId, input, context, nullptr,
+        [onAnswer](const QJsonObject &result, const QString &error) {
+            if (!onAnswer) {
+                return;
+            }
+            if (!error.isEmpty()) {
+                onAnswer(false, error);
+                return;
+            }
+            onAnswer(result.value(QStringLiteral("ok")).toBool(), result.value(QStringLiteral("message")).toString());
+        },
+        true);
+}
+
+PluginManager::EffectAnswer PluginManager::effectAnswer(const ObjectId &owner, int effectItemId, const QString &action) const
+{
+    return m_effectAnswers.value(effectJobKey(owner, effectItemId) + QLatin1Char('/') + action);
+}
+
+void PluginManager::setEffectAnswer(const ObjectId &owner, int effectItemId, const QString &action, const EffectAnswer &answer)
+{
+    m_effectAnswers.insert(effectJobKey(owner, effectItemId) + QLatin1Char('/') + action, answer);
+    Q_EMIT effectAnswerChanged(owner, effectItemId);
 }
 
 QString PluginManager::registerSet(const QString &pluginId, const QString &source, const QString &kind)
@@ -2004,8 +2048,13 @@ QString PluginManager::runGenerator(const QString &pluginId, const QString &gene
                                                     [timelineUuid, frame](const QString &binId) { placeAtFrame(timelineUuid, frame, binId); });
                 },
                 Qt::QueuedConnection);
-            const QString done = frame < 0 ? i18n("%1 is ready in the '%2' bin folder.", label, label)
-                                           : i18n("%1 is ready on the timeline and in the '%2' bin folder.", label, label);
+            QString done = frame < 0 ? i18n("%1 is ready in the '%2' bin folder.", label, label)
+                                     : i18n("%1 is ready on the timeline and in the '%2' bin folder.", label, label);
+            // what the plugin itself has to add: what it cost, what is left
+            const QString note = result.value(QStringLiteral("message")).toString().trimmed();
+            if (!note.isEmpty()) {
+                done += QLatin1Char(' ') + note;
+            }
             pCore->displayMessage(done + keptNote, OperationCompletedMessage);
             noteJobEnded(card, false, done + keptNote);
         });

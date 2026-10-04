@@ -203,7 +203,7 @@ def validate(plugin_dir):
         generate = []
     if "generator" in targets and not generate:
         errors.append("a generator needs at least one card in 'generate'")
-    field_types = {"text", "string", "enum", "set", "number", "bool"}
+    field_types = {"text", "string", "enum", "set", "number", "bool", "media", "media_list"}
     card_ids = set()
     for card in generate or []:
         if not isinstance(card, dict) or not re.match(r"^[a-z0-9][a-z0-9-]*$", str(card.get("id", ""))):
@@ -227,6 +227,21 @@ def validate(plugin_dir):
             show_if = field.get("show_if")
             if show_if is not None and (not isinstance(show_if, dict) or len(show_if) != 1 or next(iter(show_if)) not in keys):
                 errors.append("card '%s', field '%s': 'show_if' must name one other field" % (cid, field["key"]))
+            if field.get("type") == "media" and field.get("accept", "image") not in ("image", "video"):
+                errors.append("card '%s', field '%s': 'accept' must be image or video" % (cid, field["key"]))
+            if field.get("type") == "media_list":
+                items = field.get("items")
+                if not isinstance(items, list) or not items or not all(
+                        isinstance(i, dict) and re.match(r"^[a-z][a-z0-9]*$", str(i.get("key", ""))) and i.get("accept", "image") in ("image", "video")
+                        and isinstance(i.get("max", 1), int) and i.get("max", 1) >= 1 for i in items):
+                    errors.append("card '%s', field '%s': 'items' must list {key, accept: image|video, max}" % (cid, field["key"]))
+            if field.get("type") == "number" and ("min" in field or "max" in field):
+                low, high = field.get("min"), field.get("max")
+                if not isinstance(low, (int, float)) or not isinstance(high, (int, float)) or low >= high:
+                    errors.append("card '%s', field '%s': 'min' must be below 'max'" % (cid, field["key"]))
+        for action in card.get("actions", []) or []:
+            if not isinstance(action, dict) or not re.match(r"^[a-z0-9][a-z0-9-]*$", str(action.get("id", ""))) or action.get("id") == "generate":
+                errors.append("card '%s': every action needs an 'id' of lowercase letters, digits and dashes, other than 'generate'" % cid)
     for model in manifest.get("models", []) or []:
         if isinstance(model, dict) and model.get("variant") and model["variant"] not in variant_ids:
             errors.append("model '%s' names the variant '%s', which is not declared" % (model.get("name", "?"), model["variant"]))

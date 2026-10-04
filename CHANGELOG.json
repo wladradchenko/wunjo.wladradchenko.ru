@@ -12,7 +12,11 @@
             "A plugin's sound effects are offered on clips with sound and its picture effects on video clips",
             "A plugin that offers several things opens as a submenu of its own under Artificial Intelligence",
             "A generator plugin can bring several cards to the chat, each with its own form",
-            "Update appears in a plugin's submenu and settings when the site has a newer release"
+            "Update appears in a plugin's submenu and settings when the site has a newer release",
+            "Online Toolkit plugin: video, music, voice-over and sound effects made at wunjo.online and paid with its credits",
+            "Generator cards take pictures and videos: a file, the current frame of the monitor or the selected clip",
+            "A card or an effect can ask its plugin the price before a paid run, and Generate waits for the answer",
+            "Removing a face region removes the effect working inside it, and pairs on one clip are told apart by a short mark"
         ],
         "3.0.1": [
             "Fixed macOS launch failure caused by a std::pmr symbol from macOS 14 in a framework built for 13.3",

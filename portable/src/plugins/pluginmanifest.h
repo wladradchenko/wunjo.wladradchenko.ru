@@ -143,13 +143,22 @@ struct PluginParam {
     double step = 1;
 };
 
+/** @brief One kind of file a `media_list` field takes: images, say, up to three. */
+struct PluginMediaKind {
+    QString key;    ///< the entries are named key + number: image1, image2…
+    QString accept; ///< "image" or "video"
+    QString label;  ///< what its add button says
+    int max = 1;
+};
+
 /** @brief One field of a generator's form, the card a `generator` plugin puts in
- *  the chat. The types are the settings' own plus `text` (several lines) and
- *  `set` (a voice, a face… from the plugin's library of presets). */
+ *  the chat. The types are the settings' own plus `text` (several lines), `set`
+ *  (a voice, a face… from the plugin's library of presets) and `media` (a
+ *  picture or a video the user puts on the card). */
 struct PluginField {
     QString key;
     QString label;
-    QString type; // text | string | enum | set | number | bool
+    QString type; // text | string | enum | set | number | bool | media | media_list
     QVariant defaultValue;
     QStringList options; ///< for enum: the values the plugin receives
     QStringList labels;  ///< for enum: what the user reads, one per option
@@ -159,6 +168,30 @@ struct PluginField {
     /** @brief Shown only while another field has a given value: {key, value}. */
     QString showIfKey;
     QString showIfValue;
+    /** @brief For number: the range and the step. A range with min equal to max
+     *  means none was declared. */
+    double min = 0;
+    double max = 0;
+    double step = 1;
+    /** @brief For media: "image" or "video". */
+    QString accept;
+    /** @brief For media_list: what can be added, and how many of each. */
+    QList<PluginMediaKind> kinds;
+    /** @brief Generate stays shut while this field is empty. Text and set
+     *  fields are required unless they say otherwise, a media field when it
+     *  says so. */
+    bool required = false;
+};
+
+/** @brief A button a card offers next to Generate, which asks the plugin
+ *  something and shows its answer on the card: what the run would cost, what
+ *  is left on the account. Nothing is made and no job appears in the chat. */
+struct PluginAction {
+    QString id;    ///< what the plugin receives as `input.action`
+    QString label;
+    /** @brief Generate stays shut until this action has answered yes for the
+     *  values on the card, and shuts again when one of them changes. */
+    bool gate = false;
 };
 
 /** @brief One card a generator plugin puts in the chat.
@@ -172,6 +205,7 @@ struct PluginGenerator {
     QString id;    ///< unique within the plugin; what the plugin receives
     QString title; ///< the card's heading and its menu entry
     QList<PluginField> fields;
+    QList<PluginAction> actions;
     bool isValid() const { return !id.isEmpty() && !fields.isEmpty(); }
 };
 

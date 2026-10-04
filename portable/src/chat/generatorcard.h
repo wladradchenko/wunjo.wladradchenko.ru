@@ -8,11 +8,13 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "plugins/pluginmanifest.h"
 
 #include <QFrame>
+#include <functional>
 #include <QHash>
 #include <QJsonObject>
 #include <QPointer>
 
 class QAudioOutput;
+class QComboBox;
 class QLabel;
 class QLineEdit;
 class QListWidget;
@@ -49,6 +51,20 @@ public:
     void setPayload(const QJsonObject &payload);
     /** @brief Put the cursor in the first field, for a card just asked for. */
     void focusFirstField();
+    /** @brief The values on the card now, as an action is asked about them. */
+    QJsonObject values() const;
+    /** @brief An action was sent to the plugin for @p asked: show it waiting. */
+    void showAsking(const QString &action, const QJsonObject &asked);
+    /** @brief The plugin's answer to @p action about the values @p asked. */
+    void showAnswer(const QString &action, const QJsonObject &asked, bool ok, const QString &message);
+    /** @brief The label of the action Generate waits for, while it has not
+     *  answered yes for the values on the card; empty when Generate may run. */
+    QString gateBlocker() const;
+    /** @brief The id of that action, for an assistant that has to press it. */
+    QString gateAction() const;
+    /** @brief Forget the last answer: after a run the balance is not what it
+     *  said any more, and the next run is calculated again. */
+    void clearAnswer();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -56,16 +72,38 @@ protected:
 Q_SIGNALS:
     void edited(const QString &cardId, const QJsonObject &payload);
     void generateRequested(const QString &cardId);
+    void actionRequested(const QString &cardId, const QString &action);
 
 private:
     struct FieldWidgets {
         QWidget *row = nullptr;  ///< what show_if hides
         QWidget *input = nullptr;
         QList<QToolButton *> choices; ///< enum as tabs
+        QLabel *thumb = nullptr;     ///< media: what is on the slot
+        QLabel *name = nullptr;      ///< media: its file name
+    };
+    /** @brief What an action last answered, and about which values. */
+    struct Answer {
+        QString action;
+        QJsonObject asked;
+        bool ok = false;
+        bool pending = false;
+        QString message;
     };
 
     void buildForm();
     QWidget *buildLibrary(const PluginField &field);
+    QWidget *buildMedia(const PluginField &field, FieldWidgets &w);
+    QWidget *buildMediaList(const PluginField &field);
+    void refreshMedia(const QString &key);
+    void refreshMediaList(const QString &key);
+    /** @brief Ways to get something onto a slot; each returns null when the
+     *  user gave up or there was nothing to take. */
+    QJsonValue chooseFile(const QString &accept, const QString &title);
+    QJsonValue monitorFrame();
+    QJsonValue selectedClip();
+    /** @brief The menu of those ways, for a slot that takes @p accept. */
+    void offerSources(QToolButton *button, const QString &accept, const QString &title, const std::function<void(const QJsonValue &)> &take);
     void refreshLibrary();
     void openLibrary();
     void uploadVoice();
@@ -96,6 +134,20 @@ private:
     QVBoxLayout *m_form = nullptr;
     QPushButton *m_generate = nullptr;
     QHash<QString, FieldWidgets> m_fields;
+    QList<QPushButton *> m_actionButtons;
+    /** @brief The action Generate waits for, and the button that asks it. */
+    QString m_gateId;
+    QPushButton *m_gateButton = nullptr;
+    QPushButton *m_cancel = nullptr;
+    /** @brief A media_list field: where its entries are drawn, its add buttons. */
+    struct MediaList {
+        PluginField field;
+        QWidget *items = nullptr;
+        QHash<QString, QToolButton *> adds;
+    };
+    QHash<QString, MediaList> m_lists;
+    QLabel *m_answerLabel = nullptr;
+    Answer m_answer;
 
     // the library of presets (one `set` field per card is what a plugin needs)
     QString m_setKey;

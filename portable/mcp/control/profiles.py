@@ -121,6 +121,7 @@ CORE_TOOLS = {
     "generator_cards",
     "generator_card_create",
     "generator_card_set",
+    "generator_card_action",
     "generator_card_fold",
     "generator_card_run",
     # taking it back
