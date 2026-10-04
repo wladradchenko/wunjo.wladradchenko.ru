@@ -194,25 +194,39 @@ def validate(plugin_dir):
             errors.append("variant '%s': min_vram_gb must be a number" % variant["id"])
         if "cpu_ok" in variant and not isinstance(variant["cpu_ok"], bool):
             errors.append("variant '%s': cpu_ok must be true or false" % variant["id"])
-    # A generator is run from a card in the chat, and the card is its form.
+    # A generator is run from a card in the chat, and the card is its form. A
+    # plugin that makes several things brings a card for each, like effects.
     targets = manifest.get("target") if isinstance(manifest.get("target"), list) else [manifest.get("target")]
     generate = manifest.get("generate")
-    if "generator" in targets and not (isinstance(generate, dict) and generate.get("fields")):
-        errors.append("a generator needs a 'generate' block with its 'fields'")
-    if isinstance(generate, dict):
-        field_types = {"text", "string", "enum", "set", "number", "bool"}
-        keys = [f.get("key") for f in generate.get("fields", []) if isinstance(f, dict)]
-        for field in generate.get("fields", []):
+    if generate is not None and not isinstance(generate, list):
+        errors.append("'generate' must be a list of cards: [{\"id\", \"title\", \"fields\"}]")
+        generate = []
+    if "generator" in targets and not generate:
+        errors.append("a generator needs at least one card in 'generate'")
+    field_types = {"text", "string", "enum", "set", "number", "bool"}
+    card_ids = set()
+    for card in generate or []:
+        if not isinstance(card, dict) or not re.match(r"^[a-z0-9][a-z0-9-]*$", str(card.get("id", ""))):
+            errors.append("every 'generate' card needs an 'id' of lowercase letters, digits and dashes")
+            continue
+        cid = card["id"]
+        if cid in card_ids:
+            errors.append("the 'generate' card '%s' is declared twice" % cid)
+        card_ids.add(cid)
+        if not card.get("fields"):
+            errors.append("the 'generate' card '%s' has no fields" % cid)
+        keys = [f.get("key") for f in card.get("fields", []) if isinstance(f, dict)]
+        for field in card.get("fields", []):
             if not isinstance(field, dict) or not field.get("key"):
-                errors.append("every 'generate.fields' entry needs a 'key'")
+                errors.append("card '%s': every field needs a 'key'" % cid)
                 continue
             if field.get("type", "string") not in field_types:
-                errors.append("field '%s': type must be one of %s" % (field["key"], ", ".join(sorted(field_types))))
+                errors.append("card '%s', field '%s': type must be one of %s" % (cid, field["key"], ", ".join(sorted(field_types))))
             if field.get("type") == "enum" and field.get("labels") and len(field["labels"]) != len(field.get("options", [])):
-                errors.append("field '%s': 'labels' must name every option" % field["key"])
+                errors.append("card '%s', field '%s': 'labels' must name every option" % (cid, field["key"]))
             show_if = field.get("show_if")
             if show_if is not None and (not isinstance(show_if, dict) or len(show_if) != 1 or next(iter(show_if)) not in keys):
-                errors.append("field '%s': 'show_if' must name one other field" % field["key"])
+                errors.append("card '%s', field '%s': 'show_if' must name one other field" % (cid, field["key"]))
     for model in manifest.get("models", []) or []:
         if isinstance(model, dict) and model.get("variant") and model["variant"] not in variant_ids:
             errors.append("model '%s' names the variant '%s', which is not declared" % (model.get("name", "?"), model["variant"]))

@@ -12,6 +12,7 @@
 #include "effects/effectsrepository.hpp"
 #include "macros.hpp"
 #include "mainwindow.h"
+#include "plugins/plugineffects.h"
 #include "timeline2/model/timelinemodel.hpp"
 #include <profiles/profilemodel.hpp>
 #include <stack>
@@ -220,6 +221,37 @@ void EffectStackModel::removeEffectWithUndo(const QString &assetId, QString &eff
 }
 
 void EffectStackModel::removeEffectWithUndo(const std::shared_ptr<EffectItemModel> &effect, QString &effectName, Fun &undo, Fun &redo)
+{
+    // A plugin pair is one thing in two effects: a region that marks a face
+    // over time, and the effect that works inside it. Either one alone is
+    // useless — a Face Swap without its region silently picks whichever face
+    // it finds — so taking one away takes the other with it.
+    const QString bond = PluginEffects::bondOf(effect);
+    const bool wasRegion = bond.isEmpty() ? false : PluginEffects::isRegion(effect->getAssetId());
+    removeSingleEffect(effect, effectName, undo, redo);
+    if (bond.isEmpty()) {
+        return;
+    }
+    QList<std::shared_ptr<EffectItemModel>> bonded;
+    bool workerLeft = false;
+    for (int i = 0; i < rootItem->childCount(); ++i) {
+        auto other = std::static_pointer_cast<EffectItemModel>(rootItem->child(i));
+        if (other && PluginEffects::bondOf(other) == bond) {
+            bonded << other;
+            workerLeft = workerLeft || !PluginEffects::isRegion(other->getAssetId());
+        }
+    }
+    // a region another effect still works inside stays where it is
+    if (!wasRegion && workerLeft) {
+        return;
+    }
+    for (const auto &other : std::as_const(bonded)) {
+        QString otherName;
+        removeSingleEffect(other, otherName, undo, redo);
+    }
+}
+
+void EffectStackModel::removeSingleEffect(const std::shared_ptr<EffectItemModel> &effect, QString &effectName, Fun &undo, Fun &redo)
 {
     QWriteLocker locker(&m_lock);
     Q_ASSERT(m_allItems.count(effect->getId()) > 0);

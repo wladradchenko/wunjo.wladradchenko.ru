@@ -161,6 +161,20 @@ struct PluginField {
     QString showIfValue;
 };
 
+/** @brief One card a generator plugin puts in the chat.
+
+    A plugin can make several things from nothing — a voiceover and music, say —
+    and each asks for something different, so each is a card of its own, the
+    same way a plugin brings several effects. The plugin is told which one was
+    run as `input.generator`.
+ */
+struct PluginGenerator {
+    QString id;    ///< unique within the plugin; what the plugin receives
+    QString title; ///< the card's heading and its menu entry
+    QList<PluginField> fields;
+    bool isValid() const { return !id.isEmpty() && !fields.isEmpty(); }
+};
+
 /** @class PluginManifest
     @brief Parsed and validated `plugin.json` of a Wunjo Make plugin.
 
@@ -247,10 +261,13 @@ public:
      *  way-of-talking picker and nowhere else. */
     bool isAgent() const { return hasTarget(QStringLiteral("agent")); }
     QList<PluginParam> params() const { return m_params; }
-    /** @brief The card a generator brings to the chat: its title and its form. */
-    QString generateTitle() const { return m_generateTitle.isEmpty() ? m_name : m_generateTitle; }
-    QList<PluginField> generateFields() const { return m_generateFields; }
-    bool isGenerator() const { return hasTarget(QStringLiteral("generator")) && !m_generateFields.isEmpty(); }
+    /** @brief The cards a generator brings to the chat, in manifest order. */
+    QList<PluginGenerator> generators() const { return m_generators; }
+    /** @brief The card called @p id. An empty id means the first one: a card
+     *  saved in a chat before plugins had several does not name it. Invalid
+     *  when there is no such card. */
+    PluginGenerator generator(const QString &id) const;
+    bool isGenerator() const { return hasTarget(QStringLiteral("generator")) && !m_generators.isEmpty(); }
     /** @brief Effects this plugin adds to the editor while it is installed. */
     QList<PluginEffect> effects() const { return m_effects; }
     /** @brief True when its effects belong together (`"effects_apply": "together"`).
@@ -340,8 +357,7 @@ private:
     QList<PluginVariant> m_variants;
     QList<PluginParam> m_params;
     QList<PluginEffect> m_effects;
-    QString m_generateTitle;
-    QList<PluginField> m_generateFields;
+    QList<PluginGenerator> m_generators;
     QHash<QString, PluginSetsUi> m_setsUi;
     bool m_effectsTogether{false};
     QString m_inputClip;

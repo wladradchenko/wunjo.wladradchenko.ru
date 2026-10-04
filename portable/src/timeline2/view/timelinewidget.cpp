@@ -42,6 +42,24 @@
 #include <QTimer>
 #include <QUuid>
 
+namespace {
+/** @brief A menu entry per card of @p plugin, each opening it in the chat. */
+QList<PluginEffects::MenuEntry> cardEntries(const PluginManifest &plugin)
+{
+    QList<PluginEffects::MenuEntry> entries;
+    if (!plugin.isGenerator()) {
+        return entries;
+    }
+    const QString pluginId = plugin.id();
+    const QList<PluginGenerator> generators = plugin.generators();
+    for (const PluginGenerator &generator : generators) {
+        entries.append(PluginEffects::MenuEntry{i18n(generator.title.toUtf8().constData()),
+                        [pluginId, id = generator.id]() { pCore->window()->openGeneratorCard(pluginId, id); }});
+    }
+    return entries;
+}
+} // namespace
+
 const int TimelineWidget::comboScale[] = {1, 2, 4, 8, 15, 30, 50, 75, 100, 150, 200, 300, 500, 800, 1000, 1500, 2000, 3000, 6000, 15000, 30000};
 
 TimelineWidget::TimelineWidget(const QUuid uuid, QWidget *parent)
@@ -167,21 +185,13 @@ void TimelineWidget::setTimelineMenu(QMenu *clipMenu, QMenu *compositionMenu, QM
     m_timelineMenu->addMenu(m_generateMenu);
 }
 
-void TimelineWidget::addGeneratorEntries(QMenu *menu, bool marked)
+void TimelineWidget::addGeneratorEntries(QMenu *menu)
 {
     // A generator makes something from nothing, so it is offered wherever the
     // user right-clicks. Its result goes where the playhead is when Generate
     // is pressed; the card it opens is only where it is set up.
     for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("generator"))) {
-        if (!plugin.isGenerator()) {
-            continue;
-        }
-        QAction *action = menu->addAction(plugin.icon(), i18n(plugin.generateTitle().toUtf8().constData()));
-        if (marked) {
-            action->setObjectName(QStringLiteral("ai_plugin_dynamic"));
-        }
-        const QString pluginId = plugin.id();
-        connect(action, &QAction::triggered, this, [pluginId]() { pCore->window()->openGeneratorCard(pluginId); });
+        PluginEffects::addToMenu(menu, plugin, cardEntries(plugin));
     }
 }
 
@@ -314,74 +324,60 @@ void TimelineWidget::showClipMenu(int cid)
             // open project) appended is still in it, and a list kept per widget
             // cannot remove it: every timeline that ever showed this menu left a
             // block of its own behind. Clear by the mark instead of by owner.
-            const QList<QAction *> stale = aiMenu->actions();
-            for (QAction *old : stale) {
-                if (old->objectName() == QLatin1String("ai_plugin_dynamic")) {
-                    delete old;
-                }
-            }
+            PluginEffects::clearMenuEntries(aiMenu, QStringLiteral("ai_plugin_dynamic"));
             auto mark = [](QAction *action) {
                 action->setObjectName(QStringLiteral("ai_plugin_dynamic"));
                 return action;
             };
-            QList<PluginManifest> applicable;
-            // A plugin that works on both the picture and the sound answers to
-            // either list, so it would be offered twice on a clip that has both.
-            QSet<QString> alreadyOffered;
-            auto offer = [&applicable, &alreadyOffered](const PluginManifest &plugin) {
-                if (!alreadyOffered.contains(plugin.id())) {
-                    alreadyOffered.insert(plugin.id());
-                    applicable << plugin;
-                }
-            };
-            for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("video"))) {
-                if (!isAudioTrack) {
-                    offer(plugin);
+            // Which plugins work on this clip. A plugin that works on both the
+            // picture and the sound answers to either list.
+            QSet<QString> fitsClip;
+            if (!isAudioTrack) {
+                for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("video"))) {
+                    fitsClip.insert(plugin.id());
                 }
             }
-            for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("audio"))) {
-                if (clipHasAudio) {
-                    offer(plugin);
+            if (clipHasAudio) {
+                for (const PluginManifest &plugin : PluginManager::instance().pluginsForTarget(QStringLiteral("audio"))) {
+                    fitsClip.insert(plugin.id());
                 }
             }
-            // generators belong on any clip's menu too: right-clicking a clip is
-            // as good a way as any to ask for something new
-            if (!PluginManager::instance().pluginsForTarget(QStringLiteral("generator")).isEmpty()) {
-                mark(aiMenu->addSeparator());
-                addGeneratorEntries(aiMenu, true);
-            }
-            if (!applicable.isEmpty()) {
-                // An audio effect belongs on the sound, and the sound of an A/V
-                // clip is a clip of its own on an audio track: the video half
-                // refuses audio effects outright, so picking one from the video
-                // half did nothing at all. Follow the group across to the audio
-                // side and hang it there instead.
-                auto stackFor = [this](const QString &effectId, int clipId) {
-                    if (!EffectsRepository::get()->isAudioEffect(effectId) || model()->isAudioTrack(model()->getClipTrackId(clipId))) {
-                        return model()->getClipEffectStackModel(clipId);
-                    }
-                    const std::unordered_set<int> siblings = model()->getGroupElements(clipId);
-                    for (int other : siblings) {
-                        if (other != clipId && model()->isClip(other) && model()->isAudioTrack(model()->getClipTrackId(other))) {
-                            return model()->getClipEffectStackModel(other);
-                        }
-                    }
+            // An audio effect belongs on the sound, and the sound of an A/V
+            // clip is a clip of its own on an audio track: the video half
+            // refuses audio effects outright, so picking one from the video
+            // half did nothing at all. Follow the group across to the audio
+            // side and hang it there instead.
+            auto stackFor = [this](const QString &effectId, int clipId) {
+                if (!EffectsRepository::get()->isAudioEffect(effectId) || model()->isAudioTrack(model()->getClipTrackId(clipId))) {
                     return model()->getClipEffectStackModel(clipId);
-                };
-                mark(aiMenu->addSeparator());
-                for (const PluginManifest &plugin : std::as_const(applicable)) {
+                }
+                const std::unordered_set<int> siblings = model()->getGroupElements(clipId);
+                for (int other : siblings) {
+                    if (other != clipId && model()->isClip(other) && model()->isAudioTrack(model()->getClipTrackId(other))) {
+                        return model()->getClipEffectStackModel(other);
+                    }
+                }
+                return model()->getClipEffectStackModel(clipId);
+            };
+            // One entry per plugin: a row when it offers one thing, a submenu
+            // of what fits this clip when it offers several.
+            bool separated = false;
+            const QList<PluginManifest> plugins = PluginManager::instance().installedPlugins();
+            for (const PluginManifest &plugin : plugins) {
+                if (plugin.isAgent()) {
+                    continue;
+                }
+                QList<PluginEffects::MenuEntry> entries;
+                if (fitsClip.contains(plugin.id())) {
                     // A plugin that brings an effect works through it: the entry
                     // drops that effect on the clip, where it is set up and
                     // keyframed. Only a plugin without one runs its script here.
                     const QList<PluginEffect> effects = PluginEffects::menuEffects(plugin);
                     if (!effects.isEmpty() && plugin.appliesEffectsTogether()) {
-                        QAction *setAction = aiMenu->addAction(plugin.icon(), plugin.name());
-                        connect(setAction, &QAction::triggered, this,
-                                [this, plugin, cid]() { PluginEffects::applyAll(model()->getClipEffectStackModel(cid), plugin, QString()); });
-                        mark(setAction);
-                        continue;
-                    }
-                    if (!effects.isEmpty()) {
+                        entries.append(PluginEffects::MenuEntry{plugin.name(), [this, plugin, cid]() {
+                                            PluginEffects::applyAll(model()->getClipEffectStackModel(cid), plugin, QString());
+                                        }});
+                    } else if (!effects.isEmpty()) {
                         for (const PluginEffect &effect : effects) {
                             // A plugin that works on both kinds of clip still
                             // brings each effect for one of them: a sound effect
@@ -392,22 +388,31 @@ void TimelineWidget::showClipMenu(int cid)
                             if ((audioEffect && !clipHasAudio) || (!audioEffect && isAudioTrack)) {
                                 continue;
                             }
-                            QAction *effectAction = aiMenu->addAction(plugin.icon(), effect.name);
-                            connect(effectAction, &QAction::triggered, this, [this, plugin, effect, cid, stackFor]() {
-                                // an effect that works inside a region brings that region along
-                                PluginEffects::apply(stackFor(effect.id, cid), plugin, effect, QString());
-                            });
-                            mark(effectAction);
+                            entries.append(PluginEffects::MenuEntry{effect.name, [this, plugin, effect, cid, stackFor]() {
+                                                // an effect that works inside a region brings that region along
+                                                PluginEffects::apply(stackFor(effect.id, cid), plugin, effect, QString());
+                                            }});
                         }
-                        continue;
+                    } else {
+                        const QString pluginId = plugin.id();
+                        const QString target = plugin.target();
+                        entries.append(PluginEffects::MenuEntry{plugin.name(), [this, pluginId, target, cid]() {
+                                            PluginManager::instance().runPlugin(pluginId, buildPluginClipInput(target, cid), this);
+                                        }});
                     }
-                    const QString pluginId = plugin.id();
-                    const QString target = plugin.target();
-                    QAction *pluginAction = aiMenu->addAction(plugin.icon(), plugin.name());
-                    connect(pluginAction, &QAction::triggered, this, [this, pluginId, target, cid]() {
-                        PluginManager::instance().runPlugin(pluginId, buildPluginClipInput(target, cid), this);
-                    });
-                    mark(pluginAction);
+                }
+                // generators belong on any clip's menu too: right-clicking a clip
+                // is as good a way as any to ask for something new
+                entries += cardEntries(plugin);
+                if (entries.isEmpty()) {
+                    continue;
+                }
+                if (!separated) {
+                    mark(aiMenu->addSeparator());
+                    separated = true;
+                }
+                if (QAction *entry = PluginEffects::addToMenu(aiMenu, plugin, entries)) {
+                    mark(entry);
                 }
             }
             break;
@@ -602,8 +607,8 @@ void TimelineWidget::showTimelineMenu()
         QObject::disconnect(m_addMenuConnection);
     });
     if (m_generateMenu) {
-        m_generateMenu->clear();
-        addGeneratorEntries(m_generateMenu, false);
+        PluginEffects::clearMenuEntries(m_generateMenu);
+        addGeneratorEntries(m_generateMenu);
         m_generateMenu->menuAction()->setVisible(!m_generateMenu->isEmpty());
     }
     m_timelineMenu->popup(m_clickPos);

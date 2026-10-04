@@ -787,10 +787,11 @@ void ChatWidget::externalToolEnd(const QString &id, bool isError, const QString 
     persistSession();
 }
 
-QString ChatWidget::addGeneratorCard(const QString &pluginId, const QJsonObject &values, bool byAssistant)
+QString ChatWidget::addGeneratorCard(const QString &pluginId, const QString &generatorId, const QJsonObject &values, bool byAssistant)
 {
     const PluginManifest manifest = PluginManager::instance().plugin(pluginId);
-    if (!manifest.isGenerator()) {
+    const PluginGenerator generator = manifest.generator(generatorId);
+    if (!manifest.isGenerator() || !generator.isValid()) {
         return {};
     }
     if (m_stack->currentIndex() != 0) {
@@ -799,10 +800,11 @@ QString ChatWidget::addGeneratorCard(const QString &pluginId, const QJsonObject 
     const QString id = QStringLiteral("generate:") + QUuid::createUuid().toString(QUuid::WithoutBraces).left(8);
     QJsonObject payload;
     payload.insert(QStringLiteral("plugin"), pluginId);
+    payload.insert(QStringLiteral("generator"), generator.id);
     payload.insert(QStringLiteral("values"), values);
     payload.insert(QStringLiteral("collapsed"), false);
     payload.insert(QStringLiteral("author"), byAssistant ? QStringLiteral("assistant") : QStringLiteral("user"));
-    m_model.appendGenerator(id, manifest.generateTitle(), payload);
+    m_model.appendGenerator(id, generator.title, payload);
     if (GeneratorCard *card = m_generatorCards.value(id)) {
         // the defaults the form filled in belong to the saved card too
         m_model.updatePayload(id, card->payload(), false);
@@ -852,8 +854,8 @@ QString ChatWidget::runGeneratorCard(const QString &cardId)
         return {};
     }
     // Where the playhead is now: that is where the result is meant to go.
-    return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("values")).toObject(),
-                                                  pCore->currentTimelineId(), pCore->getMonitorPosition());
+    return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("generator")).toString(),
+                                                  payload.value(QStringLiteral("values")).toObject(), pCore->currentTimelineId(), pCore->getMonitorPosition());
 }
 
 void ChatWidget::switchTab(int page)
@@ -1804,13 +1806,15 @@ QWidget *ChatWidget::buildGeneratorCard(const ChatMessage &message)
 {
     const QString pluginId = message.payload.value(QStringLiteral("plugin")).toString();
     const PluginManifest manifest = PluginManager::instance().plugin(pluginId);
-    if (!manifest.isGenerator()) {
-        // the plugin is gone: say what the card was, rather than drop it
+    const PluginGenerator generator = manifest.generator(message.payload.value(QStringLiteral("generator")).toString());
+    if (!manifest.isGenerator() || !generator.isValid()) {
+        // the plugin (or this card of it) is gone: say what the card was,
+        // rather than drop it
         auto *gone = new QLabel(i18n("%1 is not installed.", message.toolName), this);
         gone->setObjectName(QStringLiteral("chatToolStatus"));
         return gone;
     }
-    auto *card = new GeneratorCard(message.toolId, manifest, message.payload, this);
+    auto *card = new GeneratorCard(message.toolId, manifest, generator, message.payload, this);
     m_generatorCards.insert(message.toolId, card);
     connect(card, &GeneratorCard::edited, this, [this](const QString &id, const QJsonObject &payload) {
         m_model.updatePayload(id, payload, false);

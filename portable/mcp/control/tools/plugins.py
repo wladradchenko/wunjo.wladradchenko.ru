@@ -92,10 +92,10 @@ def register(mcp, helpers):
             voice, a face to swap in). Record it with
             run_plugin(action="analyse", source="/abs/file"), then name the set
             in the effect's parameter with set_effect_param.
-          - a plugin with target "generator" and a "generate" block makes
-            something from nothing (a voiceover from a text): it works through a
-            card in the chat. generator_card_create puts one there filled in,
-            generator_card_run presses its Generate.
+          - a plugin with target "generator" and a "generate" list makes
+            something from nothing (a voiceover from a text): each entry is a
+            card in the chat, with its own id and fields. generator_card_create
+            puts one there filled in, generator_card_run presses its Generate.
           - only a plugin without effects is launched with run_plugin.
         """
         try:
@@ -185,24 +185,29 @@ def register(mcp, helpers):
             return f"ERROR: {e}"
 
     @mcp.tool()
-    def generator_card_create(ctx: Context, plugin_id: str, values: dict | None = None) -> str:
+    def generator_card_create(ctx: Context, plugin_id: str, values: dict | None = None,
+                              generator: str = "") -> str:
         """Put a generator's card in the chat, filled in, WITHOUT running it.
 
         The user sees every parameter before anything is made. Tell them what
         you put in it, then run it with generator_card_run when they agree (or
         straight away if they already asked for the result). list_plugins shows
-        each generator's fields under "generate".
+        each plugin's cards under "generate", each with an "id" and its fields.
 
         Args:
             plugin_id: A plugin with target "generator", e.g. "voice-toolkit".
             values: Field values by key, e.g. {"text": "...", "voice": "design",
                 "design": "a calm older man"} or {"voice": "registered",
                 "set": "<preset file from list_plugin_sets>"}.
+            generator: Which of the plugin's cards, by its "id" under
+                "generate" (e.g. "voiceover"). Empty takes the first one.
         """
         try:
             app = helpers.get_resolve(ctx)._app
-            card = app._call("scriptGeneratorCardCreate", plugin_id, json.dumps(values or {}))
+            card = app._call("scriptGeneratorCardCreate", plugin_id, generator or "", json.dumps(values or {}))
             if not card:
+                if generator:
+                    return f"ERROR: '{plugin_id}' has no card '{generator}' under \"generate\"."
                 return f"ERROR: '{plugin_id}' is not an installed generator."
             return f"Card {card} is in the chat with these values. Run it with generator_card_run(\"{card}\")."
         except Exception as e:  # noqa: BLE001

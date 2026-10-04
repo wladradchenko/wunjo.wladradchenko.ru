@@ -12,10 +12,16 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "definitions.h"
 #include "effects/effectstack/model/effectitemmodel.hpp"
 #include "effects/effectstack/model/effectstackmodel.hpp"
+#include "plugincatalog.h"
 #include "pluginmanager.h"
 
+#include <KLocalizedString>
+
+#include <QDesktopServices>
 #include <QJsonArray>
+#include <QMenu>
 #include <QSet>
+#include <QUrl>
 #include <QUuid>
 
 namespace {
@@ -69,6 +75,125 @@ QList<PluginEffect> menuEffects(const PluginManifest &plugin)
         }
     }
     return result;
+}
+
+QString bondOf(const std::shared_ptr<AssetParameterModel> &effect)
+{
+    if (effect == nullptr) {
+        return {};
+    }
+    const QString effectId = effect->getAssetId();
+    const QString pluginId = PluginManager::instance().pluginForEffect(effectId);
+    if (pluginId.isEmpty()) {
+        return {};
+    }
+    const QList<PluginEffect> effects = PluginManager::instance().plugin(pluginId).effects();
+    for (const PluginEffect &declared : effects) {
+        if (declared.id != effectId) {
+            continue;
+        }
+        for (const QString &param : declared.regionParams) {
+            const QString value = effect->getParamFromName(param).toString();
+            if (!value.isEmpty()) {
+                return pluginId + QLatin1Char('/') + value;
+            }
+        }
+    }
+    return {};
+}
+
+QString pairMark(const std::shared_ptr<EffectStackModel> &stack, const std::shared_ptr<AssetParameterModel> &effect)
+{
+    const QString bond = bondOf(effect);
+    if (stack == nullptr || bond.isEmpty()) {
+        return {};
+    }
+    const QString plugin = bond.section(QLatin1Char('/'), 0, 0) + QLatin1Char('/');
+    QSet<QString> pairs;
+    for (int i = 0; i < stack->rowCount(); ++i) {
+        const QString other = bondOf(std::dynamic_pointer_cast<EffectItemModel>(stack->getEffectStackRow(i)));
+        if (other.startsWith(plugin)) {
+            pairs.insert(other);
+        }
+    }
+    return pairs.size() > 1 ? bond.mid(plugin.size()).left(4) : QString();
+}
+
+bool isRegion(const QString &effectId)
+{
+    const QString pluginId = PluginManager::instance().pluginForEffect(effectId);
+    if (pluginId.isEmpty()) {
+        return false;
+    }
+    const QList<PluginEffect> effects = PluginManager::instance().plugin(pluginId).effects();
+    for (const PluginEffect &declared : effects) {
+        if (declared.requiresEffect == effectId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int declaredActions(const PluginManifest &plugin)
+{
+    const QList<PluginEffect> effects = menuEffects(plugin);
+    int clipActions = 0;
+    if (!effects.isEmpty()) {
+        clipActions = plugin.appliesEffectsTogether() ? 1 : int(effects.size());
+    } else if (plugin.hasTarget(QStringLiteral("video")) || plugin.hasTarget(QStringLiteral("audio")) || plugin.hasTarget(QStringLiteral("face"))) {
+        clipActions = 1;
+    }
+    return clipActions + int(plugin.generators().size());
+}
+
+QAction *addToMenu(QMenu *menu, const PluginManifest &plugin, const QList<MenuEntry> &entries)
+{
+    if (!menu || entries.isEmpty()) {
+        return nullptr;
+    }
+    if (declaredActions(plugin) <= 1 && entries.size() == 1) {
+        const MenuEntry entry = entries.first();
+        QAction *action = menu->addAction(plugin.icon(), plugin.name());
+        QObject::connect(action, &QAction::triggered, menu, [trigger = entry.trigger]() { trigger(); });
+        return action;
+    }
+    auto *sub = new QMenu(plugin.name(), menu);
+    sub->setIcon(plugin.icon());
+    for (const MenuEntry &entry : entries) {
+        QAction *action = sub->addAction(entry.text);
+        QObject::connect(action, &QAction::triggered, sub, [trigger = entry.trigger]() { trigger(); });
+    }
+    const PluginCatalog::Entry update = PluginCatalog::instance().updateFor(plugin);
+    if (!update.id.isEmpty()) {
+        sub->addSeparator();
+        QAction *action = sub->addAction(QIcon::fromTheme(QStringLiteral("download")), i18n("Update"));
+        action->setToolTip(i18n("Opens the plugin's page on wunjo.online"));
+        QObject::connect(action, &QAction::triggered, sub, [url = update.url]() { QDesktopServices::openUrl(QUrl(url)); });
+    }
+    menu->addMenu(sub);
+    return sub->menuAction();
+}
+
+void clearMenuEntries(QMenu *menu, const QString &objectName)
+{
+    if (!menu) {
+        return;
+    }
+    const QList<QAction *> actions = menu->actions();
+    for (QAction *action : actions) {
+        if (!objectName.isEmpty() && action->objectName() != objectName) {
+            continue;
+        }
+        // a submenu owns its own action: deleting the menu takes both away
+        if (QMenu *sub = action->menu(); sub && sub->parent() == menu) {
+            delete sub;
+        } else {
+            menu->removeAction(action);
+            if (action->parent() == menu) {
+                delete action;
+            }
+        }
+    }
 }
 
 QString effectToApply(const QString &effectId)

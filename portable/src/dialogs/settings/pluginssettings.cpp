@@ -575,6 +575,11 @@ void PluginsSettings::rebuildPluginList()
         item->setData(Qt::UserRole + 1, targets);
         item->setData(Qt::UserRole + 2, id);
         item->setSizeHint(QSize(0, 30));
+        // a newer release on the site: the same mark its Update button wears
+        if (!id.isEmpty() && !PluginCatalog::instance().updateFor(PluginManager::instance().plugin(id)).id.isEmpty()) {
+            item->setIcon(QIcon::fromTheme(QStringLiteral("download")));
+            item->setToolTip(i18n("Update"));
+        }
     };
 
     QList<QPair<QWidget *, int>> installed;
@@ -644,6 +649,11 @@ void PluginsSettings::rebuildPluginList()
             continue;
         }
         if (!entry.os.isEmpty() && !entry.os.contains(os)) {
+            continue;
+        }
+        // its current release needs a newer (or an older) application than
+        // this one, and would refuse to install after the download
+        if (!entry.fitsThisApp()) {
             continue;
         }
         more.append(entry);

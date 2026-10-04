@@ -4,6 +4,9 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
 #include "plugincatalog.h"
+#include "pluginmanifest.h"
+
+#include <config-wunjo.h>
 
 #include <QDir>
 #include <QFile>
@@ -15,6 +18,37 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QNetworkRequest>
 #include <QStandardPaths>
 #include <QUrl>
+
+bool PluginCatalog::Entry::fitsThisApp() const
+{
+    // the same rule the manifest applies when the plugin is installed
+    const QString app = QStringLiteral(WUNJO_VERSION);
+    if (!minAppVersion.isEmpty() && PluginManifest::compareVersions(app, minAppVersion) < 0) {
+        return false;
+    }
+    return maxAppVersion.isEmpty() || PluginManifest::compareVersions(app, maxAppVersion) <= 0;
+}
+
+PluginCatalog::Entry PluginCatalog::updateFor(const PluginManifest &plugin) const
+{
+    if (plugin.id().isEmpty() || plugin.version().isEmpty()) {
+        return {};
+    }
+    const QString os = PluginManifest::currentOs();
+    for (const Entry &entry : m_entries) {
+        if (entry.id != plugin.id()) {
+            continue;
+        }
+        if (entry.version.isEmpty() || PluginManifest::compareVersions(entry.version, plugin.version()) <= 0) {
+            return {};
+        }
+        if ((!entry.os.isEmpty() && !entry.os.contains(os)) || !entry.fitsThisApp()) {
+            return {};
+        }
+        return entry;
+    }
+    return {};
+}
 
 PluginCatalog &PluginCatalog::instance()
 {
@@ -97,6 +131,8 @@ bool PluginCatalog::parse(const QByteArray &json)
         for (const QJsonValue &topic : topics) {
             entry.topics << topic.toString();
         }
+        entry.minAppVersion = obj.value(QStringLiteral("min_app_version")).toString().trimmed();
+        entry.maxAppVersion = obj.value(QStringLiteral("max_app_version")).toString().trimmed();
         if (!entry.id.isEmpty() && !entry.url.isEmpty()) {
             entries.append(entry);
         }

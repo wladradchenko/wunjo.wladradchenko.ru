@@ -15,6 +15,7 @@
 #include "effects/effectstack/model/effectstackmodel.hpp"
 #include "wunjosettings.h"
 #include "monitor/monitor.h"
+#include "plugins/plugineffects.h"
 #include "timeline2/model/timelinemodel.hpp"
 #include "utils/qstringutils.h"
 
@@ -435,7 +436,12 @@ void EffectStackView::loadEffects()
         if (!EffectsRepository::get()->exists(assetId)) {
             assetId = effectModel->getAssetMltService();
         }
-        const QString assetName = EffectsRepository::get()->getName(assetId);
+        QString assetName = EffectsRepository::get()->getName(assetId);
+        // two Face Swaps on one clip: which region each works inside
+        const QString mark = PluginEffects::pairMark(m_model, effectModel);
+        if (!mark.isEmpty()) {
+            assetName += QLatin1Char(' ') + mark;
+        }
         view = new CollapsibleEffectView(assetName, effectModel, m_sourceFrameSize, this);
         connect(view, &CollapsibleEffectView::deleteEffect, this, &EffectStackView::slotDeleteEffect);
         connect(view, &CollapsibleEffectView::moveEffect, m_model.get(), &EffectStackModel::moveEffect);

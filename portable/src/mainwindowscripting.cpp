@@ -3449,7 +3449,7 @@ bool MainWindow::scriptChatToolEnd(const QString &id, bool isError, const QStrin
     return true;
 }
 
-QString MainWindow::openGeneratorCard(const QString &pluginId, const QJsonObject &values, bool byAssistant)
+QString MainWindow::openGeneratorCard(const QString &pluginId, const QString &generatorId, const QJsonObject &values, bool byAssistant)
 {
     if (!m_chatWidget) {
         return {};
@@ -3458,7 +3458,7 @@ QString MainWindow::openGeneratorCard(const QString &pluginId, const QJsonObject
         m_chatDock->show();
         m_chatDock->setAsCurrentTab();
     }
-    return m_chatWidget->addGeneratorCard(pluginId, values, byAssistant);
+    return m_chatWidget->addGeneratorCard(pluginId, generatorId, values, byAssistant);
 }
 
 QString MainWindow::scriptGeneratorCards()
@@ -3466,9 +3466,9 @@ QString MainWindow::scriptGeneratorCards()
     return m_chatWidget ? QString::fromUtf8(QJsonDocument(m_chatWidget->generatorCards()).toJson(QJsonDocument::Compact)) : QStringLiteral("[]");
 }
 
-QString MainWindow::scriptGeneratorCardCreate(const QString &pluginId, const QString &valuesJson)
+QString MainWindow::scriptGeneratorCardCreate(const QString &pluginId, const QString &generatorId, const QString &valuesJson)
 {
-    return openGeneratorCard(pluginId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);
+    return openGeneratorCard(pluginId, generatorId, QJsonDocument::fromJson(valuesJson.toUtf8()).object(), true);
 }
 
 bool MainWindow::scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson)

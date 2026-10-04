@@ -9,7 +9,10 @@
             "A plugin can offer models that only one of its features needs, downloaded on demand",
             "Voice presets keep the stretch of speech they were registered from",
             "A plugin effect can keep a preset it made while rendering, such as a voice described in words",
-            "A plugin's sound effects are offered on clips with sound and its picture effects on video clips"
+            "A plugin's sound effects are offered on clips with sound and its picture effects on video clips",
+            "A plugin that offers several things opens as a submenu of its own under Artificial Intelligence",
+            "A generator plugin can bring several cards to the chat, each with its own form",
+            "Update appears in a plugin's submenu and settings when the site has a newer release"
         ],
         "3.0.1": [
             "Fixed macOS launch failure caused by a std::pmr symbol from macOS 14 in a framework built for 13.3",

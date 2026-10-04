@@ -127,25 +127,34 @@ and it never appears in a clip menu.
 
 A generator makes something from nothing: a voiceover from a text, music from a
 description. It has no clip to sit on, so it works through a **card in the
-chat**: right-click the timeline → *Artificial Intelligence* → the generator,
-and its card appears in the conversation, ready to fill in. The card is only the
+chat**: right-click the timeline → *Artificial Intelligence* → the card,
+and it appears in the conversation, ready to fill in. In that menu every plugin
+is one entry under its own name: a single row when it offers one thing, a
+submenu of its effects and cards when it offers several, ending with
+**Update** when wunjo.online lists a newer release of it. The card is only the
 form and its Generate button. Each run is a job card of its own below it, with
 its progress and its end, so the form stays editable and every run keeps its
 line. Cards are saved with the project's chat and come back when it is opened.
 
-The form is the manifest's `generate` block:
+The cards are the manifest's `generate` list. A plugin that makes several
+things brings a card for each, the way it brings several effects; each card
+has an `id` (lowercase letters, digits and dashes, unique in the plugin), a
+`title` and its own `fields`:
 
 ```json
-"generate": {
-  "title": "Voiceover",
-  "fields": [
-    { "key": "text",   "type": "text", "label": "Text", "placeholder": "What to say." },
-    { "key": "voice",  "type": "enum", "label": "Voice", "options": ["design", "registered"],
-      "labels": ["Describe", "Library"], "default": "design" },
-    { "key": "design", "type": "text", "label": "Describe the voice", "compact": true, "show_if": {"voice": "design"} },
-    { "key": "set",    "type": "set",  "label": "Library", "kind": "", "show_if": {"voice": "registered"} }
-  ]
-}
+"generate": [
+  {
+    "id": "voiceover",
+    "title": "Voiceover",
+    "fields": [
+      { "key": "text",   "type": "text", "label": "Text", "placeholder": "What to say." },
+      { "key": "voice",  "type": "enum", "label": "Voice", "options": ["design", "registered"],
+        "labels": ["Describe", "Library"], "default": "design" },
+      { "key": "design", "type": "text", "label": "Describe the voice", "compact": true, "show_if": {"voice": "design"} },
+      { "key": "set",    "type": "set",  "label": "Library", "kind": "", "show_if": {"voice": "registered"} }
+    ]
+  }
+]
 ```
 
 | Type | Shows as | Value |
@@ -163,8 +172,10 @@ plugin's card is translated with the editor.
 Generate runs the entry script with
 
 ```json
-"input": { "action": "generate", "fields": { "text": "…", "voice": "design", "design": "…" }, "clips": [] }
+"input": { "action": "generate", "generator": "voiceover", "fields": { "text": "…", "voice": "design", "design": "…" }, "clips": [] }
 ```
+
+`generator` is the `id` of the card that was run.
 
 and expects the usual `result:` with the media in `outputs`, optionally `sets`
 (see *Recorded sets*). The result goes into the bin under a folder named after
@@ -172,7 +183,8 @@ the card, and onto the timeline at the playhead as it was when Generate was
 pressed: on the first audio (or video) track with room there, or on a new one.
 
 An assistant uses the same cards over MCP: `generator_cards` reads what is
-filled in, `generator_card_create` adds a card filled in without running it,
+filled in, `generator_card_create` adds a card filled in without running it
+(its `generator` argument picks the card by `id`, the first one when empty),
 `generator_card_set` changes fields, `generator_card_run` presses Generate. The
 card says when the assistant filled it in.
 

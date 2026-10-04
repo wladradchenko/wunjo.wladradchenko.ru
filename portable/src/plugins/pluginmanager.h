@@ -148,12 +148,13 @@ public:
      *  The produced file is filed under the project, written into @p resultParam
      *  of the effect and added to the bin. */
     QString runEffectJob(const QString &pluginId, const ObjectId &owner, int effectItemId, const QString &resultParam, const QJsonObject &input);
-    /** @brief Run a generator's form (the card in the chat). The run is a card
+    /** @brief Run a generator's form (the card in the chat); @p generatorId
+     *  names which of the plugin's cards, empty for the first. The run is a card
      *  of its own below the form; what it makes goes into the bin and onto the
      *  timeline @p timelineUuid at @p frame, on an audio track with room there
      *  or a new one. @p frame -1 keeps it in the bin.
      *  @return The id of the run's card, which is also its job id. */
-    QString runGenerator(const QString &pluginId, const QJsonObject &fields, const QUuid &timelineUuid, int frame);
+    QString runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame);
     /** @brief Register @p source as a preset of @p pluginId (a voice from a
      *  recording); the library follows through @ref setsChanged. */
     QString registerSet(const QString &pluginId, const QString &source, const QString &kind);

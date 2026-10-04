@@ -725,13 +725,13 @@ public Q_SLOTS:
      *  Generate. Values and the returned lists are JSON. The run's id is the id
      *  of its job card, so plugin_job_status follows it. */
     Q_SCRIPTABLE QString scriptGeneratorCards();
-    Q_SCRIPTABLE QString scriptGeneratorCardCreate(const QString &pluginId, const QString &valuesJson);
+    Q_SCRIPTABLE QString scriptGeneratorCardCreate(const QString &pluginId, const QString &generatorId, const QString &valuesJson);
     Q_SCRIPTABLE bool scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson);
     Q_SCRIPTABLE bool scriptGeneratorCardFold(const QString &cardId, bool collapsed);
     Q_SCRIPTABLE QString scriptGeneratorCardRun(const QString &cardId);
     /** @brief Put the form of the generator @p pluginId in the chat and bring
      *  the chat forward, for the user to fill in. */
-    QString openGeneratorCard(const QString &pluginId, const QJsonObject &values = {}, bool byAssistant = false);
+    QString openGeneratorCard(const QString &pluginId, const QString &generatorId, const QJsonObject &values = {}, bool byAssistant = false);
 
     // Assistant guidance: skills (multi-select) and loops (single scenario).
     // Library is global; selection is stored per project. Mirrors the chat UI.

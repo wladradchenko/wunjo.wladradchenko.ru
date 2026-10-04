@@ -1958,13 +1958,14 @@ QString PluginManager::registerSet(const QString &pluginId, const QString &sourc
     return runPlugin(pluginId, input, nullptr);
 }
 
-QString PluginManager::runGenerator(const QString &pluginId, const QJsonObject &fields, const QUuid &timelineUuid, int frame)
+QString PluginManager::runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame)
 {
     const PluginManifest manifest = m_plugins.value(pluginId);
-    if (!manifest.isValid()) {
+    const PluginGenerator generator = manifest.generator(generatorId);
+    if (!manifest.isValid() || !generator.isValid()) {
         return {};
     }
-    const QString label = manifest.generateTitle();
+    const QString label = generator.title;
     const QString card = QStringLiteral("plugin:") + QUuid::createUuid().toString(QUuid::WithoutBraces).left(8);
     noteJobStarted(card, label);
     const QString blocker = runBlocker(pluginId);
@@ -1974,6 +1975,7 @@ QString PluginManager::runGenerator(const QString &pluginId, const QJsonObject &
     }
     QJsonObject input;
     input.insert(QStringLiteral("action"), QStringLiteral("generate"));
+    input.insert(QStringLiteral("generator"), generator.id);
     input.insert(QStringLiteral("fields"), fields);
     input.insert(QStringLiteral("clips"), QJsonArray());
     runPluginJob(

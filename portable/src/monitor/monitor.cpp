@@ -744,37 +744,34 @@ void Monitor::showFaceMenu(int index)
             // A plugin that brings an effect works through it: the entry puts
             // that effect on the clicked face, where its parameters are tuned
             // and keyframed. Only a plugin without one runs its script here.
+            QList<PluginEffects::MenuEntry> entries;
             const QList<PluginEffect> effects = PluginEffects::menuEffects(plugin);
-            if (!effects.isEmpty()) {
-                if (plugin.appliesEffectsTogether()) {
-                    // its effects are ways of working on one face: offer the
-                    // plugin once and put the whole set on the clicked face
-                    QAction *setAction = menu.addAction(QIcon::fromTheme(QStringLiteral("tools-wizard")), plugin.name());
-                    connect(setAction, &QAction::triggered, this, [this, index, plugin]() { applyPluginFaceEffect(index, plugin, {}); });
-                    continue;
-                }
+            if (!effects.isEmpty() && plugin.appliesEffectsTogether()) {
+                // its effects are ways of working on one face: offer the
+                // plugin once and put the whole set on the clicked face
+                entries.append(PluginEffects::MenuEntry{plugin.name(), [this, index, plugin]() { applyPluginFaceEffect(index, plugin, {}); }});
+            } else if (!effects.isEmpty()) {
                 for (const PluginEffect &effect : effects) {
-                    QAction *effectAction = menu.addAction(QIcon::fromTheme(QStringLiteral("tools-wizard")), effect.name);
-                    connect(effectAction, &QAction::triggered, this, [this, index, plugin, effect]() { applyPluginFaceEffect(index, plugin, effect); });
+                    entries.append(PluginEffects::MenuEntry{effect.name, [this, index, plugin, effect]() { applyPluginFaceEffect(index, plugin, effect); }});
                 }
-                continue;
+            } else {
+                const QString pluginId = plugin.id();
+                entries.append(PluginEffects::MenuEntry{plugin.name(), [pluginId, binId, rect, position]() {
+                                    QJsonObject face;
+                                    face.insert(QStringLiteral("rect"), QJsonArray{rect.x(), rect.y(), rect.width(), rect.height()});
+                                    face.insert(QStringLiteral("position"), position);
+                                    QJsonObject clip;
+                                    clip.insert(QStringLiteral("bin_id"), binId);
+                                    if (std::shared_ptr<ProjectClip> binClip = pCore->projectItemModel()->getClipByBinID(binId)) {
+                                        clip.insert(QStringLiteral("path"), binClip->url());
+                                    }
+                                    QJsonObject input;
+                                    input.insert(QStringLiteral("clips"), QJsonArray{clip});
+                                    input.insert(QStringLiteral("face"), face);
+                                    PluginManager::instance().runPlugin(pluginId, input);
+                                }});
             }
-            const QString pluginId = plugin.id();
-            QAction *pluginAction = menu.addAction(QIcon::fromTheme(QStringLiteral("tools-wizard")), plugin.name());
-            connect(pluginAction, &QAction::triggered, this, [pluginId, binId, rect, position]() {
-                QJsonObject face;
-                face.insert(QStringLiteral("rect"), QJsonArray{rect.x(), rect.y(), rect.width(), rect.height()});
-                face.insert(QStringLiteral("position"), position);
-                QJsonObject clip;
-                clip.insert(QStringLiteral("bin_id"), binId);
-                if (std::shared_ptr<ProjectClip> binClip = pCore->projectItemModel()->getClipByBinID(binId)) {
-                    clip.insert(QStringLiteral("path"), binClip->url());
-                }
-                QJsonObject input;
-                input.insert(QStringLiteral("clips"), QJsonArray{clip});
-                input.insert(QStringLiteral("face"), face);
-                PluginManager::instance().runPlugin(pluginId, input);
-            });
+            PluginEffects::addToMenu(&menu, plugin, entries);
         }
     }
     menu.exec(QCursor::pos());

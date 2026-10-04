@@ -102,8 +102,9 @@ private:
      *  opening its card in the chat. Rebuilt on every show, hidden when no
      *  generator is installed. */
     QMenu *m_generateMenu{nullptr};
-    /** @brief Fill @p menu with an entry per installed generator. */
-    void addGeneratorEntries(QMenu *menu, bool marked);
+    /** @brief Fill @p menu with an entry per installed generator: its card,
+     *  or a submenu of its cards. */
+    void addGeneratorEntries(QMenu *menu);
     QMenu *m_favEffects;
     QMenu *m_favCompositions;
     QAction *m_editGuideAcion;

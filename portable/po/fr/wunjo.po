@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: wunjo\n"
 "Report-Msgid-Bugs-To: https://github.com/wladradchenko/wunjo.wladradchenko."
 "ru/issues\n"
-"POT-Creation-Date: 2026-10-03 19:20+0300\n"
+"POT-Creation-Date: 2026-10-04 12:33+0300\n"
 "PO-Revision-Date: 2026-06-27 15:05+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: fr\n"
@@ -932,13 +932,13 @@ msgstr "Piste sélectionnée"
 msgid "Go to Marker…"
 msgstr "Aller au repère..."
 
-#: src/mainwindow.cpp:798 src/monitor/monitor.cpp:940
+#: src/mainwindow.cpp:798 src/monitor/monitor.cpp:937
 #, kde-format
 msgid "Create Marker from Zone"
 msgstr "Créer un repère à partir d'une zone"
 
-#: src/mainwindow.cpp:802 src/monitor/monitor.cpp:945
-#: src/monitor/monitor.cpp:970
+#: src/mainwindow.cpp:802 src/monitor/monitor.cpp:942
+#: src/monitor/monitor.cpp:967
 #, kde-format
 msgid "Create Marker from Zone Quickly"
 msgstr "Créer rapidement un repère à partir d'une zone"
@@ -3047,10 +3047,10 @@ msgstr "Position :"
 #: src/transitions/view/transitionstackview.cpp:40
 #: src/dialogs/encodingprofilesdialog.cpp:340
 #: src/dialogs/encodingprofilesdialog.cpp:429
-#: src/dialogs/settings/pluginssettings.cpp:907
-#: src/dialogs/settings/pluginssettings.cpp:945
+#: src/dialogs/settings/pluginssettings.cpp:917
+#: src/dialogs/settings/pluginssettings.cpp:955
 #: src/dialogs/settings/wunjosettingsdialog.cpp:911
-#: src/plugins/pluginsettingstab.cpp:91 src/plugins/pluginsettingstab.cpp:875
+#: src/plugins/pluginsettingstab.cpp:107 src/plugins/pluginsettingstab.cpp:891
 #: src/project/dialogs/projectsettings.cpp:910
 #, kde-format
 msgid "Automatic"
@@ -4909,8 +4909,8 @@ msgstr "Sélectionner un clip auquel appliquer un effet"
 msgid "No item selected in timeline"
 msgstr "Aucun élément sélectionné dans la frise chronologique"
 
-#: src/timeline2/view/timelinecontroller.cpp:2119 src/monitor/monitor.cpp:1201
-#: src/monitor/monitor.cpp:1237
+#: src/timeline2/view/timelinecontroller.cpp:2119 src/monitor/monitor.cpp:1198
+#: src/monitor/monitor.cpp:1234
 #, kde-format
 msgid "Set Zone"
 msgstr "Définir la zone"
@@ -5266,8 +5266,8 @@ msgstr "Gérer les sous-titres"
 msgid "No range guide found at position"
 msgstr "Aucun repère d'intervalle trouvé à la position"
 
-#: src/timeline2/view/timelinecontroller.cpp:6387 src/monitor/monitor.cpp:3715
-#: src/monitor/monitor.cpp:3746
+#: src/timeline2/view/timelinecontroller.cpp:6387 src/monitor/monitor.cpp:3712
+#: src/monitor/monitor.cpp:3743
 #, kde-format
 msgid "No valid zone defined. Please set in/out points first."
 msgstr ""
@@ -5280,14 +5280,14 @@ msgstr ""
 msgid "Zone marker"
 msgstr "Marqueur de zone"
 
-#: src/timeline2/view/timelinecontroller.cpp:6402 src/monitor/monitor.cpp:3731
-#: src/monitor/monitor.cpp:3752
+#: src/timeline2/view/timelinecontroller.cpp:6402 src/monitor/monitor.cpp:3728
+#: src/monitor/monitor.cpp:3749
 #, kde-format
 msgid "Range marker created from zone"
 msgstr "Repère d'intervalle créé à partir d'une zone"
 
-#: src/timeline2/view/timelinecontroller.cpp:6405 src/monitor/monitor.cpp:3733
-#: src/monitor/monitor.cpp:3754
+#: src/timeline2/view/timelinecontroller.cpp:6405 src/monitor/monitor.cpp:3730
+#: src/monitor/monitor.cpp:3751
 #, kde-format
 msgid "Failed to create range marker from zone"
 msgstr "Impossible de créer un repère d'intervalle à partir de la zone."
@@ -5337,7 +5337,7 @@ msgid "Close %1"
 msgstr "Fermer %1"
 
 #: src/timeline2/view/timelinetabs.cpp:367
-#: src/timeline2/view/timelinewidget.cpp:165
+#: src/timeline2/view/timelinewidget.cpp:183
 #, kde-format
 msgid "Artificial Intelligence"
 msgstr "Intelligence artificielle"
@@ -5352,27 +5352,27 @@ msgstr "Aligner sur la référence"
 msgid "Rename Sequence"
 msgstr "Renommer la séquence"
 
-#: src/timeline2/view/timelinewidget.cpp:58
+#: src/timeline2/view/timelinewidget.cpp:76
 #, kde-format
 msgid "Insert an effect..."
 msgstr "Insérer un effet…"
 
-#: src/timeline2/view/timelinewidget.cpp:59
+#: src/timeline2/view/timelinewidget.cpp:77
 #, kde-format
 msgid "Insert a composition..."
 msgstr "Insérer une composition…"
 
-#: src/timeline2/view/timelinewidget.cpp:304
+#: src/timeline2/view/timelinewidget.cpp:314
 #, kde-format
 msgid "Disable Face Detection"
 msgstr "Désactiver la détection des visages"
 
-#: src/timeline2/view/timelinewidget.cpp:304
+#: src/timeline2/view/timelinewidget.cpp:314
 #, kde-format
 msgid "Enable Face Detection"
 msgstr "Activer la détection des visages"
 
-#: src/timeline2/view/timelinewidget.cpp:520
+#: src/timeline2/view/timelinewidget.cpp:525
 #, kde-format
 msgid "No available stream"
 msgstr "Aucun flux disponible"
@@ -5672,7 +5672,7 @@ msgstr "<b>Maj</b> pour réduire / développer toutes les pistes (audio / vide
 msgid "Minimize"
 msgstr "Réduire"
 
-#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:584
+#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:586
 #, kde-format
 msgid "Expand"
 msgstr "Développer"
@@ -5991,7 +5991,7 @@ msgstr "Trier par"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
 #: src/bin/bin.cpp:1449 src/bin/projectitemmodel.cpp:324
-#: src/chat/chatwidget.cpp:1213 rc.cpp:10318 rc.cpp:10350
+#: src/chat/chatwidget.cpp:1215 rc.cpp:10318 rc.cpp:10350
 #, kde-format
 msgid "Name"
 msgstr "Nom"
@@ -6019,7 +6019,7 @@ msgstr "Description"
 #. i18n: file: data/effects/avfilter/avfilter_noise.xml
 #. i18n: file: data/effects/avfilter/avfilter_sofalizer.xml
 #: src/bin/bin.cpp:1461 src/bin/projectitemmodel.cpp:333
-#: src/plugins/pluginmanifest.cpp:682 rc.cpp:3084 rc.cpp:3186 rc.cpp:3492
+#: src/plugins/pluginmanifest.cpp:724 rc.cpp:3084 rc.cpp:3186 rc.cpp:3492
 #: rc.cpp:3990 rc.cpp:6140 rc.cpp:6168 rc.cpp:6478 rc.cpp:6506 rc.cpp:6604
 #: rc.cpp:6614 rc.cpp:6624 rc.cpp:6634 rc.cpp:6644 rc.cpp:7020
 #, kde-format
@@ -7465,7 +7465,7 @@ msgstr "Liste de lecture MLT (*.mlt)"
 
 #. i18n: file: src/ui/configspeech_ui.ui
 #: src/pythoninterfaces/abstractpythoninterface.cpp:63
-#: src/plugins/pluginsettingstab.cpp:151 rc.cpp:9644
+#: src/plugins/pluginsettingstab.cpp:167 rc.cpp:9644
 #, kde-format
 msgid "Check configuration"
 msgstr "Vérifier la configuration"
@@ -8405,7 +8405,7 @@ msgstr "Supprimer un modèle"
 
 #: src/pythoninterfaces/dialogs/whisperdownload.cpp:174
 #: src/plugins/pluginmodelsdialog.cpp:65 src/plugins/pluginmodelsdialog.cpp:150
-#: src/plugins/pluginsettingstab.cpp:236
+#: src/plugins/pluginsettingstab.cpp:252
 #, kde-format
 msgid "Install model"
 msgstr "Installer un modèle"
@@ -9593,8 +9593,8 @@ msgstr ""
 msgid "What's New"
 msgstr "Quoi de neuf"
 
-#: src/dialogs/Simplesplash.qml:298 src/plugins/pluginsettingstab.cpp:675
-#: src/plugins/pluginsettingstab.cpp:816
+#: src/dialogs/Simplesplash.qml:298 src/plugins/pluginsettingstab.cpp:691
+#: src/plugins/pluginsettingstab.cpp:832
 #, kde-format
 msgid "Continue"
 msgstr "Continuer"
@@ -10990,7 +10990,7 @@ msgstr "Vidéo sans piste audio"
 msgid "Audio without video track"
 msgstr "Audio sans piste vidéo"
 
-#: src/dialogs/renderwidget.cpp:1251 src/monitor/monitor.cpp:1781
+#: src/dialogs/renderwidget.cpp:1251 src/monitor/monitor.cpp:1778
 #, kde-format
 msgid "untitled"
 msgstr "Sans titre"
@@ -12260,7 +12260,7 @@ msgid "Downloading multilingual model…"
 msgstr "Téléchargement d'un modèle multilingue en cours..."
 
 #: src/dialogs/settings/pluginssettings.cpp:231
-#: src/dialogs/settings/pluginssettings.cpp:1432
+#: src/dialogs/settings/pluginssettings.cpp:1442
 #, kde-format
 msgid "Please add a speech model."
 msgstr "Veuillez ajouter un modèle vocal."
@@ -12324,30 +12324,37 @@ msgstr "Agent"
 msgid "Add plugin…"
 msgstr "Ajouter un module externe…"
 
-#: src/dialogs/settings/pluginssettings.cpp:597
+#: src/dialogs/settings/pluginssettings.cpp:581
+#: src/plugins/plugineffects.cpp:112 src/plugins/pluginsettingstab.cpp:70
+#, kde-format
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: src/dialogs/settings/pluginssettings.cpp:602
 #, kde-format
 msgctxt "plugins that ship with the application"
 msgid "Built in"
 msgstr "Intégrés"
 
-#: src/dialogs/settings/pluginssettings.cpp:623
+#: src/dialogs/settings/pluginssettings.cpp:628
 #, kde-format
 msgctxt "plugins the user added"
 msgid "Installed"
 msgstr "Installés"
 
-#: src/dialogs/settings/pluginssettings.cpp:652
+#: src/dialogs/settings/pluginssettings.cpp:662
 #, kde-format
 msgctxt "plugins offered on the website, not installed here"
 msgid "Recommended"
 msgstr "Recommandés"
 
-#: src/dialogs/settings/pluginssettings.cpp:663
+#: src/dialogs/settings/pluginssettings.cpp:673
+#: src/plugins/plugineffects.cpp:113 src/plugins/pluginsettingstab.cpp:71
 #, kde-format
 msgid "Opens the plugin's page on wunjo.online"
 msgstr "Ouvre la page du module externe sur wunjo.online"
 
-#: src/dialogs/settings/pluginssettings.cpp:664
+#: src/dialogs/settings/pluginssettings.cpp:674
 #, kde-format
 msgid ""
 "%1\n"
@@ -12356,76 +12363,76 @@ msgstr ""
 "%1\n"
 "Ouvre la page du module externe sur wunjo.online"
 
-#: src/dialogs/settings/pluginssettings.cpp:684
+#: src/dialogs/settings/pluginssettings.cpp:694
 #, kde-format
 msgid "Select a plugin file"
 msgstr "Sélectionner un fichier de module externe"
 
-#: src/dialogs/settings/pluginssettings.cpp:684
+#: src/dialogs/settings/pluginssettings.cpp:694
 #, kde-format
 msgid "Wunjo plugin (*.wmplugin *.zip)"
 msgstr "Module externe Wunjo (*.wmplugin *.zip)"
 
-#: src/dialogs/settings/pluginssettings.cpp:694
-#: src/dialogs/settings/pluginssettings.cpp:698
 #: src/dialogs/settings/pluginssettings.cpp:704
-#: src/dialogs/settings/pluginssettings.cpp:712
-#: src/dialogs/settings/pluginssettings.cpp:738
+#: src/dialogs/settings/pluginssettings.cpp:708
+#: src/dialogs/settings/pluginssettings.cpp:714
+#: src/dialogs/settings/pluginssettings.cpp:722
+#: src/dialogs/settings/pluginssettings.cpp:748
 #, kde-format
 msgid "Add plugin"
 msgstr "Ajouter un module externe"
 
-#: src/dialogs/settings/pluginssettings.cpp:694
+#: src/dialogs/settings/pluginssettings.cpp:704
 #, kde-format
 msgid "This file is not a readable plugin."
 msgstr "Ce fichier n'est pas un module externe lisible."
 
-#: src/dialogs/settings/pluginssettings.cpp:699
+#: src/dialogs/settings/pluginssettings.cpp:709
 #, kde-format
 msgid "This plugin cannot be installed:<ul><li>%1</li></ul>"
 msgstr "Ce module externe ne peut pas être installé :<ul><li>%1</li></ul>"
 
-#: src/dialogs/settings/pluginssettings.cpp:705
+#: src/dialogs/settings/pluginssettings.cpp:715
 #, kde-format
 msgid "This plugin does not support %1 and cannot be installed here."
 msgstr ""
 "Ce module externe ne prend pas en charge %1 et ne peut pas être installé ici."
 
 #. i18n: file: src/ui/resourcewidget_ui.ui
-#: src/dialogs/settings/pluginssettings.cpp:716
+#: src/dialogs/settings/pluginssettings.cpp:726
 #: src/layouts/layoutmanagerdialog.cpp:105 rc.cpp:10858
 #, kde-format
 msgid "Import"
 msgstr "Importer"
 
-#: src/dialogs/settings/pluginssettings.cpp:730
+#: src/dialogs/settings/pluginssettings.cpp:740
 #, kde-format
 msgid "Replace plugin"
 msgstr "Remplacer le module externe"
 
-#: src/dialogs/settings/pluginssettings.cpp:730
+#: src/dialogs/settings/pluginssettings.cpp:740
 #, kde-format
 msgid "A plugin '%1' is already installed. Replace it?"
 msgstr "Un module externe « %1 » est déjà installé. Voulez-vous le remplacer ?"
 
-#: src/dialogs/settings/pluginssettings.cpp:738
+#: src/dialogs/settings/pluginssettings.cpp:748
 #, kde-format
 msgid "Import failed: %1"
 msgstr "Échec de l'importation : %1"
 
-#: src/dialogs/settings/pluginssettings.cpp:765
+#: src/dialogs/settings/pluginssettings.cpp:775
 #, kde-format
 msgid "Open plugin folder"
 msgstr "Ouvrir le dossier du module externe"
 
-#: src/dialogs/settings/pluginssettings.cpp:766
-#: src/dialogs/settings/pluginssettings.cpp:778
-#: src/dialogs/settings/pluginssettings.cpp:787
+#: src/dialogs/settings/pluginssettings.cpp:776
+#: src/dialogs/settings/pluginssettings.cpp:788
+#: src/dialogs/settings/pluginssettings.cpp:797
 #, kde-format
 msgid "Delete plugin"
 msgstr "Supprimer le module externe"
 
-#: src/dialogs/settings/pluginssettings.cpp:779
+#: src/dialogs/settings/pluginssettings.cpp:789
 #, kde-format
 msgid ""
 "Delete '%1' and all its files, downloaded models and environment? This "
@@ -12434,19 +12441,19 @@ msgstr ""
 "Supprimer « %1 » ainsi que tous ses fichiers, modèles téléchargés et son "
 "environnement ? Cette action est irréversible."
 
-#: src/dialogs/settings/pluginssettings.cpp:870
+#: src/dialogs/settings/pluginssettings.cpp:880
 #, kde-format
 msgid "Probing…"
 msgstr "Détection en cours…"
 
-#: src/dialogs/settings/pluginssettings.cpp:880
-#: src/dialogs/settings/pluginssettings.cpp:937
-#: src/plugins/pluginsettingstab.cpp:92
+#: src/dialogs/settings/pluginssettings.cpp:890
+#: src/dialogs/settings/pluginssettings.cpp:947
+#: src/plugins/pluginsettingstab.cpp:108
 #, kde-format
 msgid "Install to detect"
 msgstr "Installer pour détecter"
 
-#: src/dialogs/settings/pluginssettings.cpp:996
+#: src/dialogs/settings/pluginssettings.cpp:1006
 #, kde-format
 msgid ""
 "This will delete the installed models\n"
@@ -12455,8 +12462,8 @@ msgstr ""
 "Cela supprimera les modèles installés.\n"
 "Vous pourrez les installer à nouveau plus tard."
 
-#: src/dialogs/settings/pluginssettings.cpp:1013
-#: src/dialogs/settings/pluginssettings.cpp:1041
+#: src/dialogs/settings/pluginssettings.cpp:1023
+#: src/dialogs/settings/pluginssettings.cpp:1051
 #, kde-format
 msgid ""
 "This will delete the plugin python environment from:<br/><b>%1</b><br/>The "
@@ -12467,7 +12474,7 @@ msgstr ""
 "b><br/>L'environnement sera recréé et les modules téléchargés à chaque fois "
 "que vous réactiverez le module externe."
 
-#: src/dialogs/settings/pluginssettings.cpp:1027
+#: src/dialogs/settings/pluginssettings.cpp:1037
 #, kde-format
 msgid ""
 "This will delete the MCP python environment from:<br/><b>%1</b><br/>Without "
@@ -12480,82 +12487,82 @@ msgstr ""
 "nouveau."
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/dialogs/settings/pluginssettings.cpp:1056 rc.cpp:9666
+#: src/dialogs/settings/pluginssettings.cpp:1066 rc.cpp:9666
 #, kde-format
 msgid "Install multilingual translation"
 msgstr "Installer une traduction multilingue"
 
-#: src/dialogs/settings/pluginssettings.cpp:1065
+#: src/dialogs/settings/pluginssettings.cpp:1075
 #, kde-format
 msgid "Install a speech model - we recommend <b>%1</b>"
 msgstr "Installez un modèle vocal - nous vous recommandons <b>%1</b>"
 
 # unreviewed-context
-#: src/dialogs/settings/pluginssettings.cpp:1123
+#: src/dialogs/settings/pluginssettings.cpp:1133
 #, kde-format
 msgid "Select model to download"
 msgstr "Sélectionner le modèle à télécharger"
 
-#: src/dialogs/settings/pluginssettings.cpp:1139
+#: src/dialogs/settings/pluginssettings.cpp:1149
 #, kde-format
 msgid "All models are already installed"
 msgstr "Tous les modèles sont déjà installés."
 
-#: src/dialogs/settings/pluginssettings.cpp:1159
+#: src/dialogs/settings/pluginssettings.cpp:1169
 #, kde-format
 msgid "Downloading…"
 msgstr "Téléchargement en cours..."
 
-#: src/dialogs/settings/pluginssettings.cpp:1169
+#: src/dialogs/settings/pluginssettings.cpp:1179
 #, kde-format
 msgid "Downloading smallest model…"
 msgstr "Téléchargement en cours des plus petits modèles…"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/dialogs/settings/pluginssettings.cpp:1188 rc.cpp:9704
+#: src/dialogs/settings/pluginssettings.cpp:1198 rc.cpp:9704
 #, kde-format
 msgid "Download models"
 msgstr "Télécharger des modèles"
 
-#: src/dialogs/settings/pluginssettings.cpp:1240
-#: src/dialogs/settings/pluginssettings.cpp:1253
-#: src/plugins/pluginsettingstab.cpp:580
+#: src/dialogs/settings/pluginssettings.cpp:1250
+#: src/dialogs/settings/pluginssettings.cpp:1263
+#: src/plugins/pluginsettingstab.cpp:596
 #, kde-format
 msgid "Install a model"
 msgstr "Installer un modèle"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/dialogs/settings/pluginssettings.cpp:1255
-#: src/plugins/pluginsettingstab.cpp:228 src/plugins/pluginsettingstab.cpp:584
+#: src/dialogs/settings/pluginssettings.cpp:1265
+#: src/plugins/pluginsettingstab.cpp:244 src/plugins/pluginsettingstab.cpp:600
 #: rc.cpp:9672
 #, kde-format
 msgid "Manage models"
 msgstr "Gérer les modèles"
 
-#: src/dialogs/settings/pluginssettings.cpp:1314
+#: src/dialogs/settings/pluginssettings.cpp:1324
 #, kde-format
 msgid "Enter url for the new dictionary"
 msgstr "Saisir l'« URL » du nouveau dictionnaire"
 
-#: src/dialogs/settings/pluginssettings.cpp:1320
+#: src/dialogs/settings/pluginssettings.cpp:1330
 #, kde-format
 msgid "Downloading model…"
 msgstr "Téléchargement du modèle…"
 
-#: src/dialogs/settings/pluginssettings.cpp:1332
+#: src/dialogs/settings/pluginssettings.cpp:1342
 #, kde-format
 msgid "We do not allow deleting custom folder models, please do it manually."
 msgstr ""
 "Suppression des dossiers de modèles personnalisés non prise en charge, "
 "veuillez le faire manuellement."
 
-#: src/dialogs/settings/pluginssettings.cpp:1338
-#: src/dialogs/settings/pluginssettings.cpp:1391
+#: src/dialogs/settings/pluginssettings.cpp:1348
+#: src/dialogs/settings/pluginssettings.cpp:1401
 #, kde-format
 msgid "Cannot access dictionary folder."
 msgstr "Impossible d'accéder au dossier des dictionnaires."
 
-#: src/dialogs/settings/pluginssettings.cpp:1347
+#: src/dialogs/settings/pluginssettings.cpp:1357
 #, kde-format
 msgid ""
 "Delete folder:\n"
@@ -12564,28 +12571,28 @@ msgstr ""
 "Supprimer le dossier :\n"
 "%1"
 
-#: src/dialogs/settings/pluginssettings.cpp:1366
+#: src/dialogs/settings/pluginssettings.cpp:1376
 #, kde-format
 msgid "Download error"
 msgstr "Erreur de téléchargement"
 
-#: src/dialogs/settings/pluginssettings.cpp:1370
+#: src/dialogs/settings/pluginssettings.cpp:1380
 #, kde-format
 msgid "Download error %1"
 msgstr "Erreur de téléchargement %1"
 
-#: src/dialogs/settings/pluginssettings.cpp:1398
+#: src/dialogs/settings/pluginssettings.cpp:1408
 #, kde-format
 msgid "Extracting archive…"
 msgstr "Extraction de l'archive..."
 
-#: src/dialogs/settings/pluginssettings.cpp:1405
+#: src/dialogs/settings/pluginssettings.cpp:1415
 #, kde-format
 msgid "New dictionary installed."
 msgstr "Nouveau dictionnaire installé."
 
-#: src/dialogs/settings/pluginssettings.cpp:1547
-#: src/plugins/pluginsettingstab.cpp:894
+#: src/dialogs/settings/pluginssettings.cpp:1557
+#: src/plugins/pluginsettingstab.cpp:910
 #, kde-format
 msgid ""
 "Nvidia GPU support for %1\n"
@@ -12594,18 +12601,18 @@ msgstr ""
 "Prise en charge du processeur graphique (GPU) Nvidia pour %1\n"
 "Veuillez sélectionner la version de CUDA à installer."
 
-#: src/dialogs/settings/pluginssettings.cpp:1551
-#: src/plugins/pluginsettingstab.cpp:901
+#: src/dialogs/settings/pluginssettings.cpp:1561
+#: src/plugins/pluginsettingstab.cpp:917
 #, kde-format
 msgid "CUDA %1"
 msgstr "CUDA %1"
 
-#: src/dialogs/settings/pluginssettings.cpp:1564
+#: src/dialogs/settings/pluginssettings.cpp:1574
 #, kde-format
 msgid "Detected version: %1"
 msgstr "Version détectée : %1"
 
-#: src/dialogs/settings/pluginssettings.cpp:1567
+#: src/dialogs/settings/pluginssettings.cpp:1577
 #, kde-format
 msgid ""
 "Cannot determine CUDA version,\n"
@@ -12614,7 +12621,7 @@ msgstr ""
 "Impossible de déterminer la version de CUDA.\n"
 "Veuillez sélectionner la version disponible sur votre système."
 
-#: src/dialogs/settings/pluginssettings.cpp:1581
+#: src/dialogs/settings/pluginssettings.cpp:1591
 #, kde-format
 msgid ""
 "Only use this install option if your GPU\n"
@@ -12709,7 +12716,7 @@ msgid "Always use active project folder"
 msgstr "Toujours utiliser le dossier actif du projet"
 
 #: src/dialogs/settings/wunjosettingsdialog.cpp:493
-#: src/plugins/pluginsettingstab.cpp:112
+#: src/plugins/pluginsettingstab.cpp:128
 #, kde-format
 msgid "Environment"
 msgstr "Environnement"
@@ -13713,7 +13720,7 @@ msgid "This build does not ship the MCP server an outside agent needs."
 msgstr ""
 "Cette version ne fournit pas le serveur MCP dont un agent externe a besoin."
 
-#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1596
+#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1598
 #, kde-format
 msgid "interrupted"
 msgstr "interrompu"
@@ -13743,8 +13750,8 @@ msgid "Ask Wunjo…"
 msgstr "Demander à Wunjo…"
 
 #: src/chat/chatwidget.cpp:443 src/chat/chatwidget.cpp:446
-#: src/chat/chatwidget.cpp:1395 src/chat/chatwidget.cpp:1405
-#: src/chat/chatwidget.cpp:1569
+#: src/chat/chatwidget.cpp:1397 src/chat/chatwidget.cpp:1407
+#: src/chat/chatwidget.cpp:1571
 #, kde-format
 msgid "New chat"
 msgstr "Nouvelle discussion"
@@ -13780,8 +13787,8 @@ msgstr "Supprimer la discussion"
 msgid "Voice input (Whisper)"
 msgstr "Saisie vocale (Whisper)"
 
-#: src/chat/chatwidget.cpp:558 src/chat/chatwidget.cpp:1353
-#: src/chat/chatwidget.cpp:1487
+#: src/chat/chatwidget.cpp:558 src/chat/chatwidget.cpp:1355
+#: src/chat/chatwidget.cpp:1489
 #, kde-format
 msgid "Send (Enter)"
 msgstr "Envoyer (Entrée)"
@@ -13828,19 +13835,19 @@ msgstr "Arrêter l'enregistrement"
 msgid "Transcribing…"
 msgstr "Transcription en cours…"
 
-#: src/chat/chatwidget.cpp:888
+#: src/chat/chatwidget.cpp:890
 #, kde-format
 msgid "How would you like to work with Wunjo?"
 msgstr "Comment souhaitez-vous travailler avec Wunjo ?"
 
-#: src/chat/chatwidget.cpp:893
+#: src/chat/chatwidget.cpp:895
 #, kde-format
 msgid "Both drive the editor the same way. You can change this at any time."
 msgstr ""
 "Les deux pilotent l'éditeur de la même façon. Vous pouvez changer cela à "
 "tout moment."
 
-#: src/chat/chatwidget.cpp:1040
+#: src/chat/chatwidget.cpp:1042
 #, kde-format
 msgid ""
 "Everything Claude Code needs is in %1. Open a terminal there and run the "
@@ -13849,7 +13856,7 @@ msgstr ""
 "Tout ce dont Claude Code a besoin se trouve dans %1. Ouvrez-y un terminal et "
 "lancez la commande claude."
 
-#: src/chat/chatwidget.cpp:1051
+#: src/chat/chatwidget.cpp:1053
 #, kde-format
 msgid ""
 "MCP is not installed yet — install it in Settings, Plugins, on the MCP tab. "
@@ -13859,7 +13866,7 @@ msgstr ""
 "externes, dans l'onglet MCP. D'ici là, la première question de l'agent "
 "échouera dans son terminal."
 
-#: src/chat/chatwidget.cpp:1068
+#: src/chat/chatwidget.cpp:1070
 #, kde-format
 msgid ""
 "This model drives the editor through MCP, which is not installed yet. "
@@ -13868,7 +13875,7 @@ msgstr ""
 "Ce modèle pilote l'éditeur via MCP, qui n'est pas encore installé. Installez-"
 "le dans Configuration, Modules externes, dans l'onglet MCP."
 
-#: src/chat/chatwidget.cpp:1081
+#: src/chat/chatwidget.cpp:1083
 #, kde-format
 msgid ""
 "Install the assistant in the settings that just opened, then come back here."
@@ -13876,71 +13883,71 @@ msgstr ""
 "Installez l'assistant dans la configuration qui vient de s'ouvrir, puis "
 "revenez ici."
 
-#: src/chat/chatwidget.cpp:1161
+#: src/chat/chatwidget.cpp:1163
 #, kde-format
 msgid "New loop"
 msgstr "Nouvelle boucle"
 
-#: src/chat/chatwidget.cpp:1161
+#: src/chat/chatwidget.cpp:1163
 #, kde-format
 msgid "New skill"
 msgstr "Nouvelle compétence"
 
-#: src/chat/chatwidget.cpp:1162
+#: src/chat/chatwidget.cpp:1164
 #, kde-format
 msgid "Import from file…"
 msgstr "Importer depuis un fichier…"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1163 rc.cpp:8966 rc.cpp:10348
+#: src/chat/chatwidget.cpp:1165 rc.cpp:8966 rc.cpp:10348
 #, kde-format
 msgid "Edit"
 msgstr "Éditer"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1164 src/chat/generatorcard.cpp:425 rc.cpp:10326
+#: src/chat/chatwidget.cpp:1166 src/chat/generatorcard.cpp:427 rc.cpp:10326
 #: rc.cpp:10342 rc.cpp:10400
 #, kde-format
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/chat/chatwidget.cpp:1180
+#: src/chat/chatwidget.cpp:1182
 #, kde-format
 msgid "Import Loops"
 msgstr "Importer des boucles"
 
-#: src/chat/chatwidget.cpp:1180
+#: src/chat/chatwidget.cpp:1182
 #, kde-format
 msgid "Import Skills"
 msgstr "Importer des compétences"
 
-#: src/chat/chatwidget.cpp:1181
+#: src/chat/chatwidget.cpp:1183
 #, kde-format
 msgid "Text documents (*.md *.txt)"
 msgstr "Documents texte (*.md *.txt)"
 
-#: src/chat/chatwidget.cpp:1208
+#: src/chat/chatwidget.cpp:1210
 #, kde-format
 msgid "New Loop"
 msgstr "Nouvelle boucle"
 
-#: src/chat/chatwidget.cpp:1208
+#: src/chat/chatwidget.cpp:1210
 #, kde-format
 msgid "New Skill"
 msgstr "Nouvelle compétence"
 
-#: src/chat/chatwidget.cpp:1209
+#: src/chat/chatwidget.cpp:1211
 #, kde-format
 msgid "Edit Loop"
 msgstr "Modifier la boucle"
 
-#: src/chat/chatwidget.cpp:1209
+#: src/chat/chatwidget.cpp:1211
 #, kde-format
 msgid "Edit Skill"
 msgstr "Modifier la compétence"
 
-#: src/chat/chatwidget.cpp:1216
+#: src/chat/chatwidget.cpp:1218
 #, kde-format
 msgid ""
 "Describe the pipeline step by step: what to produce and which tools or "
@@ -13949,47 +13956,47 @@ msgstr ""
 "Décrivez le traitement étape par étape : ce qu'il faut produire et quels "
 "outils ou modules externes utiliser à chaque étape…"
 
-#: src/chat/chatwidget.cpp:1218
+#: src/chat/chatwidget.cpp:1220
 #, kde-format
 msgid "Describe how the assistant should work…"
 msgstr "Décrivez comment l'assistant doit travailler…"
 
-#: src/chat/chatwidget.cpp:1290
+#: src/chat/chatwidget.cpp:1292
 #, kde-format
 msgid "Built in. Editing it keeps your version; deleting it hides it."
 msgstr "Intégré. Le modifier conserve votre version ; le supprimer le masque."
 
-#: src/chat/chatwidget.cpp:1294
+#: src/chat/chatwidget.cpp:1296
 #, kde-format
 msgid "Built in, edited by you — your version is the one used."
 msgstr "Intégré, modifié par vous — c'est votre version qui est utilisée."
 
-#: src/chat/chatwidget.cpp:1353
+#: src/chat/chatwidget.cpp:1355
 #, kde-format
 msgid "Stop the assistant"
 msgstr "Arrêter l'assistant"
 
-#: src/chat/chatwidget.cpp:1416
+#: src/chat/chatwidget.cpp:1418
 #, kde-format
 msgid "Attach files"
 msgstr "Joindre des fichiers"
 
-#: src/chat/chatwidget.cpp:1462
+#: src/chat/chatwidget.cpp:1464
 #, kde-format
 msgid "Remove %1"
 msgstr "Supprimer %1"
 
-#: src/chat/chatwidget.cpp:1492
+#: src/chat/chatwidget.cpp:1494
 #, kde-format
 msgid "Stopped."
 msgstr "Arrêté."
 
-#: src/chat/chatwidget.cpp:1524 src/chat/chatwidget.cpp:1525
+#: src/chat/chatwidget.cpp:1526 src/chat/chatwidget.cpp:1527
 #, kde-format
 msgid "Attached: %1"
 msgstr "Joint : %1"
 
-#: src/chat/chatwidget.cpp:1542
+#: src/chat/chatwidget.cpp:1544
 #, kde-format
 msgid ""
 "Your own agent is driving. Ask it in the terminal you opened in %1, and what "
@@ -13998,7 +14005,7 @@ msgstr ""
 "Votre propre agent pilote. Posez-lui vos questions dans le terminal que vous "
 "avez ouvert dans %1, et ce qu'il fait apparaît ici."
 
-#: src/chat/chatwidget.cpp:1548
+#: src/chat/chatwidget.cpp:1550
 #, kde-format
 msgid ""
 "No model is selected. Press / to choose one, or pick \"External MCP\" to "
@@ -14009,17 +14016,17 @@ msgstr ""
 "choisissez « MCP externe » pour piloter l'éditeur depuis un agent que vous "
 "utilisez déjà, comme Claude Code ou Cursor."
 
-#: src/chat/chatwidget.cpp:1581
+#: src/chat/chatwidget.cpp:1583
 #, kde-format
 msgid "Untitled chat"
 msgstr "Discussion sans titre"
 
-#: src/chat/chatwidget.cpp:1586
+#: src/chat/chatwidget.cpp:1588
 #, kde-format
 msgid "No saved chats for this project yet"
 msgstr "Aucune discussion enregistrée pour ce projet pour le moment"
 
-#: src/chat/chatwidget.cpp:1613
+#: src/chat/chatwidget.cpp:1615
 #, kde-format
 msgid ""
 "Skills are simple instructions that tell the assistant how to work in this "
@@ -14028,7 +14035,7 @@ msgstr ""
 "Les compétences sont de simples instructions qui indiquent à l'assistant "
 "comment travailler dans ce projet."
 
-#: src/chat/chatwidget.cpp:1616
+#: src/chat/chatwidget.cpp:1618
 #, kde-format
 msgid ""
 "A loop is a set of steps the assistant follows to complete a task using the "
@@ -14037,7 +14044,7 @@ msgstr ""
 "Une boucle est une suite d'étapes que l'assistant suit pour accomplir une "
 "tâche à l'aide des outils ou des modules externes que vous choisissez."
 
-#: src/chat/chatwidget.cpp:1619
+#: src/chat/chatwidget.cpp:1621
 #, kde-format
 msgid ""
 "Use local model or external MCP for third-party agents to automatically "
@@ -14052,18 +14059,18 @@ msgstr ""
 #. i18n: file: src/ui/rgbparade_ui.ui
 #. i18n: file: src/ui/vectorscope_ui.ui
 #. i18n: file: src/ui/waveform_ui.ui
-#: src/chat/chatwidget.cpp:1634 rc.cpp:10174 rc.cpp:10568 rc.cpp:10868
+#: src/chat/chatwidget.cpp:1636 rc.cpp:10174 rc.cpp:10568 rc.cpp:10868
 #: rc.cpp:11250 rc.cpp:11252
 #, kde-format
 msgid "Settings"
 msgstr "Configuration"
 
-#: src/chat/chatwidget.cpp:1638
+#: src/chat/chatwidget.cpp:1640
 #, kde-format
 msgid "External MCP…"
 msgstr "MCP externe…"
 
-#: src/chat/chatwidget.cpp:1639
+#: src/chat/chatwidget.cpp:1641
 #, kde-format
 msgid ""
 "Write the folder an outside agent works in — Claude Code, Cursor, Codex — "
@@ -14072,99 +14079,99 @@ msgstr ""
 "Créer le dossier dans lequel travaille un agent externe — Claude Code, "
 "Cursor, Codex — et l'ouvrir"
 
-#: src/chat/chatwidget.cpp:1657
+#: src/chat/chatwidget.cpp:1659
 #, kde-format
 msgid "Switch model…"
 msgstr "Changer de modèle…"
 
-#: src/chat/chatwidget.cpp:1688
+#: src/chat/chatwidget.cpp:1690
 #, kde-format
 msgid "No models installed"
 msgstr "Aucun modèle installé"
 
-#: src/chat/chatwidget.cpp:1694
+#: src/chat/chatwidget.cpp:1696
 #, kde-format
 msgid "Commands"
 msgstr "Commandes"
 
-#: src/chat/chatwidget.cpp:1695
+#: src/chat/chatwidget.cpp:1697
 #, kde-format
 msgid "/new — start a new chat"
 msgstr "/new — démarrer une nouvelle discussion"
 
-#: src/chat/chatwidget.cpp:1696
+#: src/chat/chatwidget.cpp:1698
 #, kde-format
 msgid "/history — find an earlier chat"
 msgstr "/history — retrouver une discussion précédente"
 
-#: src/chat/chatwidget.cpp:1697
+#: src/chat/chatwidget.cpp:1699
 #, kde-format
 msgid "/skills — how it should work"
 msgstr "/skills — comment il doit travailler"
 
-#: src/chat/chatwidget.cpp:1698
+#: src/chat/chatwidget.cpp:1700
 #, kde-format
 msgid "/loops — a pipeline to follow"
 msgstr "/loops — un traitement à suivre"
 
-#: src/chat/chatwidget.cpp:1780
+#: src/chat/chatwidget.cpp:1782
 #, kde-format
 msgid "Running…"
 msgstr "En cours…"
 
-#: src/chat/chatwidget.cpp:1809
+#: src/chat/chatwidget.cpp:1813
 #, kde-format
 msgid "%1 is not installed."
 msgstr "%1 n’est pas installé."
 
-#: src/chat/generatorcard.cpp:112
+#: src/chat/generatorcard.cpp:114
 #, kde-format
 msgid "filled in by the assistant"
 msgstr "rempli par l’assistant"
 
-#: src/chat/generatorcard.cpp:116 src/chat/generatorcard.cpp:584
+#: src/chat/generatorcard.cpp:118 src/chat/generatorcard.cpp:586
 #, kde-format
 msgid "Collapse"
 msgstr "Replier"
 
-#: src/chat/generatorcard.cpp:265
+#: src/chat/generatorcard.cpp:267
 #, kde-format
 msgctxt "@action:button make what the card describes"
 msgid "Generate"
 msgstr "Générer"
 
-#: src/chat/generatorcard.cpp:289 src/chat/generatorcard.cpp:380
-#: src/chat/generatorcard.cpp:485
+#: src/chat/generatorcard.cpp:291 src/chat/generatorcard.cpp:382
+#: src/chat/generatorcard.cpp:487
 #, kde-format
 msgid "Upload voice"
 msgstr "Importer une voix"
 
-#: src/chat/generatorcard.cpp:373
+#: src/chat/generatorcard.cpp:375
 #, kde-format
 msgid "Find a voice"
 msgstr "Chercher une voix"
 
-#: src/chat/generatorcard.cpp:421
+#: src/chat/generatorcard.cpp:423
 #, kde-format
 msgid "Listen"
 msgstr "Écouter"
 
-#: src/chat/generatorcard.cpp:425
+#: src/chat/generatorcard.cpp:427
 #, kde-format
 msgid "Click again to delete"
 msgstr "Cliquez à nouveau pour supprimer"
 
-#: src/chat/generatorcard.cpp:486
+#: src/chat/generatorcard.cpp:488
 #, kde-format
 msgid "Audio (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 msgstr "Audio (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 
-#: src/chat/generatorcard.cpp:564
+#: src/chat/generatorcard.cpp:566
 #, kde-format
 msgid "Upload a voice first"
 msgstr "Importez d’abord une voix"
 
-#: src/chat/generatorcard.cpp:564
+#: src/chat/generatorcard.cpp:566
 #, kde-format
 msgid "Fill in %1"
 msgstr "Remplissez %1"
@@ -14364,7 +14371,7 @@ msgstr ""
 msgid "This plugin does not say how it is meant to be used."
 msgstr "Ce module externe n'indique pas comment il doit être utilisé."
 
-#: src/plugins/pluginaboutdialog.cpp:114 src/plugins/pluginsettingstab.cpp:70
+#: src/plugins/pluginaboutdialog.cpp:114 src/plugins/pluginsettingstab.cpp:86
 #, kde-format
 msgid "About %1"
 msgstr "À propos de %1"
@@ -14567,12 +14574,12 @@ msgstr "Rendu de %1 en cours…"
 msgid "Saved as the preset '%1'."
 msgstr "Enregistré comme préréglage « %1 »."
 
-#: src/plugins/pluginmanager.cpp:1877 src/plugins/pluginmanager.cpp:1991
+#: src/plugins/pluginmanager.cpp:1877 src/plugins/pluginmanager.cpp:1993
 #, kde-format
 msgid "%1 produced nothing."
 msgstr "%1 n'a rien produit."
 
-#: src/plugins/pluginmanager.cpp:1903 src/plugins/pluginmanager.cpp:2079
+#: src/plugins/pluginmanager.cpp:1903 src/plugins/pluginmanager.cpp:2081
 #, kde-format
 msgid "%1 finished."
 msgstr "%1 terminé."
@@ -14583,324 +14590,345 @@ msgid "%1 finished — on a new track, and in the '%2' bin folder"
 msgstr ""
 "%1 terminé — sur une nouvelle piste, et dans le dossier « %2 » du projet"
 
-#: src/plugins/pluginmanager.cpp:1987
+#: src/plugins/pluginmanager.cpp:1989
 #, kde-format
 msgid "Saved to the library as '%1'."
 msgstr "Enregistré dans la bibliothèque sous « %1 »."
 
-#: src/plugins/pluginmanager.cpp:2005
+#: src/plugins/pluginmanager.cpp:2007
 #, kde-format
 msgid "%1 is ready in the '%2' bin folder."
 msgstr "%1 est prêt dans le dossier « %2 » du projet."
 
-#: src/plugins/pluginmanager.cpp:2006
+#: src/plugins/pluginmanager.cpp:2008
 #, kde-format
 msgid "%1 is ready on the timeline and in the '%2' bin folder."
 msgstr "%1 est prêt dans le montage et dans le dossier « %2 » du projet."
 
-#: src/plugins/pluginmanager.cpp:2021
+#: src/plugins/pluginmanager.cpp:2023
 #, kde-format
 msgid "Running %1…"
 msgstr "Exécution de %1…"
 
-#: src/plugins/pluginmanager.cpp:2044 src/plugins/pluginsetpanel.cpp:267
+#: src/plugins/pluginmanager.cpp:2046 src/plugins/pluginsetpanel.cpp:267
 #, kde-format
 msgid "Nothing came back for %1."
 msgstr "Aucun résultat pour %1."
 
-#: src/plugins/pluginmanager.cpp:2052 src/plugins/pluginsetpanel.cpp:273
+#: src/plugins/pluginmanager.cpp:2054 src/plugins/pluginsetpanel.cpp:273
 #, kde-format
 msgid "The set could not be saved."
 msgstr "Le jeu n'a pas pu être enregistré."
 
-#: src/plugins/pluginmanager.cpp:2058
+#: src/plugins/pluginmanager.cpp:2060
 #, kde-format
 msgid "%1 recorded '%2'."
 msgstr "%1 a enregistré « %2 »."
 
-#: src/plugins/pluginmanager.cpp:2059
+#: src/plugins/pluginmanager.cpp:2061
 #, kde-format
 msgid "recorded '%1'"
 msgstr "« %1 » enregistré"
 
-#: src/plugins/pluginmanager.cpp:2080
+#: src/plugins/pluginmanager.cpp:2082
 #, kde-format
 msgid "%2: %1 file added to the bin."
 msgid_plural "%2: %1 files added to the bin."
 msgstr[0] "%2 : %1 fichier ajouté au dossier du projet."
 msgstr[1] "%2 : %1 fichiers ajoutés au dossier du projet."
 
-#: src/plugins/pluginmanifest.cpp:51
+#: src/plugins/pluginmanifest.cpp:52
 #, kde-format
 msgid "plugin.json is missing"
 msgstr "plugin.json est manquant"
 
-#: src/plugins/pluginmanifest.cpp:57
+#: src/plugins/pluginmanifest.cpp:58
 #, kde-format
 msgid "plugin.json is not valid JSON: %1"
 msgstr "plugin.json n'est pas un JSON valable : %1"
 
-#: src/plugins/pluginmanifest.cpp:95
+#: src/plugins/pluginmanifest.cpp:96
 #, kde-format
 msgid "every 'requirements_cuda' entry needs a 'file'"
 msgstr "chaque entrée « requirements_cuda » nécessite un « file »"
 
-#: src/plugins/pluginmanifest.cpp:99
+#: src/plugins/pluginmanifest.cpp:100
 #, kde-format
 msgid "requirements file '%1' was not found"
 msgstr "le fichier de dépendances « %1 » est introuvable"
 
-#: src/plugins/pluginmanifest.cpp:131
+#: src/plugins/pluginmanifest.cpp:132
 #, kde-format
 msgid "model '%1': 'unpack' only understands \"zip\" or \"tar.gz\""
 msgstr "modèle « %1 » : « unpack » ne comprend que \"zip\" ou \"tar.gz\""
 
-#: src/plugins/pluginmanifest.cpp:150
+#: src/plugins/pluginmanifest.cpp:151
 #, kde-format
 msgid "every 'variants' entry needs an 'id'"
 msgstr "chaque entrée « variants » nécessite un « id »"
 
-#: src/plugins/pluginmanifest.cpp:155
+#: src/plugins/pluginmanifest.cpp:156
 #, kde-format
 msgid "variant '%1' is declared twice"
 msgstr "la variante « %1 » est déclarée deux fois"
 
-#: src/plugins/pluginmanifest.cpp:163
+#: src/plugins/pluginmanifest.cpp:164
 #, kde-format
 msgid "model '%1' names the variant '%2', which is not declared"
 msgstr "le modèle « %1 » désigne la variante « %2 », qui n'est pas déclarée"
 
-#: src/plugins/pluginmanifest.cpp:233
+#: src/plugins/pluginmanifest.cpp:199
+#, kde-format
+msgid "'generate' must be a list of cards"
+msgstr "'generate' doit être une liste de cartes"
+
+#: src/plugins/pluginmanifest.cpp:235
+#, kde-format
+msgid ""
+"every 'generate' card needs an 'id' of lowercase letters, digits and dashes"
+msgstr "chaque carte de 'generate' a besoin d'un 'id' en minuscules, chiffres et tirets"
+
+#: src/plugins/pluginmanifest.cpp:239
+#, kde-format
+msgid "the 'generate' card '%1' is declared twice"
+msgstr "la carte '%1' de 'generate' est déclarée deux fois"
+
+#: src/plugins/pluginmanifest.cpp:243
+#, kde-format
+msgid "the 'generate' card '%1' has no fields"
+msgstr "la carte '%1' de 'generate' n'a aucun champ"
+
+#: src/plugins/pluginmanifest.cpp:262
 #, kde-format
 msgid "every 'effects' entry must be the path of an effect XML"
 msgstr "chaque entrée « effects » doit être le chemin d'un fichier XML d'effet"
 
-#: src/plugins/pluginmanifest.cpp:238
+#: src/plugins/pluginmanifest.cpp:267
 #, kde-format
 msgid "effect '%1' must live inside the plugin folder"
 msgstr "l'effet « %1 » doit se trouver dans le dossier du module externe"
 
-#: src/plugins/pluginmanifest.cpp:243
+#: src/plugins/pluginmanifest.cpp:272
 #, kde-format
 msgid "effect '%1' is missing or is not valid XML"
 msgstr "l'effet « %1 » est manquant ou n'est pas un XML valable"
 
-#: src/plugins/pluginmanifest.cpp:248
+#: src/plugins/pluginmanifest.cpp:277
 #, kde-format
 msgid "effect '%1' must have a single <effect> root"
 msgstr "l'effet « %1 » doit avoir une seule racine <effect>"
 
-#: src/plugins/pluginmanifest.cpp:256
+#: src/plugins/pluginmanifest.cpp:285
 #, kde-format
 msgid "effect '%1' does not name the MLT service it is built on"
 msgstr ""
 "l'effet « %1 » n'indique pas le service MLT sur lequel il est construit"
 
-#: src/plugins/pluginmanifest.cpp:259
+#: src/plugins/pluginmanifest.cpp:288
 #, kde-format
 msgid "effect '%1' has no id"
 msgstr "l'effet « %1 » n'a pas d'id"
 
-#: src/plugins/pluginmanifest.cpp:265
+#: src/plugins/pluginmanifest.cpp:294
 #, kde-format
 msgid "effect id '%1' must be '%2' or start with '%2.'"
 msgstr "l'id d'effet « %1 » doit être « %2 » ou commencer par « %2. »"
 
-#: src/plugins/pluginmanifest.cpp:290
+#: src/plugins/pluginmanifest.cpp:319
 #, kde-format
 msgid "effect '%1' requires '%2', which this plugin does not ship"
 msgstr "l'effet « %1 » nécessite « %2 », que ce module externe ne fournit pas"
 
-#: src/plugins/pluginmanifest.cpp:322
+#: src/plugins/pluginmanifest.cpp:351
 #, kde-format
 msgid "manifest_version must be 1"
 msgstr "manifest_version doit valoir 1"
 
-#: src/plugins/pluginmanifest.cpp:330
+#: src/plugins/pluginmanifest.cpp:359
 #, kde-format
 msgid "'%1' must look like \"3\", \"3.1\" or \"3.1.2\", not '%2'"
 msgstr ""
 "« %1 » doit être de la forme \"3\", \"3.1\" ou \"3.1.2\", et non « %2 »"
 
-#: src/plugins/pluginmanifest.cpp:335
+#: src/plugins/pluginmanifest.cpp:364
 #, kde-format
 msgid "'min_app_version' (%1) is newer than 'max_app_version' (%2)"
 msgstr "« min_app_version » (%1) est plus récent que « max_app_version » (%2)"
 
-#: src/plugins/pluginmanifest.cpp:339
+#: src/plugins/pluginmanifest.cpp:368
 #, kde-format
 msgid "missing required field 'id'"
 msgstr "champ obligatoire « id » manquant"
 
-#: src/plugins/pluginmanifest.cpp:341
+#: src/plugins/pluginmanifest.cpp:370
 #, kde-format
 msgid "id '%1' may only contain lowercase letters, digits and hyphens"
 msgstr ""
 "l'id « %1 » ne peut contenir que des lettres minuscules, des chiffres et des "
 "tirets"
 
-#: src/plugins/pluginmanifest.cpp:345
+#: src/plugins/pluginmanifest.cpp:374
 #, kde-format
 msgid "id '%1' must match the folder name '%2'"
 msgstr "l'id « %1 » doit correspondre au nom du dossier « %2 »"
 
-#: src/plugins/pluginmanifest.cpp:349
+#: src/plugins/pluginmanifest.cpp:378
 #, kde-format
 msgid "missing required field 'name'"
 msgstr "champ obligatoire « name » manquant"
 
-#: src/plugins/pluginmanifest.cpp:352
+#: src/plugins/pluginmanifest.cpp:381
 #, kde-format
 msgid "missing required field 'version'"
 msgstr "champ obligatoire « version » manquant"
 
-#: src/plugins/pluginmanifest.cpp:355
+#: src/plugins/pluginmanifest.cpp:384
 #, kde-format
 msgid "missing required field 'kind'"
 msgstr "champ obligatoire « kind » manquant"
 
-#: src/plugins/pluginmanifest.cpp:357
+#: src/plugins/pluginmanifest.cpp:386
 #, kde-format
 msgid "kind must be 'api' or 'local'"
 msgstr "kind doit valoir « api » ou « local »"
 
-#: src/plugins/pluginmanifest.cpp:360
+#: src/plugins/pluginmanifest.cpp:389
 #, kde-format
 msgid "venv must be 'private'"
 msgstr "venv doit valoir « private »"
 
-#: src/plugins/pluginmanifest.cpp:363
+#: src/plugins/pluginmanifest.cpp:392
 #, kde-format
 msgid "missing required field 'target'"
 msgstr "champ obligatoire « target » manquant"
 
-#: src/plugins/pluginmanifest.cpp:367
+#: src/plugins/pluginmanifest.cpp:396
 #, kde-format
 msgid "target must be one of video, audio, face, generator, agent"
 msgstr "target doit valoir video, audio, face, generator ou agent"
 
-#: src/plugins/pluginmanifest.cpp:375
+#: src/plugins/pluginmanifest.cpp:404
 #, kde-format
 msgid "target 'agent' cannot be combined with another target"
 msgstr "target « agent » ne peut pas être combiné avec une autre cible"
 
-#: src/plugins/pluginmanifest.cpp:378
+#: src/plugins/pluginmanifest.cpp:407
 #, kde-format
-msgid "a generator needs a 'generate' block with its fields"
-msgstr "un générateur a besoin d’un bloc 'generate' avec ses champs"
+msgid "a generator needs at least one card in 'generate'"
+msgstr "un générateur a besoin d'au moins une carte dans 'generate'"
 
-#: src/plugins/pluginmanifest.cpp:382
+#: src/plugins/pluginmanifest.cpp:411
 #, kde-format
 msgid "missing required field 'entry'"
 msgstr "champ obligatoire « entry » manquant"
 
-#: src/plugins/pluginmanifest.cpp:384
+#: src/plugins/pluginmanifest.cpp:413
 #, kde-format
 msgid "entry script '%1' was not found"
 msgstr "le script d'entrée « %1 » est introuvable"
 
-#: src/plugins/pluginmanifest.cpp:387
+#: src/plugins/pluginmanifest.cpp:416
 #, kde-format
 msgid "an 'api' plugin must declare provider.name"
 msgstr "un module externe « api » doit déclarer provider.name"
 
-#: src/plugins/pluginmanifest.cpp:391
+#: src/plugins/pluginmanifest.cpp:420
 #, kde-format
 msgid "unknown os '%1'"
 msgstr "système d'exploitation inconnu « %1 »"
 
-#: src/plugins/pluginmanifest.cpp:485
+#: src/plugins/pluginmanifest.cpp:514
 #, kde-format
 msgid "needs a graphics card"
 msgstr "nécessite une carte graphique"
 
-#: src/plugins/pluginmanifest.cpp:488
+#: src/plugins/pluginmanifest.cpp:517
 #, kde-format
 msgid "needs %1 GB of video memory, this card has %2 GB"
 msgstr "nécessite %1 Go de mémoire vidéo, cette carte a %2 Go"
 
-#: src/plugins/pluginmanifest.cpp:584
+#: src/plugins/pluginmanifest.cpp:626
 #, kde-format
 msgid "%1 needs Wunjo Make %2 or newer; this is %3."
 msgstr "%1 nécessite Wunjo Make %2 ou plus récent ; ceci est la version %3."
 
-#: src/plugins/pluginmanifest.cpp:587
+#: src/plugins/pluginmanifest.cpp:629
 #, kde-format
 msgid "%1 was built for Wunjo Make %2 and older; this is %3."
 msgstr ""
 "%1 a été conçu pour Wunjo Make %2 et antérieur ; ceci est la version %3."
 
-#: src/plugins/pluginmanifest.cpp:648
+#: src/plugins/pluginmanifest.cpp:690
 #: src/project/dialogs/projectsettings.cpp:413
 #, kde-format
 msgid "Video clips"
 msgstr "Clips vidéo"
 
-#: src/plugins/pluginmanifest.cpp:650
+#: src/plugins/pluginmanifest.cpp:692
 #: src/project/dialogs/projectsettings.cpp:416
 #, kde-format
 msgid "Audio clips"
 msgstr "Clips audio"
 
-#: src/plugins/pluginmanifest.cpp:652
+#: src/plugins/pluginmanifest.cpp:694
 #, kde-format
 msgid "Detected faces"
 msgstr "Visages détectés"
 
-#: src/plugins/pluginmanifest.cpp:654
+#: src/plugins/pluginmanifest.cpp:696
 #, kde-format
 msgid "Media generation"
 msgstr "Génération de médias"
 
-#: src/plugins/pluginmanifest.cpp:656
+#: src/plugins/pluginmanifest.cpp:698
 #, kde-format
 msgid "The chat assistant"
 msgstr "L'assistant de discussion"
 
-#: src/plugins/pluginmanifest.cpp:659
+#: src/plugins/pluginmanifest.cpp:701
 #, kde-format
 msgctxt "separator between the kinds of clip a plugin works on"
 msgid " and "
 msgstr " et "
 
-#: src/plugins/pluginmanifest.cpp:674
+#: src/plugins/pluginmanifest.cpp:716
 #, kde-format
 msgid "Acts on"
 msgstr "Agit sur"
 
-#: src/plugins/pluginmanifest.cpp:680
+#: src/plugins/pluginmanifest.cpp:722
 #, kde-format
 msgid "Adds effects"
 msgstr "Ajoute des effets"
 
-#: src/plugins/pluginmanifest.cpp:680
+#: src/plugins/pluginmanifest.cpp:722
 #, kde-format
 msgid "Adds effect"
 msgstr "Ajoute un effet"
 
-#: src/plugins/pluginmanifest.cpp:682
+#: src/plugins/pluginmanifest.cpp:724
 #, kde-format
 msgid "Online API (%1)"
 msgstr "API en ligne (%1)"
 
-#: src/plugins/pluginmanifest.cpp:682
+#: src/plugins/pluginmanifest.cpp:724
 #, kde-format
 msgid "Local model"
 msgstr "Modèle local"
 
-#: src/plugins/pluginmanifest.cpp:684
+#: src/plugins/pluginmanifest.cpp:726
 #: src/onlineresources/resourcewidget.cpp:486
 #: src/project/dialogs/projectsettings.cpp:223
 #, kde-format
 msgid "Author"
 msgstr "Auteur"
 
-#: src/plugins/pluginmanifest.cpp:686
+#: src/plugins/pluginmanifest.cpp:728
 #, kde-format
 msgid "License"
 msgstr "Licence"
 
-#: src/plugins/pluginmanifest.cpp:686
+#: src/plugins/pluginmanifest.cpp:728
 #, kde-format
 msgid "not specified"
 msgstr "non précisée"
@@ -14925,14 +14953,14 @@ msgstr ""
 msgid "%1 — %2"
 msgstr "%1 — %2"
 
-#: src/plugins/pluginmodelsdialog.cpp:250 src/plugins/pluginsettingstab.cpp:742
-#: src/plugins/pluginsettingstab.cpp:823
+#: src/plugins/pluginmodelsdialog.cpp:250 src/plugins/pluginsettingstab.cpp:758
+#: src/plugins/pluginsettingstab.cpp:839
 #, kde-format
 msgid "Could not download %1: %2"
 msgstr "Impossible de télécharger %1 : %2"
 
-#: src/plugins/pluginmodelsdialog.cpp:265 src/plugins/pluginsettingstab.cpp:751
-#: src/plugins/pluginsettingstab.cpp:854
+#: src/plugins/pluginmodelsdialog.cpp:265 src/plugins/pluginsettingstab.cpp:767
+#: src/plugins/pluginsettingstab.cpp:870
 #, kde-format
 msgid "%1 arrived damaged and was removed — please download it again."
 msgstr ""
@@ -15115,20 +15143,20 @@ msgstr "%1 n'est pas un fichier de jeu."
 #. i18n: file: src/ui/configcapture_ui.ui
 #. i18n: file: src/ui/configjogshuttle_ui.ui
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:85 rc.cpp:9314 rc.cpp:9458 rc.cpp:9676
+#: src/plugins/pluginsettingstab.cpp:101 rc.cpp:9314 rc.cpp:9458 rc.cpp:9676
 #: rc.cpp:9702
 #, kde-format
 msgid "Device:"
 msgstr "Périphérique :"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:97 src/plugins/pluginsettingstab.cpp:892
-#: src/plugins/pluginsettingstab.cpp:931 rc.cpp:9680 rc.cpp:9694
+#: src/plugins/pluginsettingstab.cpp:113 src/plugins/pluginsettingstab.cpp:908
+#: src/plugins/pluginsettingstab.cpp:947 rc.cpp:9680 rc.cpp:9694
 #, kde-format
 msgid "GPU Support"
 msgstr "Prise en charge d'un processeur graphique (GPU)"
 
-#: src/plugins/pluginsettingstab.cpp:98
+#: src/plugins/pluginsettingstab.cpp:114
 #, kde-format
 msgid ""
 "Reinstall for a specific CUDA version — only if your GPU is not being used"
@@ -15137,203 +15165,203 @@ msgstr ""
 "processeur graphique n'est pas utilisé"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:141 rc.cpp:9662 rc.cpp:9714
+#: src/plugins/pluginsettingstab.cpp:157 rc.cpp:9662 rc.cpp:9714
 #, kde-format
 msgid "Plugin size"
 msgstr "Taille du module externe"
 
-#: src/plugins/pluginsettingstab.cpp:142 src/plugins/pluginsettingstab.cpp:185
+#: src/plugins/pluginsettingstab.cpp:158 src/plugins/pluginsettingstab.cpp:201
 #, kde-format
 msgid "not installed"
 msgstr "non installé"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:145 src/plugins/pluginsettingstab.cpp:947
+#: src/plugins/pluginsettingstab.cpp:161 src/plugins/pluginsettingstab.cpp:963
 #: rc.cpp:9664 rc.cpp:9712
 #, kde-format
 msgid "Uninstall plugin"
 msgstr "Désinstaller un module externe"
 
-#: src/plugins/pluginsettingstab.cpp:147
+#: src/plugins/pluginsettingstab.cpp:163
 #, kde-format
 msgid "Remove the installed environment (keeps the plugin)"
 msgstr "Supprimer l'environnement installé (conserve le module externe)"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:224 rc.cpp:9670
+#: src/plugins/pluginsettingstab.cpp:240 rc.cpp:9670
 #, kde-format
 msgid "Model:"
 msgstr "Modèle :"
 
-#: src/plugins/pluginsettingstab.cpp:263
+#: src/plugins/pluginsettingstab.cpp:279
 #, kde-format
 msgid "API key"
 msgstr "Clé d'API"
 
-#: src/plugins/pluginsettingstab.cpp:268
+#: src/plugins/pluginsettingstab.cpp:284
 #, kde-format
 msgid "paste your %1 key"
 msgstr "collez votre clé %1"
 
-#: src/plugins/pluginsettingstab.cpp:269
+#: src/plugins/pluginsettingstab.cpp:285
 #, kde-format
 msgid "%1 key:"
 msgstr "Clé %1 :"
 
-#: src/plugins/pluginsettingstab.cpp:274
+#: src/plugins/pluginsettingstab.cpp:290
 #, kde-format
 msgid "Get a key"
 msgstr "Obtenir une clé"
 
-#: src/plugins/pluginsettingstab.cpp:279
+#: src/plugins/pluginsettingstab.cpp:295
 #, kde-format
 msgid "Save key"
 msgstr "Enregistrer la clé"
 
 #. i18n: file: src/ui/configtranscode_ui.ui
-#: src/plugins/pluginsettingstab.cpp:300 rc.cpp:9810
+#: src/plugins/pluginsettingstab.cpp:316 rc.cpp:9810
 #, kde-format
 msgid "Parameters"
 msgstr "Paramètres"
 
-#: src/plugins/pluginsettingstab.cpp:337
+#: src/plugins/pluginsettingstab.cpp:353
 #, kde-format
 msgid "Browse…"
 msgstr "Parcourir…"
 
-#: src/plugins/pluginsettingstab.cpp:342
+#: src/plugins/pluginsettingstab.cpp:358
 #, kde-format
 msgid "Select file"
 msgstr "Sélectionner un fichier"
 
-#: src/plugins/pluginsettingstab.cpp:434
+#: src/plugins/pluginsettingstab.cpp:450
 #, kde-format
 msgid "Installing… %1"
 msgstr "Installation… %1"
 
-#: src/plugins/pluginsettingstab.cpp:434
+#: src/plugins/pluginsettingstab.cpp:450
 #, kde-format
 msgid "Installing… %1 — %2"
 msgstr "Installation… %1 — %2"
 
-#: src/plugins/pluginsettingstab.cpp:476
+#: src/plugins/pluginsettingstab.cpp:492
 #, kde-format
 msgid "Models"
 msgstr "Modèles"
 
-#: src/plugins/pluginsettingstab.cpp:476
+#: src/plugins/pluginsettingstab.cpp:492
 #, kde-format
 msgid "Models — %1"
 msgstr "Modèles — %1"
 
-#: src/plugins/pluginsettingstab.cpp:493 src/plugins/pluginsettingstab.cpp:524
-#: src/plugins/pluginsettingstab.cpp:643 src/plugins/pluginsettingstab.cpp:675
-#: src/plugins/pluginsettingstab.cpp:725 src/plugins/pluginsettingstab.cpp:816
+#: src/plugins/pluginsettingstab.cpp:509 src/plugins/pluginsettingstab.cpp:540
+#: src/plugins/pluginsettingstab.cpp:659 src/plugins/pluginsettingstab.cpp:691
+#: src/plugins/pluginsettingstab.cpp:741 src/plugins/pluginsettingstab.cpp:832
 #, kde-format
 msgid "Download"
 msgstr "Télécharger"
 
-#: src/plugins/pluginsettingstab.cpp:508
+#: src/plugins/pluginsettingstab.cpp:524
 #, kde-format
 msgid "Optional models"
 msgstr "Modèles facultatifs"
 
-#: src/plugins/pluginsettingstab.cpp:518
+#: src/plugins/pluginsettingstab.cpp:534
 #, kde-format
 msgid "Optional"
 msgstr "Facultatif"
 
-#: src/plugins/pluginsettingstab.cpp:519
+#: src/plugins/pluginsettingstab.cpp:535
 #, kde-format
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:548 rc.cpp:9652 rc.cpp:9708
+#: src/plugins/pluginsettingstab.cpp:564 rc.cpp:9652 rc.cpp:9708
 #, kde-format
 msgid "Models folder"
 msgstr "Dossier de modèles"
 
-#: src/plugins/pluginsettingstab.cpp:549
+#: src/plugins/pluginsettingstab.cpp:565
 #, kde-format
 msgid "Open"
 msgstr "Ouvrir"
 
 #. i18n: file: src/ui/configspeech_ui.ui
-#: src/plugins/pluginsettingstab.cpp:550 rc.cpp:9710
+#: src/plugins/pluginsettingstab.cpp:566 rc.cpp:9710
 #, kde-format
 msgid "Delete all models"
 msgstr "Supprimer tous les modèles"
 
-#: src/plugins/pluginsettingstab.cpp:578
+#: src/plugins/pluginsettingstab.cpp:594
 #, kde-format
 msgid "Install a model. <b>%1</b> is recommended."
 msgstr "Installez un modèle. <b>%1</b> est recommandé."
 
-#: src/plugins/pluginsettingstab.cpp:624
+#: src/plugins/pluginsettingstab.cpp:640
 #, kde-format
 msgid "saved"
 msgstr "enregistrée"
 
-#: src/plugins/pluginsettingstab.cpp:642 src/plugins/pluginsettingstab.cpp:665
+#: src/plugins/pluginsettingstab.cpp:658 src/plugins/pluginsettingstab.cpp:681
 #, kde-format
 msgid "installed"
 msgstr "installé"
 
-#: src/plugins/pluginsettingstab.cpp:668
+#: src/plugins/pluginsettingstab.cpp:684
 #, kde-format
 msgid "incomplete — download again"
 msgstr "incomplet — téléchargez à nouveau"
 
-#: src/plugins/pluginsettingstab.cpp:671
+#: src/plugins/pluginsettingstab.cpp:687
 #, kde-format
 msgid "%1 downloaded so far"
 msgstr "%1 téléchargé jusqu'à présent"
 
 #. i18n: file: src/ui/titlewidget_ui.ui
-#: src/plugins/pluginsettingstab.cpp:708 src/plugins/pluginsettingstab.cpp:801
+#: src/plugins/pluginsettingstab.cpp:724 src/plugins/pluginsettingstab.cpp:817
 #: src/doc/wunjodoc.cpp:2162 rc.cpp:11048
 #, kde-format
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/plugins/pluginsettingstab.cpp:723 src/plugins/pluginsettingstab.cpp:792
+#: src/plugins/pluginsettingstab.cpp:739 src/plugins/pluginsettingstab.cpp:808
 #, kde-format
 msgid "cannot create the model folder"
 msgstr "impossible de créer le dossier du modèle"
 
-#: src/plugins/pluginsettingstab.cpp:731 src/plugins/pluginsettingstab.cpp:802
+#: src/plugins/pluginsettingstab.cpp:747 src/plugins/pluginsettingstab.cpp:818
 #, kde-format
 msgid "downloading…"
 msgstr "téléchargement…"
 
-#: src/plugins/pluginsettingstab.cpp:733 src/plugins/pluginsettingstab.cpp:804
+#: src/plugins/pluginsettingstab.cpp:749 src/plugins/pluginsettingstab.cpp:820
 #: src/monitor/monitor.cpp:100 src/scopes/colorscopes/vectorscope.cpp:432
 #, kde-format
 msgid "%1%"
 msgstr "%1 %"
 
-#: src/plugins/pluginsettingstab.cpp:809
+#: src/plugins/pluginsettingstab.cpp:825
 #, kde-format
 msgid "retrying…"
 msgstr "nouvelle tentative…"
 
-#: src/plugins/pluginsettingstab.cpp:835
+#: src/plugins/pluginsettingstab.cpp:851
 #, kde-format
 msgid "unpacking…"
 msgstr "décompression…"
 
-#: src/plugins/pluginsettingstab.cpp:901
+#: src/plugins/pluginsettingstab.cpp:917
 #, kde-format
 msgid "Processor only"
 msgstr "Processeur uniquement"
 
-#: src/plugins/pluginsettingstab.cpp:914
+#: src/plugins/pluginsettingstab.cpp:930
 #, kde-format
 msgid "Detected driver: CUDA %1"
 msgstr "Pilote détecté : CUDA %1"
 
-#: src/plugins/pluginsettingstab.cpp:917
+#: src/plugins/pluginsettingstab.cpp:933
 #, kde-format
 msgid ""
 "Cannot determine the CUDA version,\n"
@@ -15342,7 +15370,7 @@ msgstr ""
 "Impossible de déterminer la version de CUDA,\n"
 "veuillez sélectionner celle disponible sur votre système."
 
-#: src/plugins/pluginsettingstab.cpp:932
+#: src/plugins/pluginsettingstab.cpp:948
 #, kde-format
 msgid ""
 "Only use this if your GPU is not detected or the plugin does not use it.\n"
@@ -15352,7 +15380,7 @@ msgstr ""
 "module externe ne l'utilise pas.\n"
 "Les paquets seront réinstallés, ce qui peut prendre plusieurs minutes."
 
-#: src/plugins/pluginsettingstab.cpp:948
+#: src/plugins/pluginsettingstab.cpp:964
 #, kde-format
 msgid ""
 "Remove the installed environment for '%1'? The plugin stays and can be "
@@ -15783,18 +15811,18 @@ msgstr "Masquer le visage"
 msgid "Create Object Mask here…"
 msgstr "Créer un masque d'objet ici…"
 
-#: src/monitor/monitor.cpp:812
+#: src/monitor/monitor.cpp:809
 #, kde-format
 msgid "No face track for this clip — run face detection first"
 msgstr ""
 "Aucun suivi de visage pour ce clip — lancez d'abord la détection des visages"
 
-#: src/monitor/monitor.cpp:818
+#: src/monitor/monitor.cpp:815
 #, kde-format
 msgid "%1 applied to the face — set it up in the effect stack"
 msgstr "%1 appliqué au visage — configurez-le dans la pile d'effets"
 
-#: src/monitor/monitor.cpp:853
+#: src/monitor/monitor.cpp:850
 #, kde-format
 msgid "Face effect applied — tune strength or remove it in the effect stack"
 msgstr ""
@@ -15802,90 +15830,90 @@ msgstr ""
 "d'effets"
 
 #. i18n("Save zone"), this, SLOT(slotSaveZone()));
-#: src/monitor/monitor.cpp:933
+#: src/monitor/monitor.cpp:930
 #, kde-format
 msgid "Extract Zone"
 msgstr "Extraire une zone"
 
-#: src/monitor/monitor.cpp:960
+#: src/monitor/monitor.cpp:957
 #, kde-format
 msgid "Set current image as thumbnail"
 msgstr "Choisir l'image courante comme vignette"
 
-#: src/monitor/monitor.cpp:965
+#: src/monitor/monitor.cpp:962
 #, kde-format
 msgid "Create Marker from Zone..."
 msgstr "Créer un repère à partir d'une zone..."
 
-#: src/monitor/monitor.cpp:977
+#: src/monitor/monitor.cpp:974
 #, kde-format
 msgid "Always show audio thumbnails"
 msgstr "Toujours afficher les vignettes audio"
 
-#: src/monitor/monitor.cpp:991
+#: src/monitor/monitor.cpp:988
 #, kde-format
 msgid "Show Audio Levels"
 msgstr "Afficher les niveaux audio"
 
-#: src/monitor/monitor.cpp:998
+#: src/monitor/monitor.cpp:995
 #, kde-format
 msgid "Show Source Timecode"
 msgstr "Afficher le repère temporel de la source"
 
-#: src/monitor/monitor.cpp:1035
+#: src/monitor/monitor.cpp:1032
 #, kde-format
 msgid "Your screen resolution is not sufficient for this action"
 msgstr "Votre résolution d'écran est insuffisante pour cette action"
 
-#: src/monitor/monitor.cpp:1172 src/monitor/monitor.cpp:1208
-#: src/monitor/monitor.cpp:1244
+#: src/monitor/monitor.cpp:1169 src/monitor/monitor.cpp:1205
+#: src/monitor/monitor.cpp:1241
 #, kde-format
 msgid "Cannot change zone when creating a mask"
 msgstr "Impossible de modifier une zone lors de la création d'un masque"
 
-#: src/monitor/monitor.cpp:1794
+#: src/monitor/monitor.cpp:1791
 #, kde-format
 msgctxt "@title:window"
 msgid "Save Image to Project"
 msgstr "Enregistrer une image dans un projet"
 
-#: src/monitor/monitor.cpp:1794
+#: src/monitor/monitor.cpp:1791
 #, kde-format
 msgctxt "@title:window"
 msgid "Save Image"
 msgstr "Enregistrer une image"
 
-#: src/monitor/monitor.cpp:1801
+#: src/monitor/monitor.cpp:1798
 #, kde-format
 msgid "Export image using source resolution"
 msgstr "Exporter l'image en utilisant la résolution d'origine"
 
-#: src/monitor/monitor.cpp:2352
+#: src/monitor/monitor.cpp:2349
 #, kde-format
 msgid "Exit Mask Mode ?"
 msgstr "Sortir du mode « Masque » ?"
 
-#: src/monitor/monitor.cpp:2462 src/monitor/monitor.cpp:2593
+#: src/monitor/monitor.cpp:2459 src/monitor/monitor.cpp:2590
 #, kde-format
 msgid "%1 audio stream"
 msgid_plural "%1 audio streams"
 msgstr[0] "%1 flux audio"
 msgstr[1] "%1 flux audio"
 
-#: src/monitor/monitor.cpp:2477
+#: src/monitor/monitor.cpp:2474
 #: src/mltcontroller/clippropertiescontroller.cpp:858
 #, kde-format
 msgid "Merge all streams"
 msgstr "Fusionner tous les flux"
 
-#: src/monitor/monitor.cpp:2922
+#: src/monitor/monitor.cpp:2919
 #, kde-format
 msgid "Cannot initialize Movit's GLSL manager, please disable Movit"
 msgstr ""
 "Impossible d'initialiser le gestionnaire GLSL de Movit, veuillez désactiver "
 "Movit"
 
-#: src/monitor/monitor.cpp:2964 src/monitor/monitor.cpp:3021
+#: src/monitor/monitor.cpp:2961 src/monitor/monitor.cpp:3018
 #, kde-format
 msgid ""
 "The alphagrad filter is required for that feature, please install frei0r and "
@@ -15894,17 +15922,17 @@ msgstr ""
 "Le filtre alphagrad est nécessaire à cette fonction, veuillez installer "
 "frei0r et redémarrer Wunjo"
 
-#: src/monitor/monitor.cpp:2984
+#: src/monitor/monitor.cpp:2981
 #, kde-format
 msgid "Clip has no effects"
 msgstr "Le clip n'a aucun effet"
 
-#: src/monitor/monitor.cpp:2986
+#: src/monitor/monitor.cpp:2983
 #, kde-format
 msgid "Select a clip in project bin to compare effect"
 msgstr "Sélectionner un clip dans les sources du projet pour comparer l'effet"
 
-#: src/monitor/monitor.cpp:3028
+#: src/monitor/monitor.cpp:3025
 #, kde-format
 msgid ""
 "The cairoblend transition is required for that feature, please install "
@@ -15913,24 +15941,24 @@ msgstr ""
 "La transition cairoblend est nécessaire à cette fonction, veuillez installer "
 "frei0r et redémarrer Wunjo"
 
-#: src/monitor/monitor.cpp:3108
+#: src/monitor/monitor.cpp:3105
 #, kde-format
 msgid "Enable edit mode in monitor to edit effect"
 msgstr "Activer le mode d'édition dans le moniteur pour ajuster l'effet"
 
-#: src/monitor/monitor.cpp:3612
+#: src/monitor/monitor.cpp:3609
 #, kde-format
 msgid "No clip selected in Clip Monitor"
 msgstr "Aucun séquence sélectionnée dans le projet des séquences"
 
-#: src/monitor/monitor.cpp:3633
+#: src/monitor/monitor.cpp:3630
 #, kde-format
 msgid "Cannot get producer for Clip Monitor"
 msgstr ""
 "Impossible d'obtenir la personne en charge de la production dans l'écran de "
 "séquences"
 
-#: src/monitor/monitor.cpp:3725
+#: src/monitor/monitor.cpp:3722
 #, kde-format
 msgid "Create Range Marker from Zone"
 msgstr "Créer un repère d'intervalle à partir d'une zone"
@@ -48046,7 +48074,9 @@ msgstr "Créer le son du clip à partir de ce qui s’y passe"
 msgid ""
 "What is heard, e.g. footsteps on gravel and light rain. Leave empty to go by "
 "the picture"
-msgstr "Ce qu’on entend, p. ex. des pas sur du gravier et une pluie fine. Laissez vide pour suivre l’image"
+msgstr ""
+"Ce qu’on entend, p. ex. des pas sur du gravier et une pluie fine. Laissez "
+"vide pour suivre l’image"
 
 #. i18n: file: ../plugins/foley/effects/foley.xml
 #: rc.cpp:11362

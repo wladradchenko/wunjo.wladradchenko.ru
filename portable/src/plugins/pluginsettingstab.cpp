@@ -8,6 +8,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "filedownloader.h"
 #include "filedownloadjob.h"
 #include "pluginaboutdialog.h"
+#include "plugincatalog.h"
 #include "pluginmanager.h"
 #include "pluginmodelsdialog.h"
 #include "pluginpythonenv.h"
@@ -64,6 +65,21 @@ PluginSettingsTab::PluginSettingsTab(const PluginManifest &manifest, QWidget *pa
     // plugin and who wrote it.
     auto *aboutRow = new QHBoxLayout;
     aboutRow->addStretch();
+    // A newer release on the site: the page it opens is where it is read about
+    // and downloaded. The editor never replaces a plugin by itself.
+    auto *updateButton = new QPushButton(QIcon::fromTheme(QStringLiteral("download")), i18n("Update"), this);
+    updateButton->setToolTip(i18n("Opens the plugin's page on wunjo.online"));
+    aboutRow->addWidget(updateButton);
+    auto refreshUpdate = [this, updateButton]() {
+        const PluginCatalog::Entry update = PluginCatalog::instance().updateFor(m_manifest);
+        updateButton->setVisible(!update.id.isEmpty());
+        updateButton->setProperty("wunjoUpdateUrl", update.url);
+    };
+    refreshUpdate();
+    connect(&PluginCatalog::instance(), &PluginCatalog::changed, updateButton, refreshUpdate);
+    connect(updateButton, &QPushButton::clicked, this, [updateButton]() {
+        QDesktopServices::openUrl(QUrl(updateButton->property("wunjoUpdateUrl").toString()));
+    });
     auto *aboutButton = new QToolButton(this);
     aboutButton->setIcon(QIcon::fromTheme(QStringLiteral("help-about")));
     aboutButton->setAutoRaise(true);

@@ -177,6 +177,9 @@ public Q_SLOTS:
         @param effectName Will be set to the effect name
     */
     void removeEffectWithUndo(const QString &assetId, QString &effectName, int assetRow, Fun &undo, Fun &redo);
+    /** @brief Remove @p effect. A plugin effect goes together with the other
+     *  half of its pair (a Face Swap and the Face Region it works inside), in
+     *  the same undo step: neither does anything without the other. */
     void removeEffectWithUndo(const std::shared_ptr<EffectItemModel> &effect, QString &effectName, Fun &undo, Fun &redo);
     /** @brief Move an effect in the stack */
     void moveEffectByRow(int destRow, int srcRow);
@@ -198,6 +201,8 @@ protected:
     std::weak_ptr<DocUndoStack> m_undoStack;
 
 private:
+    /** @brief Remove @p effect alone, whatever it is paired with. */
+    void removeSingleEffect(const std::shared_ptr<EffectItemModel> &effect, QString &effectName, Fun &undo, Fun &redo);
     mutable QReadWriteLock m_lock;
     std::unordered_set<int> m_fadeIns;
     std::unordered_set<int> m_fadeOuts;

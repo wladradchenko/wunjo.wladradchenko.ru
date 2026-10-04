@@ -90,10 +90,12 @@ QString soundOf(const PluginSets::Set &set)
 }
 } // namespace
 
-GeneratorCard::GeneratorCard(const QString &cardId, const PluginManifest &manifest, const QJsonObject &payload, QWidget *parent)
+GeneratorCard::GeneratorCard(const QString &cardId, const PluginManifest &manifest, const PluginGenerator &generator, const QJsonObject &payload,
+                             QWidget *parent)
     : QFrame(parent)
     , m_cardId(cardId)
     , m_manifest(manifest)
+    , m_generator(generator)
     , m_payload(payload)
 {
     setObjectName(QStringLiteral("chatToolCard"));
@@ -105,7 +107,7 @@ GeneratorCard::GeneratorCard(const QString &cardId, const PluginManifest &manife
     header->setSpacing(8);
     auto *icon = new QLabel(this);
     icon->setPixmap(manifest.icon().pixmap(16, 16));
-    auto *title = new QLabel(tr8(manifest.generateTitle()), this);
+    auto *title = new QLabel(tr8(generator.title), this);
     QFont titleFont = title->font();
     titleFont.setWeight(QFont::DemiBold);
     title->setFont(titleFont);
@@ -159,7 +161,7 @@ GeneratorCard::~GeneratorCard()
 void GeneratorCard::buildForm()
 {
     const QJsonObject values = m_payload.value(QStringLiteral("values")).toObject();
-    const QList<PluginField> fields = m_manifest.generateFields();
+    const QList<PluginField> fields = m_generator.fields;
     for (const PluginField &field : fields) {
         FieldWidgets w;
         auto *row = new QWidget(m_body);
@@ -543,7 +545,7 @@ QJsonValue GeneratorCard::value(const QString &key) const
 
 void GeneratorCard::refreshVisibility()
 {
-    const QList<PluginField> fields = m_manifest.generateFields();
+    const QList<PluginField> fields = m_generator.fields;
     for (const PluginField &field : fields) {
         const FieldWidgets w = m_fields.value(field.key);
         if (w.row && !field.showIfKey.isEmpty()) {
@@ -555,7 +557,7 @@ void GeneratorCard::refreshVisibility()
 
 QString GeneratorCard::missing() const
 {
-    const QList<PluginField> fields = m_manifest.generateFields();
+    const QList<PluginField> fields = m_generator.fields;
     for (const PluginField &field : fields) {
         if (!field.showIfKey.isEmpty() && value(field.showIfKey).toVariant().toString() != field.showIfValue) {
             continue;
@@ -586,7 +588,7 @@ void GeneratorCard::refreshHeader()
     // Folded, the card is one line of what it says: the start of its first
     // text field.
     QString first;
-    const QList<PluginField> fields = m_manifest.generateFields();
+    const QList<PluginField> fields = m_generator.fields;
     for (const PluginField &field : fields) {
         if (field.type == QLatin1String("text")) {
             first = value(field.key).toString().section(QLatin1Char('\n'), 0, 0).trimmed();
@@ -605,7 +607,7 @@ void GeneratorCard::setPayload(const QJsonObject &payload)
     m_payload = payload;
     m_applying = true;
     const QJsonObject values = payload.value(QStringLiteral("values")).toObject();
-    const QList<PluginField> fields = m_manifest.generateFields();
+    const QList<PluginField> fields = m_generator.fields;
     for (const PluginField &field : fields) {
         const FieldWidgets w = m_fields.value(field.key);
         const QJsonValue v = values.value(field.key);
@@ -632,7 +634,7 @@ void GeneratorCard::setPayload(const QJsonObject &payload)
 
 void GeneratorCard::focusFirstField()
 {
-    for (const PluginField &field : m_manifest.generateFields()) {
+    for (const PluginField &field : m_generator.fields) {
         if (QWidget *input = m_fields.value(field.key).input) {
             if (input->isVisible() && (qobject_cast<QPlainTextEdit *>(input) || qobject_cast<QLineEdit *>(input))) {
                 input->setFocus();

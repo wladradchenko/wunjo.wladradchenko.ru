@@ -99,12 +99,14 @@ def write_rc(path):
     # placeholders through the same catalog as the plugin's effects.
     for f in sorted(glob.glob(os.path.join(HERE, "..", "plugins", "*", "plugin.json"))):
         try:
-            generate = json.load(open(f, encoding="utf-8")).get("generate") or {}
+            cards = json.load(open(f, encoding="utf-8")).get("generate") or []
         except (OSError, ValueError):
             continue
-        texts = [generate.get("title", "")]
-        for field in generate.get("fields", []):
-            texts += [field.get("label", ""), field.get("placeholder", "")] + list(field.get("labels", []))
+        texts = []
+        for card in cards if isinstance(cards, list) else []:
+            texts.append(card.get("title", ""))
+            for field in card.get("fields", []):
+                texts += [field.get("label", ""), field.get("placeholder", "")] + list(field.get("labels", []))
         for text in texts:
             if text:
                 lines += [f"// i18n: file: {os.path.relpath(f, HERE)}", f"i18n({c_string(text)});"]

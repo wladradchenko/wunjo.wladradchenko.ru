@@ -23,6 +23,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QRegularExpression>
+#include <QSet>
 #include <QSysInfo>
 
 #include <algorithm>
@@ -190,35 +191,63 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
             m.m_params.append(param);
         }
     }
-    // The form a generator puts in the chat. A generator without one would have
-    // nothing to ask, and no card to be run from.
-    const QJsonObject generate = root.value(QStringLiteral("generate")).toObject();
-    m.m_generateTitle = generate.value(QStringLiteral("title")).toString();
-    const QJsonArray fieldsArray = generate.value(QStringLiteral("fields")).toArray();
-    for (const QJsonValue &value : fieldsArray) {
-        const QJsonObject obj = value.toObject();
-        PluginField field;
-        field.key = obj.value(QStringLiteral("key")).toString();
-        field.label = obj.value(QStringLiteral("label")).toString();
-        field.type = obj.value(QStringLiteral("type")).toString(QStringLiteral("string"));
-        field.defaultValue = obj.value(QStringLiteral("default")).toVariant();
-        for (const QJsonValue &option : obj.value(QStringLiteral("options")).toArray()) {
-            field.options << option.toString();
+    // The cards a generator puts in the chat, one per thing it makes. A
+    // generator without one would have nothing to ask, and no card to be run
+    // from.
+    const QJsonValue generateValue = root.value(QStringLiteral("generate"));
+    if (!generateValue.isUndefined() && !generateValue.isArray()) {
+        m.m_errors << i18n("'generate' must be a list of cards");
+    }
+    QSet<QString> generatorIds;
+    static const QRegularExpression generatorIdRx(QStringLiteral("^[a-z0-9][a-z0-9-]*$"));
+    for (const QJsonValue &cardValue : generateValue.toArray()) {
+        const QJsonObject card = cardValue.toObject();
+        PluginGenerator generator;
+        generator.id = card.value(QStringLiteral("id")).toString();
+        generator.title = card.value(QStringLiteral("title")).toString();
+        const QJsonArray fieldsArray = card.value(QStringLiteral("fields")).toArray();
+        for (const QJsonValue &value : fieldsArray) {
+            const QJsonObject obj = value.toObject();
+            PluginField field;
+            field.key = obj.value(QStringLiteral("key")).toString();
+            field.label = obj.value(QStringLiteral("label")).toString();
+            field.type = obj.value(QStringLiteral("type")).toString(QStringLiteral("string"));
+            field.defaultValue = obj.value(QStringLiteral("default")).toVariant();
+            for (const QJsonValue &option : obj.value(QStringLiteral("options")).toArray()) {
+                field.options << option.toString();
+            }
+            for (const QJsonValue &label : obj.value(QStringLiteral("labels")).toArray()) {
+                field.labels << label.toString();
+            }
+            field.placeholder = obj.value(QStringLiteral("placeholder")).toString();
+            field.compact = obj.value(QStringLiteral("compact")).toBool();
+            field.kind = obj.value(QStringLiteral("kind")).toString();
+            const QJsonObject showIf = obj.value(QStringLiteral("show_if")).toObject();
+            if (!showIf.isEmpty()) {
+                field.showIfKey = showIf.constBegin().key();
+                field.showIfValue = showIf.constBegin().value().toVariant().toString();
+            }
+            if (!field.key.isEmpty()) {
+                generator.fields.append(field);
+            }
         }
-        for (const QJsonValue &label : obj.value(QStringLiteral("labels")).toArray()) {
-            field.labels << label.toString();
+        if (!generatorIdRx.match(generator.id).hasMatch()) {
+            m.m_errors << i18n("every 'generate' card needs an 'id' of lowercase letters, digits and dashes");
+            continue;
         }
-        field.placeholder = obj.value(QStringLiteral("placeholder")).toString();
-        field.compact = obj.value(QStringLiteral("compact")).toBool();
-        field.kind = obj.value(QStringLiteral("kind")).toString();
-        const QJsonObject showIf = obj.value(QStringLiteral("show_if")).toObject();
-        if (!showIf.isEmpty()) {
-            field.showIfKey = showIf.constBegin().key();
-            field.showIfValue = showIf.constBegin().value().toVariant().toString();
+        if (generatorIds.contains(generator.id)) {
+            m.m_errors << i18n("the 'generate' card '%1' is declared twice", generator.id);
+            continue;
         }
-        if (!field.key.isEmpty()) {
-            m.m_generateFields.append(field);
+        if (generator.fields.isEmpty()) {
+            m.m_errors << i18n("the 'generate' card '%1' has no fields", generator.id);
+            continue;
         }
+        if (generator.title.isEmpty()) {
+            generator.title = m.m_name;
+        }
+        generatorIds.insert(generator.id);
+        m.m_generators.append(generator);
     }
 
     // Effects the plugin brings along. They are read here rather than at install
@@ -374,8 +403,8 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         if (m.m_targets.contains(QLatin1String("agent")) && m.m_targets.count() > 1) {
             m.m_errors << i18n("target 'agent' cannot be combined with another target");
         }
-        if (m.m_targets.contains(QLatin1String("generator")) && m.m_generateFields.isEmpty()) {
-            m.m_errors << i18n("a generator needs a 'generate' block with its fields");
+        if (m.m_targets.contains(QLatin1String("generator")) && m.m_generators.isEmpty()) {
+            m.m_errors << i18n("a generator needs at least one card in 'generate'");
         }
     }
     if (m.m_entry.isEmpty()) {
@@ -498,6 +527,19 @@ QString PluginManifest::requirementsFor(double driverCuda) const
         }
     }
     return m_requirements;
+}
+
+PluginGenerator PluginManifest::generator(const QString &id) const
+{
+    if (id.isEmpty()) {
+        return m_generators.isEmpty() ? PluginGenerator() : m_generators.first();
+    }
+    for (const PluginGenerator &generator : m_generators) {
+        if (generator.id == id) {
+            return generator;
+        }
+    }
+    return {};
 }
 
 PluginSetsUi PluginManifest::setsUi(const QString &kind) const

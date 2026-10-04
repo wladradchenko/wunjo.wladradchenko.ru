@@ -83,7 +83,7 @@ public:
     // assistant fill the same card; a run is a job card of its own below it.
     /** @brief Add the form of @p pluginId with @p values filled in, unfolded and
      *  with the cursor in it. @return The card id, empty if it is no generator. */
-    QString addGeneratorCard(const QString &pluginId, const QJsonObject &values = {}, bool byAssistant = false);
+    QString addGeneratorCard(const QString &pluginId, const QString &generatorId, const QJsonObject &values = {}, bool byAssistant = false);
     /** @brief Change fields of a card, as an assistant does. */
     bool setGeneratorValues(const QString &cardId, const QJsonObject &values, bool byAssistant = true);
     bool foldGeneratorCard(const QString &cardId, bool collapsed);

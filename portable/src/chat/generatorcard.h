@@ -29,7 +29,7 @@ class QVBoxLayout;
     the same one every plugin job gets, so the form stays editable while one
     renders and every run keeps its own line in the conversation.
 
-    The fields come from the manifest's `generate` block. Its state lives in the
+    The fields come from one card of the manifest's `generate` list. Its state lives in the
     chat model (the payload), never here: the conversation is redrawn from the
     model, and an assistant fills the same card over MCP. Every edit goes out as
     @ref edited; a change from outside comes back through @ref setPayload.
@@ -38,7 +38,8 @@ class GeneratorCard : public QFrame
 {
     Q_OBJECT
 public:
-    GeneratorCard(const QString &cardId, const PluginManifest &manifest, const QJsonObject &payload, QWidget *parent = nullptr);
+    GeneratorCard(const QString &cardId, const PluginManifest &manifest, const PluginGenerator &generator, const QJsonObject &payload,
+                  QWidget *parent = nullptr);
     ~GeneratorCard() override;
 
     QString cardId() const { return m_cardId; }
@@ -81,6 +82,7 @@ private:
 
     QString m_cardId;
     PluginManifest m_manifest;
+    PluginGenerator m_generator;
     QJsonObject m_payload;
     bool m_applying = false;
     /** @brief True while the form is first built: defaults filled in then are
