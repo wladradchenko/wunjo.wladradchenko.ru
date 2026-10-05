@@ -25,7 +25,7 @@
                         "mainWindowUniqueName": "WunjoKDDock"
                     }
                 ],
-                "tabIndex": 2,
+                "tabIndex": 3,
                 "wasFloating": false
             },
             "uniqueName": "clip_properties"
@@ -317,7 +317,7 @@
             "uniqueName": "media_browser"
         },
         {
-            "lastCloseReason": 2,
+            "lastCloseReason": 0,
             "lastPosition": {
                 "lastFloatingGeometry": {
                     "height": 0,
@@ -333,7 +333,7 @@
                         "mainWindowUniqueName": "WunjoKDDock"
                     }
                 ],
-                "tabIndex": 0,
+                "tabIndex": 1,
                 "wasFloating": false
             },
             "uniqueName": "onlineresources"
@@ -377,7 +377,7 @@
                         "mainWindowUniqueName": "WunjoKDDock"
                     }
                 ],
-                "tabIndex": 3,
+                "tabIndex": 4,
                 "wasFloating": false
             },
             "uniqueName": "effect_list"
@@ -421,7 +421,7 @@
                         "mainWindowUniqueName": "WunjoKDDock"
                     }
                 ],
-                "tabIndex": 1,
+                "tabIndex": 2,
                 "wasFloating": false
             },
             "uniqueName": "undo_history"
@@ -567,7 +567,6 @@
         "media_browser",
         "mixer",
         "notes_widget",
-        "onlineresources",
         "rgb_parade",
         "screengrab",
         "subtitles",
@@ -594,6 +593,7 @@
                         "currentTabIndex": 0,
                         "dockWidgets": [
                             "project_bin",
+                            "onlineresources",
                             "undo_history",
                             "clip_properties",
                             "effect_list"

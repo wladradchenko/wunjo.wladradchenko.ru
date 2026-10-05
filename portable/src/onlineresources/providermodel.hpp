@@ -6,8 +6,11 @@
 
 #pragma once
 
+#include <QDate>
+#include <QHash>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMap>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QOAuth2AuthorizationCodeFlow>
@@ -35,6 +38,13 @@ struct ResourceItemInfo
     QStringList downloadLabels;
     QString imageUrl;
     QString previewUrl;
+    // only filled for a plugin's library: when it was made, what it is, the
+    // name the file is saved under, which tool made it and whether it is ready
+    QString date;
+    QString contentType;
+    QString fileName;
+    QString group;
+    QString status;
     // int filesize;
 };
 
@@ -44,7 +54,10 @@ class ProviderModel : public QObject
 public:
     enum SERVICETYPE { UNKNOWN = 0, AUDIO = 1, VIDEO = 2, IMAGE = 3 };
     ProviderModel() = delete;
-    ProviderModel(const QString &path);
+    /** @param pluginId set when the description comes from an installed
+     *  plugin: the list is then that plugin's own files, the key and the address
+     *  are read from the plugin's settings. */
+    ProviderModel(const QString &path, const QString &pluginId = QString());
 
     void authorize();
     void refreshAccessToken();
@@ -55,6 +68,17 @@ public:
     QString attribution() const;
     bool downloadOAuth2() const;
     bool requiresLogin() const;
+    /** @brief The list is a plugin's files in its own cloud, not a stock library. */
+    bool isLibrary() const;
+    QString pluginId() const;
+    /** @brief Limits the next requests to these days; an invalid date is no limit. */
+    void setDateRange(const QDate &from, const QDate &to);
+    /** @brief The plugin's tools by id, with the names the list shows. */
+    QMap<QString, QString> groups() const;
+    /** @brief Whether the plugin's key has been entered. */
+    bool hasKey() const;
+    /** @brief The server's host name, for messages. */
+    QString host() const;
 
 public Q_SLOTS:
     void slotStartSearch(const QString &searchText, int page);
@@ -87,10 +111,20 @@ private:
     QJsonValue objectGetValue(QJsonObject item, QString key);
     QString objectGetString(QJsonObject item, const QString &key, const QString &id = QString(), const QString &parentKey = QString());
     QString replacePlaceholders(QString string, const QString &query = QString(), const int page = 0, const QString &id = QString());
-    std::pair<QList<ResourceItemInfo>, const int> parseSearchResponse(const QByteArray &res);
+    /** @brief api.root, read again for every request of a plugin's library. */
+    QString apiRoot() const;
+    QString pluginKey() const;
+    std::pair<QList<ResourceItemInfo>, const int> parseSearchResponse(const QByteArray &res, int page = 1);
     std::pair<QStringList, QStringList> parseFilesResponse(const QByteArray &res, const QString &id);
     QTemporaryFile *m_tmpThumbFile;
-    const int m_perPage = 15;
+    int m_perPage = 15;
+    QString m_pluginId;
+    QDate m_from;
+    QDate m_to;
+    /** @brief For lists paged by the date of the last item: page → the value
+     *  that asks for it. Page 1 needs none. */
+    QHash<int, QString> m_cursors;
+    int m_requestedPage = 1;
 
 Q_SIGNALS:
     void searchDone(QList<ResourceItemInfo> &list, const int pageCount);

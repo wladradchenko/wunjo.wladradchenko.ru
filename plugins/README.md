@@ -42,6 +42,7 @@ install from the `models` URLs (keeps archives small and licensing clean).
 | `venv` | enum | no | `private` (**default**) ⇒ the plugin gets its own environment `venv-<id>`, isolated from everything else. `shared` ⇒ it reuses the global `venv`. Keep the default; pick `shared` only for light, conflict-free deps you have vetted — populating the global venv is a rare, manual act, not something a downloaded plugin should assume. |
 | `target` | enum | yes | `video`, `audio`, `face`, `generator`, or `agent` — decides where the plugin appears (see below). |
 | `entry` | string | yes | Entry script relative to the plugin root. |
+| `library` | string | no | A JSON file describing the user's own files in the plugin's cloud, listed on the *Online Resources* tab (see *Files in the cloud*, since 3.1). |
 | `python` | string | no | Minimum interpreter, e.g. `python3.10`. Informational for now. |
 | `requirements` | string | no | Path to a pip requirements file. Empty/absent ⇒ no environment is built and the plugin runs on the system Python (regardless of `venv`). |
 | `provider` | object | if `kind=api` | `{ "name", "key_setting", "signup_url" }`. `name` keys the stored API key; the key reaches the plugin only as env `WUNJO_KEY_<NAME>` (upper-cased), never on the command line, never in the model context. |
@@ -213,6 +214,68 @@ filled in, `generator_card_create` adds a card filled in without running it
 `generator_card_set` changes fields, `generator_card_action` presses one of
 the card's actions and returns its answer, `generator_card_run` presses
 Generate. The card says when the assistant filled it in.
+
+### Files in the cloud (`library`, since 3.1)
+
+A plugin that makes its results on a server can let the user take them back
+later, for example after the editor was closed during a run. The `library` file
+describes the list of the user's files in the same format as the services of
+the *Online Resources* tab (`portable/data/resourceproviders/README.md`), with
+a few keys of its own:
+
+```json
+{
+    "name": "Online Toolkit",
+    "homepage": "https://wunjo.online/account",
+    "type": "mixed",
+    "integration": "buildin",
+    "api": {
+        "root": "%param:server%",
+        "rootDefault": "https://api.wunjo.online",
+        "rootEnv": "WUNJO_API_URL",
+        "search": {
+            "perPage": 50,
+            "paging": { "param": "to", "field": "created_at" },
+            "req": {
+                "path": "/v1/jobs", "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer %key%" }],
+                "params": [
+                    { "key": "limit", "value": "%perpage%" },
+                    { "key": "from", "value": "%from%" },
+                    { "key": "to", "value": "%to%" }
+                ]
+            },
+            "res": {
+                "format": "json", "list": "jobs", "id": "id",
+                "name": "params.prompt", "nameAlt": "params.text",
+                "date": "created_at", "group": "module", "status": "status",
+                "contentType": "result.content_type", "fileName": "result.file_name",
+                "downloadUrl": "result.url"
+            }
+        }
+    },
+    "groups": { "text-to-video": "Text to video", "music": "Music" }
+}
+```
+
+- `%key%` is the plugin's stored API key, `%param:<key>%` a value from its
+  settings tab, `rootDefault` the address when that value is empty or the
+  setting is not declared, `rootEnv` an environment variable that overrides
+  the address.
+- `%from%` and `%to%` are the dates chosen on the tab (`yyyy-MM-dd`); a
+  parameter that comes out empty is not sent.
+- `paging` lists by cursor: page N asks with the `field` of the last item of
+  page N-1 in `param`.
+- `status` other than `done` shows the file as still being made.
+- `groups` names the tools: the filter on the tab, the line under each file and
+  the bin folder an imported file goes into, the same folder a run of that card
+  uses. The names are translated like card titles.
+
+The editor sends the requests itself; the plugin's script is not run. Nothing
+is asked for until the user opens the tab or picks the plugin there. The list
+shows the first frame of each video; a file is downloaded into the project's
+`plugin-results` folder only when it is previewed, imported or dragged, and
+only once.
 
 ### Parameters (auto-generated dialog)
 
@@ -505,4 +568,11 @@ Exit codes: `0` ok (must have printed `result:`), `2` bad input, `3` missing key
 python pack.py stub-video            # → dist/stub-video-1.0.0.wmplugin
 python pack.py --all                 # pack every plugin folder here
 python pack.py --check stub-video    # validate the manifest without packing
+python pack.py --debug online-toolkit # → dist/online-toolkit-1.0.0-debug.wmplugin
 ```
+
+A `debug.json` next to the manifest holds keys that replace the manifest's own
+in a build for the plugin's author only, such as a setting with the address of
+a test server that users must not see. `--debug` packs that build;
+`debug.json` never goes into an archive. Both builds have the same `id`, so
+installing one replaces the other.

@@ -505,6 +505,28 @@ QString PluginManager::apiKey(const QString &provider) const
     return KConfigGroup(&config, QStringLiteral("keys")).readEntry(provider, QString());
 }
 
+QString PluginManager::paramValue(const QString &pluginId, const QString &key) const
+{
+    const PluginManifest manifest = plugin(pluginId);
+    QVariant fallback;
+    bool known = false;
+    const QList<PluginParam> declared = manifest.params();
+    for (const PluginParam &param : declared) {
+        if (param.key == key) {
+            fallback = param.defaultValue;
+            known = true;
+            break;
+        }
+    }
+    // A value left behind by a build that declared the setting (a debug one,
+    // say) is not read by one that does not: the plugin itself never sees it
+    if (!known) {
+        return QString();
+    }
+    KConfig config(QStringLiteral("wunjopluginsrc"), KConfig::SimpleConfig);
+    return KConfigGroup(&config, pluginId).readEntry(key, fallback).toString();
+}
+
 void PluginManager::setApiKey(const QString &provider, const QString &key)
 {
     if (provider.isEmpty()) {
@@ -572,7 +594,7 @@ PluginManager::ImportCandidate PluginManager::inspect(const QString &path) const
  * user will look for it. Returns "-1" — the bin root — if there is no project
  * yet or the folder could not be made, which is where clips landed before.
  */
-static QString effectResultsFolder(const QString &effectName)
+QString PluginManager::resultsFolder(const QString &effectName)
 {
     std::shared_ptr<ProjectItemModel> model = pCore->projectItemModel();
     if (!model || effectName.isEmpty()) {
@@ -1930,7 +1952,7 @@ void PluginManager::startEffectJob(const QueuedJob &job)
             // that its id comes back and so that there is something to wait on:
             // the producer loads in the background, and a clip with no duration
             // yet cannot be put on a track.
-            const QString folderId = effectResultsFolder(label);
+            const QString folderId = PluginManager::resultsFolder(label);
             const ObjectId owner = job.owner;
             QMetaObject::invokeMethod(
                 pCore->window(),
@@ -2038,7 +2060,7 @@ QString PluginManager::runGenerator(const QString &pluginId, const QString &gene
                 return;
             }
             const QString destination = keepResult(label, produced);
-            const QString folderId = effectResultsFolder(label);
+            const QString folderId = PluginManager::resultsFolder(label);
             QMetaObject::invokeMethod(
                 pCore->window(),
                 [destination, folderId, timelineUuid, frame]() {

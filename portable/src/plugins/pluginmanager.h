@@ -115,6 +115,13 @@ public:
      *  config file, never handed to the assistant — only booleans are. */
     QString apiKey(const QString &provider) const;
     void setApiKey(const QString &provider, const QString &key);
+    /** @brief Value of setting @p key on plugin @p pluginId's settings tab, or
+     *  the default its manifest gives when the user never changed it. */
+    QString paramValue(const QString &pluginId, const QString &key) const;
+    /** @brief Id of the bin folder called @p name at the top of the project,
+     *  made when missing. Every plugin result goes into the folder named after
+     *  what made it. "-1" (the bin root) when there is no project. */
+    static QString resultsFolder(const QString &name);
 
     /** @brief Read a folder or `.wunjoplugin` archive without installing it.
      *  The returned candidate carries validation errors for the UI. */

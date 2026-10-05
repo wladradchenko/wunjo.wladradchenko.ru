@@ -227,3 +227,32 @@ and your config like this
 }
 ```
 you will finally get `https://example.org/files/nice-picture-1234` as url.
+
+## A Plugin's Own Files
+
+A plugin can bring a description in this format as its `library` file (see
+`plugins/README.md`). It then lists the user's own files in the plugin's
+cloud, and a few more keys are read:
+
+| Key | Meaning |
+| :------------- | :------------- |
+| `type: "mixed"` | Video and sound in one list; each item's kind comes from `res.contentType` |
+| `api.root: "%param:<key>%"` | The address is the value of that setting on the plugin's settings tab |
+| `api.rootDefault` | The address when the setting is empty or not declared |
+| `api.rootEnv` | An environment variable that, when set, overrides the address |
+| `api.search.perPage` | Items per page (`%perpage%`), 15 when absent |
+| `api.search.paging` | `{ "param", "field" }`: page N is asked for with `field` of the last item of page N-1 in `param` |
+| `res.nameAlt` | Read when `name` is empty |
+| `res.date`, `res.group`, `res.status`, `res.contentType`, `res.fileName` | When the item was made, which tool made it, `done` once it is ready, its media type and the name it is saved under |
+| `groups` | Tool id → name shown in the list and used for the bin folder |
+
+Placeholders for `params` and `header`, in addition to the ones above:
+
+| Placeholder | Replaced By |
+| :------------- | :------------- |
+| %key% | The plugin's stored API key |
+| %from% | First day chosen on the tab, `yyyy-MM-dd`, or empty |
+| %to% | Last day chosen on the tab, `yyyy-MM-dd`, or empty |
+
+A parameter that comes out empty is left out of the request, and every value is
+percent-encoded.

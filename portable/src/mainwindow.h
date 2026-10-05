@@ -45,6 +45,7 @@ class AssetPanel;
 class AudioGraphSpectrum;
 class AutomaskHelper;
 class ChatWidget;
+class ResourceWidget;
 class EffectBasket;
 class EffectListWidget;
 class TransitionListWidget;
@@ -306,6 +307,7 @@ private:
     ChatWidget *m_chatWidget{nullptr};
     KDDockWidgets::QtWidgets::DockWidget *m_mixerDock{nullptr};
     KDDockWidgets::QtWidgets::DockWidget *m_onlineResourcesDock{nullptr};
+    ResourceWidget *m_onlineResources{nullptr};
 
     KSelectAction *m_timeFormatButton;
     QAction *m_compositeAction;

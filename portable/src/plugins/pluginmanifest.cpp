@@ -85,6 +85,7 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         m.m_targets << targetValue.toString();
     }
     m.m_entry = root.value(QStringLiteral("entry")).toString();
+    m.m_library = root.value(QStringLiteral("library")).toString();
     m.m_requirements = root.value(QStringLiteral("requirements")).toString();
     const QJsonArray variants = root.value(QStringLiteral("requirements_cuda")).toArray();
     for (const QJsonValue &value : variants) {
@@ -438,6 +439,20 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         m.m_errors << i18n("missing required field 'entry'");
     } else if (!QFileInfo::exists(dir + QLatin1Char('/') + m.m_entry)) {
         m.m_errors << i18n("entry script '%1' was not found", m.m_entry);
+    }
+    if (!m.m_library.isEmpty()) {
+        // The Online Resources tab lists what this file describes; one it cannot
+        // read would leave the plugin's files out of reach without a word.
+        QFile library(dir + QLatin1Char('/') + m.m_library);
+        QJsonParseError parseError;
+        const QJsonObject described =
+            library.open(QIODevice::ReadOnly) ? QJsonDocument::fromJson(library.readAll(), &parseError).object() : QJsonObject();
+        if (!library.exists()) {
+            m.m_errors << i18n("library file '%1' was not found", m.m_library);
+        } else if (described.value(QStringLiteral("name")).toString().isEmpty() ||
+                   !described.value(QStringLiteral("api")).toObject().value(QStringLiteral("search")).isObject()) {
+            m.m_errors << i18n("library file '%1' needs 'name' and 'api.search'", m.m_library);
+        }
     }
     if (m.m_kind == QLatin1String("api") && m.m_providerName.isEmpty()) {
         m.m_errors << i18n("an 'api' plugin must declare provider.name");

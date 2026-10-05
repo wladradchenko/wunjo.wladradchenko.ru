@@ -5,6 +5,7 @@
 */
 
 #include "providersrepository.hpp"
+#include "plugins/pluginmanager.h"
 #include "wunjo_debug.h"
 #include <QDir>
 #include <QStandardPaths>
@@ -66,6 +67,19 @@ void ProvidersRepository::refresh(bool fullRefresh)
         std::unique_ptr<ProviderModel> provider(new ProviderModel(file));
         if (check_provider(provider, file)) {
             m_providers.insert(std::make_pair(file, std::move(provider)));
+        }
+    }
+
+    // Plugins with files of their own in a cloud describe that list the same way
+    const QList<PluginManifest> plugins = PluginManager::instance().installedPlugins();
+    for (const PluginManifest &plugin : plugins) {
+        if (plugin.libraryFile().isEmpty()) {
+            continue;
+        }
+        const QString key = QStringLiteral("plugin:") + plugin.id();
+        std::unique_ptr<ProviderModel> provider(new ProviderModel(QDir(plugin.rootDir()).absoluteFilePath(plugin.libraryFile()), plugin.id()));
+        if (check_provider(provider, key)) {
+            m_providers.insert(std::make_pair(key, std::move(provider)));
         }
     }
 }

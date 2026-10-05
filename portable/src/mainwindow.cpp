@@ -129,6 +129,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QStandardPaths>
 #include <QStatusBar>
 #include <QStyleFactory>
+#include <QTimer>
 #include <QUndoGroup>
 #include <QVBoxLayout>
 #include <QtConcurrent/QtConcurrentRun>
@@ -380,17 +381,17 @@ void MainWindow::init()
     clipDockWidget->close();
 
     // Online resources widget
-    auto *onlineResources = new ResourceWidget(this);
-    m_onlineResourcesDock = addDock(i18n("Online Resources"), QStringLiteral("onlineresources"), onlineResources);
+    m_onlineResources = new ResourceWidget(this);
+    m_onlineResourcesDock = addDock(i18n("Online Resources"), QStringLiteral("onlineresources"), m_onlineResources);
     m_onlineResourcesDock->close();
-    connect(onlineResources, &ResourceWidget::previewClip, this, [&](const QString &path, const QString &title) {
+    connect(m_onlineResources, &ResourceWidget::previewClip, this, [&](const QString &path, const QString &title) {
         m_clipMonitor->slotPreviewResource(path, title);
         m_clipMonitorDock->open();
         m_clipMonitorDock->setAsCurrentTab();
     });
 
-    connect(onlineResources, &ResourceWidget::addClip, this, &MainWindow::slotAddProjectClip);
-    connect(onlineResources, &ResourceWidget::addLicenseInfo, this, &MainWindow::slotAddTextNote);
+    connect(m_onlineResources, &ResourceWidget::addClip, this, &MainWindow::slotAddProjectClip);
+    connect(m_onlineResources, &ResourceWidget::addLicenseInfo, this, &MainWindow::slotAddTextNote);
 
     const QSize stackSize(firstWindowSize.width() * 0.3, 0);
     m_effectStackDock =
@@ -1029,6 +1030,9 @@ void MainWindow::init()
 void MainWindow::finishUiSetup()
 {
     pCore->restoreLayout();
+    // the layout may have put the Online Resources tab on screen; only showing
+    // it after this point loads a plugin's list
+    QTimer::singleShot(0, m_onlineResources, &ResourceWidget::started);
     Q_EMIT pCore->closeSplash();
     setAutoSaveSettings();
     QObject::disconnect(pCore.get(), &Core::GUISetupDone, this, nullptr);

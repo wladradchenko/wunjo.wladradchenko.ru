@@ -75,7 +75,7 @@ Background and the manual checks for each piece: `dev-docs/dbus-removal-checklis
   `activeLayout`), **not** a serialized session blob, so layout file changes take effect on
   restart. Never rename dock `uniqueName`s; create every dock (incl. `chat`) before the
   first layout restore. Editing layout composition: left column = hub tabs
-  (Bin/History/Props/Effects) over mini Clip Monitor (tabbed with Effect/Composition Stack),
+  (Bin/Online Resources/History/Props/Effects) over mini Clip Monitor (tabbed with Effect/Composition Stack),
   center = Project Monitor over Timeline, right = full-height Chat.
 - Tab-raise UX: clicking a bin clip raises the Clip Monitor tab; selecting a timeline clip
   raises the Effect/Composition Stack tab (stock raiseprops* settings drive the latter).

@@ -5,6 +5,12 @@ Usage:
     python pack.py <plugin-dir> [<plugin-dir> ...]   # validate + pack each
     python pack.py --all                             # pack every plugin here
     python pack.py --check <plugin-dir>              # validate only, do not pack
+    python pack.py --debug <plugin-dir>              # the plugin's debug build
+
+A plugin may keep a ``debug.json`` next to its manifest: keys that replace the
+manifest's own in a build meant for its author only — the address of a test
+server, say, that users must not see. ``--debug`` packs that build as
+``<id>-<version>-debug.wmplugin``; ``debug.json`` itself is never packed.
 
 An archive is a plain ZIP whose root is the plugin folder's contents. Model
 weights (``models/``) and any environment (``venv*``, ``__pycache__``) are never
@@ -17,11 +23,14 @@ import argparse
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
 
 MANIFEST = "plugin.json"
+DEBUG_OVERLAY = "debug.json"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,63}$")
 KINDS = {"api", "local"}
 # Private only. Installing into the application's own venv used to be allowed
@@ -259,6 +268,23 @@ def validate(plugin_dir):
         if not os.path.isfile(os.path.join(plugin_dir, manifest["entry"])):
             errors.append("entry script '%s' not found" % manifest["entry"])
 
+    library = manifest.get("library")
+    if library is not None:
+        # the plugin's own files in its cloud, listed on the Online Resources tab
+        path = os.path.join(plugin_dir, library) if isinstance(library, str) else ""
+        if not path or not os.path.isfile(path):
+            errors.append("library file '%s' not found" % library)
+        else:
+            try:
+                with open(path, "r", encoding="utf-8") as handle:
+                    described = json.load(handle)
+            except ValueError as error:
+                errors.append("library file '%s' is not valid JSON: %s" % (library, error))
+            else:
+                search = ((described.get("api") or {}).get("search") or {}) if isinstance(described, dict) else {}
+                if not isinstance(described, dict) or not described.get("name") or not (search.get("req") or {}).get("path"):
+                    errors.append("library file '%s' needs 'name' and 'api.search.req.path'" % library)
+
     if manifest.get("kind") == "api":
         provider = manifest.get("provider")
         if not isinstance(provider, dict) or not provider.get("name"):
@@ -343,14 +369,14 @@ def _packable(root, names, plugin_dir, bundle_models=False):
     return names
 
 
-def pack(plugin_dir, out_dir):
+def pack(plugin_dir, out_dir, suffix=""):
     manifest, errors = validate(plugin_dir)
     if errors:
         for error in errors:
             print("  ERROR: %s" % error, file=sys.stderr)
         return None
     os.makedirs(out_dir, exist_ok=True)
-    name = "%s-%s.wmplugin" % (manifest["id"], manifest["version"])
+    name = "%s-%s%s.wmplugin" % (manifest["id"], manifest["version"], suffix)
     archive = os.path.join(out_dir, name)
     bundle_models = bool(manifest.get("bundle_models"))
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -359,10 +385,31 @@ def pack(plugin_dir, out_dir):
             for filename in files:
                 if filename.endswith((".pyc", ".pyo")):
                     continue
+                if root == plugin_dir and filename == DEBUG_OVERLAY:
+                    continue
                 full = os.path.join(root, filename)
                 rel = os.path.relpath(full, plugin_dir)
                 zf.write(full, rel)
     return archive
+
+
+def debug_copy(plugin_dir, scratch):
+    """A copy of the plugin with debug.json laid over its manifest, or None."""
+    overlay_path = os.path.join(plugin_dir, DEBUG_OVERLAY)
+    if not os.path.isfile(overlay_path):
+        print("%s: no %s" % (os.path.basename(os.path.normpath(plugin_dir)), DEBUG_OVERLAY))
+        return None
+    with open(os.path.join(plugin_dir, MANIFEST), encoding="utf-8") as handle:
+        manifest = json.load(handle)
+    with open(overlay_path, encoding="utf-8") as handle:
+        manifest.update(json.load(handle))
+    # validate() wants the folder named after the id
+    copy = os.path.join(scratch, os.path.basename(os.path.normpath(plugin_dir)))
+    shutil.copytree(plugin_dir, copy, ignore=shutil.ignore_patterns("venv*", "__pycache__", ".git", "models", DEBUG_OVERLAY))
+    with open(os.path.join(copy, MANIFEST), "w", encoding="utf-8") as handle:
+        json.dump(manifest, handle, ensure_ascii=False, indent=4)
+        handle.write("\n")
+    return copy
 
 
 def main():
@@ -370,6 +417,7 @@ def main():
     parser.add_argument("plugins", nargs="*", help="plugin folders")
     parser.add_argument("--all", action="store_true", help="pack every plugin folder here")
     parser.add_argument("--check", action="store_true", help="validate only, do not pack")
+    parser.add_argument("--debug", action="store_true", help="pack the debug build (plugin.json with debug.json laid over it)")
     parser.add_argument("-o", "--out", default="dist", help="output directory (default: dist)")
     args = parser.parse_args()
 
@@ -382,6 +430,9 @@ def main():
     if not targets:
         parser.error("no plugin folders given (use folder names or --all)")
 
+    scratch = tempfile.mkdtemp() if args.debug else None
+    if scratch:
+        targets = [t for t in (debug_copy(p, scratch) for p in targets) if t]
     failures = 0
     for plugin_dir in targets:
         label = os.path.basename(os.path.normpath(plugin_dir))
@@ -396,11 +447,13 @@ def main():
             print("%s: OK (%s %s, %s/%s)" % (label, manifest["name"], manifest["version"],
                                              manifest["kind"], manifest["target"]))
             continue
-        archive = pack(plugin_dir, os.path.abspath(args.out))
+        archive = pack(plugin_dir, os.path.abspath(args.out), "-debug" if args.debug else "")
         if archive:
             print("%s -> %s (%d bytes)" % (label, archive, os.path.getsize(archive)))
         else:
             failures += 1
+    if scratch:
+        shutil.rmtree(scratch, ignore_errors=True)
     return 1 if failures else 0
 
 

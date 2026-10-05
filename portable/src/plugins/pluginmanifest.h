@@ -259,6 +259,10 @@ public:
     QIcon icon() const;
     bool hasTarget(const QString &target) const { return m_targets.contains(target); }
     QString entry() const { return m_entry; }
+    /** @brief Description of the plugin's own cloud files, in the format of
+     *  the Online Resources services, relative to @ref rootDir. Empty when the
+     *  plugin keeps nothing online. */
+    QString libraryFile() const { return m_library; }
     QString requirements() const { return m_requirements; }
     /** @brief GPU variants of the requirements, richest first. */
     QList<PluginRequirements> requirementsVariants() const { return m_requirementsVariants; }
@@ -379,6 +383,7 @@ private:
     QStringList m_targets;
     QString m_icon;
     QString m_entry;
+    QString m_library;
     QString m_requirements;
     QList<PluginRequirements> m_requirementsVariants;
     QStringList m_os;

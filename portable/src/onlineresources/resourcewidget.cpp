@@ -5,11 +5,17 @@
 */
 
 #include "resourcewidget.hpp"
+#include "bin/bin.h"
+#include "bin/projectitemmodel.h"
 #include "core.h"
+#include "doc/wunjodoc.h"
+#include "plugins/filedownloadjob.h"
+#include "plugins/pluginmanager.h"
+#include "wunjosettings.h"
 
 #include <KConfigGroup>
+#include <KDateComboBox>
 #include <KFileItem>
-#include "plugins/filedownloadjob.h"
 
 #include <KIO/JobTracker>
 #include <KJobTrackerInterface>
@@ -21,17 +27,26 @@
 #include <KSharedConfig>
 #include <KSqueezedTextLabel>
 #include <QComboBox>
+#include <QApplication>
 #include <QDesktopServices>
+#include <QDir>
+#include <QDrag>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QGridLayout>
 #include <QIcon>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMimeData>
+#include <QMouseEvent>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QRegularExpression>
+#include <QStandardPaths>
 #include <QTimer>
 #include <QToolBar>
+#include <QToolButton>
 
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent)
@@ -53,32 +68,77 @@ ResourceWidget::ResourceWidget(QWidget *parent)
     m_stopAction = new QAction(i18n("Abort"), this);
     connect(m_stopAction, &QAction::triggered, this, &ResourceWidget::abortDownload);
 
-    for (const QPair<QString, QString> &provider : ProvidersRepository::get()->getAllProviers()) {
-        QIcon icon;
-        switch (ProvidersRepository::get()->getProvider(provider.second)->type()) {
-        case ProviderModel::AUDIO:
-            icon = QIcon::fromTheme(QStringLiteral("player-volume"));
-            break;
-        case ProviderModel::VIDEO:
-            icon = QIcon::fromTheme(QStringLiteral("camera-video"));
-            break;
-        case ProviderModel::IMAGE:
-            icon = QIcon::fromTheme(QStringLiteral("camera-photo"));
-            break;
-        default:
-            icon = QIcon();
-        }
-        service_list->addItem(icon, provider.first, provider.second);
+    // The bar a plugin's library adds over the list: which days, which tool
+    m_libraryBar = new QWidget(this);
+    auto *bar = new QGridLayout(m_libraryBar);
+    bar->setContentsMargins(0, QFontInfo(font()).pixelSize() / 2, 0, 0);
+    m_from = new KDateComboBox(m_libraryBar);
+    m_from->setToolTip(i18nc("@info:tooltip first day of a date range", "From"));
+    m_from->setDate(QDate());
+    m_to = new KDateComboBox(m_libraryBar);
+    m_to->setToolTip(i18nc("@info:tooltip last day of a date range", "To"));
+    m_to->setDate(QDate());
+    m_group = new QComboBox(m_libraryBar);
+    m_refresh = new QToolButton(m_libraryBar);
+    m_refresh->setIcon(QIcon::fromTheme(QStringLiteral("view-refresh")));
+    m_refresh->setToolTip(i18n("Refresh"));
+    m_refresh->setAutoRaise(true);
+    // A date field squeezed by a narrow tab showed only its arrow: it keeps room
+    // for a whole date, and the dates get a row of their own
+    for (KDateComboBox *field : {m_from, m_to}) {
+        field->setMinimumContentsLength(10);
+        field->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
     }
+    bar->addWidget(m_from, 0, 0);
+    bar->addWidget(m_to, 0, 1, 1, 2);
+    bar->addWidget(m_group, 1, 0, 1, 2);
+    bar->addWidget(m_refresh, 1, 2);
+    bar->setColumnStretch(0, 1);
+    bar->setColumnStretch(1, 1);
+    left_box->insertWidget(1, m_libraryBar);
+    m_libraryBar->hide();
+    // a date is "entered" also when the field only loses focus: ask again only
+    // when the days really changed
+    auto datesEntered = [this]() {
+        if (m_from->date() != m_rangeFrom || m_to->date() != m_rangeTo) {
+            reloadLibrary();
+        }
+    };
+    connect(m_from, &KDateComboBox::dateEntered, this, datesEntered);
+    connect(m_to, &KDateComboBox::dateEntered, this, datesEntered);
+    connect(m_refresh, &QToolButton::clicked, this, &ResourceWidget::reloadLibrary);
+    connect(m_group, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ResourceWidget::applyFilter);
+
+    fillServices();
     connect(service_list, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ResourceWidget::slotChangeProvider);
+    // picked by the user, not restored from the settings: that may go online
+    connect(service_list, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), this, &ResourceWidget::loadIfEmpty);
+    connect(&PluginManager::instance(), &PluginManager::pluginsChanged, this, &ResourceWidget::slotPluginsChanged);
     loadConfig();
     connect(provider_info, &KUrlLabel::leftClickedUrl, this, [&]() { slotOpenUrl(provider_info->url()); });
     connect(label_license, &KUrlLabel::leftClickedUrl, this, [&]() { slotOpenUrl(label_license->url()); });
-    connect(search_text, &KLineEdit::returnKeyPressed, this, &ResourceWidget::slotStartSearch);
+    connect(search_text, &KLineEdit::returnKeyPressed, this, [this]() {
+        if (isLibrary()) {
+            applyFilter();
+        } else {
+            slotStartSearch();
+        }
+    });
+    connect(search_text, &QLineEdit::textChanged, this, &ResourceWidget::applyFilter);
     connect(search_results, &QListWidget::currentRowChanged, this, &ResourceWidget::slotUpdateCurrentItem);
+    connect(search_results, &QListWidget::itemDoubleClicked, this, [this](QListWidgetItem *item) {
+        if (isLibrary()) {
+            importLibraryItem(item);
+        }
+    });
+    search_results->viewport()->installEventFilter(this);
     connect(this, &ResourceWidget::gotPixmap, this, &ResourceWidget::slotShowPixmap);
     connect(button_preview, &QAbstractButton::clicked, this, [&]() {
         if (!m_currentProvider) {
+            return;
+        }
+        if (isLibrary()) {
+            previewLibraryItem(m_currentItem);
             return;
         }
 
@@ -86,6 +146,13 @@ ResourceWidget::ResourceWidget(QWidget *parent)
     });
 
     connect(button_import, &QAbstractButton::clicked, this, [&]() {
+        if (!m_currentProvider) {
+            return;
+        }
+        if (isLibrary()) {
+            importLibraryItem(m_currentItem);
+            return;
+        }
         if (m_currentProvider->get()->downloadOAuth2()) {
             if (m_currentProvider->get()->requiresLogin()) {
                 KMessageBox::information(this, i18n("Login is required to download this item.\nYou will be redirected to the login page now."));
@@ -113,7 +180,76 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 ResourceWidget::~ResourceWidget()
 {
+    stopThumbnails();
     saveConfig();
+}
+
+void ResourceWidget::fillServices()
+{
+    const QString previous = service_list->currentData().toString();
+    QSignalBlocker blocker(service_list);
+    service_list->clear();
+    const QVector<QPair<QString, QString>> providers = ProvidersRepository::get()->getAllProviers();
+    // the files of the user's own plugins come before the stock libraries
+    for (const bool libraries : {true, false}) {
+        for (const QPair<QString, QString> &provider : providers) {
+            ProviderModel *model = ProvidersRepository::get()->getProvider(provider.second).get();
+            if (model->isLibrary() != libraries) {
+                continue;
+            }
+            QIcon icon;
+            if (model->isLibrary()) {
+                icon = PluginManager::instance().plugin(model->pluginId()).icon();
+            } else {
+                switch (model->type()) {
+                case ProviderModel::AUDIO:
+                    icon = QIcon::fromTheme(QStringLiteral("player-volume"));
+                    break;
+                case ProviderModel::VIDEO:
+                    icon = QIcon::fromTheme(QStringLiteral("camera-video"));
+                    break;
+                case ProviderModel::IMAGE:
+                    icon = QIcon::fromTheme(QStringLiteral("camera-photo"));
+                    break;
+                default:
+                    icon = QIcon();
+                }
+            }
+            service_list->addItem(icon, provider.first, provider.second);
+        }
+    }
+    const int index = previous.isEmpty() ? -1 : service_list->findData(previous);
+    if (index >= 0) {
+        service_list->setCurrentIndex(index);
+    }
+}
+
+void ResourceWidget::slotPluginsChanged()
+{
+    // The repository is about to rebuild every service: nothing may point into it
+    stopThumbnails();
+    if (m_currentProvider != nullptr) {
+        m_currentProvider->get()->disconnect(this);
+        m_currentProvider = nullptr;
+    }
+    m_searching = false;
+    blockUI(false);
+    ProvidersRepository::get()->refresh();
+    fillServices();
+    slotChangeProvider();
+}
+
+void ResourceWidget::started()
+{
+    m_started = true;
+}
+
+void ResourceWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    if (m_started) {
+        QTimer::singleShot(0, this, &ResourceWidget::loadIfEmpty);
+    }
 }
 
 /**
@@ -124,7 +260,9 @@ void ResourceWidget::loadConfig()
 {
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup resourceConfig(config, "OnlineResources");
-    slider_zoom->setValue(resourceConfig.readEntry("zoom", 7));
+    m_stockZoom = resourceConfig.readEntry("zoom", 7);
+    m_libraryZoom = resourceConfig.readEntry("libraryZoom", 2);
+    slider_zoom->setValue(m_stockZoom);
     if (resourceConfig.readEntry("provider", service_list->itemText(0)).isEmpty()) {
         service_list->setCurrentIndex(0);
     } else {
@@ -142,7 +280,9 @@ void ResourceWidget::saveConfig()
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup resourceConfig(config, "OnlineResources");
     resourceConfig.writeEntry(QStringLiteral("provider"), service_list->currentText());
-    resourceConfig.writeEntry(QStringLiteral("zoom"), slider_zoom->value());
+    (m_zoomForLibrary ? m_libraryZoom : m_stockZoom) = slider_zoom->value();
+    resourceConfig.writeEntry(QStringLiteral("zoom"), m_stockZoom);
+    resourceConfig.writeEntry(QStringLiteral("libraryZoom"), m_libraryZoom);
     config->sync();
 }
 
@@ -153,6 +293,7 @@ void ResourceWidget::saveConfig()
  */
 void ResourceWidget::blockUI(bool block)
 {
+    m_libraryBar->setEnabled(!block);
     buildin_box->setEnabled(!block);
     search_text->setEnabled(!block);
     service_list->setEnabled(!block);
@@ -168,6 +309,9 @@ void ResourceWidget::slotChangeProvider()
     if (m_currentProvider != nullptr) {
         m_currentProvider->get()->disconnect(this);
     }
+    stopThumbnails();
+    m_searching = false;
+    m_loaded = false;
 
     // Reset backoff when provider changes assuming the new has not put us under rate limit (yet)
     m_backoff = 0;
@@ -194,7 +338,33 @@ void ResourceWidget::slotChangeProvider()
 
     m_currentProvider = &ProvidersRepository::get()->getProvider(service_list->currentData().toString());
 
-    provider_info->setText(i18n("Media provided by %1", m_currentProvider->get()->name()));
+    const bool library = m_currentProvider->get()->isLibrary();
+    // A plugin's list is read by its text, a stock library by its pictures:
+    // each keeps a size of its own
+    if (library != m_zoomForLibrary) {
+        (m_zoomForLibrary ? m_libraryZoom : m_stockZoom) = slider_zoom->value();
+        m_zoomForLibrary = library;
+        slider_zoom->setValue(library ? m_libraryZoom : m_stockZoom);
+    }
+    m_libraryBar->setVisible(library);
+    label_license->setVisible(!library);
+    if (library) {
+        provider_info->setText(i18n("Your files from %1", m_currentProvider->get()->name()));
+        QSignalBlocker blocker(m_group);
+        m_group->clear();
+        m_group->addItem(i18n("All"), QString());
+        const QMap<QString, QString> groups = m_currentProvider->get()->groups();
+        for (auto it = groups.constBegin(); it != groups.constEnd(); ++it) {
+            m_group->addItem(i18n(it.value().toUtf8().constData()), it.key());
+        }
+        if (m_currentProvider->get()->hasKey()) {
+            showNote(i18n("Press Refresh to load the list"), KMessageWidget::Information);
+        } else {
+            showNote(i18n("Add the key in the plugin's settings"), KMessageWidget::Warning);
+        }
+    } else {
+        provider_info->setText(i18n("Media provided by %1", m_currentProvider->get()->name()));
+    }
     provider_info->setUrl(m_currentProvider->get()->homepage());
     connect(m_currentProvider->get(), &ProviderModel::searchDone, this, &ResourceWidget::slotSearchFinished);
     connect(m_currentProvider->get(), &ProviderModel::searchError, this, &ResourceWidget::slotDisplayError);
@@ -203,7 +373,7 @@ void ResourceWidget::slotChangeProvider()
     connect(m_currentProvider->get(), &ProviderModel::authenticated, this, &ResourceWidget::slotAccessTokenReceived);
 
     // automatically kick of a search if we have search text and we switch services.
-    if (!search_text->text().isEmpty()) {
+    if (!library && !search_text->text().isEmpty()) {
         slotStartSearch();
     }
 }
@@ -224,6 +394,21 @@ void ResourceWidget::slotOpenUrl(const QString &url)
  */
 void ResourceWidget::slotStartSearch()
 {
+    if (m_currentProvider == nullptr) {
+        return;
+    }
+    if (isLibrary()) {
+        stopThumbnails();
+        if (!m_currentProvider->get()->hasKey()) {
+            search_results->clear();
+            showNote(i18n("Add the key in the plugin's settings"), KMessageWidget::Warning);
+            return;
+        }
+        m_rangeFrom = m_from->date();
+        m_rangeTo = m_to->date();
+        m_currentProvider->get()->setDateRange(m_rangeFrom, m_rangeTo);
+    }
+    m_searching = true;
     // Abort and clear all active image downloads from previous searches
     for (QNetworkReply *reply : std::as_const(m_activeImageReplies)) {
         reply->abort();
@@ -258,12 +443,17 @@ void ResourceWidget::slotStartSearch()
  */
 void ResourceWidget::slotDisplayError(const QString &message)
 {
-    message_line->setText(i18n("Search failed! %1", message));
+    m_searching = false;
+    message_line->clearActions();
+    // a plugin's library says in a whole sentence what went wrong
+    message_line->setText(isLibrary() ? message : i18n("Search failed! %1", message));
     message_line->setMessageType(KMessageWidget::Error);
     message_line->show();
-    page_number->setEnabled(false);
+    page_number->setEnabled(isLibrary() && page_number->maximum() > 1);
     service_list->setEnabled(true);
     buildin_box->setEnabled(true);
+    search_text->setEnabled(true);
+    m_libraryBar->setEnabled(true);
     setCursor(Qt::ArrowCursor);
 }
 
@@ -275,6 +465,13 @@ void ResourceWidget::slotDisplayError(const QString &message)
  */
 void ResourceWidget::slotSearchFinished(const QList<ResourceItemInfo> &list, int pageCount)
 {
+    if (isLibrary()) {
+        if (m_searching) {
+            showLibraryList(list, pageCount);
+        }
+        return;
+    }
+    m_searching = false;
     QMutexLocker lock(&m_imageLock);
     m_imagesUrl.clear();
     if (list.isEmpty()) {
@@ -344,6 +541,13 @@ void ResourceWidget::slotShowPixmap(const QString &url, const QPixmap &pixmap)
 void ResourceWidget::abortDownload()
 {
     message_line->clearActions();
+    if (isLibrary()) {
+        // the answer that still comes is thrown away
+        m_searching = false;
+        message_line->hide();
+        blockUI(false);
+        return;
+    }
     slotSearchFinished({}, 1);
     delete m_networkManager;
     m_networkManager = nullptr;
@@ -461,6 +665,21 @@ void ResourceWidget::slotUpdateCurrentItem()
     // get the item the user selected
     m_currentItem = search_results->currentItem();
     if (!m_currentItem) {
+        return;
+    }
+
+    if (isLibrary()) {
+        const bool ready = m_currentItem->data(statusRole).toString() == QLatin1String("done") && !m_currentItem->data(downloadRole).toString().isEmpty();
+        const QString tool = toolName(m_currentItem->data(groupRole).toString());
+        const QStringList lines = libraryRowText(m_currentItem).split(QLatin1Char('\n'));
+        QString details = QStringLiteral("<h3>%1</h3>").arg(tool.toHtmlEscaped());
+        details.append(lines.value(1).toHtmlEscaped() + QStringLiteral("<br /><br />"));
+        details.append(m_currentItem->data(descriptionRole).toString().toHtmlEscaped().replace(QLatin1Char('\n'), QStringLiteral("<br />")));
+        info_browser->setHtml(details);
+        button_preview->show();
+        details_box->setEnabled(true);
+        button_import->setEnabled(ready);
+        button_preview->setEnabled(ready);
         return;
     }
 
@@ -796,5 +1015,384 @@ void ResourceWidget::slotAccessTokenReceived(const QString &accessToken)
     } else {
         KMessageBox::error(this, i18n("Try importing again to obtain a new connection"),
                            i18n("Error Getting Access Token from %1.", m_currentProvider->get()->name()));
+    }
+}
+
+/*
+ * A plugin's library
+ */
+
+bool ResourceWidget::isLibrary() const
+{
+    return m_currentProvider != nullptr && m_currentProvider->get() != nullptr && m_currentProvider->get()->isLibrary();
+}
+
+void ResourceWidget::showNote(const QString &text, KMessageWidget::MessageType type)
+{
+    message_line->clearActions();
+    message_line->setText(text);
+    message_line->setMessageType(type);
+    message_line->show();
+}
+
+void ResourceWidget::reloadLibrary()
+{
+    if (!isLibrary()) {
+        return;
+    }
+    page_number->blockSignals(true);
+    page_number->setValue(1);
+    page_number->blockSignals(false);
+    slotStartSearch();
+}
+
+void ResourceWidget::loadIfEmpty()
+{
+    if (isLibrary() && !m_loaded && !m_searching) {
+        reloadLibrary();
+    }
+}
+
+QString ResourceWidget::toolName(const QString &group) const
+{
+    if (!isLibrary()) {
+        return group;
+    }
+    const QString name = m_currentProvider->get()->groups().value(group);
+    return name.isEmpty() ? group : i18n(name.toUtf8().constData());
+}
+
+QString ResourceWidget::libraryRowText(const QListWidgetItem *item) const
+{
+    const QString tool = toolName(item->data(groupRole).toString());
+    QString title = item->data(nameRole).toString().simplified();
+    if (title.isEmpty()) {
+        title = tool.isEmpty() ? i18n("Unnamed") : tool;
+    }
+    if (title.size() > 60) {
+        title = title.left(59).trimmed() + QChar(0x2026);
+    }
+    QStringList second;
+    const QString stamp = item->data(dateRole).toString();
+    QDateTime made = QDateTime::fromString(stamp, Qt::ISODateWithMs);
+    if (!made.isValid()) {
+        // the server writes microseconds
+        QString shorter = stamp;
+        shorter.remove(QRegularExpression(QStringLiteral("\\.\\d+")));
+        made = QDateTime::fromString(shorter, Qt::ISODate);
+    }
+    if (made.isValid()) {
+        second << QLocale().toString(made.toLocalTime(), QLocale::ShortFormat);
+    }
+    if (!tool.isEmpty()) {
+        second << tool;
+    }
+    if (item->data(statusRole).toString() != QLatin1String("done") || item->data(downloadRole).toString().isEmpty()) {
+        second << i18n("in progress");
+    } else if (QFile::exists(libraryTarget(item))) {
+        second << i18n("downloaded");
+    }
+    return title + QLatin1Char('\n') + second.join(QStringLiteral(", "));
+}
+
+void ResourceWidget::showLibraryList(const QList<ResourceItemInfo> &list, int pageCount)
+{
+    m_searching = false;
+    m_loaded = true;
+    blockUI(false);
+    message_line->clearActions();
+    search_results->clear();
+    for (const ResourceItemInfo &item : list) {
+        const bool ready = item.status == QLatin1String("done") && !item.downloadUrl.isEmpty();
+        const bool audio = item.contentType.startsWith(QLatin1String("audio/"));
+        auto *row = new QListWidgetItem(QIcon::fromTheme(audio ? QStringLiteral("audio-x-generic") : QStringLiteral("video-x-generic")), QString());
+        row->setData(idRole, item.id);
+        row->setData(nameRole, item.name);
+        row->setData(descriptionRole, item.name);
+        row->setData(downloadRole, item.downloadUrl);
+        row->setData(previewRole, item.downloadUrl);
+        row->setData(singleDownloadRole, true);
+        row->setData(dateRole, item.date);
+        row->setData(contentTypeRole, item.contentType);
+        row->setData(fileNameRole, item.fileName);
+        row->setData(groupRole, item.group);
+        row->setData(statusRole, ready ? QStringLiteral("done") : item.status);
+        row->setText(libraryRowText(row));
+        search_results->addItem(row);
+    }
+    if (list.isEmpty()) {
+        showNote(i18n("No files yet"), KMessageWidget::Information);
+    } else {
+        message_line->hide();
+    }
+    page_number->setMaximum(qMax(1, pageCount));
+    page_number->setEnabled(page_number->maximum() > 1);
+    applyFilter();
+    requestThumbnails();
+}
+
+void ResourceWidget::applyFilter()
+{
+    if (!isLibrary()) {
+        return;
+    }
+    const QString text = search_text->text().trimmed();
+    const QString group = m_group->currentData().toString();
+    for (int i = 0; i < search_results->count(); ++i) {
+        QListWidgetItem *row = search_results->item(i);
+        const bool otherTool = !group.isEmpty() && row->data(groupRole).toString() != group;
+        const bool otherText = !text.isEmpty() && !row->data(nameRole).toString().contains(text, Qt::CaseInsensitive);
+        row->setHidden(otherTool || otherText);
+    }
+}
+
+QListWidgetItem *ResourceWidget::itemById(const QString &id) const
+{
+    for (int i = 0; i < search_results->count(); ++i) {
+        if (search_results->item(i)->data(idRole).toString() == id) {
+            return search_results->item(i);
+        }
+    }
+    return nullptr;
+}
+
+QString ResourceWidget::libraryTarget(const QListWidgetItem *item) const
+{
+    WunjoDoc *doc = pCore->currentDoc();
+    if (doc == nullptr || item == nullptr) {
+        return QString();
+    }
+    QString name = QFileInfo(item->data(fileNameRole).toString()).fileName();
+    if (name.isEmpty()) {
+        const QString type = item->data(contentTypeRole).toString();
+        QString suffix = QFileInfo(QUrl(item->data(downloadRole).toString()).path()).suffix();
+        if (suffix.isEmpty()) {
+            suffix = type.startsWith(QLatin1String("audio/")) ? QStringLiteral("mp3") : QStringLiteral("mp4");
+        }
+        name = item->data(idRole).toString() + QLatin1Char('.') + suffix;
+    }
+    name.replace(QRegularExpression(QStringLiteral("[/\\\\:*?\"<>|]")), QStringLiteral("-"));
+    return doc->projectDataFolder() + QStringLiteral("/plugin-results/") + name;
+}
+
+void ResourceWidget::fetchLibraryItem(QListWidgetItem *item, const std::function<void(const QString &)> &then)
+{
+    if (item == nullptr || item->data(statusRole).toString() != QLatin1String("done")) {
+        return;
+    }
+    const QString id = item->data(idRole).toString();
+    const QString url = item->data(downloadRole).toString();
+    const QString dest = libraryTarget(item);
+    if (url.isEmpty() || dest.isEmpty()) {
+        return;
+    }
+    if (QFile::exists(dest)) {
+        if (then) {
+            then(dest);
+        }
+        return;
+    }
+    if (then) {
+        m_afterFetch.insert(id, then);
+    }
+    if (m_fetching.contains(id)) {
+        return;
+    }
+    QDir().mkpath(QFileInfo(dest).absolutePath());
+    // The link leads to the provider's storage, not to the plugin's server: it
+    // takes no key, and none is sent there.
+    auto *job = new FileDownloadJob(QUrl(url), dest, this);
+    m_fetching.insert(id, job);
+    connect(job, &KJob::result, this, [this, id, dest](KJob *finished) {
+        m_fetching.remove(id);
+        const std::function<void(const QString &)> next = m_afterFetch.take(id);
+        if (finished->error() != 0 || !QFile::exists(dest)) {
+            if (finished->error() != KJob::KilledJobError) {
+                showNote(i18n("The file could not be downloaded. The service may no longer keep it"), KMessageWidget::Error);
+            }
+            return;
+        }
+        if (QListWidgetItem *row = itemById(id)) {
+            row->setText(libraryRowText(row));
+        }
+        if (next) {
+            next(dest);
+        }
+    });
+    KIO::getJobTracker()->registerJob(job);
+    job->start();
+}
+
+void ResourceWidget::previewLibraryItem(QListWidgetItem *item)
+{
+    if (item == nullptr) {
+        return;
+    }
+    // Played from the disk: the monitor opens a link in the interface's thread
+    // and the editor stands still for as long as that takes
+    const QString title = libraryRowText(item).section(QLatin1Char('\n'), 0, 0);
+    fetchLibraryItem(item, [this, title](const QString &path) { Q_EMIT previewClip(path, title); });
+}
+
+void ResourceWidget::importLibraryItem(QListWidgetItem *item)
+{
+    if (item == nullptr || !isLibrary()) {
+        return;
+    }
+    // the same bin folder a run of that tool puts its result into
+    QString folder = m_currentProvider->get()->groups().value(item->data(groupRole).toString());
+    if (folder.isEmpty()) {
+        folder = m_currentProvider->get()->name();
+    }
+    fetchLibraryItem(item, [this, folder](const QString &path) {
+        std::shared_ptr<ProjectItemModel> model = pCore->projectItemModel();
+        const QStringList known = model ? model->getClipByUrl(QFileInfo(path)) : QStringList();
+        if (!known.isEmpty() && pCore->activeBin() != nullptr) {
+            pCore->activeBin()->selectClipById(known.first());
+            return;
+        }
+        Q_EMIT addClip(QUrl::fromLocalFile(path), PluginManager::resultsFolder(folder));
+    });
+}
+
+void ResourceWidget::dragLibraryItem(QListWidgetItem *item)
+{
+    if (item == nullptr || item->data(statusRole).toString() != QLatin1String("done")) {
+        return;
+    }
+    const QString dest = libraryTarget(item);
+    if (dest.isEmpty()) {
+        return;
+    }
+    if (!QFile::exists(dest)) {
+        // nothing to drop yet: get it, and say so
+        fetchLibraryItem(item, {});
+        showNote(i18n("The file is downloading. Drag it when it is ready"), KMessageWidget::Information);
+        QTimer::singleShot(6000, message_line, &KMessageWidget::animatedHide);
+        return;
+    }
+    auto *mime = new QMimeData;
+    mime->setUrls({QUrl::fromLocalFile(dest)});
+    auto *drag = new QDrag(search_results);
+    drag->setMimeData(mime);
+    drag->setPixmap(item->icon().pixmap(search_results->iconSize()));
+    drag->exec(Qt::CopyAction);
+}
+
+bool ResourceWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == search_results->viewport() && isLibrary()) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            auto *mouse = static_cast<QMouseEvent *>(event);
+            if (mouse->button() == Qt::LeftButton) {
+                m_pressPos = mouse->position().toPoint();
+                QListWidgetItem *row = search_results->itemAt(m_pressPos);
+                m_pressedId = row ? row->data(idRole).toString() : QString();
+            }
+        } else if (event->type() == QEvent::MouseMove) {
+            auto *mouse = static_cast<QMouseEvent *>(event);
+            if ((mouse->buttons() & Qt::LeftButton) && !m_pressedId.isEmpty() &&
+                (mouse->position().toPoint() - m_pressPos).manhattanLength() >= QApplication::startDragDistance()) {
+                const QString id = m_pressedId;
+                m_pressedId.clear();
+                dragLibraryItem(itemById(id));
+                return true;
+            }
+        } else if (event->type() == QEvent::MouseButtonRelease) {
+            m_pressedId.clear();
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+QString ResourceWidget::thumbnailPath(const QString &id) const
+{
+    QString safe = id;
+    safe.replace(QRegularExpression(QStringLiteral("[^A-Za-z0-9_-]")), QStringLiteral("_"));
+    return QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QStringLiteral("/library-thumbs/") + m_currentProvider->get()->pluginId() +
+           QLatin1Char('/') + safe + QStringLiteral(".jpg");
+}
+
+void ResourceWidget::requestThumbnails()
+{
+    stopThumbnails();
+    if (!isLibrary()) {
+        return;
+    }
+    for (int i = 0; i < search_results->count(); ++i) {
+        QListWidgetItem *row = search_results->item(i);
+        if (!row->data(contentTypeRole).toString().startsWith(QLatin1String("video/")) || row->data(statusRole).toString() != QLatin1String("done")) {
+            continue;
+        }
+        const QString id = row->data(idRole).toString();
+        const QString cached = thumbnailPath(id);
+        if (QFile::exists(cached)) {
+            row->setIcon(QIcon(cached));
+        } else {
+            m_thumbQueue << id;
+            m_thumbUrls.insert(id, row->data(downloadRole).toString());
+        }
+    }
+    // two at a time: each one is a connection to the provider's storage
+    nextThumbnail();
+    nextThumbnail();
+}
+
+void ResourceWidget::nextThumbnail()
+{
+    if (m_thumbQueue.isEmpty() || m_thumbProcesses.size() >= 2 || !isLibrary()) {
+        return;
+    }
+    const QString id = m_thumbQueue.takeFirst();
+    const QString url = m_thumbUrls.take(id);
+    const QString target = thumbnailPath(id);
+    const QString part = target + QStringLiteral(".part.jpg");
+    QDir().mkpath(QFileInfo(target).absolutePath());
+
+    auto *process = new QProcess(this);
+    m_thumbProcesses << process;
+    // ffmpeg reads the start of the file only, enough for one frame; a link
+    // that does not answer is given up after a while
+    QTimer::singleShot(20000, process, [process]() { process->kill(); });
+    auto finish = [this, process, id, target, part](bool ok) {
+        if (!m_thumbProcesses.removeOne(process)) {
+            return;
+        }
+        process->deleteLater();
+        if (ok && QFileInfo(part).size() > 0) {
+            QFile::remove(target);
+            QFile::rename(part, target);
+            if (QListWidgetItem *row = itemById(id)) {
+                row->setIcon(QIcon(target));
+            }
+        } else {
+            QFile::remove(part);
+        }
+        nextThumbnail();
+    };
+    connect(process, &QProcess::finished, this,
+            [finish](int code, QProcess::ExitStatus status) { finish(status == QProcess::NormalExit && code == 0); });
+    connect(process, &QProcess::errorOccurred, this, [finish](QProcess::ProcessError error) {
+        if (error == QProcess::FailedToStart) {
+            finish(false);
+        }
+    });
+    process->start(WunjoSettings::ffmpegpath(), {QStringLiteral("-hide_banner"), QStringLiteral("-loglevel"), QStringLiteral("error"), QStringLiteral("-y"),
+                                                 QStringLiteral("-ss"), QStringLiteral("0"), QStringLiteral("-i"), url, QStringLiteral("-frames:v"),
+                                                 QStringLiteral("1"), QStringLiteral("-vf"), QStringLiteral("scale=320:-2"), QStringLiteral("-update"),
+                                                 QStringLiteral("1"), part});
+}
+
+void ResourceWidget::stopThumbnails()
+{
+    m_thumbQueue.clear();
+    m_thumbUrls.clear();
+    const QList<QProcess *> running = m_thumbProcesses;
+    m_thumbProcesses.clear();
+    for (QProcess *process : running) {
+        process->disconnect(this);
+        process->kill();
+        process->waitForFinished(1000);
+        process->deleteLater();
     }
 }

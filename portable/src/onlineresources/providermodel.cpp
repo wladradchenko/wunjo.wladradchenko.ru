@@ -5,6 +5,7 @@
 */
 
 #include "providermodel.hpp"
+#include "plugins/pluginmanager.h"
 #include "wunjo_debug.h"
 
 #include <KConfigGroup>
@@ -20,12 +21,14 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <kio/storedtransferjob.h>
 
-ProviderModel::ProviderModel(const QString &path)
+ProviderModel::ProviderModel(const QString &path, const QString &pluginId)
     : m_path(path)
     , m_invalid(false)
+    , m_pluginId(pluginId)
 {
 
     QFile file(path);
@@ -56,6 +59,7 @@ ProviderModel::ProviderModel(const QString &path)
         m_clientkey = m_doc["clientkey"].toString();
         m_attribution = m_doc["attributionHtml"].toString();
         m_homepage = m_doc["homepage"].toString();
+        m_perPage = qMax(1, m_search.value("perPage").toInt(15));
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS // don't make this any more public than it is.
         if (!m_clientkey.isEmpty()) {
@@ -281,6 +285,85 @@ bool ProviderModel::requiresLogin() const
  * In addition this function takes care of modifiers like "$" for placeholders, etc. but does not parse them (use objectGetString for this purpose)
  */
 
+bool ProviderModel::isLibrary() const
+{
+    return !m_pluginId.isEmpty();
+}
+
+QString ProviderModel::pluginId() const
+{
+    return m_pluginId;
+}
+
+void ProviderModel::setDateRange(const QDate &from, const QDate &to)
+{
+    m_from = from;
+    m_to = to;
+}
+
+QMap<QString, QString> ProviderModel::groups() const
+{
+    QMap<QString, QString> found;
+    const QJsonObject groups = m_doc["groups"].toObject();
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it) {
+        found.insert(it.key(), it.value().toString());
+    }
+    return found;
+}
+
+QString ProviderModel::pluginKey() const
+{
+    if (!isLibrary()) {
+        return QString();
+    }
+    const PluginManifest manifest = PluginManager::instance().plugin(m_pluginId);
+    return PluginManager::instance().apiKey(manifest.providerName());
+}
+
+bool ProviderModel::hasKey() const
+{
+    return !pluginKey().isEmpty();
+}
+
+/**
+ * @brief ProviderModel::apiRoot
+ * A plugin's server may be moved on its settings tab or, while testing, by an
+ * environment variable — the same order the plugin's own code follows — so the
+ * address is read for every request instead of once.
+ */
+QString ProviderModel::apiRoot() const
+{
+    QString root = m_apiroot;
+    if (!isLibrary()) {
+        return root;
+    }
+    const QString variable = m_doc["api"].toObject()["rootEnv"].toString();
+    const QString fromEnv = variable.isEmpty() ? QString() : qEnvironmentVariable(variable.toUtf8().constData()).trimmed();
+    if (!fromEnv.isEmpty()) {
+        root = fromEnv;
+    } else {
+        static const QRegularExpression param(QStringLiteral("%param:([^%]+)%"));
+        QRegularExpressionMatch match = param.match(root);
+        while (match.hasMatch()) {
+            root.replace(match.capturedStart(), match.capturedLength(), PluginManager::instance().paramValue(m_pluginId, match.captured(1)).trimmed());
+            match = param.match(root);
+        }
+    }
+    if (root.trimmed().isEmpty()) {
+        // the setting is only declared in the plugin's debug build
+        root = m_doc["api"].toObject()["rootDefault"].toString();
+    }
+    while (root.endsWith(QLatin1Char('/'))) {
+        root.chop(1);
+    }
+    return root;
+}
+
+QString ProviderModel::host() const
+{
+    return QUrl(apiRoot()).host();
+}
+
 QJsonValue ProviderModel::objectGetValue(QJsonObject item, QString key)
 {
     QJsonObject tmpKeys = m_search["res"].toObject();
@@ -369,6 +452,13 @@ QString ProviderModel::replacePlaceholders(QString string, const QString &query,
     string = string.replace("%shortlocale%", "en-US"); // TODO
     string = string.replace("%clientkey%", m_clientkey);
     string = string.replace("%id%", id);
+    if (isLibrary()) {
+        if (string.contains(QLatin1String("%key%"))) {
+            string = string.replace("%key%", pluginKey());
+        }
+        string = string.replace("%from%", m_from.isValid() ? m_from.toString(Qt::ISODate) : QString());
+        string = string.replace("%to%", m_to.isValid() ? m_to.toString(Qt::ISODate) : QString());
+    }
 
     return string;
 }
@@ -382,11 +472,32 @@ QString ProviderModel::replacePlaceholders(QString string, const QString &query,
 QUrl ProviderModel::getSearchUrl(const QString &searchText, const int page)
 {
 
-    QUrl url(m_apiroot);
+    QUrl url(isLibrary() ? apiRoot() : m_apiroot);
     const QJsonObject req = m_search.value("req").toObject();
-    QUrlQuery query;
     url.setPath(url.path().append(req.value("path").toString()));
     const QJsonArray array = req.value("params").toArray();
+    if (isLibrary()) {
+        // A list paged by date asks for page N with the date of the last item of
+        // page N-1. Such a date carries a "+" (2026-10-04T20:33:10+00:00) that a
+        // server reads as a space unless it is encoded, so every value is.
+        const QString cursorParam = m_search.value("paging").toObject().value("param").toString();
+        const QString cursor = page > 1 ? m_cursors.value(page) : QString();
+        QStringList parts;
+        for (const auto &param : array) {
+            const QString key = param.toObject().value("key").toString();
+            QString value = replacePlaceholders(param.toObject().value("value").toString(), searchText, page);
+            if (!cursorParam.isEmpty() && key == cursorParam && !cursor.isEmpty()) {
+                value = cursor;
+            }
+            if (value.isEmpty()) {
+                continue;
+            }
+            parts << QString::fromLatin1(QUrl::toPercentEncoding(key)) + QLatin1Char('=') + QString::fromLatin1(QUrl::toPercentEncoding(value));
+        }
+        url.setQuery(parts.join(QLatin1Char('&')), QUrl::StrictMode);
+        return url;
+    }
+    QUrlQuery query;
     for (const auto &param : array) {
         query.addQueryItem(param.toObject().value("key").toString(), replacePlaceholders(param.toObject().value("value").toString(), searchText, page));
     }
@@ -403,6 +514,10 @@ QUrl ProviderModel::getSearchUrl(const QString &searchText, const int page)
  */
 void ProviderModel::slotStartSearch(const QString &searchText, const int page)
 {
+    if (page <= 1) {
+        m_cursors.clear();
+    }
+    m_requestedPage = page;
     QUrl uri = getSearchUrl(searchText, page);
 
     if (m_search.value("req").toObject().value("method").toString() == "GET") {
@@ -416,14 +531,33 @@ void ProviderModel::slotStartSearch(const QString &searchText, const int page)
         }
         QNetworkReply *reply = m_networkManager->get(request);
 
-        connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        connect(reply, &QNetworkReply::finished, this, [this, reply, page]() {
+            if (isLibrary() && page != m_requestedPage) {
+                // an older request answering after a newer one was sent
+                reply->deleteLater();
+                return;
+            }
             if (reply->error() == QNetworkReply::NoError) {
                 QByteArray response = reply->readAll();
-                std::pair<QList<ResourceItemInfo>, const int> result = parseSearchResponse(response);
+                std::pair<QList<ResourceItemInfo>, const int> result = parseSearchResponse(response, page);
                 Q_EMIT searchDone(result.first, result.second);
 
             } else {
-                Q_EMIT searchError(QStringLiteral("HTTP ") + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
+                const int code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+                QString message;
+                if (isLibrary()) {
+                    if (code == 401 || code == 403) {
+                        message = i18n("The key is not valid");
+                    } else if (code == 429) {
+                        message = i18n("Too many requests. Try again in a minute");
+                    } else if (code == 0) {
+                        message = i18n("No connection to %1", host());
+                    }
+                }
+                if (message.isEmpty()) {
+                    message = QStringLiteral("HTTP ") + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
+                }
+                Q_EMIT searchError(message);
                 qCDebug(WUNJO_LOG) << reply->errorString();
             }
             reply->deleteLater();
@@ -445,7 +579,7 @@ void ProviderModel::slotStartSearch(const QString &searchText, const int page)
  * @return pair of  of QList containing ResourceItemInfo and int reflecting the number of found pages
  * Parse the response data of a search request, usually after slotStartSearch
  */
-std::pair<QList<ResourceItemInfo>, const int> ProviderModel::parseSearchResponse(const QByteArray &data)
+std::pair<QList<ResourceItemInfo>, const int> ProviderModel::parseSearchResponse(const QByteArray &data, int page)
 {
     QJsonObject keys = m_search["res"].toObject();
     QList<ResourceItemInfo> list;
@@ -504,7 +638,27 @@ std::pair<QList<ResourceItemInfo>, const int> ProviderModel::parseSearchResponse
                 }
             }
 
+            if (isLibrary()) {
+                if (onlineItem.name.isEmpty()) {
+                    onlineItem.name = objectGetString(item.toObject(), "nameAlt");
+                }
+                onlineItem.date = objectGetString(item.toObject(), "date");
+                onlineItem.contentType = objectGetString(item.toObject(), "contentType");
+                onlineItem.fileName = objectGetString(item.toObject(), "fileName");
+                onlineItem.group = objectGetString(item.toObject(), "group");
+                onlineItem.status = objectGetString(item.toObject(), "status");
+            }
+
             list << onlineItem;
+        }
+        if (isLibrary() && !m_search.value("paging").toObject().isEmpty()) {
+            // No total to divide: there is a next page as long as this one is full
+            if (list.size() >= m_perPage && !list.constLast().date.isEmpty()) {
+                m_cursors.insert(page + 1, list.constLast().date);
+                pageCount = page + 1;
+            } else {
+                pageCount = page;
+            }
         }
     } else {
         qCWarning(WUNJO_LOG) << "WARNING: unknown response format: " << keys["format"];
