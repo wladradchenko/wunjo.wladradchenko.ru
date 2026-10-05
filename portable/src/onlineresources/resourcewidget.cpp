@@ -5,6 +5,7 @@
 */
 
 #include "resourcewidget.hpp"
+#include "resourceservice.hpp"
 #include "bin/bin.h"
 #include "bin/projectitemmodel.h"
 #include "core.h"
@@ -673,7 +674,11 @@ void ResourceWidget::slotUpdateCurrentItem()
         const QString tool = toolName(m_currentItem->data(groupRole).toString());
         const QStringList lines = libraryRowText(m_currentItem).split(QLatin1Char('\n'));
         QString details = QStringLiteral("<h3>%1</h3>").arg(tool.toHtmlEscaped());
-        details.append(lines.value(1).toHtmlEscaped() + QStringLiteral("<br /><br />"));
+        details.append(lines.value(1).toHtmlEscaped() + QStringLiteral("<br />"));
+        if (m_currentItem->data(priceRole).toInt() >= 0) {
+            details.append(i18n("Price %1", m_currentItem->data(priceRole).toInt()).toHtmlEscaped() + QStringLiteral("<br />"));
+        }
+        details.append(QStringLiteral("<br />"));
         details.append(m_currentItem->data(descriptionRole).toString().toHtmlEscaped().replace(QLatin1Char('\n'), QStringLiteral("<br />")));
         info_browser->setHtml(details);
         button_preview->show();
@@ -728,6 +733,15 @@ void ResourceWidget::slotUpdateCurrentItem()
     details_box->setEnabled(true);
     button_import->setEnabled(true);
     button_preview->setEnabled(true);
+}
+
+QString ResourceWidget::attributionText(const QString &name, const QString &url, const QString &author, const QString &licenseUrl)
+{
+    QString attribution = i18nc("item name, item url, author name, license name, license url",
+                                "This video uses \"%1\" (%2) by \"%3\" licensed under %4. To view a copy of this license, visit %5",
+                                name.isEmpty() ? i18n("Unnamed") : name, url, author, licenseNameFromUrl(licenseUrl, true), licenseUrl);
+    attribution.append(QStringLiteral("<br/> "));
+    return attribution;
 }
 
 /**
@@ -927,12 +941,8 @@ void ResourceWidget::slotSaveItem(const QString &originalUrl, const QString &acc
                                              "Do you want to add license attribution to your Project Notes?"),
                                         QString(), KStandardGuiItem::add(), KGuiItem(i18nc("@action:button", "Continue without")),
                                         i18n("Remember this decision")) == KMessageBox::PrimaryAction) {
-        attribution = i18nc("item name, item url, author name, license name, license url",
-                            "This video uses \"%1\" (%2) by \"%3\" licensed under %4. To view a copy of this license, visit %5",
-                            m_currentItem->data(nameRole).toString().isEmpty() ? i18n("Unnamed") : m_currentItem->data(nameRole).toString(),
-                            m_currentItem->data(urlRole).toString(), m_currentItem->data(authorRole).toString(),
-                            ResourceWidget::licenseNameFromUrl(m_currentItem->data(licenseRole).toString(), true), m_currentItem->data(licenseRole).toString());
-        attribution.append(QStringLiteral("<br/> "));
+        attribution = attributionText(m_currentItem->data(nameRole).toString(), m_currentItem->data(urlRole).toString(),
+                                      m_currentItem->data(authorRole).toString(), m_currentItem->data(licenseRole).toString());
     }
 
     QString saveUrlstring = QFileDialog::getSaveFileName(this, QString(), path, ext);
@@ -1117,6 +1127,7 @@ void ResourceWidget::showLibraryList(const QList<ResourceItemInfo> &list, int pa
         row->setData(fileNameRole, item.fileName);
         row->setData(groupRole, item.group);
         row->setData(statusRole, ready ? QStringLiteral("done") : item.status);
+        row->setData(priceRole, item.price);
         row->setText(libraryRowText(row));
         search_results->addItem(row);
     }
@@ -1158,21 +1169,16 @@ QListWidgetItem *ResourceWidget::itemById(const QString &id) const
 
 QString ResourceWidget::libraryTarget(const QListWidgetItem *item) const
 {
-    WunjoDoc *doc = pCore->currentDoc();
-    if (doc == nullptr || item == nullptr) {
+    if (item == nullptr) {
         return QString();
     }
-    QString name = QFileInfo(item->data(fileNameRole).toString()).fileName();
-    if (name.isEmpty()) {
-        const QString type = item->data(contentTypeRole).toString();
-        QString suffix = QFileInfo(QUrl(item->data(downloadRole).toString()).path()).suffix();
-        if (suffix.isEmpty()) {
-            suffix = type.startsWith(QLatin1String("audio/")) ? QStringLiteral("mp3") : QStringLiteral("mp4");
-        }
-        name = item->data(idRole).toString() + QLatin1Char('.') + suffix;
-    }
-    name.replace(QRegularExpression(QStringLiteral("[/\\\\:*?\"<>|]")), QStringLiteral("-"));
-    return doc->projectDataFolder() + QStringLiteral("/plugin-results/") + name;
+    return ResourceService::libraryTarget(item->data(fileNameRole).toString(), item->data(idRole).toString(), item->data(contentTypeRole).toString(),
+                                          item->data(downloadRole).toString());
+}
+
+void ResourceWidget::setService(ResourceService *service)
+{
+    m_service = service;
 }
 
 void ResourceWidget::fetchLibraryItem(QListWidgetItem *item, const std::function<void(const QString &)> &then)
@@ -1183,44 +1189,24 @@ void ResourceWidget::fetchLibraryItem(QListWidgetItem *item, const std::function
     const QString id = item->data(idRole).toString();
     const QString url = item->data(downloadRole).toString();
     const QString dest = libraryTarget(item);
-    if (url.isEmpty() || dest.isEmpty()) {
+    if (url.isEmpty() || dest.isEmpty() || m_service == nullptr) {
         return;
     }
-    if (QFile::exists(dest)) {
-        if (then) {
-            then(dest);
-        }
-        return;
-    }
-    if (then) {
-        m_afterFetch.insert(id, then);
-    }
-    if (m_fetching.contains(id)) {
-        return;
-    }
-    QDir().mkpath(QFileInfo(dest).absolutePath());
-    // The link leads to the provider's storage, not to the plugin's server: it
-    // takes no key, and none is sent there.
-    auto *job = new FileDownloadJob(QUrl(url), dest, this);
-    m_fetching.insert(id, job);
-    connect(job, &KJob::result, this, [this, id, dest](KJob *finished) {
-        m_fetching.remove(id);
-        const std::function<void(const QString &)> next = m_afterFetch.take(id);
-        if (finished->error() != 0 || !QFile::exists(dest)) {
-            if (finished->error() != KJob::KilledJobError) {
-                showNote(i18n("The file could not be downloaded. The service may no longer keep it"), KMessageWidget::Error);
+    // Shared with the assistant: a file it is already fetching is not fetched twice
+    m_service->fetch(QUrl(url), dest, [this, id, then](const QString &path, const QString &error) {
+        if (path.isEmpty()) {
+            if (!error.isEmpty()) {
+                showNote(error, KMessageWidget::Error);
             }
             return;
         }
         if (QListWidgetItem *row = itemById(id)) {
             row->setText(libraryRowText(row));
         }
-        if (next) {
-            next(dest);
+        if (then) {
+            then(path);
         }
     });
-    KIO::getJobTracker()->registerJob(job);
-    job->start();
 }
 
 void ResourceWidget::previewLibraryItem(QListWidgetItem *item)

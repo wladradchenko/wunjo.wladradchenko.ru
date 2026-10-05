@@ -17,6 +17,8 @@ from mcp.server.fastmcp import Context
 #: face, measuring a voice — and short enough that a stuck one does not hold
 #: the conversation.
 WAIT_SECONDS = 600
+#: How long a paid run waits here for the user to answer the editor's question.
+CONFIRM_SECONDS = 180
 
 
 def _await_job(app, job_id: str, timeout: int) -> dict:
@@ -47,6 +49,49 @@ def _await_job(app, job_id: str, timeout: int) -> dict:
     state.setdefault("percent", 0)
     state.setdefault("message", "")
     return state
+
+
+def _await_spend(app, request: int, timeout: int) -> dict:
+    """Wait for the user's answer to a paid run (or an allowance) in the editor."""
+    deadline = time.monotonic() + timeout
+    while True:
+        raw = app._call("scriptSpendState", int(request))
+        try:
+            state = json.loads(raw) if isinstance(raw, str) else dict(raw or {})
+        except (TypeError, ValueError):
+            state = {"state": "failed", "message": "unreadable answer"}
+        if state.get("state") != "waiting" or time.monotonic() >= deadline:
+            return state
+        time.sleep(1.0)
+
+
+def _paid_run(app, answer: str, what: str, retry: str) -> str:
+    """Follow a run that answered "gate:" or "confirm:" instead of a job id;
+    an empty string when it was neither."""
+    if answer.startswith("gate:"):
+        return f"ERROR: {what} costs credits and is priced first. {retry}"
+    if not answer.startswith("confirm:"):
+        return ""
+    state = _await_spend(app, int(answer[8:]), CONFIRM_SECONDS)
+    name = state.get("state")
+    if name == "waiting":
+        return ("The editor is asking the user to confirm the price. Tell them the price and what it is for; "
+                "call this tool again to keep waiting for their answer.")
+    if name == "declined":
+        return "The user declined: nothing was run or charged. Do not run it again unless they ask."
+    if name == "stale":
+        return f"ERROR: the settings changed since the price was named; nothing was run. {retry}"
+    if name != "accepted" or not state.get("job"):
+        return f"ERROR: {state.get('message') or 'the run did not start'}"
+    job_id = state["job"]
+    via = " (within the allowance the user gave)" if state.get("by") == "allowance" else ""
+    job = _await_job(app, job_id, timeout=5)
+    if job["state"] == "failed":
+        return f"ERROR: {job['message']}"
+    if job["state"] == "done":
+        return job["message"] or "Finished."
+    return (f"Started{via} (job {job_id}). Follow it with plugin_job_status(\"{job_id}\"); its last sentence says "
+            "what was charged and what is left — tell the user.")
 
 
 def register(mcp, helpers):
@@ -236,6 +281,8 @@ def register(mcp, helpers):
         Nothing is made and nothing is charged. A card whose action says
         "gate": true cannot be run until that action has answered yes for the
         values now on the card; change a field and it has to be asked again.
+        The answer of "price" names the price and the balance: tell the user
+        both before running.
 
         Args:
             card_id: From generator_cards or generator_card_create.
@@ -270,21 +317,30 @@ def register(mcp, helpers):
 
     @mcp.tool()
     def generator_card_run(ctx: Context, card_id: str) -> str:
-        """Press Generate on a card, exactly as the user would.
+        """Press Generate on a card, as the user would.
 
         The run is a job card of its own below the form. The result goes into
         the project bin and onto the timeline at the playhead, on an audio track
         with room there or a new one. Move the playhead first (seek_to) if
         it should start somewhere else.
+
+        A paid card (its action says "gate") needs generator_card_action with
+        that action first. Then the editor asks the user to confirm the price
+        in a window, unless they gave an allowance (spending_allowance): this
+        waits for their answer. Their words in the chat are not that answer.
         """
         try:
             app = helpers.get_resolve(ctx)._app
             job_id = app._call("scriptGeneratorCardRun", card_id)
             if not job_id:
                 return f"ERROR: no card {card_id} in this chat."
-            if str(job_id).startswith("gate:"):
+            job_id = str(job_id)
+            if job_id.startswith("gate:"):
                 return (f"ERROR: Generate is closed until '{job_id[5:]}' answers yes for these values. "
                         "Call generator_card_action with that action first.")
+            paid = _paid_run(app, job_id, "This card", "Call generator_card_action(card_id, \"price\") again.")
+            if paid:
+                return paid
             state = _await_job(app, job_id, timeout=5)
             if state["state"] == "failed":
                 return f"ERROR: {state['message']}"
@@ -305,6 +361,10 @@ def register(mcp, helpers):
         on its own. Call this last, then wait and check get_media_pool — the new
         clip lands in the project bin, the clip on the timeline is left alone.
 
+        A paid effect (an online one) needs effect_action(clip_id, effect_id,
+        "price") first; then the editor asks the user to confirm the price, or
+        spends from the allowance they gave, and this waits for that.
+
         Args:
             clip_id: Timeline clip the effect sits on.
             effect_id: The effect's id, e.g. "face-toolkit.swap".
@@ -315,6 +375,13 @@ def register(mcp, helpers):
             if not job_id:
                 return (f"ERROR: '{effect_id}' is not on clip {clip_id}, or it is not an "
                         "effect that renders.")
+            job_id = str(job_id)
+            if job_id.startswith("gate:"):
+                return (f"ERROR: this effect costs credits. Ask the price first: "
+                        f"effect_action({clip_id}, \"{effect_id}\", \"{job_id[5:]}\"), tell the user, then call this again.")
+            paid = _paid_run(app, job_id, "This effect", f"Call effect_action({clip_id}, \"{effect_id}\", \"price\") again.")
+            if paid:
+                return paid
             # A render can also refuse before it starts — a missing preset, a
             # weight that was never downloaded — and that answer comes back at
             # once. Only a render that is really running is reported as started.
@@ -326,6 +393,65 @@ def register(mcp, helpers):
             return (f"Rendering '{effect_id}' on clip {clip_id} (job {job_id}). It takes "
                     f"minutes; follow it with plugin_job_status(\"{job_id}\") and tell the "
                     "user it has started.")
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def effect_action(ctx: Context, clip_id: int, effect_id: str, action: str = "price") -> str:
+        """Press a plugin effect's own question button, such as "price" — what
+        rendering it would cost and what is on the account. Nothing is made or
+        charged. The answer holds while the effect stays as it is; change a
+        parameter and ask again. The effect's panel shows the same answer.
+
+        Args:
+            clip_id: Timeline clip the effect sits on.
+            effect_id: The effect's id.
+            action: The button's action, "price" for the online effects.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            if not app._call("scriptEffectAction", int(clip_id), effect_id, action):
+                return f"ERROR: '{effect_id}' on clip {clip_id} has no '{action}' button."
+            deadline = time.monotonic() + 90
+            while time.monotonic() < deadline:
+                time.sleep(1.0)
+                raw = app._call("scriptEffectAnswer", int(clip_id), effect_id, action) or "{}"
+                answer = json.loads(raw) if isinstance(raw, str) else dict(raw)
+                if not answer.get("pending") and answer.get("current"):
+                    head = "OK" if answer.get("ok") else "NO"
+                    return f"{head}: {answer.get('message') or ''}".strip()
+            return "ERROR: the plugin did not answer in time."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
+    def spending_allowance(ctx: Context, plugin_id: str, credits: int = 0) -> str:
+        """Ask the user to let you spend up to `credits` of a paid plugin without
+        a confirmation per run — when they gave you a task with a budget and do
+        not want to be asked each time. The editor shows them a window; the
+        allowance is theirs to give, never assumed from the chat. It is counted
+        by the editor, shown in the chat, can be revoked, and ends when the
+        editor closes. A run that fails gives its credits back.
+
+        Credits are the plugin's own unit: when the user named money, convert or
+        ask, and say the number you ask for.
+
+        Args:
+            plugin_id: The paid plugin, e.g. "online-toolkit".
+            credits: How many; 0 only reads what is left.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            request = app._call("scriptSpendAllowance", plugin_id, int(credits or 0))
+            state = _await_spend(app, int(request), CONFIRM_SECONDS)
+            name = state.get("state")
+            if name == "accepted":
+                return f"Allowance: {state.get('left', 0)} credits left for {plugin_id}."
+            if name == "declined":
+                return "The user declined; each paid run will be confirmed in the editor."
+            if name == "waiting":
+                return "The editor is asking the user; call this again to keep waiting."
+            return f"ERROR: {state.get('message') or 'no allowance'}"
         except Exception as e:  # noqa: BLE001
             return f"ERROR: {e}"
 

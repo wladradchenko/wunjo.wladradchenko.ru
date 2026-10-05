@@ -46,6 +46,8 @@ class AudioGraphSpectrum;
 class AutomaskHelper;
 class ChatWidget;
 class ResourceWidget;
+class ResourceService;
+class SpendGuard;
 class EffectBasket;
 class EffectListWidget;
 class TransitionListWidget;
@@ -308,6 +310,8 @@ private:
     KDDockWidgets::QtWidgets::DockWidget *m_mixerDock{nullptr};
     KDDockWidgets::QtWidgets::DockWidget *m_onlineResourcesDock{nullptr};
     ResourceWidget *m_onlineResources{nullptr};
+    ResourceService *m_resourceService{nullptr};
+    SpendGuard *m_spendGuard{nullptr};
 
     KSelectAction *m_timeFormatButton;
     QAction *m_compositeAction;
@@ -697,6 +701,20 @@ public Q_SLOTS:
      *  follow with @ref scriptPluginJobStatus, or empty when there is no such
      *  effect on that clip. */
     Q_SCRIPTABLE QString scriptGenerateEffect(int clipId, const QString &effectId);
+    /** @brief Press the price button of a plugin effect (its `action`), as the
+     *  panel's button does; the answer is read with @ref scriptEffectAnswer.
+     *  @return 1 when asked, 0 when there is no such effect or no such button. */
+    Q_SCRIPTABLE int scriptEffectAction(int clipId, const QString &effectId, const QString &action);
+    /** @brief {"pending", "ok", "message", "price", "current"}: current is false
+     *  when the effect changed since the question was asked. */
+    Q_SCRIPTABLE QString scriptEffectAnswer(int clipId, const QString &effectId, const QString &action);
+    /** @brief A paid run asked for by an assistant waits for the user: what
+     *  became of it, see SpendGuard::state. */
+    Q_SCRIPTABLE QString scriptSpendState(int request);
+    /** @brief Ask the user to let the assistant spend up to @p credits of
+     *  @p pluginId without asking; 0 only reads what is left. @return The
+     *  request to follow with @ref scriptSpendState. */
+    Q_SCRIPTABLE int scriptSpendAllowance(const QString &pluginId, int credits);
     // Preflight: is a plugin ready to run (installed, API key, venv/deps, models)?
     Q_SCRIPTABLE QVariantMap scriptPluginStatus(const QString &id);
 
@@ -736,6 +754,15 @@ public Q_SLOTS:
     Q_SCRIPTABLE bool scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson);
     Q_SCRIPTABLE bool scriptGeneratorCardFold(const QString &cardId, bool collapsed);
     Q_SCRIPTABLE QString scriptGeneratorCardRun(const QString &cardId);
+    /** @brief The Online Resources services, for an assistant: stock libraries
+     *  and the files plugins keep in their clouds. Searching and importing take
+     *  a while: they answer with a request number, and the outcome is read with
+     *  the matching Answer call. Everything returned is JSON. */
+    Q_SCRIPTABLE QString scriptOnlineServices();
+    Q_SCRIPTABLE int scriptOnlineSearch(const QString &service, const QString &query, int page, const QString &dateFrom, const QString &dateTo);
+    Q_SCRIPTABLE QString scriptOnlineSearchAnswer(int request);
+    Q_SCRIPTABLE int scriptOnlineImport(const QString &service, const QString &itemId, const QString &version);
+    Q_SCRIPTABLE QString scriptOnlineImportAnswer(int request);
     /** @brief Put the form of the generator @p pluginId in the chat and bring
      *  the chat forward, for the user to fill in. */
     QString openGeneratorCard(const QString &pluginId, const QString &generatorId, const QJsonObject &values = {}, bool byAssistant = false);

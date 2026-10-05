@@ -92,6 +92,24 @@ AI PLUGINS (video/audio/face/generator — some bundled out of the box):
   (poll get_media_pool / render_bin_frame). Generator plugins take a prompt/params
   (no clip); you write the prompts. speech_recognition runs Whisper headless.
 
+PAID PLUGINS (a card action or an effect with a price question costs the user money):
+  Ask the price first — generator_card_action(card, "price") for a card,
+  effect_action(clip, effect, "price") for an effect — and tell the user the
+  price and the balance in their language. Then generator_card_run /
+  generate_effect: the editor itself asks the user to confirm in a window and
+  the tool waits for the answer. Their words in the chat are not that answer.
+  When the user gives a task with a budget and does not want to be asked each
+  time, ask once with spending_allowance(plugin, credits) — credits, not money;
+  the editor counts it. After a run, say what was charged and what is left.
+  If the user declines, do not run it again unless they ask.
+
+ONLINE FILES (stock libraries and the files plugins keep in their clouds):
+  online_services — the services; online_search(service, query...) — find;
+  online_import(service, id) — download into the project and add to the media
+  pool (then insert_clip). Free. A plugin's cloud also holds generations whose
+  run was lost when the editor closed. For stock, tell the user the author and
+  license (the credit also goes into the project notes).
+
 NARRATE INTO THE CHAT (do this on every task, in the USER'S LANGUAGE):
   The user does not see your reasoning — mirror it into the app's Chat dock so
   they know what is happening. Tools: chat_user (echo their request),
@@ -163,9 +181,10 @@ from control.tools import (
     selection,
     playback,
     navigation,
+    online,
 )
 
-for mod in [library, guidance, plugins, face, chat, project, media, timeline, transitions, effects, markers, replace, checkpoints, composite, speed, audio, titles, preview, subtitles, keyframes, compositions, zones, sequences, proxy, groups, selection, playback, navigation]:
+for mod in [library, guidance, plugins, face, chat, project, media, timeline, transitions, effects, markers, replace, checkpoints, composite, speed, audio, titles, preview, subtitles, keyframes, compositions, zones, sequences, proxy, groups, selection, playback, navigation, online]:
     mod.register(mcp, helpers)
 
 # ---------------------------------------------------------------------------

@@ -364,6 +364,16 @@ QString ProviderModel::host() const
     return QUrl(apiRoot()).host();
 }
 
+bool ProviderModel::canRequestPage(int page) const
+{
+    return page <= 1 || m_search.value("paging").toObject().isEmpty() || m_cursors.contains(page);
+}
+
+bool ProviderModel::hasFilesRequest() const
+{
+    return m_download.value("req").isObject();
+}
+
 QJsonValue ProviderModel::objectGetValue(QJsonObject item, QString key)
 {
     QJsonObject tmpKeys = m_search["res"].toObject();
@@ -647,6 +657,8 @@ std::pair<QList<ResourceItemInfo>, const int> ProviderModel::parseSearchResponse
                 onlineItem.fileName = objectGetString(item.toObject(), "fileName");
                 onlineItem.group = objectGetString(item.toObject(), "group");
                 onlineItem.status = objectGetString(item.toObject(), "status");
+                const QJsonValue price = objectGetValue(item.toObject(), "price");
+                onlineItem.price = price.isDouble() ? price.toInt() : -1;
             }
 
             list << onlineItem;

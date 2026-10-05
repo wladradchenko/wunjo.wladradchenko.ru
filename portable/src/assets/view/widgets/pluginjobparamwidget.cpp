@@ -75,6 +75,9 @@ PluginJobParamWidget::PluginJobParamWidget(std::shared_ptr<AssetParameterModel> 
     if (!m_action.isEmpty()) {
         m_answer = new QLabel(this);
         m_answer->setWordWrap(true);
+        // "top up at https://…" is meant to be followed
+        m_answer->setTextFormat(Qt::RichText);
+        m_answer->setOpenExternalLinks(true);
         m_answer->setVisible(false);
         layout->addWidget(m_answer);
     }
@@ -127,9 +130,7 @@ void PluginJobParamWidget::resizeEvent(QResizeEvent *event)
 
 QByteArray PluginJobParamWidget::asked() const
 {
-    QJsonObject job = PluginEffects::buildJob(m_model, m_pluginId);
-    job.remove(QStringLiteral("action"));
-    return QJsonDocument(job).toJson(QJsonDocument::Compact);
+    return PluginEffects::askedJob(m_model, m_pluginId);
 }
 
 void PluginJobParamWidget::ask()
@@ -137,30 +138,11 @@ void PluginJobParamWidget::ask()
     if (m_pluginId.isEmpty()) {
         return;
     }
-    QJsonObject input = PluginEffects::buildJob(m_model, m_pluginId);
-    if (input.isEmpty()) {
-        pCore->displayMessage(i18n("This effect is not on a clip that can be rendered."), ErrorMessage);
-        return;
-    }
-    input.insert(QStringLiteral("action"), m_action);
-    PluginManager::EffectAnswer pending;
-    pending.pending = true;
-    pending.asked = asked();
-    PluginManager::instance().setEffectAnswer(m_owner, m_effectItemId, m_action, pending);
     // The answer belongs to the effect, not to this widget, which the stack
     // rebuilds at will: the manager keeps it and tells whoever shows it now.
-    const ObjectId owner = m_owner;
-    const int itemId = m_effectItemId;
-    const QString action = m_action;
-    const QByteArray question = pending.asked;
-    PluginManager::instance().queryPlugin(m_pluginId, input, &PluginManager::instance(),
-                                          [owner, itemId, action, question](bool ok, const QString &message) {
-                                              PluginManager::EffectAnswer answer;
-                                              answer.ok = ok;
-                                              answer.message = message;
-                                              answer.asked = question;
-                                              PluginManager::instance().setEffectAnswer(owner, itemId, action, answer);
-                                          });
+    if (!PluginEffects::askEffect(m_model, m_pluginId, m_effectItemId, m_action)) {
+        pCore->displayMessage(i18n("This effect is not on a clip that can be rendered."), ErrorMessage);
+    }
 }
 
 void PluginJobParamWidget::updateState()
@@ -170,7 +152,7 @@ void PluginJobParamWidget::updateState()
         const bool current = !answer.asked.isEmpty() && answer.asked == asked();
         m_button->setText(m_runLabel);
         m_button->setEnabled(!answer.pending && !m_pluginId.isEmpty());
-        m_answer->setText(answer.message);
+        m_answer->setText(PluginEffects::linkify(answer.message));
         m_answer->setVisible(current && !answer.pending && !answer.message.isEmpty());
         m_progress->setVisible(false);
         fitHeight();
@@ -204,16 +186,20 @@ void PluginJobParamWidget::runJob()
     if (m_pluginId.isEmpty() || PluginManager::instance().effectJobProgress(m_owner, m_effectItemId) != PluginManager::JobNone) {
         return;
     }
-    if (!m_gate.isEmpty()) {
-        const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(m_owner, m_effectItemId, m_gate);
-        if (!answer.ok || answer.asked != asked()) {
-            return;
-        }
+    int price = -1;
+    if (!PluginEffects::gateOpen(m_model, m_pluginId, m_effectItemId, m_gate, &price)) {
+        return;
     }
-    const QJsonObject input = PluginEffects::buildJob(m_model, m_pluginId);
+    QJsonObject input = PluginEffects::buildJob(m_model, m_pluginId);
     if (input.isEmpty()) {
         pCore->displayMessage(i18n("This effect is not on a clip that can be rendered."), ErrorMessage);
         return;
+    }
+    // The user pressed it, having seen the price: the plugin refuses to charge
+    // more than that (see plugins/README.md)
+    input.insert(QStringLiteral("started_by"), QStringLiteral("user"));
+    if (price >= 0) {
+        input.insert(QStringLiteral("confirmed"), QJsonObject{{QStringLiteral("price"), price}});
     }
     // Hand it to the manager and forget it: what comes back is watched through
     // the signal, so leaving this clip or moving the playhead changes nothing.

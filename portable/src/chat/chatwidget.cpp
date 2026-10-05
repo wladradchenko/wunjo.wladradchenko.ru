@@ -14,6 +14,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "mainwindow.h"
 #include "pluginchatbackend.h"
 #include "plugins/pluginmanager.h"
+#include "plugins/spendguard.h"
 #include "theme.h"
 
 #include <KActionCollection>
@@ -617,6 +618,25 @@ ChatWidget::ChatWidget(QWidget *parent)
     rootLayout->addWidget(m_hintBar);
     updateHintBar();
 
+    // While the assistant may spend without asking, the user sees it here and
+    // can take it back at any moment
+    m_allowanceBar = new KMessageWidget(this);
+    m_allowanceBar->setMessageType(KMessageWidget::Warning);
+    m_allowanceBar->setCloseButtonVisible(false);
+    m_allowanceBar->setWordWrap(true);
+    auto *revoke = new QAction(QIcon::fromTheme(QStringLiteral("dialog-cancel")), i18n("Revoke"), m_allowanceBar);
+    connect(revoke, &QAction::triggered, this, [this]() {
+        if (m_spendGuard) {
+            const QStringList plugins = m_spendGuard->allowed();
+            for (const QString &plugin : plugins) {
+                m_spendGuard->revoke(plugin);
+            }
+        }
+    });
+    m_allowanceBar->addAction(revoke);
+    m_allowanceBar->hide();
+    rootLayout->addWidget(m_allowanceBar);
+
     // "Assistant is thinking…" indicator (driven by the external agent), just
     // above the input; hidden unless a request is in flight.
     m_thinkingLabel = new QLabel(i18n("Assistant is thinking…"), this);
@@ -863,8 +883,10 @@ int ChatWidget::askGeneratorCard(const QString &cardId, const QString &action)
     if (GeneratorCard *card = m_generatorCards.value(cardId)) {
         card->showAsking(action, asked);
     }
+    // the old answer no longer holds while a new one is on its way
+    m_cardAnswers.remove(cardId);
     const int seq = ++m_answerSeq;
-    PluginManager::instance().queryPlugin(pluginId, input, this, [this, cardId, action, asked, seq](bool ok, const QString &message) {
+    PluginManager::instance().queryPlugin(pluginId, input, this, [this, cardId, action, asked, seq](bool ok, const QString &message, const QJsonObject &result) {
         if (GeneratorCard *card = m_generatorCards.value(cardId)) {
             card->showAnswer(action, asked, ok, message);
         }
@@ -873,31 +895,110 @@ int ChatWidget::askGeneratorCard(const QString &cardId, const QString &action)
         answer.insert(QStringLiteral("action"), action);
         answer.insert(QStringLiteral("ok"), ok);
         answer.insert(QStringLiteral("message"), message);
+        answer.insert(QStringLiteral("asked"), asked);
+        answer.insert(QStringLiteral("price"), result.value(QStringLiteral("price")).isDouble() ? result.value(QStringLiteral("price")).toInt() : -1);
         m_cardAnswers.insert(cardId, answer);
     });
     return seq;
 }
 
-QString ChatWidget::runGeneratorCard(const QString &cardId)
+void ChatWidget::setSpendGuard(SpendGuard *guard)
+{
+    m_spendGuard = guard;
+    if (guard) {
+        connect(guard, &SpendGuard::allowanceChanged, this, &ChatWidget::updateAllowanceBar);
+    }
+    updateAllowanceBar();
+}
+
+void ChatWidget::updateAllowanceBar()
+{
+    if (!m_allowanceBar) {
+        return;
+    }
+    const QStringList plugins = m_spendGuard ? m_spendGuard->allowed() : QStringList();
+    if (plugins.isEmpty()) {
+        m_allowanceBar->hide();
+        return;
+    }
+    QStringList lines;
+    for (const QString &plugin : plugins) {
+        const QString name = PluginManager::instance().plugin(plugin).name();
+        lines << i18n("The assistant spends %1 credits without asking, %2 left", name.isEmpty() ? plugin : name, m_spendGuard->allowance(plugin));
+    }
+    m_allowanceBar->setText(lines.join(QLatin1Char('\n')));
+    m_allowanceBar->show();
+}
+
+bool ChatWidget::cardHasGate(const QString &cardId) const
+{
+    const QJsonObject payload = m_model.payload(cardId);
+    const PluginManifest manifest = PluginManager::instance().plugin(payload.value(QStringLiteral("plugin")).toString());
+    const PluginGenerator generator = manifest.generator(payload.value(QStringLiteral("generator")).toString());
+    for (const PluginAction &action : generator.actions) {
+        if (action.gate) {
+            return true;
+        }
+    }
+    return false;
+}
+
+QString ChatWidget::cardGate(const QString &cardId, int *price) const
+{
+    if (price) {
+        *price = -1;
+    }
+    const QJsonObject payload = m_model.payload(cardId);
+    const PluginManifest manifest = PluginManager::instance().plugin(payload.value(QStringLiteral("plugin")).toString());
+    const PluginGenerator generator = manifest.generator(payload.value(QStringLiteral("generator")).toString());
+    const QJsonObject answer = m_cardAnswers.value(cardId);
+    for (const PluginAction &action : generator.actions) {
+        if (!action.gate) {
+            continue;
+        }
+        const bool open = answer.value(QStringLiteral("action")).toString() == action.id && answer.value(QStringLiteral("ok")).toBool() &&
+            answer.value(QStringLiteral("asked")).toObject() == payload.value(QStringLiteral("values")).toObject();
+        if (!open) {
+            return action.id;
+        }
+        if (price) {
+            *price = answer.value(QStringLiteral("price")).toInt(-1);
+        }
+    }
+    return {};
+}
+
+QString ChatWidget::runGeneratorCard(const QString &cardId, const QJsonObject &extra)
 {
     const QJsonObject payload = m_model.payload(cardId);
     if (payload.isEmpty()) {
         return {};
     }
     // the same rule as the button: a card that has to be priced first is not
-    // run behind the user's back by anyone
-    if (GeneratorCard *card = m_generatorCards.value(cardId)) {
-        const QString gate = card->gateAction();
-        if (!gate.isEmpty()) {
-            return QStringLiteral("gate:") + gate;
-        }
+    // run behind the user's back by anyone. Read from the card's data, not its
+    // widget: a card scrolled away or rebuilt has none for a while
+    int price = -1;
+    const QString gate = cardGate(cardId, &price);
+    if (!gate.isEmpty()) {
+        return QStringLiteral("gate:") + gate;
     }
+    QJsonObject input = extra;
+    if (!input.contains(QStringLiteral("started_by"))) {
+        input.insert(QStringLiteral("started_by"), QStringLiteral("user"));
+    }
+    if (price >= 0) {
+        // the plugin refuses to charge more than the user saw (plugins/README.md)
+        input.insert(QStringLiteral("confirmed"), QJsonObject{{QStringLiteral("price"), price}});
+    }
+    // one price, one run: the next run asks again
+    m_cardAnswers.remove(cardId);
     if (GeneratorCard *card = m_generatorCards.value(cardId)) {
         card->clearAnswer();
     }
     // Where the playhead is now: that is where the result is meant to go.
     return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("generator")).toString(),
-                                                  payload.value(QStringLiteral("values")).toObject(), pCore->currentTimelineId(), pCore->getMonitorPosition());
+                                                  payload.value(QStringLiteral("values")).toObject(), pCore->currentTimelineId(), pCore->getMonitorPosition(),
+                                                  input);
 }
 
 void ChatWidget::switchTab(int page)
@@ -1863,6 +1964,8 @@ QWidget *ChatWidget::buildGeneratorCard(const ChatMessage &message)
         m_persistTimer->start();
     });
     connect(card, &GeneratorCard::actionRequested, this, [this](const QString &id, const QString &action) { askGeneratorCard(id, action); });
+    // Cancel on the card closes Generate for everyone, the assistant included
+    connect(card, &GeneratorCard::priceDropped, this, [this](const QString &id) { m_cardAnswers.remove(id); });
     connect(card, &GeneratorCard::generateRequested, this, [this](const QString &id) {
         m_persistTimer->stop();
         persistSession();

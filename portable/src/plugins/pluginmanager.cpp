@@ -296,6 +296,15 @@ void PluginManager::noteJobEnded(const QString &jobId, bool isError, const QStri
     if (auto *window = pCore->window()) {
         window->scriptChatToolEnd(jobId, isError, message);
     }
+    Q_EMIT jobFinished(jobId, isError);
+}
+
+QString PluginManager::refuseJob(const QString &name, const QString &message)
+{
+    const QString jobId = QStringLiteral("plugin:") + QUuid::createUuid().toString(QUuid::WithoutBraces).left(8);
+    noteJobStarted(jobId, name);
+    noteJobEnded(jobId, true, message);
+    return jobId;
 }
 
 QJsonObject PluginManager::jobOutcome(const QString &jobId) const
@@ -1980,12 +1989,12 @@ void PluginManager::startEffectJob(const QueuedJob &job)
 }
 
 void PluginManager::queryPlugin(const QString &pluginId, const QJsonObject &input, QObject *context,
-                                const std::function<void(bool, const QString &)> &onAnswer)
+                                const std::function<void(bool, const QString &, const QJsonObject &)> &onAnswer)
 {
     const QString blocker = runBlocker(pluginId);
     if (!blocker.isEmpty()) {
         if (onAnswer) {
-            onAnswer(false, blocker);
+            onAnswer(false, blocker, QJsonObject());
         }
         return;
     }
@@ -1996,10 +2005,10 @@ void PluginManager::queryPlugin(const QString &pluginId, const QJsonObject &inpu
                 return;
             }
             if (!error.isEmpty()) {
-                onAnswer(false, error);
+                onAnswer(false, error, QJsonObject());
                 return;
             }
-            onAnswer(result.value(QStringLiteral("ok")).toBool(), result.value(QStringLiteral("message")).toString());
+            onAnswer(result.value(QStringLiteral("ok")).toBool(), result.value(QStringLiteral("message")).toString(), result);
         },
         true);
 }
@@ -2024,7 +2033,8 @@ QString PluginManager::registerSet(const QString &pluginId, const QString &sourc
     return runPlugin(pluginId, input, nullptr);
 }
 
-QString PluginManager::runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame)
+QString PluginManager::runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame,
+                                    const QJsonObject &extra)
 {
     const PluginManifest manifest = m_plugins.value(pluginId);
     const PluginGenerator generator = manifest.generator(generatorId);
@@ -2044,6 +2054,9 @@ QString PluginManager::runGenerator(const QString &pluginId, const QString &gene
     input.insert(QStringLiteral("generator"), generator.id);
     input.insert(QStringLiteral("fields"), fields);
     input.insert(QStringLiteral("clips"), QJsonArray());
+    for (auto it = extra.constBegin(); it != extra.constEnd(); ++it) {
+        input.insert(it.key(), it.value());
+    }
     runPluginJob(
         pluginId, input, this, [this, card](int percent) { noteJobProgress(card, percent); },
         [this, pluginId, label, card, timelineUuid, frame](const QJsonObject &result, const QString &error) {

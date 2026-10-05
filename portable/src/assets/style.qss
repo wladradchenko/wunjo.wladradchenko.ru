@@ -99,6 +99,12 @@ QTabBar::tab:selected {
 QTabBar::tab:hover:!selected {
     color: #C8EDD2;
 }
+/* The scroll arrows of a tab strip too narrow for its titles: opaque, so the
+   tab sliding under them does not show through. Hover keeps the tool button
+   rule above; no padding here (see the QToolButton constraint in the header). */
+QTabBar QToolButton {
+    background-color: #0D0D0D;
+}
 QTabBar::close-button {
     subcontrol-origin: padding;
     subcontrol-position: right;

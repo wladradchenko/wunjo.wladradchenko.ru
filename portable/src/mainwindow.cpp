@@ -56,6 +56,8 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "plugins/pluginmanager.h"
 #include "scripting/scriptingserver.h"
 #include "monitor/scopes/audiographspectrum.h"
+#include "onlineresources/resourceservice.hpp"
+#include "plugins/spendguard.h"
 #include "onlineresources/resourcewidget.hpp"
 #include "profiles/profilemodel.hpp"
 #include "profiles/profilerepository.hpp"
@@ -381,7 +383,10 @@ void MainWindow::init()
     clipDockWidget->close();
 
     // Online resources widget
+    m_resourceService = new ResourceService(this);
+    connect(m_resourceService, &ResourceService::addLicenseInfo, this, &MainWindow::slotAddTextNote);
     m_onlineResources = new ResourceWidget(this);
+    m_onlineResources->setService(m_resourceService);
     m_onlineResourcesDock = addDock(i18n("Online Resources"), QStringLiteral("onlineresources"), m_onlineResources);
     m_onlineResourcesDock->close();
     connect(m_onlineResources, &ResourceWidget::previewClip, this, [&](const QString &path, const QString &title) {
@@ -523,6 +528,8 @@ void MainWindow::init()
 
     // Assistant chat (UI skeleton; the Claude/MCP backend plugs in later)
     m_chatWidget = new ChatWidget(this);
+    m_spendGuard = new SpendGuard(this);
+    m_chatWidget->setSpendGuard(m_spendGuard);
     m_chatDock = addDock(i18n("Chat"), QStringLiteral("chat"), m_chatWidget, KDDockWidgets::Location_None, m_projectBinDock);
 
     connect(m_commandStack, &QUndoGroup::cleanChanged, [this, cleanHistory](bool isClean) {

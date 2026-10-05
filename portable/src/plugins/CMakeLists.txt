@@ -15,4 +15,5 @@ set(wunjo_SRCS
     plugins/pluginmodelsdialog.cpp
     plugins/plugincatalog.cpp
     plugins/pluginaboutdialog.cpp
+    plugins/spendguard.cpp
   PARENT_SCOPE)

@@ -160,8 +160,11 @@ public:
      *  of its own below the form; what it makes goes into the bin and onto the
      *  timeline @p timelineUuid at @p frame, on an audio track with room there
      *  or a new one. @p frame -1 keeps it in the bin.
+     *  @p extra goes into the job's input as it is: who started the run and the
+     *  price the user agreed to (see plugins/README.md).
      *  @return The id of the run's card, which is also its job id. */
-    QString runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame);
+    QString runGenerator(const QString &pluginId, const QString &generatorId, const QJsonObject &fields, const QUuid &timelineUuid, int frame,
+                         const QJsonObject &extra = QJsonObject());
     /** @brief Register @p source as a preset of @p pluginId (a voice from a
      *  recording); the library follows through @ref setsChanged. */
     QString registerSet(const QString &pluginId, const QString &source, const QString &kind);
@@ -178,9 +181,14 @@ public:
      *  cost, what is left on an account. The plugin gets @p input (with its
      *  `action`) like any job, but no job card appears and its working folder
      *  is removed afterwards. @p onAnswer gets the plugin's `ok` and its
-     *  sentence, or false and the reason it could not answer. */
+     *  sentence, or false and the reason it could not answer, and the whole
+     *  result object (empty then): a price answer carries `price` and
+     *  `balance` there. */
     void queryPlugin(const QString &pluginId, const QJsonObject &input, QObject *context,
-                     const std::function<void(bool ok, const QString &message)> &onAnswer);
+                     const std::function<void(bool ok, const QString &message, const QJsonObject &result)> &onAnswer);
+    /** @brief A job that is refused before it starts: it gets an id and a card
+     *  saying why, like a plugin that declines. @return Its id. */
+    QString refuseJob(const QString &name, const QString &message);
 
     /** @brief What an effect's action button last heard back (see
      *  PluginJobParamWidget): kept here because the button that asks and the
@@ -193,6 +201,8 @@ public:
          *  while the effect still describes the same job. */
         QByteArray asked;
         bool pending = false;
+        /** @brief The price the plugin named, -1 when it gave no number. */
+        int price = -1;
     };
     EffectAnswer effectAnswer(const ObjectId &owner, int effectItemId, const QString &action) const;
     void setEffectAnswer(const ObjectId &owner, int effectItemId, const QString &action, const EffectAnswer &answer);
@@ -295,6 +305,8 @@ Q_SIGNALS:
     void setsChanged(const QString &pluginId);
     /** @brief An action button of the effect @p effectItemId was answered or asked again. */
     void effectAnswerChanged(const ObjectId &owner, int effectItemId);
+    /** @brief Job @p jobId ended, @p failed when it did not produce anything. */
+    void jobFinished(const QString &jobId, bool failed);
 
 private:
     PluginManager();

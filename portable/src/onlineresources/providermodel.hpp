@@ -45,6 +45,8 @@ struct ResourceItemInfo
     QString fileName;
     QString group;
     QString status;
+    /** @brief What it cost, -1 when the list does not say. */
+    int price = -1;
     // int filesize;
 };
 
@@ -79,6 +81,11 @@ public:
     bool hasKey() const;
     /** @brief The server's host name, for messages. */
     QString host() const;
+    /** @brief Whether @p page can be asked for now: a list paged by the date of
+     *  its last item reaches page N only through page N-1. */
+    bool canRequestPage(int page) const;
+    /** @brief The search gives no file links and a second request does. */
+    bool hasFilesRequest() const;
 
 public Q_SLOTS:
     void slotStartSearch(const QString &searchText, int page);

@@ -108,4 +108,26 @@ bool applyAll(const std::shared_ptr<EffectStackModel> &stack, const PluginManife
  *  Returns an empty object when the clip cannot be resolved. */
 QJsonObject buildJob(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId);
 
+/** @brief The value of `<jobparam name="@p name">` on any render parameter of
+ *  the effect: "gate" and "action" name the price question, "key" the
+ *  parameter the result is written into. Empty when none says it. */
+QString jobParam(const std::shared_ptr<AssetParameterModel> &model, const QString &name);
+
+/** @brief The effect's job as a price question is asked about it: an answer
+ *  holds only while this stays the same. */
+QByteArray askedJob(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId);
+
+/** @brief Ask the plugin @p action (what the render would cost) for the effect
+ *  as it is now. The answer is kept by the plugin manager for the effect, so
+ *  its panel and an assistant read the same one. False when the effect is not
+ *  on a clip a job can be made of. */
+bool askEffect(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId, int effectItemId, const QString &action);
+
+/** @brief Whether the price question @p gate has been answered yes for the
+ *  effect as it is now; @p price gets the price the plugin named, -1 for none. */
+bool gateOpen(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId, int effectItemId, const QString &gate, int *price = nullptr);
+
+/** @brief Rich text of a plugin's sentence with its web addresses clickable. */
+QString linkify(const QString &text);
+
 } // namespace PluginEffects

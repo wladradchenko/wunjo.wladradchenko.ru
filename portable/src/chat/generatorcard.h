@@ -20,6 +20,7 @@ class QLineEdit;
 class QListWidget;
 class QMediaPlayer;
 class QPushButton;
+class QScrollArea;
 class QToolButton;
 class QVBoxLayout;
 
@@ -73,6 +74,8 @@ Q_SIGNALS:
     void edited(const QString &cardId, const QJsonObject &payload);
     void generateRequested(const QString &cardId);
     void actionRequested(const QString &cardId, const QString &action);
+    /** @brief The user dropped the calculated price with Cancel. */
+    void priceDropped(const QString &cardId);
 
 private:
     struct FieldWidgets {
@@ -97,6 +100,11 @@ private:
     QWidget *buildMediaList(const PluginField &field);
     void refreshMedia(const QString &key);
     void refreshMediaList(const QString &key);
+    /** @brief How many of @p kind the card takes now: its `max_by` field decides
+     *  when it has one. */
+    int allowed(const PluginMediaKind &kind) const;
+    /** @brief The entries of @p kind in @p entries, in the order of their numbers. */
+    static QStringList kindNames(const QJsonObject &entries, const PluginMediaKind &kind);
     /** @brief Ways to get something onto a slot; each returns null when the
      *  user gave up or there was nothing to take. */
     QJsonValue chooseFile(const QString &accept, const QString &title);
@@ -143,6 +151,7 @@ private:
     struct MediaList {
         PluginField field;
         QWidget *items = nullptr;
+        QScrollArea *scroll = nullptr;
         QHash<QString, QToolButton *> adds;
     };
     QHash<QString, MediaList> m_lists;

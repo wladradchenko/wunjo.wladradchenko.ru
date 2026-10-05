@@ -11,6 +11,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "doc/wunjodoc.h"
 #include "mainwindow.h"
 #include "monitor/monitor.h"
+#include "plugins/plugineffects.h"
 #include "plugins/pluginmanager.h"
 #include "plugins/pluginsetstore.h"
 #include "timeline2/model/timelineitemmodel.hpp"
@@ -39,7 +40,9 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QPainterPath>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QResizeEvent>
+#include <QScrollArea>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -331,6 +334,9 @@ void GeneratorCard::buildForm()
     m_answerLabel = new QLabel(m_body);
     m_answerLabel->setObjectName(QStringLiteral("chatToolStatus"));
     m_answerLabel->setWordWrap(true);
+    // "top up at https://…" is meant to be followed
+    m_answerLabel->setTextFormat(Qt::RichText);
+    m_answerLabel->setOpenExternalLinks(true);
     m_answerLabel->setVisible(false);
     m_form->addWidget(m_answerLabel);
 
@@ -354,7 +360,10 @@ void GeneratorCard::buildForm()
     if (m_gateButton) {
         m_cancel = new QPushButton(i18nc("@action:button drop the calculated price", "Cancel"), m_body);
         m_cancel->setCursor(Qt::PointingHandCursor);
-        connect(m_cancel, &QPushButton::clicked, this, [this]() { clearAnswer(); });
+        connect(m_cancel, &QPushButton::clicked, this, [this]() {
+            clearAnswer();
+            Q_EMIT priceDropped(m_cardId);
+        });
         foot->addWidget(m_cancel);
         foot->addWidget(m_gateButton);
     }
@@ -547,7 +556,15 @@ QWidget *GeneratorCard::buildMediaList(const PluginField &field)
     auto *itemsLayout = new QVBoxLayout(list.items);
     itemsLayout->setContentsMargins(0, 0, 0, 0);
     itemsLayout->setSpacing(4);
-    layout->addWidget(list.items);
+    // Thirty references must not stretch the card down the whole chat: past a
+    // few rows the list scrolls inside it
+    auto *scroll = new QScrollArea(holder);
+    scroll->setFrameShape(QFrame::NoFrame);
+    scroll->setWidgetResizable(true);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setWidget(list.items);
+    list.scroll = scroll;
+    layout->addWidget(scroll);
     auto *adds = new QHBoxLayout;
     adds->setContentsMargins(0, 0, 0, 0);
     for (const PluginMediaKind &kind : field.kinds) {
@@ -577,6 +594,33 @@ QWidget *GeneratorCard::buildMediaList(const PluginField &field)
     return holder;
 }
 
+QStringList GeneratorCard::kindNames(const QJsonObject &entries, const PluginMediaKind &kind)
+{
+    // by number, not as text: image2 before image10
+    static const QRegularExpression numbered(QStringLiteral("^(\\D+)(\\d+)$"));
+    QList<QPair<int, QString>> found;
+    for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
+        const QRegularExpressionMatch match = numbered.match(it.key());
+        if (match.hasMatch() && match.captured(1) == kind.key) {
+            found.append({match.captured(2).toInt(), it.key()});
+        }
+    }
+    std::sort(found.begin(), found.end());
+    QStringList names;
+    for (const auto &one : std::as_const(found)) {
+        names << one.second;
+    }
+    return names;
+}
+
+int GeneratorCard::allowed(const PluginMediaKind &kind) const
+{
+    if (kind.maxByKey.isEmpty()) {
+        return kind.max;
+    }
+    return kind.maxBy.value(value(kind.maxByKey).toVariant().toString(), kind.max);
+}
+
 void GeneratorCard::refreshMediaList(const QString &key)
 {
     const MediaList list = m_lists.value(key);
@@ -586,44 +630,58 @@ void GeneratorCard::refreshMediaList(const QString &key)
     const QList<QWidget *> old = list.items->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
     qDeleteAll(old);
     const QJsonObject entries = value(key).toObject();
-    QStringList names = entries.keys();
-    std::sort(names.begin(), names.end());
-    for (const QString &name : std::as_const(names)) {
-        auto *row = new QWidget(list.items);
-        auto *line = new QHBoxLayout(row);
-        line->setContentsMargins(0, 0, 0, 0);
-        line->setSpacing(6);
-        auto *thumb = new QLabel(row);
-        thumb->setFixedSize(64, 40);
-        thumb->setAlignment(Qt::AlignCenter);
-        thumb->setObjectName(QStringLiteral("chatAttachThumb"));
-        showThumb(thumb, entries.value(name));
-        auto *label = new QLabel(QStringLiteral("@") + name + QStringLiteral("  ") + describeMedia(entries.value(name)), row);
-        label->setToolTip(mediaPath(entries.value(name)));
-        auto *remove = new QToolButton(row);
-        remove->setIcon(QIcon::fromTheme(QStringLiteral("edit-clear")));
-        remove->setToolTip(i18n("Remove"));
-        remove->setAutoRaise(true);
-        connect(remove, &QToolButton::clicked, this, [this, key, name]() {
-            QJsonObject now = value(key).toObject();
-            now.remove(name);
-            setValue(key, now);
-            refreshMediaList(key);
-        });
-        line->addWidget(thumb);
-        line->addWidget(label, 1);
-        line->addWidget(remove);
-        list.items->layout()->addWidget(row);
-    }
-    // an add button goes once its kind is full
+    int rows = 0;
     for (const PluginMediaKind &kind : list.field.kinds) {
-        int count = 0;
-        for (const QString &name : std::as_const(names)) {
-            count += name.startsWith(kind.key) ? 1 : 0;
+        const QStringList names = kindNames(entries, kind);
+        const int most = allowed(kind);
+        for (int i = 0; i < names.size(); ++i) {
+            const QString &name = names.at(i);
+            // Over what the chosen model takes: kept, since the text may name
+            // it, but marked, and the card does not run until it goes
+            const bool over = i >= most;
+            auto *row = new QWidget(list.items);
+            auto *line = new QHBoxLayout(row);
+            line->setContentsMargins(0, 0, 0, 0);
+            line->setSpacing(6);
+            auto *thumb = new QLabel(row);
+            thumb->setFixedSize(64, 40);
+            thumb->setAlignment(Qt::AlignCenter);
+            thumb->setObjectName(QStringLiteral("chatAttachThumb"));
+            showThumb(thumb, entries.value(name));
+            auto *label = new QLabel(QStringLiteral("@") + name + QStringLiteral("  ") + describeMedia(entries.value(name)), row);
+            label->setToolTip(over ? (most == 0 ? i18n("%1 is not taken here", tr8(kind.label)) : i18n("%1, no more than %2", tr8(kind.label), most))
+                                   : mediaPath(entries.value(name)));
+            if (over) {
+                label->setEnabled(false);
+                thumb->setEnabled(false);
+            }
+            auto *remove = new QToolButton(row);
+            remove->setIcon(QIcon::fromTheme(QStringLiteral("edit-clear")));
+            remove->setToolTip(i18n("Remove"));
+            remove->setAutoRaise(true);
+            connect(remove, &QToolButton::clicked, this, [this, key, name]() {
+                QJsonObject now = value(key).toObject();
+                now.remove(name);
+                setValue(key, now);
+                refreshMediaList(key);
+            });
+            line->addWidget(thumb);
+            line->addWidget(label, 1);
+            line->addWidget(remove);
+            list.items->layout()->addWidget(row);
+            ++rows;
         }
+        // an add button goes once its kind is full for the chosen model
         if (QToolButton *add = list.adds.value(kind.key)) {
-            add->setVisible(count < kind.max);
+            add->setVisible(names.size() < most);
         }
+    }
+    if (list.scroll) {
+        // as tall as the rows, up to about six of them
+        list.items->adjustSize();
+        const int rowHeight = 40 + 4;
+        list.scroll->setFixedHeight(qMin(rows, 6) * rowHeight);
+        list.scroll->setVisible(rows > 0);
     }
 }
 
@@ -901,6 +959,15 @@ void GeneratorCard::setValue(const QString &key, const QJsonValue &v, bool byUse
         m_payload.insert(QStringLiteral("author"), QStringLiteral("user"));
     }
     refreshHeader();
+    // a field that sets how many references a list takes (the model)
+    for (auto it = m_lists.constBegin(); it != m_lists.constEnd(); ++it) {
+        for (const PluginMediaKind &kind : it.value().field.kinds) {
+            if (kind.maxByKey == key) {
+                refreshMediaList(it.key());
+                break;
+            }
+        }
+    }
     refreshFoot();
     Q_EMIT edited(m_cardId, m_payload);
 }
@@ -930,8 +997,15 @@ QString GeneratorCard::missing() const
             continue;
         }
         if (field.type == QLatin1String("media_list")) {
-            if (field.required && value(field.key).toObject().isEmpty()) {
+            const QJsonObject entries = value(field.key).toObject();
+            if (field.required && entries.isEmpty()) {
                 return i18n("Add %1", tr8(field.label).toLower());
+            }
+            for (const PluginMediaKind &kind : field.kinds) {
+                const int most = allowed(kind);
+                if (kindNames(entries, kind).size() > most) {
+                    return most == 0 ? i18n("%1 is not taken here", tr8(kind.label)) : i18n("%1, no more than %2", tr8(kind.label), most);
+                }
             }
             continue;
         }
@@ -974,7 +1048,7 @@ void GeneratorCard::refreshFoot()
     if (m_answerLabel) {
         // an answer about values that have changed since says nothing any more
         const bool current = !m_answer.message.isEmpty() && !m_answer.pending && m_answer.asked == values();
-        m_answerLabel->setText(m_answer.message);
+        m_answerLabel->setText(PluginEffects::linkify(m_answer.message));
         m_answerLabel->setVisible(current);
     }
 }

@@ -244,6 +244,16 @@ def validate(plugin_dir):
                         isinstance(i, dict) and re.match(r"^[a-z][a-z0-9]*$", str(i.get("key", ""))) and i.get("accept", "image") in ("image", "video")
                         and isinstance(i.get("max", 1), int) and i.get("max", 1) >= 1 for i in items):
                     errors.append("card '%s', field '%s': 'items' must list {key, accept: image|video, max}" % (cid, field["key"]))
+                for item in items if isinstance(items, list) else []:
+                    max_by = item.get("max_by") if isinstance(item, dict) else None
+                    if max_by is None:
+                        continue
+                    top = item.get("max", 1)
+                    table = next(iter(max_by.values())) if isinstance(max_by, dict) and len(max_by) == 1 else None
+                    if (table is None or next(iter(max_by)) not in keys or next(iter(max_by)) == field["key"]
+                            or not isinstance(table, dict) or not all(isinstance(n, int) and 0 <= n <= top for n in table.values())):
+                        errors.append("card '%s', field '%s': 'max_by' must name one other field and give whole numbers from 0 to 'max'"
+                                      % (cid, field["key"]))
             if field.get("type") == "number" and ("min" in field or "max" in field):
                 low, high = field.get("min"), field.get("max")
                 if not isinstance(low, (int, float)) or not isinstance(high, (int, float)) or low >= high:

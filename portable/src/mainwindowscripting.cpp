@@ -14,6 +14,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QPointer>
 #include <QTemporaryFile>
 #include <QTimer>
 #include "assets/assetpanel.hpp"
@@ -40,6 +41,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "plugins/plugineffects.h"
 #include "plugins/pluginmanager.h"
 #include "plugins/pluginsetstore.h"
+#include "plugins/spendguard.h"
 #include "wunjosettings.h"
 #include "dialogs/clipcreationdialog.h"
 #include "dialogs/clipjobmanager.h"
@@ -79,6 +81,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "monitor/monitormanager.h"
 #include "monitor/monitorproxy.h"
 #include "monitor/scopes/audiographspectrum.h"
+#include "onlineresources/resourceservice.hpp"
 #include "onlineresources/resourcewidget.hpp"
 #include "profiles/profilemodel.hpp"
 #include "profiles/profilerepository.hpp"
@@ -3494,7 +3497,76 @@ bool MainWindow::scriptGeneratorCardFold(const QString &cardId, bool collapsed)
 
 QString MainWindow::scriptGeneratorCardRun(const QString &cardId)
 {
-    return m_chatWidget ? m_chatWidget->runGeneratorCard(cardId) : QString();
+    if (!m_chatWidget) {
+        return {};
+    }
+    const QJsonObject started{{QStringLiteral("started_by"), QStringLiteral("assistant")}};
+    if (!m_chatWidget->cardHasGate(cardId)) {
+        return m_chatWidget->runGeneratorCard(cardId, started);
+    }
+    // A paid run: priced first, and agreed to by the user, never by the
+    // assistant on its own
+    int price = -1;
+    const QString gate = m_chatWidget->cardGate(cardId, &price);
+    if (!gate.isEmpty()) {
+        return QStringLiteral("gate:") + gate;
+    }
+    const QJsonObject payload = m_chatWidget->generatorCardPayload(cardId);
+    const QString pluginId = payload.value(QStringLiteral("plugin")).toString();
+    const PluginGenerator generator = PluginManager::instance().plugin(pluginId).generator(payload.value(QStringLiteral("generator")).toString());
+    const QJsonObject values = payload.value(QStringLiteral("values")).toObject();
+    SpendGuard::Spend spend;
+    spend.pluginId = pluginId;
+    spend.title = generator.title.isEmpty() ? QString() : i18n(generator.title.toUtf8().constData());
+    spend.sentence = m_chatWidget->generatorCardAnswer(cardId).value(QStringLiteral("message")).toString();
+    spend.price = price;
+    spend.target = QStringLiteral("card:") + cardId;
+    QPointer<ChatWidget> chat = m_chatWidget;
+    spend.stillValid = [chat, cardId, values, price]() {
+        int now = -1;
+        return chat && chat->cardGate(cardId, &now).isEmpty() && now == price &&
+            chat->generatorCardPayload(cardId).value(QStringLiteral("values")).toObject() == values;
+    };
+    spend.run = [chat, cardId](const QString &by) -> QString {
+        if (!chat) {
+            return {};
+        }
+        return chat->runGeneratorCard(cardId, QJsonObject{{QStringLiteral("started_by"), QStringLiteral("assistant")}, {QStringLiteral("confirmed_by"), by}});
+    };
+    return QStringLiteral("confirm:") + QString::number(m_spendGuard->request(spend));
+}
+
+// ── Online Resources for the assistant (backed by ResourceService) ──
+
+static QString compactJson(const QJsonValue &value)
+{
+    return QString::fromUtf8(value.isArray() ? QJsonDocument(value.toArray()).toJson(QJsonDocument::Compact)
+                                             : QJsonDocument(value.toObject()).toJson(QJsonDocument::Compact));
+}
+
+QString MainWindow::scriptOnlineServices()
+{
+    return compactJson(m_resourceService ? m_resourceService->services() : QJsonArray());
+}
+
+int MainWindow::scriptOnlineSearch(const QString &service, const QString &query, int page, const QString &dateFrom, const QString &dateTo)
+{
+    return m_resourceService ? m_resourceService->search(service, query, page, dateFrom, dateTo) : 0;
+}
+
+QString MainWindow::scriptOnlineSearchAnswer(int request)
+{
+    return compactJson(m_resourceService ? m_resourceService->searchAnswer(request) : QJsonObject());
+}
+
+int MainWindow::scriptOnlineImport(const QString &service, const QString &itemId, const QString &version)
+{
+    return m_resourceService ? m_resourceService->importItem(service, itemId, version) : 0;
+}
+
+QString MainWindow::scriptOnlineImportAnswer(int request)
+{
+    return compactJson(m_resourceService ? m_resourceService->importAnswer(request) : QJsonObject());
 }
 
 // ── Assistant guidance: skills & loops (backed by ChatGuidanceStore) ──
@@ -3677,10 +3749,47 @@ QString MainWindow::scriptRunPlugin(const QString &id, const QString &inputJson)
     if (!doc.isObject()) {
         return {};
     }
+    // A plugin that prices its runs is run from its cards and effects, where
+    // the price is asked and the user agrees; a bare run would skip both
+    for (const PluginGenerator &generator : manifest.generators()) {
+        for (const PluginAction &action : generator.actions) {
+            if (action.gate) {
+                return PluginManager::instance().refuseJob(
+                    manifest.name(), QStringLiteral("This plugin is run from its cards (generator_card_create) and effects (generate_effect), "
+                                                    "where the price is asked first."));
+            }
+        }
+    }
     // Non-blocking, and the answer is not "started": it is the id of the job, so the caller can ask what became of it — a plugin
     // that declines says so in one sentence, and an assistant that cannot read
     // it reports work that never happened. @ref scriptPluginJobStatus reads it.
     return PluginManager::instance().runPlugin(id, doc.object(), this);
+}
+
+/** @brief A plugin effect on timeline clip @p clipId, with what a render or
+ *  a price question needs of it; false when there is none. */
+static bool findPluginEffect(MainWindow *window, int clipId, const QString &effectId, std::shared_ptr<AssetParameterModel> &asset, QString &pluginId,
+                             int &effectItemId)
+{
+    auto timeline = window->getCurrentTimeline();
+    if (!timeline || !timeline->model() || !timeline->model()->isClip(clipId)) {
+        return false;
+    }
+    auto stack = timeline->model()->getClipEffectStackModel(clipId);
+    if (!stack) {
+        return false;
+    }
+    asset = stack->getAssetModelById(effectId);
+    if (!asset) {
+        return false;
+    }
+    pluginId = PluginManager::instance().pluginForEffect(effectId);
+    auto effect = std::dynamic_pointer_cast<EffectItemModel>(asset);
+    if (pluginId.isEmpty() || !effect) {
+        return false;
+    }
+    effectItemId = effect->getId();
+    return true;
 }
 
 QString MainWindow::scriptGenerateEffect(int clipId, const QString &effectId)
@@ -3692,50 +3801,103 @@ QString MainWindow::scriptGenerateEffect(int clipId, const QString &effectId)
     // button on the effect and nothing else, so an assistant could set every
     // parameter correctly and still leave the clip untouched, with no way to
     // say what was missing. This is that button.
-    auto timeline = getCurrentTimeline();
-    if (!timeline || !timeline->model() || !timeline->model()->isClip(clipId)) {
-        return {};
-    }
-    auto stack = timeline->model()->getClipEffectStackModel(clipId);
-    if (!stack) {
-        return {};
-    }
-    auto asset = stack->getAssetModelById(effectId);
-    if (!asset) {
-        return {};
-    }
-    const QString pluginId = PluginManager::instance().pluginForEffect(effectId);
-    if (pluginId.isEmpty()) {
-        return {};
-    }
-    auto effect = std::dynamic_pointer_cast<EffectItemModel>(asset);
-    if (!effect) {
+    std::shared_ptr<AssetParameterModel> asset;
+    QString pluginId;
+    int effectItemId = -1;
+    if (!findPluginEffect(this, clipId, effectId, asset, pluginId, effectItemId)) {
         return {};
     }
     // Which parameter the produced file is written into. It is named by the
     // render parameter itself, the same place the button reads it from, so an
     // effect that renders differently keeps working without changes here.
-    QString resultParam;
-    for (int row = 0; row < asset->rowCount(); ++row) {
-        const QVariantList jobParams = asset->data(asset->index(row, 0), AssetParameterModel::FilterJobParamsRole).toList();
-        for (const QVariant &entry : jobParams) {
-            const QStringList pair = entry.toStringList();
-            if (pair.size() == 2 && pair.at(0) == QLatin1String("key")) {
-                resultParam = pair.at(1);
-            }
-        }
-        if (!resultParam.isEmpty()) {
-            break;
-        }
-    }
-    const QJsonObject input = PluginEffects::buildJob(asset, pluginId);
+    const QString resultParam = PluginEffects::jobParam(asset, QStringLiteral("key"));
+    QJsonObject input = PluginEffects::buildJob(asset, pluginId);
     if (input.isEmpty()) {
         return {};
     }
-    // The job's id: a render takes minutes, and whoever asked for it has to be
-    // able to come back and ask how it went — including when it declined to
-    // start at all, which used to be a message banner and nothing else.
-    return PluginManager::instance().runEffectJob(pluginId, asset->getOwnerId(), effect->getId(), resultParam, input);
+    input.insert(QStringLiteral("started_by"), QStringLiteral("assistant"));
+    const ObjectId owner = asset->getOwnerId();
+    const QString gate = PluginEffects::jobParam(asset, QStringLiteral("gate"));
+    if (gate.isEmpty()) {
+        // The job's id: a render takes minutes, and whoever asked for it has to be
+        // able to come back and ask how it went — including when it declined to
+        // start at all, which used to be a message banner and nothing else.
+        return PluginManager::instance().runEffectJob(pluginId, owner, effectItemId, resultParam, input);
+    }
+
+    // A paid render: priced first, and agreed to by the user, never by the
+    // assistant on its own
+    int price = -1;
+    if (!PluginEffects::gateOpen(asset, pluginId, effectItemId, gate, &price)) {
+        return QStringLiteral("gate:") + gate;
+    }
+    const std::weak_ptr<AssetParameterModel> weak = asset;
+    SpendGuard::Spend spend;
+    spend.pluginId = pluginId;
+    spend.title = EffectsRepository::get()->getName(effectId);
+    spend.sentence = PluginManager::instance().effectAnswer(owner, effectItemId, gate).message;
+    spend.price = price;
+    spend.target = QStringLiteral("effect:%1:%2:%3").arg(owner.uuid.toString()).arg(owner.itemId).arg(effectItemId);
+    spend.stillValid = [weak, pluginId, effectItemId, gate, price]() {
+        int now = -1;
+        return PluginEffects::gateOpen(weak.lock(), pluginId, effectItemId, gate, &now) && now == price;
+    };
+    spend.run = [weak, pluginId, owner, effectItemId, resultParam, price](const QString &by) -> QString {
+        auto model = weak.lock();
+        QJsonObject job = model ? PluginEffects::buildJob(model, pluginId) : QJsonObject();
+        if (job.isEmpty()) {
+            return {};
+        }
+        job.insert(QStringLiteral("started_by"), QStringLiteral("assistant"));
+        job.insert(QStringLiteral("confirmed_by"), by);
+        if (price >= 0) {
+            job.insert(QStringLiteral("confirmed"), QJsonObject{{QStringLiteral("price"), price}});
+        }
+        return PluginManager::instance().runEffectJob(pluginId, owner, effectItemId, resultParam, job);
+    };
+    return QStringLiteral("confirm:") + QString::number(m_spendGuard->request(spend));
+}
+
+int MainWindow::scriptEffectAction(int clipId, const QString &effectId, const QString &action)
+{
+    std::shared_ptr<AssetParameterModel> asset;
+    QString pluginId;
+    int effectItemId = -1;
+    if (!findPluginEffect(this, clipId, effectId, asset, pluginId, effectItemId)) {
+        return 0;
+    }
+    // only a button the effect has: the plugin is not asked anything else
+    if (PluginEffects::jobParam(asset, QStringLiteral("action")) != action && PluginEffects::jobParam(asset, QStringLiteral("gate")) != action) {
+        return 0;
+    }
+    return PluginEffects::askEffect(asset, pluginId, effectItemId, action) ? 1 : 0;
+}
+
+QString MainWindow::scriptEffectAnswer(int clipId, const QString &effectId, const QString &action)
+{
+    std::shared_ptr<AssetParameterModel> asset;
+    QString pluginId;
+    int effectItemId = -1;
+    QJsonObject out;
+    if (findPluginEffect(this, clipId, effectId, asset, pluginId, effectItemId)) {
+        const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(asset->getOwnerId(), effectItemId, action);
+        out.insert(QStringLiteral("pending"), answer.pending);
+        out.insert(QStringLiteral("ok"), answer.ok);
+        out.insert(QStringLiteral("message"), answer.message);
+        out.insert(QStringLiteral("price"), answer.price);
+        out.insert(QStringLiteral("current"), !answer.asked.isEmpty() && answer.asked == PluginEffects::askedJob(asset, pluginId));
+    }
+    return QString::fromUtf8(QJsonDocument(out).toJson(QJsonDocument::Compact));
+}
+
+QString MainWindow::scriptSpendState(int request)
+{
+    return QString::fromUtf8(QJsonDocument(m_spendGuard->state(request)).toJson(QJsonDocument::Compact));
+}
+
+int MainWindow::scriptSpendAllowance(const QString &pluginId, int credits)
+{
+    return m_spendGuard->askAllowance(pluginId, credits);
 }
 
 QString MainWindow::scriptPluginJobStatus(const QString &jobId)

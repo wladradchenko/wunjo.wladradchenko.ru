@@ -148,7 +148,12 @@ struct PluginMediaKind {
     QString key;    ///< the entries are named key + number: image1, image2…
     QString accept; ///< "image" or "video"
     QString label;  ///< what its add button says
-    int max = 1;
+    int max = 1;    ///< the most ever, and the names go up to it
+    /** @brief `max_by`: the most depends on another field of the card (the
+     *  model): its value → how many, 0 for "not taken". A value not listed
+     *  keeps @ref max. */
+    QString maxByKey;
+    QHash<QString, int> maxBy;
 };
 
 /** @brief One field of a generator's form, the card a `generator` plugin puts in

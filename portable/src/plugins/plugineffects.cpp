@@ -19,6 +19,8 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include <QDesktopServices>
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QRegularExpression>
 #include <QMenu>
 #include <QSet>
 #include <QUrl>
@@ -365,6 +367,87 @@ bool apply(const std::shared_ptr<EffectStackModel> &stack, const PluginManifest 
         added = appendOne(stack, region, faceTrack, bond);
     }
     return appendOne(stack, effect, faceTrack, bond) || added;
+}
+
+QString jobParam(const std::shared_ptr<AssetParameterModel> &model, const QString &name)
+{
+    if (model == nullptr) {
+        return {};
+    }
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QVariantList jobParams = model->data(model->index(row, 0), AssetParameterModel::FilterJobParamsRole).toList();
+        for (const QVariant &entry : jobParams) {
+            const QStringList pair = entry.toStringList();
+            if (pair.size() == 2 && pair.at(0) == name && !pair.at(1).isEmpty()) {
+                return pair.at(1);
+            }
+        }
+    }
+    return {};
+}
+
+QByteArray askedJob(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId)
+{
+    QJsonObject job = buildJob(model, pluginId);
+    job.remove(QStringLiteral("action"));
+    return QJsonDocument(job).toJson(QJsonDocument::Compact);
+}
+
+bool askEffect(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId, int effectItemId, const QString &action)
+{
+    if (model == nullptr || pluginId.isEmpty() || action.isEmpty()) {
+        return false;
+    }
+    QJsonObject input = buildJob(model, pluginId);
+    if (input.isEmpty()) {
+        return false;
+    }
+    input.insert(QStringLiteral("action"), action);
+    PluginManager::EffectAnswer pending;
+    pending.pending = true;
+    pending.asked = askedJob(model, pluginId);
+    const ObjectId owner = model->getOwnerId();
+    PluginManager::instance().setEffectAnswer(owner, effectItemId, action, pending);
+    // The answer belongs to the effect, not to whoever asked: the panel's
+    // widget is rebuilt at will, and an assistant reads the same answer
+    const QByteArray question = pending.asked;
+    PluginManager::instance().queryPlugin(pluginId, input, &PluginManager::instance(),
+                                          [owner, effectItemId, action, question](bool ok, const QString &message, const QJsonObject &result) {
+                                              PluginManager::EffectAnswer answer;
+                                              answer.ok = ok;
+                                              answer.message = message;
+                                              answer.asked = question;
+                                              answer.price = result.value(QStringLiteral("price")).isDouble() ? result.value(QStringLiteral("price")).toInt() : -1;
+                                              PluginManager::instance().setEffectAnswer(owner, effectItemId, action, answer);
+                                          });
+    return true;
+}
+
+bool gateOpen(const std::shared_ptr<AssetParameterModel> &model, const QString &pluginId, int effectItemId, const QString &gate, int *price)
+{
+    if (price) {
+        *price = -1;
+    }
+    if (gate.isEmpty()) {
+        return true;
+    }
+    if (model == nullptr) {
+        return false;
+    }
+    const PluginManager::EffectAnswer answer = PluginManager::instance().effectAnswer(model->getOwnerId(), effectItemId, gate);
+    const bool open = answer.ok && !answer.pending && answer.asked == askedJob(model, pluginId);
+    if (open && price) {
+        *price = answer.price;
+    }
+    return open;
+}
+
+QString linkify(const QString &text)
+{
+    static const QRegularExpression address(QStringLiteral("(https?://[^\\s<>\"]+[^\\s<>\".,;:!?)])"));
+    QString html = text.toHtmlEscaped();
+    html.replace(address, QStringLiteral("<a href=\"\\1\">\\1</a>"));
+    return html;
 }
 
 } // namespace PluginEffects

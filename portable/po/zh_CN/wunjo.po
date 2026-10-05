@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: wunjo\n"
 "Report-Msgid-Bugs-To: https://github.com/wladradchenko/wunjo.wladradchenko."
 "ru/issues\n"
-"POT-Creation-Date: 2026-10-05 17:17+0300\n"
+"POT-Creation-Date: 2026-10-05 19:53+0300\n"
 "PO-Revision-Date: 2024-04-23 19:24\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -364,7 +364,7 @@ msgstr "您的项目编码方案无效，导出可能失败。"
 
 #. i18n: file: data/effects/avfilter/subtitles.xml
 #. i18n: file: src/ui.rc
-#: src/core.cpp:1141 src/mainwindow.cpp:290 src/bin/model/subtitlemodel.cpp:82
+#: src/core.cpp:1141 src/mainwindow.cpp:292 src/bin/model/subtitlemodel.cpp:82
 #: src/project/dialogs/archivewidget.cpp:100
 #: src/project/dialogs/projectsettings.cpp:434 rc.cpp:7676 rc.cpp:9208
 #, kde-format
@@ -442,7 +442,7 @@ msgid "Other Files"
 msgstr "其他文件"
 
 #: src/filefilter.cpp:135 src/effects/effectlist/view/effectlistwidget.cpp:177
-#: src/onlineresources/resourcewidget.cpp:893
+#: src/onlineresources/resourcewidget.cpp:927
 #, kde-format
 msgid "All Files"
 msgstr "所有文件"
@@ -596,252 +596,252 @@ msgid "Rendering %1 started"
 msgstr "渲染 %1 已开始"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:155 rc.cpp:9214
+#: src/mainwindow.cpp:157 rc.cpp:9214
 #, kde-format
 msgid "Monitor"
 msgstr "监视器"
 
-#: src/mainwindow.cpp:157 src/bin/bin.cpp:3978 src/bin/bin.cpp:4114
+#: src/mainwindow.cpp:159 src/bin/bin.cpp:3978 src/bin/bin.cpp:4114
 #, kde-format
 msgid "Add Clip"
 msgstr "添加片段"
 
-#: src/mainwindow.cpp:159
+#: src/mainwindow.cpp:161
 #, kde-format
 msgid "Add Marker by Category Number"
 msgstr "添加标记 (按类别编号)"
 
-#: src/mainwindow.cpp:161
+#: src/mainwindow.cpp:163
 #, kde-format
 msgid "Navigation and Playback"
 msgstr "导航和播放"
 
-#: src/mainwindow.cpp:163
+#: src/mainwindow.cpp:165
 #, kde-format
 msgid "Bin Tags"
 msgstr "素材箱标签"
 
-#: src/mainwindow.cpp:215
+#: src/mainwindow.cpp:217
 #, kde-format
 msgid "Cannot find your default profile, switching to ATSC 1080p 25"
 msgstr "无法找到您的默认编码方案，切换到 ATSC 1080p 25"
 
-#: src/mainwindow.cpp:282 src/dialogs/settings/wunjosettingsdialog.cpp:91
+#: src/mainwindow.cpp:284 src/dialogs/settings/wunjosettingsdialog.cpp:91
 #, kde-format
 msgid "Timeline"
 msgstr "时间轴"
 
-#: src/mainwindow.cpp:285 src/bin/bin.cpp:6860
+#: src/mainwindow.cpp:287 src/bin/bin.cpp:6860
 #, kde-format
 msgid "Project Bin"
 msgstr "项目素材箱"
 
 #. i18n: file: ../plugins/voice-toolkit/plugin.json
-#: src/mainwindow.cpp:287 rc.cpp:210 rc.cpp:216
+#: src/mainwindow.cpp:289 rc.cpp:210 rc.cpp:216
 #, kde-format
 msgid "Library"
 msgstr "素材库"
 
-#: src/mainwindow.cpp:293
+#: src/mainwindow.cpp:295
 #, kde-format
 msgid "Speech Editor"
 msgstr "语音编辑器"
 
-#: src/mainwindow.cpp:296
+#: src/mainwindow.cpp:298
 #, kde-format
 msgid "Time Remapping"
 msgstr "时间重新映射"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/projectsettings_ui.ui
-#: src/mainwindow.cpp:307 rc.cpp:9226 rc.cpp:10850
+#: src/mainwindow.cpp:309 rc.cpp:9226 rc.cpp:10850
 #, kde-format
 msgid "Markers"
 msgstr "标记"
 
-#: src/mainwindow.cpp:322 src/dialogs/settings/wunjosettingsdialog.cpp:1007
+#: src/mainwindow.cpp:324 src/dialogs/settings/wunjosettingsdialog.cpp:1007
 #, kde-format
 msgid "Monitor %1"
 msgstr "监视器 %1"
 
-#: src/mainwindow.cpp:330 src/timeline2/view/qml/AudioRecordButton.qml:155
+#: src/mainwindow.cpp:332 src/timeline2/view/qml/AudioRecordButton.qml:155
 #: src/timeline2/view/qml/AudioRecordButton.qml:268
 #, kde-format
 msgid "Record"
 msgstr "录制"
 
-#: src/mainwindow.cpp:336
+#: src/mainwindow.cpp:338
 #, kde-format
 msgid "Enable audio monitoring from the Mixer to record"
 msgstr "启用从混音器到录音的音频监视"
 
-#: src/mainwindow.cpp:344 src/monitor/recmanager.cpp:100
+#: src/mainwindow.cpp:346 src/monitor/recmanager.cpp:100
 #, kde-format
 msgid "Configure Recording"
 msgstr "配置录制功能"
 
 #. i18n: file: src/ui/configcapture_ui.ui
-#: src/mainwindow.cpp:347 src/monitor/recmanager.cpp:37
+#: src/mainwindow.cpp:349 src/monitor/recmanager.cpp:37
 #: src/monitor/recmanager.cpp:91 rc.cpp:9484
 #, kde-format
 msgid "Screen Grab"
 msgstr "屏幕捕获"
 
-#: src/mainwindow.cpp:351
+#: src/mainwindow.cpp:353
 #, kde-format
 msgid "Switch to next Sequence"
 msgstr "切换到下一个序列"
 
-#: src/mainwindow.cpp:355
+#: src/mainwindow.cpp:357
 #, kde-format
 msgid "Switch to previous Sequence"
 msgstr "切换到上一个序列"
 
-#: src/mainwindow.cpp:361
+#: src/mainwindow.cpp:363
 #, kde-format
 msgid "Audio Spectrum"
 msgstr "音频频谱图"
 
-#: src/mainwindow.cpp:366
+#: src/mainwindow.cpp:368
 #, kde-format
 msgid "Clip Monitor"
 msgstr "片段监视器"
 
-#: src/mainwindow.cpp:368
+#: src/mainwindow.cpp:370
 #, kde-format
 msgid "Project Monitor"
 msgstr "项目监视器"
 
-#: src/mainwindow.cpp:380
+#: src/mainwindow.cpp:382
 #, kde-format
 msgid "Media Browser"
 msgstr "媒体浏览器"
 
-#: src/mainwindow.cpp:385 src/bin/bin.cpp:4019
+#: src/mainwindow.cpp:390 src/bin/bin.cpp:4019
 #, kde-format
 msgid "Online Resources"
 msgstr "在线资源"
 
-#: src/mainwindow.cpp:398
+#: src/mainwindow.cpp:403
 #, kde-format
 msgid "Effect/Composition Stack"
 msgstr "效果/转场堆栈"
 
-#: src/mainwindow.cpp:483
+#: src/mainwindow.cpp:488
 #, kde-format
 msgid "Only show reviewed items"
 msgstr "仅显示已审核的资源"
 
-#: src/mainwindow.cpp:487
+#: src/mainwindow.cpp:492
 #, kde-format
 msgid "Only show 10 bit compatible items"
 msgstr "仅显示 10 bit 兼容的资源"
 
 #. i18n: file: data/layouts/effects.json
 #. i18n: file: src/ui/editsub_ui.ui
-#: src/mainwindow.cpp:496 src/mainwindow.cpp:629 rc.cpp:10 rc.cpp:10232
+#: src/mainwindow.cpp:501 src/mainwindow.cpp:636 rc.cpp:10 rc.cpp:10232
 #, kde-format
 msgid "Effects"
 msgstr "效果"
 
 #. i18n: file: src/ui/configtimeline_ui.ui
-#: src/mainwindow.cpp:499
+#: src/mainwindow.cpp:504
 #: src/transitions/transitionlist/model/transitiontreemodel.cpp:36 rc.cpp:9986
 #, kde-format
 msgid "Compositions"
 msgstr "合成"
 
-#: src/mainwindow.cpp:502
+#: src/mainwindow.cpp:507
 #, kde-format
 msgid "Clear Undo History"
 msgstr "清除撤消历史"
 
-#: src/mainwindow.cpp:505
+#: src/mainwindow.cpp:510
 #, kde-format
 msgid ""
 "This will clear all undo history, you will not be able to undo any previous "
 "action."
 msgstr "此操作将清除所有撤销历史记录，您将无法撤销之前的任何操作。"
 
-#: src/mainwindow.cpp:517
+#: src/mainwindow.cpp:522
 #, kde-format
 msgid "Clean"
 msgstr "清除"
 
-#: src/mainwindow.cpp:522
+#: src/mainwindow.cpp:527
 #, kde-format
 msgid "Undo History"
 msgstr "历史记录"
 
-#: src/mainwindow.cpp:526 src/chat/chatwidget.cpp:473
+#: src/mainwindow.cpp:533 src/chat/chatwidget.cpp:474
 #, kde-format
 msgid "Chat"
 msgstr "聊天"
 
-#: src/mainwindow.cpp:534
+#: src/mainwindow.cpp:541
 #, kde-format
 msgid "Show Title Bars"
 msgstr "显示标题工具栏"
 
-#: src/mainwindow.cpp:547 src/dialogs/settings/wunjosettingsdialog.cpp:219
+#: src/mainwindow.cpp:554 src/dialogs/settings/wunjosettingsdialog.cpp:219
 #, kde-format
 msgid "Theme"
 msgstr "主题"
 
-#: src/mainwindow.cpp:551 src/dialogs/settings/wunjosettingsdialog.cpp:223
+#: src/mainwindow.cpp:558 src/dialogs/settings/wunjosettingsdialog.cpp:223
 #, kde-format
 msgid "Dark (default)"
 msgstr "深色 (默认)"
 
-#: src/mainwindow.cpp:552 src/dialogs/settings/wunjosettingsdialog.cpp:224
+#: src/mainwindow.cpp:559 src/dialogs/settings/wunjosettingsdialog.cpp:224
 #, kde-format
 msgid "Light"
 msgstr "浅色"
 
-#: src/mainwindow.cpp:567 src/mainwindow.cpp:588
+#: src/mainwindow.cpp:574 src/mainwindow.cpp:595
 #, kde-format
 msgid "Primary Color"
 msgstr "主色调"
 
-#: src/mainwindow.cpp:586 src/assets/view/widgets/urllistparamwidget.cpp:402
+#: src/mainwindow.cpp:593 src/assets/view/widgets/urllistparamwidget.cpp:402
 #, kde-format
 msgid "Custom…"
 msgstr "自定义…"
 
-#: src/mainwindow.cpp:596 src/mainwindow.cpp:598
+#: src/mainwindow.cpp:603 src/mainwindow.cpp:605
 #, kde-format
 msgid "Audio Mixer"
 msgstr "混音器"
 
-#: src/mainwindow.cpp:597
+#: src/mainwindow.cpp:604
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the audio mixer panel/widget."
 msgstr "显示/隐藏混音器面板/控件。"
 
-#: src/mainwindow.cpp:628
+#: src/mainwindow.cpp:635
 #, kde-format
 msgid "Add Effect"
 msgstr "添加效果"
 
-#: src/mainwindow.cpp:632
+#: src/mainwindow.cpp:639
 #, kde-format
 msgid "Add Transition"
 msgstr "添加转场"
 
-#: src/mainwindow.cpp:633 src/mainwindow.cpp:2548
+#: src/mainwindow.cpp:640 src/mainwindow.cpp:2555
 #: src/transitions/transitionlist/model/transitiontreemodel.cpp:37
 #, kde-format
 msgid "Transitions"
 msgstr "转场"
 
 #. i18n("Favorite Effects"));
-#: src/mainwindow.cpp:647 src/mainwindow.cpp:659 src/mainwindow.cpp:666
+#: src/mainwindow.cpp:654 src/mainwindow.cpp:666 src/mainwindow.cpp:673
 #, kde-format
 msgid "Favorite Effects"
 msgstr "常用效果"
 
-#: src/mainwindow.cpp:648 src/mainwindow.cpp:661
+#: src/mainwindow.cpp:655 src/mainwindow.cpp:668
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -849,12 +849,12 @@ msgid ""
 "it to the selected clip."
 msgstr "点击显示常用效果列表。双击某个效果即可将它添加到选中的片段。"
 
-#: src/mainwindow.cpp:674 src/mainwindow.cpp:1866
+#: src/mainwindow.cpp:681 src/mainwindow.cpp:1873
 #, kde-format
 msgid "Render…"
 msgstr "导出…"
 
-#: src/mainwindow.cpp:679
+#: src/mainwindow.cpp:686
 #, kde-format
 msgctxt ""
 "@intoolbar the name of the action to place an export/render button in a "
@@ -862,105 +862,105 @@ msgctxt ""
 msgid "Render Button"
 msgstr "导出按钮"
 
-#: src/mainwindow.cpp:685
+#: src/mainwindow.cpp:692
 #, kde-format
 msgid "Rendering preview"
 msgstr "导出预览"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:690 src/dialogs/encodingprofilesdialog.cpp:58 rc.cpp:9210
+#: src/mainwindow.cpp:697 src/dialogs/encodingprofilesdialog.cpp:58 rc.cpp:9210
 #, kde-format
 msgid "Timeline Preview"
 msgstr "时间轴预览"
 
-#: src/mainwindow.cpp:777 src/mainwindow.cpp:859 src/mainwindow.cpp:2368
+#: src/mainwindow.cpp:784 src/mainwindow.cpp:866 src/mainwindow.cpp:2375
 #, kde-format
 msgid "Identify Gaps"
 msgstr "识别间隙"
 
-#: src/mainwindow.cpp:778 src/mainwindow.cpp:860
+#: src/mainwindow.cpp:785 src/mainwindow.cpp:867
 #, kde-format
 msgid "All Tracks"
 msgstr "所有轨道"
 
-#: src/mainwindow.cpp:781 src/mainwindow.cpp:863
+#: src/mainwindow.cpp:788 src/mainwindow.cpp:870
 #, kde-format
 msgid "Selected Track"
 msgstr "选中的轨道"
 
-#: src/mainwindow.cpp:785
+#: src/mainwindow.cpp:792
 #, kde-format
 msgid "Go to Marker…"
 msgstr "跳转到标记…"
 
-#: src/mainwindow.cpp:799 src/monitor/monitor.cpp:939
+#: src/mainwindow.cpp:806 src/monitor/monitor.cpp:939
 #, kde-format
 msgid "Create Marker from Zone"
 msgstr "从区段创建标记"
 
-#: src/mainwindow.cpp:803 src/monitor/monitor.cpp:944
+#: src/mainwindow.cpp:810 src/monitor/monitor.cpp:944
 #: src/monitor/monitor.cpp:969
 #, kde-format
 msgid "Create Marker from Zone Quickly"
 msgstr "快速从区段创建标记"
 
-#: src/mainwindow.cpp:844
+#: src/mainwindow.cpp:851
 #, kde-format
 msgid "Separate Channels"
 msgstr "拆分轨道"
 
-#: src/mainwindow.cpp:851
+#: src/mainwindow.cpp:858
 #, kde-format
 msgid "Normalize Audio Thumbnails"
 msgstr "标准化音频缩略图"
 
-#: src/mainwindow.cpp:868
+#: src/mainwindow.cpp:875
 #, kde-format
 msgid "Thumbnails"
 msgstr "缩略图"
 
-#: src/mainwindow.cpp:870
+#: src/mainwindow.cpp:877
 #, kde-format
 msgid "In Frame"
 msgstr "入点帧"
 
-#: src/mainwindow.cpp:874
+#: src/mainwindow.cpp:881
 #, kde-format
 msgid "In/Out Frames"
 msgstr "入点/出点帧"
 
-#: src/mainwindow.cpp:878
+#: src/mainwindow.cpp:885
 #, kde-format
 msgid "All Frames"
 msgstr "所有帧"
 
-#: src/mainwindow.cpp:882
+#: src/mainwindow.cpp:889
 #, kde-format
 msgid "No Thumbnails"
 msgstr "无缩略图"
 
-#: src/mainwindow.cpp:918
+#: src/mainwindow.cpp:925
 #, kde-format
 msgid "Preview Using Proxy Clips"
 msgstr "预览代理片段"
 
-#: src/mainwindow.cpp:925
+#: src/mainwindow.cpp:932
 #, kde-format
 msgid "Automatic Preview"
 msgstr "自动预览"
 
-#: src/mainwindow.cpp:1009
+#: src/mainwindow.cpp:1016
 #, kde-format
 msgctxt "@title:window"
 msgid "Loading Project"
 msgstr "正在加载项目"
 
-#: src/mainwindow.cpp:1116 src/dialogs/Splash.qml:731
+#: src/mainwindow.cpp:1123 src/dialogs/Splash.qml:731
 #, kde-format
 msgid "Community"
 msgstr "社区"
 
-#: src/mainwindow.cpp:1195
+#: src/mainwindow.cpp:1202
 #, kde-format
 msgid ""
 "You have 1 rendering job running.\n"
@@ -972,17 +972,17 @@ msgstr[0] ""
 "您有 %1 个导出任务正在运行。\n"
 "您想要如何处理这些任务？"
 
-#: src/mainwindow.cpp:1197
+#: src/mainwindow.cpp:1204
 #, kde-format
 msgid "Continue rendering in the background"
 msgstr "在后台继续渲染"
 
-#: src/mainwindow.cpp:1197
+#: src/mainwindow.cpp:1204
 #, kde-format
 msgid "Abort rendering"
 msgstr "中止渲染"
 
-#: src/mainwindow.cpp:1214
+#: src/mainwindow.cpp:1221
 #, kde-format
 msgid ""
 "You have 1 rendering job waiting in the queue.\n"
@@ -994,42 +994,42 @@ msgstr[0] ""
 "您有 %1 个导出任务在队列中等待。\n"
 "您想要如何处理这些任务？"
 
-#: src/mainwindow.cpp:1217
+#: src/mainwindow.cpp:1224
 #, kde-format
 msgid "Start them now"
 msgstr "立刻处理它们"
 
-#: src/mainwindow.cpp:1217
+#: src/mainwindow.cpp:1224
 #, kde-format
 msgid "Delete them"
 msgstr "删除它们"
 
-#: src/mainwindow.cpp:1327 src/timeline2/view/timelinecontroller.cpp:2500
+#: src/mainwindow.cpp:1334 src/timeline2/view/timelinecontroller.cpp:2500
 #, kde-format
 msgid "Select a clip to compare effect"
 msgstr "选择一段片段以比较效果"
 
-#: src/mainwindow.cpp:1377
+#: src/mainwindow.cpp:1384
 #, kde-format
 msgid "Normal Mode"
 msgstr "正常模式"
 
-#: src/mainwindow.cpp:1384
+#: src/mainwindow.cpp:1391
 #, kde-format
 msgid "Overwrite Mode"
 msgstr "覆盖模式"
 
-#: src/mainwindow.cpp:1391
+#: src/mainwindow.cpp:1398
 #, kde-format
 msgid "Insert Mode"
 msgstr "插入模式"
 
-#: src/mainwindow.cpp:1395
+#: src/mainwindow.cpp:1402
 #, kde-format
 msgid "Timeline Edit Mode"
 msgstr "时间轴编辑模式"
 
-#: src/mainwindow.cpp:1397
+#: src/mainwindow.cpp:1404
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1039,101 +1039,101 @@ msgstr ""
 "在正常模式、覆盖模式、插入模式之间切换。这将决定在时间轴中处理片段时的默认操"
 "作。"
 
-#: src/mainwindow.cpp:1406
+#: src/mainwindow.cpp:1413
 #, kde-format
 msgid "Do not Use Timeline Zone for Insert"
 msgstr "不使用时间轴区段进行插入"
 
-#: src/mainwindow.cpp:1406
+#: src/mainwindow.cpp:1413
 #, kde-format
 msgid "Use Timeline Zone for Insert"
 msgstr "使用时间轴区域进行插入"
 
-#: src/mainwindow.cpp:1407
+#: src/mainwindow.cpp:1414
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Toggles between using the timeline zone for inserting (on) or not (off)."
 msgstr "开/关使用时间轴区段插入的功能。"
 
-#: src/mainwindow.cpp:1414
+#: src/mainwindow.cpp:1421
 #, kde-format
 msgid "Enable Track Compositing"
 msgstr "启用轨道合成"
 
-#: src/mainwindow.cpp:1420
+#: src/mainwindow.cpp:1427
 #, kde-format
 msgid "Split Audio Tracks"
 msgstr "拆分音频轨道"
 
-#: src/mainwindow.cpp:1426
+#: src/mainwindow.cpp:1433
 #, kde-format
 msgid "Split Audio Tracks (reverse)"
 msgstr "拆分音频轨道 (反向)"
 
-#: src/mainwindow.cpp:1432
+#: src/mainwindow.cpp:1439
 #, kde-format
 msgid "Mixed Audio tracks"
 msgstr "混合音频轨道"
 
-#: src/mainwindow.cpp:1445 src/mainwindow.cpp:1607
+#: src/mainwindow.cpp:1452 src/mainwindow.cpp:1614
 #, kde-format
 msgid "Zoom In Audio Waveforms"
 msgstr "放大音频波形"
 
-#: src/mainwindow.cpp:1446 src/mainwindow.cpp:1615
+#: src/mainwindow.cpp:1453 src/mainwindow.cpp:1622
 #, kde-format
 msgid "Zoom Out Audio Waveforms"
 msgstr "缩小音频波形"
 
-#: src/mainwindow.cpp:1447
+#: src/mainwindow.cpp:1454
 #, kde-format
 msgid "Reset Audio Waveform Zoom"
 msgstr "重置音频波形缩放"
 
-#: src/mainwindow.cpp:1448
+#: src/mainwindow.cpp:1455
 #, kde-format
 msgid "Cycle Audio Waveform Zoom Levels"
 msgstr "循环切换音频波形缩放级别"
 
-#: src/mainwindow.cpp:1461 src/project/dialogs/slideshowclip.cpp:85
+#: src/mainwindow.cpp:1468 src/project/dialogs/slideshowclip.cpp:85
 #, kde-format
 msgid "hh:mm:ss:ff"
 msgstr "hh:mm:ss:ff"
 
-#: src/mainwindow.cpp:1462 src/plugins/pluginsetpanel.cpp:96
+#: src/mainwindow.cpp:1469 src/plugins/pluginsetpanel.cpp:96
 #: src/plugins/pluginsetpanel.cpp:214 src/project/dialogs/slideshowclip.cpp:86
 #, kde-format
 msgid "Frames"
 msgstr "帧数"
 
-#: src/mainwindow.cpp:1474
+#: src/mainwindow.cpp:1481
 #, kde-format
 msgid "Edit Subtitle Tool"
 msgstr "字幕编辑工具"
 
-#: src/mainwindow.cpp:1475
+#: src/mainwindow.cpp:1482
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the subtitle track in the timeline."
 msgstr "开/关时间轴中的字幕轨道。"
 
-#: src/mainwindow.cpp:1482 src/titler/titlewidget.cpp:404
+#: src/mainwindow.cpp:1489 src/titler/titlewidget.cpp:404
 #, kde-format
 msgid "Selection Tool"
 msgstr "选择工具"
 
-#: src/mainwindow.cpp:1487
+#: src/mainwindow.cpp:1494
 #, kde-format
 msgid "Razor Tool"
 msgstr "分割工具"
 
-#: src/mainwindow.cpp:1492
+#: src/mainwindow.cpp:1499
 #, kde-format
 msgid "Spacer Tool"
 msgstr "间隙工具"
 
-#: src/mainwindow.cpp:1495
+#: src/mainwindow.cpp:1502
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1143,12 +1143,12 @@ msgstr ""
 "选中此模式时，点击并拖动时间轴，可整体移动点击处后方的所有内容，用于调整片段"
 "之间的间隙长度。"
 
-#: src/mainwindow.cpp:1500
+#: src/mainwindow.cpp:1507
 #, kde-format
 msgid "Ripple Tool"
 msgstr "波纹编辑工具"
 
-#: src/mainwindow.cpp:1503
+#: src/mainwindow.cpp:1510
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1162,12 +1162,12 @@ msgstr ""
 #.
 #. m_buttonRollTool->setCheckable(true);
 #. m_buttonRollTool->setChecked(false);
-#: src/mainwindow.cpp:1513
+#: src/mainwindow.cpp:1520
 #, kde-format
 msgid "Slip Tool"
 msgstr "滑移工具"
 
-#: src/mainwindow.cpp:1514
+#: src/mainwindow.cpp:1521
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1177,27 +1177,27 @@ msgstr ""
 "选中此模式时，拖动片段可在它的入点/出点之间的区间里前后滑移片段内容，不会改变"
 "片段区间的位置。"
 
-#: src/mainwindow.cpp:1518
+#: src/mainwindow.cpp:1525
 #, kde-format
 msgid "Multicam Tool"
 msgstr "多机位工具"
 
-#: src/mainwindow.cpp:1539
+#: src/mainwindow.cpp:1546
 #, kde-format
 msgid "Collapse/Expand Item"
 msgstr "折叠/展开项目"
 
-#: src/mainwindow.cpp:1543
+#: src/mainwindow.cpp:1550
 #, kde-format
 msgid "Collapse/Expand All Items"
 msgstr "折叠/展开所有项目"
 
-#: src/mainwindow.cpp:1547
+#: src/mainwindow.cpp:1554
 #, kde-format
 msgid "Mix Clips"
 msgstr "混合片段"
 
-#: src/mainwindow.cpp:1549
+#: src/mainwindow.cpp:1556
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1205,12 +1205,12 @@ msgid ""
 "one closest to the playhead."
 msgstr "在选中的片段与它在离播放头最近的相邻片段之间创建一个相同轨道的转场。"
 
-#: src/mainwindow.cpp:1557
+#: src/mainwindow.cpp:1564
 #, kde-format
 msgid "Show Video Thumbnails"
 msgstr "显示视频缩略图"
 
-#: src/mainwindow.cpp:1558
+#: src/mainwindow.cpp:1565
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1218,12 +1218,12 @@ msgid ""
 "(default is On)."
 msgstr "显示/隐藏时间轴中片段的视频缩略图 (默认显示)。"
 
-#: src/mainwindow.cpp:1566
+#: src/mainwindow.cpp:1573
 #, kde-format
 msgid "Show Audio Thumbnails"
 msgstr "显示音频缩略图"
 
-#: src/mainwindow.cpp:1567
+#: src/mainwindow.cpp:1574
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1231,37 +1231,37 @@ msgid ""
 "(default is On)."
 msgstr "显示/隐藏时间轴中片段的音频缩略图 (默认显示)。"
 
-#: src/mainwindow.cpp:1590 src/mainwindow.cpp:1645
+#: src/mainwindow.cpp:1597 src/mainwindow.cpp:1652
 #, kde-format
 msgid "%1×"
 msgstr "%1×"
 
-#: src/mainwindow.cpp:1626
+#: src/mainwindow.cpp:1633
 #, kde-format
 msgid "Click to reset Audio Waveform Zoom"
 msgstr "点击以重置音频波形缩放"
 
-#: src/mainwindow.cpp:1632
+#: src/mainwindow.cpp:1639
 #, kde-format
 msgid "Current Audio Waveform Zoom Level"
 msgstr "当前音频波形缩放级别"
 
-#: src/mainwindow.cpp:1659
+#: src/mainwindow.cpp:1666
 #, kde-format
 msgid "Audio Thumbnails"
 msgstr "音频缩略图"
 
-#: src/mainwindow.cpp:1662
+#: src/mainwindow.cpp:1669
 #, kde-format
 msgid "Show Markers Comments"
 msgstr "显示标记备注"
 
-#: src/mainwindow.cpp:1668
+#: src/mainwindow.cpp:1675
 #, kde-format
 msgid "Snap"
 msgstr "吸附"
 
-#: src/mainwindow.cpp:1669
+#: src/mainwindow.cpp:1676
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1269,68 +1269,68 @@ msgid ""
 "and others)."
 msgstr "开/关吸附功能 (将片段吸附到播放头、边缘、标记、辅助线和其他对象)。"
 
-#: src/mainwindow.cpp:1674
+#: src/mainwindow.cpp:1681
 #, kde-format
 msgid "Show Clip Names"
 msgstr "显示片段名称"
 
-#: src/mainwindow.cpp:1675
+#: src/mainwindow.cpp:1682
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the display of clip names and info in timeline."
 msgstr "在时间线中显示片段名称和信息。"
 
-#: src/mainwindow.cpp:1680
+#: src/mainwindow.cpp:1687
 #, kde-format
 msgid "Mouse Zoom on Playhead"
 msgstr "在播放头位置缩放鼠标"
 
-#: src/mainwindow.cpp:1681
+#: src/mainwindow.cpp:1688
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the mouse zoom on playhead feature (default is Off)."
 msgstr "切换“在播放头位置缩放鼠标”功能 (默认关闭) 。"
 
-#: src/mainwindow.cpp:1687
+#: src/mainwindow.cpp:1694
 #, kde-format
 msgid "Show Color Tags in Timeline"
 msgstr "在时间轴中显示颜色标签"
 
-#: src/mainwindow.cpp:1688
+#: src/mainwindow.cpp:1695
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the display of clip tags in the timeline (default is On)."
 msgstr "显示/隐藏时间轴中片段的标签 (默认显示)。"
 
-#: src/mainwindow.cpp:1694
+#: src/mainwindow.cpp:1701
 #, kde-format
 msgid "Fit Zoom to Project"
 msgstr "缩放以适应整个项目"
 
-#: src/mainwindow.cpp:1695
+#: src/mainwindow.cpp:1702
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Adjusts the zoom level to fit the entire project into the timeline windows."
 msgstr "调整缩放级别，将整个项目以适合时间轴窗口的大小显示。"
 
-#: src/mainwindow.cpp:1720
+#: src/mainwindow.cpp:1727
 #, kde-format
 msgid "Experimental GPU processing enabled - not for production"
 msgstr "已启用实验性 GPU 处理功能 - 请勿用于生产环境"
 
-#: src/mainwindow.cpp:1730 src/mainwindow.cpp:4091
+#: src/mainwindow.cpp:1737 src/mainwindow.cpp:4098
 #, kde-format
 msgid "Multicam"
 msgstr "多机位"
 
-#: src/mainwindow.cpp:1731
+#: src/mainwindow.cpp:1738
 #, kde-format
 msgid "Active tool and editing mode"
 msgstr "活动工具和编辑模式"
 
 #. i18n: file: data/effectscategory.rc
-#: src/mainwindow.cpp:1765 src/dialogs/settings/wunjosettingsdialog.cpp:95
+#: src/mainwindow.cpp:1772 src/dialogs/settings/wunjosettingsdialog.cpp:95
 #: src/scopes/colorscopes/vectorscope.cpp:144 rc.cpp:9122
 #, kde-format
 msgid "Tools"
@@ -1338,261 +1338,261 @@ msgstr "工具"
 
 #. i18n: file: src/ui/editrenderpreset_ui.ui
 #. i18n: file: src/ui/renderwidget_ui.ui
-#: src/mainwindow.cpp:1785 rc.cpp:10112 rc.cpp:10122 rc.cpp:11004
+#: src/mainwindow.cpp:1792 rc.cpp:10112 rc.cpp:10122 rc.cpp:11004
 #, kde-format
 msgid "Auto"
 msgstr "自动"
 
-#: src/mainwindow.cpp:1790
+#: src/mainwindow.cpp:1797
 #, kde-format
 msgid "OpenGL"
 msgstr "OpenGL"
 
-#: src/mainwindow.cpp:1795
+#: src/mainwindow.cpp:1802
 #, kde-format
 msgid "DirectX (ANGLE)"
 msgstr "DirectX (ANGLE)"
 
-#: src/mainwindow.cpp:1800
+#: src/mainwindow.cpp:1807
 #, kde-format
 msgid "Software OpenGL"
 msgstr "软件 OpenGL"
 
-#: src/mainwindow.cpp:1810
+#: src/mainwindow.cpp:1817
 #, kde-format
 msgid "Run Config Wizard…"
 msgstr "运行配置向导…"
 
 #. i18n: file: src/ui/speechdialog_ui.ui
-#: src/mainwindow.cpp:1818 src/mainwindow.cpp:1850
+#: src/mainwindow.cpp:1825 src/mainwindow.cpp:1857
 #: src/dialogs/textbasededit.cpp:717 rc.cpp:11144
 #, kde-format
 msgid "Language"
 msgstr "语言"
 
-#: src/mainwindow.cpp:1823
+#: src/mainwindow.cpp:1830
 #, kde-format
 msgid "System language"
 msgstr "系统语言"
 
-#: src/mainwindow.cpp:1850
+#: src/mainwindow.cpp:1857
 #, kde-format
 msgid "The new language is used after Wunjo Make restarts."
 msgstr "新语言将在 Wunjo Make 重启后生效。"
 
-#: src/mainwindow.cpp:1851
+#: src/mainwindow.cpp:1858
 #, kde-format
 msgid "Restart Now"
 msgstr "立即重启"
 
-#: src/mainwindow.cpp:1852
+#: src/mainwindow.cpp:1859
 #, kde-format
 msgid "Later"
 msgstr "稍后"
 
-#: src/mainwindow.cpp:1863
+#: src/mainwindow.cpp:1870
 #, kde-format
 msgid "Project Settings…"
 msgstr "项目设置…"
 
-#: src/mainwindow.cpp:1869
+#: src/mainwindow.cpp:1876
 #, kde-format
 msgid "Stop Render"
 msgstr "停止导出"
 
-#: src/mainwindow.cpp:1872 src/bin/projectitemmodel.cpp:1222
+#: src/mainwindow.cpp:1879 src/bin/projectitemmodel.cpp:1222
 #, kde-format
 msgid "Remove Unused Media"
 msgstr "移除未使用的媒体"
 
-#: src/mainwindow.cpp:1874
+#: src/mainwindow.cpp:1881
 #, kde-format
 msgid "Reset Configuration…"
 msgstr "重置配置…"
 
-#: src/mainwindow.cpp:1879
+#: src/mainwindow.cpp:1886
 #, kde-format
 msgid "Play Zone From Cursor"
 msgstr "播放光标位置的区段"
 
-#: src/mainwindow.cpp:1882
+#: src/mainwindow.cpp:1889
 #, kde-format
 msgid "Play Zone"
 msgstr "播放区段"
 
-#: src/mainwindow.cpp:1884
+#: src/mainwindow.cpp:1891
 #, kde-format
 msgid "Loop Zone"
 msgstr "循环播放区段"
 
-#: src/mainwindow.cpp:1886
+#: src/mainwindow.cpp:1893
 #, kde-format
 msgid "Loop Selected Clip"
 msgstr "循环播放所选片段"
 
-#: src/mainwindow.cpp:1890
+#: src/mainwindow.cpp:1897
 #, kde-format
 msgid "Transcode Clips…"
 msgstr "转码片段…"
 
-#: src/mainwindow.cpp:1891
+#: src/mainwindow.cpp:1898
 #, kde-format
 msgid "OpenTimelineIO E&xport…"
 msgstr "OpenTimelineIO 导出(&X)…"
 
-#: src/mainwindow.cpp:1895
+#: src/mainwindow.cpp:1902
 #, kde-format
 msgid "OpenTimelineIO &Import…"
 msgstr "OpenTimelineIO 导入(&I)…"
 
-#: src/mainwindow.cpp:1900
+#: src/mainwindow.cpp:1907
 #, kde-format
 msgid "Archive Project…"
 msgstr "归档项目…"
 
-#: src/mainwindow.cpp:1902
+#: src/mainwindow.cpp:1909
 #, kde-format
 msgid "Switch Monitor"
 msgstr "切换监视器"
 
-#: src/mainwindow.cpp:1903
+#: src/mainwindow.cpp:1910
 #, kde-format
 msgid "Focus Timecode"
 msgstr "聚焦时间码"
 
-#: src/mainwindow.cpp:1904
+#: src/mainwindow.cpp:1911
 #, kde-format
 msgid "Expand Clip"
 msgstr "展开片段"
 
-#: src/mainwindow.cpp:1906
+#: src/mainwindow.cpp:1913
 #, kde-format
 msgid "Monitor Info Overlay"
 msgstr "监视器信息叠加"
 
-#: src/mainwindow.cpp:1911
+#: src/mainwindow.cpp:1918
 #, kde-format
 msgid "Monitor Overlay Timecode"
 msgstr "监视器叠加时间码"
 
-#: src/mainwindow.cpp:1916
+#: src/mainwindow.cpp:1923
 #, kde-format
 msgid "Monitor Overlay Playback Fps"
 msgstr "监视器叠加播放帧速率"
 
-#: src/mainwindow.cpp:1921
+#: src/mainwindow.cpp:1928
 #, kde-format
 msgid "Monitor Overlay Markers"
 msgstr "监视器叠加标记"
 
-#: src/mainwindow.cpp:1926
+#: src/mainwindow.cpp:1933
 #, kde-format
 msgid "Monitor Overlay Audio Waveform"
 msgstr "监视器叠加音频波形图"
 
-#: src/mainwindow.cpp:1931
+#: src/mainwindow.cpp:1938
 #, kde-format
 msgid "Monitor Overlay Clip Jobs"
 msgstr "监视器叠加片段任务"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:1945 rc.cpp:9222
+#: src/mainwindow.cpp:1952 rc.cpp:9222
 #, kde-format
 msgid "Preview Resolution"
 msgstr "预览分辨率"
 
-#: src/mainwindow.cpp:1949
+#: src/mainwindow.cpp:1956
 #, kde-format
 msgid "Full Resolution (1:1)"
 msgstr "完整分辨率 (1:1)"
 
-#: src/mainwindow.cpp:1953 src/monitor/monitor.cpp:245
+#: src/mainwindow.cpp:1960 src/monitor/monitor.cpp:245
 #, kde-format
 msgid "1080p"
 msgstr "1080p"
 
-#: src/mainwindow.cpp:1957 src/monitor/monitor.cpp:245
+#: src/mainwindow.cpp:1964 src/monitor/monitor.cpp:245
 #, kde-format
 msgid "720p"
 msgstr "720p"
 
-#: src/mainwindow.cpp:1961 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1968 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "540p"
 msgstr "540p"
 
-#: src/mainwindow.cpp:1965 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1972 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "360p"
 msgstr "360p"
 
-#: src/mainwindow.cpp:1969 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1976 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "270p"
 msgstr "270p"
 
-#: src/mainwindow.cpp:2003
+#: src/mainwindow.cpp:2010
 #, kde-format
 msgid "Real Time (drop frames)"
 msgstr "实时 (跳帧)"
 
-#: src/mainwindow.cpp:2009
+#: src/mainwindow.cpp:2016
 #, kde-format
 msgid "Insert Zone in Project Bin"
 msgstr "插入区段到项目素材箱"
 
-#: src/mainwindow.cpp:2011
+#: src/mainwindow.cpp:2018
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Creates a new clip in the project bin from the defined zone."
 msgstr "基于指定区段在项目素材箱中创建一个新的片段。"
 
-#: src/mainwindow.cpp:2014
+#: src/mainwindow.cpp:2021
 #, kde-format
 msgid "Go to Previous Snap Point"
 msgstr "跳转到上一个吸附点"
 
-#: src/mainwindow.cpp:2016
+#: src/mainwindow.cpp:2023
 #, kde-format
 msgid "Go to Next Snap Point"
 msgstr "跳转到下一个吸附点"
 
-#: src/mainwindow.cpp:2019
+#: src/mainwindow.cpp:2026
 #, kde-format
 msgid "Go to Clip Start"
 msgstr "跳转到片段开头"
 
-#: src/mainwindow.cpp:2021
+#: src/mainwindow.cpp:2028
 #, kde-format
 msgid "Go to Clip End"
 msgstr "跳转到片段结尾"
 
-#: src/mainwindow.cpp:2023
+#: src/mainwindow.cpp:2030
 #, kde-format
 msgid "Go to Previous Marker"
 msgstr "切换到上一个标记"
 
-#: src/mainwindow.cpp:2025
+#: src/mainwindow.cpp:2032
 #, kde-format
 msgid "Go to Next Marker"
 msgstr "切换到下一个标记"
 
-#: src/mainwindow.cpp:2027
+#: src/mainwindow.cpp:2034
 #, kde-format
 msgid "Align Playhead to Mouse Position"
 msgstr "对齐播放头到鼠标位置"
 
-#: src/mainwindow.cpp:2030
+#: src/mainwindow.cpp:2037
 #, kde-format
 msgid "Grab Current Item"
 msgstr "捕获当前项目"
 
-#: src/mainwindow.cpp:2033
+#: src/mainwindow.cpp:2040
 #, kde-format
 msgid "Overwrite Clip Zone in Timeline"
 msgstr "覆盖时间轴中的片段区段"
 
-#: src/mainwindow.cpp:2035
+#: src/mainwindow.cpp:2042
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1603,12 +1603,12 @@ msgstr ""
 "点击时，当前在项目素材箱中选中的片段的区段将被插入到活动时间轴中的播放头位"
 "置。位于插入位置的原有片段将被剪切并覆盖。"
 
-#: src/mainwindow.cpp:2037
+#: src/mainwindow.cpp:2044
 #, kde-format
 msgid "Insert Clip Zone in Timeline"
 msgstr "插入片段区段到时间轴"
 
-#: src/mainwindow.cpp:2039
+#: src/mainwindow.cpp:2046
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1619,12 +1619,12 @@ msgstr ""
 "点击时，当前在项目素材箱中选中的片段的区段将被插入到活动时间轴中的播放头位"
 "置。位于插入位置的原有片段将被剪切并移动到右侧。"
 
-#: src/mainwindow.cpp:2041
+#: src/mainwindow.cpp:2048
 #, kde-format
 msgid "Extract Timeline Zone"
 msgstr "提取时间轴区段 (移除前拉)"
 
-#: src/mainwindow.cpp:2043
+#: src/mainwindow.cpp:2050
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1632,12 +1632,12 @@ msgid ""
 "are shifted left."
 msgstr "点击可从时间轴中删除时间轴区段。所有位于它右侧的片段会被左移。"
 
-#: src/mainwindow.cpp:2044
+#: src/mainwindow.cpp:2051
 #, kde-format
 msgid "Lift Timeline Zone"
 msgstr "提升时间轴区段 (移除)"
 
-#: src/mainwindow.cpp:2046
+#: src/mainwindow.cpp:2053
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1645,24 +1645,24 @@ msgid ""
 "stay in position."
 msgstr "点击可从时间轴中删除时间轴区段。所有位于它右侧的片段将原地不动。"
 
-#: src/mainwindow.cpp:2047
+#: src/mainwindow.cpp:2054
 #, kde-format
 msgid "Add Preview Zone"
 msgstr "添加预览区段"
 
-#: src/mainwindow.cpp:2049
+#: src/mainwindow.cpp:2056
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Add the currently defined timeline/selection zone as a preview render zone"
 msgstr "将当前指定的时间轴/所选区段添加为一个预览渲染区段。"
 
-#: src/mainwindow.cpp:2050 src/timeline2/view/previewmanager.cpp:577
+#: src/mainwindow.cpp:2057 src/timeline2/view/previewmanager.cpp:577
 #, kde-format
 msgid "Remove Preview Zone"
 msgstr "移除预览区域"
 
-#: src/mainwindow.cpp:2054
+#: src/mainwindow.cpp:2061
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1672,23 +1672,23 @@ msgstr ""
 "从预览渲染区段中移除当前指定的时间轴/所选区段。请注意：这可能会在导出预览区段"
 "中留下空档。"
 
-#: src/mainwindow.cpp:2055 src/timeline2/view/previewmanager.cpp:503
+#: src/mainwindow.cpp:2062 src/timeline2/view/previewmanager.cpp:503
 #, kde-format
 msgid "Remove All Preview Zones"
 msgstr "移除所有预览区域"
 
-#: src/mainwindow.cpp:2057
+#: src/mainwindow.cpp:2064
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Remove all preview render zones."
 msgstr "移除所有预览渲染区段。"
 
-#: src/mainwindow.cpp:2058
+#: src/mainwindow.cpp:2065
 #, kde-format
 msgid "Start Preview Render"
 msgstr "开始预览导出"
 
-#: src/mainwindow.cpp:2061
+#: src/mainwindow.cpp:2068
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1699,248 +1699,248 @@ msgstr ""
 "点击开始渲染所有预览区段 (推荐用于包含复杂、大量效果的区段)。<nl/>点击下箭头"
 "图标可以显示选项列表 (例如：添加预览渲染区段、移除所有区段等)。"
 
-#: src/mainwindow.cpp:2063
+#: src/mainwindow.cpp:2070
 #, kde-format
 msgid "Stop Preview Render"
 msgstr "停止预览导出"
 
-#: src/mainwindow.cpp:2066
+#: src/mainwindow.cpp:2073
 #, kde-format
 msgid "Adjust Timeline Zone to Selection"
 msgstr "将时间轴区段调整到选中区域"
 
-#: src/mainwindow.cpp:2068
+#: src/mainwindow.cpp:2075
 #, kde-format
 msgid "Select Clip"
 msgstr "选择片段"
 
-#: src/mainwindow.cpp:2070
+#: src/mainwindow.cpp:2077
 #, kde-format
 msgid "Deselect Clip"
 msgstr "取消选择片段"
 
-#: src/mainwindow.cpp:2072
+#: src/mainwindow.cpp:2079
 #, kde-format
 msgid "Add Clip to Selection"
 msgstr "添加片段到所选范围"
 
-#: src/mainwindow.cpp:2074
+#: src/mainwindow.cpp:2081
 #, kde-format
 msgid "Select Transition"
 msgstr "选择转场"
 
-#: src/mainwindow.cpp:2076
+#: src/mainwindow.cpp:2083
 #, kde-format
 msgid "Deselect Transition"
 msgstr "取消选择转场"
 
-#: src/mainwindow.cpp:2078
+#: src/mainwindow.cpp:2085
 #, kde-format
 msgid "Add Transition to Selection"
 msgstr "添加转场到所选范围"
 
-#: src/mainwindow.cpp:2081
+#: src/mainwindow.cpp:2088
 #, kde-format
 msgid "Delete All Markers"
 msgstr "删除所有标记"
 
-#: src/mainwindow.cpp:2083
+#: src/mainwindow.cpp:2090
 #, kde-format
 msgid "Add Marker Quickly"
 msgstr "快速添加标记"
 
-#: src/mainwindow.cpp:2087
+#: src/mainwindow.cpp:2094
 #, kde-format
 msgid "Add Marker Category 1"
 msgstr "添加标记类别 1"
 
-#: src/mainwindow.cpp:2091
+#: src/mainwindow.cpp:2098
 #, kde-format
 msgid "Add Marker Category 2"
 msgstr "添加标记类别 2"
 
-#: src/mainwindow.cpp:2095
+#: src/mainwindow.cpp:2102
 #, kde-format
 msgid "Add Marker Category 3"
 msgstr "添加标记类别 3"
 
-#: src/mainwindow.cpp:2099
+#: src/mainwindow.cpp:2106
 #, kde-format
 msgid "Add Marker Category 4"
 msgstr "添加标记类别 4"
 
-#: src/mainwindow.cpp:2103
+#: src/mainwindow.cpp:2110
 #, kde-format
 msgid "Add Marker Category 5"
 msgstr "添加标记类别 5"
 
-#: src/mainwindow.cpp:2107
+#: src/mainwindow.cpp:2114
 #, kde-format
 msgid "Add Marker Category 6"
 msgstr "添加标记类别 6"
 
-#: src/mainwindow.cpp:2111
+#: src/mainwindow.cpp:2118
 #, kde-format
 msgid "Add Marker Category 7"
 msgstr "添加标记类别 7"
 
-#: src/mainwindow.cpp:2115
+#: src/mainwindow.cpp:2122
 #, kde-format
 msgid "Add Marker Category 8"
 msgstr "添加标记类别 8"
 
-#: src/mainwindow.cpp:2119
+#: src/mainwindow.cpp:2126
 #, kde-format
 msgid "Add Marker Category 9"
 msgstr "添加标记类别 9"
 
-#: src/mainwindow.cpp:2123
+#: src/mainwindow.cpp:2130
 #, kde-format
 msgid "Add Marker Category 10"
 msgstr "添加标记类别 10"
 
-#: src/mainwindow.cpp:2128
+#: src/mainwindow.cpp:2135
 #, kde-format
 msgid "Current Selection"
 msgstr "当前选择范围"
 
-#: src/mainwindow.cpp:2130
+#: src/mainwindow.cpp:2137
 #, kde-format
 msgid "Add Marker"
 msgstr "添加标记"
 
-#: src/mainwindow.cpp:2134
+#: src/mainwindow.cpp:2141
 #, kde-format
 msgid "Delete Marker"
 msgstr "删除标记"
 
-#: src/mainwindow.cpp:2138
+#: src/mainwindow.cpp:2145
 #, kde-format
 msgid "Edit Marker…"
 msgstr "编辑标记…"
 
-#: src/mainwindow.cpp:2143 src/timeline2/model/timelinefunctions.cpp:1273
+#: src/mainwindow.cpp:2150 src/timeline2/model/timelinefunctions.cpp:1273
 #, kde-format
 msgid "Restore Audio"
 msgstr "还原音频"
 
-#: src/mainwindow.cpp:2149
+#: src/mainwindow.cpp:2156
 #, kde-format
 msgid "Extract Clip"
 msgstr "移除片段并闭合间隙"
 
-#: src/mainwindow.cpp:2155
+#: src/mainwindow.cpp:2162
 #, kde-format
 msgid "Save Clip Part to Bin"
 msgstr "保存片段部分到素材箱"
 
-#: src/mainwindow.cpp:2160
+#: src/mainwindow.cpp:2167
 #, kde-format
 msgid "Disable Clip"
 msgstr "禁用片段"
 
-#: src/mainwindow.cpp:2166
+#: src/mainwindow.cpp:2173
 #, kde-format
 msgid "Set Audio Reference"
 msgstr "设置音频辅助线"
 
-#: src/mainwindow.cpp:2173
+#: src/mainwindow.cpp:2180
 #, kde-format
 msgid "Align Audio to Reference"
 msgstr "对齐音频到辅助线"
 
-#: src/mainwindow.cpp:2179
+#: src/mainwindow.cpp:2186
 #, kde-format
 msgid "Set Timecode Reference"
 msgstr "设置时间码基准点"
 
-#: src/mainwindow.cpp:2182
+#: src/mainwindow.cpp:2189
 #, kde-format
 msgid "Align Timecode to Reference"
 msgstr "对齐时间码到时间码基准点"
 
-#: src/mainwindow.cpp:2186
+#: src/mainwindow.cpp:2193
 #, kde-format
 msgid "Edit Duration"
 msgstr "编辑持续时间"
 
-#: src/mainwindow.cpp:2190
+#: src/mainwindow.cpp:2197
 #, kde-format
 msgid "Change Speed"
 msgstr "更改速度"
 
-#: src/mainwindow.cpp:2196
+#: src/mainwindow.cpp:2203
 #, kde-format
 msgid "Time Remap"
 msgstr "时间重新映射"
 
-#: src/mainwindow.cpp:2203
+#: src/mainwindow.cpp:2210
 #, kde-format
 msgid "Clip in Project Bin"
 msgstr "项目素材箱中的片段"
 
-#: src/mainwindow.cpp:2208
+#: src/mainwindow.cpp:2215
 #, kde-format
 msgid "Search Bin Clip…"
 msgstr "搜索素材箱片段…"
 
 #. i18n: file: src/ui/cutjobdialog_ui.ui
-#: src/mainwindow.cpp:2210 rc.cpp:10054
+#: src/mainwindow.cpp:2217 rc.cpp:10054
 #, kde-format
 msgid "Cut Clip"
 msgstr "分割片段"
 
-#: src/mainwindow.cpp:2213
+#: src/mainwindow.cpp:2220
 #, kde-format
 msgid "Replace with Bin Selection"
 msgstr "替换为素材箱中选中的项目"
 
-#: src/mainwindow.cpp:2217
+#: src/mainwindow.cpp:2224
 #, kde-format
 msgid "Cut All Clips"
 msgstr "分割所有片段"
 
-#: src/mainwindow.cpp:2220
+#: src/mainwindow.cpp:2227
 #, kde-format
 msgid "Delete Selected Item"
 msgstr "删除所选项目"
 
-#: src/mainwindow.cpp:2223
+#: src/mainwindow.cpp:2230
 #, kde-format
 msgid "Resize Item Start"
 msgstr "调整项目开头"
 
-#: src/mainwindow.cpp:2227
+#: src/mainwindow.cpp:2234
 #, kde-format
 msgid "Resize Item End"
 msgstr "调整项目结尾"
 
-#: src/mainwindow.cpp:2231
+#: src/mainwindow.cpp:2238
 #, kde-format
 msgid "Paste Effects"
 msgstr "粘贴效果"
 
-#: src/mainwindow.cpp:2237
+#: src/mainwindow.cpp:2244
 #, kde-format
 msgid "Remove Effects"
 msgstr "移除特效"
 
-#: src/mainwindow.cpp:2244
+#: src/mainwindow.cpp:2251
 #, kde-format
 msgid "Group Clips"
 msgstr "创建片段组合"
 
-#: src/mainwindow.cpp:2250
+#: src/mainwindow.cpp:2257
 #, kde-format
 msgid "Ungroup Clips"
 msgstr "取消片段组合"
 
-#: src/mainwindow.cpp:2256
+#: src/mainwindow.cpp:2263
 #, kde-format
 msgid "Create Sequence from Selection"
 msgstr "使用选中内容创建序列"
 
-#: src/mainwindow.cpp:2259
+#: src/mainwindow.cpp:2266
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1950,12 +1950,12 @@ msgstr ""
 "将当前在时间轴中选中的片段添加到一个可以在另一个时间轴标签页中打开的新的序列"
 "片段。"
 
-#: src/mainwindow.cpp:2263
+#: src/mainwindow.cpp:2270
 #, kde-format
 msgid "Copy Selection to New Sequence"
 msgstr "复制选区至新序列"
 
-#: src/mainwindow.cpp:2266
+#: src/mainwindow.cpp:2273
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1965,152 +1965,152 @@ msgstr ""
 "将当前在时间轴中选中的片段复制到一个可以在另一个时间轴标签页中打开的新的序列"
 "片段。"
 
-#: src/mainwindow.cpp:2280
+#: src/mainwindow.cpp:2287
 #, kde-format
 msgid "Effect Keyframes"
 msgstr "效果关键帧"
 
-#: src/mainwindow.cpp:2281 src/monitor/view/EffectToolBar.qml:122
+#: src/mainwindow.cpp:2288 src/monitor/view/EffectToolBar.qml:122
 #, kde-format
 msgid "Add/Remove Keyframe"
 msgstr "添加/移除关键帧"
 
-#: src/mainwindow.cpp:2283 src/assets/view/widgets/keyframecontainer.cpp:160
+#: src/mainwindow.cpp:2290 src/assets/view/widgets/keyframecontainer.cpp:160
 #: src/dialogs/timeremap.cpp:1603
 #, kde-format
 msgid "Go to next keyframe"
 msgstr "跳转到下一关键帧"
 
-#: src/mainwindow.cpp:2285 src/assets/view/widgets/keyframecontainer.cpp:156
+#: src/mainwindow.cpp:2292 src/assets/view/widgets/keyframecontainer.cpp:156
 #: src/dialogs/timeremap.cpp:1606
 #, kde-format
 msgid "Go to previous keyframe"
 msgstr "跳转到上一关键帧"
 
-#: src/mainwindow.cpp:2290
+#: src/mainwindow.cpp:2297
 #, kde-format
 msgid "Insert Space…"
 msgstr "插入空白区域…"
 
-#: src/mainwindow.cpp:2291
+#: src/mainwindow.cpp:2298
 #, kde-format
 msgid "Remove Space"
 msgstr "移除空白区域"
 
-#: src/mainwindow.cpp:2292
+#: src/mainwindow.cpp:2299
 #, kde-format
 msgid "Remove All Spaces After Cursor"
 msgstr "移除光标后方的所有空白区域"
 
-#: src/mainwindow.cpp:2293
+#: src/mainwindow.cpp:2300
 #, kde-format
 msgid "Remove All Clips After Cursor"
 msgstr "移除光标后方的所有片段"
 
-#: src/mainwindow.cpp:2294
+#: src/mainwindow.cpp:2301
 #, kde-format
 msgid "Remove Space in All Tracks"
 msgstr "移除所有轨道中的空白区域"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/configtimeline_ui.ui
-#: src/mainwindow.cpp:2296 rc.cpp:9206 rc.cpp:9988
+#: src/mainwindow.cpp:2303 rc.cpp:9206 rc.cpp:9988
 #, kde-format
 msgid "Tracks"
 msgstr "轨道"
 
-#: src/mainwindow.cpp:2297
+#: src/mainwindow.cpp:2304
 #, kde-format
 msgctxt "@action"
 msgid "Insert Track…"
 msgstr "插入轨道…"
 
-#: src/mainwindow.cpp:2301
+#: src/mainwindow.cpp:2308
 #, kde-format
 msgid "Fit all Tracks in View"
 msgstr "视图缩放至适合所有轨道"
 
-#: src/mainwindow.cpp:2307 src/timeline2/view/timelinecontroller.cpp:5590
+#: src/mainwindow.cpp:2314 src/timeline2/view/timelinecontroller.cpp:5590
 #, kde-format
 msgid "Sequence effects"
 msgstr "序列效果"
 
-#: src/mainwindow.cpp:2314
+#: src/mainwindow.cpp:2321
 #, kde-format
 msgid "Switch Track Target Audio Stream"
 msgstr "切换轨道目标音频流"
 
-#: src/mainwindow.cpp:2319
+#: src/mainwindow.cpp:2326
 #, kde-format
 msgid "Delete Track…"
 msgstr "删除轨道…"
 
-#: src/mainwindow.cpp:2324
+#: src/mainwindow.cpp:2331
 #, kde-format
 msgid "Move Track Up"
 msgstr "上移轨道"
 
-#: src/mainwindow.cpp:2328
+#: src/mainwindow.cpp:2335
 #, kde-format
 msgid "Move Track Down"
 msgstr "下移轨道"
 
-#: src/mainwindow.cpp:2332
+#: src/mainwindow.cpp:2339
 #, kde-format
 msgid "Show Record Controls"
 msgstr "显示录制控制选项"
 
-#: src/mainwindow.cpp:2338
+#: src/mainwindow.cpp:2345
 #, kde-format
 msgid "Select All in Current Track"
 msgstr "全部选择当前轨道"
 
-#: src/mainwindow.cpp:2355
+#: src/mainwindow.cpp:2362
 #, kde-format
 msgid "Manage Cached Data…"
 msgstr "管理缓存数据…"
 
-#: src/mainwindow.cpp:2358
+#: src/mainwindow.cpp:2365
 #, kde-format
 msgid "Disable Timeline Preview"
 msgstr "禁用时间轴预览"
 
-#: src/mainwindow.cpp:2362
+#: src/mainwindow.cpp:2369
 #, kde-format
 msgid "Add/Remove Timeline Marker"
 msgstr "添加/删除时间轴标记"
 
-#: src/mainwindow.cpp:2364
+#: src/mainwindow.cpp:2371
 #, kde-format
 msgid "Delete Timeline Marker"
 msgstr "删除时间线标记"
 
-#: src/mainwindow.cpp:2366
+#: src/mainwindow.cpp:2373
 #, kde-format
 msgid "Delete All Timeline Markers"
 msgstr "删除所有时间轴标记"
 
-#: src/mainwindow.cpp:2370
+#: src/mainwindow.cpp:2377
 #, kde-format
 msgid "Edit Timeline Marker…"
 msgstr "编辑时间线标记..."
 
-#: src/mainwindow.cpp:2373
+#: src/mainwindow.cpp:2380
 #, kde-format
 msgid "Export Markers…"
 msgstr "导出标记..."
 
-#: src/mainwindow.cpp:2374
+#: src/mainwindow.cpp:2381
 #, kde-format
 msgid "Search Marker…"
 msgstr "搜索标记..."
 
-#: src/mainwindow.cpp:2377 src/mainwindow.cpp:2380
+#: src/mainwindow.cpp:2384 src/mainwindow.cpp:2387
 #, kde-format
 msgid "Lock Timeline Markers"
 msgstr "锁定时间线标记"
 
-#: src/mainwindow.cpp:2382
+#: src/mainwindow.cpp:2389
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2120,57 +2120,57 @@ msgstr ""
 "锁定标记。标记被锁定后，使用间隔工具或者插入/移除轨道中的空白帧时，辅助线将不"
 "会移动。"
 
-#: src/mainwindow.cpp:2384
+#: src/mainwindow.cpp:2391
 #, kde-format
 msgid "Add Subtitle"
 msgstr "添加字幕"
 
-#: src/mainwindow.cpp:2386
+#: src/mainwindow.cpp:2393
 #, kde-format
 msgid "Disable Subtitle"
 msgstr "禁用字幕"
 
-#: src/mainwindow.cpp:2387
+#: src/mainwindow.cpp:2394
 #, kde-format
 msgid "Lock Subtitle"
 msgstr "锁定字幕"
 
-#: src/mainwindow.cpp:2389
+#: src/mainwindow.cpp:2396
 #, kde-format
 msgid "Manage Subtitles"
 msgstr "管理字幕"
 
-#: src/mainwindow.cpp:2391
+#: src/mainwindow.cpp:2398
 #, kde-format
 msgid "Import Subtitle File…"
 msgstr "导入字幕文件…"
 
-#: src/mainwindow.cpp:2393
+#: src/mainwindow.cpp:2400
 #, kde-format
 msgid "Export Subtitle File…"
 msgstr "导出字幕文件…"
 
-#: src/mainwindow.cpp:2395 src/timeline2/model/timelinemodel.cpp:2626
+#: src/mainwindow.cpp:2402 src/timeline2/model/timelinemodel.cpp:2626
 #, kde-format
 msgid "Delete Subtitle"
 msgstr "删除字幕"
 
-#: src/mainwindow.cpp:2396
+#: src/mainwindow.cpp:2403
 #, kde-format
 msgid "Speech Recognition…"
 msgstr "语音识别…"
 
-#: src/mainwindow.cpp:2401
+#: src/mainwindow.cpp:2408
 #, kde-format
 msgid "Object Mask (select && track objects)"
 msgstr "对象蒙版 (选择 && 跟踪对象)"
 
-#: src/mainwindow.cpp:2416
+#: src/mainwindow.cpp:2423
 #, kde-format
 msgid "Detect Faces"
 msgstr "检测人脸"
 
-#: src/mainwindow.cpp:2450
+#: src/mainwindow.cpp:2457
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2180,123 +2180,123 @@ msgstr ""
 "这将在显示单独的 <emphasis>菜单栏</emphasis> 和在主工具栏显示 <interface>汉堡"
 "菜单</interface> 按钮之间切换。"
 
-#: src/mainwindow.cpp:2481
+#: src/mainwindow.cpp:2488
 #, kde-format
 msgid "Copy Debug Information"
 msgstr "复制调试信息"
 
-#: src/mainwindow.cpp:2483
+#: src/mainwindow.cpp:2490
 #, kde-format
 msgid "Disable Timeline Effects"
 msgstr "禁用时间轴效果"
 
-#: src/mainwindow.cpp:2505
+#: src/mainwindow.cpp:2512
 #, kde-format
 msgid "Track menu"
 msgstr "轨道菜单"
 
-#: src/mainwindow.cpp:2509
+#: src/mainwindow.cpp:2516
 #, kde-format
 msgid "Toggle Track Disabled"
 msgstr "启用/禁用轨道"
 
-#: src/mainwindow.cpp:2511
+#: src/mainwindow.cpp:2518
 #, kde-format
 msgid "Toggle All Tracks Disabled"
 msgstr "禁用全部轨道"
 
-#: src/mainwindow.cpp:2513
+#: src/mainwindow.cpp:2520
 #, kde-format
 msgid "Toggle Track Lock"
 msgstr "锁定/解锁轨道"
 
-#: src/mainwindow.cpp:2515
+#: src/mainwindow.cpp:2522
 #, kde-format
 msgid "Toggle All Tracks Lock"
 msgstr "锁定所有轨道"
 
-#: src/mainwindow.cpp:2517
+#: src/mainwindow.cpp:2524
 #, kde-format
 msgid "Toggle Track Target"
 msgstr "切换轨道目标"
 
-#: src/mainwindow.cpp:2519
+#: src/mainwindow.cpp:2526
 #, kde-format
 msgid "Toggle Track Active"
 msgstr "切换轨道活动状态"
 
-#: src/mainwindow.cpp:2521
+#: src/mainwindow.cpp:2528
 #, kde-format
 msgid "Toggle All Tracks Active"
 msgstr "切换所有轨道活动状态"
 
-#: src/mainwindow.cpp:2523
+#: src/mainwindow.cpp:2530
 #, kde-format
 msgid "Switch All Tracks Active"
 msgstr "切换所有轨道活动状态"
 
-#: src/mainwindow.cpp:2525
+#: src/mainwindow.cpp:2532
 #, kde-format
 msgid "Restore Current Clip Target Tracks"
 msgstr "恢复当前片段目标轨道"
 
-#: src/mainwindow.cpp:2527
+#: src/mainwindow.cpp:2534
 #, kde-format
 msgid "Add Project Note"
 msgstr "添加项目注释"
 
-#: src/mainwindow.cpp:2533
+#: src/mainwindow.cpp:2540
 #, kde-format
 msgid "Select Audio Track %1"
 msgstr "选择音频轨道 %1"
 
-#: src/mainwindow.cpp:2537
+#: src/mainwindow.cpp:2544
 #, kde-format
 msgid "Select Video Track %1"
 msgstr "选择视频轨道 %1"
 
-#: src/mainwindow.cpp:2541
+#: src/mainwindow.cpp:2548
 #, kde-format
 msgid "Select Target %1"
 msgstr "选择目标 %1"
 
-#: src/mainwindow.cpp:2558
+#: src/mainwindow.cpp:2565
 #, kde-format
 msgid "Extract Frame…"
 msgstr "提取帧…"
 
-#: src/mainwindow.cpp:2561
+#: src/mainwindow.cpp:2568
 #, kde-format
 msgid "Extract Frame to Project…"
 msgstr "提取帧到项目…"
 
-#: src/mainwindow.cpp:2564
+#: src/mainwindow.cpp:2571
 #, kde-format
 msgid "Extract Frame to Clipboard"
 msgstr "将帧提取到剪贴板"
 
-#: src/mainwindow.cpp:2699
+#: src/mainwindow.cpp:2706
 #, kde-format
 msgid ""
 "You have changed the proxy parameters. Do you want to recreate all proxy "
 "clips for this project?"
 msgstr "您更改了代理片段参数。您想要为此项目重建所有代理片段吗？"
 
-#: src/mainwindow.cpp:2700
+#: src/mainwindow.cpp:2707
 #, kde-format
 msgctxt "@action:button"
 msgid "Recreate"
 msgstr "重建"
 
-#: src/mainwindow.cpp:2701 src/titler/titlewidget.cpp:2333
-#: src/onlineresources/resourcewidget.cpp:908
+#: src/mainwindow.cpp:2708 src/titler/titlewidget.cpp:2333
+#: src/onlineresources/resourcewidget.cpp:942
 #: src/scopes/colorscopes/colorplaneexport.cpp:157
 #, kde-format
 msgctxt "@action:button"
 msgid "Continue without"
 msgstr "继续，不重建"
 
-#: src/mainwindow.cpp:2757
+#: src/mainwindow.cpp:2764
 #, kde-format
 msgid ""
 "The current project has not been saved.<br/>This will first save the "
@@ -2306,7 +2306,7 @@ msgstr ""
 "当前项目尚未保存。<br/>此操作将首先保存项目，然后将所有临时文件从 <br/"
 "><b>%1</b> 移动到 <b>%2</b>，<br>最后重新加载项目文件。"
 
-#: src/mainwindow.cpp:2765
+#: src/mainwindow.cpp:2772
 #, kde-format
 msgid ""
 "This will move all temporary files from<br/><b>%1</b> to <b>%2</b>,<br/>the "
@@ -2315,71 +2315,71 @@ msgstr ""
 "此操作会将所有临时文件从 <br/><b>%1</b> 移动到 <b>%2</b>，<br/>然后重新加载项"
 "目文件。"
 
-#: src/mainwindow.cpp:2774 src/project/projectmanager.cpp:614
+#: src/mainwindow.cpp:2781 src/project/projectmanager.cpp:614
 #, kde-format
 msgid "Cannot perform operation, invalid document id: %1"
 msgstr "无法执行操作，无效文档 ID：%1"
 
-#: src/mainwindow.cpp:2779 src/project/projectmanager.cpp:620
+#: src/mainwindow.cpp:2786 src/project/projectmanager.cpp:620
 #, kde-format
 msgid "Cannot perform operation, target directory already exists: %1"
 msgstr "无法执行操作，目标目录已经存在：%1"
 
-#: src/mainwindow.cpp:2927
+#: src/mainwindow.cpp:2934
 #, kde-format
 msgid "This will remove all unused clips from your project."
 msgstr "此操作将移除项目中所有未使用片段。"
 
-#: src/mainwindow.cpp:2927
+#: src/mainwindow.cpp:2934
 #, kde-format
 msgid "Clean up project"
 msgstr "清理项目"
 
-#: src/mainwindow.cpp:3058
+#: src/mainwindow.cpp:3065
 #, kde-format
 msgid "Download New Keyboard Schemes…"
 msgstr "下载新的快捷键方案…"
 
-#: src/mainwindow.cpp:3102
+#: src/mainwindow.cpp:3109
 #, kde-format
 msgctxt "general keyboard shortcuts"
 msgid "General"
 msgstr "常规"
 
-#: src/mainwindow.cpp:3183
+#: src/mainwindow.cpp:3190
 #, kde-format
 msgid ""
 "This will delete Wunjo's configuration file and restart the application. Do "
 "you want to proceed?"
 msgstr "此操作将删除 Wunjo 的配置文件并重新启动应用程序。您想要继续吗？"
 
-#: src/mainwindow.cpp:3184
+#: src/mainwindow.cpp:3191
 #, kde-format
 msgctxt "@title:window"
 msgid "Reset Configuration"
 msgstr "重置配置"
 
-#: src/mainwindow.cpp:3313 src/bin/bin.cpp:5890
+#: src/mainwindow.cpp:3320 src/bin/bin.cpp:5890
 #, kde-format
 msgid "Cannot find clip to add marker"
 msgstr "无法找到要添加标记的片段"
 
-#: src/mainwindow.cpp:3331 src/mainwindow.cpp:3358
+#: src/mainwindow.cpp:3338 src/mainwindow.cpp:3365
 #, kde-format
 msgid "Cannot find clip to remove marker"
 msgstr "无法找到要移除标记的片段"
 
-#: src/mainwindow.cpp:3341 src/mainwindow.cpp:3397
+#: src/mainwindow.cpp:3348 src/mainwindow.cpp:3404
 #, kde-format
 msgid "No marker found at cursor time"
 msgstr "光标时间上找不到标记"
 
-#: src/mainwindow.cpp:3363 src/mainwindow.cpp:3373
+#: src/mainwindow.cpp:3370 src/mainwindow.cpp:3380
 #, kde-format
 msgid "An error occurred while deleting markers"
 msgstr "删除标记时出错"
 
-#: src/mainwindow.cpp:3390 src/timeline2/view/timelinecontroller.cpp:1413
+#: src/mainwindow.cpp:3397 src/timeline2/view/timelinecontroller.cpp:1413
 #: src/timeline2/view/timelinecontroller.cpp:1421
 #: src/timeline2/view/timelinecontroller.cpp:1442
 #: src/timeline2/view/timelinecontroller.cpp:1482
@@ -2389,46 +2389,46 @@ msgstr "删除标记时出错"
 msgid "Cannot find clip to edit marker"
 msgstr "无法找到要编辑标记的片段"
 
-#: src/mainwindow.cpp:3442
+#: src/mainwindow.cpp:3449
 #, kde-format
 msgid "Marker category does not exist"
 msgstr "标记类别不存在"
 
-#: src/mainwindow.cpp:3657 src/timeline2/model/timelinefunctions.cpp:818
+#: src/mainwindow.cpp:3664 src/timeline2/model/timelinefunctions.cpp:818
 #: src/timeline2/view/timelinecontroller.cpp:3622
 #, kde-format
 msgid "Overwrite zone"
 msgstr "覆盖区段"
 
-#: src/mainwindow.cpp:3659 src/mainwindow.cpp:3678
+#: src/mainwindow.cpp:3666 src/mainwindow.cpp:3685
 #: src/timeline2/model/timelinefunctions.cpp:820
 #: src/timeline2/view/timelinecontroller.cpp:3624
 #, kde-format
 msgid "Could not insert zone"
 msgstr "无法插入区段"
 
-#: src/mainwindow.cpp:3669
+#: src/mainwindow.cpp:3676
 #, kde-format
 msgid "No clip selected in project bin"
 msgstr "项目素材箱中没有选中片段"
 
-#: src/mainwindow.cpp:3676 src/timeline2/model/timelinefunctions.cpp:818
+#: src/mainwindow.cpp:3683 src/timeline2/model/timelinefunctions.cpp:818
 #: src/timeline2/view/timelinecontroller.cpp:3622
 #, kde-format
 msgid "Insert zone"
 msgstr "插入区段"
 
-#: src/mainwindow.cpp:3843
+#: src/mainwindow.cpp:3850
 #, kde-format
 msgid "Cannot add effect to active item"
 msgstr "无法添加特效到活动项目"
 
-#: src/mainwindow.cpp:3905
+#: src/mainwindow.cpp:3912
 #, kde-format
 msgid "Zoom Level: %1/%2"
 msgstr "缩放级别：%1/%2"
 
-#: src/mainwindow.cpp:4059
+#: src/mainwindow.cpp:4066
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2440,7 +2440,7 @@ msgstr ""
 "shortcut>进行多选，<shortcut>Meta + 拖动</shortcut>移动分组片段到另一条轨道，"
 "<shortcut>Ctrl + 拖动</shortcut>平移视图"
 
-#: src/mainwindow.cpp:4063
+#: src/mainwindow.cpp:4070
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2453,24 +2453,24 @@ msgstr ""
 "shortcut>进行多选，<shortcut>Meta + Alt + 拖动</shortcut>移动分组片段到另一条"
 "轨道，<shortcut>Ctrl + 拖动</shortcut>平移视图"
 
-#: src/mainwindow.cpp:4066
+#: src/mainwindow.cpp:4073
 #, kde-format
 msgid "Select"
 msgstr "选择"
 
-#: src/mainwindow.cpp:4068
+#: src/mainwindow.cpp:4075
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "<shortcut>Shift</shortcut> to preview cut frame"
 msgstr "<shortcut>按住 Shift</shortcut> 预览剪切帧"
 
 #. i18n: file: src/ui/configtools_ui.ui
-#: src/mainwindow.cpp:4069 rc.cpp:9994
+#: src/mainwindow.cpp:4076 rc.cpp:9994
 #, kde-format
 msgid "Razor"
 msgstr "分割"
 
-#: src/mainwindow.cpp:4073
+#: src/mainwindow.cpp:4080
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2480,12 +2480,12 @@ msgstr ""
 "<shortcut>按住 Ctrl</shortcut> 仅应用到当前轨道，<shortcut>按住 Shift</"
 "shortcut> 同时移动辅助线。两个修饰键可以同时使用。"
 
-#: src/mainwindow.cpp:4074
+#: src/mainwindow.cpp:4081
 #, kde-format
 msgid "Spacer"
 msgstr "间隙"
 
-#: src/mainwindow.cpp:4076
+#: src/mainwindow.cpp:4083
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2495,13 +2495,13 @@ msgstr ""
 "<shortcut>点击</shortcut>项目进行滑动，<shortcut>Shift + 点击</shortcut>进行"
 "多选"
 
-#: src/mainwindow.cpp:4077
+#: src/mainwindow.cpp:4084
 #, kde-format
 msgctxt "Timeline Tool"
 msgid "Slip"
 msgstr "滑移"
 
-#: src/mainwindow.cpp:4082
+#: src/mainwindow.cpp:4089
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2513,13 +2513,13 @@ msgstr ""
 "shortcut>进行多选，<shortcut>Alt + 点击</shortcut>选择分组中的项目，"
 "<shortcut>Ctrl + 拖动</shortcut>平移视图"
 
-#: src/mainwindow.cpp:4084
+#: src/mainwindow.cpp:4091
 #, kde-format
 msgctxt "Timeline Tool"
 msgid "Ripple"
 msgstr "波纹编辑"
 
-#: src/mainwindow.cpp:4090
+#: src/mainwindow.cpp:4097
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2529,199 +2529,199 @@ msgstr ""
 "<shortcut>点击</shortcut>项目监视器中的一个轨道视图即可对活动轨道以外的轨道执"
 "行提升操作。"
 
-#: src/mainwindow.cpp:4106
+#: src/mainwindow.cpp:4113
 #, kde-format
 msgid "Insert"
 msgstr "插入"
 
-#: src/mainwindow.cpp:4108 src/doc/documentvalidator.cpp:2248
+#: src/mainwindow.cpp:4115 src/doc/documentvalidator.cpp:2248
 #, kde-format
 msgid "Overwrite"
 msgstr "覆盖"
 
-#: src/mainwindow.cpp:4383 src/mainwindow.cpp:4385
+#: src/mainwindow.cpp:4390 src/mainwindow.cpp:4392
 #, kde-format
 msgid "Scopes"
 msgstr "范围"
 
-#: src/mainwindow.cpp:4390
+#: src/mainwindow.cpp:4397
 #, kde-format
 msgid "Project Bins"
 msgstr "项目素材箱"
 
-#: src/mainwindow.cpp:4467
+#: src/mainwindow.cpp:4474
 #, kde-format
 msgid "Clip Jobs"
 msgstr "片段任务"
 
-#: src/mainwindow.cpp:4486
+#: src/mainwindow.cpp:4493
 #, kde-format
 msgid "Configure Clip Jobs…"
 msgstr "配置片段任务…"
 
-#: src/mainwindow.cpp:4492
+#: src/mainwindow.cpp:4499
 #, kde-format
 msgid "Transcoders"
 msgstr "转码器"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:4493 rc.cpp:9182
+#: src/mainwindow.cpp:4500 rc.cpp:9182
 #, kde-format
 msgid "Extract Audio"
 msgstr "提取音频"
 
-#: src/mainwindow.cpp:4559
+#: src/mainwindow.cpp:4566
 #, kde-format
 msgid "-merged"
 msgstr "-merged"
 
-#: src/mainwindow.cpp:4562
+#: src/mainwindow.cpp:4569
 #, kde-format
 msgid "-stream-%1"
 msgstr "-stream-%1"
 
-#: src/mainwindow.cpp:4595 src/mainwindow.cpp:4925
+#: src/mainwindow.cpp:4602 src/mainwindow.cpp:4932
 #, kde-format
 msgid "Interface"
 msgstr "接口"
 
-#: src/mainwindow.cpp:4666
+#: src/mainwindow.cpp:4673
 #, kde-format
 msgctxt "@title:window"
 msgid "Files to Transcode"
 msgstr "要转码的文件"
 
-#: src/mainwindow.cpp:4760
+#: src/mainwindow.cpp:4767
 #, kde-format
 msgid "Could not ask the system to shut down."
 msgstr "无法请求系统关机。"
 
-#: src/mainwindow.cpp:4832
+#: src/mainwindow.cpp:4839
 #, kde-format
 msgid "Project file could not be saved for archiving."
 msgstr "无法为压缩任务保存项目文件。"
 
-#: src/mainwindow.cpp:4840
+#: src/mainwindow.cpp:4847
 #, kde-format
 msgid "Archiving project"
 msgstr "正在压缩项目"
 
-#: src/mainwindow.cpp:4939
+#: src/mainwindow.cpp:4946
 #, kde-format
 msgid "Raise %1"
 msgstr "提升 %1"
 
-#: src/mainwindow.cpp:5000
+#: src/mainwindow.cpp:5007
 #, kde-format
 msgid "Icon Size"
 msgstr "图标大小"
 
-#: src/mainwindow.cpp:5004
+#: src/mainwindow.cpp:5011
 #, kde-format
 msgctxt "@item:inmenu Icon size"
 msgid "Default"
 msgstr "默认"
 
-#: src/mainwindow.cpp:5025 src/mainwindow.cpp:5053
+#: src/mainwindow.cpp:5032 src/mainwindow.cpp:5060
 #, kde-format
 msgid "Small (%1x%2)"
 msgstr "小 (%1x%2)"
 
-#: src/mainwindow.cpp:5027 src/mainwindow.cpp:5055
+#: src/mainwindow.cpp:5034 src/mainwindow.cpp:5062
 #, kde-format
 msgid "Medium (%1x%2)"
 msgstr "中 (%1x%2)"
 
-#: src/mainwindow.cpp:5029 src/mainwindow.cpp:5057
+#: src/mainwindow.cpp:5036 src/mainwindow.cpp:5064
 #, kde-format
 msgid "Large (%1x%2)"
 msgstr "大 (%1x%2)"
 
-#: src/mainwindow.cpp:5031 src/mainwindow.cpp:5059
+#: src/mainwindow.cpp:5038 src/mainwindow.cpp:5066
 #, kde-format
 msgid "Huge (%1x%2)"
 msgstr "特大 (%1x%2)"
 
-#: src/mainwindow.cpp:5115
+#: src/mainwindow.cpp:5122
 #, kde-format
 msgid ""
 "This will hide the menu bar completely. You can show it again by typing "
 "Ctrl+M."
 msgstr "这将完全隐藏菜单栏。按 Ctrl+M 可以重新显示。"
 
-#: src/mainwindow.cpp:5115
+#: src/mainwindow.cpp:5122
 #, kde-format
 msgid "Hide menu bar"
 msgstr "隐藏菜单栏"
 
-#: src/mainwindow.cpp:5457 src/timeline2/view/timelinecontroller.cpp:5821
+#: src/mainwindow.cpp:5464 src/timeline2/view/timelinecontroller.cpp:5821
 #, kde-format
 msgid "No subtitles in current project"
 msgstr "当前项目不含字幕"
 
-#: src/mainwindow.cpp:5619 src/bin/bin.cpp:6863 src/bin/bin.cpp:6866
+#: src/mainwindow.cpp:5626 src/bin/bin.cpp:6863 src/bin/bin.cpp:6866
 #, kde-format
 msgid "Project Bin %1"
 msgstr "项目素材箱 %1"
 
-#: src/mainwindow.cpp:5822
+#: src/mainwindow.cpp:5829
 #, kde-format
 msgid "Go to download page"
 msgstr "访问下载页面"
 
-#: src/mainwindow.cpp:5826
+#: src/mainwindow.cpp:5833
 #, kde-format
 msgid "Never check again"
 msgstr "不再检查"
 
-#: src/mainwindow.cpp:5828
+#: src/mainwindow.cpp:5835
 #, kde-format
 msgid "Wunjo Make %1 is available — you are running %2."
 msgstr "Wunjo Make %1 已发布 — 您当前运行的是 %2。"
 
-#: src/mainwindow.cpp:5869
+#: src/mainwindow.cpp:5876
 #, kde-format
 msgid "Checking cached data size"
 msgstr "检查缓存的数据大小"
 
-#: src/mainwindowscripting.cpp:546
+#: src/mainwindowscripting.cpp:549
 #, kde-format
 msgid "Create folder"
 msgstr "创建文件夹"
 
-#: src/mainwindowscripting.cpp:664
+#: src/mainwindowscripting.cpp:667
 #, kde-format
 msgid "Delete clip"
 msgstr "删除片段"
 
-#: src/mainwindowscripting.cpp:696 src/bin/bin.cpp:5212
+#: src/mainwindowscripting.cpp:699 src/bin/bin.cpp:5212
 #: src/dialogs/clipcreationdialog.cpp:347
 #, kde-format
 msgid "Title clip"
 msgstr "标题片段"
 
-#: src/mainwindowscripting.cpp:1107
+#: src/mainwindowscripting.cpp:1110
 #, kde-format
 msgid "Ripple delete"
 msgstr "波纹删除"
 
-#: src/mainwindowscripting.cpp:1152
+#: src/mainwindowscripting.cpp:1155
 #, kde-format
 msgid "Ripple trim"
 msgstr "波纹修剪"
 
-#: src/mainwindowscripting.cpp:1257
+#: src/mainwindowscripting.cpp:1260
 #, kde-format
 msgid "Add mix"
 msgstr "添加混合"
 
-#: src/mainwindowscripting.cpp:1645
+#: src/mainwindowscripting.cpp:1648
 #: src/timeline2/view/timelinecontroller.cpp:4327
 #, kde-format
 msgid "Paste effects"
 msgstr "粘贴效果"
 
-#: src/mainwindowscripting.cpp:2030
+#: src/mainwindowscripting.cpp:2033
 #: src/timeline2/model/timelinefunctions.cpp:1169
 #: src/timeline2/model/timelinefunctions.cpp:1173
 #: src/timeline2/model/timelinefunctions.cpp:1180
@@ -2730,7 +2730,7 @@ msgstr "粘贴效果"
 msgid "Enable clip"
 msgstr "启用片段"
 
-#: src/mainwindowscripting.cpp:2030
+#: src/mainwindowscripting.cpp:2033
 #: src/timeline2/model/timelinefunctions.cpp:1169
 #: src/timeline2/model/timelinefunctions.cpp:1173
 #: src/timeline2/model/timelinefunctions.cpp:1180
@@ -2739,50 +2739,50 @@ msgstr "启用片段"
 msgid "Disable clip"
 msgstr "禁用片段"
 
-#: src/mainwindowscripting.cpp:2933 src/bin/model/subtitlemodel.cpp:1634
+#: src/mainwindowscripting.cpp:2936 src/bin/model/subtitlemodel.cpp:1634
 #: src/dialogs/subtitleedit.cpp:284
 #, kde-format
 msgid "Add subtitle"
 msgstr "添加字幕"
 
-#: src/mainwindowscripting.cpp:3104 src/bin/clipcreator.cpp:174
+#: src/mainwindowscripting.cpp:3107 src/bin/clipcreator.cpp:174
 #: src/bin/clipcreator.cpp:270
 #, kde-format
 msgid "Create sequence"
 msgstr "创建序列"
 
-#: src/mainwindowscripting.cpp:3804
+#: src/mainwindowscripting.cpp:3966
 #, kde-format
 msgid "The object detection environment is not installed yet."
 msgstr "对象检测环境尚未安装。"
 
-#: src/mainwindowscripting.cpp:3810
+#: src/mainwindowscripting.cpp:3972
 #, kde-format
 msgid "Cannot access the project folder."
 msgstr "无法访问项目文件夹。"
 
-#: src/mainwindowscripting.cpp:3841
+#: src/mainwindowscripting.cpp:4003
 #: src/effects/effectstack/view/maskmanager.cpp:328
 #, kde-format
 msgid "Exporting video frames"
 msgstr "导出视频帧"
 
-#: src/mainwindowscripting.cpp:3877
+#: src/mainwindowscripting.cpp:4039
 #, kde-format
 msgid "Prepare the frames first with sam_prepare."
 msgstr "请先使用 sam_prepare 准备帧。"
 
-#: src/mainwindowscripting.cpp:3881
+#: src/mainwindowscripting.cpp:4043
 #, kde-format
 msgid "Say what to follow: at least one point or box on the first frame."
 msgstr "请指定要跟踪的对象：在第一帧上至少添加一个点或框。"
 
-#: src/mainwindowscripting.cpp:3890
+#: src/mainwindowscripting.cpp:4052
 #, kde-format
 msgid "The exported frames are gone — prepare again."
 msgstr "导出的帧已不存在 — 请重新准备。"
 
-#: src/mainwindowscripting.cpp:3896
+#: src/mainwindowscripting.cpp:4058
 #, kde-format
 msgid "mask"
 msgstr "蒙版"
@@ -5459,7 +5459,7 @@ msgstr "<b>Shift</b>以折叠/展开所有同类轨道 (音频/视频)"
 msgid "Minimize"
 msgstr "最小化"
 
-#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:1035
+#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:1109
 #, kde-format
 msgid "Expand"
 msgstr "展开"
@@ -5751,7 +5751,7 @@ msgstr "排序方式"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
 #: src/bin/bin.cpp:1449 src/bin/projectitemmodel.cpp:324
-#: src/chat/chatwidget.cpp:1257 rc.cpp:10522 rc.cpp:10554
+#: src/chat/chatwidget.cpp:1358 rc.cpp:10522 rc.cpp:10554
 #, kde-format
 msgid "Name"
 msgstr "名称"
@@ -5779,7 +5779,7 @@ msgstr "描述"
 #. i18n: file: data/effects/avfilter/avfilter_noise.xml
 #. i18n: file: data/effects/avfilter/avfilter_sofalizer.xml
 #: src/bin/bin.cpp:1461 src/bin/projectitemmodel.cpp:333
-#: src/plugins/pluginmanifest.cpp:766 rc.cpp:3288 rc.cpp:3390 rc.cpp:3696
+#: src/plugins/pluginmanifest.cpp:774 rc.cpp:3288 rc.cpp:3390 rc.cpp:3696
 #: rc.cpp:4194 rc.cpp:6344 rc.cpp:6372 rc.cpp:6682 rc.cpp:6710 rc.cpp:6808
 #: rc.cpp:6818 rc.cpp:6828 rc.cpp:6838 rc.cpp:6848 rc.cpp:7224
 #, kde-format
@@ -5889,7 +5889,7 @@ msgid "Cancel Pending Jobs"
 msgstr "取消待处理任务"
 
 #. i18n: file: data/effects/avfilter/avfilter_curves.xml
-#: src/bin/bin.cpp:1665 src/onlineresources/resourcewidget.cpp:335 rc.cpp:5670
+#: src/bin/bin.cpp:1665 src/onlineresources/resourcewidget.cpp:356 rc.cpp:5670
 #, kde-format
 msgid "All"
 msgstr "全部"
@@ -5901,7 +5901,7 @@ msgstr "全部"
 #. i18n: file: src/ui/projectsettings_ui.ui
 #. i18n: file: src/ui/renderwidget_ui.ui
 #: src/bin/bin.cpp:1666 src/dialogs/settings/pluginssettings.cpp:444
-#: src/monitor/recmanager.cpp:44 src/onlineresources/resourcewidget.cpp:889
+#: src/monitor/recmanager.cpp:44 src/onlineresources/resourcewidget.cpp:923
 #: rc.cpp:102 rc.cpp:9392 rc.cpp:10068 rc.cpp:10082 rc.cpp:10800 rc.cpp:10956
 #, kde-format
 msgid "Video"
@@ -5926,7 +5926,7 @@ msgstr "图像"
 #: src/lib/audio/audioStreamInfo.cpp:25 src/lib/audio/audioStreamInfo.cpp:31
 #: src/monitor/recmanager.cpp:45
 #: src/effects/effectlist/model/effecttreemodel.cpp:65
-#: src/onlineresources/resourcewidget.cpp:887 rc.cpp:2 rc.cpp:9394 rc.cpp:9516
+#: src/onlineresources/resourcewidget.cpp:921 rc.cpp:2 rc.cpp:9394 rc.cpp:9516
 #: rc.cpp:10060 rc.cpp:10142 rc.cpp:10802 rc.cpp:10978
 #, kde-format
 msgid "Audio"
@@ -6100,6 +6100,7 @@ msgstr "替换时间轴中的片段"
 
 #: src/bin/bin.cpp:2390 src/bin/bin.cpp:6239 src/bin/clipcreator.cpp:350
 #: src/effects/effectstack/view/maskmanager.cpp:641
+#: src/onlineresources/resourceservice.cpp:563
 #, kde-format
 msgctxt "@action"
 msgid "Add clip"
@@ -6447,10 +6448,10 @@ msgid "Edit Tags"
 msgstr "编辑标签"
 
 #: src/bin/bin.cpp:5012 src/bin/projectclip.cpp:192
-#: src/bin/projectclip.cpp:2046 src/onlineresources/resourcewidget.cpp:472
-#: src/onlineresources/resourcewidget.cpp:897
-#: src/onlineresources/resourcewidget.cpp:912
-#: src/onlineresources/resourcewidget.cpp:1050
+#: src/bin/projectclip.cpp:2046 src/onlineresources/resourcewidget.cpp:493
+#: src/onlineresources/resourcewidget.cpp:742
+#: src/onlineresources/resourcewidget.cpp:931
+#: src/onlineresources/resourcewidget.cpp:1080
 #, kde-format
 msgid "Unnamed"
 msgstr "未命名"
@@ -8978,23 +8979,23 @@ msgstr "伽马"
 msgid "Gain"
 msgstr "Gain - 增益"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:142
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:215
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:144
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:195
 #, kde-format
 msgid "This effect is not on a clip that can be rendered."
 msgstr "此效果所在的片段无法渲染。"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:185
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:167
 #, kde-format
 msgid "Queued…"
 msgstr "已排队…"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:187
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:169
 #, kde-format
 msgid "Rendering… %1%"
 msgstr "正在渲染… %1%"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:199
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:181
 #, kde-format
 msgid "Check the price first"
 msgstr "请先查看价格"
@@ -11555,7 +11556,7 @@ msgid "Using MLT %1"
 msgstr "正在运行 MLT 媒体框架程序 %1"
 
 #: src/dialogs/wizard.cpp:79 src/doc/wunjodoc.cpp:1903
-#: src/onlineresources/resourcewidget.cpp:67 src/project/cliptranscode.cpp:193
+#: src/onlineresources/resourcewidget.cpp:69 src/project/cliptranscode.cpp:193
 #: src/project/cliptranscode.cpp:227 src/project/dialogs/archivewidget.cpp:785
 #: src/project/dialogs/archivewidget.cpp:1293
 #, kde-format
@@ -11878,7 +11879,7 @@ msgid "Add plugin…"
 msgstr "添加插件…"
 
 #: src/dialogs/settings/pluginssettings.cpp:581
-#: src/plugins/plugineffects.cpp:169 src/plugins/pluginsettingstab.cpp:70
+#: src/plugins/plugineffects.cpp:171 src/plugins/pluginsettingstab.cpp:70
 #, kde-format
 msgid "Update"
 msgstr "更新"
@@ -11902,7 +11903,7 @@ msgid "Recommended"
 msgstr "推荐"
 
 #: src/dialogs/settings/pluginssettings.cpp:673
-#: src/plugins/plugineffects.cpp:170 src/plugins/pluginsettingstab.cpp:71
+#: src/plugins/plugineffects.cpp:172 src/plugins/pluginsettingstab.cpp:71
 #, kde-format
 msgid "Opens the plugin's page on wunjo.online"
 msgstr "在 wunjo.online 上打开插件页面"
@@ -12180,7 +12181,7 @@ msgstr ""
 msgid "Colors and Markers"
 msgstr "颜色和标记"
 
-#: src/dialogs/settings/wunjosettingsdialog.cpp:127 src/chat/chatwidget.cpp:481
+#: src/dialogs/settings/wunjosettingsdialog.cpp:127 src/chat/chatwidget.cpp:482
 #: src/effects/effectlist/model/effecttreemodel.cpp:66
 #, kde-format
 msgid "Plugins"
@@ -13229,7 +13230,7 @@ msgstr "无法创建 %1。"
 msgid "This build does not ship the MCP server an outside agent needs."
 msgstr "此版本未附带外部智能体所需的 MCP 服务器。"
 
-#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1640
+#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1741
 #, kde-format
 msgid "interrupted"
 msgstr "已中断"
@@ -13252,113 +13253,123 @@ msgstr ""
 msgid "Speech recognition failed: %1"
 msgstr "语音识别失败：%1"
 
-#: src/chat/chatwidget.cpp:376
+#: src/chat/chatwidget.cpp:377
 #, kde-format
 msgid "Ask Wunjo…"
 msgstr "询问 Wunjo…"
 
-#: src/chat/chatwidget.cpp:443 src/chat/chatwidget.cpp:446
-#: src/chat/chatwidget.cpp:1439 src/chat/chatwidget.cpp:1449
-#: src/chat/chatwidget.cpp:1613
+#: src/chat/chatwidget.cpp:444 src/chat/chatwidget.cpp:447
+#: src/chat/chatwidget.cpp:1540 src/chat/chatwidget.cpp:1550
+#: src/chat/chatwidget.cpp:1714
 #, kde-format
 msgid "New chat"
 msgstr "新建聊天"
 
-#: src/chat/chatwidget.cpp:450
+#: src/chat/chatwidget.cpp:451
 #, kde-format
 msgid "Chat history"
 msgstr "聊天记录"
 
-#: src/chat/chatwidget.cpp:474
+#: src/chat/chatwidget.cpp:475
 #, kde-format
 msgid "Skills"
 msgstr "技能"
 
-#: src/chat/chatwidget.cpp:475
+#: src/chat/chatwidget.cpp:476
 #, kde-format
 msgid "Loops"
 msgstr "循环"
 
-#: src/chat/chatwidget.cpp:514
+#: src/chat/chatwidget.cpp:515
 #, kde-format
 msgid "Search chats…"
 msgstr "搜索聊天…"
 
-#: src/chat/chatwidget.cpp:521
+#: src/chat/chatwidget.cpp:522
 #, kde-format
 msgid "Delete chat"
 msgstr "删除聊天"
 
-#: src/chat/chatwidget.cpp:553 src/chat/chatwidget.cpp:718
-#: src/chat/chatwidget.cpp:724
+#: src/chat/chatwidget.cpp:554 src/chat/chatwidget.cpp:738
+#: src/chat/chatwidget.cpp:744
 #, kde-format
 msgid "Voice input (Whisper)"
 msgstr "语音输入 (Whisper)"
 
-#: src/chat/chatwidget.cpp:558 src/chat/chatwidget.cpp:1397
-#: src/chat/chatwidget.cpp:1531
+#: src/chat/chatwidget.cpp:559 src/chat/chatwidget.cpp:1498
+#: src/chat/chatwidget.cpp:1632
 #, kde-format
 msgid "Send (Enter)"
 msgstr "发送 (Enter)"
 
-#: src/chat/chatwidget.cpp:567
+#: src/chat/chatwidget.cpp:568
 #, kde-format
 msgid "Commands and settings"
 msgstr "命令和设置"
 
-#: src/chat/chatwidget.cpp:578
+#: src/chat/chatwidget.cpp:579
 #, kde-format
 msgid "Attach files for the assistant to work on"
 msgstr "附加文件供助手处理"
 
-#: src/chat/chatwidget.cpp:622
+#: src/chat/chatwidget.cpp:627
+#, kde-format
+msgid "Revoke"
+msgstr "撤销"
+
+#: src/chat/chatwidget.cpp:642
 #, kde-format
 msgid "Assistant is thinking…"
 msgstr "助手正在思考…"
 
-#: src/chat/chatwidget.cpp:653
+#: src/chat/chatwidget.cpp:673
 #, kde-format
 msgid "Claude Code is driving. Ask it there — what it does shows up here."
 msgstr "Claude Code 正在操控编辑器。请在那里提问 — 它的操作会显示在这里。"
 
-#: src/chat/chatwidget.cpp:660
+#: src/chat/chatwidget.cpp:680
 #, kde-format
 msgid "Open folder"
 msgstr "打开文件夹"
 
-#: src/chat/chatwidget.cpp:661
+#: src/chat/chatwidget.cpp:681
 #, kde-format
 msgid "Copy command"
 msgstr "复制命令"
 
-#: src/chat/chatwidget.cpp:718
+#: src/chat/chatwidget.cpp:738
 #, kde-format
 msgid "Stop recording"
 msgstr "停止录制"
 
-#: src/chat/chatwidget.cpp:724
+#: src/chat/chatwidget.cpp:744
 #, kde-format
 msgid "Transcribing…"
 msgstr "正在转写…"
 
-#: src/chat/chatwidget.cpp:932
+#: src/chat/chatwidget.cpp:927
+#, kde-format
+msgid "The assistant spends %1 credits without asking, %2 left"
+msgstr "助手正在不经询问地花费 %1 积分，剩余 %2"
+
+#: src/chat/chatwidget.cpp:1033
 #, kde-format
 msgid "How would you like to work with Wunjo?"
 msgstr "您希望如何使用 Wunjo？"
 
-#: src/chat/chatwidget.cpp:937
+#: src/chat/chatwidget.cpp:1038
 #, kde-format
 msgid "Both drive the editor the same way. You can change this at any time."
 msgstr "两种方式操控编辑器的效果相同。您可以随时更改。"
 
-#: src/chat/chatwidget.cpp:1084
+#: src/chat/chatwidget.cpp:1185
 #, kde-format
 msgid ""
 "Everything Claude Code needs is in %1. Open a terminal there and run the "
 "claude command."
 msgstr "Claude Code 所需的一切都在 %1 中。在那里打开终端并运行 claude 命令。"
 
-#: src/chat/chatwidget.cpp:1095
+#: src/chat/chatwidget.cpp:1196
 #, kde-format
 msgid ""
 "MCP is not installed yet — install it in Settings, Plugins, on the MCP tab. "
@@ -13367,7 +13378,7 @@ msgstr ""
 "MCP 尚未安装 — 请在 设置 > 插件 的 MCP 标签页中安装。在此之前，智能体在终端中"
 "的第一个问题将会失败。"
 
-#: src/chat/chatwidget.cpp:1112
+#: src/chat/chatwidget.cpp:1213
 #, kde-format
 msgid ""
 "This model drives the editor through MCP, which is not installed yet. "
@@ -13376,124 +13387,124 @@ msgstr ""
 "此模型通过 MCP 操控编辑器，但 MCP 尚未安装。请在 设置 > 插件 的 MCP 标签页中"
 "安装。"
 
-#: src/chat/chatwidget.cpp:1125
+#: src/chat/chatwidget.cpp:1226
 #, kde-format
 msgid ""
 "Install the assistant in the settings that just opened, then come back here."
 msgstr "请在刚刚打开的设置中安装助手，然后回到这里。"
 
-#: src/chat/chatwidget.cpp:1205
+#: src/chat/chatwidget.cpp:1306
 #, kde-format
 msgid "New loop"
 msgstr "新建循环"
 
-#: src/chat/chatwidget.cpp:1205
+#: src/chat/chatwidget.cpp:1306
 #, kde-format
 msgid "New skill"
 msgstr "新建技能"
 
-#: src/chat/chatwidget.cpp:1206
+#: src/chat/chatwidget.cpp:1307
 #, kde-format
 msgid "Import from file…"
 msgstr "从文件导入…"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1207 rc.cpp:9170 rc.cpp:10552
+#: src/chat/chatwidget.cpp:1308 rc.cpp:9170 rc.cpp:10552
 #, kde-format
 msgid "Edit"
 msgstr "编辑"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1208 src/chat/generatorcard.cpp:794 rc.cpp:10530
+#: src/chat/chatwidget.cpp:1309 src/chat/generatorcard.cpp:852 rc.cpp:10530
 #: rc.cpp:10546 rc.cpp:10604
 #, kde-format
 msgid "Delete"
 msgstr "删除"
 
-#: src/chat/chatwidget.cpp:1224
+#: src/chat/chatwidget.cpp:1325
 #, kde-format
 msgid "Import Loops"
 msgstr "导入循环"
 
-#: src/chat/chatwidget.cpp:1224
+#: src/chat/chatwidget.cpp:1325
 #, kde-format
 msgid "Import Skills"
 msgstr "导入技能"
 
-#: src/chat/chatwidget.cpp:1225
+#: src/chat/chatwidget.cpp:1326
 #, kde-format
 msgid "Text documents (*.md *.txt)"
 msgstr "文本文档 (*.md *.txt)"
 
-#: src/chat/chatwidget.cpp:1252
+#: src/chat/chatwidget.cpp:1353
 #, kde-format
 msgid "New Loop"
 msgstr "新建循环"
 
-#: src/chat/chatwidget.cpp:1252
+#: src/chat/chatwidget.cpp:1353
 #, kde-format
 msgid "New Skill"
 msgstr "新建技能"
 
-#: src/chat/chatwidget.cpp:1253
+#: src/chat/chatwidget.cpp:1354
 #, kde-format
 msgid "Edit Loop"
 msgstr "编辑循环"
 
-#: src/chat/chatwidget.cpp:1253
+#: src/chat/chatwidget.cpp:1354
 #, kde-format
 msgid "Edit Skill"
 msgstr "编辑技能"
 
-#: src/chat/chatwidget.cpp:1260
+#: src/chat/chatwidget.cpp:1361
 #, kde-format
 msgid ""
 "Describe the pipeline step by step: what to produce and which tools or "
 "plugins to use at every stage…"
 msgstr "逐步描述流程：要生成什么内容，以及每个阶段使用哪些工具或插件…"
 
-#: src/chat/chatwidget.cpp:1262
+#: src/chat/chatwidget.cpp:1363
 #, kde-format
 msgid "Describe how the assistant should work…"
 msgstr "描述助手应如何工作…"
 
-#: src/chat/chatwidget.cpp:1334
+#: src/chat/chatwidget.cpp:1435
 #, kde-format
 msgid "Built in. Editing it keeps your version; deleting it hides it."
 msgstr "内置。编辑后将保留您的版本；删除后将隐藏它。"
 
-#: src/chat/chatwidget.cpp:1338
+#: src/chat/chatwidget.cpp:1439
 #, kde-format
 msgid "Built in, edited by you — your version is the one used."
 msgstr "内置，已由您编辑 — 将使用您的版本。"
 
-#: src/chat/chatwidget.cpp:1397
+#: src/chat/chatwidget.cpp:1498
 #, kde-format
 msgid "Stop the assistant"
 msgstr "停止助手"
 
-#: src/chat/chatwidget.cpp:1460
+#: src/chat/chatwidget.cpp:1561
 #, kde-format
 msgid "Attach files"
 msgstr "附加文件"
 
-#: src/chat/chatwidget.cpp:1506
+#: src/chat/chatwidget.cpp:1607
 #, kde-format
 msgid "Remove %1"
 msgstr "移除 %1"
 
-#: src/chat/chatwidget.cpp:1536
+#: src/chat/chatwidget.cpp:1637
 #, kde-format
 msgid "Stopped."
 msgstr "已停止。"
 
-#: src/chat/chatwidget.cpp:1568 src/chat/chatwidget.cpp:1569
+#: src/chat/chatwidget.cpp:1669 src/chat/chatwidget.cpp:1670
 #, kde-format
 msgid "Attached: %1"
 msgstr "已附加：%1"
 
-#: src/chat/chatwidget.cpp:1586
+#: src/chat/chatwidget.cpp:1687
 #, kde-format
 msgid ""
 "Your own agent is driving. Ask it in the terminal you opened in %1, and what "
@@ -13502,7 +13513,7 @@ msgstr ""
 "您自己的智能体正在操控编辑器。请在您于 %1 中打开的终端里提问，它的操作会显示"
 "在这里。"
 
-#: src/chat/chatwidget.cpp:1592
+#: src/chat/chatwidget.cpp:1693
 #, kde-format
 msgid ""
 "No model is selected. Press / to choose one, or pick \"External MCP\" to "
@@ -13512,31 +13523,31 @@ msgstr ""
 "未选择模型。按 / 选择一个模型，或选择“外部 MCP”，以便通过您已在使用的智能体 "
 "(例如 Claude Code 或 Cursor) 操控编辑器。"
 
-#: src/chat/chatwidget.cpp:1625
+#: src/chat/chatwidget.cpp:1726
 #, kde-format
 msgid "Untitled chat"
 msgstr "未命名聊天"
 
-#: src/chat/chatwidget.cpp:1630
+#: src/chat/chatwidget.cpp:1731
 #, kde-format
 msgid "No saved chats for this project yet"
 msgstr "此项目尚无已保存的聊天"
 
-#: src/chat/chatwidget.cpp:1657
+#: src/chat/chatwidget.cpp:1758
 #, kde-format
 msgid ""
 "Skills are simple instructions that tell the assistant how to work in this "
 "project."
 msgstr "技能是一些简单的指令，用于告诉助手在此项目中如何工作。"
 
-#: src/chat/chatwidget.cpp:1660
+#: src/chat/chatwidget.cpp:1761
 #, kde-format
 msgid ""
 "A loop is a set of steps the assistant follows to complete a task using the "
 "tools or plugins you choose."
 msgstr "循环是助手使用您选择的工具或插件完成任务时所遵循的一系列步骤。"
 
-#: src/chat/chatwidget.cpp:1663
+#: src/chat/chatwidget.cpp:1764
 #, kde-format
 msgid ""
 "Use local model or external MCP for third-party agents to automatically "
@@ -13550,174 +13561,184 @@ msgstr ""
 #. i18n: file: src/ui/rgbparade_ui.ui
 #. i18n: file: src/ui/vectorscope_ui.ui
 #. i18n: file: src/ui/waveform_ui.ui
-#: src/chat/chatwidget.cpp:1678 rc.cpp:10378 rc.cpp:10772 rc.cpp:11072
+#: src/chat/chatwidget.cpp:1779 rc.cpp:10378 rc.cpp:10772 rc.cpp:11072
 #: rc.cpp:11454 rc.cpp:11456
 #, kde-format
 msgid "Settings"
 msgstr "项目设置"
 
-#: src/chat/chatwidget.cpp:1682
+#: src/chat/chatwidget.cpp:1783
 #, kde-format
 msgid "External MCP…"
 msgstr "外部 MCP…"
 
-#: src/chat/chatwidget.cpp:1683
+#: src/chat/chatwidget.cpp:1784
 #, kde-format
 msgid ""
 "Write the folder an outside agent works in — Claude Code, Cursor, Codex — "
 "and open it"
 msgstr "创建外部智能体 (Claude Code、Cursor、Codex) 的工作文件夹并打开它"
 
-#: src/chat/chatwidget.cpp:1701
+#: src/chat/chatwidget.cpp:1802
 #, kde-format
 msgid "Switch model…"
 msgstr "切换模型…"
 
-#: src/chat/chatwidget.cpp:1732
+#: src/chat/chatwidget.cpp:1833
 #, kde-format
 msgid "No models installed"
 msgstr "未安装任何模型"
 
-#: src/chat/chatwidget.cpp:1738
+#: src/chat/chatwidget.cpp:1839
 #, kde-format
 msgid "Commands"
 msgstr "命令"
 
-#: src/chat/chatwidget.cpp:1739
+#: src/chat/chatwidget.cpp:1840
 #, kde-format
 msgid "/new — start a new chat"
 msgstr "/new — 开始新的聊天"
 
-#: src/chat/chatwidget.cpp:1740
+#: src/chat/chatwidget.cpp:1841
 #, kde-format
 msgid "/history — find an earlier chat"
 msgstr "/history — 查找之前的聊天"
 
-#: src/chat/chatwidget.cpp:1741
+#: src/chat/chatwidget.cpp:1842
 #, kde-format
 msgid "/skills — how it should work"
 msgstr "/skills — 它应如何工作"
 
-#: src/chat/chatwidget.cpp:1742
+#: src/chat/chatwidget.cpp:1843
 #, kde-format
 msgid "/loops — a pipeline to follow"
 msgstr "/loops — 要遵循的流程"
 
-#: src/chat/chatwidget.cpp:1824
+#: src/chat/chatwidget.cpp:1925
 #, kde-format
 msgid "Running…"
 msgstr "正在运行…"
 
-#: src/chat/chatwidget.cpp:1855
+#: src/chat/chatwidget.cpp:1956
 #, kde-format
 msgid "%1 is not installed."
 msgstr "%1 未安装。"
 
-#: src/chat/generatorcard.cpp:128
+#: src/chat/generatorcard.cpp:131
 #, kde-format
 msgid "filled in by the assistant"
 msgstr "由助手填写"
 
-#: src/chat/generatorcard.cpp:132 src/chat/generatorcard.cpp:1035
+#: src/chat/generatorcard.cpp:135 src/chat/generatorcard.cpp:1109
 #, kde-format
 msgid "Collapse"
 msgstr "折叠"
 
-#: src/chat/generatorcard.cpp:355
+#: src/chat/generatorcard.cpp:361
 #, kde-format
 msgctxt "@action:button drop the calculated price"
 msgid "Cancel"
 msgstr "取消"
 
-#: src/chat/generatorcard.cpp:361
+#: src/chat/generatorcard.cpp:370
 #, kde-format
 msgctxt "@action:button make what the card describes"
 msgid "Generate"
 msgstr "生成"
 
 #. i18n: file: src/ui/missingclips_ui.ui
-#: src/chat/generatorcard.cpp:399 src/chat/generatorcard.cpp:605 rc.cpp:10680
+#: src/chat/generatorcard.cpp:408 src/chat/generatorcard.cpp:660 rc.cpp:10680
 #, kde-format
 msgid "Remove"
 msgstr "移除"
 
-#: src/chat/generatorcard.cpp:411
+#: src/chat/generatorcard.cpp:420
 #, kde-format
 msgid "Choose a file"
 msgstr "选择文件"
 
-#: src/chat/generatorcard.cpp:419
+#: src/chat/generatorcard.cpp:428
 #, kde-format
 msgid "Selected clip on the timeline"
 msgstr "时间线上选中的片段"
 
-#: src/chat/generatorcard.cpp:427
+#: src/chat/generatorcard.cpp:436
 #, kde-format
 msgid "Current frame of the monitor"
 msgstr "监视器当前帧"
 
-#: src/chat/generatorcard.cpp:442
+#: src/chat/generatorcard.cpp:451
 #, kde-format
 msgid "Videos (*.mp4 *.mov *.mkv *.webm *.avi)"
 msgstr "视频 (*.mp4 *.mov *.mkv *.webm *.avi)"
 
-#: src/chat/generatorcard.cpp:442
+#: src/chat/generatorcard.cpp:451
 #, kde-format
 msgid "Images (*.png *.jpg *.jpeg *.webp *.bmp)"
 msgstr "图像 (*.png *.jpg *.jpeg *.webp *.bmp)"
 
-#: src/chat/generatorcard.cpp:464
+#: src/chat/generatorcard.cpp:473
 #, kde-format
 msgid "The frame could not be saved."
 msgstr "无法保存该帧。"
 
-#: src/chat/generatorcard.cpp:493
+#: src/chat/generatorcard.cpp:502
 #, kde-format
 msgid "Select a video clip on the timeline first."
 msgstr "请先在时间线上选择一个视频片段。"
 
-#: src/chat/generatorcard.cpp:529
+#: src/chat/generatorcard.cpp:538
 #, kde-format
 msgid "%1, %2 s"
 msgstr "%1，%2 秒"
 
-#: src/chat/generatorcard.cpp:658 src/chat/generatorcard.cpp:749
-#: src/chat/generatorcard.cpp:854
+#: src/chat/generatorcard.cpp:652 src/chat/generatorcard.cpp:1007
+#, kde-format
+msgid "%1 is not taken here"
+msgstr "此处不接受%1"
+
+#: src/chat/generatorcard.cpp:652 src/chat/generatorcard.cpp:1007
+#, kde-format
+msgid "%1, no more than %2"
+msgstr "%1，最多 %2"
+
+#: src/chat/generatorcard.cpp:716 src/chat/generatorcard.cpp:807
+#: src/chat/generatorcard.cpp:912
 #, kde-format
 msgid "Upload voice"
 msgstr "上传声音"
 
-#: src/chat/generatorcard.cpp:742
+#: src/chat/generatorcard.cpp:800
 #, kde-format
 msgid "Find a voice"
 msgstr "查找声音"
 
-#: src/chat/generatorcard.cpp:790
+#: src/chat/generatorcard.cpp:848
 #, kde-format
 msgid "Listen"
 msgstr "试听"
 
-#: src/chat/generatorcard.cpp:794
+#: src/chat/generatorcard.cpp:852
 #, kde-format
 msgid "Click again to delete"
 msgstr "再次点击以删除"
 
-#: src/chat/generatorcard.cpp:855
+#: src/chat/generatorcard.cpp:913
 #, kde-format
 msgid "Audio (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 msgstr "音频 (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 
-#: src/chat/generatorcard.cpp:934 src/chat/generatorcard.cpp:942
+#: src/chat/generatorcard.cpp:1002 src/chat/generatorcard.cpp:1016
 #, kde-format
 msgid "Add %1"
 msgstr "添加 %1"
 
-#: src/chat/generatorcard.cpp:948
+#: src/chat/generatorcard.cpp:1022
 #, kde-format
 msgid "Upload a voice first"
 msgstr "请先上传声音"
 
-#: src/chat/generatorcard.cpp:948
+#: src/chat/generatorcard.cpp:1022
 #, kde-format
 msgid "Fill in %1"
 msgstr "请填写%1"
@@ -13922,234 +13943,234 @@ msgstr "颜色分量"
 msgid "How to use"
 msgstr "使用方法"
 
-#: src/plugins/pluginmanager.cpp:357 src/plugins/pluginmodelsdialog.cpp:230
+#: src/plugins/pluginmanager.cpp:366 src/plugins/pluginmodelsdialog.cpp:230
 #, kde-format
 msgid "Could not create the folder for %1."
 msgstr "无法为 %1 创建文件夹。"
 
-#: src/plugins/pluginmanager.cpp:373
+#: src/plugins/pluginmanager.cpp:382
 #, kde-format
 msgid "%1 could not be unpacked."
 msgstr "无法解压 %1。"
 
-#: src/plugins/pluginmanager.cpp:697
+#: src/plugins/pluginmanager.cpp:713
 #, kde-format
 msgid "Add the rendered result to the timeline"
 msgstr "将渲染结果添加到时间轴"
 
-#: src/plugins/pluginmanager.cpp:740 src/plugins/pluginmanager.cpp:752
+#: src/plugins/pluginmanager.cpp:756 src/plugins/pluginmanager.cpp:768
 #, kde-format
 msgid "Add the generated clip to the timeline"
 msgstr "将生成的片段添加到时间轴"
 
-#: src/plugins/pluginmanager.cpp:858
+#: src/plugins/pluginmanager.cpp:874
 #, kde-format
 msgid "the plugin is not valid"
 msgstr "插件无效"
 
-#: src/plugins/pluginmanager.cpp:864
+#: src/plugins/pluginmanager.cpp:880
 #, kde-format
 msgid "this plugin does not support %1"
 msgstr "此插件不支持 %1"
 
-#: src/plugins/pluginmanager.cpp:905
+#: src/plugins/pluginmanager.cpp:921
 #, kde-format
 msgid "built-in plugins cannot be removed"
 msgstr "无法移除内置插件"
 
-#: src/plugins/pluginmanager.cpp:912
+#: src/plugins/pluginmanager.cpp:928
 #, kde-format
 msgid "could not delete the plugin folder"
 msgstr "无法删除插件文件夹"
 
-#: src/plugins/pluginmanager.cpp:1026
+#: src/plugins/pluginmanager.cpp:1042
 #, kde-format
 msgid "A model is missing — download it in the plugin's settings."
 msgstr "缺少模型 — 请在插件设置中下载。"
 
-#: src/plugins/pluginmanager.cpp:1027
+#: src/plugins/pluginmanager.cpp:1043
 #, kde-format
 msgid "The model %1 is missing — download it in the plugin's settings."
 msgstr "缺少模型 %1 — 请在插件设置中下载。"
 
-#: src/plugins/pluginmanager.cpp:1031
+#: src/plugins/pluginmanager.cpp:1047
 #, kde-format
 msgid "An API key is missing — add it in the plugin's settings."
 msgstr "缺少 API 密钥 — 请在插件设置中添加。"
 
-#: src/plugins/pluginmanager.cpp:1032
+#: src/plugins/pluginmanager.cpp:1048
 #, kde-format
 msgid "The %1 API key is missing — add it in the plugin's settings."
 msgstr "缺少 %1 API 密钥 — 请在插件设置中添加。"
 
-#: src/plugins/pluginmanager.cpp:1086
+#: src/plugins/pluginmanager.cpp:1102
 #, kde-format
 msgid "Python was not found — cannot run '%1'."
 msgstr "未找到 Python — 无法运行“%1”。"
 
-#: src/plugins/pluginmanager.cpp:1160
+#: src/plugins/pluginmanager.cpp:1176
 #, kde-format
 msgid "Could not prepare the job for '%1'."
 msgstr "无法为“%1”准备任务。"
 
-#: src/plugins/pluginmanager.cpp:1262 src/plugins/pluginmanager.cpp:1653
+#: src/plugins/pluginmanager.cpp:1278 src/plugins/pluginmanager.cpp:1669
 #, kde-format
 msgid "'%1' is not installed."
 msgstr "“%1”尚未安装。"
 
-#: src/plugins/pluginmanager.cpp:1324
+#: src/plugins/pluginmanager.cpp:1340
 #, kde-format
 msgid "%1 failed."
 msgstr "%1 失败。"
 
-#: src/plugins/pluginmanager.cpp:1324
+#: src/plugins/pluginmanager.cpp:1340
 #, kde-format
 msgid "%1: %2"
 msgstr "%1：%2"
 
-#: src/plugins/pluginmanager.cpp:1340
+#: src/plugins/pluginmanager.cpp:1356
 #, kde-format
 msgid "Could not launch '%1'."
 msgstr "无法启动“%1”。"
 
-#: src/plugins/pluginmanager.cpp:1608
+#: src/plugins/pluginmanager.cpp:1624
 #, kde-format
 msgid "The manifest of this plugin cannot be read."
 msgstr "无法读取此插件的清单文件。"
 
-#: src/plugins/pluginmanager.cpp:1615
+#: src/plugins/pluginmanager.cpp:1631
 #, kde-format
 msgid "%1 does not run on this operating system."
 msgstr "%1 无法在此操作系统上运行。"
 
-#: src/plugins/pluginmanager.cpp:1642
+#: src/plugins/pluginmanager.cpp:1658
 #, kde-format
 msgid "This needs about %1 free in %2, and there is %3."
 msgstr "此操作需要 %2 中约有 %1 的可用空间，当前可用 %3。"
 
-#: src/plugins/pluginmanager.cpp:1669
+#: src/plugins/pluginmanager.cpp:1685
 #, kde-format
 msgid "%1 needs the model %2 — download it in the plugin's settings."
 msgstr "%1 需要模型 %2 — 请在插件设置中下载。"
 
-#: src/plugins/pluginmanager.cpp:1671
+#: src/plugins/pluginmanager.cpp:1687
 #, kde-format
 msgid ""
 "The model %1 was not downloaded completely — get it again in the plugin's "
 "settings."
 msgstr "模型 %1 未完整下载 — 请在插件设置中重新获取。"
 
-#: src/plugins/pluginmanager.cpp:1699
+#: src/plugins/pluginmanager.cpp:1715
 #, kde-format
 msgid "cannot create the folder for %1"
 msgstr "无法为 %1 创建文件夹"
 
-#: src/plugins/pluginmanager.cpp:1703 src/plugins/pluginmanager.cpp:1714
+#: src/plugins/pluginmanager.cpp:1719 src/plugins/pluginmanager.cpp:1730
 #, kde-format
 msgid "downloading %1…"
 msgstr "正在下载 %1…"
 
-#: src/plugins/pluginmanager.cpp:1714
+#: src/plugins/pluginmanager.cpp:1730
 #, kde-format
 msgid "downloading %1 — %2%"
 msgstr "正在下载 %1 — %2%"
 
-#: src/plugins/pluginmanager.cpp:1720
+#: src/plugins/pluginmanager.cpp:1736
 #, kde-format
 msgid "%1: %2 — retrying in %3 s"
 msgstr "%1：%2 — %3 秒后重试"
 
-#: src/plugins/pluginmanager.cpp:1732
+#: src/plugins/pluginmanager.cpp:1748
 #, kde-format
 msgid "could not download %1: %2"
 msgstr "无法下载 %1：%2"
 
-#: src/plugins/pluginmanager.cpp:1775
+#: src/plugins/pluginmanager.cpp:1791
 #, kde-format
 msgid "preparing %1…"
 msgstr "正在准备 %1…"
 
-#: src/plugins/pluginmanager.cpp:1791
+#: src/plugins/pluginmanager.cpp:1807
 #, kde-format
 msgid "the environment of %1 could not be built"
 msgstr "无法构建 %1 的环境"
 
-#: src/plugins/pluginmanager.cpp:1795
+#: src/plugins/pluginmanager.cpp:1811
 #, kde-format
 msgid "building the environment of %1…"
 msgstr "正在构建 %1 的环境…"
 
-#: src/plugins/pluginmanager.cpp:1828
+#: src/plugins/pluginmanager.cpp:1844
 #, kde-format
 msgid "%1 — waiting for the plugin to be free"
 msgstr "%1 — 正在等待插件空闲"
 
-#: src/plugins/pluginmanager.cpp:1854
+#: src/plugins/pluginmanager.cpp:1870
 #, kde-format
 msgid "%1 is rendering…"
 msgstr "%1 正在渲染…"
 
-#: src/plugins/pluginmanager.cpp:1891
+#: src/plugins/pluginmanager.cpp:1907
 #, kde-format
 msgid "Saved as the preset '%1'."
 msgstr "已保存为预设“%1”。"
 
-#: src/plugins/pluginmanager.cpp:1896 src/plugins/pluginmanager.cpp:2052
+#: src/plugins/pluginmanager.cpp:1912 src/plugins/pluginmanager.cpp:2072
 #, kde-format
 msgid "%1 produced nothing."
 msgstr "%1 未生成任何内容。"
 
-#: src/plugins/pluginmanager.cpp:1922 src/plugins/pluginmanager.cpp:2145
+#: src/plugins/pluginmanager.cpp:1938 src/plugins/pluginmanager.cpp:2165
 #, kde-format
 msgid "%1 finished."
 msgstr "%1 已完成。"
 
-#: src/plugins/pluginmanager.cpp:1965
+#: src/plugins/pluginmanager.cpp:1981
 #, kde-format
 msgid "%1 finished — on a new track, and in the '%2' bin folder"
 msgstr "%1 已完成 — 结果位于新轨道上，以及素材箱文件夹“%2”中"
 
-#: src/plugins/pluginmanager.cpp:2048
+#: src/plugins/pluginmanager.cpp:2068
 #, kde-format
 msgid "Saved to the library as '%1'."
 msgstr "已以“%1”保存到库中。"
 
-#: src/plugins/pluginmanager.cpp:2066
+#: src/plugins/pluginmanager.cpp:2086
 #, kde-format
 msgid "%1 is ready in the '%2' bin folder."
 msgstr "%1 已在素材箱的“%2”文件夹中就绪。"
 
-#: src/plugins/pluginmanager.cpp:2067
+#: src/plugins/pluginmanager.cpp:2087
 #, kde-format
 msgid "%1 is ready on the timeline and in the '%2' bin folder."
 msgstr "%1 已在时间轴和素材箱的“%2”文件夹中就绪。"
 
-#: src/plugins/pluginmanager.cpp:2087
+#: src/plugins/pluginmanager.cpp:2107
 #, kde-format
 msgid "Running %1…"
 msgstr "正在运行 %1…"
 
-#: src/plugins/pluginmanager.cpp:2110 src/plugins/pluginsetpanel.cpp:267
+#: src/plugins/pluginmanager.cpp:2130 src/plugins/pluginsetpanel.cpp:267
 #, kde-format
 msgid "Nothing came back for %1."
 msgstr "%1 未返回任何结果。"
 
-#: src/plugins/pluginmanager.cpp:2118 src/plugins/pluginsetpanel.cpp:273
+#: src/plugins/pluginmanager.cpp:2138 src/plugins/pluginsetpanel.cpp:273
 #, kde-format
 msgid "The set could not be saved."
 msgstr "无法保存预设。"
 
-#: src/plugins/pluginmanager.cpp:2124
+#: src/plugins/pluginmanager.cpp:2144
 #, kde-format
 msgid "%1 recorded '%2'."
 msgstr "%1 已录制“%2”。"
 
-#: src/plugins/pluginmanager.cpp:2125
+#: src/plugins/pluginmanager.cpp:2145
 #, kde-format
 msgid "recorded '%1'"
 msgstr "已录制“%1”"
 
-#: src/plugins/pluginmanager.cpp:2146
+#: src/plugins/pluginmanager.cpp:2166
 #, kde-format
 msgid "%2: %1 file added to the bin."
 msgid_plural "%2: %1 files added to the bin."
@@ -14200,258 +14221,258 @@ msgstr "模型“%1”指定了变体“%2”，但该变体未声明"
 msgid "'generate' must be a list of cards"
 msgstr "'generate' 必须是卡片列表"
 
-#: src/plugins/pluginmanifest.cpp:263
+#: src/plugins/pluginmanifest.cpp:271
 #, kde-format
 msgid ""
 "every 'generate' card needs an 'id' of lowercase letters, digits and dashes"
 msgstr "'generate' 中的每张卡片都需要由小写字母、数字和连字符组成的 'id'"
 
-#: src/plugins/pluginmanifest.cpp:267
+#: src/plugins/pluginmanifest.cpp:275
 #, kde-format
 msgid "the 'generate' card '%1' is declared twice"
 msgstr "'generate' 中的卡片 '%1' 被声明了两次"
 
-#: src/plugins/pluginmanifest.cpp:271
+#: src/plugins/pluginmanifest.cpp:279
 #, kde-format
 msgid "the 'generate' card '%1' has no fields"
 msgstr "'generate' 中的卡片 '%1' 没有字段"
 
-#: src/plugins/pluginmanifest.cpp:290
+#: src/plugins/pluginmanifest.cpp:298
 #, kde-format
 msgid "every 'effects' entry must be the path of an effect XML"
 msgstr "每个“effects”条目都必须是效果 XML 的路径"
 
-#: src/plugins/pluginmanifest.cpp:295
+#: src/plugins/pluginmanifest.cpp:303
 #, kde-format
 msgid "effect '%1' must live inside the plugin folder"
 msgstr "效果“%1”必须位于插件文件夹内"
 
-#: src/plugins/pluginmanifest.cpp:300
+#: src/plugins/pluginmanifest.cpp:308
 #, kde-format
 msgid "effect '%1' is missing or is not valid XML"
 msgstr "效果“%1”缺失或不是有效的 XML"
 
-#: src/plugins/pluginmanifest.cpp:305
+#: src/plugins/pluginmanifest.cpp:313
 #, kde-format
 msgid "effect '%1' must have a single <effect> root"
 msgstr "效果“%1”必须只有一个 <effect> 根元素"
 
-#: src/plugins/pluginmanifest.cpp:313
+#: src/plugins/pluginmanifest.cpp:321
 #, kde-format
 msgid "effect '%1' does not name the MLT service it is built on"
 msgstr "效果“%1”未指定其所基于的 MLT 服务"
 
-#: src/plugins/pluginmanifest.cpp:316
+#: src/plugins/pluginmanifest.cpp:324
 #, kde-format
 msgid "effect '%1' has no id"
 msgstr "效果“%1”没有 id"
 
-#: src/plugins/pluginmanifest.cpp:322
+#: src/plugins/pluginmanifest.cpp:330
 #, kde-format
 msgid "effect id '%1' must be '%2' or start with '%2.'"
 msgstr "效果 id“%1”必须为“%2”或以“%2.”开头"
 
-#: src/plugins/pluginmanifest.cpp:347
+#: src/plugins/pluginmanifest.cpp:355
 #, kde-format
 msgid "effect '%1' requires '%2', which this plugin does not ship"
 msgstr "效果“%1”需要“%2”，但此插件未附带该文件"
 
-#: src/plugins/pluginmanifest.cpp:379
+#: src/plugins/pluginmanifest.cpp:387
 #, kde-format
 msgid "manifest_version must be 1"
 msgstr "manifest_version 必须为 1"
 
-#: src/plugins/pluginmanifest.cpp:387
+#: src/plugins/pluginmanifest.cpp:395
 #, kde-format
 msgid "'%1' must look like \"3\", \"3.1\" or \"3.1.2\", not '%2'"
 msgstr "“%1”的格式必须类似“3”、“3.1”或“3.1.2”，而不是“%2”"
 
-#: src/plugins/pluginmanifest.cpp:392
+#: src/plugins/pluginmanifest.cpp:400
 #, kde-format
 msgid "'min_app_version' (%1) is newer than 'max_app_version' (%2)"
 msgstr "“min_app_version” (%1) 比“max_app_version” (%2) 更新"
 
-#: src/plugins/pluginmanifest.cpp:396
+#: src/plugins/pluginmanifest.cpp:404
 #, kde-format
 msgid "missing required field 'id'"
 msgstr "缺少必填字段“id”"
 
-#: src/plugins/pluginmanifest.cpp:398
+#: src/plugins/pluginmanifest.cpp:406
 #, kde-format
 msgid "id '%1' may only contain lowercase letters, digits and hyphens"
 msgstr "id“%1”只能包含小写字母、数字和连字符"
 
-#: src/plugins/pluginmanifest.cpp:402
+#: src/plugins/pluginmanifest.cpp:410
 #, kde-format
 msgid "id '%1' must match the folder name '%2'"
 msgstr "id“%1”必须与文件夹名称“%2”一致"
 
-#: src/plugins/pluginmanifest.cpp:406
+#: src/plugins/pluginmanifest.cpp:414
 #, kde-format
 msgid "missing required field 'name'"
 msgstr "缺少必填字段“name”"
 
-#: src/plugins/pluginmanifest.cpp:409
+#: src/plugins/pluginmanifest.cpp:417
 #, kde-format
 msgid "missing required field 'version'"
 msgstr "缺少必填字段“version”"
 
-#: src/plugins/pluginmanifest.cpp:412
+#: src/plugins/pluginmanifest.cpp:420
 #, kde-format
 msgid "missing required field 'kind'"
 msgstr "缺少必填字段“kind”"
 
-#: src/plugins/pluginmanifest.cpp:414
+#: src/plugins/pluginmanifest.cpp:422
 #, kde-format
 msgid "kind must be 'api' or 'local'"
 msgstr "kind 必须为“api”或“local”"
 
-#: src/plugins/pluginmanifest.cpp:417
+#: src/plugins/pluginmanifest.cpp:425
 #, kde-format
 msgid "venv must be 'private'"
 msgstr "venv 必须为“private”"
 
-#: src/plugins/pluginmanifest.cpp:420
+#: src/plugins/pluginmanifest.cpp:428
 #, kde-format
 msgid "missing required field 'target'"
 msgstr "缺少必填字段“target”"
 
-#: src/plugins/pluginmanifest.cpp:424
+#: src/plugins/pluginmanifest.cpp:432
 #, kde-format
 msgid "target must be one of video, audio, face, generator, agent"
 msgstr "target 必须为 video、audio、face、generator、agent 之一"
 
-#: src/plugins/pluginmanifest.cpp:432
+#: src/plugins/pluginmanifest.cpp:440
 #, kde-format
 msgid "target 'agent' cannot be combined with another target"
 msgstr "target“agent”不能与其他 target 组合使用"
 
-#: src/plugins/pluginmanifest.cpp:435
+#: src/plugins/pluginmanifest.cpp:443
 #, kde-format
 msgid "a generator needs at least one card in 'generate'"
 msgstr "生成器在 'generate' 中至少需要一张卡片"
 
-#: src/plugins/pluginmanifest.cpp:439
+#: src/plugins/pluginmanifest.cpp:447
 #, kde-format
 msgid "missing required field 'entry'"
 msgstr "缺少必填字段“entry”"
 
-#: src/plugins/pluginmanifest.cpp:441
+#: src/plugins/pluginmanifest.cpp:449
 #, kde-format
 msgid "entry script '%1' was not found"
 msgstr "未找到入口脚本“%1”"
 
-#: src/plugins/pluginmanifest.cpp:451
+#: src/plugins/pluginmanifest.cpp:459
 #, kde-format
 msgid "library file '%1' was not found"
 msgstr "未找到库文件“%1”"
 
-#: src/plugins/pluginmanifest.cpp:454
+#: src/plugins/pluginmanifest.cpp:462
 #, kde-format
 msgid "library file '%1' needs 'name' and 'api.search'"
 msgstr "库文件“%1”需要包含“name”和“api.search”"
 
-#: src/plugins/pluginmanifest.cpp:458
+#: src/plugins/pluginmanifest.cpp:466
 #, kde-format
 msgid "an 'api' plugin must declare provider.name"
 msgstr "“api”插件必须声明 provider.name"
 
-#: src/plugins/pluginmanifest.cpp:462
+#: src/plugins/pluginmanifest.cpp:470
 #, kde-format
 msgid "unknown os '%1'"
 msgstr "未知操作系统“%1”"
 
-#: src/plugins/pluginmanifest.cpp:556
+#: src/plugins/pluginmanifest.cpp:564
 #, kde-format
 msgid "needs a graphics card"
 msgstr "需要显卡"
 
-#: src/plugins/pluginmanifest.cpp:559
+#: src/plugins/pluginmanifest.cpp:567
 #, kde-format
 msgid "needs %1 GB of video memory, this card has %2 GB"
 msgstr "需要 %1 GB 显存，此显卡只有 %2 GB"
 
-#: src/plugins/pluginmanifest.cpp:668
+#: src/plugins/pluginmanifest.cpp:676
 #, kde-format
 msgid "%1 needs Wunjo Make %2 or newer; this is %3."
 msgstr "%1 需要 Wunjo Make %2 或更高版本；当前版本为 %3。"
 
-#: src/plugins/pluginmanifest.cpp:671
+#: src/plugins/pluginmanifest.cpp:679
 #, kde-format
 msgid "%1 was built for Wunjo Make %2 and older; this is %3."
 msgstr "%1 是为 Wunjo Make %2 及更早版本构建的；当前版本为 %3。"
 
-#: src/plugins/pluginmanifest.cpp:732
+#: src/plugins/pluginmanifest.cpp:740
 #: src/project/dialogs/projectsettings.cpp:413
 #, kde-format
 msgid "Video clips"
 msgstr "视频片段"
 
-#: src/plugins/pluginmanifest.cpp:734
+#: src/plugins/pluginmanifest.cpp:742
 #: src/project/dialogs/projectsettings.cpp:416
 #, kde-format
 msgid "Audio clips"
 msgstr "音频片段"
 
-#: src/plugins/pluginmanifest.cpp:736
+#: src/plugins/pluginmanifest.cpp:744
 #, kde-format
 msgid "Detected faces"
 msgstr "检测到的人脸"
 
-#: src/plugins/pluginmanifest.cpp:738
+#: src/plugins/pluginmanifest.cpp:746
 #, kde-format
 msgid "Media generation"
 msgstr "媒体生成"
 
-#: src/plugins/pluginmanifest.cpp:740
+#: src/plugins/pluginmanifest.cpp:748
 #, kde-format
 msgid "The chat assistant"
 msgstr "聊天助手"
 
-#: src/plugins/pluginmanifest.cpp:743
+#: src/plugins/pluginmanifest.cpp:751
 #, kde-format
 msgctxt "separator between the kinds of clip a plugin works on"
 msgid " and "
 msgstr "和"
 
-#: src/plugins/pluginmanifest.cpp:758
+#: src/plugins/pluginmanifest.cpp:766
 #, kde-format
 msgid "Acts on"
 msgstr "作用于"
 
-#: src/plugins/pluginmanifest.cpp:764
+#: src/plugins/pluginmanifest.cpp:772
 #, kde-format
 msgid "Adds effects"
 msgstr "添加效果"
 
-#: src/plugins/pluginmanifest.cpp:764
+#: src/plugins/pluginmanifest.cpp:772
 #, kde-format
 msgid "Adds effect"
 msgstr "添加效果"
 
-#: src/plugins/pluginmanifest.cpp:766
+#: src/plugins/pluginmanifest.cpp:774
 #, kde-format
 msgid "Online API (%1)"
 msgstr "在线 API (%1)"
 
-#: src/plugins/pluginmanifest.cpp:766
+#: src/plugins/pluginmanifest.cpp:774
 #, kde-format
 msgid "Local model"
 msgstr "本地模型"
 
-#: src/plugins/pluginmanifest.cpp:768
-#: src/onlineresources/resourcewidget.cpp:685
+#: src/plugins/pluginmanifest.cpp:776
+#: src/onlineresources/resourcewidget.cpp:710
 #: src/project/dialogs/projectsettings.cpp:223
 #, kde-format
 msgid "Author"
 msgstr "作者"
 
-#: src/plugins/pluginmanifest.cpp:770
+#: src/plugins/pluginmanifest.cpp:778
 #, kde-format
 msgid "License"
 msgstr "许可证"
 
-#: src/plugins/pluginmanifest.cpp:770
+#: src/plugins/pluginmanifest.cpp:778
 #, kde-format
 msgid "not specified"
 msgstr "未指定"
@@ -14901,6 +14922,27 @@ msgid ""
 "Remove the installed environment for '%1'? The plugin stays and can be "
 "reinstalled from here."
 msgstr "是否移除“%1”已安装的环境？插件将保留，并可在此处重新安装。"
+
+#: src/plugins/spendguard.cpp:77
+#, kde-format
+msgid "The assistant asks to run it"
+msgstr "助手请求运行"
+
+#. i18n: file: data/effectscategory.rc
+#: src/plugins/spendguard.cpp:81 rc.cpp:9088
+#, kde-format
+msgid "Generate"
+msgstr "Generate - 生成"
+
+#: src/plugins/spendguard.cpp:122
+#, kde-format
+msgid "The assistant asks to spend up to %1 credits without asking each time"
+msgstr "助手请求在不逐次询问的情况下花费最多 %1 积分"
+
+#: src/plugins/spendguard.cpp:124
+#, kde-format
+msgid "Allow"
+msgstr "允许"
 
 #: src/widgets/colorpickerwidget.cpp:76
 #, kde-format
@@ -17237,39 +17279,44 @@ msgctxt "@title:window"
 msgid "Error Loading Data"
 msgstr "加载数据时出错"
 
-#: src/onlineresources/providermodel.cpp:546
+#: src/onlineresources/providermodel.cpp:560
 #, kde-format
 msgid "The key is not valid"
 msgstr "密钥无效"
 
-#: src/onlineresources/providermodel.cpp:548
+#: src/onlineresources/providermodel.cpp:562
 #, kde-format
 msgid "Too many requests. Try again in a minute"
 msgstr "请求过多。请一分钟后再试"
 
-#: src/onlineresources/providermodel.cpp:550
+#: src/onlineresources/providermodel.cpp:564
 #, kde-format
 msgid "No connection to %1"
 msgstr "无法连接到 %1"
 
-#: src/onlineresources/resourcewidget.cpp:75
+#: src/onlineresources/resourceservice.cpp:654
+#, kde-format
+msgid "The file could not be downloaded. The service may no longer keep it"
+msgstr "无法下载文件。服务可能已不再保存它"
+
+#: src/onlineresources/resourcewidget.cpp:77
 #, kde-format
 msgctxt "@info:tooltip first day of a date range"
 msgid "From"
 msgstr "从"
 
-#: src/onlineresources/resourcewidget.cpp:78
+#: src/onlineresources/resourcewidget.cpp:80
 #, kde-format
 msgctxt "@info:tooltip last day of a date range"
 msgid "To"
 msgstr "到"
 
-#: src/onlineresources/resourcewidget.cpp:83
+#: src/onlineresources/resourcewidget.cpp:85
 #, kde-format
 msgid "Refresh"
 msgstr "刷新"
 
-#: src/onlineresources/resourcewidget.cpp:149
+#: src/onlineresources/resourcewidget.cpp:159
 #, kde-format
 msgid ""
 "Login is required to download this item.\n"
@@ -17278,247 +17325,88 @@ msgstr ""
 "需要登录才能下载此项目。\n"
 "您现在将被重定向到登录页面。"
 
-#: src/onlineresources/resourcewidget.cpp:332
+#: src/onlineresources/resourcewidget.cpp:353
 #, kde-format
 msgid "Your files from %1"
 msgstr "你在 %1 的文件"
 
-#: src/onlineresources/resourcewidget.cpp:341
+#: src/onlineresources/resourcewidget.cpp:362
 #, kde-format
 msgid "Press Refresh to load the list"
 msgstr "按“刷新”加载列表"
 
-#: src/onlineresources/resourcewidget.cpp:343
-#: src/onlineresources/resourcewidget.cpp:384
+#: src/onlineresources/resourcewidget.cpp:364
+#: src/onlineresources/resourcewidget.cpp:405
 #, kde-format
 msgid "Add the key in the plugin's settings"
 msgstr "请在插件设置中添加密钥"
 
-#: src/onlineresources/resourcewidget.cpp:346
+#: src/onlineresources/resourcewidget.cpp:367
 #, kde-format
 msgid "Media provided by %1"
 msgstr "媒体由 %1 提供"
 
-#: src/onlineresources/resourcewidget.cpp:405
+#: src/onlineresources/resourcewidget.cpp:426
 #, kde-format
 msgctxt "@info:status"
 msgid "Search pending…"
 msgstr "搜索正在等待…"
 
-#: src/onlineresources/resourcewidget.cpp:429
+#: src/onlineresources/resourcewidget.cpp:450
 #, kde-format
 msgid "Search failed! %1"
 msgstr "搜索失败！%1"
 
-#: src/onlineresources/resourcewidget.cpp:458
+#: src/onlineresources/resourcewidget.cpp:479
 #, kde-format
 msgctxt "@info"
 msgid "No items found."
 msgstr "未找到项目。"
 
-#: src/onlineresources/resourcewidget.cpp:469
+#: src/onlineresources/resourcewidget.cpp:490
 #, kde-format
 msgctxt "@info:progress"
 msgid "Parsing item %1 of %2…"
 msgstr "正在解析 %2 个项目中的第 %1 个…"
 
-#: src/onlineresources/resourcewidget.cpp:472
+#: src/onlineresources/resourcewidget.cpp:493
 #, kde-format
 msgctxt "Created by author name"
 msgid "Created by %1"
 msgstr "作者：%1"
 
-#: src/onlineresources/resourcewidget.cpp:675
+#: src/onlineresources/resourcewidget.cpp:679
+#, kde-format
+msgid "Price %1"
+msgstr "价格 %1"
+
+#: src/onlineresources/resourcewidget.cpp:700
 #, kde-format
 msgctxt "the url link pointing to a web page"
 msgid "link"
 msgstr "链接"
 
-#: src/onlineresources/resourcewidget.cpp:681
+#: src/onlineresources/resourcewidget.cpp:706
 #, kde-format
 msgid "Created by <a href=\"%1\">"
 msgstr "作者：<a href=\"%1\">"
 
-#: src/onlineresources/resourcewidget.cpp:689
+#: src/onlineresources/resourcewidget.cpp:714
 #, kde-format
 msgid "Created by %1"
 msgstr "作者：%1"
 
-#: src/onlineresources/resourcewidget.cpp:695
+#: src/onlineresources/resourcewidget.cpp:720
 #, kde-format
 msgid "Size: %1 x %2"
 msgstr "尺寸：%1 x %2"
 
-#: src/onlineresources/resourcewidget.cpp:698
+#: src/onlineresources/resourcewidget.cpp:723
 #, kde-format
 msgid "Duration: %1 sec"
 msgstr "持续时间：%1 秒"
 
-#: src/onlineresources/resourcewidget.cpp:726
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "CC Sampling+"
-msgstr "知识共享取样使用加强版"
-
-#: src/onlineresources/resourcewidget.cpp:728
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution"
-msgstr "知识共享：署名"
-
-#: src/onlineresources/resourcewidget.cpp:729
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY"
-msgstr "CC BY"
-
-#: src/onlineresources/resourcewidget.cpp:731
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NoDerivs"
-msgstr "知识共享：署名-禁止演绎"
-
-#: src/onlineresources/resourcewidget.cpp:732
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-ND"
-msgstr "CC BY-ND"
-
-#: src/onlineresources/resourcewidget.cpp:734
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial-ShareAlike"
-msgstr "知识共享：署名-非商业性使用-相同方式共享"
-
-#: src/onlineresources/resourcewidget.cpp:735
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC-SA"
-msgstr "CC BY-NC-SA"
-
-#: src/onlineresources/resourcewidget.cpp:737
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-ShareAlike"
-msgstr "知识共享：署名-相同方式共享"
-
-#: src/onlineresources/resourcewidget.cpp:738
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-SA"
-msgstr "CC BY-SA"
-
-#: src/onlineresources/resourcewidget.cpp:740
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial"
-msgstr "知识共享：署名-非商业性使用"
-
 #: src/onlineresources/resourcewidget.cpp:741
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC"
-msgstr "CC BY-NC"
-
-#: src/onlineresources/resourcewidget.cpp:743
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial-NoDerivs"
-msgstr "知识共享：署名-非商业性使用-相同方式共享-禁止演绎"
-
-#: src/onlineresources/resourcewidget.cpp:744
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC-ND"
-msgstr "CC BY-NC-ND"
-
-#: src/onlineresources/resourcewidget.cpp:746
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons 0"
-msgstr "知识共享 0"
-
-#: src/onlineresources/resourcewidget.cpp:747
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC 0"
-msgstr "CC 0"
-
-#: src/onlineresources/resourcewidget.cpp:749
-#, kde-format
-msgctxt "License"
-msgid "Public Domain"
-msgstr "公共领域"
-
-#: src/onlineresources/resourcewidget.cpp:751
-#, kde-format
-msgctxt "Short for: Unknown Creative Commons License"
-msgid "Unknown CC License"
-msgstr "未知 CC 许可证"
-
-#: src/onlineresources/resourcewidget.cpp:752
-#, kde-format
-msgid "Unknown Creative Commons License"
-msgstr "未知知识共享许可证"
-
-#: src/onlineresources/resourcewidget.cpp:772
-#, kde-format
-msgid "Pexels License"
-msgstr "Pexels 许可证"
-
-#: src/onlineresources/resourcewidget.cpp:774
-#, kde-format
-msgid "Pixabay License"
-msgstr "Pixabay 许可证"
-
-#: src/onlineresources/resourcewidget.cpp:777
-#, kde-format
-msgid "Unknown License"
-msgstr "未知许可证"
-
-#: src/onlineresources/resourcewidget.cpp:814
-#, kde-format
-msgid "It maybe takes a while until the preview is loaded"
-msgstr "预览可能需要一段时间才能加载"
-
-#: src/onlineresources/resourcewidget.cpp:822
-#, kde-format
-msgid "Online Resources Preview"
-msgstr "在线资源预览"
-
-#: src/onlineresources/resourcewidget.cpp:844
-#, kde-format
-msgctxt "@title:window"
-msgid "Choose File Version"
-msgstr "选择文件版本"
-
-#: src/onlineresources/resourcewidget.cpp:844
-#, kde-format
-msgid "Please choose the version you want to download"
-msgstr "请选择您想要下载的版本"
-
-#. i18n: file: src/ui/clipjobmanager_ui.ui
-#: src/onlineresources/resourcewidget.cpp:891 rc.cpp:9396
-#, kde-format
-msgid "Images"
-msgstr "图像"
-
-#: src/onlineresources/resourcewidget.cpp:906
-#, kde-format
-msgid ""
-"Be aware that the usage of the resource is maybe restricted by license terms "
-"or law!\n"
-"Do you want to add license attribution to your Project Notes?"
-msgstr ""
-"请注意，资源的使用可能受到许可证条款或法律的限制。\n"
-"您想要将许可证的署名添加到您的项目注释中吗？"
-
-#: src/onlineresources/resourcewidget.cpp:909
-#, kde-format
-msgid "Remember this decision"
-msgstr "记住此选择"
-
-#: src/onlineresources/resourcewidget.cpp:911
 #, kde-format
 msgctxt "item name, item url, author name, license name, license url"
 msgid ""
@@ -17528,58 +17416,217 @@ msgstr ""
 "此视频使用了“%1”(%2) 项目，作者为“%3”，使用 %4 许可证进行授权。要查看此许可证"
 "的副本，请访问 %5"
 
-#: src/onlineresources/resourcewidget.cpp:954
+#: src/onlineresources/resourcewidget.cpp:760
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "CC Sampling+"
+msgstr "知识共享取样使用加强版"
+
+#: src/onlineresources/resourcewidget.cpp:762
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution"
+msgstr "知识共享：署名"
+
+#: src/onlineresources/resourcewidget.cpp:763
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY"
+msgstr "CC BY"
+
+#: src/onlineresources/resourcewidget.cpp:765
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NoDerivs"
+msgstr "知识共享：署名-禁止演绎"
+
+#: src/onlineresources/resourcewidget.cpp:766
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-ND"
+msgstr "CC BY-ND"
+
+#: src/onlineresources/resourcewidget.cpp:768
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial-ShareAlike"
+msgstr "知识共享：署名-非商业性使用-相同方式共享"
+
+#: src/onlineresources/resourcewidget.cpp:769
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC-SA"
+msgstr "CC BY-NC-SA"
+
+#: src/onlineresources/resourcewidget.cpp:771
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-ShareAlike"
+msgstr "知识共享：署名-相同方式共享"
+
+#: src/onlineresources/resourcewidget.cpp:772
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-SA"
+msgstr "CC BY-SA"
+
+#: src/onlineresources/resourcewidget.cpp:774
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial"
+msgstr "知识共享：署名-非商业性使用"
+
+#: src/onlineresources/resourcewidget.cpp:775
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC"
+msgstr "CC BY-NC"
+
+#: src/onlineresources/resourcewidget.cpp:777
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial-NoDerivs"
+msgstr "知识共享：署名-非商业性使用-相同方式共享-禁止演绎"
+
+#: src/onlineresources/resourcewidget.cpp:778
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC-ND"
+msgstr "CC BY-NC-ND"
+
+#: src/onlineresources/resourcewidget.cpp:780
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons 0"
+msgstr "知识共享 0"
+
+#: src/onlineresources/resourcewidget.cpp:781
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC 0"
+msgstr "CC 0"
+
+#: src/onlineresources/resourcewidget.cpp:783
+#, kde-format
+msgctxt "License"
+msgid "Public Domain"
+msgstr "公共领域"
+
+#: src/onlineresources/resourcewidget.cpp:785
+#, kde-format
+msgctxt "Short for: Unknown Creative Commons License"
+msgid "Unknown CC License"
+msgstr "未知 CC 许可证"
+
+#: src/onlineresources/resourcewidget.cpp:786
+#, kde-format
+msgid "Unknown Creative Commons License"
+msgstr "未知知识共享许可证"
+
+#: src/onlineresources/resourcewidget.cpp:806
+#, kde-format
+msgid "Pexels License"
+msgstr "Pexels 许可证"
+
+#: src/onlineresources/resourcewidget.cpp:808
+#, kde-format
+msgid "Pixabay License"
+msgstr "Pixabay 许可证"
+
+#: src/onlineresources/resourcewidget.cpp:811
+#, kde-format
+msgid "Unknown License"
+msgstr "未知许可证"
+
+#: src/onlineresources/resourcewidget.cpp:848
+#, kde-format
+msgid "It maybe takes a while until the preview is loaded"
+msgstr "预览可能需要一段时间才能加载"
+
+#: src/onlineresources/resourcewidget.cpp:856
+#, kde-format
+msgid "Online Resources Preview"
+msgstr "在线资源预览"
+
+#: src/onlineresources/resourcewidget.cpp:878
+#, kde-format
+msgctxt "@title:window"
+msgid "Choose File Version"
+msgstr "选择文件版本"
+
+#: src/onlineresources/resourcewidget.cpp:878
+#, kde-format
+msgid "Please choose the version you want to download"
+msgstr "请选择您想要下载的版本"
+
+#. i18n: file: src/ui/clipjobmanager_ui.ui
+#: src/onlineresources/resourcewidget.cpp:925 rc.cpp:9396
+#, kde-format
+msgid "Images"
+msgstr "图像"
+
+#: src/onlineresources/resourcewidget.cpp:940
+#, kde-format
+msgid ""
+"Be aware that the usage of the resource is maybe restricted by license terms "
+"or law!\n"
+"Do you want to add license attribution to your Project Notes?"
+msgstr ""
+"请注意，资源的使用可能受到许可证条款或法律的限制。\n"
+"您想要将许可证的署名添加到您的项目注释中吗？"
+
+#: src/onlineresources/resourcewidget.cpp:943
+#, kde-format
+msgid "Remember this decision"
+msgstr "记住此选择"
+
+#: src/onlineresources/resourcewidget.cpp:984
 #, kde-format
 msgid "%1 Try again."
 msgstr "%1 请重试。"
 
-#: src/onlineresources/resourcewidget.cpp:954
-#: src/onlineresources/resourcewidget.cpp:956
+#: src/onlineresources/resourcewidget.cpp:984
+#: src/onlineresources/resourcewidget.cpp:986
 #, kde-format
 msgid "Error Loading Data"
 msgstr "加载数据时出错"
 
-#: src/onlineresources/resourcewidget.cpp:968
+#: src/onlineresources/resourcewidget.cpp:998
 #, kde-format
 msgid "Resource saved to %1"
 msgstr "资源已保存到 %1"
 
-#: src/onlineresources/resourcewidget.cpp:968
+#: src/onlineresources/resourcewidget.cpp:998
 #, kde-format
 msgid "Data Imported"
 msgstr "数据已导入"
 
-#: src/onlineresources/resourcewidget.cpp:996
+#: src/onlineresources/resourcewidget.cpp:1026
 #, kde-format
 msgid "Try importing again to obtain a new connection"
 msgstr "请重新尝试导入以获取新连接"
 
-#: src/onlineresources/resourcewidget.cpp:997
+#: src/onlineresources/resourcewidget.cpp:1027
 #, kde-format
 msgid "Error Getting Access Token from %1."
 msgstr "从 %1 获取访问令牌时出错。"
 
-#: src/onlineresources/resourcewidget.cpp:1071
+#: src/onlineresources/resourcewidget.cpp:1101
 #, kde-format
 msgid "in progress"
 msgstr "生成中"
 
-#: src/onlineresources/resourcewidget.cpp:1073
+#: src/onlineresources/resourcewidget.cpp:1103
 #, kde-format
 msgid "downloaded"
 msgstr "已下载"
 
-#: src/onlineresources/resourcewidget.cpp:1104
+#: src/onlineresources/resourcewidget.cpp:1135
 #, kde-format
 msgid "No files yet"
 msgstr "还没有文件"
 
-#: src/onlineresources/resourcewidget.cpp:1191
-#, kde-format
-msgid "The file could not be downloaded. The service may no longer keep it"
-msgstr "无法下载文件。服务可能已不再保存它"
-
-#: src/onlineresources/resourcewidget.cpp:1250
+#: src/onlineresources/resourcewidget.cpp:1256
 #, kde-format
 msgid "The file is downloading. Drag it when it is ready"
 msgstr "文件正在下载。准备好后再拖动"
@@ -41812,12 +41859,6 @@ msgid "Utilities"
 msgstr "实用工具"
 
 #. i18n: file: data/effectscategory.rc
-#: rc.cpp:9088
-#, kde-format
-msgid "Generate"
-msgstr "Generate - 生成"
-
-#. i18n: file: data/effectscategory.rc
 #: rc.cpp:9090
 #, kde-format
 msgid "On Master"
@@ -47020,10 +47061,6 @@ msgstr "开启：仅保留人声，去除背景声音。关闭：保留背景声
 #, kde-format
 #~ msgid "Press %1 first"
 #~ msgstr "请先点击“%1”"
-
-#, kde-format
-#~ msgid "Price"
-#~ msgstr "价格"
 
 #, kde-format
 #~ msgid "Credits"

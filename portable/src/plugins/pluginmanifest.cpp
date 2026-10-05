@@ -239,6 +239,14 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
                 kind.accept = kindObj.value(QStringLiteral("accept")).toString(QStringLiteral("image"));
                 kind.label = kindObj.value(QStringLiteral("label")).toString(kind.key);
                 kind.max = qMax(1, kindObj.value(QStringLiteral("max")).toInt(1));
+                const QJsonObject maxBy = kindObj.value(QStringLiteral("max_by")).toObject();
+                if (!maxBy.isEmpty()) {
+                    kind.maxByKey = maxBy.constBegin().key();
+                    const QJsonObject table = maxBy.constBegin().value().toObject();
+                    for (auto it = table.constBegin(); it != table.constEnd(); ++it) {
+                        kind.maxBy.insert(it.key(), qBound(0, it.value().toInt(kind.max), kind.max));
+                    }
+                }
                 if (!kind.key.isEmpty()) {
                     field.kinds.append(kind);
                 }

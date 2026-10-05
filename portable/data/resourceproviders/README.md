@@ -244,6 +244,7 @@ cloud, and a few more keys are read:
 | `api.search.paging` | `{ "param", "field" }`: page N is asked for with `field` of the last item of page N-1 in `param` |
 | `res.nameAlt` | Read when `name` is empty |
 | `res.date`, `res.group`, `res.status`, `res.contentType`, `res.fileName` | When the item was made, which tool made it, `done` once it is ready, its media type and the name it is saved under |
+| `res.price` | What the item cost, a number; shown with it |
 | `groups` | Tool id → name shown in the list and used for the bin folder |
 
 Placeholders for `params` and `header`, in addition to the ones above:

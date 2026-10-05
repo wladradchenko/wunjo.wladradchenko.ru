@@ -25,8 +25,8 @@
 
 #include <functional>
 
-class FileDownloadJob;
 class KDateComboBox;
+class ResourceService;
 class QComboBox;
 class QToolButton;
 
@@ -54,6 +54,7 @@ const int contentTypeRole = Qt::UserRole + 19;
 const int fileNameRole = Qt::UserRole + 20;
 const int groupRole = Qt::UserRole + 21;
 const int statusRole = Qt::UserRole + 22;
+const int priceRole = Qt::UserRole + 23;
 
 class ResourceWidget : public QWidget, public Ui::ResourceWidget_UI
 {
@@ -66,6 +67,13 @@ public:
      *  loads a plugin's list. Before, the tab may be on screen without anyone
      *  having asked for it, and nothing goes to the network unasked. */
     void started();
+    /** @brief The downloads into the project go through @p service, shared with
+     *  the assistant, so a file asked for by both is fetched once. */
+    void setService(ResourceService *service);
+    /** @brief "CC BY 4.0" (short) or the full name of the license at @p licenseUrl. */
+    static QString licenseNameFromUrl(const QString &licenseUrl, const bool shortName);
+    /** @brief The line credited in the project notes for a stock item. */
+    static QString attributionText(const QString &name, const QString &url, const QString &author, const QString &licenseUrl);
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -109,7 +117,6 @@ private:
     void loadConfig();
     void saveConfig();
     void blockUI(bool block);
-    QString licenseNameFromUrl(const QString &licenseUrl, const bool shortName);
     void downloadImage(const QString &url, QSharedPointer<QMap<QString, int>> retryCount);
     void fillServices();
 
@@ -159,8 +166,7 @@ private:
     QStringList m_thumbQueue;
     QHash<QString, QString> m_thumbUrls;
     QList<QProcess *> m_thumbProcesses;
-    QHash<QString, FileDownloadJob *> m_fetching;
-    QHash<QString, std::function<void(const QString &)>> m_afterFetch;
+    ResourceService *m_service{nullptr};
     QString m_pressedId;
     QPoint m_pressPos;
 

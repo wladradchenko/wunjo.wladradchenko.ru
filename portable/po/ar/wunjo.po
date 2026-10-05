@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: wunjo\n"
 "Report-Msgid-Bugs-To: https://github.com/wladradchenko/wunjo.wladradchenko."
 "ru/issues\n"
-"POT-Creation-Date: 2026-10-05 17:17+0300\n"
+"POT-Creation-Date: 2026-10-05 19:53+0300\n"
 "PO-Revision-Date: 2026-07-01 17:55+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
@@ -370,7 +370,7 @@ msgstr "ملف تعريف مشروعك غير صالح، قد يفشل التص�
 
 #. i18n: file: data/effects/avfilter/subtitles.xml
 #. i18n: file: src/ui.rc
-#: src/core.cpp:1141 src/mainwindow.cpp:290 src/bin/model/subtitlemodel.cpp:82
+#: src/core.cpp:1141 src/mainwindow.cpp:292 src/bin/model/subtitlemodel.cpp:82
 #: src/project/dialogs/archivewidget.cpp:100
 #: src/project/dialogs/projectsettings.cpp:434 rc.cpp:7676 rc.cpp:9208
 #, kde-format
@@ -448,7 +448,7 @@ msgid "Other Files"
 msgstr "ملفات أخرى"
 
 #: src/filefilter.cpp:135 src/effects/effectlist/view/effectlistwidget.cpp:177
-#: src/onlineresources/resourcewidget.cpp:893
+#: src/onlineresources/resourcewidget.cpp:927
 #, kde-format
 msgid "All Files"
 msgstr "كلّ الملفّات"
@@ -606,252 +606,252 @@ msgid "Rendering %1 started"
 msgstr "بدأ تصيير %1"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:155 rc.cpp:9214
+#: src/mainwindow.cpp:157 rc.cpp:9214
 #, kde-format
 msgid "Monitor"
 msgstr "راقب"
 
-#: src/mainwindow.cpp:157 src/bin/bin.cpp:3978 src/bin/bin.cpp:4114
+#: src/mainwindow.cpp:159 src/bin/bin.cpp:3978 src/bin/bin.cpp:4114
 #, kde-format
 msgid "Add Clip"
 msgstr "أضف مقطع"
 
-#: src/mainwindow.cpp:159
+#: src/mainwindow.cpp:161
 #, kde-format
 msgid "Add Marker by Category Number"
 msgstr "أضف علامة بسرعة حسب رقم الفئة"
 
-#: src/mainwindow.cpp:161
+#: src/mainwindow.cpp:163
 #, kde-format
 msgid "Navigation and Playback"
 msgstr "التنقل والتشغيل"
 
-#: src/mainwindow.cpp:163
+#: src/mainwindow.cpp:165
 #, kde-format
 msgid "Bin Tags"
 msgstr "وسوم السلة"
 
-#: src/mainwindow.cpp:215
+#: src/mainwindow.cpp:217
 #, kde-format
 msgid "Cannot find your default profile, switching to ATSC 1080p 25"
 msgstr "تعذّر العثور على التشكيلة المبدئية، سأحوّل إلى ATSC 1080p 25"
 
-#: src/mainwindow.cpp:282 src/dialogs/settings/wunjosettingsdialog.cpp:91
+#: src/mainwindow.cpp:284 src/dialogs/settings/wunjosettingsdialog.cpp:91
 #, kde-format
 msgid "Timeline"
 msgstr "الخطّ الزّمنيّ"
 
-#: src/mainwindow.cpp:285 src/bin/bin.cpp:6860
+#: src/mainwindow.cpp:287 src/bin/bin.cpp:6860
 #, kde-format
 msgid "Project Bin"
 msgstr "سلّة المشروع"
 
 #. i18n: file: ../plugins/voice-toolkit/plugin.json
-#: src/mainwindow.cpp:287 rc.cpp:210 rc.cpp:216
+#: src/mainwindow.cpp:289 rc.cpp:210 rc.cpp:216
 #, kde-format
 msgid "Library"
 msgstr "المكتبة"
 
-#: src/mainwindow.cpp:293
+#: src/mainwindow.cpp:295
 #, kde-format
 msgid "Speech Editor"
 msgstr "محرر الكلام"
 
-#: src/mainwindow.cpp:296
+#: src/mainwindow.cpp:298
 #, kde-format
 msgid "Time Remapping"
 msgstr "إعادة تنظيم الوقت"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/projectsettings_ui.ui
-#: src/mainwindow.cpp:307 rc.cpp:9226 rc.cpp:10850
+#: src/mainwindow.cpp:309 rc.cpp:9226 rc.cpp:10850
 #, kde-format
 msgid "Markers"
 msgstr "العلامات"
 
-#: src/mainwindow.cpp:322 src/dialogs/settings/wunjosettingsdialog.cpp:1007
+#: src/mainwindow.cpp:324 src/dialogs/settings/wunjosettingsdialog.cpp:1007
 #, kde-format
 msgid "Monitor %1"
 msgstr "الشّاشة %1"
 
-#: src/mainwindow.cpp:330 src/timeline2/view/qml/AudioRecordButton.qml:155
+#: src/mainwindow.cpp:332 src/timeline2/view/qml/AudioRecordButton.qml:155
 #: src/timeline2/view/qml/AudioRecordButton.qml:268
 #, kde-format
 msgid "Record"
 msgstr "سجّل"
 
-#: src/mainwindow.cpp:336
+#: src/mainwindow.cpp:338
 #, kde-format
 msgid "Enable audio monitoring from the Mixer to record"
 msgstr "مكن مراقبة الصوت من جهاز المزج للتسجيل"
 
-#: src/mainwindow.cpp:344 src/monitor/recmanager.cpp:100
+#: src/mainwindow.cpp:346 src/monitor/recmanager.cpp:100
 #, kde-format
 msgid "Configure Recording"
 msgstr "اضبط التّسجيل"
 
 #. i18n: file: src/ui/configcapture_ui.ui
-#: src/mainwindow.cpp:347 src/monitor/recmanager.cpp:37
+#: src/mainwindow.cpp:349 src/monitor/recmanager.cpp:37
 #: src/monitor/recmanager.cpp:91 rc.cpp:9484
 #, kde-format
 msgid "Screen Grab"
 msgstr "التقاط الشاشة"
 
-#: src/mainwindow.cpp:351
+#: src/mainwindow.cpp:353
 #, kde-format
 msgid "Switch to next Sequence"
 msgstr "بدل إلى التسلسل التالي"
 
-#: src/mainwindow.cpp:355
+#: src/mainwindow.cpp:357
 #, kde-format
 msgid "Switch to previous Sequence"
 msgstr "بدّل إلى التسلسل السّابق"
 
-#: src/mainwindow.cpp:361
+#: src/mainwindow.cpp:363
 #, kde-format
 msgid "Audio Spectrum"
 msgstr "طيف الصّوت"
 
-#: src/mainwindow.cpp:366
+#: src/mainwindow.cpp:368
 #, kde-format
 msgid "Clip Monitor"
 msgstr "شاشة المقطع"
 
-#: src/mainwindow.cpp:368
+#: src/mainwindow.cpp:370
 #, kde-format
 msgid "Project Monitor"
 msgstr "شاشة المشروع"
 
-#: src/mainwindow.cpp:380
+#: src/mainwindow.cpp:382
 #, kde-format
 msgid "Media Browser"
 msgstr "متصفح الوسائط"
 
-#: src/mainwindow.cpp:385 src/bin/bin.cpp:4019
+#: src/mainwindow.cpp:390 src/bin/bin.cpp:4019
 #, kde-format
 msgid "Online Resources"
 msgstr "الموارد على الإنترنت"
 
-#: src/mainwindow.cpp:398
+#: src/mainwindow.cpp:403
 #, kde-format
 msgid "Effect/Composition Stack"
 msgstr "كومة التأثير/التركيب"
 
-#: src/mainwindow.cpp:483
+#: src/mainwindow.cpp:488
 #, kde-format
 msgid "Only show reviewed items"
 msgstr "أظهر العناصر المراجعة فقط"
 
-#: src/mainwindow.cpp:487
+#: src/mainwindow.cpp:492
 #, kde-format
 msgid "Only show 10 bit compatible items"
 msgstr "اعرض فقط العناصر المتوافقة مع 10 بت"
 
 #. i18n: file: data/layouts/effects.json
 #. i18n: file: src/ui/editsub_ui.ui
-#: src/mainwindow.cpp:496 src/mainwindow.cpp:629 rc.cpp:10 rc.cpp:10232
+#: src/mainwindow.cpp:501 src/mainwindow.cpp:636 rc.cpp:10 rc.cpp:10232
 #, kde-format
 msgid "Effects"
 msgstr "التّأثيرات"
 
 #. i18n: file: src/ui/configtimeline_ui.ui
-#: src/mainwindow.cpp:499
+#: src/mainwindow.cpp:504
 #: src/transitions/transitionlist/model/transitiontreemodel.cpp:36 rc.cpp:9986
 #, kde-format
 msgid "Compositions"
 msgstr "التّراكبات"
 
-#: src/mainwindow.cpp:502
+#: src/mainwindow.cpp:507
 #, kde-format
 msgid "Clear Undo History"
 msgstr "أمسح سجل التراجع"
 
-#: src/mainwindow.cpp:505
+#: src/mainwindow.cpp:510
 #, kde-format
 msgid ""
 "This will clear all undo history, you will not be able to undo any previous "
 "action."
 msgstr "هذا يمسح كل سجلات التراجع، لن تستطيع التراجع عن أي فعل سابق."
 
-#: src/mainwindow.cpp:517
+#: src/mainwindow.cpp:522
 #, kde-format
 msgid "Clean"
 msgstr "مسح"
 
-#: src/mainwindow.cpp:522
+#: src/mainwindow.cpp:527
 #, kde-format
 msgid "Undo History"
 msgstr "تأريخ التّراجع"
 
-#: src/mainwindow.cpp:526 src/chat/chatwidget.cpp:473
+#: src/mainwindow.cpp:533 src/chat/chatwidget.cpp:474
 #, kde-format
 msgid "Chat"
 msgstr "الدردشة"
 
-#: src/mainwindow.cpp:534
+#: src/mainwindow.cpp:541
 #, kde-format
 msgid "Show Title Bars"
 msgstr "أظهر أشرطة العناوين"
 
-#: src/mainwindow.cpp:547 src/dialogs/settings/wunjosettingsdialog.cpp:219
+#: src/mainwindow.cpp:554 src/dialogs/settings/wunjosettingsdialog.cpp:219
 #, kde-format
 msgid "Theme"
 msgstr "السّمة"
 
-#: src/mainwindow.cpp:551 src/dialogs/settings/wunjosettingsdialog.cpp:223
+#: src/mainwindow.cpp:558 src/dialogs/settings/wunjosettingsdialog.cpp:223
 #, kde-format
 msgid "Dark (default)"
 msgstr "داكن (المبدئي)"
 
-#: src/mainwindow.cpp:552 src/dialogs/settings/wunjosettingsdialog.cpp:224
+#: src/mainwindow.cpp:559 src/dialogs/settings/wunjosettingsdialog.cpp:224
 #, kde-format
 msgid "Light"
 msgstr "فاتح"
 
-#: src/mainwindow.cpp:567 src/mainwindow.cpp:588
+#: src/mainwindow.cpp:574 src/mainwindow.cpp:595
 #, kde-format
 msgid "Primary Color"
 msgstr "اللون الأساسي"
 
-#: src/mainwindow.cpp:586 src/assets/view/widgets/urllistparamwidget.cpp:402
+#: src/mainwindow.cpp:593 src/assets/view/widgets/urllistparamwidget.cpp:402
 #, kde-format
 msgid "Custom…"
 msgstr "مخصّص…"
 
-#: src/mainwindow.cpp:596 src/mainwindow.cpp:598
+#: src/mainwindow.cpp:603 src/mainwindow.cpp:605
 #, kde-format
 msgid "Audio Mixer"
 msgstr "مازج الصوت"
 
-#: src/mainwindow.cpp:597
+#: src/mainwindow.cpp:604
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the audio mixer panel/widget."
 msgstr "تظهر/تخفي لوحة مازج الصوت."
 
-#: src/mainwindow.cpp:628
+#: src/mainwindow.cpp:635
 #, kde-format
 msgid "Add Effect"
 msgstr "أضف تأثيرًا"
 
-#: src/mainwindow.cpp:632
+#: src/mainwindow.cpp:639
 #, kde-format
 msgid "Add Transition"
 msgstr "أضف انتقالًا"
 
-#: src/mainwindow.cpp:633 src/mainwindow.cpp:2548
+#: src/mainwindow.cpp:640 src/mainwindow.cpp:2555
 #: src/transitions/transitionlist/model/transitiontreemodel.cpp:37
 #, kde-format
 msgid "Transitions"
 msgstr "الانتقالات"
 
 #. i18n("Favorite Effects"));
-#: src/mainwindow.cpp:647 src/mainwindow.cpp:659 src/mainwindow.cpp:666
+#: src/mainwindow.cpp:654 src/mainwindow.cpp:666 src/mainwindow.cpp:673
 #, kde-format
 msgid "Favorite Effects"
 msgstr "التّأثيرات المفضّلة"
 
-#: src/mainwindow.cpp:648 src/mainwindow.cpp:661
+#: src/mainwindow.cpp:655 src/mainwindow.cpp:668
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -861,12 +861,12 @@ msgstr ""
 "انقر لعرض قائمة التأثيرات المفضلة. انقر نقر مزدوج على تأثير لإضافته للمقطع "
 "المحدد."
 
-#: src/mainwindow.cpp:674 src/mainwindow.cpp:1866
+#: src/mainwindow.cpp:681 src/mainwindow.cpp:1873
 #, kde-format
 msgid "Render…"
 msgstr "صيّر…"
 
-#: src/mainwindow.cpp:679
+#: src/mainwindow.cpp:686
 #, kde-format
 msgctxt ""
 "@intoolbar the name of the action to place an export/render button in a "
@@ -874,105 +874,105 @@ msgctxt ""
 msgid "Render Button"
 msgstr "زرّ التّصيير"
 
-#: src/mainwindow.cpp:685
+#: src/mainwindow.cpp:692
 #, kde-format
 msgid "Rendering preview"
 msgstr "يصير المعاينة"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:690 src/dialogs/encodingprofilesdialog.cpp:58 rc.cpp:9210
+#: src/mainwindow.cpp:697 src/dialogs/encodingprofilesdialog.cpp:58 rc.cpp:9210
 #, kde-format
 msgid "Timeline Preview"
 msgstr "معاينة الخطّ الزّمنيّ"
 
-#: src/mainwindow.cpp:777 src/mainwindow.cpp:859 src/mainwindow.cpp:2368
+#: src/mainwindow.cpp:784 src/mainwindow.cpp:866 src/mainwindow.cpp:2375
 #, kde-format
 msgid "Identify Gaps"
 msgstr "عرّف الفجوات"
 
-#: src/mainwindow.cpp:778 src/mainwindow.cpp:860
+#: src/mainwindow.cpp:785 src/mainwindow.cpp:867
 #, kde-format
 msgid "All Tracks"
 msgstr "كلّ المسارات"
 
-#: src/mainwindow.cpp:781 src/mainwindow.cpp:863
+#: src/mainwindow.cpp:788 src/mainwindow.cpp:870
 #, kde-format
 msgid "Selected Track"
 msgstr "المسار المحدد"
 
-#: src/mainwindow.cpp:785
+#: src/mainwindow.cpp:792
 #, kde-format
 msgid "Go to Marker…"
 msgstr "انتقل إلى علامة…"
 
-#: src/mainwindow.cpp:799 src/monitor/monitor.cpp:939
+#: src/mainwindow.cpp:806 src/monitor/monitor.cpp:939
 #, kde-format
 msgid "Create Marker from Zone"
 msgstr "أنشئ علامة من منطقة"
 
-#: src/mainwindow.cpp:803 src/monitor/monitor.cpp:944
+#: src/mainwindow.cpp:810 src/monitor/monitor.cpp:944
 #: src/monitor/monitor.cpp:969
 #, kde-format
 msgid "Create Marker from Zone Quickly"
 msgstr "أنشئ علامات من منطقة بسرعة"
 
-#: src/mainwindow.cpp:844
+#: src/mainwindow.cpp:851
 #, kde-format
 msgid "Separate Channels"
 msgstr "افصل القنوات"
 
-#: src/mainwindow.cpp:851
+#: src/mainwindow.cpp:858
 #, kde-format
 msgid "Normalize Audio Thumbnails"
 msgstr "سوّي مصغّرات الصّوت"
 
-#: src/mainwindow.cpp:868
+#: src/mainwindow.cpp:875
 #, kde-format
 msgid "Thumbnails"
 msgstr "المصغّرات"
 
-#: src/mainwindow.cpp:870
+#: src/mainwindow.cpp:877
 #, kde-format
 msgid "In Frame"
 msgstr "إطار دخول"
 
-#: src/mainwindow.cpp:874
+#: src/mainwindow.cpp:881
 #, kde-format
 msgid "In/Out Frames"
 msgstr "إطارات الدخل/الخرج"
 
-#: src/mainwindow.cpp:878
+#: src/mainwindow.cpp:885
 #, kde-format
 msgid "All Frames"
 msgstr "كل الإطارات"
 
-#: src/mainwindow.cpp:882
+#: src/mainwindow.cpp:889
 #, kde-format
 msgid "No Thumbnails"
 msgstr "لا مصغّرات"
 
-#: src/mainwindow.cpp:918
+#: src/mainwindow.cpp:925
 #, kde-format
 msgid "Preview Using Proxy Clips"
 msgstr "عاين مستخدمًا المقاطع الوسيطة"
 
-#: src/mainwindow.cpp:925
+#: src/mainwindow.cpp:932
 #, kde-format
 msgid "Automatic Preview"
 msgstr "معانية آليّة"
 
-#: src/mainwindow.cpp:1009
+#: src/mainwindow.cpp:1016
 #, kde-format
 msgctxt "@title:window"
 msgid "Loading Project"
 msgstr "يحمّل مشروعًا"
 
-#: src/mainwindow.cpp:1116 src/dialogs/Splash.qml:731
+#: src/mainwindow.cpp:1123 src/dialogs/Splash.qml:731
 #, kde-format
 msgid "Community"
 msgstr "المجتمع"
 
-#: src/mainwindow.cpp:1195
+#: src/mainwindow.cpp:1202
 #, kde-format
 msgid ""
 "You have 1 rendering job running.\n"
@@ -997,17 +997,17 @@ msgstr[5] ""
 "لديك %1 مهمّة تصيير تعمل.\n"
 "ما الذي تريد فعله بها؟"
 
-#: src/mainwindow.cpp:1197
+#: src/mainwindow.cpp:1204
 #, kde-format
 msgid "Continue rendering in the background"
 msgstr "استمر في التصيير في الخلفية"
 
-#: src/mainwindow.cpp:1197
+#: src/mainwindow.cpp:1204
 #, kde-format
 msgid "Abort rendering"
 msgstr "أجهض التصيير"
 
-#: src/mainwindow.cpp:1214
+#: src/mainwindow.cpp:1221
 #, kde-format
 msgid ""
 "You have 1 rendering job waiting in the queue.\n"
@@ -1032,42 +1032,42 @@ msgstr[5] ""
 "لديك %1 مهمّة تصيير تنتظر في الطّابور.\n"
 "ما الذي تريد فعله بها؟"
 
-#: src/mainwindow.cpp:1217
+#: src/mainwindow.cpp:1224
 #, kde-format
 msgid "Start them now"
 msgstr "ابدأها الآن"
 
-#: src/mainwindow.cpp:1217
+#: src/mainwindow.cpp:1224
 #, kde-format
 msgid "Delete them"
 msgstr "احذفها"
 
-#: src/mainwindow.cpp:1327 src/timeline2/view/timelinecontroller.cpp:2500
+#: src/mainwindow.cpp:1334 src/timeline2/view/timelinecontroller.cpp:2500
 #, kde-format
 msgid "Select a clip to compare effect"
 msgstr "اختر مقطع لتقاران التأثير"
 
-#: src/mainwindow.cpp:1377
+#: src/mainwindow.cpp:1384
 #, kde-format
 msgid "Normal Mode"
 msgstr "الوضع العاديّ"
 
-#: src/mainwindow.cpp:1384
+#: src/mainwindow.cpp:1391
 #, kde-format
 msgid "Overwrite Mode"
 msgstr "نمط الطمس"
 
-#: src/mainwindow.cpp:1391
+#: src/mainwindow.cpp:1398
 #, kde-format
 msgid "Insert Mode"
 msgstr "وضع الإدراج"
 
-#: src/mainwindow.cpp:1395
+#: src/mainwindow.cpp:1402
 #, kde-format
 msgid "Timeline Edit Mode"
 msgstr "وضع تحرير الخطّ الزّمنيّ"
 
-#: src/mainwindow.cpp:1397
+#: src/mainwindow.cpp:1404
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1077,101 +1077,101 @@ msgstr ""
 "تبدل بين وضع الإدخال ووضع التبديل والوضع العادي. تحدد الإجراء المبدئي عند "
 "التعامل مع المقاطع في الخط الزمني."
 
-#: src/mainwindow.cpp:1406
+#: src/mainwindow.cpp:1413
 #, kde-format
 msgid "Do not Use Timeline Zone for Insert"
 msgstr "لا تستخدم منطقة الخط الزمني للإدراج"
 
-#: src/mainwindow.cpp:1406
+#: src/mainwindow.cpp:1413
 #, kde-format
 msgid "Use Timeline Zone for Insert"
 msgstr "استخدم منطقة الخط الزمني للإدراج"
 
-#: src/mainwindow.cpp:1407
+#: src/mainwindow.cpp:1414
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Toggles between using the timeline zone for inserting (on) or not (off)."
 msgstr "تبدل بين استخدام منطقة الخط الزمني للإدراج أو لا."
 
-#: src/mainwindow.cpp:1414
+#: src/mainwindow.cpp:1421
 #, kde-format
 msgid "Enable Track Compositing"
 msgstr "مكن تركيب المسار"
 
-#: src/mainwindow.cpp:1420
+#: src/mainwindow.cpp:1427
 #, kde-format
 msgid "Split Audio Tracks"
 msgstr "اقسم مسارات الصّوت"
 
-#: src/mainwindow.cpp:1426
+#: src/mainwindow.cpp:1433
 #, kde-format
 msgid "Split Audio Tracks (reverse)"
 msgstr "اقسم مسارات الصّوت (عكسيًا)"
 
-#: src/mainwindow.cpp:1432
+#: src/mainwindow.cpp:1439
 #, kde-format
 msgid "Mixed Audio tracks"
 msgstr "مسارات الصّوت مخلوطة"
 
-#: src/mainwindow.cpp:1445 src/mainwindow.cpp:1607
+#: src/mainwindow.cpp:1452 src/mainwindow.cpp:1614
 #, kde-format
 msgid "Zoom In Audio Waveforms"
 msgstr "قرّب أشكال الموجات الصوتية"
 
-#: src/mainwindow.cpp:1446 src/mainwindow.cpp:1615
+#: src/mainwindow.cpp:1453 src/mainwindow.cpp:1622
 #, kde-format
 msgid "Zoom Out Audio Waveforms"
 msgstr "بعّد أشكال الموجات الصوتية"
 
-#: src/mainwindow.cpp:1447
+#: src/mainwindow.cpp:1454
 #, kde-format
 msgid "Reset Audio Waveform Zoom"
 msgstr "أعد ضبط تقريب شكل الموجات الصوتية"
 
-#: src/mainwindow.cpp:1448
+#: src/mainwindow.cpp:1455
 #, kde-format
 msgid "Cycle Audio Waveform Zoom Levels"
 msgstr "دوّر مستويات تقريب شكل الموجات الصوتية"
 
-#: src/mainwindow.cpp:1461 src/project/dialogs/slideshowclip.cpp:85
+#: src/mainwindow.cpp:1468 src/project/dialogs/slideshowclip.cpp:85
 #, kde-format
 msgid "hh:mm:ss:ff"
 msgstr "hh:mm:ss:ff"
 
-#: src/mainwindow.cpp:1462 src/plugins/pluginsetpanel.cpp:96
+#: src/mainwindow.cpp:1469 src/plugins/pluginsetpanel.cpp:96
 #: src/plugins/pluginsetpanel.cpp:214 src/project/dialogs/slideshowclip.cpp:86
 #, kde-format
 msgid "Frames"
 msgstr "الإطارات"
 
-#: src/mainwindow.cpp:1474
+#: src/mainwindow.cpp:1481
 #, kde-format
 msgid "Edit Subtitle Tool"
 msgstr "أداة تحرير الترجمة"
 
-#: src/mainwindow.cpp:1475
+#: src/mainwindow.cpp:1482
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the subtitle track in the timeline."
 msgstr "تعرض/تخفي مسار الترجمة في الخط الزمني."
 
-#: src/mainwindow.cpp:1482 src/titler/titlewidget.cpp:404
+#: src/mainwindow.cpp:1489 src/titler/titlewidget.cpp:404
 #, kde-format
 msgid "Selection Tool"
 msgstr "أداة التّحديد"
 
-#: src/mainwindow.cpp:1487
+#: src/mainwindow.cpp:1494
 #, kde-format
 msgid "Razor Tool"
 msgstr "أداة المقصّ"
 
-#: src/mainwindow.cpp:1492
+#: src/mainwindow.cpp:1499
 #, kde-format
 msgid "Spacer Tool"
 msgstr "أداة الفضاء"
 
-#: src/mainwindow.cpp:1495
+#: src/mainwindow.cpp:1502
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1181,12 +1181,12 @@ msgstr ""
 "عند تحديدها، النقر وسحب الفأرة في الخط الزمني سيجمع المقاطع المتفرقة مؤقتا "
 "وسينشئ أو يزيل المساحة بين المقاطع."
 
-#: src/mainwindow.cpp:1500
+#: src/mainwindow.cpp:1507
 #, kde-format
 msgid "Ripple Tool"
 msgstr "أداة التموج"
 
-#: src/mainwindow.cpp:1503
+#: src/mainwindow.cpp:1510
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1200,12 +1200,12 @@ msgstr ""
 #.
 #. m_buttonRollTool->setCheckable(true);
 #. m_buttonRollTool->setChecked(false);
-#: src/mainwindow.cpp:1513
+#: src/mainwindow.cpp:1520
 #, kde-format
 msgid "Slip Tool"
 msgstr "أداة الانزلاق"
 
-#: src/mainwindow.cpp:1514
+#: src/mainwindow.cpp:1521
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1214,27 +1214,27 @@ msgid ""
 msgstr ""
 "عند تحديدها، سحب مقطعًا سيزلق المقطع الذي بأسفل النافذة المحددة ذهابًا وإيابًا."
 
-#: src/mainwindow.cpp:1518
+#: src/mainwindow.cpp:1525
 #, kde-format
 msgid "Multicam Tool"
 msgstr "أداة الكاميرات"
 
-#: src/mainwindow.cpp:1539
+#: src/mainwindow.cpp:1546
 #, kde-format
 msgid "Collapse/Expand Item"
 msgstr "اطو/وسع العنصر"
 
-#: src/mainwindow.cpp:1543
+#: src/mainwindow.cpp:1550
 #, kde-format
 msgid "Collapse/Expand All Items"
 msgstr "اطو/افرد كل العناصر"
 
-#: src/mainwindow.cpp:1547
+#: src/mainwindow.cpp:1554
 #, kde-format
 msgid "Mix Clips"
 msgstr "اخلط المقاطع"
 
-#: src/mainwindow.cpp:1549
+#: src/mainwindow.cpp:1556
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1243,12 +1243,12 @@ msgid ""
 msgstr ""
 "ينشئ انتقالًا من نفس المسار بين المقطع المحدد وأقرب مقطع إلى رأس التشغيل."
 
-#: src/mainwindow.cpp:1557
+#: src/mainwindow.cpp:1564
 #, kde-format
 msgid "Show Video Thumbnails"
 msgstr "أظهر مصغّرات الفيديو"
 
-#: src/mainwindow.cpp:1558
+#: src/mainwindow.cpp:1565
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1256,12 +1256,12 @@ msgid ""
 "(default is On)."
 msgstr "تعرض/تخفي مصغرات الفيديو للمقاطع في الخطّ الزمني (مفعلة مبدئيا)"
 
-#: src/mainwindow.cpp:1566
+#: src/mainwindow.cpp:1573
 #, kde-format
 msgid "Show Audio Thumbnails"
 msgstr "أظهر مصغّرات الصّوت"
 
-#: src/mainwindow.cpp:1567
+#: src/mainwindow.cpp:1574
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1269,37 +1269,37 @@ msgid ""
 "(default is On)."
 msgstr "تعرض/تخفي مصغرات صوتية للمقاطع في الخطّ الزمني (مفعلة مبدئيا)"
 
-#: src/mainwindow.cpp:1590 src/mainwindow.cpp:1645
+#: src/mainwindow.cpp:1597 src/mainwindow.cpp:1652
 #, kde-format
 msgid "%1×"
 msgstr "%1×"
 
-#: src/mainwindow.cpp:1626
+#: src/mainwindow.cpp:1633
 #, kde-format
 msgid "Click to reset Audio Waveform Zoom"
 msgstr "انقر لإعادة ضبط تقريب شكل الموجات الصوتية"
 
-#: src/mainwindow.cpp:1632
+#: src/mainwindow.cpp:1639
 #, kde-format
 msgid "Current Audio Waveform Zoom Level"
 msgstr "مستوى تقريب شكل الموجات الصوتية الحالي"
 
-#: src/mainwindow.cpp:1659
+#: src/mainwindow.cpp:1666
 #, kde-format
 msgid "Audio Thumbnails"
 msgstr "مصغرات الصوت"
 
-#: src/mainwindow.cpp:1662
+#: src/mainwindow.cpp:1669
 #, kde-format
 msgid "Show Markers Comments"
 msgstr "اعرض تعليقات العلامات"
 
-#: src/mainwindow.cpp:1668
+#: src/mainwindow.cpp:1675
 #, kde-format
 msgid "Snap"
 msgstr "اجذب"
 
-#: src/mainwindow.cpp:1669
+#: src/mainwindow.cpp:1676
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1309,23 +1309,23 @@ msgstr ""
 "تفعل/تعطل وظيفة الجذب (المقاطع تنجذب إلى حواف رأس التشغيل، أوالعلامات أو "
 "الأدلة وغيرها)."
 
-#: src/mainwindow.cpp:1674
+#: src/mainwindow.cpp:1681
 #, kde-format
 msgid "Show Clip Names"
 msgstr "أعرض أسماء المقاطع"
 
-#: src/mainwindow.cpp:1675
+#: src/mainwindow.cpp:1682
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the display of clip names and info in timeline."
 msgstr "يقلب عرض أسماء المقاطع ومعلوماتها في الخط الزمني."
 
-#: src/mainwindow.cpp:1680
+#: src/mainwindow.cpp:1687
 #, kde-format
 msgid "Mouse Zoom on Playhead"
 msgstr "تكبير الفأرة عند رأس التشكيل"
 
-#: src/mainwindow.cpp:1681
+#: src/mainwindow.cpp:1688
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the mouse zoom on playhead feature (default is Off)."
@@ -1333,46 +1333,46 @@ msgstr ""
 "تفعيل/إيقاف ميزة تكبير/تصغير المؤشر عند رأس التشغيل (الوضع المبدئي هو "
 "التعطيل)."
 
-#: src/mainwindow.cpp:1687
+#: src/mainwindow.cpp:1694
 #, kde-format
 msgid "Show Color Tags in Timeline"
 msgstr "أظهر وسوم لون في الخطّ الزّمنيّ"
 
-#: src/mainwindow.cpp:1688
+#: src/mainwindow.cpp:1695
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Toggles the display of clip tags in the timeline (default is On)."
 msgstr "تعرض/تخفي وسوم المقطع في الخطّ الزمني (مفعلة مبدئيًا)."
 
-#: src/mainwindow.cpp:1694
+#: src/mainwindow.cpp:1701
 #, kde-format
 msgid "Fit Zoom to Project"
 msgstr "لائم التكبير للمشروع"
 
-#: src/mainwindow.cpp:1695
+#: src/mainwindow.cpp:1702
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Adjusts the zoom level to fit the entire project into the timeline windows."
 msgstr "يضبط مستوى التكبير ليلائم كامل المشروع داخل نوافذ الخط الزمني."
 
-#: src/mainwindow.cpp:1720
+#: src/mainwindow.cpp:1727
 #, kde-format
 msgid "Experimental GPU processing enabled - not for production"
 msgstr "المعالجة الرسومية بالعتاد التجربية مفعلة - ليست للإنتاج"
 
-#: src/mainwindow.cpp:1730 src/mainwindow.cpp:4091
+#: src/mainwindow.cpp:1737 src/mainwindow.cpp:4098
 #, kde-format
 msgid "Multicam"
 msgstr "الكاميرات"
 
-#: src/mainwindow.cpp:1731
+#: src/mainwindow.cpp:1738
 #, kde-format
 msgid "Active tool and editing mode"
 msgstr "أداة نشطة و نمط التحرير"
 
 #. i18n: file: data/effectscategory.rc
-#: src/mainwindow.cpp:1765 src/dialogs/settings/wunjosettingsdialog.cpp:95
+#: src/mainwindow.cpp:1772 src/dialogs/settings/wunjosettingsdialog.cpp:95
 #: src/scopes/colorscopes/vectorscope.cpp:144 rc.cpp:9122
 #, kde-format
 msgid "Tools"
@@ -1380,261 +1380,261 @@ msgstr "أدوات"
 
 #. i18n: file: src/ui/editrenderpreset_ui.ui
 #. i18n: file: src/ui/renderwidget_ui.ui
-#: src/mainwindow.cpp:1785 rc.cpp:10112 rc.cpp:10122 rc.cpp:11004
+#: src/mainwindow.cpp:1792 rc.cpp:10112 rc.cpp:10122 rc.cpp:11004
 #, kde-format
 msgid "Auto"
 msgstr "آليّ"
 
-#: src/mainwindow.cpp:1790
+#: src/mainwindow.cpp:1797
 #, kde-format
 msgid "OpenGL"
 msgstr "أوبن‌جي‌إل"
 
-#: src/mainwindow.cpp:1795
+#: src/mainwindow.cpp:1802
 #, kde-format
 msgid "DirectX (ANGLE)"
 msgstr "دايركت إكس(أنجل)"
 
-#: src/mainwindow.cpp:1800
+#: src/mainwindow.cpp:1807
 #, kde-format
 msgid "Software OpenGL"
 msgstr "أوبن‌جي‌إل برمجي"
 
-#: src/mainwindow.cpp:1810
+#: src/mainwindow.cpp:1817
 #, kde-format
 msgid "Run Config Wizard…"
 msgstr "شغّل مرشد الضّبط…"
 
 #. i18n: file: src/ui/speechdialog_ui.ui
-#: src/mainwindow.cpp:1818 src/mainwindow.cpp:1850
+#: src/mainwindow.cpp:1825 src/mainwindow.cpp:1857
 #: src/dialogs/textbasededit.cpp:717 rc.cpp:11144
 #, kde-format
 msgid "Language"
 msgstr "اللغة"
 
-#: src/mainwindow.cpp:1823
+#: src/mainwindow.cpp:1830
 #, kde-format
 msgid "System language"
 msgstr "لغة النظام"
 
-#: src/mainwindow.cpp:1850
+#: src/mainwindow.cpp:1857
 #, kde-format
 msgid "The new language is used after Wunjo Make restarts."
 msgstr "تُستخدم اللغة الجديدة بعد إعادة تشغيل Wunjo Make."
 
-#: src/mainwindow.cpp:1851
+#: src/mainwindow.cpp:1858
 #, kde-format
 msgid "Restart Now"
 msgstr "أعد التشغيل الآن"
 
-#: src/mainwindow.cpp:1852
+#: src/mainwindow.cpp:1859
 #, kde-format
 msgid "Later"
 msgstr "لاحقًا"
 
-#: src/mainwindow.cpp:1863
+#: src/mainwindow.cpp:1870
 #, kde-format
 msgid "Project Settings…"
 msgstr "إعدادات المشروع…"
 
-#: src/mainwindow.cpp:1869
+#: src/mainwindow.cpp:1876
 #, kde-format
 msgid "Stop Render"
 msgstr "أوقف التّصيير"
 
-#: src/mainwindow.cpp:1872 src/bin/projectitemmodel.cpp:1222
+#: src/mainwindow.cpp:1879 src/bin/projectitemmodel.cpp:1222
 #, kde-format
 msgid "Remove Unused Media"
 msgstr "احذف الوسائط غير المستخدمة"
 
-#: src/mainwindow.cpp:1874
+#: src/mainwindow.cpp:1881
 #, kde-format
 msgid "Reset Configuration…"
 msgstr "صفّر الضبط…"
 
-#: src/mainwindow.cpp:1879
+#: src/mainwindow.cpp:1886
 #, kde-format
 msgid "Play Zone From Cursor"
 msgstr "شغّل المنطقة من المؤشر"
 
-#: src/mainwindow.cpp:1882
+#: src/mainwindow.cpp:1889
 #, kde-format
 msgid "Play Zone"
 msgstr "شغّل المنطقة"
 
-#: src/mainwindow.cpp:1884
+#: src/mainwindow.cpp:1891
 #, kde-format
 msgid "Loop Zone"
 msgstr "منطقة حلقة التكرار"
 
-#: src/mainwindow.cpp:1886
+#: src/mainwindow.cpp:1893
 #, kde-format
 msgid "Loop Selected Clip"
 msgstr "كرر المقطع المحدد"
 
-#: src/mainwindow.cpp:1890
+#: src/mainwindow.cpp:1897
 #, kde-format
 msgid "Transcode Clips…"
 msgstr "تبديل ترميز المقاطع…"
 
-#: src/mainwindow.cpp:1891
+#: src/mainwindow.cpp:1898
 #, kde-format
 msgid "OpenTimelineIO E&xport…"
 msgstr "&صدر ‏OpenTimelineIO‏…"
 
-#: src/mainwindow.cpp:1895
+#: src/mainwindow.cpp:1902
 #, kde-format
 msgid "OpenTimelineIO &Import…"
 msgstr "ا&ستورد OpenTimelineIO…"
 
-#: src/mainwindow.cpp:1900
+#: src/mainwindow.cpp:1907
 #, kde-format
 msgid "Archive Project…"
 msgstr "أرشف المشروع…"
 
-#: src/mainwindow.cpp:1902
+#: src/mainwindow.cpp:1909
 #, kde-format
 msgid "Switch Monitor"
 msgstr "بدّل الشّاشة"
 
-#: src/mainwindow.cpp:1903
+#: src/mainwindow.cpp:1910
 #, kde-format
 msgid "Focus Timecode"
 msgstr "رمز وقت التركيز"
 
-#: src/mainwindow.cpp:1904
+#: src/mainwindow.cpp:1911
 #, kde-format
 msgid "Expand Clip"
 msgstr "وسع المقطع"
 
-#: src/mainwindow.cpp:1906
+#: src/mainwindow.cpp:1913
 #, kde-format
 msgid "Monitor Info Overlay"
 msgstr "المعلومات المسقطة على الشاشة"
 
-#: src/mainwindow.cpp:1911
+#: src/mainwindow.cpp:1918
 #, kde-format
 msgid "Monitor Overlay Timecode"
 msgstr "رمز الوقت المسقط على الشاشة"
 
-#: src/mainwindow.cpp:1916
+#: src/mainwindow.cpp:1923
 #, kde-format
 msgid "Monitor Overlay Playback Fps"
 msgstr "معدل الأطر المسقط على الشاشة"
 
-#: src/mainwindow.cpp:1921
+#: src/mainwindow.cpp:1928
 #, kde-format
 msgid "Monitor Overlay Markers"
 msgstr "العلامات المسقطة على الشاشة"
 
-#: src/mainwindow.cpp:1926
+#: src/mainwindow.cpp:1933
 #, kde-format
 msgid "Monitor Overlay Audio Waveform"
 msgstr "الشكل الموجي للصوت المُسقط على الشاشة"
 
-#: src/mainwindow.cpp:1931
+#: src/mainwindow.cpp:1938
 #, kde-format
 msgid "Monitor Overlay Clip Jobs"
 msgstr "مهام رمز الوقت المسقط على الشاشة"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:1945 rc.cpp:9222
+#: src/mainwindow.cpp:1952 rc.cpp:9222
 #, kde-format
 msgid "Preview Resolution"
 msgstr "عاين الدقة"
 
-#: src/mainwindow.cpp:1949
+#: src/mainwindow.cpp:1956
 #, kde-format
 msgid "Full Resolution (1:1)"
 msgstr "دقة عالية (1:1)"
 
-#: src/mainwindow.cpp:1953 src/monitor/monitor.cpp:245
+#: src/mainwindow.cpp:1960 src/monitor/monitor.cpp:245
 #, kde-format
 msgid "1080p"
 msgstr "1080p"
 
-#: src/mainwindow.cpp:1957 src/monitor/monitor.cpp:245
+#: src/mainwindow.cpp:1964 src/monitor/monitor.cpp:245
 #, kde-format
 msgid "720p"
 msgstr "720ب"
 
-#: src/mainwindow.cpp:1961 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1968 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "540p"
 msgstr "540ب"
 
-#: src/mainwindow.cpp:1965 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1972 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "360p"
 msgstr "360ب"
 
-#: src/mainwindow.cpp:1969 src/monitor/monitor.cpp:246
+#: src/mainwindow.cpp:1976 src/monitor/monitor.cpp:246
 #, kde-format
 msgid "270p"
 msgstr "270ب"
 
-#: src/mainwindow.cpp:2003
+#: src/mainwindow.cpp:2010
 #, kde-format
 msgid "Real Time (drop frames)"
 msgstr "الوقت الحقيقي (إسقاط الأطر)"
 
-#: src/mainwindow.cpp:2009
+#: src/mainwindow.cpp:2016
 #, kde-format
 msgid "Insert Zone in Project Bin"
 msgstr "أدرج منطقة في سلة المشروع"
 
-#: src/mainwindow.cpp:2011
+#: src/mainwindow.cpp:2018
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Creates a new clip in the project bin from the defined zone."
 msgstr "ينشئ مقطعًا جديدًا في سلة المشروع من المنطقة المعرفة."
 
-#: src/mainwindow.cpp:2014
+#: src/mainwindow.cpp:2021
 #, kde-format
 msgid "Go to Previous Snap Point"
 msgstr "انتقل إلى نقطة الجذب السّابقة"
 
-#: src/mainwindow.cpp:2016
+#: src/mainwindow.cpp:2023
 #, kde-format
 msgid "Go to Next Snap Point"
 msgstr "انتقل إلى نقطة الجذب التّالية"
 
-#: src/mainwindow.cpp:2019
+#: src/mainwindow.cpp:2026
 #, kde-format
 msgid "Go to Clip Start"
 msgstr "انتقل إلى بداية المقطع"
 
-#: src/mainwindow.cpp:2021
+#: src/mainwindow.cpp:2028
 #, kde-format
 msgid "Go to Clip End"
 msgstr "انتقل إلى نهاية المقطع"
 
-#: src/mainwindow.cpp:2023
+#: src/mainwindow.cpp:2030
 #, kde-format
 msgid "Go to Previous Marker"
 msgstr "انتقل إلى العلامة السّابقة"
 
-#: src/mainwindow.cpp:2025
+#: src/mainwindow.cpp:2032
 #, kde-format
 msgid "Go to Next Marker"
 msgstr "انتقل إلى علامة التالية…"
 
-#: src/mainwindow.cpp:2027
+#: src/mainwindow.cpp:2034
 #, kde-format
 msgid "Align Playhead to Mouse Position"
 msgstr "حاذِ رأس التشغيل مع موضع الفأرة"
 
-#: src/mainwindow.cpp:2030
+#: src/mainwindow.cpp:2037
 #, kde-format
 msgid "Grab Current Item"
 msgstr "أمسك العنصر الحالي"
 
-#: src/mainwindow.cpp:2033
+#: src/mainwindow.cpp:2040
 #, kde-format
 msgid "Overwrite Clip Zone in Timeline"
 msgstr "استبدل منطقة المقطع في الخط الزمني"
 
-#: src/mainwindow.cpp:2035
+#: src/mainwindow.cpp:2042
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1646,12 +1646,12 @@ msgstr ""
 "التشغيل في الجدول الزمني النشيط. المقاطع التي في موضع الإدراج ستُقص ويعاد "
 "كتابتها."
 
-#: src/mainwindow.cpp:2037
+#: src/mainwindow.cpp:2044
 #, kde-format
 msgid "Insert Clip Zone in Timeline"
 msgstr "أدرج منطقة مقطع في الخط الزمني"
 
-#: src/mainwindow.cpp:2039
+#: src/mainwindow.cpp:2046
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1663,12 +1663,12 @@ msgstr ""
 "التشغيل في الجدول الزمني النشيط. المقاطع التي في موضع الإدراج ستُقص وستحرك "
 "إلى اليمين."
 
-#: src/mainwindow.cpp:2041
+#: src/mainwindow.cpp:2048
 #, kde-format
 msgid "Extract Timeline Zone"
 msgstr "استخرج منطقة الخط الزمني"
 
-#: src/mainwindow.cpp:2043
+#: src/mainwindow.cpp:2050
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1678,12 +1678,12 @@ msgstr ""
 "انقر لتحذف منطقة الخط الزمني من الخط الزمني، كل المقاطع التي على اليمين "
 "ستحرك إلى اليسار."
 
-#: src/mainwindow.cpp:2044
+#: src/mainwindow.cpp:2051
 #, kde-format
 msgid "Lift Timeline Zone"
 msgstr "ارفع منطقة الخط الزمني"
 
-#: src/mainwindow.cpp:2046
+#: src/mainwindow.cpp:2053
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1693,24 +1693,24 @@ msgstr ""
 "انقر لتحذف منطقة الخط الزمني من الخط الزمني، كل المقاطع التي على اليمين "
 "ستبقى في مكانها."
 
-#: src/mainwindow.cpp:2047
+#: src/mainwindow.cpp:2054
 #, kde-format
 msgid "Add Preview Zone"
 msgstr "أضف منطقة معاينة"
 
-#: src/mainwindow.cpp:2049
+#: src/mainwindow.cpp:2056
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
 "Add the currently defined timeline/selection zone as a preview render zone"
 msgstr "أضف المنطقة المعرفة في الخط الزمني/المحددة كمنطقة تصيير كمعاينة"
 
-#: src/mainwindow.cpp:2050 src/timeline2/view/previewmanager.cpp:577
+#: src/mainwindow.cpp:2057 src/timeline2/view/previewmanager.cpp:577
 #, kde-format
 msgid "Remove Preview Zone"
 msgstr "أزل منطقة معاينة"
 
-#: src/mainwindow.cpp:2054
+#: src/mainwindow.cpp:2061
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1720,23 +1720,23 @@ msgstr ""
 "تزيل المنطقة المعرفة في الخط الزمني/المحددة من مناطق تصيير كمعاينة. لاحظ أن "
 "هذا قد يترك فراغات في مناطق المصيرة كمعاينة."
 
-#: src/mainwindow.cpp:2055 src/timeline2/view/previewmanager.cpp:503
+#: src/mainwindow.cpp:2062 src/timeline2/view/previewmanager.cpp:503
 #, kde-format
 msgid "Remove All Preview Zones"
 msgstr "أزل كل مناطق المعاينة"
 
-#: src/mainwindow.cpp:2057
+#: src/mainwindow.cpp:2064
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "Remove all preview render zones."
 msgstr "أزل كل مناطق تصيير كمعاينة"
 
-#: src/mainwindow.cpp:2058
+#: src/mainwindow.cpp:2065
 #, kde-format
 msgid "Start Preview Render"
 msgstr "ابدأ تصيير المعاينة"
 
-#: src/mainwindow.cpp:2061
+#: src/mainwindow.cpp:2068
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -1749,248 +1749,248 @@ msgstr ""
 "للحصول على قائمة بالخيارات (على سبيل المثال: أضف منطقة تصيير كمعاينة، أزل "
 "جميع المناطق) ."
 
-#: src/mainwindow.cpp:2063
+#: src/mainwindow.cpp:2070
 #, kde-format
 msgid "Stop Preview Render"
 msgstr "أوقف تصيير المعاينة"
 
-#: src/mainwindow.cpp:2066
+#: src/mainwindow.cpp:2073
 #, kde-format
 msgid "Adjust Timeline Zone to Selection"
 msgstr "اضبط منطقة الخط الزمني إلى التحديد"
 
-#: src/mainwindow.cpp:2068
+#: src/mainwindow.cpp:2075
 #, kde-format
 msgid "Select Clip"
 msgstr "حدّد المقطع"
 
-#: src/mainwindow.cpp:2070
+#: src/mainwindow.cpp:2077
 #, kde-format
 msgid "Deselect Clip"
 msgstr "أزل تحديد المقطع"
 
-#: src/mainwindow.cpp:2072
+#: src/mainwindow.cpp:2079
 #, kde-format
 msgid "Add Clip to Selection"
 msgstr "أضف المقطع إلى التّحديد"
 
-#: src/mainwindow.cpp:2074
+#: src/mainwindow.cpp:2081
 #, kde-format
 msgid "Select Transition"
 msgstr "حدّد الانتقال"
 
-#: src/mainwindow.cpp:2076
+#: src/mainwindow.cpp:2083
 #, kde-format
 msgid "Deselect Transition"
 msgstr "أزل تحديد الانتقال"
 
-#: src/mainwindow.cpp:2078
+#: src/mainwindow.cpp:2085
 #, kde-format
 msgid "Add Transition to Selection"
 msgstr "أضف الانتقال إلى التّحديد"
 
-#: src/mainwindow.cpp:2081
+#: src/mainwindow.cpp:2088
 #, kde-format
 msgid "Delete All Markers"
 msgstr "احذف كل العلامات"
 
-#: src/mainwindow.cpp:2083
+#: src/mainwindow.cpp:2090
 #, kde-format
 msgid "Add Marker Quickly"
 msgstr "أضف علامة سريعًا"
 
-#: src/mainwindow.cpp:2087
+#: src/mainwindow.cpp:2094
 #, kde-format
 msgid "Add Marker Category 1"
 msgstr "أضف علامة الفئة 1"
 
-#: src/mainwindow.cpp:2091
+#: src/mainwindow.cpp:2098
 #, kde-format
 msgid "Add Marker Category 2"
 msgstr "أضف علامة الفئة 2"
 
-#: src/mainwindow.cpp:2095
+#: src/mainwindow.cpp:2102
 #, kde-format
 msgid "Add Marker Category 3"
 msgstr "أضف علامة الفئة 3"
 
-#: src/mainwindow.cpp:2099
+#: src/mainwindow.cpp:2106
 #, kde-format
 msgid "Add Marker Category 4"
 msgstr "أضف علامة الفئة 4"
 
-#: src/mainwindow.cpp:2103
+#: src/mainwindow.cpp:2110
 #, kde-format
 msgid "Add Marker Category 5"
 msgstr "أضف علامة الفئة 5"
 
-#: src/mainwindow.cpp:2107
+#: src/mainwindow.cpp:2114
 #, kde-format
 msgid "Add Marker Category 6"
 msgstr "أضف علامة الفئة 6"
 
-#: src/mainwindow.cpp:2111
+#: src/mainwindow.cpp:2118
 #, kde-format
 msgid "Add Marker Category 7"
 msgstr "أضف علامة الفئة 7"
 
-#: src/mainwindow.cpp:2115
+#: src/mainwindow.cpp:2122
 #, kde-format
 msgid "Add Marker Category 8"
 msgstr "أضف علامة الفئة 8"
 
-#: src/mainwindow.cpp:2119
+#: src/mainwindow.cpp:2126
 #, kde-format
 msgid "Add Marker Category 9"
 msgstr "أضف علامة الفئة 9"
 
-#: src/mainwindow.cpp:2123
+#: src/mainwindow.cpp:2130
 #, kde-format
 msgid "Add Marker Category 10"
 msgstr "أضف علامة الفئة 10"
 
-#: src/mainwindow.cpp:2128
+#: src/mainwindow.cpp:2135
 #, kde-format
 msgid "Current Selection"
 msgstr "التحديد الحالي"
 
-#: src/mainwindow.cpp:2130
+#: src/mainwindow.cpp:2137
 #, kde-format
 msgid "Add Marker"
 msgstr "أضف علامة"
 
-#: src/mainwindow.cpp:2134
+#: src/mainwindow.cpp:2141
 #, kde-format
 msgid "Delete Marker"
 msgstr "احذف علامة"
 
-#: src/mainwindow.cpp:2138
+#: src/mainwindow.cpp:2145
 #, kde-format
 msgid "Edit Marker…"
 msgstr "حرر علامة…"
 
-#: src/mainwindow.cpp:2143 src/timeline2/model/timelinefunctions.cpp:1273
+#: src/mainwindow.cpp:2150 src/timeline2/model/timelinefunctions.cpp:1273
 #, kde-format
 msgid "Restore Audio"
 msgstr "استعد الصوت"
 
-#: src/mainwindow.cpp:2149
+#: src/mainwindow.cpp:2156
 #, kde-format
 msgid "Extract Clip"
 msgstr "استخرج مقطع"
 
-#: src/mainwindow.cpp:2155
+#: src/mainwindow.cpp:2162
 #, kde-format
 msgid "Save Clip Part to Bin"
 msgstr "احفظ جزء مقطع في السلة"
 
-#: src/mainwindow.cpp:2160
+#: src/mainwindow.cpp:2167
 #, kde-format
 msgid "Disable Clip"
 msgstr "تعطيل مقطع"
 
-#: src/mainwindow.cpp:2166
+#: src/mainwindow.cpp:2173
 #, kde-format
 msgid "Set Audio Reference"
 msgstr "حدد مرجع للصوت"
 
-#: src/mainwindow.cpp:2173
+#: src/mainwindow.cpp:2180
 #, kde-format
 msgid "Align Audio to Reference"
 msgstr "حاذِ الصوت إلى المرجع"
 
-#: src/mainwindow.cpp:2179
+#: src/mainwindow.cpp:2186
 #, kde-format
 msgid "Set Timecode Reference"
 msgstr "اضبط مرجع رمز الوقت"
 
-#: src/mainwindow.cpp:2182
+#: src/mainwindow.cpp:2189
 #, kde-format
 msgid "Align Timecode to Reference"
 msgstr "حاذي رمز الوقت بالمرجع"
 
-#: src/mainwindow.cpp:2186
+#: src/mainwindow.cpp:2193
 #, kde-format
 msgid "Edit Duration"
 msgstr "حرّر المدّة"
 
-#: src/mainwindow.cpp:2190
+#: src/mainwindow.cpp:2197
 #, kde-format
 msgid "Change Speed"
 msgstr "غيّر السرعة"
 
-#: src/mainwindow.cpp:2196
+#: src/mainwindow.cpp:2203
 #, kde-format
 msgid "Time Remap"
 msgstr "إعادة تعيين الوقت"
 
-#: src/mainwindow.cpp:2203
+#: src/mainwindow.cpp:2210
 #, kde-format
 msgid "Clip in Project Bin"
 msgstr "مقطع في سلة المشروع"
 
-#: src/mainwindow.cpp:2208
+#: src/mainwindow.cpp:2215
 #, kde-format
 msgid "Search Bin Clip…"
 msgstr "البحث في سلة المقطع…"
 
 #. i18n: file: src/ui/cutjobdialog_ui.ui
-#: src/mainwindow.cpp:2210 rc.cpp:10054
+#: src/mainwindow.cpp:2217 rc.cpp:10054
 #, kde-format
 msgid "Cut Clip"
 msgstr "قص المقطع"
 
-#: src/mainwindow.cpp:2213
+#: src/mainwindow.cpp:2220
 #, kde-format
 msgid "Replace with Bin Selection"
 msgstr "استبدل بتحديد الخزانة"
 
-#: src/mainwindow.cpp:2217
+#: src/mainwindow.cpp:2224
 #, kde-format
 msgid "Cut All Clips"
 msgstr "قص كل المقاطع"
 
-#: src/mainwindow.cpp:2220
+#: src/mainwindow.cpp:2227
 #, kde-format
 msgid "Delete Selected Item"
 msgstr "احذف العنصر المحدّد"
 
-#: src/mainwindow.cpp:2223
+#: src/mainwindow.cpp:2230
 #, kde-format
 msgid "Resize Item Start"
 msgstr "غير حجم بدء العنصر"
 
-#: src/mainwindow.cpp:2227
+#: src/mainwindow.cpp:2234
 #, kde-format
 msgid "Resize Item End"
 msgstr "غير حجم نهاية العنصر"
 
-#: src/mainwindow.cpp:2231
+#: src/mainwindow.cpp:2238
 #, kde-format
 msgid "Paste Effects"
 msgstr "ألصق التّأثيرات"
 
-#: src/mainwindow.cpp:2237
+#: src/mainwindow.cpp:2244
 #, kde-format
 msgid "Remove Effects"
 msgstr "أزل تأثيرات"
 
-#: src/mainwindow.cpp:2244
+#: src/mainwindow.cpp:2251
 #, kde-format
 msgid "Group Clips"
 msgstr "جمّع المقاطع"
 
-#: src/mainwindow.cpp:2250
+#: src/mainwindow.cpp:2257
 #, kde-format
 msgid "Ungroup Clips"
 msgstr "أزل تجميع المقاطع"
 
-#: src/mainwindow.cpp:2256
+#: src/mainwindow.cpp:2263
 #, kde-format
 msgid "Create Sequence from Selection"
 msgstr "أنشئ تسلسلًا جديدًا من التحديد"
 
-#: src/mainwindow.cpp:2259
+#: src/mainwindow.cpp:2266
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2000,12 +2000,12 @@ msgstr ""
 "تضيف المقطع أو المقاطع المحددة في الخط الزمني إلى مقطع تسلسل جديد يمكن فتحه "
 "في لسان خط زمني أخر."
 
-#: src/mainwindow.cpp:2263
+#: src/mainwindow.cpp:2270
 #, kde-format
 msgid "Copy Selection to New Sequence"
 msgstr "انسخ التحديد إلى تسلسل جديد"
 
-#: src/mainwindow.cpp:2266
+#: src/mainwindow.cpp:2273
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2015,152 +2015,152 @@ msgstr ""
 "انسخ المقطع أو المقاطع المحددة حاليًا في الخط الزمني إلى مقطع تسلسل جديد يمكن "
 "فتحه في لسان خط زمني آخر."
 
-#: src/mainwindow.cpp:2280
+#: src/mainwindow.cpp:2287
 #, kde-format
 msgid "Effect Keyframes"
 msgstr "تأثير الإطار الرئيس"
 
-#: src/mainwindow.cpp:2281 src/monitor/view/EffectToolBar.qml:122
+#: src/mainwindow.cpp:2288 src/monitor/view/EffectToolBar.qml:122
 #, kde-format
 msgid "Add/Remove Keyframe"
 msgstr "أضف/أزل الإطار الرئيس"
 
-#: src/mainwindow.cpp:2283 src/assets/view/widgets/keyframecontainer.cpp:160
+#: src/mainwindow.cpp:2290 src/assets/view/widgets/keyframecontainer.cpp:160
 #: src/dialogs/timeremap.cpp:1603
 #, kde-format
 msgid "Go to next keyframe"
 msgstr "انتقل إلى الإطار الرئيس التّالي"
 
-#: src/mainwindow.cpp:2285 src/assets/view/widgets/keyframecontainer.cpp:156
+#: src/mainwindow.cpp:2292 src/assets/view/widgets/keyframecontainer.cpp:156
 #: src/dialogs/timeremap.cpp:1606
 #, kde-format
 msgid "Go to previous keyframe"
 msgstr "انتقل إلى الإطار الرئيس السّابق"
 
-#: src/mainwindow.cpp:2290
+#: src/mainwindow.cpp:2297
 #, kde-format
 msgid "Insert Space…"
 msgstr "أدرج فضاء…"
 
-#: src/mainwindow.cpp:2291
+#: src/mainwindow.cpp:2298
 #, kde-format
 msgid "Remove Space"
 msgstr "أزل الفضاء"
 
-#: src/mainwindow.cpp:2292
+#: src/mainwindow.cpp:2299
 #, kde-format
 msgid "Remove All Spaces After Cursor"
 msgstr "أزل كلّ الفضاءات بعد المؤشّر"
 
-#: src/mainwindow.cpp:2293
+#: src/mainwindow.cpp:2300
 #, kde-format
 msgid "Remove All Clips After Cursor"
 msgstr "أزل كلّ المقاطع بعد المؤشّر"
 
-#: src/mainwindow.cpp:2294
+#: src/mainwindow.cpp:2301
 #, kde-format
 msgid "Remove Space in All Tracks"
 msgstr "أزل الفضاء في كلّ المسارات"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/configtimeline_ui.ui
-#: src/mainwindow.cpp:2296 rc.cpp:9206 rc.cpp:9988
+#: src/mainwindow.cpp:2303 rc.cpp:9206 rc.cpp:9988
 #, kde-format
 msgid "Tracks"
 msgstr "المقطوعات"
 
-#: src/mainwindow.cpp:2297
+#: src/mainwindow.cpp:2304
 #, kde-format
 msgctxt "@action"
 msgid "Insert Track…"
 msgstr "أدرج مسار…"
 
-#: src/mainwindow.cpp:2301
+#: src/mainwindow.cpp:2308
 #, kde-format
 msgid "Fit all Tracks in View"
 msgstr "لائم كلّ المسارات في العرض"
 
-#: src/mainwindow.cpp:2307 src/timeline2/view/timelinecontroller.cpp:5590
+#: src/mainwindow.cpp:2314 src/timeline2/view/timelinecontroller.cpp:5590
 #, kde-format
 msgid "Sequence effects"
 msgstr "تأثيرات التسلسل"
 
-#: src/mainwindow.cpp:2314
+#: src/mainwindow.cpp:2321
 #, kde-format
 msgid "Switch Track Target Audio Stream"
 msgstr "بدّل دفق صوت المسار المستهدف"
 
-#: src/mainwindow.cpp:2319
+#: src/mainwindow.cpp:2326
 #, kde-format
 msgid "Delete Track…"
 msgstr "احذف المسار…"
 
-#: src/mainwindow.cpp:2324
+#: src/mainwindow.cpp:2331
 #, kde-format
 msgid "Move Track Up"
 msgstr "حرّك المقطع لأعلى"
 
-#: src/mainwindow.cpp:2328
+#: src/mainwindow.cpp:2335
 #, kde-format
 msgid "Move Track Down"
 msgstr "حرّك المقطع لأسفل"
 
-#: src/mainwindow.cpp:2332
+#: src/mainwindow.cpp:2339
 #, kde-format
 msgid "Show Record Controls"
 msgstr "اعرض متحكمات التّسجيل"
 
-#: src/mainwindow.cpp:2338
+#: src/mainwindow.cpp:2345
 #, kde-format
 msgid "Select All in Current Track"
 msgstr "حدّد الكلّ في المقطع الحاليّ"
 
-#: src/mainwindow.cpp:2355
+#: src/mainwindow.cpp:2362
 #, kde-format
 msgid "Manage Cached Data…"
 msgstr "أدر البيانات المخبّئة…"
 
-#: src/mainwindow.cpp:2358
+#: src/mainwindow.cpp:2365
 #, kde-format
 msgid "Disable Timeline Preview"
 msgstr "عطّل معاينة الخط الزمني"
 
-#: src/mainwindow.cpp:2362
+#: src/mainwindow.cpp:2369
 #, kde-format
 msgid "Add/Remove Timeline Marker"
 msgstr "أضف/أزل علامة الخط الزمني"
 
-#: src/mainwindow.cpp:2364
+#: src/mainwindow.cpp:2371
 #, kde-format
 msgid "Delete Timeline Marker"
 msgstr "احذف علامة الخط الزمني"
 
-#: src/mainwindow.cpp:2366
+#: src/mainwindow.cpp:2373
 #, kde-format
 msgid "Delete All Timeline Markers"
 msgstr "احذف علامات الخط الزمني"
 
-#: src/mainwindow.cpp:2370
+#: src/mainwindow.cpp:2377
 #, kde-format
 msgid "Edit Timeline Marker…"
 msgstr "حرر علامة الخط الزمني…"
 
-#: src/mainwindow.cpp:2373
+#: src/mainwindow.cpp:2380
 #, kde-format
 msgid "Export Markers…"
 msgstr "صدر العلامات…"
 
-#: src/mainwindow.cpp:2374
+#: src/mainwindow.cpp:2381
 #, kde-format
 msgid "Search Marker…"
 msgstr "ابحث العلامات…"
 
-#: src/mainwindow.cpp:2377 src/mainwindow.cpp:2380
+#: src/mainwindow.cpp:2384 src/mainwindow.cpp:2387
 #, kde-format
 msgid "Lock Timeline Markers"
 msgstr "اقفل علامات الخط الزمني"
 
-#: src/mainwindow.cpp:2382
+#: src/mainwindow.cpp:2389
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2170,57 +2170,57 @@ msgstr ""
 "أقفِل علامات الخط الزمني. عند القفل، لن تتحرك العلامات عند استخدام أداة "
 "المباعد أو إدراج/إزالة فراغ في المسارات."
 
-#: src/mainwindow.cpp:2384
+#: src/mainwindow.cpp:2391
 #, kde-format
 msgid "Add Subtitle"
 msgstr "أضف ترجمة"
 
-#: src/mainwindow.cpp:2386
+#: src/mainwindow.cpp:2393
 #, kde-format
 msgid "Disable Subtitle"
 msgstr "عطل الترجمة"
 
-#: src/mainwindow.cpp:2387
+#: src/mainwindow.cpp:2394
 #, kde-format
 msgid "Lock Subtitle"
 msgstr "اقفل الترجمة"
 
-#: src/mainwindow.cpp:2389
+#: src/mainwindow.cpp:2396
 #, kde-format
 msgid "Manage Subtitles"
 msgstr "أدر الترجمة"
 
-#: src/mainwindow.cpp:2391
+#: src/mainwindow.cpp:2398
 #, kde-format
 msgid "Import Subtitle File…"
 msgstr "استورد ملف الترجمة…"
 
-#: src/mainwindow.cpp:2393
+#: src/mainwindow.cpp:2400
 #, kde-format
 msgid "Export Subtitle File…"
 msgstr "صدّر ملفّ ترجمة…"
 
-#: src/mainwindow.cpp:2395 src/timeline2/model/timelinemodel.cpp:2626
+#: src/mainwindow.cpp:2402 src/timeline2/model/timelinemodel.cpp:2626
 #, kde-format
 msgid "Delete Subtitle"
 msgstr "احذف الترجمة"
 
-#: src/mainwindow.cpp:2396
+#: src/mainwindow.cpp:2403
 #, kde-format
 msgid "Speech Recognition…"
 msgstr "تعرف على الكلام…"
 
-#: src/mainwindow.cpp:2401
+#: src/mainwindow.cpp:2408
 #, kde-format
 msgid "Object Mask (select && track objects)"
 msgstr "قناع الكائن (حدّد && تتبّع الكائنات)"
 
-#: src/mainwindow.cpp:2416
+#: src/mainwindow.cpp:2423
 #, kde-format
 msgid "Detect Faces"
 msgstr "اكتشف الوجوه"
 
-#: src/mainwindow.cpp:2450
+#: src/mainwindow.cpp:2457
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2230,102 +2230,102 @@ msgstr ""
 "هذا يبدل بين <emphasis>شريط القائمة </emphasis> و زر <interface> القائمة "
 "المزدوجة </interface> في شريط الأدوات الرئيس."
 
-#: src/mainwindow.cpp:2481
+#: src/mainwindow.cpp:2488
 #, kde-format
 msgid "Copy Debug Information"
 msgstr "انسخ معلومات التنقيح"
 
-#: src/mainwindow.cpp:2483
+#: src/mainwindow.cpp:2490
 #, kde-format
 msgid "Disable Timeline Effects"
 msgstr "عطّل تأثيرات الخطّ الزّمنيّ"
 
-#: src/mainwindow.cpp:2505
+#: src/mainwindow.cpp:2512
 #, kde-format
 msgid "Track menu"
 msgstr "قائمة المسار"
 
-#: src/mainwindow.cpp:2509
+#: src/mainwindow.cpp:2516
 #, kde-format
 msgid "Toggle Track Disabled"
 msgstr "تبديل المسار مقفل"
 
-#: src/mainwindow.cpp:2511
+#: src/mainwindow.cpp:2518
 #, kde-format
 msgid "Toggle All Tracks Disabled"
 msgstr "قلّب تعطيل كل المسارات"
 
-#: src/mainwindow.cpp:2513
+#: src/mainwindow.cpp:2520
 #, kde-format
 msgid "Toggle Track Lock"
 msgstr "اقلب قفل المسار"
 
-#: src/mainwindow.cpp:2515
+#: src/mainwindow.cpp:2522
 #, kde-format
 msgid "Toggle All Tracks Lock"
 msgstr "قلّب قفل كل المسارات"
 
-#: src/mainwindow.cpp:2517
+#: src/mainwindow.cpp:2524
 #, kde-format
 msgid "Toggle Track Target"
 msgstr "اقلب المسار لنشط"
 
-#: src/mainwindow.cpp:2519
+#: src/mainwindow.cpp:2526
 #, kde-format
 msgid "Toggle Track Active"
 msgstr "اقلب المسار لنشط"
 
-#: src/mainwindow.cpp:2521
+#: src/mainwindow.cpp:2528
 #, kde-format
 msgid "Toggle All Tracks Active"
 msgstr "اقلب كل المسارات إلى نشطة"
 
-#: src/mainwindow.cpp:2523
+#: src/mainwindow.cpp:2530
 #, kde-format
 msgid "Switch All Tracks Active"
 msgstr "تبدل كلّ المسارات الحالة النشطة"
 
-#: src/mainwindow.cpp:2525
+#: src/mainwindow.cpp:2532
 #, kde-format
 msgid "Restore Current Clip Target Tracks"
 msgstr "استعادة المسارات المستهدفة للمقطع الحالي"
 
-#: src/mainwindow.cpp:2527
+#: src/mainwindow.cpp:2534
 #, kde-format
 msgid "Add Project Note"
 msgstr "أضف ملاحظات المشروع"
 
-#: src/mainwindow.cpp:2533
+#: src/mainwindow.cpp:2540
 #, kde-format
 msgid "Select Audio Track %1"
 msgstr "حدد مسار الصوت %1"
 
-#: src/mainwindow.cpp:2537
+#: src/mainwindow.cpp:2544
 #, kde-format
 msgid "Select Video Track %1"
 msgstr "حدد مسار الفيديو %1"
 
-#: src/mainwindow.cpp:2541
+#: src/mainwindow.cpp:2548
 #, kde-format
 msgid "Select Target %1"
 msgstr "اختر الهدف %1"
 
-#: src/mainwindow.cpp:2558
+#: src/mainwindow.cpp:2565
 #, kde-format
 msgid "Extract Frame…"
 msgstr "استخرج الإطار…"
 
-#: src/mainwindow.cpp:2561
+#: src/mainwindow.cpp:2568
 #, kde-format
 msgid "Extract Frame to Project…"
 msgstr "استخرج الإطار إلى مشروع…"
 
-#: src/mainwindow.cpp:2564
+#: src/mainwindow.cpp:2571
 #, kde-format
 msgid "Extract Frame to Clipboard"
 msgstr "استخرج الإطار إلى الحافظة"
 
-#: src/mainwindow.cpp:2699
+#: src/mainwindow.cpp:2706
 #, kde-format
 msgid ""
 "You have changed the proxy parameters. Do you want to recreate all proxy "
@@ -2334,21 +2334,21 @@ msgstr ""
 "لقد غيرت المعلمات الوسيط. هل تريد إعادة إنشاء جميع مقاطع الوسطاء لهذا "
 "المشروع؟"
 
-#: src/mainwindow.cpp:2700
+#: src/mainwindow.cpp:2707
 #, kde-format
 msgctxt "@action:button"
 msgid "Recreate"
 msgstr "أعد الإنشاء"
 
-#: src/mainwindow.cpp:2701 src/titler/titlewidget.cpp:2333
-#: src/onlineresources/resourcewidget.cpp:908
+#: src/mainwindow.cpp:2708 src/titler/titlewidget.cpp:2333
+#: src/onlineresources/resourcewidget.cpp:942
 #: src/scopes/colorscopes/colorplaneexport.cpp:157
 #, kde-format
 msgctxt "@action:button"
 msgid "Continue without"
 msgstr "تابع دونها"
 
-#: src/mainwindow.cpp:2757
+#: src/mainwindow.cpp:2764
 #, kde-format
 msgid ""
 "The current project has not been saved.<br/>This will first save the "
@@ -2359,7 +2359,7 @@ msgstr ""
 "الملفات المؤقتة من <br/><b>%1</b> إلى <b>%2</b>،<br> و إعادة تحميل ملف "
 "المشروع"
 
-#: src/mainwindow.cpp:2765
+#: src/mainwindow.cpp:2772
 #, kde-format
 msgid ""
 "This will move all temporary files from<br/><b>%1</b> to <b>%2</b>,<br/>the "
@@ -2368,38 +2368,38 @@ msgstr ""
 "سيؤدي إلى نقل جميع الملفات المؤقتة من<br/> <b>%1</b> إلى <b>%2</b> ،<br/> و "
 "إعادة تحميل ملف المشروع"
 
-#: src/mainwindow.cpp:2774 src/project/projectmanager.cpp:614
+#: src/mainwindow.cpp:2781 src/project/projectmanager.cpp:614
 #, kde-format
 msgid "Cannot perform operation, invalid document id: %1"
 msgstr "لا يمكن إجراء العمليّة، مستند غير صالح: %1"
 
-#: src/mainwindow.cpp:2779 src/project/projectmanager.cpp:620
+#: src/mainwindow.cpp:2786 src/project/projectmanager.cpp:620
 #, kde-format
 msgid "Cannot perform operation, target directory already exists: %1"
 msgstr "لا يمكن إجراء العمليّة، دليل المقصد موجود فعلًا: %1"
 
-#: src/mainwindow.cpp:2927
+#: src/mainwindow.cpp:2934
 #, kde-format
 msgid "This will remove all unused clips from your project."
 msgstr "سيزيل هذا كلّ المقاطع غير المستخدمة من مشروعك."
 
-#: src/mainwindow.cpp:2927
+#: src/mainwindow.cpp:2934
 #, kde-format
 msgid "Clean up project"
 msgstr "تنظيف المشروع"
 
-#: src/mainwindow.cpp:3058
+#: src/mainwindow.cpp:3065
 #, kde-format
 msgid "Download New Keyboard Schemes…"
 msgstr "تشكيلات لوحة المفاتيح جديدة…"
 
-#: src/mainwindow.cpp:3102
+#: src/mainwindow.cpp:3109
 #, kde-format
 msgctxt "general keyboard shortcuts"
 msgid "General"
 msgstr "عامّ"
 
-#: src/mainwindow.cpp:3183
+#: src/mainwindow.cpp:3190
 #, kde-format
 msgid ""
 "This will delete Wunjo's configuration file and restart the application. Do "
@@ -2407,33 +2407,33 @@ msgid ""
 msgstr ""
 "سيؤدي هذا إلى حذف ملف ضبط Wunjo وإعادة تشغيل التطبيق. هل تريد المتابعة؟"
 
-#: src/mainwindow.cpp:3184
+#: src/mainwindow.cpp:3191
 #, kde-format
 msgctxt "@title:window"
 msgid "Reset Configuration"
 msgstr "صفّر الضبط"
 
-#: src/mainwindow.cpp:3313 src/bin/bin.cpp:5890
+#: src/mainwindow.cpp:3320 src/bin/bin.cpp:5890
 #, kde-format
 msgid "Cannot find clip to add marker"
 msgstr "لم يعثر على مقطع ليضيف علامة لها"
 
-#: src/mainwindow.cpp:3331 src/mainwindow.cpp:3358
+#: src/mainwindow.cpp:3338 src/mainwindow.cpp:3365
 #, kde-format
 msgid "Cannot find clip to remove marker"
 msgstr "لم يعثر على مقطع ليحذف العلامة"
 
-#: src/mainwindow.cpp:3341 src/mainwindow.cpp:3397
+#: src/mainwindow.cpp:3348 src/mainwindow.cpp:3404
 #, kde-format
 msgid "No marker found at cursor time"
 msgstr "لم يعثر على علامة في وقت المُؤشِر"
 
-#: src/mainwindow.cpp:3363 src/mainwindow.cpp:3373
+#: src/mainwindow.cpp:3370 src/mainwindow.cpp:3380
 #, kde-format
 msgid "An error occurred while deleting markers"
 msgstr "حدث خطأ في أثناء حذف العلامات"
 
-#: src/mainwindow.cpp:3390 src/timeline2/view/timelinecontroller.cpp:1413
+#: src/mainwindow.cpp:3397 src/timeline2/view/timelinecontroller.cpp:1413
 #: src/timeline2/view/timelinecontroller.cpp:1421
 #: src/timeline2/view/timelinecontroller.cpp:1442
 #: src/timeline2/view/timelinecontroller.cpp:1482
@@ -2443,46 +2443,46 @@ msgstr "حدث خطأ في أثناء حذف العلامات"
 msgid "Cannot find clip to edit marker"
 msgstr "لم يعثر على مقطع ليحرر العلامة"
 
-#: src/mainwindow.cpp:3442
+#: src/mainwindow.cpp:3449
 #, kde-format
 msgid "Marker category does not exist"
 msgstr "فئة العلامة غير موجودة"
 
-#: src/mainwindow.cpp:3657 src/timeline2/model/timelinefunctions.cpp:818
+#: src/mainwindow.cpp:3664 src/timeline2/model/timelinefunctions.cpp:818
 #: src/timeline2/view/timelinecontroller.cpp:3622
 #, kde-format
 msgid "Overwrite zone"
 msgstr "استبدل منطقة"
 
-#: src/mainwindow.cpp:3659 src/mainwindow.cpp:3678
+#: src/mainwindow.cpp:3666 src/mainwindow.cpp:3685
 #: src/timeline2/model/timelinefunctions.cpp:820
 #: src/timeline2/view/timelinecontroller.cpp:3624
 #, kde-format
 msgid "Could not insert zone"
 msgstr "تعذر إدراج منطقة"
 
-#: src/mainwindow.cpp:3669
+#: src/mainwindow.cpp:3676
 #, kde-format
 msgid "No clip selected in project bin"
 msgstr "لم تحدد مقطع في سلة المشروع"
 
-#: src/mainwindow.cpp:3676 src/timeline2/model/timelinefunctions.cpp:818
+#: src/mainwindow.cpp:3683 src/timeline2/model/timelinefunctions.cpp:818
 #: src/timeline2/view/timelinecontroller.cpp:3622
 #, kde-format
 msgid "Insert zone"
 msgstr "أدرج منطقة"
 
-#: src/mainwindow.cpp:3843
+#: src/mainwindow.cpp:3850
 #, kde-format
 msgid "Cannot add effect to active item"
 msgstr "لا يمكن إضافة تأثير للعنصر النشط"
 
-#: src/mainwindow.cpp:3905
+#: src/mainwindow.cpp:3912
 #, kde-format
 msgid "Zoom Level: %1/%2"
 msgstr "مستوى التكبير: %1/%2"
 
-#: src/mainwindow.cpp:4059
+#: src/mainwindow.cpp:4066
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2494,7 +2494,7 @@ msgstr ""
 "مع shift</shortcut> للتحديد المتعدد، <shortcut>سحب مع Meta</shortcut> لنقل "
 "المقطع المجموع إلى مسار أخر،<shortcut>سحب مع ctrl</shortcut> للتوزيع"
 
-#: src/mainwindow.cpp:4063
+#: src/mainwindow.cpp:4070
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2507,24 +2507,24 @@ msgstr ""
 "مع shift</shortcut> للتحديد المتعدد، <shortcut>سحب مع Meta + Alt</shortcut> "
 "لنقل المقطع المجموع إلى مسار أخر،<shortcut>سحب مع ctrl</shortcut> للتوزيع"
 
-#: src/mainwindow.cpp:4066
+#: src/mainwindow.cpp:4073
 #, kde-format
 msgid "Select"
 msgstr "اختر"
 
-#: src/mainwindow.cpp:4068
+#: src/mainwindow.cpp:4075
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid "<shortcut>Shift</shortcut> to preview cut frame"
 msgstr "<shortcut>Shift</shortcut> لمعاينة الإطار المقطوع"
 
 #. i18n: file: src/ui/configtools_ui.ui
-#: src/mainwindow.cpp:4069 rc.cpp:9994
+#: src/mainwindow.cpp:4076 rc.cpp:9994
 #, kde-format
 msgid "Razor"
 msgstr "المقصّ"
 
-#: src/mainwindow.cpp:4073
+#: src/mainwindow.cpp:4080
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2534,12 +2534,12 @@ msgstr ""
 "<shortcut>Ctrl</shortcut> للتطبيق على المسار الحالي فقط، <shortcut>Shift</"
 "shortcut> يحرك الخطوط الإرشادية. يمكنك الجمع بين المعدلين."
 
-#: src/mainwindow.cpp:4074
+#: src/mainwindow.cpp:4081
 #, kde-format
 msgid "Spacer"
 msgstr "مُباعد"
 
-#: src/mainwindow.cpp:4076
+#: src/mainwindow.cpp:4083
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2549,13 +2549,13 @@ msgstr ""
 "<shortcut>النقر</shortcut> على العنصر لإزلاقه, <shortcut>النقر مع Shift</"
 "shortcut> للتحديد المتعدد"
 
-#: src/mainwindow.cpp:4077
+#: src/mainwindow.cpp:4084
 #, kde-format
 msgctxt "Timeline Tool"
 msgid "Slip"
 msgstr "انزلاق"
 
-#: src/mainwindow.cpp:4082
+#: src/mainwindow.cpp:4089
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2567,13 +2567,13 @@ msgstr ""
 "Shift</shortcut> للتحديد المتعدد، <shortcut>النقر مع Alt</shortcut> لتحيد "
 "عنصر في مجموعة،<shortcut>سحب مع Ctrl</shortcut> للتوزيع"
 
-#: src/mainwindow.cpp:4084
+#: src/mainwindow.cpp:4091
 #, kde-format
 msgctxt "Timeline Tool"
 msgid "Ripple"
 msgstr "تموج"
 
-#: src/mainwindow.cpp:4090
+#: src/mainwindow.cpp:4097
 #, kde-kuit-format
 msgctxt "@info:whatsthis"
 msgid ""
@@ -2583,199 +2583,199 @@ msgstr ""
 "<shortcut>انقر</shortcut> على عرض المسار في شاشة المشروع لتنفذ رفع لكل "
 "المسارات باستثناء النشط منها"
 
-#: src/mainwindow.cpp:4106
+#: src/mainwindow.cpp:4113
 #, kde-format
 msgid "Insert"
 msgstr "أدرج"
 
-#: src/mainwindow.cpp:4108 src/doc/documentvalidator.cpp:2248
+#: src/mainwindow.cpp:4115 src/doc/documentvalidator.cpp:2248
 #, kde-format
 msgid "Overwrite"
 msgstr "استبدل"
 
-#: src/mainwindow.cpp:4383 src/mainwindow.cpp:4385
+#: src/mainwindow.cpp:4390 src/mainwindow.cpp:4392
 #, kde-format
 msgid "Scopes"
 msgstr "مناظير"
 
-#: src/mainwindow.cpp:4390
+#: src/mainwindow.cpp:4397
 #, kde-format
 msgid "Project Bins"
 msgstr "سلال المشروع"
 
-#: src/mainwindow.cpp:4467
+#: src/mainwindow.cpp:4474
 #, kde-format
 msgid "Clip Jobs"
 msgstr "مهام المقطع"
 
-#: src/mainwindow.cpp:4486
+#: src/mainwindow.cpp:4493
 #, kde-format
 msgid "Configure Clip Jobs…"
 msgstr "اضبط مهامّ المقاطع…"
 
-#: src/mainwindow.cpp:4492
+#: src/mainwindow.cpp:4499
 #, kde-format
 msgid "Transcoders"
 msgstr "مبدلات الترميز"
 
 #. i18n: file: src/ui.rc
-#: src/mainwindow.cpp:4493 rc.cpp:9182
+#: src/mainwindow.cpp:4500 rc.cpp:9182
 #, kde-format
 msgid "Extract Audio"
 msgstr "استخرج الصوت"
 
-#: src/mainwindow.cpp:4559
+#: src/mainwindow.cpp:4566
 #, kde-format
 msgid "-merged"
 msgstr "-مدمج"
 
-#: src/mainwindow.cpp:4562
+#: src/mainwindow.cpp:4569
 #, kde-format
 msgid "-stream-%1"
 msgstr "-الدفق-%1"
 
-#: src/mainwindow.cpp:4595 src/mainwindow.cpp:4925
+#: src/mainwindow.cpp:4602 src/mainwindow.cpp:4932
 #, kde-format
 msgid "Interface"
 msgstr "الواجهة"
 
-#: src/mainwindow.cpp:4666
+#: src/mainwindow.cpp:4673
 #, kde-format
 msgctxt "@title:window"
 msgid "Files to Transcode"
 msgstr "ملفات ليبدل ترميزها"
 
-#: src/mainwindow.cpp:4760
+#: src/mainwindow.cpp:4767
 #, kde-format
 msgid "Could not ask the system to shut down."
 msgstr "تعذّر طلب إيقاف تشغيل النظام."
 
-#: src/mainwindow.cpp:4832
+#: src/mainwindow.cpp:4839
 #, kde-format
 msgid "Project file could not be saved for archiving."
 msgstr "لا يمكن حفظ ملف المشروع للأرشفة."
 
-#: src/mainwindow.cpp:4840
+#: src/mainwindow.cpp:4847
 #, kde-format
 msgid "Archiving project"
 msgstr "يأرشف المشروع"
 
-#: src/mainwindow.cpp:4939
+#: src/mainwindow.cpp:4946
 #, kde-format
 msgid "Raise %1"
 msgstr "ارفع %1"
 
-#: src/mainwindow.cpp:5000
+#: src/mainwindow.cpp:5007
 #, kde-format
 msgid "Icon Size"
 msgstr "حجم الأيقونات"
 
-#: src/mainwindow.cpp:5004
+#: src/mainwindow.cpp:5011
 #, kde-format
 msgctxt "@item:inmenu Icon size"
 msgid "Default"
 msgstr "المبدئي"
 
-#: src/mainwindow.cpp:5025 src/mainwindow.cpp:5053
+#: src/mainwindow.cpp:5032 src/mainwindow.cpp:5060
 #, kde-format
 msgid "Small (%1x%2)"
 msgstr "صغيرة (%1×%2)"
 
-#: src/mainwindow.cpp:5027 src/mainwindow.cpp:5055
+#: src/mainwindow.cpp:5034 src/mainwindow.cpp:5062
 #, kde-format
 msgid "Medium (%1x%2)"
 msgstr "متوسّطة (%1×%2)"
 
-#: src/mainwindow.cpp:5029 src/mainwindow.cpp:5057
+#: src/mainwindow.cpp:5036 src/mainwindow.cpp:5064
 #, kde-format
 msgid "Large (%1x%2)"
 msgstr "كبيرة (%1×%2)"
 
-#: src/mainwindow.cpp:5031 src/mainwindow.cpp:5059
+#: src/mainwindow.cpp:5038 src/mainwindow.cpp:5066
 #, kde-format
 msgid "Huge (%1x%2)"
 msgstr "ضخمة (%1×%2)"
 
-#: src/mainwindow.cpp:5115
+#: src/mainwindow.cpp:5122
 #, kde-format
 msgid ""
 "This will hide the menu bar completely. You can show it again by typing "
 "Ctrl+M."
 msgstr "سيُخفي هذا شريط القوائم بالكامل. يمكنك إظهاره مجدّدًا بضغط Ctrl+M."
 
-#: src/mainwindow.cpp:5115
+#: src/mainwindow.cpp:5122
 #, kde-format
 msgid "Hide menu bar"
 msgstr "أخفِ شريط القوائم"
 
-#: src/mainwindow.cpp:5457 src/timeline2/view/timelinecontroller.cpp:5821
+#: src/mainwindow.cpp:5464 src/timeline2/view/timelinecontroller.cpp:5821
 #, kde-format
 msgid "No subtitles in current project"
 msgstr "لا يوجد ترجمات في المشروع الحالي"
 
-#: src/mainwindow.cpp:5619 src/bin/bin.cpp:6863 src/bin/bin.cpp:6866
+#: src/mainwindow.cpp:5626 src/bin/bin.cpp:6863 src/bin/bin.cpp:6866
 #, kde-format
 msgid "Project Bin %1"
 msgstr "سلّة المشروع %1"
 
-#: src/mainwindow.cpp:5822
+#: src/mainwindow.cpp:5829
 #, kde-format
 msgid "Go to download page"
 msgstr "اذهب إلى صفحة التحميل"
 
-#: src/mainwindow.cpp:5826
+#: src/mainwindow.cpp:5833
 #, kde-format
 msgid "Never check again"
 msgstr "لا تحقق مجددًا"
 
-#: src/mainwindow.cpp:5828
+#: src/mainwindow.cpp:5835
 #, kde-format
 msgid "Wunjo Make %1 is available — you are running %2."
 msgstr "Wunjo Make %1 متوفر — أنت تشغّل %2."
 
-#: src/mainwindow.cpp:5869
+#: src/mainwindow.cpp:5876
 #, kde-format
 msgid "Checking cached data size"
 msgstr "يفحص حجم بيانات الخبيئة"
 
-#: src/mainwindowscripting.cpp:546
+#: src/mainwindowscripting.cpp:549
 #, kde-format
 msgid "Create folder"
 msgstr "أنشئ مجلّدًا"
 
-#: src/mainwindowscripting.cpp:664
+#: src/mainwindowscripting.cpp:667
 #, kde-format
 msgid "Delete clip"
 msgstr "احذف المقطع"
 
-#: src/mainwindowscripting.cpp:696 src/bin/bin.cpp:5212
+#: src/mainwindowscripting.cpp:699 src/bin/bin.cpp:5212
 #: src/dialogs/clipcreationdialog.cpp:347
 #, kde-format
 msgid "Title clip"
 msgstr "مقطع عنوان"
 
-#: src/mainwindowscripting.cpp:1107
+#: src/mainwindowscripting.cpp:1110
 #, kde-format
 msgid "Ripple delete"
 msgstr "حذف متموّج"
 
-#: src/mainwindowscripting.cpp:1152
+#: src/mainwindowscripting.cpp:1155
 #, kde-format
 msgid "Ripple trim"
 msgstr "تشذيب متموّج"
 
-#: src/mainwindowscripting.cpp:1257
+#: src/mainwindowscripting.cpp:1260
 #, kde-format
 msgid "Add mix"
 msgstr "أضف مزجًا"
 
-#: src/mainwindowscripting.cpp:1645
+#: src/mainwindowscripting.cpp:1648
 #: src/timeline2/view/timelinecontroller.cpp:4327
 #, kde-format
 msgid "Paste effects"
 msgstr "ألصق التّأثيرات"
 
-#: src/mainwindowscripting.cpp:2030
+#: src/mainwindowscripting.cpp:2033
 #: src/timeline2/model/timelinefunctions.cpp:1169
 #: src/timeline2/model/timelinefunctions.cpp:1173
 #: src/timeline2/model/timelinefunctions.cpp:1180
@@ -2784,7 +2784,7 @@ msgstr "ألصق التّأثيرات"
 msgid "Enable clip"
 msgstr "مكّن مقطع"
 
-#: src/mainwindowscripting.cpp:2030
+#: src/mainwindowscripting.cpp:2033
 #: src/timeline2/model/timelinefunctions.cpp:1169
 #: src/timeline2/model/timelinefunctions.cpp:1173
 #: src/timeline2/model/timelinefunctions.cpp:1180
@@ -2793,50 +2793,50 @@ msgstr "مكّن مقطع"
 msgid "Disable clip"
 msgstr "عطّل مقطع"
 
-#: src/mainwindowscripting.cpp:2933 src/bin/model/subtitlemodel.cpp:1634
+#: src/mainwindowscripting.cpp:2936 src/bin/model/subtitlemodel.cpp:1634
 #: src/dialogs/subtitleedit.cpp:284
 #, kde-format
 msgid "Add subtitle"
 msgstr "أضف ترجمة"
 
-#: src/mainwindowscripting.cpp:3104 src/bin/clipcreator.cpp:174
+#: src/mainwindowscripting.cpp:3107 src/bin/clipcreator.cpp:174
 #: src/bin/clipcreator.cpp:270
 #, kde-format
 msgid "Create sequence"
 msgstr "أنشئ تسلسلًا جديدًا"
 
-#: src/mainwindowscripting.cpp:3804
+#: src/mainwindowscripting.cpp:3966
 #, kde-format
 msgid "The object detection environment is not installed yet."
 msgstr "بيئة اكتشاف الكائنات غير مثبّتة بعد."
 
-#: src/mainwindowscripting.cpp:3810
+#: src/mainwindowscripting.cpp:3972
 #, kde-format
 msgid "Cannot access the project folder."
 msgstr "لا يمكن الوصول إلى مجلد المشروع."
 
-#: src/mainwindowscripting.cpp:3841
+#: src/mainwindowscripting.cpp:4003
 #: src/effects/effectstack/view/maskmanager.cpp:328
 #, kde-format
 msgid "Exporting video frames"
 msgstr "يصدر إطارات الفيديو"
 
-#: src/mainwindowscripting.cpp:3877
+#: src/mainwindowscripting.cpp:4039
 #, kde-format
 msgid "Prepare the frames first with sam_prepare."
 msgstr "جهّز الإطارات أولًا باستخدام sam_prepare."
 
-#: src/mainwindowscripting.cpp:3881
+#: src/mainwindowscripting.cpp:4043
 #, kde-format
 msgid "Say what to follow: at least one point or box on the first frame."
 msgstr "حدّد ما يجب تتبّعه: نقطة أو مربع واحد على الأقل في الإطار الأول."
 
-#: src/mainwindowscripting.cpp:3890
+#: src/mainwindowscripting.cpp:4052
 #, kde-format
 msgid "The exported frames are gone — prepare again."
 msgstr "الإطارات المصدّرة لم تعد موجودة — جهّزها مجددًا."
 
-#: src/mainwindowscripting.cpp:3896
+#: src/mainwindowscripting.cpp:4058
 #, kde-format
 msgid "mask"
 msgstr "قناع"
@@ -5552,7 +5552,7 @@ msgstr "<b> Shift </b> لطي/توسيع جميع المسارات من نفس �
 msgid "Minimize"
 msgstr "صغّر"
 
-#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:1035
+#: src/timeline2/view/qml/TrackHead.qml:267 src/chat/generatorcard.cpp:1109
 #, kde-format
 msgid "Expand"
 msgstr "وسع"
@@ -5880,7 +5880,7 @@ msgstr "افرز حسب"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
 #: src/bin/bin.cpp:1449 src/bin/projectitemmodel.cpp:324
-#: src/chat/chatwidget.cpp:1257 rc.cpp:10522 rc.cpp:10554
+#: src/chat/chatwidget.cpp:1358 rc.cpp:10522 rc.cpp:10554
 #, kde-format
 msgid "Name"
 msgstr "الاسم"
@@ -5908,7 +5908,7 @@ msgstr "الوصف"
 #. i18n: file: data/effects/avfilter/avfilter_noise.xml
 #. i18n: file: data/effects/avfilter/avfilter_sofalizer.xml
 #: src/bin/bin.cpp:1461 src/bin/projectitemmodel.cpp:333
-#: src/plugins/pluginmanifest.cpp:766 rc.cpp:3288 rc.cpp:3390 rc.cpp:3696
+#: src/plugins/pluginmanifest.cpp:774 rc.cpp:3288 rc.cpp:3390 rc.cpp:3696
 #: rc.cpp:4194 rc.cpp:6344 rc.cpp:6372 rc.cpp:6682 rc.cpp:6710 rc.cpp:6808
 #: rc.cpp:6818 rc.cpp:6828 rc.cpp:6838 rc.cpp:6848 rc.cpp:7224
 #, kde-format
@@ -6018,7 +6018,7 @@ msgid "Cancel Pending Jobs"
 msgstr "ألغِ المهامّ المرجأة"
 
 #. i18n: file: data/effects/avfilter/avfilter_curves.xml
-#: src/bin/bin.cpp:1665 src/onlineresources/resourcewidget.cpp:335 rc.cpp:5670
+#: src/bin/bin.cpp:1665 src/onlineresources/resourcewidget.cpp:356 rc.cpp:5670
 #, kde-format
 msgid "All"
 msgstr "الكل"
@@ -6030,7 +6030,7 @@ msgstr "الكل"
 #. i18n: file: src/ui/projectsettings_ui.ui
 #. i18n: file: src/ui/renderwidget_ui.ui
 #: src/bin/bin.cpp:1666 src/dialogs/settings/pluginssettings.cpp:444
-#: src/monitor/recmanager.cpp:44 src/onlineresources/resourcewidget.cpp:889
+#: src/monitor/recmanager.cpp:44 src/onlineresources/resourcewidget.cpp:923
 #: rc.cpp:102 rc.cpp:9392 rc.cpp:10068 rc.cpp:10082 rc.cpp:10800 rc.cpp:10956
 #, kde-format
 msgid "Video"
@@ -6055,7 +6055,7 @@ msgstr "صورة"
 #: src/lib/audio/audioStreamInfo.cpp:25 src/lib/audio/audioStreamInfo.cpp:31
 #: src/monitor/recmanager.cpp:45
 #: src/effects/effectlist/model/effecttreemodel.cpp:65
-#: src/onlineresources/resourcewidget.cpp:887 rc.cpp:2 rc.cpp:9394 rc.cpp:9516
+#: src/onlineresources/resourcewidget.cpp:921 rc.cpp:2 rc.cpp:9394 rc.cpp:9516
 #: rc.cpp:10060 rc.cpp:10142 rc.cpp:10802 rc.cpp:10978
 #, kde-format
 msgid "Audio"
@@ -6237,6 +6237,7 @@ msgstr "استبدل في الخطّ الزّمني"
 
 #: src/bin/bin.cpp:2390 src/bin/bin.cpp:6239 src/bin/clipcreator.cpp:350
 #: src/effects/effectstack/view/maskmanager.cpp:641
+#: src/onlineresources/resourceservice.cpp:563
 #, kde-format
 msgctxt "@action"
 msgid "Add clip"
@@ -6594,10 +6595,10 @@ msgid "Edit Tags"
 msgstr "حرر الأوسمة"
 
 #: src/bin/bin.cpp:5012 src/bin/projectclip.cpp:192
-#: src/bin/projectclip.cpp:2046 src/onlineresources/resourcewidget.cpp:472
-#: src/onlineresources/resourcewidget.cpp:897
-#: src/onlineresources/resourcewidget.cpp:912
-#: src/onlineresources/resourcewidget.cpp:1050
+#: src/bin/projectclip.cpp:2046 src/onlineresources/resourcewidget.cpp:493
+#: src/onlineresources/resourcewidget.cpp:742
+#: src/onlineresources/resourcewidget.cpp:931
+#: src/onlineresources/resourcewidget.cpp:1080
 #, kde-format
 msgid "Unnamed"
 msgstr "غير مسمى"
@@ -9163,23 +9164,23 @@ msgstr "غاما"
 msgid "Gain"
 msgstr "الكسب"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:142
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:215
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:144
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:195
 #, kde-format
 msgid "This effect is not on a clip that can be rendered."
 msgstr "هذا التأثير ليس على مقطع يمكن تصييره."
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:185
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:167
 #, kde-format
 msgid "Queued…"
 msgstr "في الطابور…"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:187
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:169
 #, kde-format
 msgid "Rendering… %1%"
 msgstr "يصيّر… %1%"
 
-#: src/assets/view/widgets/pluginjobparamwidget.cpp:199
+#: src/assets/view/widgets/pluginjobparamwidget.cpp:181
 #, kde-format
 msgid "Check the price first"
 msgstr "تحقق من السعر أولًا"
@@ -11778,7 +11779,7 @@ msgid "Using MLT %1"
 msgstr "يستخدم ام ال تي %1"
 
 #: src/dialogs/wizard.cpp:79 src/doc/wunjodoc.cpp:1903
-#: src/onlineresources/resourcewidget.cpp:67 src/project/cliptranscode.cpp:193
+#: src/onlineresources/resourcewidget.cpp:69 src/project/cliptranscode.cpp:193
 #: src/project/cliptranscode.cpp:227 src/project/dialogs/archivewidget.cpp:785
 #: src/project/dialogs/archivewidget.cpp:1293
 #, kde-format
@@ -12109,7 +12110,7 @@ msgid "Add plugin…"
 msgstr "أضف ملحقًا…"
 
 #: src/dialogs/settings/pluginssettings.cpp:581
-#: src/plugins/plugineffects.cpp:169 src/plugins/pluginsettingstab.cpp:70
+#: src/plugins/plugineffects.cpp:171 src/plugins/pluginsettingstab.cpp:70
 #, kde-format
 msgid "Update"
 msgstr "تحديث"
@@ -12133,7 +12134,7 @@ msgid "Recommended"
 msgstr "موصى بها"
 
 #: src/dialogs/settings/pluginssettings.cpp:673
-#: src/plugins/plugineffects.cpp:170 src/plugins/pluginsettingstab.cpp:71
+#: src/plugins/plugineffects.cpp:172 src/plugins/pluginsettingstab.cpp:71
 #, kde-format
 msgid "Opens the plugin's page on wunjo.online"
 msgstr "يفتح صفحة الملحق على wunjo.online"
@@ -12411,7 +12412,7 @@ msgstr ""
 msgid "Colors and Markers"
 msgstr "الألوان والعلامات"
 
-#: src/dialogs/settings/wunjosettingsdialog.cpp:127 src/chat/chatwidget.cpp:481
+#: src/dialogs/settings/wunjosettingsdialog.cpp:127 src/chat/chatwidget.cpp:482
 #: src/effects/effectlist/model/effecttreemodel.cpp:66
 #, kde-format
 msgid "Plugins"
@@ -13466,7 +13467,7 @@ msgstr "تعذّر إنشاء %1."
 msgid "This build does not ship the MCP server an outside agent needs."
 msgstr "هذه البنية لا تتضمن خادم MCP الذي يحتاجه وكيل خارجي."
 
-#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1640
+#: src/chat/chatmessagemodel.cpp:243 src/chat/chatwidget.cpp:1741
 #, kde-format
 msgid "interrupted"
 msgstr "مقاطَع"
@@ -13489,106 +13490,116 @@ msgstr ""
 msgid "Speech recognition failed: %1"
 msgstr "فشل التعرف على الكلام: %1"
 
-#: src/chat/chatwidget.cpp:376
+#: src/chat/chatwidget.cpp:377
 #, kde-format
 msgid "Ask Wunjo…"
 msgstr "اسأل Wunjo…"
 
-#: src/chat/chatwidget.cpp:443 src/chat/chatwidget.cpp:446
-#: src/chat/chatwidget.cpp:1439 src/chat/chatwidget.cpp:1449
-#: src/chat/chatwidget.cpp:1613
+#: src/chat/chatwidget.cpp:444 src/chat/chatwidget.cpp:447
+#: src/chat/chatwidget.cpp:1540 src/chat/chatwidget.cpp:1550
+#: src/chat/chatwidget.cpp:1714
 #, kde-format
 msgid "New chat"
 msgstr "دردشة جديدة"
 
-#: src/chat/chatwidget.cpp:450
+#: src/chat/chatwidget.cpp:451
 #, kde-format
 msgid "Chat history"
 msgstr "سجل الدردشات"
 
-#: src/chat/chatwidget.cpp:474
+#: src/chat/chatwidget.cpp:475
 #, kde-format
 msgid "Skills"
 msgstr "المهارات"
 
-#: src/chat/chatwidget.cpp:475
+#: src/chat/chatwidget.cpp:476
 #, kde-format
 msgid "Loops"
 msgstr "الحلقات"
 
-#: src/chat/chatwidget.cpp:514
+#: src/chat/chatwidget.cpp:515
 #, kde-format
 msgid "Search chats…"
 msgstr "ابحث في الدردشات…"
 
-#: src/chat/chatwidget.cpp:521
+#: src/chat/chatwidget.cpp:522
 #, kde-format
 msgid "Delete chat"
 msgstr "احذف الدردشة"
 
-#: src/chat/chatwidget.cpp:553 src/chat/chatwidget.cpp:718
-#: src/chat/chatwidget.cpp:724
+#: src/chat/chatwidget.cpp:554 src/chat/chatwidget.cpp:738
+#: src/chat/chatwidget.cpp:744
 #, kde-format
 msgid "Voice input (Whisper)"
 msgstr "إدخال صوتي (Whisper)"
 
-#: src/chat/chatwidget.cpp:558 src/chat/chatwidget.cpp:1397
-#: src/chat/chatwidget.cpp:1531
+#: src/chat/chatwidget.cpp:559 src/chat/chatwidget.cpp:1498
+#: src/chat/chatwidget.cpp:1632
 #, kde-format
 msgid "Send (Enter)"
 msgstr "أرسل (Enter)"
 
-#: src/chat/chatwidget.cpp:567
+#: src/chat/chatwidget.cpp:568
 #, kde-format
 msgid "Commands and settings"
 msgstr "الأوامر والإعدادات"
 
-#: src/chat/chatwidget.cpp:578
+#: src/chat/chatwidget.cpp:579
 #, kde-format
 msgid "Attach files for the assistant to work on"
 msgstr "أرفق ملفات ليعمل عليها المساعد"
 
-#: src/chat/chatwidget.cpp:622
+#: src/chat/chatwidget.cpp:627
+#, kde-format
+msgid "Revoke"
+msgstr "إلغاء الإذن"
+
+#: src/chat/chatwidget.cpp:642
 #, kde-format
 msgid "Assistant is thinking…"
 msgstr "المساعد يفكّر…"
 
-#: src/chat/chatwidget.cpp:653
+#: src/chat/chatwidget.cpp:673
 #, kde-format
 msgid "Claude Code is driving. Ask it there — what it does shows up here."
 msgstr "Claude Code هو من يتحكم. اسأله هناك — ما يفعله يظهر هنا."
 
-#: src/chat/chatwidget.cpp:660
+#: src/chat/chatwidget.cpp:680
 #, kde-format
 msgid "Open folder"
 msgstr "افتح المجلد"
 
-#: src/chat/chatwidget.cpp:661
+#: src/chat/chatwidget.cpp:681
 #, kde-format
 msgid "Copy command"
 msgstr "انسخ الأمر"
 
-#: src/chat/chatwidget.cpp:718
+#: src/chat/chatwidget.cpp:738
 #, kde-format
 msgid "Stop recording"
 msgstr "أوقف التسجيل"
 
-#: src/chat/chatwidget.cpp:724
+#: src/chat/chatwidget.cpp:744
 #, kde-format
 msgid "Transcribing…"
 msgstr "يفرّغ الكلام…"
 
-#: src/chat/chatwidget.cpp:932
+#: src/chat/chatwidget.cpp:927
+#, kde-format
+msgid "The assistant spends %1 credits without asking, %2 left"
+msgstr "ينفق المساعد رصيد %1 دون سؤال، المتبقي %2"
+
+#: src/chat/chatwidget.cpp:1033
 #, kde-format
 msgid "How would you like to work with Wunjo?"
 msgstr "كيف تودّ العمل مع Wunjo؟"
 
-#: src/chat/chatwidget.cpp:937
+#: src/chat/chatwidget.cpp:1038
 #, kde-format
 msgid "Both drive the editor the same way. You can change this at any time."
 msgstr "كلاهما يتحكم في المحرر بالطريقة نفسها. يمكنك تغيير هذا في أي وقت."
 
-#: src/chat/chatwidget.cpp:1084
+#: src/chat/chatwidget.cpp:1185
 #, kde-format
 msgid ""
 "Everything Claude Code needs is in %1. Open a terminal there and run the "
@@ -13596,7 +13607,7 @@ msgid ""
 msgstr ""
 "كل ما يحتاجه Claude Code موجود في %1. افتح طرفية هناك وشغّل الأمر claude."
 
-#: src/chat/chatwidget.cpp:1095
+#: src/chat/chatwidget.cpp:1196
 #, kde-format
 msgid ""
 "MCP is not installed yet — install it in Settings, Plugins, on the MCP tab. "
@@ -13605,7 +13616,7 @@ msgstr ""
 "MCP غير مثبّت بعد — ثبّته في الإعدادات، الملحقات، في لسان MCP. حتى ذلك الحين "
 "سيفشل أول سؤال للوكيل في طرفيته."
 
-#: src/chat/chatwidget.cpp:1112
+#: src/chat/chatwidget.cpp:1213
 #, kde-format
 msgid ""
 "This model drives the editor through MCP, which is not installed yet. "
@@ -13614,77 +13625,77 @@ msgstr ""
 "هذا النموذج يتحكم في المحرر عبر MCP، وهو غير مثبّت بعد. ثبّته في الإعدادات، "
 "الملحقات، في لسان MCP."
 
-#: src/chat/chatwidget.cpp:1125
+#: src/chat/chatwidget.cpp:1226
 #, kde-format
 msgid ""
 "Install the assistant in the settings that just opened, then come back here."
 msgstr "ثبّت المساعد في الإعدادات التي فُتحت للتو، ثم عد إلى هنا."
 
-#: src/chat/chatwidget.cpp:1205
+#: src/chat/chatwidget.cpp:1306
 #, kde-format
 msgid "New loop"
 msgstr "حلقة جديدة"
 
-#: src/chat/chatwidget.cpp:1205
+#: src/chat/chatwidget.cpp:1306
 #, kde-format
 msgid "New skill"
 msgstr "مهارة جديدة"
 
-#: src/chat/chatwidget.cpp:1206
+#: src/chat/chatwidget.cpp:1307
 #, kde-format
 msgid "Import from file…"
 msgstr "استورد من ملف…"
 
 #. i18n: file: src/ui.rc
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1207 rc.cpp:9170 rc.cpp:10552
+#: src/chat/chatwidget.cpp:1308 rc.cpp:9170 rc.cpp:10552
 #, kde-format
 msgid "Edit"
 msgstr "حرّر"
 
 #. i18n: file: src/ui/managesubtitles_ui.ui
-#: src/chat/chatwidget.cpp:1208 src/chat/generatorcard.cpp:794 rc.cpp:10530
+#: src/chat/chatwidget.cpp:1309 src/chat/generatorcard.cpp:852 rc.cpp:10530
 #: rc.cpp:10546 rc.cpp:10604
 #, kde-format
 msgid "Delete"
 msgstr "احذف"
 
-#: src/chat/chatwidget.cpp:1224
+#: src/chat/chatwidget.cpp:1325
 #, kde-format
 msgid "Import Loops"
 msgstr "استورد الحلقات"
 
-#: src/chat/chatwidget.cpp:1224
+#: src/chat/chatwidget.cpp:1325
 #, kde-format
 msgid "Import Skills"
 msgstr "استورد المهارات"
 
-#: src/chat/chatwidget.cpp:1225
+#: src/chat/chatwidget.cpp:1326
 #, kde-format
 msgid "Text documents (*.md *.txt)"
 msgstr "مستندات نصية (*.md *.txt)"
 
-#: src/chat/chatwidget.cpp:1252
+#: src/chat/chatwidget.cpp:1353
 #, kde-format
 msgid "New Loop"
 msgstr "حلقة جديدة"
 
-#: src/chat/chatwidget.cpp:1252
+#: src/chat/chatwidget.cpp:1353
 #, kde-format
 msgid "New Skill"
 msgstr "مهارة جديدة"
 
-#: src/chat/chatwidget.cpp:1253
+#: src/chat/chatwidget.cpp:1354
 #, kde-format
 msgid "Edit Loop"
 msgstr "حرّر الحلقة"
 
-#: src/chat/chatwidget.cpp:1253
+#: src/chat/chatwidget.cpp:1354
 #, kde-format
 msgid "Edit Skill"
 msgstr "حرّر المهارة"
 
-#: src/chat/chatwidget.cpp:1260
+#: src/chat/chatwidget.cpp:1361
 #, kde-format
 msgid ""
 "Describe the pipeline step by step: what to produce and which tools or "
@@ -13693,47 +13704,47 @@ msgstr ""
 "صف خط المعالجة خطوة بخطوة: ما الذي يجب إنتاجه وأي الأدوات أو الملحقات تُستخدم "
 "في كل مرحلة…"
 
-#: src/chat/chatwidget.cpp:1262
+#: src/chat/chatwidget.cpp:1363
 #, kde-format
 msgid "Describe how the assistant should work…"
 msgstr "صف كيف يجب أن يعمل المساعد…"
 
-#: src/chat/chatwidget.cpp:1334
+#: src/chat/chatwidget.cpp:1435
 #, kde-format
 msgid "Built in. Editing it keeps your version; deleting it hides it."
 msgstr "مدمجة. تحريرها يحفظ نسختك؛ وحذفها يخفيها."
 
-#: src/chat/chatwidget.cpp:1338
+#: src/chat/chatwidget.cpp:1439
 #, kde-format
 msgid "Built in, edited by you — your version is the one used."
 msgstr "مدمجة، حرّرتها أنت — نسختك هي المستخدمة."
 
-#: src/chat/chatwidget.cpp:1397
+#: src/chat/chatwidget.cpp:1498
 #, kde-format
 msgid "Stop the assistant"
 msgstr "أوقف المساعد"
 
-#: src/chat/chatwidget.cpp:1460
+#: src/chat/chatwidget.cpp:1561
 #, kde-format
 msgid "Attach files"
 msgstr "أرفق ملفات"
 
-#: src/chat/chatwidget.cpp:1506
+#: src/chat/chatwidget.cpp:1607
 #, kde-format
 msgid "Remove %1"
 msgstr "أزل %1"
 
-#: src/chat/chatwidget.cpp:1536
+#: src/chat/chatwidget.cpp:1637
 #, kde-format
 msgid "Stopped."
 msgstr "أُوقف."
 
-#: src/chat/chatwidget.cpp:1568 src/chat/chatwidget.cpp:1569
+#: src/chat/chatwidget.cpp:1669 src/chat/chatwidget.cpp:1670
 #, kde-format
 msgid "Attached: %1"
 msgstr "مرفق: %1"
 
-#: src/chat/chatwidget.cpp:1586
+#: src/chat/chatwidget.cpp:1687
 #, kde-format
 msgid ""
 "Your own agent is driving. Ask it in the terminal you opened in %1, and what "
@@ -13742,7 +13753,7 @@ msgstr ""
 "وكيلك الخاص هو من يتحكم. اسأله في الطرفية التي فتحتها في %1، وما يفعله يظهر "
 "هنا."
 
-#: src/chat/chatwidget.cpp:1592
+#: src/chat/chatwidget.cpp:1693
 #, kde-format
 msgid ""
 "No model is selected. Press / to choose one, or pick \"External MCP\" to "
@@ -13752,24 +13763,24 @@ msgstr ""
 "لم يُحدَّد أي نموذج. اضغط / لاختيار واحد، أو اختر \"MCP خارجي\" للتحكم في "
 "المحرر من وكيل تستخدمه فعلًا، مثل Claude Code أو Cursor."
 
-#: src/chat/chatwidget.cpp:1625
+#: src/chat/chatwidget.cpp:1726
 #, kde-format
 msgid "Untitled chat"
 msgstr "دردشة بلا عنوان"
 
-#: src/chat/chatwidget.cpp:1630
+#: src/chat/chatwidget.cpp:1731
 #, kde-format
 msgid "No saved chats for this project yet"
 msgstr "لا توجد دردشات محفوظة لهذا المشروع بعد"
 
-#: src/chat/chatwidget.cpp:1657
+#: src/chat/chatwidget.cpp:1758
 #, kde-format
 msgid ""
 "Skills are simple instructions that tell the assistant how to work in this "
 "project."
 msgstr "المهارات تعليمات بسيطة تخبر المساعد كيف يعمل في هذا المشروع."
 
-#: src/chat/chatwidget.cpp:1660
+#: src/chat/chatwidget.cpp:1761
 #, kde-format
 msgid ""
 "A loop is a set of steps the assistant follows to complete a task using the "
@@ -13778,7 +13789,7 @@ msgstr ""
 "الحلقة مجموعة من الخطوات يتبعها المساعد لإنجاز مهمة باستخدام الأدوات أو "
 "الملحقات التي تختارها."
 
-#: src/chat/chatwidget.cpp:1663
+#: src/chat/chatwidget.cpp:1764
 #, kde-format
 msgid ""
 "Use local model or external MCP for third-party agents to automatically "
@@ -13792,18 +13803,18 @@ msgstr ""
 #. i18n: file: src/ui/rgbparade_ui.ui
 #. i18n: file: src/ui/vectorscope_ui.ui
 #. i18n: file: src/ui/waveform_ui.ui
-#: src/chat/chatwidget.cpp:1678 rc.cpp:10378 rc.cpp:10772 rc.cpp:11072
+#: src/chat/chatwidget.cpp:1779 rc.cpp:10378 rc.cpp:10772 rc.cpp:11072
 #: rc.cpp:11454 rc.cpp:11456
 #, kde-format
 msgid "Settings"
 msgstr "إعدادات"
 
-#: src/chat/chatwidget.cpp:1682
+#: src/chat/chatwidget.cpp:1783
 #, kde-format
 msgid "External MCP…"
 msgstr "MCP خارجي…"
 
-#: src/chat/chatwidget.cpp:1683
+#: src/chat/chatwidget.cpp:1784
 #, kde-format
 msgid ""
 "Write the folder an outside agent works in — Claude Code, Cursor, Codex — "
@@ -13812,156 +13823,166 @@ msgstr ""
 "اكتب المجلد الذي يعمل فيه وكيل خارجي — Claude Code أو Cursor أو Codex — "
 "وافتحه"
 
-#: src/chat/chatwidget.cpp:1701
+#: src/chat/chatwidget.cpp:1802
 #, kde-format
 msgid "Switch model…"
 msgstr "بدّل النموذج…"
 
-#: src/chat/chatwidget.cpp:1732
+#: src/chat/chatwidget.cpp:1833
 #, kde-format
 msgid "No models installed"
 msgstr "لا توجد نماذج مثبّتة"
 
-#: src/chat/chatwidget.cpp:1738
+#: src/chat/chatwidget.cpp:1839
 #, kde-format
 msgid "Commands"
 msgstr "الأوامر"
 
-#: src/chat/chatwidget.cpp:1739
+#: src/chat/chatwidget.cpp:1840
 #, kde-format
 msgid "/new — start a new chat"
 msgstr "/new — ابدأ دردشة جديدة"
 
-#: src/chat/chatwidget.cpp:1740
+#: src/chat/chatwidget.cpp:1841
 #, kde-format
 msgid "/history — find an earlier chat"
 msgstr "/history — ابحث عن دردشة سابقة"
 
-#: src/chat/chatwidget.cpp:1741
+#: src/chat/chatwidget.cpp:1842
 #, kde-format
 msgid "/skills — how it should work"
 msgstr "/skills — كيف يجب أن يعمل"
 
-#: src/chat/chatwidget.cpp:1742
+#: src/chat/chatwidget.cpp:1843
 #, kde-format
 msgid "/loops — a pipeline to follow"
 msgstr "/loops — خط معالجة لاتباعه"
 
-#: src/chat/chatwidget.cpp:1824
+#: src/chat/chatwidget.cpp:1925
 #, kde-format
 msgid "Running…"
 msgstr "يعمل…"
 
-#: src/chat/chatwidget.cpp:1855
+#: src/chat/chatwidget.cpp:1956
 #, kde-format
 msgid "%1 is not installed."
 msgstr "%1 غير مثبّت."
 
-#: src/chat/generatorcard.cpp:128
+#: src/chat/generatorcard.cpp:131
 #, kde-format
 msgid "filled in by the assistant"
 msgstr "ملأه المساعد"
 
-#: src/chat/generatorcard.cpp:132 src/chat/generatorcard.cpp:1035
+#: src/chat/generatorcard.cpp:135 src/chat/generatorcard.cpp:1109
 #, kde-format
 msgid "Collapse"
 msgstr "طيّ"
 
-#: src/chat/generatorcard.cpp:355
+#: src/chat/generatorcard.cpp:361
 #, kde-format
 msgctxt "@action:button drop the calculated price"
 msgid "Cancel"
 msgstr "إلغاء"
 
-#: src/chat/generatorcard.cpp:361
+#: src/chat/generatorcard.cpp:370
 #, kde-format
 msgctxt "@action:button make what the card describes"
 msgid "Generate"
 msgstr "وَلِّد"
 
 #. i18n: file: src/ui/missingclips_ui.ui
-#: src/chat/generatorcard.cpp:399 src/chat/generatorcard.cpp:605 rc.cpp:10680
+#: src/chat/generatorcard.cpp:408 src/chat/generatorcard.cpp:660 rc.cpp:10680
 #, kde-format
 msgid "Remove"
 msgstr "أزل"
 
-#: src/chat/generatorcard.cpp:411
+#: src/chat/generatorcard.cpp:420
 #, kde-format
 msgid "Choose a file"
 msgstr "اختر ملفًا"
 
-#: src/chat/generatorcard.cpp:419
+#: src/chat/generatorcard.cpp:428
 #, kde-format
 msgid "Selected clip on the timeline"
 msgstr "المقطع المحدد على الخط الزمني"
 
-#: src/chat/generatorcard.cpp:427
+#: src/chat/generatorcard.cpp:436
 #, kde-format
 msgid "Current frame of the monitor"
 msgstr "الإطار الحالي في الشاشة"
 
-#: src/chat/generatorcard.cpp:442
+#: src/chat/generatorcard.cpp:451
 #, kde-format
 msgid "Videos (*.mp4 *.mov *.mkv *.webm *.avi)"
 msgstr "مقاطع فيديو (*.mp4 *.mov *.mkv *.webm *.avi)"
 
-#: src/chat/generatorcard.cpp:442
+#: src/chat/generatorcard.cpp:451
 #, kde-format
 msgid "Images (*.png *.jpg *.jpeg *.webp *.bmp)"
 msgstr "صور (*.png *.jpg *.jpeg *.webp *.bmp)"
 
-#: src/chat/generatorcard.cpp:464
+#: src/chat/generatorcard.cpp:473
 #, kde-format
 msgid "The frame could not be saved."
 msgstr "تعذّر حفظ الإطار."
 
-#: src/chat/generatorcard.cpp:493
+#: src/chat/generatorcard.cpp:502
 #, kde-format
 msgid "Select a video clip on the timeline first."
 msgstr "حدد مقطع فيديو على الخط الزمني أولًا."
 
-#: src/chat/generatorcard.cpp:529
+#: src/chat/generatorcard.cpp:538
 #, kde-format
 msgid "%1, %2 s"
 msgstr "%1، %2 ث"
 
-#: src/chat/generatorcard.cpp:658 src/chat/generatorcard.cpp:749
-#: src/chat/generatorcard.cpp:854
+#: src/chat/generatorcard.cpp:652 src/chat/generatorcard.cpp:1007
+#, kde-format
+msgid "%1 is not taken here"
+msgstr "%1 غير مقبول هنا"
+
+#: src/chat/generatorcard.cpp:652 src/chat/generatorcard.cpp:1007
+#, kde-format
+msgid "%1, no more than %2"
+msgstr "%1، ليس أكثر من %2"
+
+#: src/chat/generatorcard.cpp:716 src/chat/generatorcard.cpp:807
+#: src/chat/generatorcard.cpp:912
 #, kde-format
 msgid "Upload voice"
 msgstr "رفع صوت"
 
-#: src/chat/generatorcard.cpp:742
+#: src/chat/generatorcard.cpp:800
 #, kde-format
 msgid "Find a voice"
 msgstr "ابحث عن صوت"
 
-#: src/chat/generatorcard.cpp:790
+#: src/chat/generatorcard.cpp:848
 #, kde-format
 msgid "Listen"
 msgstr "استمع"
 
-#: src/chat/generatorcard.cpp:794
+#: src/chat/generatorcard.cpp:852
 #, kde-format
 msgid "Click again to delete"
 msgstr "انقر مرة أخرى للحذف"
 
-#: src/chat/generatorcard.cpp:855
+#: src/chat/generatorcard.cpp:913
 #, kde-format
 msgid "Audio (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 msgstr "صوت (*.wav *.mp3 *.m4a *.aac *.ogg *.flac)"
 
-#: src/chat/generatorcard.cpp:934 src/chat/generatorcard.cpp:942
+#: src/chat/generatorcard.cpp:1002 src/chat/generatorcard.cpp:1016
 #, kde-format
 msgid "Add %1"
 msgstr "إضافة %1"
 
-#: src/chat/generatorcard.cpp:948
+#: src/chat/generatorcard.cpp:1022
 #, kde-format
 msgid "Upload a voice first"
 msgstr "ارفع صوتًا أولًا"
 
-#: src/chat/generatorcard.cpp:948
+#: src/chat/generatorcard.cpp:1022
 #, kde-format
 msgid "Fill in %1"
 msgstr "املأ %1"
@@ -14170,234 +14191,234 @@ msgstr "المكوّنات"
 msgid "How to use"
 msgstr "طريقة الاستخدام"
 
-#: src/plugins/pluginmanager.cpp:357 src/plugins/pluginmodelsdialog.cpp:230
+#: src/plugins/pluginmanager.cpp:366 src/plugins/pluginmodelsdialog.cpp:230
 #, kde-format
 msgid "Could not create the folder for %1."
 msgstr "تعذّر إنشاء المجلد لـ %1."
 
-#: src/plugins/pluginmanager.cpp:373
+#: src/plugins/pluginmanager.cpp:382
 #, kde-format
 msgid "%1 could not be unpacked."
 msgstr "تعذّر فك ضغط %1."
 
-#: src/plugins/pluginmanager.cpp:697
+#: src/plugins/pluginmanager.cpp:713
 #, kde-format
 msgid "Add the rendered result to the timeline"
 msgstr "أضف النتيجة المصيّرة إلى الخطّ الزّمنيّ"
 
-#: src/plugins/pluginmanager.cpp:740 src/plugins/pluginmanager.cpp:752
+#: src/plugins/pluginmanager.cpp:756 src/plugins/pluginmanager.cpp:768
 #, kde-format
 msgid "Add the generated clip to the timeline"
 msgstr "أضف المقطع المولَّد إلى الخطّ الزّمنيّ"
 
-#: src/plugins/pluginmanager.cpp:858
+#: src/plugins/pluginmanager.cpp:874
 #, kde-format
 msgid "the plugin is not valid"
 msgstr "الملحق غير صالح"
 
-#: src/plugins/pluginmanager.cpp:864
+#: src/plugins/pluginmanager.cpp:880
 #, kde-format
 msgid "this plugin does not support %1"
 msgstr "هذا الملحق لا يدعم %1"
 
-#: src/plugins/pluginmanager.cpp:905
+#: src/plugins/pluginmanager.cpp:921
 #, kde-format
 msgid "built-in plugins cannot be removed"
 msgstr "لا يمكن إزالة الملحقات المدمجة"
 
-#: src/plugins/pluginmanager.cpp:912
+#: src/plugins/pluginmanager.cpp:928
 #, kde-format
 msgid "could not delete the plugin folder"
 msgstr "تعذّر حذف مجلد الملحق"
 
-#: src/plugins/pluginmanager.cpp:1026
+#: src/plugins/pluginmanager.cpp:1042
 #, kde-format
 msgid "A model is missing — download it in the plugin's settings."
 msgstr "نموذج مفقود — نزّله في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1027
+#: src/plugins/pluginmanager.cpp:1043
 #, kde-format
 msgid "The model %1 is missing — download it in the plugin's settings."
 msgstr "النموذج %1 مفقود — نزّله في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1031
+#: src/plugins/pluginmanager.cpp:1047
 #, kde-format
 msgid "An API key is missing — add it in the plugin's settings."
 msgstr "مفتاح API مفقود — أضفه في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1032
+#: src/plugins/pluginmanager.cpp:1048
 #, kde-format
 msgid "The %1 API key is missing — add it in the plugin's settings."
 msgstr "مفتاح API الخاص بـ %1 مفقود — أضفه في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1086
+#: src/plugins/pluginmanager.cpp:1102
 #, kde-format
 msgid "Python was not found — cannot run '%1'."
 msgstr "لم يُعثر على بايثون — لا يمكن تشغيل '%1'."
 
-#: src/plugins/pluginmanager.cpp:1160
+#: src/plugins/pluginmanager.cpp:1176
 #, kde-format
 msgid "Could not prepare the job for '%1'."
 msgstr "تعذّر تجهيز المهمة لـ '%1'."
 
-#: src/plugins/pluginmanager.cpp:1262 src/plugins/pluginmanager.cpp:1653
+#: src/plugins/pluginmanager.cpp:1278 src/plugins/pluginmanager.cpp:1669
 #, kde-format
 msgid "'%1' is not installed."
 msgstr "'%1' غير مثبّت."
 
-#: src/plugins/pluginmanager.cpp:1324
+#: src/plugins/pluginmanager.cpp:1340
 #, kde-format
 msgid "%1 failed."
 msgstr "فشل %1."
 
-#: src/plugins/pluginmanager.cpp:1324
+#: src/plugins/pluginmanager.cpp:1340
 #, kde-format
 msgid "%1: %2"
 msgstr "%1: %2"
 
-#: src/plugins/pluginmanager.cpp:1340
+#: src/plugins/pluginmanager.cpp:1356
 #, kde-format
 msgid "Could not launch '%1'."
 msgstr "تعذّر تشغيل '%1'."
 
-#: src/plugins/pluginmanager.cpp:1608
+#: src/plugins/pluginmanager.cpp:1624
 #, kde-format
 msgid "The manifest of this plugin cannot be read."
 msgstr "لا يمكن قراءة بيان هذا الملحق."
 
-#: src/plugins/pluginmanager.cpp:1615
+#: src/plugins/pluginmanager.cpp:1631
 #, kde-format
 msgid "%1 does not run on this operating system."
 msgstr "%1 لا يعمل على نظام التشغيل هذا."
 
-#: src/plugins/pluginmanager.cpp:1642
+#: src/plugins/pluginmanager.cpp:1658
 #, kde-format
 msgid "This needs about %1 free in %2, and there is %3."
 msgstr "يحتاج هذا إلى نحو %1 من المساحة الحرة في %2، والمتوفر %3."
 
-#: src/plugins/pluginmanager.cpp:1669
+#: src/plugins/pluginmanager.cpp:1685
 #, kde-format
 msgid "%1 needs the model %2 — download it in the plugin's settings."
 msgstr "يحتاج %1 إلى النموذج %2 — نزّله في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1671
+#: src/plugins/pluginmanager.cpp:1687
 #, kde-format
 msgid ""
 "The model %1 was not downloaded completely — get it again in the plugin's "
 "settings."
 msgstr "لم يُنزَّل النموذج %1 بالكامل — نزّله مجددًا في إعدادات الملحق."
 
-#: src/plugins/pluginmanager.cpp:1699
+#: src/plugins/pluginmanager.cpp:1715
 #, kde-format
 msgid "cannot create the folder for %1"
 msgstr "لا يمكن إنشاء المجلد لـ %1"
 
-#: src/plugins/pluginmanager.cpp:1703 src/plugins/pluginmanager.cpp:1714
+#: src/plugins/pluginmanager.cpp:1719 src/plugins/pluginmanager.cpp:1730
 #, kde-format
 msgid "downloading %1…"
 msgstr "يُنزّل %1…"
 
-#: src/plugins/pluginmanager.cpp:1714
+#: src/plugins/pluginmanager.cpp:1730
 #, kde-format
 msgid "downloading %1 — %2%"
 msgstr "يُنزّل %1 — %2%"
 
-#: src/plugins/pluginmanager.cpp:1720
+#: src/plugins/pluginmanager.cpp:1736
 #, kde-format
 msgid "%1: %2 — retrying in %3 s"
 msgstr "%1: %2 — إعادة المحاولة بعد %3 ث"
 
-#: src/plugins/pluginmanager.cpp:1732
+#: src/plugins/pluginmanager.cpp:1748
 #, kde-format
 msgid "could not download %1: %2"
 msgstr "تعذّر تنزيل %1: %2"
 
-#: src/plugins/pluginmanager.cpp:1775
+#: src/plugins/pluginmanager.cpp:1791
 #, kde-format
 msgid "preparing %1…"
 msgstr "يجهّز %1…"
 
-#: src/plugins/pluginmanager.cpp:1791
+#: src/plugins/pluginmanager.cpp:1807
 #, kde-format
 msgid "the environment of %1 could not be built"
 msgstr "تعذّر بناء بيئة %1"
 
-#: src/plugins/pluginmanager.cpp:1795
+#: src/plugins/pluginmanager.cpp:1811
 #, kde-format
 msgid "building the environment of %1…"
 msgstr "يبني بيئة %1…"
 
-#: src/plugins/pluginmanager.cpp:1828
+#: src/plugins/pluginmanager.cpp:1844
 #, kde-format
 msgid "%1 — waiting for the plugin to be free"
 msgstr "%1 — ينتظر تفرّغ الملحق"
 
-#: src/plugins/pluginmanager.cpp:1854
+#: src/plugins/pluginmanager.cpp:1870
 #, kde-format
 msgid "%1 is rendering…"
 msgstr "%1 يصيّر…"
 
-#: src/plugins/pluginmanager.cpp:1891
+#: src/plugins/pluginmanager.cpp:1907
 #, kde-format
 msgid "Saved as the preset '%1'."
 msgstr "حُفظ كإعداد مسبق «%1»."
 
-#: src/plugins/pluginmanager.cpp:1896 src/plugins/pluginmanager.cpp:2052
+#: src/plugins/pluginmanager.cpp:1912 src/plugins/pluginmanager.cpp:2072
 #, kde-format
 msgid "%1 produced nothing."
 msgstr "لم ينتج %1 شيئًا."
 
-#: src/plugins/pluginmanager.cpp:1922 src/plugins/pluginmanager.cpp:2145
+#: src/plugins/pluginmanager.cpp:1938 src/plugins/pluginmanager.cpp:2165
 #, kde-format
 msgid "%1 finished."
 msgstr "انتهى %1."
 
-#: src/plugins/pluginmanager.cpp:1965
+#: src/plugins/pluginmanager.cpp:1981
 #, kde-format
 msgid "%1 finished — on a new track, and in the '%2' bin folder"
 msgstr "انتهى %1 — على مسار جديد، وفي مجلد السلة '%2'"
 
-#: src/plugins/pluginmanager.cpp:2048
+#: src/plugins/pluginmanager.cpp:2068
 #, kde-format
 msgid "Saved to the library as '%1'."
 msgstr "حُفظ في المكتبة باسم «%1»."
 
-#: src/plugins/pluginmanager.cpp:2066
+#: src/plugins/pluginmanager.cpp:2086
 #, kde-format
 msgid "%1 is ready in the '%2' bin folder."
 msgstr "%1 جاهز في مجلد «%2» في السلّة."
 
-#: src/plugins/pluginmanager.cpp:2067
+#: src/plugins/pluginmanager.cpp:2087
 #, kde-format
 msgid "%1 is ready on the timeline and in the '%2' bin folder."
 msgstr "%1 جاهز على الخطّ الزّمنيّ وفي مجلد «%2» في السلّة."
 
-#: src/plugins/pluginmanager.cpp:2087
+#: src/plugins/pluginmanager.cpp:2107
 #, kde-format
 msgid "Running %1…"
 msgstr "يشغّل %1…"
 
-#: src/plugins/pluginmanager.cpp:2110 src/plugins/pluginsetpanel.cpp:267
+#: src/plugins/pluginmanager.cpp:2130 src/plugins/pluginsetpanel.cpp:267
 #, kde-format
 msgid "Nothing came back for %1."
 msgstr "لم يرجع شيء من %1."
 
-#: src/plugins/pluginmanager.cpp:2118 src/plugins/pluginsetpanel.cpp:273
+#: src/plugins/pluginmanager.cpp:2138 src/plugins/pluginsetpanel.cpp:273
 #, kde-format
 msgid "The set could not be saved."
 msgstr "تعذّر حفظ المجموعة."
 
-#: src/plugins/pluginmanager.cpp:2124
+#: src/plugins/pluginmanager.cpp:2144
 #, kde-format
 msgid "%1 recorded '%2'."
 msgstr "سجّل %1 '%2'."
 
-#: src/plugins/pluginmanager.cpp:2125
+#: src/plugins/pluginmanager.cpp:2145
 #, kde-format
 msgid "recorded '%1'"
 msgstr "سُجّل '%1'"
 
-#: src/plugins/pluginmanager.cpp:2146
+#: src/plugins/pluginmanager.cpp:2166
 #, kde-format
 msgid "%2: %1 file added to the bin."
 msgid_plural "%2: %1 files added to the bin."
@@ -14453,259 +14474,259 @@ msgstr "النموذج '%1' يسمّي المتغيّر '%2'، وهو غير م�
 msgid "'generate' must be a list of cards"
 msgstr "يجب أن يكون 'generate' قائمة بطاقات"
 
-#: src/plugins/pluginmanifest.cpp:263
+#: src/plugins/pluginmanifest.cpp:271
 #, kde-format
 msgid ""
 "every 'generate' card needs an 'id' of lowercase letters, digits and dashes"
 msgstr ""
 "تحتاج كل بطاقة في 'generate' إلى 'id' من أحرف لاتينية صغيرة وأرقام وشرطات"
 
-#: src/plugins/pluginmanifest.cpp:267
+#: src/plugins/pluginmanifest.cpp:275
 #, kde-format
 msgid "the 'generate' card '%1' is declared twice"
 msgstr "البطاقة '%1' في 'generate' معرّفة مرتين"
 
-#: src/plugins/pluginmanifest.cpp:271
+#: src/plugins/pluginmanifest.cpp:279
 #, kde-format
 msgid "the 'generate' card '%1' has no fields"
 msgstr "البطاقة '%1' في 'generate' بلا حقول"
 
-#: src/plugins/pluginmanifest.cpp:290
+#: src/plugins/pluginmanifest.cpp:298
 #, kde-format
 msgid "every 'effects' entry must be the path of an effect XML"
 msgstr "كل مدخل في 'effects' يجب أن يكون مسار ملف XML لتأثير"
 
-#: src/plugins/pluginmanifest.cpp:295
+#: src/plugins/pluginmanifest.cpp:303
 #, kde-format
 msgid "effect '%1' must live inside the plugin folder"
 msgstr "يجب أن يكون التأثير '%1' داخل مجلد الملحق"
 
-#: src/plugins/pluginmanifest.cpp:300
+#: src/plugins/pluginmanifest.cpp:308
 #, kde-format
 msgid "effect '%1' is missing or is not valid XML"
 msgstr "التأثير '%1' مفقود أو ليس XML صالحًا"
 
-#: src/plugins/pluginmanifest.cpp:305
+#: src/plugins/pluginmanifest.cpp:313
 #, kde-format
 msgid "effect '%1' must have a single <effect> root"
 msgstr "يجب أن يكون للتأثير '%1' جذر <effect> واحد"
 
-#: src/plugins/pluginmanifest.cpp:313
+#: src/plugins/pluginmanifest.cpp:321
 #, kde-format
 msgid "effect '%1' does not name the MLT service it is built on"
 msgstr "التأثير '%1' لا يسمّي خدمة MLT المبني عليها"
 
-#: src/plugins/pluginmanifest.cpp:316
+#: src/plugins/pluginmanifest.cpp:324
 #, kde-format
 msgid "effect '%1' has no id"
 msgstr "التأثير '%1' بلا id"
 
-#: src/plugins/pluginmanifest.cpp:322
+#: src/plugins/pluginmanifest.cpp:330
 #, kde-format
 msgid "effect id '%1' must be '%2' or start with '%2.'"
 msgstr "يجب أن يكون معرّف التأثير '%1' هو '%2' أو يبدأ بـ '%2.'"
 
-#: src/plugins/pluginmanifest.cpp:347
+#: src/plugins/pluginmanifest.cpp:355
 #, kde-format
 msgid "effect '%1' requires '%2', which this plugin does not ship"
 msgstr "التأثير '%1' يتطلب '%2'، وهو غير مضمّن في هذا الملحق"
 
-#: src/plugins/pluginmanifest.cpp:379
+#: src/plugins/pluginmanifest.cpp:387
 #, kde-format
 msgid "manifest_version must be 1"
 msgstr "يجب أن تكون manifest_version مساوية لـ 1"
 
-#: src/plugins/pluginmanifest.cpp:387
+#: src/plugins/pluginmanifest.cpp:395
 #, kde-format
 msgid "'%1' must look like \"3\", \"3.1\" or \"3.1.2\", not '%2'"
 msgstr "يجب أن يكون '%1' بصيغة \"3\" أو \"3.1\" أو \"3.1.2\"، لا '%2'"
 
-#: src/plugins/pluginmanifest.cpp:392
+#: src/plugins/pluginmanifest.cpp:400
 #, kde-format
 msgid "'min_app_version' (%1) is newer than 'max_app_version' (%2)"
 msgstr "'min_app_version' ‏(%1) أحدث من 'max_app_version' ‏(%2)"
 
-#: src/plugins/pluginmanifest.cpp:396
+#: src/plugins/pluginmanifest.cpp:404
 #, kde-format
 msgid "missing required field 'id'"
 msgstr "الحقل المطلوب 'id' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:398
+#: src/plugins/pluginmanifest.cpp:406
 #, kde-format
 msgid "id '%1' may only contain lowercase letters, digits and hyphens"
 msgstr "المعرّف '%1' قد يحتوي فقط على أحرف صغيرة وأرقام وشرطات"
 
-#: src/plugins/pluginmanifest.cpp:402
+#: src/plugins/pluginmanifest.cpp:410
 #, kde-format
 msgid "id '%1' must match the folder name '%2'"
 msgstr "يجب أن يطابق المعرّف '%1' اسم المجلد '%2'"
 
-#: src/plugins/pluginmanifest.cpp:406
+#: src/plugins/pluginmanifest.cpp:414
 #, kde-format
 msgid "missing required field 'name'"
 msgstr "الحقل المطلوب 'name' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:409
+#: src/plugins/pluginmanifest.cpp:417
 #, kde-format
 msgid "missing required field 'version'"
 msgstr "الحقل المطلوب 'version' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:412
+#: src/plugins/pluginmanifest.cpp:420
 #, kde-format
 msgid "missing required field 'kind'"
 msgstr "الحقل المطلوب 'kind' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:414
+#: src/plugins/pluginmanifest.cpp:422
 #, kde-format
 msgid "kind must be 'api' or 'local'"
 msgstr "يجب أن يكون kind إما 'api' أو 'local'"
 
-#: src/plugins/pluginmanifest.cpp:417
+#: src/plugins/pluginmanifest.cpp:425
 #, kde-format
 msgid "venv must be 'private'"
 msgstr "يجب أن يكون venv مساويًا لـ 'private'"
 
-#: src/plugins/pluginmanifest.cpp:420
+#: src/plugins/pluginmanifest.cpp:428
 #, kde-format
 msgid "missing required field 'target'"
 msgstr "الحقل المطلوب 'target' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:424
+#: src/plugins/pluginmanifest.cpp:432
 #, kde-format
 msgid "target must be one of video, audio, face, generator, agent"
 msgstr "يجب أن يكون target أحد: video، audio، face، generator، agent"
 
-#: src/plugins/pluginmanifest.cpp:432
+#: src/plugins/pluginmanifest.cpp:440
 #, kde-format
 msgid "target 'agent' cannot be combined with another target"
 msgstr "لا يمكن دمج target 'agent' مع هدف آخر"
 
-#: src/plugins/pluginmanifest.cpp:435
+#: src/plugins/pluginmanifest.cpp:443
 #, kde-format
 msgid "a generator needs at least one card in 'generate'"
 msgstr "يحتاج المولّد إلى بطاقة واحدة على الأقل في 'generate'"
 
-#: src/plugins/pluginmanifest.cpp:439
+#: src/plugins/pluginmanifest.cpp:447
 #, kde-format
 msgid "missing required field 'entry'"
 msgstr "الحقل المطلوب 'entry' مفقود"
 
-#: src/plugins/pluginmanifest.cpp:441
+#: src/plugins/pluginmanifest.cpp:449
 #, kde-format
 msgid "entry script '%1' was not found"
 msgstr "لم يُعثر على سكربت الدخول '%1'"
 
-#: src/plugins/pluginmanifest.cpp:451
+#: src/plugins/pluginmanifest.cpp:459
 #, kde-format
 msgid "library file '%1' was not found"
 msgstr "لم يُعثر على ملف المكتبة '%1'"
 
-#: src/plugins/pluginmanifest.cpp:454
+#: src/plugins/pluginmanifest.cpp:462
 #, kde-format
 msgid "library file '%1' needs 'name' and 'api.search'"
 msgstr "ملف المكتبة '%1' يحتاج إلى 'name' و'api.search'"
 
-#: src/plugins/pluginmanifest.cpp:458
+#: src/plugins/pluginmanifest.cpp:466
 #, kde-format
 msgid "an 'api' plugin must declare provider.name"
 msgstr "يجب أن يعلن ملحق 'api' عن provider.name"
 
-#: src/plugins/pluginmanifest.cpp:462
+#: src/plugins/pluginmanifest.cpp:470
 #, kde-format
 msgid "unknown os '%1'"
 msgstr "نظام تشغيل مجهول '%1'"
 
-#: src/plugins/pluginmanifest.cpp:556
+#: src/plugins/pluginmanifest.cpp:564
 #, kde-format
 msgid "needs a graphics card"
 msgstr "يحتاج إلى بطاقة رسوميات"
 
-#: src/plugins/pluginmanifest.cpp:559
+#: src/plugins/pluginmanifest.cpp:567
 #, kde-format
 msgid "needs %1 GB of video memory, this card has %2 GB"
 msgstr "يحتاج إلى %1 غيغابايت من ذاكرة الفيديو، وهذه البطاقة فيها %2 غيغابايت"
 
-#: src/plugins/pluginmanifest.cpp:668
+#: src/plugins/pluginmanifest.cpp:676
 #, kde-format
 msgid "%1 needs Wunjo Make %2 or newer; this is %3."
 msgstr "يحتاج %1 إلى Wunjo Make %2 أو أحدث؛ وهذه %3."
 
-#: src/plugins/pluginmanifest.cpp:671
+#: src/plugins/pluginmanifest.cpp:679
 #, kde-format
 msgid "%1 was built for Wunjo Make %2 and older; this is %3."
 msgstr "بُني %1 لـ Wunjo Make %2 وما قبله؛ وهذه %3."
 
-#: src/plugins/pluginmanifest.cpp:732
+#: src/plugins/pluginmanifest.cpp:740
 #: src/project/dialogs/projectsettings.cpp:413
 #, kde-format
 msgid "Video clips"
 msgstr "مقاطع الفيديو"
 
-#: src/plugins/pluginmanifest.cpp:734
+#: src/plugins/pluginmanifest.cpp:742
 #: src/project/dialogs/projectsettings.cpp:416
 #, kde-format
 msgid "Audio clips"
 msgstr "مقاطع الصّوت"
 
-#: src/plugins/pluginmanifest.cpp:736
+#: src/plugins/pluginmanifest.cpp:744
 #, kde-format
 msgid "Detected faces"
 msgstr "الوجوه المكتشفة"
 
-#: src/plugins/pluginmanifest.cpp:738
+#: src/plugins/pluginmanifest.cpp:746
 #, kde-format
 msgid "Media generation"
 msgstr "توليد الوسائط"
 
-#: src/plugins/pluginmanifest.cpp:740
+#: src/plugins/pluginmanifest.cpp:748
 #, kde-format
 msgid "The chat assistant"
 msgstr "مساعد الدردشة"
 
-#: src/plugins/pluginmanifest.cpp:743
+#: src/plugins/pluginmanifest.cpp:751
 #, kde-format
 msgctxt "separator between the kinds of clip a plugin works on"
 msgid " and "
 msgstr " و "
 
-#: src/plugins/pluginmanifest.cpp:758
+#: src/plugins/pluginmanifest.cpp:766
 #, kde-format
 msgid "Acts on"
 msgstr "يعمل على"
 
-#: src/plugins/pluginmanifest.cpp:764
+#: src/plugins/pluginmanifest.cpp:772
 #, kde-format
 msgid "Adds effects"
 msgstr "يضيف تأثيرات"
 
-#: src/plugins/pluginmanifest.cpp:764
+#: src/plugins/pluginmanifest.cpp:772
 #, kde-format
 msgid "Adds effect"
 msgstr "يضيف تأثيرًا"
 
-#: src/plugins/pluginmanifest.cpp:766
+#: src/plugins/pluginmanifest.cpp:774
 #, kde-format
 msgid "Online API (%1)"
 msgstr "API على الشابكة (%1)"
 
-#: src/plugins/pluginmanifest.cpp:766
+#: src/plugins/pluginmanifest.cpp:774
 #, kde-format
 msgid "Local model"
 msgstr "نموذج محلي"
 
-#: src/plugins/pluginmanifest.cpp:768
-#: src/onlineresources/resourcewidget.cpp:685
+#: src/plugins/pluginmanifest.cpp:776
+#: src/onlineresources/resourcewidget.cpp:710
 #: src/project/dialogs/projectsettings.cpp:223
 #, kde-format
 msgid "Author"
 msgstr "المؤلّف"
 
-#: src/plugins/pluginmanifest.cpp:770
+#: src/plugins/pluginmanifest.cpp:778
 #, kde-format
 msgid "License"
 msgstr "الرخصة"
 
-#: src/plugins/pluginmanifest.cpp:770
+#: src/plugins/pluginmanifest.cpp:778
 #, kde-format
 msgid "not specified"
 msgstr "غير محدد"
@@ -15157,6 +15178,27 @@ msgid ""
 "Remove the installed environment for '%1'? The plugin stays and can be "
 "reinstalled from here."
 msgstr "أأزيل البيئة المثبّتة لـ '%1'؟ يبقى الملحق ويمكن إعادة تثبيته من هنا."
+
+#: src/plugins/spendguard.cpp:77
+#, kde-format
+msgid "The assistant asks to run it"
+msgstr "يطلب المساعد تشغيله"
+
+#. i18n: file: data/effectscategory.rc
+#: src/plugins/spendguard.cpp:81 rc.cpp:9088
+#, kde-format
+msgid "Generate"
+msgstr "توليد"
+
+#: src/plugins/spendguard.cpp:122
+#, kde-format
+msgid "The assistant asks to spend up to %1 credits without asking each time"
+msgstr "يطلب المساعد إنفاق ما يصل إلى %1 رصيد دون السؤال في كل مرة"
+
+#: src/plugins/spendguard.cpp:124
+#, kde-format
+msgid "Allow"
+msgstr "سماح"
 
 #: src/widgets/colorpickerwidget.cpp:76
 #, kde-format
@@ -17568,39 +17610,44 @@ msgctxt "@title:window"
 msgid "Error Loading Data"
 msgstr "خطأ في تحميل البيانات"
 
-#: src/onlineresources/providermodel.cpp:546
+#: src/onlineresources/providermodel.cpp:560
 #, kde-format
 msgid "The key is not valid"
 msgstr "المفتاح غير صالح"
 
-#: src/onlineresources/providermodel.cpp:548
+#: src/onlineresources/providermodel.cpp:562
 #, kde-format
 msgid "Too many requests. Try again in a minute"
 msgstr "طلبات كثيرة جدًا. حاول مرة أخرى بعد دقيقة"
 
-#: src/onlineresources/providermodel.cpp:550
+#: src/onlineresources/providermodel.cpp:564
 #, kde-format
 msgid "No connection to %1"
 msgstr "لا يوجد اتصال بـ %1"
 
-#: src/onlineresources/resourcewidget.cpp:75
+#: src/onlineresources/resourceservice.cpp:654
+#, kde-format
+msgid "The file could not be downloaded. The service may no longer keep it"
+msgstr "تعذّر تنزيل الملف. ربما لم تعد الخدمة تحتفظ به"
+
+#: src/onlineresources/resourcewidget.cpp:77
 #, kde-format
 msgctxt "@info:tooltip first day of a date range"
 msgid "From"
 msgstr "من"
 
-#: src/onlineresources/resourcewidget.cpp:78
+#: src/onlineresources/resourcewidget.cpp:80
 #, kde-format
 msgctxt "@info:tooltip last day of a date range"
 msgid "To"
 msgstr "إلى"
 
-#: src/onlineresources/resourcewidget.cpp:83
+#: src/onlineresources/resourcewidget.cpp:85
 #, kde-format
 msgid "Refresh"
 msgstr "تحديث"
 
-#: src/onlineresources/resourcewidget.cpp:149
+#: src/onlineresources/resourcewidget.cpp:159
 #, kde-format
 msgid ""
 "Login is required to download this item.\n"
@@ -17609,247 +17656,88 @@ msgstr ""
 "الولوج مطلوب لتنزيل هذا العنصر. \n"
 "سيعاد توجيهك إلى صفحة الولوج الآن."
 
-#: src/onlineresources/resourcewidget.cpp:332
+#: src/onlineresources/resourcewidget.cpp:353
 #, kde-format
 msgid "Your files from %1"
 msgstr "ملفاتك من %1"
 
-#: src/onlineresources/resourcewidget.cpp:341
+#: src/onlineresources/resourcewidget.cpp:362
 #, kde-format
 msgid "Press Refresh to load the list"
 msgstr "اضغط تحديث لتحميل القائمة"
 
-#: src/onlineresources/resourcewidget.cpp:343
-#: src/onlineresources/resourcewidget.cpp:384
+#: src/onlineresources/resourcewidget.cpp:364
+#: src/onlineresources/resourcewidget.cpp:405
 #, kde-format
 msgid "Add the key in the plugin's settings"
 msgstr "أضف المفتاح في إعدادات الملحق"
 
-#: src/onlineresources/resourcewidget.cpp:346
+#: src/onlineresources/resourcewidget.cpp:367
 #, kde-format
 msgid "Media provided by %1"
 msgstr "الوسيط موفر بواسطة %1"
 
-#: src/onlineresources/resourcewidget.cpp:405
+#: src/onlineresources/resourcewidget.cpp:426
 #, kde-format
 msgctxt "@info:status"
 msgid "Search pending…"
 msgstr "البحث في الانتظار…"
 
-#: src/onlineresources/resourcewidget.cpp:429
+#: src/onlineresources/resourcewidget.cpp:450
 #, kde-format
 msgid "Search failed! %1"
 msgstr "فشل البحث! %1"
 
-#: src/onlineresources/resourcewidget.cpp:458
+#: src/onlineresources/resourcewidget.cpp:479
 #, kde-format
 msgctxt "@info"
 msgid "No items found."
 msgstr "لم يُعثر على عناصر."
 
-#: src/onlineresources/resourcewidget.cpp:469
+#: src/onlineresources/resourcewidget.cpp:490
 #, kde-format
 msgctxt "@info:progress"
 msgid "Parsing item %1 of %2…"
 msgstr "تحليل العنصر %1 من %2…"
 
-#: src/onlineresources/resourcewidget.cpp:472
+#: src/onlineresources/resourcewidget.cpp:493
 #, kde-format
 msgctxt "Created by author name"
 msgid "Created by %1"
 msgstr "انشئ بواسطة %1"
 
-#: src/onlineresources/resourcewidget.cpp:675
+#: src/onlineresources/resourcewidget.cpp:679
+#, kde-format
+msgid "Price %1"
+msgstr "السعر %1"
+
+#: src/onlineresources/resourcewidget.cpp:700
 #, kde-format
 msgctxt "the url link pointing to a web page"
 msgid "link"
 msgstr "رابط"
 
-#: src/onlineresources/resourcewidget.cpp:681
+#: src/onlineresources/resourcewidget.cpp:706
 #, kde-format
 msgid "Created by <a href=\"%1\">"
 msgstr "أنشئ بواسطة <a href=\"%1\">"
 
-#: src/onlineresources/resourcewidget.cpp:689
+#: src/onlineresources/resourcewidget.cpp:714
 #, kde-format
 msgid "Created by %1"
 msgstr "انشئ بواسطة %1"
 
-#: src/onlineresources/resourcewidget.cpp:695
+#: src/onlineresources/resourcewidget.cpp:720
 #, kde-format
 msgid "Size: %1 x %2"
 msgstr "القياس: %1 × %2"
 
-#: src/onlineresources/resourcewidget.cpp:698
+#: src/onlineresources/resourcewidget.cpp:723
 #, kde-format
 msgid "Duration: %1 sec"
 msgstr "المدّة: %1 ث"
 
-#: src/onlineresources/resourcewidget.cpp:726
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "CC Sampling+"
-msgstr "CC Sampling+"
-
-#: src/onlineresources/resourcewidget.cpp:728
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution"
-msgstr "المشاع الإبداعي نَسب المُصنَّف"
-
-#: src/onlineresources/resourcewidget.cpp:729
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY"
-msgstr "CC BY"
-
-#: src/onlineresources/resourcewidget.cpp:731
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NoDerivs"
-msgstr "المشاع الإبداعي نسب المصنف-منع الاشتقاق"
-
-#: src/onlineresources/resourcewidget.cpp:732
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-ND"
-msgstr "CC BY-ND"
-
-#: src/onlineresources/resourcewidget.cpp:734
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial-ShareAlike"
-msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-الترخيص بالمثل"
-
-#: src/onlineresources/resourcewidget.cpp:735
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC-SA"
-msgstr "CC BY-NC-SA"
-
-#: src/onlineresources/resourcewidget.cpp:737
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-ShareAlike"
-msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-الترخيص بالمثل"
-
-#: src/onlineresources/resourcewidget.cpp:738
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-SA"
-msgstr "CC BY-SA"
-
-#: src/onlineresources/resourcewidget.cpp:740
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial"
-msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري"
-
 #: src/onlineresources/resourcewidget.cpp:741
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC"
-msgstr "CC BY-NC"
-
-#: src/onlineresources/resourcewidget.cpp:743
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons Attribution-NonCommercial-NoDerivs"
-msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-منع الاشتقاق"
-
-#: src/onlineresources/resourcewidget.cpp:744
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC BY-NC-ND"
-msgstr "CC BY-NC-ND"
-
-#: src/onlineresources/resourcewidget.cpp:746
-#, kde-format
-msgctxt "Creative Commons License"
-msgid "Creative Commons 0"
-msgstr "المشاع الإبداعي 0"
-
-#: src/onlineresources/resourcewidget.cpp:747
-#, kde-format
-msgctxt "Creative Commons License (short)"
-msgid "CC 0"
-msgstr "CC 0"
-
-#: src/onlineresources/resourcewidget.cpp:749
-#, kde-format
-msgctxt "License"
-msgid "Public Domain"
-msgstr "ملكية عامة"
-
-#: src/onlineresources/resourcewidget.cpp:751
-#, kde-format
-msgctxt "Short for: Unknown Creative Commons License"
-msgid "Unknown CC License"
-msgstr "ترخيص مشاع إبداعي مجهول"
-
-#: src/onlineresources/resourcewidget.cpp:752
-#, kde-format
-msgid "Unknown Creative Commons License"
-msgstr "ترخيص مشاع إبداعي مجهول"
-
-#: src/onlineresources/resourcewidget.cpp:772
-#, kde-format
-msgid "Pexels License"
-msgstr "رخصة Pexels"
-
-#: src/onlineresources/resourcewidget.cpp:774
-#, kde-format
-msgid "Pixabay License"
-msgstr "رخصة Pixabay"
-
-#: src/onlineresources/resourcewidget.cpp:777
-#, kde-format
-msgid "Unknown License"
-msgstr "ترخيص مجهول"
-
-#: src/onlineresources/resourcewidget.cpp:814
-#, kde-format
-msgid "It maybe takes a while until the preview is loaded"
-msgstr "ربما يستغرق الأمر بعض الوقت حتى تتحمل المعاينة"
-
-#: src/onlineresources/resourcewidget.cpp:822
-#, kde-format
-msgid "Online Resources Preview"
-msgstr "معاينة موارد على الإنترنت"
-
-#: src/onlineresources/resourcewidget.cpp:844
-#, kde-format
-msgctxt "@title:window"
-msgid "Choose File Version"
-msgstr "اختر إصدارة الملف"
-
-#: src/onlineresources/resourcewidget.cpp:844
-#, kde-format
-msgid "Please choose the version you want to download"
-msgstr "الرجاء اختيار الإصدار الذي تريد تنزيله"
-
-#. i18n: file: src/ui/clipjobmanager_ui.ui
-#: src/onlineresources/resourcewidget.cpp:891 rc.cpp:9396
-#, kde-format
-msgid "Images"
-msgstr "الصور"
-
-#: src/onlineresources/resourcewidget.cpp:906
-#, kde-format
-msgid ""
-"Be aware that the usage of the resource is maybe restricted by license terms "
-"or law!\n"
-"Do you want to add license attribution to your Project Notes?"
-msgstr ""
-"كن على علم بأن استخدام المورد قد يكون مقيدًا حسب شروط الترخيص أو القانون! \n"
-"هل تريد إضافة إسناد الترخيص إلى ملاحظات مشروعك؟"
-
-#: src/onlineresources/resourcewidget.cpp:909
-#, kde-format
-msgid "Remember this decision"
-msgstr "تذكر هذا القرار"
-
-#: src/onlineresources/resourcewidget.cpp:911
 #, kde-format
 msgctxt "item name, item url, author name, license name, license url"
 msgid ""
@@ -17859,58 +17747,217 @@ msgstr ""
 "يستخدم هذا الفيديو \"%1\" (%2) بواسطة \"%3\" المرخصة تحت %4. لعرض نسخة من "
 "هذا الترخيص، تفضل بزيارة %5"
 
-#: src/onlineresources/resourcewidget.cpp:954
+#: src/onlineresources/resourcewidget.cpp:760
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "CC Sampling+"
+msgstr "CC Sampling+"
+
+#: src/onlineresources/resourcewidget.cpp:762
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution"
+msgstr "المشاع الإبداعي نَسب المُصنَّف"
+
+#: src/onlineresources/resourcewidget.cpp:763
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY"
+msgstr "CC BY"
+
+#: src/onlineresources/resourcewidget.cpp:765
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NoDerivs"
+msgstr "المشاع الإبداعي نسب المصنف-منع الاشتقاق"
+
+#: src/onlineresources/resourcewidget.cpp:766
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-ND"
+msgstr "CC BY-ND"
+
+#: src/onlineresources/resourcewidget.cpp:768
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial-ShareAlike"
+msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-الترخيص بالمثل"
+
+#: src/onlineresources/resourcewidget.cpp:769
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC-SA"
+msgstr "CC BY-NC-SA"
+
+#: src/onlineresources/resourcewidget.cpp:771
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-ShareAlike"
+msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-الترخيص بالمثل"
+
+#: src/onlineresources/resourcewidget.cpp:772
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-SA"
+msgstr "CC BY-SA"
+
+#: src/onlineresources/resourcewidget.cpp:774
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial"
+msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري"
+
+#: src/onlineresources/resourcewidget.cpp:775
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC"
+msgstr "CC BY-NC"
+
+#: src/onlineresources/resourcewidget.cpp:777
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons Attribution-NonCommercial-NoDerivs"
+msgstr "المشاع الإبداعي نَسب المُصنَّف-غير تجاري-منع الاشتقاق"
+
+#: src/onlineresources/resourcewidget.cpp:778
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC BY-NC-ND"
+msgstr "CC BY-NC-ND"
+
+#: src/onlineresources/resourcewidget.cpp:780
+#, kde-format
+msgctxt "Creative Commons License"
+msgid "Creative Commons 0"
+msgstr "المشاع الإبداعي 0"
+
+#: src/onlineresources/resourcewidget.cpp:781
+#, kde-format
+msgctxt "Creative Commons License (short)"
+msgid "CC 0"
+msgstr "CC 0"
+
+#: src/onlineresources/resourcewidget.cpp:783
+#, kde-format
+msgctxt "License"
+msgid "Public Domain"
+msgstr "ملكية عامة"
+
+#: src/onlineresources/resourcewidget.cpp:785
+#, kde-format
+msgctxt "Short for: Unknown Creative Commons License"
+msgid "Unknown CC License"
+msgstr "ترخيص مشاع إبداعي مجهول"
+
+#: src/onlineresources/resourcewidget.cpp:786
+#, kde-format
+msgid "Unknown Creative Commons License"
+msgstr "ترخيص مشاع إبداعي مجهول"
+
+#: src/onlineresources/resourcewidget.cpp:806
+#, kde-format
+msgid "Pexels License"
+msgstr "رخصة Pexels"
+
+#: src/onlineresources/resourcewidget.cpp:808
+#, kde-format
+msgid "Pixabay License"
+msgstr "رخصة Pixabay"
+
+#: src/onlineresources/resourcewidget.cpp:811
+#, kde-format
+msgid "Unknown License"
+msgstr "ترخيص مجهول"
+
+#: src/onlineresources/resourcewidget.cpp:848
+#, kde-format
+msgid "It maybe takes a while until the preview is loaded"
+msgstr "ربما يستغرق الأمر بعض الوقت حتى تتحمل المعاينة"
+
+#: src/onlineresources/resourcewidget.cpp:856
+#, kde-format
+msgid "Online Resources Preview"
+msgstr "معاينة موارد على الإنترنت"
+
+#: src/onlineresources/resourcewidget.cpp:878
+#, kde-format
+msgctxt "@title:window"
+msgid "Choose File Version"
+msgstr "اختر إصدارة الملف"
+
+#: src/onlineresources/resourcewidget.cpp:878
+#, kde-format
+msgid "Please choose the version you want to download"
+msgstr "الرجاء اختيار الإصدار الذي تريد تنزيله"
+
+#. i18n: file: src/ui/clipjobmanager_ui.ui
+#: src/onlineresources/resourcewidget.cpp:925 rc.cpp:9396
+#, kde-format
+msgid "Images"
+msgstr "الصور"
+
+#: src/onlineresources/resourcewidget.cpp:940
+#, kde-format
+msgid ""
+"Be aware that the usage of the resource is maybe restricted by license terms "
+"or law!\n"
+"Do you want to add license attribution to your Project Notes?"
+msgstr ""
+"كن على علم بأن استخدام المورد قد يكون مقيدًا حسب شروط الترخيص أو القانون! \n"
+"هل تريد إضافة إسناد الترخيص إلى ملاحظات مشروعك؟"
+
+#: src/onlineresources/resourcewidget.cpp:943
+#, kde-format
+msgid "Remember this decision"
+msgstr "تذكر هذا القرار"
+
+#: src/onlineresources/resourcewidget.cpp:984
 #, kde-format
 msgid "%1 Try again."
 msgstr "%1 جرّب مجدّدًا."
 
-#: src/onlineresources/resourcewidget.cpp:954
-#: src/onlineresources/resourcewidget.cpp:956
+#: src/onlineresources/resourcewidget.cpp:984
+#: src/onlineresources/resourcewidget.cpp:986
 #, kde-format
 msgid "Error Loading Data"
 msgstr "خطأ في تحميل البيانات"
 
-#: src/onlineresources/resourcewidget.cpp:968
+#: src/onlineresources/resourcewidget.cpp:998
 #, kde-format
 msgid "Resource saved to %1"
 msgstr "حُفظ المورد في %1"
 
-#: src/onlineresources/resourcewidget.cpp:968
+#: src/onlineresources/resourcewidget.cpp:998
 #, kde-format
 msgid "Data Imported"
 msgstr "استوردت البيانات"
 
-#: src/onlineresources/resourcewidget.cpp:996
+#: src/onlineresources/resourcewidget.cpp:1026
 #, kde-format
 msgid "Try importing again to obtain a new connection"
 msgstr "حاول الاستيراد مرة أخرى للحصول على اتصال جديد"
 
-#: src/onlineresources/resourcewidget.cpp:997
+#: src/onlineresources/resourcewidget.cpp:1027
 #, kde-format
 msgid "Error Getting Access Token from %1."
 msgstr "خطأ في الحصول على رمز الوصول من %1"
 
-#: src/onlineresources/resourcewidget.cpp:1071
+#: src/onlineresources/resourcewidget.cpp:1101
 #, kde-format
 msgid "in progress"
 msgstr "قيد الإنشاء"
 
-#: src/onlineresources/resourcewidget.cpp:1073
+#: src/onlineresources/resourcewidget.cpp:1103
 #, kde-format
 msgid "downloaded"
 msgstr "تم التنزيل"
 
-#: src/onlineresources/resourcewidget.cpp:1104
+#: src/onlineresources/resourcewidget.cpp:1135
 #, kde-format
 msgid "No files yet"
 msgstr "لا توجد ملفات بعد"
 
-#: src/onlineresources/resourcewidget.cpp:1191
-#, kde-format
-msgid "The file could not be downloaded. The service may no longer keep it"
-msgstr "تعذّر تنزيل الملف. ربما لم تعد الخدمة تحتفظ به"
-
-#: src/onlineresources/resourcewidget.cpp:1250
+#: src/onlineresources/resourcewidget.cpp:1256
 #, kde-format
 msgid "The file is downloading. Drag it when it is ready"
 msgstr "يجري تنزيل الملف. اسحبه عندما يصبح جاهزًا"
@@ -42478,12 +42525,6 @@ msgid "Utilities"
 msgstr "الأدوات"
 
 #. i18n: file: data/effectscategory.rc
-#: rc.cpp:9088
-#, kde-format
-msgid "Generate"
-msgstr "توليد"
-
-#. i18n: file: data/effectscategory.rc
 #: rc.cpp:9090
 #, kde-format
 msgid "On Master"
@@ -47704,10 +47745,6 @@ msgstr "مفعّل: الصوت وحده، دون ما كان خلفه. معطّ�
 #, kde-format
 #~ msgid "Press %1 first"
 #~ msgstr "اضغط %1 أولًا"
-
-#, kde-format
-#~ msgid "Price"
-#~ msgstr "السعر"
 
 #, kde-format
 #~ msgid "Credits"

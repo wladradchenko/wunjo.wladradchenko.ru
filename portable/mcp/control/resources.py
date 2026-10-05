@@ -39,6 +39,15 @@ COOKBOOK = """\
 - Delete by color: `delete_markers_by_color(color)`
 - Colors: Purple, Blue, Cyan, Green, Yellow, Orange, Red
 
+## Workflow: Files from the Internet
+
+1. `online_services` — stock libraries and plugins' clouds, with their ids
+2. `online_search(service, query)` — a stock library needs a query; a plugin's
+   cloud lists newest first and takes dates (yyyy-MM-dd) and a tool
+3. `online_import(service, id)` — downloads into the project, returns a bin id
+4. `insert_clip(bin_id, track, frame)` to place it
+5. For stock, name the author and license to the user
+
 ## Workflow: Checkpoints (Undo)
 
 1. Before risky operations: `checkpoint_save(label)`

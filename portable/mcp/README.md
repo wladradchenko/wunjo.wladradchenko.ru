@@ -61,6 +61,8 @@ pip install -r requirements.txt
 |--------|-------|
 | Project | `get_project_info`, `save_project`, `load_project` |
 | Media | `get_media_pool`, `import_media`, `import_media_glob`, `create_bin_folder` |
+| Online | `online_services`, `online_search`, `online_import` — stock libraries and the files plugins keep in their clouds |
+| Paid runs | `effect_action` (an effect's price), `spending_allowance` (the user lets the assistant spend up to N credits); `generator_card_run` and `generate_effect` wait for the user to confirm a paid run in the editor |
 | Timeline | `get_track_list`, `get_clip_info`, `insert_clip`, `append_clips`, `move_clip`, `delete_clip`, `add_track`, `trim_clip` |
 | Transitions | `add_transition`, `remove_transition` |
 | Markers | `get_markers`, `add_marker`, `delete_marker`, `delete_markers_by_color` |

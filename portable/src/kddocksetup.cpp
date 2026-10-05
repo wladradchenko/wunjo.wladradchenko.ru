@@ -23,7 +23,10 @@ public:
         // Metrics live here, colors come from the QTabBar rules in style.qss
         setDrawBase(false);
         setExpanding(false);
-        setElideMode(Qt::ElideRight);
+        // A narrow column cut every title down to "Fil…", "E…": names stay
+        // whole, and when they do not fit the bar scrolls with two arrows
+        setElideMode(Qt::ElideNone);
+        setUsesScrollButtons(true);
         setFixedHeight(30);
         parentWidget->setProperty("_breeze_force_frame", false);
         setContextMenuPolicy(Qt::CustomContextMenu);

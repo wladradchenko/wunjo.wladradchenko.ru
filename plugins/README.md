@@ -167,7 +167,7 @@ has an `id` (lowercase letters, digits and dashes, unique in the plugin), a
 | `number` | a slider from `min` to `max` in steps of `step`, with the value beside it; a spin box when no range is given | the number |
 | `bool` | a check box | true/false |
 | `media` | a slot with a thumbnail. `accept: "image"` takes a file or the current frame of the project monitor (saved as PNG in the project's `plugin-frames/<id>/`); `accept: "video"` takes a file or the clip selected on the timeline | a path, or `{"path", "in", "out"}` for a timeline clip, `in`/`out` in project frames |
-| `media_list` | entries the user adds one by one: an add button per kind in `items` (`{"key", "accept", "max", "label"}`), each gone once its kind is full. Entries are named key + number (`image1`, `video1`) and keep the name when another is removed, so a text that mentions `@image2` stays right | `{"image1": path, "video1": {"path", "in", "out"}}` |
+| `media_list` | entries the user adds one by one: an add button per kind in `items` (`{"key", "accept", "max", "label"}`), each gone once its kind is full. Entries are named key + number (`image1`, `video1`) and keep the name when another is removed, so a text that mentions `@image2` stays right. With `"max_by": {"model": {"gemini-omni": 7, "kling-o1": 0}}` how many a kind takes follows another field of the card; a value not listed keeps `max`, which is also the highest number a name gets. Entries over the limit after that field changes are kept but marked, and the card does not run until they are removed (since 3.1) | `{"image1": path, "video1": {"path", "in", "out"}}` |
 
 `show_if` shows a field only while another field has the given value.
 `required` keeps Generate shut while the field is empty; `text` and `set`
@@ -191,7 +191,9 @@ The entry script gets `input.action` set to the action's `id` (with
 `generator` and `fields` as for a run) and answers with
 `result:{"ok": true|false, "message": "…", "outputs": [], "place": "none"}`. The
 `message` is shown on the card while the values it was asked about stay the
-same. A card with a `gate: true` action goes in two steps: the action's button
+same; a web address in it is shown as a link. A price answer should also carry
+the numbers, `"price": 14, "balance": 646`: without `price` the editor cannot
+hand the agreed price to the run or count an assistant's allowance. A card with a `gate: true` action goes in two steps: the action's button
 first (Calculate); once it has answered `ok`, its sentence shows with Cancel
 and Generate. Changing a field, pressing Cancel or running the card brings the
 first step back.
@@ -214,6 +216,21 @@ filled in, `generator_card_create` adds a card filled in without running it
 `generator_card_set` changes fields, `generator_card_action` presses one of
 the card's actions and returns its answer, `generator_card_run` presses
 Generate. The card says when the assistant filled it in.
+
+**Paid runs** (since 3.1). A run that is priced first (a `gate`, on a card or
+an effect) and asked for by an assistant does not start on the assistant's
+word: the editor shows the user the plugin's price sentence in a window and
+runs it only when they press Generate. The user may instead give the assistant
+an allowance (`spending_allowance` over MCP): up to N credits of one plugin
+spent without a window, counted by the editor from the `price` numbers, shown
+in the chat with Revoke, forgotten when the editor closes; a failed run gives
+its share back. A plugin that prices its runs is not started with `run_plugin`.
+
+Every run's `input` says who started it, for the plugin to pass on to its
+service: `"started_by": "user" | "assistant"` and, for an assistant's paid run,
+`"confirmed_by": "user" | "allowance"`. A priced run also carries
+`"confirmed": {"price": N}`, the price the user agreed to: the plugin must not
+charge more, and should refuse with a sentence when its fresh price is higher.
 
 ### Files in the cloud (`library`, since 3.1)
 
@@ -275,7 +292,8 @@ The editor sends the requests itself; the plugin's script is not run. Nothing
 is asked for until the user opens the tab or picks the plugin there. The list
 shows the first frame of each video; a file is downloaded into the project's
 `plugin-results` folder only when it is previewed, imported or dragged, and
-only once.
+only once. An assistant reaches the same list over MCP with `online_services`,
+`online_search` and `online_import`.
 
 ### Parameters (auto-generated dialog)
 

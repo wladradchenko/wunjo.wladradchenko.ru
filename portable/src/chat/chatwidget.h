@@ -12,6 +12,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include <QJsonObject>
 #include <QMap>
 #include <QPlainTextEdit>
+#include <QPointer>
 #include <QWidget>
 
 class AbstractChatBackend;
@@ -25,6 +26,7 @@ class QProgressBar;
 class QScrollArea;
 class QStackedWidget;
 class KMessageWidget;
+class SpendGuard;
 class QMenu;
 class QLineEdit;
 class QToolButton;
@@ -88,17 +90,30 @@ public:
     /** @brief Change fields of a card, as an assistant does. */
     bool setGeneratorValues(const QString &cardId, const QJsonObject &values, bool byAssistant = true);
     bool foldGeneratorCard(const QString &cardId, bool collapsed);
-    /** @brief Press Generate on a card. @return The id of the run's own card,
-     *  empty when there is no such card, or "gate:<action>" when Generate waits
-     *  for that action to answer yes first. */
-    QString runGeneratorCard(const QString &cardId);
+    /** @brief Press Generate on a card. @p extra goes into the job's input
+     *  (who started it: "started_by", "confirmed_by"); the price the user
+     *  agreed to is added here. @return The id of the run's own card, empty
+     *  when there is no such card, or "gate:<action>" when Generate waits for
+     *  that action to answer yes first. */
+    QString runGeneratorCard(const QString &cardId, const QJsonObject &extra = QJsonObject());
+    /** @brief The price question a run of @p cardId still waits for, empty when
+     *  the card can run. Decided from the card's data, so it holds whether the
+     *  card is on screen or not. @p price gets the price the plugin named, -1
+     *  for none. */
+    QString cardGate(const QString &cardId, int *price = nullptr) const;
+    /** @brief Whether a run of @p cardId is priced first (its card declares a gate). */
+    bool cardHasGate(const QString &cardId) const;
+    /** @brief The card's data: plugin, generator, values. */
+    QJsonObject generatorCardPayload(const QString &cardId) const { return m_model.payload(cardId); }
     /** @brief Press an action button of a card (Price, Credits). The answer
      *  comes back on the card and through @ref generatorCardAnswer.
      *  @return A number that the answer will carry, 0 when there is no such card. */
     int askGeneratorCard(const QString &cardId, const QString &action);
     /** @brief The last answer an action of @p cardId gave: {seq, action, ok,
-     *  message}, empty while there is none. */
+     *  message, price, asked}, empty while there is none. */
     QJsonObject generatorCardAnswer(const QString &cardId) const { return m_cardAnswers.value(cardId); }
+    /** @brief Where the assistant's spending allowance lives, shown above the input. */
+    void setSpendGuard(SpendGuard *guard);
     /** @brief Every card of the session: id, plugin, values, folded. */
     QJsonArray generatorCards() const { return m_model.generators(); }
 
@@ -207,6 +222,10 @@ private:
     QLineEdit *m_historySearch{nullptr};
     /** @brief The dismissible line above the input explaining the open tab. */
     KMessageWidget *m_hintBar{nullptr};
+    /** @brief "The assistant spends without asking", with a way to take it back. */
+    KMessageWidget *m_allowanceBar{nullptr};
+    QPointer<SpendGuard> m_spendGuard;
+    void updateAllowanceBar();
     /** @brief Closed once, gone for the rest of the session. */
     bool m_hintDismissed{false};
     QVBoxLayout *m_brainLayout{nullptr};  ///< the cards, rebuilt on refresh

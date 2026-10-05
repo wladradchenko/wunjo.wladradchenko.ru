@@ -5,5 +5,6 @@ set(wunjo_SRCS
   ${wunjo_SRCS}
   onlineresources/providermodel.cpp
   onlineresources/providersrepository.cpp
+  onlineresources/resourceservice.cpp
   onlineresources/resourcewidget.cpp
   PARENT_SCOPE)
