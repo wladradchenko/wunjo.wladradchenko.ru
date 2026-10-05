@@ -487,6 +487,8 @@ private Q_SLOTS:
                                   BinMessage::BinCategory messageCategory = BinMessage::BinCategory::NoMessage);
     void displayBinLogMessagePrivate(const QString &text, int type, const QString logInfo);
     void cleanRestart(bool cleanAndRestart);
+    /** @brief Open a web link from inside an AppImage, through the system's own tools */
+    void openLinkOutsideAppImage(const QUrl &link);
     void startFromGuessedProfile(QString descriptiveString, QString fps, bool interlaced, int vTracks, int aTracks);
 
 Q_SIGNALS:

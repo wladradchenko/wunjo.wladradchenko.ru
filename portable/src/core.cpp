@@ -69,6 +69,14 @@ Core::Core(LinuxPackageType packageType, bool debugMode)
     m_hideTimer.setInterval(5000);
     m_hideTimer.setSingleShot(true);
     connect(&m_hideTimer, &QTimer::timeout, this, [&]() { Q_EMIT hideBars(!WunjoSettings::showtitlebars()); });
+    if (m_packageType == LinuxPackageType::AppImage) {
+        // Every web link in the application is opened with QDesktopServices,
+        // and inside an AppImage that did nothing: a click on a recommended
+        // plugin went back to the page it came from and no browser appeared.
+        // The handler takes them all at once, whichever dialog they come from.
+        QDesktopServices::setUrlHandler(QStringLiteral("http"), this, "openLinkOutsideAppImage");
+        QDesktopServices::setUrlHandler(QStringLiteral("https"), this, "openLinkOutsideAppImage");
+    }
 }
 
 void Core::startHideBarsTimer()
@@ -112,7 +120,14 @@ void Core::finishShutdown()
     mediaUnavailable.reset();
 }
 
-Core::~Core() {}
+Core::~Core()
+{
+    if (m_packageType == LinuxPackageType::AppImage) {
+        // Qt wants a handler withdrawn before the object behind it goes
+        QDesktopServices::unsetUrlHandler(QStringLiteral("http"));
+        QDesktopServices::unsetUrlHandler(QStringLiteral("https"));
+    }
+}
 
 bool Core::build(LinuxPackageType packageType, bool testMode, bool debugMode, bool showWelcome)
 {
@@ -2331,6 +2346,21 @@ void Core::openLink(const QUrl &link)
         return;
     }
     QDesktopServices::openUrl(link);
+}
+
+void Core::openLinkOutsideAppImage(const QUrl &link)
+{
+    // xdg-open is the system's, but started from here it inherits the image's
+    // PATH and data directories and picks up the image's copy of gio in place
+    // of the desktop's. With those entries taken out it runs as it would from
+    // a terminal — the same thing MainWindow::appHelpActivated has always done
+    // for the one link it opens.
+    QProcess process;
+    process.setProcessEnvironment(MainWindow::getCleanEnvironement());
+    const QString openPath = QStandardPaths::findExecutable(QStringLiteral("xdg-open"));
+    process.setProgram(openPath.isEmpty() ? QStringLiteral("xdg-open") : openPath);
+    process.setArguments({QString::fromUtf8(link.toEncoded())});
+    process.startDetached();
 }
 
 std::pair<QString, int> Core::getSelectedClipAndOffset()
