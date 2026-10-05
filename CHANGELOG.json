@@ -3,7 +3,7 @@
     "history": {
         "3.1.0": [
             "Interface in 11 languages, chosen in Settings > Language: English, Russian, Spanish, French, Italian, Dutch, Polish, Brazilian Portuguese, Turkish, Ukrainian, Arabic and Simplified Chinese",
-            "Generator plugins work through a card in the chat: right-click the timeline, fill in the card, press Generate; the result lands at the playhead",
+            "Generator plugins work through a card in the chat, right-click the timeline, fill in the card, press Generate; the result lands at the playhead",
             "The chat reopens the project's last conversation, cards included",
             "Plugin effects can take a multi-line text",
             "A plugin can offer models that only one of its features needs, downloaded on demand",
@@ -13,8 +13,7 @@
             "A plugin that offers several things opens as a submenu of its own under Artificial Intelligence",
             "A generator plugin can bring several cards to the chat, each with its own form",
             "Update appears in a plugin's submenu and settings when the site has a newer release",
-            "Online Toolkit plugin: video, music, voice-over and sound effects made at wunjo.online and paid with its credits",
-            "Generator cards take pictures and videos: a file, the current frame of the monitor or the selected clip",
+            "Generator cards take pictures and videos, a file, the current frame of the monitor or the selected clip",
             "A card or an effect can ask its plugin the price before a paid run, and Generate waits for the answer",
             "Removing a face region removes the effect working inside it, and pairs on one clip are told apart by a short mark"
         ],
