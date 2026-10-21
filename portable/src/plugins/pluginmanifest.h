@@ -211,7 +211,15 @@ struct PluginGenerator {
     QString title; ///< the card's heading and its menu entry
     QList<PluginField> fields;
     QList<PluginAction> actions;
+    /** @brief `"place": "bin"`: what the card makes is material, not part of
+     *  the edit (a picture to use as a reference), and stays off the timeline. */
+    bool binOnly = false;
     bool isValid() const { return !id.isEmpty() && !fields.isEmpty(); }
+    /** @brief @p values with every field they leave out at its default. A card
+     *  writes the defaults into its own copy as it builds the form, and into the
+     *  chat's only on the next edit — folding it is one — so the same settings
+     *  are held both ways. Whatever compares a card's values compares these. */
+    QJsonObject withDefaults(const QJsonObject &values) const;
 };
 
 /** @class PluginManifest

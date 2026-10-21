@@ -120,6 +120,26 @@ def register(mcp, helpers):
             return f"ERROR: {e}"
 
     @mcp.tool()
+    def cancel_plugin_job(ctx: Context, job_id: str) -> str:
+        """Stop a local plugin's job (a voice, a face, a lip sync) whose result
+        is no longer wanted, so the user's machine is free again.
+
+        A render still waiting for its plugin is dropped from the queue. An
+        online job cannot be cancelled: it runs on the provider's servers and
+        is paid once it has started — wait for it instead.
+
+        Args:
+            job_id: The id run_plugin, generator_card_run or generate_effect
+                answered with.
+        """
+        try:
+            app = helpers.get_resolve(ctx)._app
+            reason = app._call("scriptCancelPluginJob", job_id)
+            return f"ERROR: {reason}" if reason else "Cancelled."
+        except Exception as e:  # noqa: BLE001
+            return f"ERROR: {e}"
+
+    @mcp.tool()
     def list_plugins(ctx: Context) -> str:
         """Every installed plugin's own manifest, as its author wrote it.
 
@@ -316,22 +336,33 @@ def register(mcp, helpers):
             return f"ERROR: {e}"
 
     @mcp.tool()
-    def generator_card_run(ctx: Context, card_id: str) -> str:
+    def generator_card_run(ctx: Context, card_id: str, place: str = "timeline") -> str:
         """Press Generate on a card, as the user would.
 
         The run is a job card of its own below the form. The result goes into
-        the project bin and onto the timeline at the playhead, on an audio track
-        with room there or a new one. Move the playhead first (seek_to) if
-        it should start somewhere else.
+        the project bin and, with place "timeline", onto the timeline at the
+        playhead: audio on an audio track with room there or a new one, a video
+        on a video track, and its sound, when it has any, on an audio track
+        grouped with it. Move the playhead first (seek_to) if it should start
+        somewhere else. Use place "bin" for what is not part of the edit yet:
+        a voice sample, a trial take, a picture to use as a reference. A card
+        whose manifest says "place": "bin" (the image cards) always goes to
+        the bin.
 
         A paid card (its action says "gate") needs generator_card_action with
         that action first. Then the editor asks the user to confirm the price
         in a window, unless they gave an allowance (spending_allowance): this
         waits for their answer. Their words in the chat are not that answer.
+
+        Args:
+            card_id: From generator_cards or generator_card_create.
+            place: "timeline" (default) or "bin".
         """
         try:
+            if place not in ("timeline", "bin"):
+                return "ERROR: place is \"timeline\" or \"bin\"."
             app = helpers.get_resolve(ctx)._app
-            job_id = app._call("scriptGeneratorCardRun", card_id)
+            job_id = app._call("scriptGeneratorCardRun", card_id, place)
             if not job_id:
                 return f"ERROR: no card {card_id} in this chat."
             job_id = str(job_id)

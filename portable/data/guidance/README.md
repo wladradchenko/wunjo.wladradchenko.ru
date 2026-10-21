@@ -49,8 +49,8 @@ Rules that keep them useful:
   on.
 - **Promise only what the plugins can do.** Loops must check `list_plugins` /
   `plugin_status` before a step that needs one, and say so honestly when nothing
-  installed can do the job — `voice-toolkit` clones a voice and separates one
-  from its background, it does not read a script aloud.
+  installed can do the job — `voice-toolkit` reads a text aloud, clones a voice
+  and separates one from its background, and nothing in it writes the script.
 
 ## How they reach the agent
 

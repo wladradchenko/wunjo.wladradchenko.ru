@@ -390,6 +390,18 @@
     </ul>
   </description>
   <releases>
+    <release version="3.1.1" date="2026-10-21">
+      <description>
+        <p>Generated video keeps its sound, and the assistant works with generated pictures.</p>
+        <ul>
+          <li>A generated video with sound goes onto the timeline with its sound</li>
+          <li>Subtitles from speech recognition break at sentence ends and pauses</li>
+          <li>Titles made by the assistant show their text</li>
+          <li>Built-in guidance for generated pictures, video and whole stories</li>
+          <li>The agent folder also works with Cursor and Codex</li>
+        </ul>
+      </description>
+    </release>
     <release version="3.1.0" date="2026-10-03">
       <description>
         <p>Interface languages and groundwork for new plugins.</p>

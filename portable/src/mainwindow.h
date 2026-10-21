@@ -683,6 +683,9 @@ public Q_SLOTS:
      *  first" — and an assistant that cannot read it reports work it never did.
      *  This is where that sentence is read. */
     Q_SCRIPTABLE QString scriptPluginJobStatus(const QString &jobId);
+    /** @brief Call off a local plugin's job. Empty when it was, otherwise why
+     *  not: an online job cannot be, it is paid once it has started. */
+    Q_SCRIPTABLE QString scriptCancelPluginJob(const QString &jobId);
     Q_SCRIPTABLE bool scriptInstallPlugin(const QString &id);
 
     // ── Object masks (SAM-2) ────────────────────────────────────────────
@@ -753,7 +756,9 @@ public Q_SLOTS:
     Q_SCRIPTABLE QString scriptGeneratorCardAnswer(const QString &cardId);
     Q_SCRIPTABLE bool scriptGeneratorCardSet(const QString &cardId, const QString &valuesJson);
     Q_SCRIPTABLE bool scriptGeneratorCardFold(const QString &cardId, bool collapsed);
-    Q_SCRIPTABLE QString scriptGeneratorCardRun(const QString &cardId);
+    /** @brief Press Generate on a card. @p place "bin" keeps the result off the
+     *  timeline; anything else puts it at the playhead. */
+    Q_SCRIPTABLE QString scriptGeneratorCardRun(const QString &cardId, const QString &place);
     /** @brief The Online Resources services, for an assistant: stock libraries
      *  and the files plugins keep in their clouds. Searching and importing take
      *  a while: they answer with a request number, and the outcome is read with

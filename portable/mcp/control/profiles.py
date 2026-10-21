@@ -106,9 +106,11 @@ CORE_TOOLS = {
     "render_bin_frame",
     "render_contact_sheet",
     "render_video",
-    # the user's own instructions
+    # the user's own instructions, and the library they come from
     "get_selected_skills",
     "get_selected_loop",
+    "list_skills",
+    "get_skill",
     # the other plugins
     "list_plugins",
     "install_plugin",
@@ -117,6 +119,7 @@ CORE_TOOLS = {
     "list_plugin_sets",
     "generate_effect",
     "plugin_job_status",
+    "cancel_plugin_job",
     # generator cards: the form the user and the assistant fill in together
     "generator_cards",
     "generator_card_create",
@@ -175,6 +178,11 @@ CUTTING WHAT SOMEBODY SAYS
   keep the lines that carry the story, and drop the rest. A cut that lands mid
   word is what makes an edit look automatic.
 
+THE LIBRARY
+  list_skills names the editor's craft notes, one line each: cutting speech,
+  subtitles, titles, generated pictures and video, and the user's own. Read
+  the one a task needs with get_skill before you start it.
+
 PAID RUNS
   A card or an effect that asks its price first costs the user money. Ask the
   price (generator_card_action or effect_action with "price") and tell the user
@@ -183,6 +191,11 @@ PAID RUNS
   answer. If they gave a budget and do not want questions, ask once with
   spending_allowance in credits. Afterwards say what was charged and what is
   left. If they decline, do not run it again unless they ask.
+  Resolution sets most of a video's price: ask which one they want, with the
+  price of each, and never pick the highest yourself. Drafts at the lowest
+  resolution and shortest duration, one take at a time, the final one only
+  once they like the draft. Takes and samples go to the bin (place="bin").
+  Local plugins run one at a time; cancel_plugin_job drops an unwanted one.
 
 USING A PLUGIN
   list_plugins gives each plugin's own manifest — read it, the user may have

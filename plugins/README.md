@@ -169,6 +169,10 @@ has an `id` (lowercase letters, digits and dashes, unique in the plugin), a
 | `media` | a slot with a thumbnail. `accept: "image"` takes a file or the current frame of the project monitor (saved as PNG in the project's `plugin-frames/<id>/`); `accept: "video"` takes a file or the clip selected on the timeline | a path, or `{"path", "in", "out"}` for a timeline clip, `in`/`out` in project frames |
 | `media_list` | entries the user adds one by one: an add button per kind in `items` (`{"key", "accept", "max", "label"}`), each gone once its kind is full. Entries are named key + number (`image1`, `video1`) and keep the name when another is removed, so a text that mentions `@image2` stays right. With `"max_by": {"model": {"gemini-omni": 7, "kling-o1": 0}}` how many a kind takes follows another field of the card; a value not listed keeps `max`, which is also the highest number a name gets. Entries over the limit after that field changes are kept but marked, and the card does not run until they are removed (since 3.1) | `{"image1": path, "video1": {"path", "in", "out"}}` |
 
+A card with `"place": "bin"` makes material rather than part of the edit (a
+picture to use as a reference): its result goes into the bin only, never onto
+the timeline, whoever presses Generate.
+
 `show_if` shows a field only while another field has the given value.
 `required` keeps Generate shut while the field is empty; `text` and `set`
 fields are required unless they say `false`, a `media` field only when it says
@@ -209,13 +213,17 @@ where `generator` is the `id` of the card that was run, and expects the usual
 A `message` in the result is added to the line that says the job is done. The result goes into the bin under a folder named after
 the card, and onto the timeline at the playhead as it was when Generate was
 pressed: on the first audio (or video) track with room there, or on a new one.
+A video with sound goes in as both halves, grouped, each on a track of its kind.
 
 An assistant uses the same cards over MCP: `generator_cards` reads what is
 filled in, `generator_card_create` adds a card filled in without running it
 (its `generator` argument picks the card by `id`, the first one when empty),
 `generator_card_set` changes fields, `generator_card_action` presses one of
 the card's actions and returns its answer, `generator_card_run` presses
-Generate. The card says when the assistant filled it in.
+Generate (`place="bin"` keeps the result off the timeline). The card says when
+the assistant filled it in. `cancel_plugin_job` stops a local plugin's job; an
+online one (a plugin with a `provider`) is not stopped, since its provider
+finishes and charges it anyway.
 
 **Paid runs** (since 3.1). A run that is priced first (a `gate`, on a card or
 an effect) and asked for by an assistant does not start on the assistant's

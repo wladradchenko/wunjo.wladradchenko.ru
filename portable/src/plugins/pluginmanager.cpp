@@ -291,12 +291,23 @@ void PluginManager::noteJobProgress(const QString &jobId, int percent)
 
 void PluginManager::noteJobEnded(const QString &jobId, bool isError, const QString &message)
 {
+    m_jobHandles.remove(jobId);
+    // a stopped process dies with whatever it was printing; the reason is ours
+    const QString said = m_cancelledJobs.remove(jobId) ? i18n("Cancelled.") : message;
     const int percent = isError ? m_jobOutcomes.value(jobId).value(QStringLiteral("percent")).toInt() : 100;
-    recordJob(jobId, isError ? QStringLiteral("failed") : QStringLiteral("done"), percent, message);
+    recordJob(jobId, isError ? QStringLiteral("failed") : QStringLiteral("done"), percent, said);
     if (auto *window = pCore->window()) {
-        window->scriptChatToolEnd(jobId, isError, message);
+        window->scriptChatToolEnd(jobId, isError, said);
     }
     Q_EMIT jobFinished(jobId, isError);
+}
+
+void PluginManager::trackJob(const QString &jobId, const QString &pluginId, const QString &handle)
+{
+    // empty when it never started, and then it has already ended
+    if (!handle.isEmpty()) {
+        m_jobHandles.insert(jobId, {pluginId, handle});
+    }
 }
 
 QString PluginManager::refuseJob(const QString &name, const QString &message)
@@ -728,7 +739,12 @@ static void placeResultOnTimeline(const ObjectId &owner, const QString &binId)
  * existing audio tracks are tried first, top down: the timeline refuses an
  * insertion where something already lies, and the first track that takes it
  * keeps the project from growing a new track per sentence. Only when none has
- * room is a track added, on top of the audio stack. */
+ * room is a track added, on top of the audio stack.
+ *
+ * A generated video that carries sound (a model that speaks the lines of its
+ * prompt) goes in as both halves, each on a track of its kind, grouped the way
+ * a dropped A/V clip is — a picture placed without its sound looks like a
+ * silent result, and halves that are not grouped drift apart on the first move. */
 static void placeAtFrame(const QUuid &uuid, int frame, const QString &binId)
 {
     WunjoDoc *doc = pCore->currentDoc();
@@ -740,34 +756,52 @@ static void placeAtFrame(const QUuid &uuid, int frame, const QString &binId)
     if (!timeline || !master) {
         return;
     }
-    const bool audio = master->clipType() == ClipType::Audio;
-    const QString prefix = audio ? QStringLiteral("A") : QStringLiteral("V");
+    const ClipType::ProducerType type = master->clipType();
+    const bool wantsVideo = type != ClipType::Audio;
+    const bool wantsAudio = type == ClipType::Audio || master->hasAudioAndVideo();
     Fun undo = []() { return true; };
     Fun redo = []() { return true; };
     pCore->monitorManager()->pauseActiveMonitor();
-    QList<int> tracks = timeline->getTracksIds(audio);
-    std::reverse(tracks.begin(), tracks.end());
-    for (int trackId : std::as_const(tracks)) {
-        if (timeline->trackIsLocked(trackId)) {
-            continue;
+    // the first unlocked track of the kind with room at the frame, top down,
+    // else a new one on top of that kind's stack; -1 when neither takes it
+    auto place = [&timeline, &undo, &redo, &binId, frame](bool audio) {
+        const QString item = (audio ? QStringLiteral("A") : QStringLiteral("V")) + binId;
+        QList<int> tracks = timeline->getTracksIds(audio);
+        std::reverse(tracks.begin(), tracks.end());
+        for (int trackId : std::as_const(tracks)) {
+            if (timeline->trackIsLocked(trackId)) {
+                continue;
+            }
+            int clipId = -1;
+            if (timeline->requestClipInsertion(item, trackId, frame, clipId, true, true, false, undo, redo)) {
+                return clipId;
+            }
         }
+        const int audioCount = int(timeline->getTracksIds(true).count());
+        int trackId = -1;
+        Mlt::Tractor *tractor = timeline->tractor();
+        tractor->lock();
+        const bool inserted =
+            timeline->requestTrackInsertion(audio ? audioCount : audioCount + int(timeline->getTracksIds(false).count()), trackId, QString(), audio, undo, redo);
+        tractor->unlock();
         int clipId = -1;
-        if (timeline->requestClipInsertion(prefix + binId, trackId, frame, clipId, true, true, false, undo, redo)) {
-            pCore->pushUndo(undo, redo, i18n("Add the generated clip to the timeline"));
-            return;
+        if (inserted && timeline->requestClipInsertion(item, trackId, frame, clipId, true, true, false, undo, redo)) {
+            return clipId;
         }
-    }
-    int trackId = -1;
-    Mlt::Tractor *tractor = timeline->tractor();
-    tractor->lock();
-    const bool inserted = timeline->requestTrackInsertion(audio ? int(timeline->getTracksIds(true).count()) : int(timeline->getTracksIds(true).count() + timeline->getTracksIds(false).count()),
-                                                          trackId, QString(), audio, undo, redo);
-    tractor->unlock();
-    int clipId = -1;
-    if (inserted && timeline->requestClipInsertion(prefix + binId, trackId, frame, clipId, true, true, false, undo, redo)) {
+        return -1;
+    };
+    const int videoClip = wantsVideo ? place(false) : -1;
+    const int audioClip = wantsAudio ? place(true) : -1;
+    // half a placement is worse than none, as in placeResultOnTimeline
+    const bool placed = (!wantsVideo || videoClip > -1) && (!wantsAudio || audioClip > -1);
+    if (placed) {
+        if (videoClip > -1 && audioClip > -1) {
+            timeline->requestClipsGroup({videoClip, audioClip}, undo, redo, GroupType::AVSplit);
+        }
         pCore->pushUndo(undo, redo, i18n("Add the generated clip to the timeline"));
         return;
     }
+    Mlt::Tractor *tractor = timeline->tractor();
     tractor->lock();
     undo();
     tractor->unlock();
@@ -1385,6 +1419,40 @@ QString effectJobKey(const ObjectId &owner, int effectItemId)
 }
 } // namespace
 
+QString PluginManager::cancelJob(const QString &jobId)
+{
+    // a render still waiting for the plugin: it leaves the queue, nothing ran
+    for (int i = 0; i < m_effectJobQueue.size(); ++i) {
+        const QueuedJob &job = m_effectJobQueue.at(i);
+        const QString key = effectJobKey(job.owner, job.effectItemId);
+        if (QStringLiteral("render:") + key != jobId) {
+            continue;
+        }
+        const QueuedJob dropped = m_effectJobQueue.takeAt(i);
+        m_effectJobs.remove(key);
+        Q_EMIT effectJobProgressChanged(dropped.owner, dropped.effectItemId, JobNone);
+        // it never had a card in the chat, so only the outcome is told
+        recordJob(jobId, QStringLiteral("failed"), 0, i18n("Cancelled."));
+        Q_EMIT jobFinished(jobId, true);
+        return {};
+    }
+    const auto it = m_jobHandles.constFind(jobId);
+    if (it == m_jobHandles.constEnd()) {
+        return m_jobOutcomes.contains(jobId) ? i18n("The job has already ended.") : i18n("There is no such job.");
+    }
+    // An online job runs on the provider's servers: the process here only
+    // waits for it, and stopping that leaves the job running and charged.
+    if (!m_plugins.value(it.value().first).providerName().isEmpty()) {
+        return i18n("This job runs online and is paid once it has started; it cannot be cancelled here.");
+    }
+    m_cancelledJobs.insert(jobId);
+    if (!cancelPluginJob(it.value().second)) {
+        m_cancelledJobs.remove(jobId);
+        return i18n("The job has already ended.");
+    }
+    return {};
+}
+
 int PluginManager::effectJobProgress(const ObjectId &owner, int effectItemId) const
 {
     return m_effectJobs.value(effectJobKey(owner, effectItemId), JobNone);
@@ -1874,7 +1942,7 @@ void PluginManager::startEffectJob(const QueuedJob &job)
     // render does — with the reason when there is one.
     const QString card = QStringLiteral("render:") + key;
     noteJobStarted(card, label);
-    runPluginJob(
+    const QString handle = runPluginJob(
         job.pluginId, job.input, this,
         [this, key, job, card](int progress) {
             m_effectJobs.insert(key, progress);
@@ -1986,6 +2054,7 @@ void PluginManager::startEffectJob(const QueuedJob &job)
             pCore->displayMessage(done, OperationCompletedMessage);
             noteJobEnded(card, false, done);
         });
+    trackJob(card, job.pluginId, handle);
 }
 
 void PluginManager::queryPlugin(const QString &pluginId, const QJsonObject &input, QObject *context,
@@ -2057,7 +2126,7 @@ QString PluginManager::runGenerator(const QString &pluginId, const QString &gene
     for (auto it = extra.constBegin(); it != extra.constEnd(); ++it) {
         input.insert(it.key(), it.value());
     }
-    runPluginJob(
+    const QString handle = runPluginJob(
         pluginId, input, this, [this, card](int percent) { noteJobProgress(card, percent); },
         [this, pluginId, label, card, timelineUuid, frame](const QJsonObject &result, const QString &error) {
             if (!error.isEmpty()) {
@@ -2093,6 +2162,7 @@ QString PluginManager::runGenerator(const QString &pluginId, const QString &gene
             pCore->displayMessage(done + keptNote, OperationCompletedMessage);
             noteJobEnded(card, false, done + keptNote);
         });
+    trackJob(card, pluginId, handle);
     return card;
 }
 
@@ -2115,7 +2185,7 @@ QString PluginManager::runPlugin(const QString &id, const QJsonObject &input, QW
     const QString action = input.value(QStringLiteral("action")).toString();
     const QString kind = input.value(QStringLiteral("kind")).toString();
     const QString source = input.value(QStringLiteral("source")).toString();
-    runPluginJob(
+    const QString handle = runPluginJob(
         id, input, this, [this, card](int percent) { noteJobProgress(card, percent); },
         [this, id, name, action, kind, source, card](const QJsonObject &result, const QString &error) {
         if (!error.isEmpty()) {
@@ -2168,5 +2238,6 @@ QString PluginManager::runPlugin(const QString &id, const QJsonObject &input, QW
         pCore->displayMessage(message, OperationCompletedMessage);
         noteJobEnded(card, false, message);
         });
+    trackJob(card, id, handle);
     return card;
 }

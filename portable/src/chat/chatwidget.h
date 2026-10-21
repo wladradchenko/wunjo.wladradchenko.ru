@@ -94,8 +94,9 @@ public:
      *  (who started it: "started_by", "confirmed_by"); the price the user
      *  agreed to is added here. @return The id of the run's own card, empty
      *  when there is no such card, or "gate:<action>" when Generate waits for
-     *  that action to answer yes first. */
-    QString runGeneratorCard(const QString &cardId, const QJsonObject &extra = QJsonObject());
+     *  that action to answer yes first. @p binOnly keeps the result off the
+     *  timeline: a voice sample or a trial take is not part of the edit. */
+    QString runGeneratorCard(const QString &cardId, const QJsonObject &extra = QJsonObject(), bool binOnly = false);
     /** @brief The price question a run of @p cardId still waits for, empty when
      *  the card can run. Decided from the card's data, so it holds whether the
      *  card is on screen or not. @p price gets the price the plugin named, -1

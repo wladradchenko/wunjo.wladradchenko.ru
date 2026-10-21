@@ -123,6 +123,8 @@ private:
      *  that was chosen got deleted): that is nobody's edit. */
     void setValue(const QString &key, const QJsonValue &value, bool byUser = true);
     QJsonValue value(const QString &key) const;
+    /** @brief The last answer was about the values on the card now. */
+    bool answerCurrent() const;
     /** @brief What still has to be filled in before Generate can run, or empty. */
     QString missing() const;
 

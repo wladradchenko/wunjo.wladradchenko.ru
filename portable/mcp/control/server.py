@@ -102,6 +102,16 @@ PAID PLUGINS (a card action or an effect with a price question costs the user mo
   time, ask once with spending_allowance(plugin, credits) — credits, not money;
   the editor counts it. After a run, say what was charged and what is left.
   If the user declines, do not run it again unless they ask.
+  Resolution sets most of a video's price (1080p costs several times 360p):
+  - before the first run ask which resolution they want, with the price of each;
+    never pick the highest on your own;
+  - try ideas at the lowest resolution and shortest duration, then make the
+    final one at the resolution they agree to once they like the draft;
+  - one take at a time: look at it, then decide the next; never start several
+    copies of the same prompt at once;
+  - takes, samples and references go in with place="bin" until they are used.
+  A local plugin (a voice, a face, a lip sync) runs on the user's machine: one
+  at a time, and cancel_plugin_job when its result is no longer wanted.
 
 ONLINE FILES (stock libraries and the files plugins keep in their clouds):
   online_services — the services; online_search(service, query...) — find;

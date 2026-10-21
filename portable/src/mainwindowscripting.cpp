@@ -921,8 +921,9 @@ int MainWindow::scriptInsertClip(const QString &binClipId, int trackId, int posi
     // that is not in the bin onto a track that does not exist; an assistant can
     // ask for exactly that, and the model below assumes the ids are real — the
     // lookup throws rather than returns, and an uncaught throw takes the whole
-    // editor down with the user's project in it.
-    if (!pCore->projectItemModel()->getClipByBinID(binClipId)) {
+    // editor down with the user's project in it. A fragment comes as
+    // "binId/in/out", the form a dragged clip zone takes; the clip is the first part.
+    if (!pCore->projectItemModel()->getClipByBinID(binClipId.section(QLatin1Char('/'), 0, 0))) {
         return -1;
     }
     if (!timeline->model()->isTrack(trackId) || position < 0) {
@@ -2910,22 +2911,27 @@ QVariantList MainWindow::scriptGetSubtitles()
     return result;
 }
 
-int MainWindow::scriptAddSubtitle(int startFrame, int endFrame, const QString &text, int layer)
+/** @brief The subtitle track of @p timeline, made and shown when it has none
+ *  yet: adding, importing and styling all start from one. */
+static std::shared_ptr<SubtitleModel> subtitlesOf(TimelineWidget *timeline)
 {
-    auto timeline = getCurrentTimeline();
-    if (!timeline || !timeline->model()) return -1;
-    bool created = false;
     if (!timeline->model()->hasSubtitleModel()) {
         timeline->model()->createSubtitleModel();
-        created = true;
-    }
-    auto subModel = timeline->model()->getSubtitleModel();
-    if (created) {
+        auto subModel = timeline->model()->getSubtitleModel();
         // Ensure QML view is connected to the new subtitle model
         pCore->subtitleWidget()->setModel(subModel);
         timeline->connectSubtitleModel(true);
         WunjoSettings::setShowSubtitles(true);
+        return subModel;
     }
+    return timeline->model()->getSubtitleModel();
+}
+
+int MainWindow::scriptAddSubtitle(int startFrame, int endFrame, const QString &text, int layer)
+{
+    auto timeline = getCurrentTimeline();
+    if (!timeline || !timeline->model()) return -1;
+    auto subModel = subtitlesOf(timeline);
     double fps = pCore->getCurrentFps();
     GenTime startPos(startFrame, fps);
     GenTime endPos(endFrame, fps);
@@ -2971,17 +2977,7 @@ bool MainWindow::scriptImportSubtitle(const QString &filePath, int offset, const
     auto timeline = getCurrentTimeline();
     if (!timeline || !timeline->model()) return false;
     if (!QFile::exists(filePath)) return false;
-    bool created = false;
-    if (!timeline->model()->hasSubtitleModel()) {
-        timeline->model()->createSubtitleModel();
-        created = true;
-    }
-    auto subModel = timeline->model()->getSubtitleModel();
-    if (created) {
-        pCore->subtitleWidget()->setModel(subModel);
-        timeline->connectSubtitleModel(true);
-        WunjoSettings::setShowSubtitles(true);
-    }
+    auto subModel = subtitlesOf(timeline);
     double fps = pCore->getCurrentFps();
     QByteArray enc = encoding.isEmpty() ? QByteArrayLiteral("UTF-8") : encoding.toUtf8();
     subModel->importSubtitle(filePath, offset, true, fps, fps, enc);
@@ -3049,8 +3045,8 @@ bool MainWindow::scriptSetSubtitleStyle(const QString &name, const QStringList &
 {
     auto timeline = getCurrentTimeline();
     if (!timeline || !timeline->model()) return false;
-    if (!timeline->model()->hasSubtitleModel()) return false;
-    auto subModel = timeline->model()->getSubtitleModel();
+    // a style is set before the first line as often as after it
+    auto subModel = subtitlesOf(timeline);
 
     // Start from existing style or defaults
     const auto &styles = subModel->getAllSubtitleStyles(global);
@@ -3495,14 +3491,15 @@ bool MainWindow::scriptGeneratorCardFold(const QString &cardId, bool collapsed)
     return m_chatWidget && m_chatWidget->foldGeneratorCard(cardId, collapsed);
 }
 
-QString MainWindow::scriptGeneratorCardRun(const QString &cardId)
+QString MainWindow::scriptGeneratorCardRun(const QString &cardId, const QString &place)
 {
     if (!m_chatWidget) {
         return {};
     }
+    const bool binOnly = place == QLatin1String("bin");
     const QJsonObject started{{QStringLiteral("started_by"), QStringLiteral("assistant")}};
     if (!m_chatWidget->cardHasGate(cardId)) {
-        return m_chatWidget->runGeneratorCard(cardId, started);
+        return m_chatWidget->runGeneratorCard(cardId, started, binOnly);
     }
     // A paid run: priced first, and agreed to by the user, never by the
     // assistant on its own
@@ -3522,16 +3519,17 @@ QString MainWindow::scriptGeneratorCardRun(const QString &cardId)
     spend.price = price;
     spend.target = QStringLiteral("card:") + cardId;
     QPointer<ChatWidget> chat = m_chatWidget;
-    spend.stillValid = [chat, cardId, values, price]() {
+    spend.stillValid = [chat, cardId, generator, values, price]() {
         int now = -1;
         return chat && chat->cardGate(cardId, &now).isEmpty() && now == price &&
-            chat->generatorCardPayload(cardId).value(QStringLiteral("values")).toObject() == values;
+            generator.withDefaults(chat->generatorCardPayload(cardId).value(QStringLiteral("values")).toObject()) == generator.withDefaults(values);
     };
-    spend.run = [chat, cardId](const QString &by) -> QString {
+    spend.run = [chat, cardId, binOnly](const QString &by) -> QString {
         if (!chat) {
             return {};
         }
-        return chat->runGeneratorCard(cardId, QJsonObject{{QStringLiteral("started_by"), QStringLiteral("assistant")}, {QStringLiteral("confirmed_by"), by}});
+        return chat->runGeneratorCard(cardId, QJsonObject{{QStringLiteral("started_by"), QStringLiteral("assistant")}, {QStringLiteral("confirmed_by"), by}},
+                                      binOnly);
     };
     return QStringLiteral("confirm:") + QString::number(m_spendGuard->request(spend));
 }
@@ -3909,6 +3907,11 @@ QString MainWindow::scriptPluginJobStatus(const QString &jobId)
         return QStringLiteral(R"({"state":"unknown"})");
     }
     return QString::fromUtf8(QJsonDocument(outcome).toJson(QJsonDocument::Compact));
+}
+
+QString MainWindow::scriptCancelPluginJob(const QString &jobId)
+{
+    return PluginManager::instance().cancelJob(jobId);
 }
 
 QVariantList MainWindow::scriptListPluginSets(const QString &pluginId, const QString &kind)

@@ -26,6 +26,91 @@ import whispertotext
 # fp16 = False to disable fp16
 
 
+# Whisper's own srt writer cuts a segment by width alone, and a segment can hold
+# the end of one speaker's line and the start of the next: in an interview the
+# question and the answer end up on one subtitle. The words carry their own
+# times, so the lines are built from them instead (see cues_from_words).
+SENTENCE_END = ('.', '?', '!', '…', '。', '？', '！')
+# A silence this long (seconds) ends a line even mid-sentence: someone else
+# is about to speak, or the same person starts a new thought.
+PAUSE = 0.4
+# Whisper places a word's start a little after it is heard; a line shown this
+# much (seconds) earlier reads as on time.
+LEAD = 0.15
+
+
+def cues_from_words(result, max_line_width=None, max_line_count=None):
+    """[(start, end, text)] from the words of a whisper result, or None when
+    the result has no word times (then whisper's own srt stays)."""
+    words = []
+    for segment in result.get("segments") or []:
+        if not segment.get("words"):
+            return None
+        words.extend(w for w in segment["words"] if w.get("word", "").strip())
+    if not words:
+        return None
+    width = int(max_line_width) if max_line_width else 0
+    count = max(int(max_line_count or 1), 1)
+    limit = width * count
+
+    def text_of(group):
+        return "".join(w["word"] for w in group).strip()
+
+    groups, current = [], []
+    for word in words:
+        if current:
+            last = current[-1]
+            ended = last["word"].strip().endswith(SENTENCE_END)
+            paused = float(word["start"]) - float(last["end"]) > PAUSE
+            too_long = limit and len(text_of(current + [word])) > limit
+            if ended or paused or too_long:
+                groups.append(current)
+                current = []
+        current.append(word)
+    if current:
+        groups.append(current)
+
+    cues = []
+    previous_end = 0.0
+    for group in groups:
+        start = max(float(group[0]["start"]) - LEAD, previous_end, 0.0)
+        end = max(float(group[-1]["end"]), start + 0.1)
+        text = text_of(group)
+        if width and count > 1:
+            text = "\n".join(wrap(text, width))
+        cues.append((start, end, text))
+        previous_end = end
+    return cues
+
+
+def wrap(text, width):
+    """Lines of at most width characters, broken between words."""
+    lines, line = [], ""
+    for piece in text.split(" "):
+        if line and len(line) + 1 + len(piece) > width:
+            lines.append(line)
+            line = piece
+        else:
+            line = piece if not line else line + " " + piece
+    if line:
+        lines.append(line)
+    return lines
+
+
+def srt_time(seconds):
+    millis = int(round(seconds * 1000))
+    hours, millis = divmod(millis, 3600000)
+    minutes, millis = divmod(millis, 60000)
+    secs, millis = divmod(millis, 1000)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
+
+
+def write_srt(cues, path):
+    with open(path, 'w', encoding='utf8') as f:
+        for n, (start, end, text) in enumerate(cues, 1):
+            f.write(f"{n}\n{srt_time(start)} --> {srt_time(end)}\n{text}\n\n")
+
+
 def main(source, model, **kwargs):
     kwargs_def = {
         'device': 'cpu',
@@ -78,6 +163,12 @@ def main(source, model, **kwargs):
             args += f"max_line_count={kwargs['max_line_count']} "
 
     result = whispertotext.run_whisper(source, model, device, task, args)
+
+    if not kwargs['seamless_source']:
+        # over the file whisper's writer has just made: same folder, same name
+        cues = cues_from_words(result, kwargs['max_line_width'], kwargs['max_line_count'])
+        if cues:
+            write_srt(cues, os.path.join(outFolder, os.path.splitext(os.path.basename(source))[0] + ".srt"))
 
     if kwargs['seamless_source']:
         print("0%| initialize", file=sys.stdout, flush=True)

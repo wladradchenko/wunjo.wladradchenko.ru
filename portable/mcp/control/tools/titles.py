@@ -26,6 +26,49 @@ _STYLE_TO_XML_ATTR = {
     "shadow": "shadow",
 }
 
+# The tool's alignment (0 left, 1 center, 2 right) as the Qt flags the titler
+# stores: AlignLeft, AlignHCenter, AlignRight.
+_ALIGNMENT_TO_QT = {"0": "1", "1": "4", "2": "2"}
+
+
+def _rgba(color: str) -> str:
+    """"#rrggbb" or "#aarrggbb" as the "r,g,b,a" the titler reads; anything
+    else hex cannot be is passed on as it is (it may already be r,g,b,a)."""
+    value = str(color).strip()
+    digits = value.lstrip("#")
+    if not value.startswith("#") or len(digits) not in (6, 8):
+        return value
+    try:
+        numbers = [int(digits[i:i + 2], 16) for i in range(0, len(digits), 2)]
+    except ValueError:
+        return value
+    if len(numbers) == 3:
+        r, g, b, a = numbers + [255]
+    else:
+        a, r, g, b = numbers
+    return f"{r},{g},{b},{a}"
+
+
+def _shadow(value: str) -> str:
+    """The documented "r;g;b;a;xoff;yoff;blur" as the titler's own
+    "enabled;#AARRGGBB;blur;xoff;yoff"; a value already in that form is kept."""
+    parts = [v.strip() for v in str(value).split(";")]
+    if len(parts) != 7:
+        return str(value)
+    r, g, b, a, xoff, yoff, blur = (int(float(v)) for v in parts)
+    return f"1;#{a:02x}{r:02x}{g:02x}{b:02x};{blur};{xoff};{yoff}"
+
+
+def _xml_value(key: str, value) -> str:
+    """A style value written the way the titler and MLT read it back."""
+    if key in ("color", "font_outline_color", "bg_color"):
+        return _rgba(value)
+    if key == "alignment":
+        return _ALIGNMENT_TO_QT.get(str(value), str(value))
+    if key == "shadow":
+        return _shadow(value)
+    return str(value)
+
 
 def _parse_srt(path: str, fps: float) -> list[tuple[int, int, str]]:
     """Parse an SRT file into a list of (start_frame, end_frame, text).
@@ -65,42 +108,41 @@ def _parse_srt(path: str, fps: float) -> list[tuple[int, int, str]]:
 
 
 def _build_title_xml(w: int, h: int, x: int, y: int, text: str, style: dict) -> str:
-    """Build kdenlivetitle XML string with conditional attributes."""
-    # Always-present attributes
-    attrs = [
-        f'font="{style["font"]}"',
-        f'font-pixel-size="{style["font_size"]}"',
-        f'font-weight="{style["font_weight"]}"',
-        f'font-color="{style["color"]}"',
-        f'alignment="{style["alignment"]}"',
-    ]
-
-    # Optional attributes — only include when non-default
-    if style.get("font_italic", "0") != "0":
-        attrs.append(f'font-italic="{style["font_italic"]}"')
-    if style.get("font_underline", "0") != "0":
-        attrs.append(f'font-underline="{style["font_underline"]}"')
+    """Build kdenlivetitle XML the way the titler saves it (data/titles/*):
+    the text is the body of <content>, colours are "r,g,b,a", every item has a
+    transform, and the document names its viewport and background. A title
+    written any other way loads as an empty, colourless text — a black frame."""
+    size = int(float(style["font_size"]))
+    lines = max(text.count("\n") + 1, 1)
+    attrs = {
+        "font": style["font"],
+        "font-pixel-size": str(size),
+        "font-weight": str(style["font_weight"]),
+        "font-color": _rgba(style["color"]),
+        "font-italic": str(style.get("font_italic", "0")),
+        "font-underline": str(style.get("font_underline", "0")),
+        # the box the alignment is measured in: the frame's width from x
+        "alignment": _xml_value("alignment", style["alignment"]),
+        "box-width": str(w - x),
+        "box-height": str(int(size * 1.3 * lines)),
+    }
     if float(style.get("font_outline", "0")) > 0:
-        attrs.append(f'font-outline="{style["font_outline"]}"')
-        attrs.append(
-            f'font-outline-color="{style.get("font_outline_color", "#000000")}"'
-        )
+        attrs["font-outline"] = str(style["font_outline"])
+        attrs["font-outline-color"] = _rgba(style.get("font_outline_color", "#000000"))
     if style.get("letter_spacing", "0") != "0":
-        attrs.append(f'letter-spacing="{style["letter_spacing"]}"')
+        attrs["letter-spacing"] = str(style["letter_spacing"])
     if style.get("line_spacing", "0") != "0":
-        attrs.append(f'line-spacing="{style["line_spacing"]}"')
+        attrs["line-spacing"] = str(style["line_spacing"])
     if style.get("shadow", ""):
-        attrs.append(f'shadow="{style["shadow"]}"')
+        attrs["shadow"] = _shadow(style["shadow"])
 
-    safe_text = html.escape(text)
-    attr_str = "\n    ".join(attrs)
-
+    identity = "<transform>1,0,0,0,1,0,0,0,1</transform>"
+    attr_str = " ".join(f'{k}="{html.escape(v)}"' for k, v in attrs.items())
     xml = (
-        f'<kdenlivetitle width="{w}" height="{h}" LC_NUMERIC="C">\n'
-        f' <item type="QGraphicsTextItem" z-index="0">\n'
-        f'  <position x="{x}" y="{y}"/>\n'
-        f"  <content\n    {attr_str}\n"
-        f'    text="{safe_text}"/>\n'
+        f'<kdenlivetitle width="{w}" height="{h}">\n'
+        f' <item type="QGraphicsTextItem" z-index="1">\n'
+        f'  <position x="{x}" y="{y}">\n   {identity}\n  </position>\n'
+        f"  <content {attr_str}>{html.escape(text, quote=False)}</content>\n"
         f" </item>\n"
     )
 
@@ -109,13 +151,19 @@ def _build_title_xml(w: int, h: int, x: int, y: int, text: str, style: dict) -> 
     if bg_color:
         bg_x, bg_y, bg_w, bg_h = _compute_bg_rect(w, h, y, style)
         xml += (
-            f' <item type="QGraphicsRectItem" z-index="-1">'
-            f'<content rect="{bg_x},{bg_y},{bg_w},{bg_h}" '
-            f'brushcolor="{bg_color}"/>'
-            f"</item>\n"
+            f' <item type="QGraphicsRectItem" z-index="0">\n'
+            f'  <position x="{bg_x}" y="{bg_y}">\n   {identity}\n  </position>\n'
+            f'  <content rect="0,0,{bg_w},{bg_h}" brushcolor="{_rgba(bg_color)}" '
+            f'pencolor="0,0,0,0" penwidth="0"/>\n'
+            f" </item>\n"
         )
 
-    xml += "</kdenlivetitle>"
+    xml += (
+        f' <startviewport rect="0,0,{w},{h}"/>\n'
+        f' <endviewport rect="0,0,{w},{h}"/>\n'
+        f' <background color="0,0,0,0"/>\n'
+        f"</kdenlivetitle>"
+    )
     return xml
 
 
@@ -183,6 +231,7 @@ def register(mcp, helpers):
                 letter_spacing — extra spacing in pixels (default "0")
                 line_spacing  — extra line spacing in pixels (default "0")
                 shadow        — "r;g;b;a;xoff;yoff;blur" e.g. "0;0;0;255;2;2;3"
+                                (the titler's "1;#AARRGGBB;blur;xoff;yoff" works too)
                 bg_color      — background color hex, supports alpha "#aarrggbb"
                 bg_rect       — explicit bg rect "x,y,w,h" (overrides auto)
                 bg_padding    — padding for auto bg rect in pixels (default "20")
@@ -298,20 +347,21 @@ def register(mcp, helpers):
 
             # Parse XML
             root = ET.fromstring(current_xml)
-            content_el = root.find(".//content")
+            content_el = root.find(".//item[@type='QGraphicsTextItem']/content")
             if content_el is None:
-                return "ERROR: No <content> element found in title XML."
+                return "ERROR: No text item found in title XML."
 
-            # Update text
+            # Update text: the body of <content>, which is where the titler reads it
             if new_text is not None:
-                content_el.set("text", html.escape(new_text))
+                content_el.text = new_text
+                content_el.attrib.pop("text", None)
 
-            # Update style attributes
+            # Update style attributes, in the titler's own formats
             if style:
                 for key, value in style.items():
                     xml_attr = _STYLE_TO_XML_ATTR.get(key)
                     if xml_attr:
-                        content_el.set(xml_attr, str(value))
+                        content_el.set(xml_attr, _xml_value(key, value))
 
             # Serialize back
             updated_xml = ET.tostring(root, encoding="unicode")

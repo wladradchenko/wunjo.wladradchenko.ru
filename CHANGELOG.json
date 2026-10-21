@@ -1,6 +1,20 @@
 {
-    "version": "3.1.0",
+    "version": "3.1.1",
     "history": {
+        "3.1.1": [
+            "A generated video with sound goes onto the timeline with its sound, the two halves grouped",
+            "A price asked on a generator card stays valid when the card is folded or redrawn",
+            "A generator card can keep its result in the bin instead of the timeline, and image cards always do",
+            "The assistant can stop a local plugin's job; an online job, paid once it has started, is left to finish",
+            "The assistant can insert a fragment of a clip in one step",
+            "Titles made by the assistant show their text instead of a black frame",
+            "Speech recognition breaks subtitles at sentence ends and pauses, so two speakers no longer share a line, and shows them in time with the words",
+            "A subtitle style can be set before the first subtitle exists",
+            "The timeline summary no longer reports dissolves that are not there after a split and a move",
+            "The assistant's contact sheets, crops and panel screenshots work out of the box",
+            "Built-in guidance for generated pictures and video, and a loop that makes a whole story from generated shots",
+            "The built-in assistant can read the guidance library, and the agent folder registers the editor for Cursor and Codex as well as Claude Code"
+        ],
         "3.1.0": [
             "Interface in 11 languages, chosen in Settings > Language: English, Russian, Spanish, French, Italian, Dutch, Polish, Brazilian Portuguese, Turkish, Ukrainian, Arabic and Simplified Chinese",
             "Generator plugins work through a card in the chat, right-click the timeline, fill in the card, press Generate; the result lands at the playhead",

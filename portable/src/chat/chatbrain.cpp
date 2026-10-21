@@ -99,6 +99,27 @@ QJsonObject serverInvocation()
     return server;
 }
 
+/** @brief A TOML basic string: quoted, with backslashes and quotes escaped
+ *  (a Windows path is full of backslashes). */
+QString tomlString(const QString &text)
+{
+    QString escaped = text;
+    escaped.replace(QLatin1Char('\\'), QStringLiteral("\\\\")).replace(QLatin1Char('"'), QStringLiteral("\\\""));
+    return QLatin1Char('"') + escaped + QLatin1Char('"');
+}
+
+/** @brief The server as Codex registers one: `[mcp_servers.<name>]` in TOML. */
+QString codexRegistration(const QJsonObject &server)
+{
+    QStringList args;
+    const QJsonArray arguments = server.value(QStringLiteral("args")).toArray();
+    for (const QJsonValue &argument : arguments) {
+        args << tomlString(argument.toString());
+    }
+    return QStringLiteral("[mcp_servers.wunjo-make]\ncommand = %1\nargs = [%2]\n")
+        .arg(tomlString(server.value(QStringLiteral("command")).toString()), args.join(QStringLiteral(", ")));
+}
+
 /** @brief The briefing an agent reads when it opens the folder.
  *
  * Deliberately about this editor and not about this codebase: the agent is
@@ -121,6 +142,13 @@ will watch what you do to their project.
    A *skill* is how they want you to work; a *loop* is a pipeline they want
    followed from source material to finished video. If either has content it
    outranks your own judgement. Do this once per session.
+3. `list_skills` and `list_loops` — the editor's library: how a video is cut,
+   subtitled, titled, graded, and how generated pictures and video are made,
+   next to anything the user wrote. Read the ones the task needs with
+   `get_skill` before you start, not after. When the user asks for a whole
+   video and no loop is selected, offer the loop that fits — `ai-story` for a
+   story made of generated shots — and let them choose; never select one for
+   them.
 
 ## Tell them what you are doing
 
@@ -160,9 +188,12 @@ instead of a black box.
 )");
 }
 
+/** @brief The note for the person who opens the folder. English, like the
+ *  files next to it: it is a technical note about those files, not part of
+ *  the interface. */
 QString readmeDocument(const QString &folder)
 {
-    return i18n(R"(# Drive Wunjo Make from your own agent
+    return QStringLiteral(R"(# Drive Wunjo Make from your own agent
 
 This folder was written by Wunjo Make. It contains everything an agent needs to
 control the editor that is running right now.
@@ -177,8 +208,9 @@ control the editor that is running right now.
 
        claude
 
-   Cursor, Codex and anything else that reads `.mcp.json` and `AGENTS.md` work
-   the same way — open this folder as the working directory.
+   Cursor and Codex work the same way: open this folder as the working
+   directory. Codex asks whether to trust the folder the first time; say yes,
+   or it does not load the editor's tools.
 
 3. Ask for what you want: "cut this on the beats", "put the takes in order and
    cross-dissolve them", "burn in subtitles".
@@ -188,12 +220,14 @@ eyes on the timeline.
 
 ## Files here
 
-- `.mcp.json` — registers the `wunjo-make` tool server
+- `.mcp.json` — registers the `wunjo-make` tool server for Claude Code
+- `.cursor/mcp.json` — the same for Cursor
+- `.codex/config.toml` — the same for Codex
 - `CLAUDE.md`, `AGENTS.md` — how to drive this editor (read by the agent)
 
 Keep Wunjo Make open: the tools talk to the live application, not to files.
-)",
-                folder);
+)")
+        .arg(folder);
 }
 
 } // namespace
@@ -277,9 +311,20 @@ QString prepareAgentFolder(QString *errorOut)
     const QString registration = QString::fromUtf8(QJsonDocument(root).toJson(QJsonDocument::Indented));
 
     const QString instructions = instructionsDocument();
+    // The same server for each agent, where that agent looks for it: Claude
+    // Code reads .mcp.json, Cursor .cursor/mcp.json in the same format, Codex
+    // .codex/config.toml once the user trusts the folder.
+    if (!QDir().mkpath(folder + QStringLiteral("/.cursor")) || !QDir().mkpath(folder + QStringLiteral("/.codex"))) {
+        if (errorOut) {
+            *errorOut = i18n("Could not create %1.", folder);
+        }
+        return {};
+    }
     // Two names for one document: agents disagree about which to read, and a
     // user who switches from one to the other should not have to notice.
     if (!writeFile(folder + QStringLiteral("/.mcp.json"), registration, errorOut) ||
+        !writeFile(folder + QStringLiteral("/.cursor/mcp.json"), registration, errorOut) ||
+        !writeFile(folder + QStringLiteral("/.codex/config.toml"), codexRegistration(serverInvocation()), errorOut) ||
         !writeFile(folder + QStringLiteral("/CLAUDE.md"), instructions, errorOut) ||
         !writeFile(folder + QStringLiteral("/AGENTS.md"), instructions, errorOut) ||
         !writeFile(folder + QStringLiteral("/README.md"), readmeDocument(folder), errorOut)) {

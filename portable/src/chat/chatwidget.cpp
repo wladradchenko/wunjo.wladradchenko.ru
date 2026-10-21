@@ -952,12 +952,13 @@ QString ChatWidget::cardGate(const QString &cardId, int *price) const
     const PluginManifest manifest = PluginManager::instance().plugin(payload.value(QStringLiteral("plugin")).toString());
     const PluginGenerator generator = manifest.generator(payload.value(QStringLiteral("generator")).toString());
     const QJsonObject answer = m_cardAnswers.value(cardId);
+    const QJsonObject values = generator.withDefaults(payload.value(QStringLiteral("values")).toObject());
     for (const PluginAction &action : generator.actions) {
         if (!action.gate) {
             continue;
         }
         const bool open = answer.value(QStringLiteral("action")).toString() == action.id && answer.value(QStringLiteral("ok")).toBool() &&
-            answer.value(QStringLiteral("asked")).toObject() == payload.value(QStringLiteral("values")).toObject();
+            generator.withDefaults(answer.value(QStringLiteral("asked")).toObject()) == values;
         if (!open) {
             return action.id;
         }
@@ -968,7 +969,7 @@ QString ChatWidget::cardGate(const QString &cardId, int *price) const
     return {};
 }
 
-QString ChatWidget::runGeneratorCard(const QString &cardId, const QJsonObject &extra)
+QString ChatWidget::runGeneratorCard(const QString &cardId, const QJsonObject &extra, bool binOnly)
 {
     const QJsonObject payload = m_model.payload(cardId);
     if (payload.isEmpty()) {
@@ -996,9 +997,14 @@ QString ChatWidget::runGeneratorCard(const QString &cardId, const QJsonObject &e
         card->clearAnswer();
     }
     // Where the playhead is now: that is where the result is meant to go.
-    return PluginManager::instance().runGenerator(payload.value(QStringLiteral("plugin")).toString(), payload.value(QStringLiteral("generator")).toString(),
-                                                  payload.value(QStringLiteral("values")).toObject(), pCore->currentTimelineId(), pCore->getMonitorPosition(),
-                                                  input);
+    // A frame of -1 leaves it in the bin, as a card that makes material asks.
+    const QString pluginId = payload.value(QStringLiteral("plugin")).toString();
+    const QString generatorId = payload.value(QStringLiteral("generator")).toString();
+    if (PluginManager::instance().plugin(pluginId).generator(generatorId).binOnly) {
+        binOnly = true;
+    }
+    return PluginManager::instance().runGenerator(pluginId, generatorId, payload.value(QStringLiteral("values")).toObject(), pCore->currentTimelineId(),
+                                                  binOnly ? -1 : pCore->getMonitorPosition(), input);
 }
 
 void ChatWidget::switchTab(int page)

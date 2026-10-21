@@ -1047,7 +1047,7 @@ void GeneratorCard::refreshFoot()
     }
     if (m_answerLabel) {
         // an answer about values that have changed since says nothing any more
-        const bool current = !m_answer.message.isEmpty() && !m_answer.pending && m_answer.asked == values();
+        const bool current = !m_answer.message.isEmpty() && !m_answer.pending && answerCurrent();
         m_answerLabel->setText(PluginEffects::linkify(m_answer.message));
         m_answerLabel->setVisible(current);
     }
@@ -1064,13 +1064,18 @@ QJsonObject GeneratorCard::values() const
     return m_payload.value(QStringLiteral("values")).toObject();
 }
 
+bool GeneratorCard::answerCurrent() const
+{
+    return m_generator.withDefaults(m_answer.asked) == m_generator.withDefaults(values());
+}
+
 QString GeneratorCard::gateAction() const
 {
     for (const PluginAction &action : m_generator.actions) {
         if (!action.gate) {
             continue;
         }
-        const bool open = m_answer.action == action.id && m_answer.ok && !m_answer.pending && m_answer.asked == values();
+        const bool open = m_answer.action == action.id && m_answer.ok && !m_answer.pending && answerCurrent();
         if (!open) {
             return action.id;
         }

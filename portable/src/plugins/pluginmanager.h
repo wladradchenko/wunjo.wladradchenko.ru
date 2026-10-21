@@ -284,6 +284,13 @@ public:
                          const std::function<void(const QJsonObject &result, const QString &error)> &onFinished, bool scratch = false);
     /** @brief Stop the job @p handle names. False when it has already ended. */
     bool cancelPluginJob(const QString &handle);
+    /** @brief Call off the job @p jobId that @ref runPlugin, @ref runGenerator
+     *  or @ref runEffectJob answered with: a render still waiting for its
+     *  plugin leaves the queue, a running one is stopped and ends as failed
+     *  with "Cancelled.". Not for a plugin with a provider — its job runs on
+     *  the provider's servers, which finish and charge it whatever happens to
+     *  the process here. @return Empty when it was called off, else why not. */
+    QString cancelJob(const QString &jobId);
     /** @brief The MCP server shipped with the app (`share/wunjo/mcp`), or empty
      *  when this build has none. Both the built-in assistant and an outside
      *  agent are pointed at this one copy. */
@@ -370,6 +377,11 @@ private:
     QHash<QString, QString> m_effectOwners;
     /** @brief Jobs a caller may still call off, by handle. */
     QHash<QString, QProcess *> m_runningJobs;
+    /** @brief Job id -> (plugin id, handle) while its process runs. */
+    QHash<QString, QPair<QString, QString>> m_jobHandles;
+    /** @brief Jobs stopped by @ref cancelJob that have not ended yet. */
+    QSet<QString> m_cancelledJobs;
+    void trackJob(const QString &jobId, const QString &pluginId, const QString &handle);
     /** @brief Renders in flight or waiting: "owner/effect" -> percent. */
     QHash<QString, int> m_effectJobs;
     QHash<QString, EffectAnswer> m_effectAnswers;

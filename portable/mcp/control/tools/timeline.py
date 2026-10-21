@@ -46,6 +46,10 @@ def register(mcp, helpers):
                 for cd in clip_dicts:
                     cd["clip_id"] = int(cd.get("id", cd.get("clip_id", -1)))
                     clips_info.append(cd)
+                # In timeline order: the editor lists clips by id, and a clip
+                # split and moved would otherwise sit next to one it does not
+                # touch and read as an overlap below.
+                clips_info.sort(key=lambda c: int(c.get("position", 0)))
 
                 total_frames = sum(int(c.get("duration", 0)) for c in clips_info)
                 total_tc = helpers.format_tc(total_frames, fps)
@@ -161,18 +165,34 @@ def register(mcp, helpers):
             return f"ERROR: {e}"
 
     @mcp.tool()
-    def insert_clip(ctx: Context, bin_id: str, track_id: int, position: int) -> str:
+    def insert_clip(ctx: Context, bin_id: str, track_id: int, position: int,
+                    source_in: int = -1, source_out: int = -1) -> str:
         """Insert a single clip at position. For assembling a full timeline from scene clips, use the build_timeline tool instead.
+
+        Give source_in and source_out to insert only a fragment of the source in
+        one call, instead of inserting the whole clip and trimming it after.
 
         Args:
             bin_id: Media pool clip ID (string).
             track_id: Target track ID.
             position: Position in frames on the timeline.
+            source_in: First frame of the source to take (default: its start).
+            source_out: Frame of the source the fragment ends before (default: its end).
         """
         try:
             tl = helpers.get_timeline(ctx)
             fps = helpers.get_fps(ctx)
-            item = tl.InsertClip(bin_id, track_id, position)
+            item_id = bin_id
+            if source_in >= 0 or source_out >= 0:
+                if source_out < 0:
+                    return "ERROR: source_out is needed with source_in (the frame the fragment ends before)."
+                start = max(int(source_in), 0)
+                if int(source_out) <= start:
+                    return f"ERROR: source_out ({source_out}) must be after source_in ({start})."
+                # the editor's own form for a fragment, the one a dragged
+                # clip zone takes: "id/in/out" with the out frame included
+                item_id = f"{bin_id}/{start}/{int(source_out) - 1}"
+            item = tl.InsertClip(item_id, track_id, position)
             if item is None:
                 return f"ERROR: Could not insert bin_id={bin_id} at track {track_id}, frame {position}"
             tc = helpers.format_tc(position, fps)

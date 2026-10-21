@@ -206,6 +206,7 @@ PluginManifest PluginManifest::fromDir(const QString &dir, bool checkFolderName)
         PluginGenerator generator;
         generator.id = card.value(QStringLiteral("id")).toString();
         generator.title = card.value(QStringLiteral("title")).toString();
+        generator.binOnly = card.value(QStringLiteral("place")).toString() == QLatin1String("bin");
         const QJsonArray fieldsArray = card.value(QStringLiteral("fields")).toArray();
         for (const QJsonValue &value : fieldsArray) {
             const QJsonObject obj = value.toObject();
@@ -590,6 +591,23 @@ PluginGenerator PluginManifest::generator(const QString &id) const
         }
     }
     return {};
+}
+
+QJsonObject PluginGenerator::withDefaults(const QJsonObject &values) const
+{
+    // the card's own rule (GeneratorCard::buildForm): a field it was not given
+    // takes its default, unless there is none
+    QJsonObject filled = values;
+    for (const PluginField &field : fields) {
+        if (filled.contains(field.key)) {
+            continue;
+        }
+        const QJsonValue value = QJsonValue::fromVariant(field.defaultValue);
+        if (!value.isNull() && !value.isUndefined()) {
+            filled.insert(field.key, value);
+        }
+    }
+    return filled;
 }
 
 PluginSetsUi PluginManifest::setsUi(const QString &kind) const
