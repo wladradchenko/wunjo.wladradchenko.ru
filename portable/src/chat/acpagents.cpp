@@ -156,8 +156,13 @@ bool writeMarker(const QJsonObject &agent, const QJsonObject &content)
 
 QString nodeExecutable()
 {
-    const QString dir = QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("node"), QStandardPaths::LocateDirectory);
-    if (!dir.isEmpty()) {
+    // "wunjo/node" too: the first macOS packages put it one level deeper than
+    // the rest of the data there
+    for (const QString &relative : {QStringLiteral("node"), QStringLiteral("wunjo/node")}) {
+        const QString dir = QStandardPaths::locate(QStandardPaths::AppDataLocation, relative, QStandardPaths::LocateDirectory);
+        if (dir.isEmpty()) {
+            continue;
+        }
         for (const QString &candidate : {QStringLiteral("/bin/node"), QStringLiteral("/node.exe"), QStringLiteral("/bin/node.exe")}) {
             if (QFileInfo(dir + candidate).isExecutable()) {
                 return dir + candidate;

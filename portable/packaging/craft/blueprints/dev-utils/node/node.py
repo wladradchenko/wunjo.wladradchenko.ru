@@ -12,10 +12,10 @@ flatpak manifest installs the same version as a module of its own.
 Shipped as the upstream prebuilt binary, like uv: building Node here would pull
 a whole toolchain into the image for one executable.
 
-It installs into share/wunjo/node because that is where the application looks
-for it on every platform (QStandardPaths::locate under AppDataLocation, the way
-it finds its MCP server): Craft moves share/ into Contents/Resources on macOS,
-usr/share in the AppImage, and keeps it beside bin/ on Windows. The Windows zip
+It installs where the application's own data is, because that is where it
+looks (QStandardPaths::locate under AppDataLocation, the way it finds its MCP
+server): share/wunjo/node in the AppImage and on Windows, share/node on macOS,
+which Craft moves into Contents/Resources. The Windows zip
 puts node.exe at its root; the tarballs carry bin/node — the application checks
 both.
 """
@@ -53,7 +53,11 @@ class subinfo(info.infoclass):
             self.targets[ver] = f"https://nodejs.org/dist/v{ver}/node-v{ver}-{platform}"
             # every archive carries one top-level directory named after itself
             self.targetInstSrc[ver] = stem
-            self.targetInstallPath[ver] = "share/wunjo/node"
+            # beside the application's other data: share/wunjo everywhere but
+            # macOS, where it has no "wunjo" level (DATA_INSTALL_PREFIX is
+            # empty there, CMakeLists.txt) and Craft moves share/ into
+            # Contents/Resources — so Contents/Resources/node
+            self.targetInstallPath[ver] = "share/node" if CraftCore.compiler.isMacOS else "share/wunjo/node"
             self.targetDigests[ver] = ([digests[platform]], CraftHash.HashAlgorithm.SHA256)
 
         self.defaultTarget = "22.23.3"
