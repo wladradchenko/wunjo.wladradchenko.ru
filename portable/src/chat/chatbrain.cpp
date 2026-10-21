@@ -5,8 +5,11 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #include "chatbrain.h"
 
+#include "acpagents.h"
+
 #include "core.h"
 #include "doc/wunjodoc.h"
+#include "mainwindow.h"
 #include "mcppythonenv.h"
 #include "plugins/pluginmanager.h"
 #include "wunjosettings.h"
@@ -126,9 +129,9 @@ QString codexRegistration(const QJsonObject &server)
  * being handed a running application to drive, and everything it needs to know
  * is which tools exist, what to read first, and what the user will see.
  */
-QString instructionsDocument()
+QString instructionsDocument(bool inChat = false)
 {
-    return QStringLiteral(R"(# Driving Wunjo Make
+    QString document = QStringLiteral(R"(# Driving Wunjo Make
 
 This folder connects you to a **running Wunjo Make** — a video editor — through
 the `wunjo-make` MCP server. The user has it open on screen right now, and they
@@ -186,6 +189,18 @@ instead of a black box.
 - When unsure what state the project is in, call `get_timeline_summary` again
   rather than assuming.
 )");
+    if (inChat) {
+        // An agent the chat itself drives: its replies and tool calls are drawn
+        // there already, and the chat_* tools are left out of its server.
+        const int from = document.indexOf(QStringLiteral("## Tell them what you are doing"));
+        const int to = document.indexOf(QStringLiteral("## Working on the project"));
+        if (from >= 0 && to > from) {
+            document.remove(from, to - from);
+        }
+        document.replace(QStringLiteral("the `wunjo-make` MCP server. The user has it open on screen right now, and they\nwill watch what you do to their project."),
+                         QStringLiteral("the `wunjo-make` MCP server. The user is talking to you from the editor's own\nChat panel and watches what you do to their project."));
+    }
+    return document;
 }
 
 /** @brief The note for the person who opens the folder. English, like the
@@ -254,6 +269,19 @@ QList<Option> options()
         option.name = manifest.name();
         option.description = manifest.description();
         option.ready = environmentBuilt(manifest) && PluginManager::instance().runBlocker(manifest.id()).isEmpty();
+        list << option;
+    }
+    // Then every agent of the ACP registry. Ready means picking it is enough:
+    // it is installed by the first message sent to it, with a card showing the
+    // download, so nothing has to be set up beforehand.
+    const QJsonArray registry = AcpAgents::registry();
+    for (const QJsonValue &value : registry) {
+        const QJsonObject entry = value.toObject();
+        Option option;
+        option.id = AcpPrefix() + entry.value(QStringLiteral("id")).toString();
+        option.name = entry.value(QStringLiteral("name")).toString();
+        option.description = entry.value(QStringLiteral("description")).toString();
+        option.ready = serverInstalled();
         list << option;
     }
     return list;
@@ -336,6 +364,64 @@ QString prepareAgentFolder(QString *errorOut)
 QString launchCommand()
 {
     return QStringLiteral("cd \"%1\" && claude").arg(agentFolder());
+}
+
+QString prepareChatAgentFolder(QString *errorOut)
+{
+    const QString folder = agentFolder() + QStringLiteral("-chat");
+    if (!QDir().mkpath(folder)) {
+        if (errorOut) {
+            *errorOut = i18n("Could not create %1.", folder);
+        }
+        return {};
+    }
+    const QString instructions = instructionsDocument(true);
+    if (!writeFile(folder + QStringLiteral("/CLAUDE.md"), instructions, errorOut) || !writeFile(folder + QStringLiteral("/AGENTS.md"), instructions, errorOut)) {
+        return {};
+    }
+    return folder;
+}
+
+QJsonObject acpMcpServer()
+{
+    QJsonObject server{{QStringLiteral("name"), QStringLiteral("wunjo-make")}};
+    const QString launcher = QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("mcp/start"));
+    QJsonArray arguments;
+#if defined(Q_OS_WIN)
+    // the launcher is a shell script; Windows starts the server's own Python
+    const bool useLauncher = false;
+#else
+    const bool useLauncher = !launcher.isEmpty();
+#endif
+    if (useLauncher) {
+        server.insert(QStringLiteral("command"), launcher);
+    } else {
+        const QString python = McpPythonEnv::python();
+        server.insert(QStringLiteral("command"), python.isEmpty() ? QStringLiteral("python3") : python);
+        arguments.append(QString(PluginManager::mcpServerDir() + QStringLiteral("/run.py")));
+    }
+    server.insert(QStringLiteral("args"), arguments);
+    QJsonArray env{QJsonObject{{QStringLiteral("name"), QStringLiteral("WUNJO_CHAT_MIRROR")}, {QStringLiteral("value"), QStringLiteral("0")}}};
+    // Some agents start MCP servers with only a short list of variables (Codex
+    // keeps HOME, PATH and a few more). The launcher finds venv-mcp through
+    // XDG_DATA_HOME — inside the flatpak that is ~/.var/app/…, not the
+    // ~/.local/share it falls back to — and the client finds the editor's
+    // socket under XDG_RUNTIME_DIR, so both are handed over by name.
+    for (const char *name : {"XDG_DATA_HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_RUNTIME_DIR"}) {
+        const QString value = qEnvironmentVariable(name);
+        if (!value.isEmpty()) {
+            env.append(QJsonObject{{QStringLiteral("name"), QString::fromLatin1(name)}, {QStringLiteral("value"), value}});
+        }
+    }
+    if (auto *window = pCore ? pCore->window() : nullptr) {
+        // this instance, not whichever copy of the editor answers first
+        const QString socket = window->scriptingSocketName();
+        if (!socket.isEmpty()) {
+            env.append(QJsonObject{{QStringLiteral("name"), QStringLiteral("WUNJO_SOCKET")}, {QStringLiteral("value"), socket}});
+        }
+    }
+    server.insert(QStringLiteral("env"), env);
+    return server;
 }
 
 } // namespace ChatBrain

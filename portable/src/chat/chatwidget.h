@@ -20,6 +20,7 @@ class GeneratorCard;
 class ChatHistoryStore;
 class ChatVoiceInput;
 class QLabel;
+class QPushButton;
 class QListWidget;
 class QListWidgetItem;
 class QProgressBar;
@@ -150,6 +151,12 @@ private:
     void updateHintBar();
     QWidget *buildToolCard(const ChatMessage &message);
     QWidget *buildGeneratorCard(const ChatMessage &message);
+    /** @brief A question from the assistant with a button per answer. */
+    QWidget *buildQuestionCard(const ChatMessage &message);
+    void refreshQuestionCard(const QModelIndex &index);
+    /** @brief Who answers in the chat: the models on this computer and every
+     *  agent of the ACP registry, in one list with a search field. */
+    void showModelPicker();
     void refreshToolCard(const QModelIndex &index);
     void rebuildMessageArea();
     void refreshHistoryList();
@@ -201,6 +208,9 @@ private:
     /** @brief The backend this widget made for the chosen assistant plugin.
      *  setBackend() also accepts one from outside, which this must not delete. */
     AbstractChatBackend *m_ownedBackend{nullptr};
+    /** @brief The mode @ref m_ownedBackend was made for, so switching from one
+     *  assistant to another replaces it. */
+    QString m_ownedMode;
     QString m_sessionId;
     QString m_sessionTitle;
 
@@ -251,6 +261,8 @@ private:
     QMap<QString, QLabel *> m_toolStatusLabels;
     QMap<QString, QLabel *> m_toolIcons;
     QMap<QString, GeneratorCard *> m_generatorCards;
+    QMap<QString, QList<QPushButton *>> m_questionButtons;
+    QMap<QString, QLabel *> m_questionAnswers;
     /** @brief The last answer to an action of each card, for an assistant that
      *  pressed it and has to read what it said. Not saved: prices change. */
     QHash<QString, QJsonObject> m_cardAnswers;

@@ -5,6 +5,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 #pragma once
 
+#include <QJsonObject>
 #include <QList>
 #include <QString>
 
@@ -61,5 +62,23 @@ QString prepareAgentFolder(QString *errorOut = nullptr);
 
 /** @brief The line to paste in a terminal to start working there. */
 QString launchCommand();
+
+/** @brief The prefix of a mode that is an agent of the ACP registry:
+ *  `acp:claude-acp`, `acp:codex-acp` … */
+inline const QString AcpPrefix() { return QStringLiteral("acp:"); }
+
+/** @brief The folder an agent driven from the chat works in: the briefing of
+ *  @ref prepareAgentFolder without the part about mirroring itself into the
+ *  chat — the chat draws that agent's replies itself. Next to the outside
+ *  agent's folder, not inside it, because agents read the instructions of
+ *  every parent folder too. */
+QString prepareChatAgentFolder(QString *errorOut = nullptr);
+
+/** @brief The editor's MCP server as an ACP session takes it:
+ *  {"name", "command", "args", "env": [{"name", "value"}]}. The agent runs
+ *  where the editor runs — inside the sandbox on a flatpak — so the server is
+ *  started directly, pinned to this instance's socket, with the chat_* tools
+ *  left out. */
+QJsonObject acpMcpServer();
 
 } // namespace ChatBrain

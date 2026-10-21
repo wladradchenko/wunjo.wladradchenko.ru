@@ -3,6 +3,8 @@
 
 set(wunjo_SRCS
   ${wunjo_SRCS}
+    chat/acpagents.cpp
+    chat/acpchatbackend.cpp
     chat/chatbackend.cpp
     chat/chatbrain.cpp
     chat/pluginchatbackend.cpp

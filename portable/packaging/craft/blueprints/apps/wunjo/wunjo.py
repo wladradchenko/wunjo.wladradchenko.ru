@@ -126,6 +126,10 @@ class subinfo(info.infoclass):
         # copy of every wheel.
         self.runtimeDependencies["dev-utils/uv"] = None
 
+        # Node.js for the chat's agents (ACP adapters are npm packages); the
+        # agents themselves are downloaded on first use. See dev-utils/node.
+        self.runtimeDependencies["dev-utils/node"] = None
+
         # Everything else the editor links
         self.runtimeDependencies["qt-libs/kddockwidgets"] = None
         self.runtimeDependencies["libs/mlt"] = None

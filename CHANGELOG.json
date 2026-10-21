@@ -1,7 +1,13 @@
 {
-    "version": "3.1.1",
+    "version": "3.2.0",
     "history": {
-        "3.1.1": [
+        "3.2.0": [
+            "Agents in the chat: Claude, Codex, Gemini, Copilot, Grok and the rest of the ACP registry answer right in the Chat panel, with their replies streaming in and a card per tool they use",
+            "Switch model opens one window with the models on this computer and every agent, searchable; an agent is installed with the first message sent to it",
+            "An agent already on the computer, such as Claude Code or Codex from the VS Code extension, is reused with its sign-in, so its install is a few dozen megabytes",
+            "An agent that needs signing in shows its ways of doing it as buttons; a login command runs by itself and opens its link in the browser",
+            "Questions from an agent, such as permission to run a command, appear as buttons in the chat",
+            "Node.js ships with the editor for the agents",
             "A generated video with sound goes onto the timeline with its sound, the two halves grouped",
             "A price asked on a generator card stays valid when the card is folded or redrawn",
             "A generator card can keep its result in the bin instead of the timeline, and image cards always do",

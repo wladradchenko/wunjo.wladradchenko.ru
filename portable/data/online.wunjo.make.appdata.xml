@@ -390,10 +390,11 @@
     </ul>
   </description>
   <releases>
-    <release version="3.1.1" date="2026-10-21">
+    <release version="3.2.0" date="2026-10-21">
       <description>
-        <p>Generated video keeps its sound, and the assistant works with generated pictures.</p>
+        <p>Agents in the chat: Claude, Codex, Gemini and others answer right in the editor.</p>
         <ul>
+          <li>Pick an agent from the ACP registry in Switch model; it is installed with the first message and signs in with your own account</li>
           <li>A generated video with sound goes onto the timeline with its sound</li>
           <li>Subtitles from speech recognition break at sentence ends and pauses</li>
           <li>Titles made by the assistant show their text</li>

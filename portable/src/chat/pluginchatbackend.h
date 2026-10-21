@@ -31,12 +31,12 @@ public:
 
     /** @brief Which conversation the next message belongs to, so the assistant
      *  can pick up where it left off instead of meeting the user anew. */
-    void setSession(const QString &sessionId);
+    void setSession(const QString &sessionId) override;
 
     /** @brief Ask the plugin to unload the model. Called when the user picks a
      *  different way of talking, and when the app is closing: a few gigabytes
      *  of weights should not outlive the reason they were loaded. */
-    void release();
+    void release() override;
 
 private:
     QString m_pluginId;

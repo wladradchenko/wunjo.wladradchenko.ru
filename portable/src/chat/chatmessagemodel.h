@@ -16,7 +16,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 struct ChatMessage
 {
     enum class Author { User, Assistant, Error };
-    enum class Kind { Text, ToolCard, Generator };
+    enum class Kind { Text, ToolCard, Generator, Question };
     enum class ToolStatus { Running, Done, Failed };
 
     Author author{Author::User};
@@ -64,6 +64,11 @@ public:
         updates), otherwise append a new one. */
     void updateLastText(ChatMessage::Author author, const QString &text);
     void appendToolCard(const QString &id, const QString &name);
+    /** @brief Add a question only the user can answer, as buttons: @p options
+     *  [{"id", "label"}]. Kept in the payload with the answer once given. */
+    void appendQuestion(const QString &id, const QString &text, const QJsonArray &options);
+    /** @brief The question @p id was answered with @p label ("" to dismiss it). */
+    void answerQuestion(const QString &id, const QString &label);
     /** @brief Add the form of a generator plugin, under the card id @p id. */
     void appendGenerator(const QString &id, const QString &name, const QJsonObject &payload);
     /** @brief Replace a generator's state. @p notify false when the change came

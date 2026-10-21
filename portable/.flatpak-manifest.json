@@ -102,6 +102,35 @@
             ]
         },
         {
+            "x-comment": "Node.js for the chat's agents: the ACP adapters of Claude, Codex, Gemini and the others in the ACP registry are npm packages, and claude-agent-acp needs Node 22 or later. Shipped as the official prebuilt binary, like uv; the agents themselves are downloaded on first use, not here. Installed under share/wunjo/node, where the application finds it on every platform (QStandardPaths::locate, like the MCP server). Only bin/ and lib/ (npm) are kept — the headers and docs are for building addons.",
+            "name": "node",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p /app/share/wunjo/node",
+                "cp -a bin lib LICENSE /app/share/wunjo/node/"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://nodejs.org/dist/v22.23.3/node-v22.23.3-linux-x64.tar.xz",
+                    "sha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de",
+                    "strip-components": 1,
+                    "only-arches": [
+                        "x86_64"
+                    ]
+                },
+                {
+                    "type": "archive",
+                    "url": "https://nodejs.org/dist/v22.23.3/node-v22.23.3-linux-arm64.tar.xz",
+                    "sha256": "a44aeb94849a299b22df10b9e622ec2f605c2183501bc40590705131de7c740f",
+                    "strip-components": 1,
+                    "only-arches": [
+                        "aarch64"
+                    ]
+                }
+            ]
+        },
+        {
             "name": "wunjo",
             "buildsystem": "cmake-ninja",
             "builddir": true,

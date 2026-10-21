@@ -96,6 +96,33 @@ void ChatMessageModel::appendToolCard(const QString &id, const QString &name)
     endInsertRows();
 }
 
+void ChatMessageModel::appendQuestion(const QString &id, const QString &text, const QJsonArray &options)
+{
+    ChatMessage m;
+    m.author = ChatMessage::Author::Assistant;
+    m.kind = ChatMessage::Kind::Question;
+    m.toolId = id;
+    m.text = text;
+    m.payload = QJsonObject{{QStringLiteral("options"), options}};
+    m.timestamp = QDateTime::currentDateTime();
+    beginInsertRows(QModelIndex(), m_messages.size(), m_messages.size());
+    m_messages.append(m);
+    endInsertRows();
+}
+
+void ChatMessageModel::answerQuestion(const QString &id, const QString &label)
+{
+    for (int row = m_messages.size() - 1; row >= 0; --row) {
+        ChatMessage &m = m_messages[row];
+        if (m.kind == ChatMessage::Kind::Question && m.toolId == id) {
+            m.payload.insert(QStringLiteral("answer"), label);
+            const QModelIndex ix = index(row);
+            Q_EMIT dataChanged(ix, ix, {PayloadRole});
+            return;
+        }
+    }
+}
+
 void ChatMessageModel::appendGenerator(const QString &id, const QString &name, const QJsonObject &payload)
 {
     ChatMessage m;
@@ -203,7 +230,7 @@ QJsonArray ChatMessageModel::toJson() const
         o.insert(QStringLiteral("author"), int(m.author));
         o.insert(QStringLiteral("kind"), int(m.kind));
         o.insert(QStringLiteral("text"), m.text);
-        if (m.kind == ChatMessage::Kind::Generator) {
+        if (m.kind == ChatMessage::Kind::Generator || m.kind == ChatMessage::Kind::Question) {
             o.insert(QStringLiteral("toolId"), m.toolId);
             o.insert(QStringLiteral("toolName"), m.toolName);
             o.insert(QStringLiteral("payload"), m.payload);
@@ -241,6 +268,10 @@ void ChatMessageModel::loadJson(const QJsonArray &array)
         if (m.kind == ChatMessage::Kind::ToolCard && m.toolStatus == ChatMessage::ToolStatus::Running) {
             m.toolStatus = ChatMessage::ToolStatus::Failed;
             m.text = i18n("interrupted");
+        }
+        // Nobody is waiting for an answer to a question from a previous run.
+        if (m.kind == ChatMessage::Kind::Question && !m.payload.contains(QStringLiteral("answer"))) {
+            m.payload.insert(QStringLiteral("answer"), QString());
         }
         m_messages.append(m);
     }

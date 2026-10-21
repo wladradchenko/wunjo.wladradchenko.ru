@@ -5,6 +5,7 @@ dataset/
 portable/src/linux
 portable/src/win
 portable/src/win-unpacked
+portable/build-bundle.log
 gitkey
 NOTE.md
 .flatpak-builder/

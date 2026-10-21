@@ -251,13 +251,19 @@ def apply(mcp) -> None:
     list to read and lets the choice be made tool by tool — the modules do not
     divide along the lines that matter here.
     """
-    if selected() != "core":
+    core = selected() == "core"
+    # An agent the editor's chat drives itself (over ACP) has its replies and
+    # tool calls drawn by the chat already; the chat_* tools would print each
+    # of them twice.
+    mirror = os.environ.get("WUNJO_CHAT_MIRROR", "1").strip() != "0"
+    if not core and mirror:
         return
     registry = getattr(getattr(mcp, "_tool_manager", None), "_tools", None)
     if not isinstance(registry, dict):
         # A FastMCP that keeps its tools somewhere else: better to serve them
         # all than to fail to start, and the mismatch is worth saying out loud.
-        print("WUNJO_TOOL_PROFILE=core could not be applied to this MCP version", file=sys.stderr)
+        print("WUNJO_TOOL_PROFILE / WUNJO_CHAT_MIRROR could not be applied to this MCP version", file=sys.stderr)
         return
-    for name in [name for name in registry if name not in CORE_TOOLS]:
-        del registry[name]
+    for name in list(registry):
+        if (core and name not in CORE_TOOLS) or (not mirror and name.startswith("chat_")):
+            del registry[name]

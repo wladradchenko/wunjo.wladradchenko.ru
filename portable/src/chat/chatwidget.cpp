@@ -4,6 +4,8 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
 #include "chatwidget.h"
+#include "acpagents.h"
+#include "acpchatbackend.h"
 #include "chatbackend.h"
 #include "chatbrain.h"
 #include "chatguidancestore.h"
@@ -1267,18 +1269,27 @@ void ChatWidget::applyBrain()
     // choose; see submitInput().
     const bool driveHere = !mode.isEmpty() && mode != ChatBrain::External();
 
-    if (m_ownedBackend != nullptr && (!driveHere || m_backend != m_ownedBackend)) {
-        if (auto *plugin = qobject_cast<PluginChatBackend *>(m_ownedBackend)) {
-            plugin->release(); // hand back the graphics card before letting go
-        }
+    // Replaced when the mode changes, not only when it is cleared: going from
+    // one assistant to another used to keep talking to the first one.
+    if (m_ownedBackend != nullptr && (!driveHere || m_backend != m_ownedBackend || m_ownedMode != mode)) {
+        m_ownedBackend->release(); // a model's graphics card, an agent's process
         m_ownedBackend->deleteLater();
+        if (m_backend == m_ownedBackend) {
+            setBackend(nullptr);
+        }
         m_ownedBackend = nullptr;
-        m_backend = nullptr;
+        m_ownedMode.clear();
     }
     if (driveHere && m_ownedBackend == nullptr) {
-        auto *backend = new PluginChatBackend(mode, this);
+        AbstractChatBackend *backend = nullptr;
+        if (mode.startsWith(ChatBrain::AcpPrefix())) {
+            backend = new AcpChatBackend(mode.mid(ChatBrain::AcpPrefix().size()), this);
+        } else {
+            backend = new PluginChatBackend(mode, this);
+        }
         backend->setSession(m_sessionId);
         m_ownedBackend = backend;
+        m_ownedMode = mode;
         setBackend(backend);
     }
     if (m_stack->currentIndex() == 4) {
@@ -1482,6 +1493,17 @@ void ChatWidget::setBackend(AbstractChatBackend *backend)
         m_model.appendText(ChatMessage::Author::Assistant, text);
         persistSession();
     });
+    connect(m_backend, &AbstractChatBackend::assistantStream, this, [this](const QString &text) {
+        m_model.updateLastText(ChatMessage::Author::Assistant, text);
+        if (m_thinkingLabel) {
+            m_thinkingLabel->setVisible(false); // the answer is arriving
+        }
+        m_persistTimer->start(); // a save per word would be a save per word
+    });
+    connect(m_backend, &AbstractChatBackend::questionAsked, this, [this](const QString &id, const QString &text, const QJsonArray &options) {
+        m_model.appendQuestion(id, text, options);
+        persistSession();
+    });
     connect(m_backend, &AbstractChatBackend::errorOccurred, this,
             [this](const QString &message) { m_model.appendText(ChatMessage::Author::Error, message); });
     connect(m_backend, &AbstractChatBackend::toolStarted, this,
@@ -1522,8 +1544,8 @@ void ChatWidget::setBackend(AbstractChatBackend *backend)
 /** @brief Tell an assistant plugin which conversation the next message joins. */
 void ChatWidget::noteSessionChanged()
 {
-    if (auto *plugin = qobject_cast<PluginChatBackend *>(m_backend)) {
-        plugin->setSession(m_sessionId);
+    if (m_backend) {
+        m_backend->setSession(m_sessionId);
     }
 }
 
@@ -1652,6 +1674,12 @@ void ChatWidget::submitInput()
     if (text.isEmpty() && m_attachments.isEmpty()) {
         return;
     }
+    if (ChatBrain::current().isEmpty()) {
+        // Nobody to answer yet. The window that chooses is the whole answer,
+        // and what was typed stays in the field to send once someone is chosen.
+        showModelPicker();
+        return;
+    }
     m_input->clear();
     m_stack->setCurrentIndex(0);
     if (m_sessionTitle.isEmpty()) {
@@ -1693,11 +1721,8 @@ void ChatWidget::submitInput()
                            i18n("Your own agent is driving. Ask it in the terminal you opened in %1, and what it does appears here.",
                                 ChatBrain::agentFolder()));
     } else {
-        // Nothing chosen, which is how a fresh install starts. Both ways out
-        // are named, because neither is obvious from an empty panel.
-        m_model.appendText(ChatMessage::Author::Assistant,
-                           i18n("No model is selected. Press / to choose one, or pick \"External MCP\" to drive the editor from an "
-                                "agent you already use, such as Claude Code or Cursor."));
+        // a mode whose backend could not be made: the window to choose again
+        showModelPicker();
     }
     persistSession();
 }
@@ -1767,7 +1792,7 @@ void ChatWidget::updateHintBar()
         text = i18n("A loop is a set of steps the assistant follows to complete a task using the tools or plugins you choose.");
         break;
     case 0:
-        text = i18n("Use local model or external MCP for third-party agents to automatically generate and edit content and mix effects from plugins.");
+        text = i18n("Use switch model or external MCP for third-party agents to automatically generate and edit content and mix effects from plugins.");
         break;
     default:
         m_hintBar->hide();
@@ -1805,39 +1830,36 @@ QMenu *ChatWidget::buildSlashMenu()
     // there is a single local one, and a flat list of one reads as a mistake.
     // What is offered is what this machine can run; picking one that is not
     // built yet opens its page, which is where the download happens.
-    auto *models = menu->addMenu(i18n("Switch model…"));
-    const QList<ChatBrain::Option> options = ChatBrain::options();
-    auto *group = new QActionGroup(models);
-    group->setExclusive(true);
-    for (const ChatBrain::Option &option : options) {
-        if (option.id == ChatBrain::External()) {
-            continue; // that one is a folder to open, not a model
-        }
-        // The name alone. Whether it still needs setting up is not something to
-        // label a menu entry with — picking one that is not ready says so in
-        // the conversation, with what to do about it, which is the moment the
-        // answer is of any use.
-        auto *action = models->addAction(option.name);
-        action->setCheckable(true);
-        action->setChecked(ChatBrain::current() == option.id);
-        action->setToolTip(option.description);
-        group->addAction(action);
-        const QString id = option.id;
-        const bool ready = option.ready;
-        connect(action, &QAction::triggered, this, [this, id, ready]() {
-            ChatBrain::setCurrent(id);
-            applyBrain();
-            if (!ready) {
-                // Nothing to talk to yet: send them where it is installed.
-                if (auto *window = pCore->window()) {
-                    window->showPluginSettings(id);
+    // One entry that opens the whole choice — models on this computer and the
+    // agents of the ACP registry, forty-odd of them — in a window that can
+    // search, rather than a menu nobody could scroll through.
+    menu->addAction(i18n("Switch model…"), this, &ChatWidget::showModelPicker);
+    // How freely the chosen agent may act — its own modes, as it names them.
+    // Filled each time the menu opens, because they arrive with the agent's
+    // session; hidden when the one answering has none.
+    auto *modes = menu->addMenu(i18n("Mode"));
+    connect(menu, &QMenu::aboutToShow, modes, [this, modes]() {
+        modes->clear();
+        const QJsonArray available = m_backend ? m_backend->modes() : QJsonArray();
+        auto *group = new QActionGroup(modes);
+        group->setExclusive(true);
+        for (const QJsonValue &value : available) {
+            const QJsonObject mode = value.toObject();
+            const QString id = mode.value(QStringLiteral("id")).toString();
+            auto *action = modes->addAction(mode.value(QStringLiteral("name")).toString(id));
+            action->setToolTip(mode.value(QStringLiteral("description")).toString());
+            action->setCheckable(true);
+            action->setChecked(id == m_backend->currentMode());
+            group->addAction(action);
+            connect(action, &QAction::triggered, this, [this, id]() {
+                if (m_backend) {
+                    m_backend->setMode(id);
                 }
-            }
-        });
-    }
-    if (models->isEmpty()) {
-        models->addAction(i18n("No models installed"))->setEnabled(false);
-    }
+            });
+        }
+        modes->setToolTipsVisible(true);
+        modes->menuAction()->setVisible(!available.isEmpty());
+    });
 
     // ── Commands ───────────────────────────────────────────────────────────
     // The same things the tabs do, reachable by name — and the place where the
@@ -2027,6 +2049,8 @@ void ChatWidget::onRowsInserted(const QModelIndex &parent, int first, int last)
             refreshToolCard(index); // a card read back from disk shows how it ended
         } else if (message.kind == ChatMessage::Kind::Generator) {
             widget = buildGeneratorCard(message);
+        } else if (message.kind == ChatMessage::Kind::Question) {
+            widget = buildQuestionCard(message);
         } else {
             widget = buildBubble(message);
         }
@@ -2040,8 +2064,20 @@ void ChatWidget::onDataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
         const QModelIndex index = m_model.index(row);
         const auto kind = ChatMessage::Kind(index.data(ChatMessageModel::KindRole).toInt());
-        if (kind == ChatMessage::Kind::ToolCard) {
+        if (kind == ChatMessage::Kind::Text) {
+            // A reply streaming in rewrites the text of its row; the rows and
+            // the layout's items run in step, so the row's widget is item `row`.
+            QLayoutItem *item = m_messagesLayout->itemAt(row);
+            if (QWidget *widget = item ? item->widget() : nullptr) {
+                if (auto *label = widget->findChild<QLabel *>(QStringLiteral("chatAssistantText"))) {
+                    label->setText(index.data(ChatMessageModel::TextRole).toString());
+                }
+            }
+            scrollToBottom();
+        } else if (kind == ChatMessage::Kind::ToolCard) {
             refreshToolCard(index);
+        } else if (kind == ChatMessage::Kind::Question) {
+            refreshQuestionCard(index);
         } else if (kind == ChatMessage::Kind::Generator) {
             if (GeneratorCard *card = m_generatorCards.value(index.data(ChatMessageModel::ToolIdRole).toString())) {
                 card->setPayload(index.data(ChatMessageModel::PayloadRole).toJsonObject());
@@ -2056,6 +2092,8 @@ void ChatWidget::rebuildMessageArea()
     m_toolStatusLabels.clear();
     m_toolIcons.clear();
     m_generatorCards.clear();
+    m_questionButtons.clear();
+    m_questionAnswers.clear();
     while (m_messagesLayout->count() > 1) {
         QLayoutItem *item = m_messagesLayout->takeAt(0);
         if (QWidget *w = item->widget()) {
@@ -2074,4 +2112,209 @@ void ChatWidget::rebuildMessageArea()
 void ChatWidget::scrollToBottom()
 {
     QTimer::singleShot(0, m_scrollArea, [this]() { m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->maximum()); });
+}
+
+QWidget *ChatWidget::buildQuestionCard(const ChatMessage &message)
+{
+    auto *card = new QFrame(this);
+    card->setObjectName(QStringLiteral("chatToolCard"));
+    auto *layout = new QVBoxLayout(card);
+    layout->setContentsMargins(10, 8, 10, 8);
+    layout->setSpacing(6);
+    auto *text = new QLabel(message.text, card);
+    text->setWordWrap(true);
+    QFont font = text->font();
+    font.setWeight(QFont::DemiBold);
+    text->setFont(font);
+    layout->addWidget(text);
+
+    const QString id = message.toolId;
+    QList<QPushButton *> list;
+    const QJsonArray options = message.payload.value(QStringLiteral("options")).toArray();
+    // "Yes / No" sit side by side; longer answers ("Log in with Google",
+    // "Yes, and don't ask again for …") get a row each, full width, because a
+    // button cannot wrap its text and a cut answer is not one you can choose.
+    bool longAnswers = options.size() > 3;
+    for (const QJsonValue &value : options) {
+        longAnswers = longAnswers || value.toObject().value(QStringLiteral("label")).toString().size() > 14;
+    }
+    QBoxLayout *buttons = longAnswers ? static_cast<QBoxLayout *>(new QVBoxLayout) : static_cast<QBoxLayout *>(new QHBoxLayout);
+    buttons->setSpacing(4);
+    for (const QJsonValue &value : options) {
+        const QJsonObject option = value.toObject();
+        auto *button = new QPushButton(option.value(QStringLiteral("label")).toString(), card);
+        button->setToolTip(button->text()); // a long answer is cut on the button
+        const QString optionId = option.value(QStringLiteral("id")).toString();
+        const QString label = button->text();
+        connect(button, &QPushButton::clicked, this, [this, id, optionId, label]() {
+            m_model.answerQuestion(id, label);
+            persistSession();
+            if (m_backend) {
+                m_backend->answerQuestion(id, optionId);
+            }
+        });
+        buttons->addWidget(button);
+        list << button;
+    }
+    if (!longAnswers) {
+        buttons->addStretch();
+    }
+    layout->addLayout(buttons);
+    auto *answer = new QLabel(card);
+    answer->setObjectName(QStringLiteral("chatToolStatus"));
+    answer->setVisible(false);
+    layout->addWidget(answer);
+    m_questionButtons.insert(id, list);
+    m_questionAnswers.insert(id, answer);
+    // a question read back from disk shows how it was answered
+    if (message.payload.contains(QStringLiteral("answer"))) {
+        for (QPushButton *button : std::as_const(list)) {
+            button->setEnabled(false);
+        }
+        const QString label = message.payload.value(QStringLiteral("answer")).toString();
+        answer->setText(label.isEmpty() ? i18n("No answer") : label);
+        answer->setVisible(true);
+    }
+
+    auto *row = new QWidget(this);
+    auto *rowLayout = new QHBoxLayout(row);
+    rowLayout->setContentsMargins(0, 0, 0, 0);
+    rowLayout->addWidget(card, 4);
+    rowLayout->addStretch(1);
+    return row;
+}
+
+void ChatWidget::refreshQuestionCard(const QModelIndex &index)
+{
+    const QString id = index.data(ChatMessageModel::ToolIdRole).toString();
+    const QJsonObject payload = index.data(ChatMessageModel::PayloadRole).toJsonObject();
+    if (!payload.contains(QStringLiteral("answer"))) {
+        return; // still waiting
+    }
+    // Answered here, or left from a previous run where nobody waits any more:
+    // either way the buttons are done.
+    for (QPushButton *button : m_questionButtons.value(id)) {
+        button->setEnabled(false);
+    }
+    if (QLabel *answer = m_questionAnswers.value(id)) {
+        const QString label = payload.value(QStringLiteral("answer")).toString();
+        answer->setText(label.isEmpty() ? i18n("No answer") : label);
+        answer->setVisible(true);
+    }
+}
+
+void ChatWidget::showModelPicker()
+{
+    auto *dialog = new QDialog(this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(i18n("Switch model"));
+    dialog->resize(520, 560);
+    auto *layout = new QVBoxLayout(dialog);
+    auto *search = new QLineEdit(dialog);
+    search->setPlaceholderText(i18n("Search"));
+    search->setClearButtonEnabled(true);
+    layout->addWidget(search);
+    auto *list = new QListWidget(dialog);
+    list->setWordWrap(true);
+    layout->addWidget(list);
+    auto *status = new QLabel(dialog);
+    status->setObjectName(QStringLiteral("chatToolStatus"));
+    layout->addWidget(status);
+
+    auto fill = [list, search]() {
+        list->clear();
+        const QString current = ChatBrain::current();
+        const QString filter = search->text().trimmed();
+        auto header = [list](const QString &title) {
+            auto *item = new QListWidgetItem(title, list);
+            item->setFlags(Qt::NoItemFlags);
+            QFont font = item->font();
+            font.setWeight(QFont::DemiBold);
+            item->setFont(font);
+            return item;
+        };
+        // models on this computer: the assistant plugins
+        QListWidgetItem *localHeader = header(i18n("On this computer"));
+        int local = 0;
+        const QList<ChatBrain::Option> options = ChatBrain::options();
+        for (const ChatBrain::Option &option : options) {
+            if (option.id == ChatBrain::External() || option.id.startsWith(ChatBrain::AcpPrefix())) {
+                continue;
+            }
+            auto *item = new QListWidgetItem(option.name + QLatin1Char('\n') + option.description, list);
+            item->setData(Qt::UserRole, option.id);
+            item->setData(Qt::UserRole + 1, option.ready);
+            item->setToolTip(option.description);
+            if (option.ready) {
+                item->setIcon(QIcon::fromTheme(QStringLiteral("dialog-ok-apply")));
+            }
+            item->setSelected(current == option.id);
+            item->setHidden(!filter.isEmpty() && !option.name.contains(filter, Qt::CaseInsensitive) &&
+                            !option.description.contains(filter, Qt::CaseInsensitive));
+            local += item->isHidden() ? 0 : 1;
+        }
+        localHeader->setHidden(local == 0);
+        header(i18n("Agents"));
+        const QJsonArray agents = AcpAgents::registry();
+        for (const QJsonValue &value : agents) {
+            const QJsonObject entry = value.toObject();
+            const QString id = entry.value(QStringLiteral("id")).toString();
+            const QString name = entry.value(QStringLiteral("name")).toString();
+            const QString description = entry.value(QStringLiteral("description")).toString();
+            auto *item = new QListWidgetItem(name + QLatin1Char('\n') + description, list);
+            item->setData(Qt::UserRole, QString(ChatBrain::AcpPrefix() + id));
+            item->setData(Qt::UserRole + 1, true);
+            item->setToolTip(description);
+            if (AcpAgents::isInstalled(id)) {
+                item->setIcon(QIcon::fromTheme(QStringLiteral("dialog-ok-apply")));
+            }
+            if (current == ChatBrain::AcpPrefix() + id) {
+                item->setSelected(true);
+            }
+            item->setHidden(!filter.isEmpty() && !name.contains(filter, Qt::CaseInsensitive) && !description.contains(filter, Qt::CaseInsensitive));
+        }
+    };
+    connect(search, &QLineEdit::textChanged, dialog, fill);
+    fill();
+    // the registry changes between releases; ask for it again each time
+    status->setText(AcpAgents::registry().isEmpty() ? i18n("Loading the list of agents…") : QString());
+    AcpAgents::refreshRegistry(dialog, [fill, status](bool ok) {
+        fill();
+        status->setText(ok || !AcpAgents::registry().isEmpty() ? QString() : i18n("The list of agents could not be loaded."));
+    });
+
+    connect(list, &QListWidget::itemActivated, dialog, [this, dialog](QListWidgetItem *item) {
+        const QString mode = item->data(Qt::UserRole).toString();
+        if (mode.isEmpty()) {
+            return; // a group heading
+        }
+        const QString name = item->text().section(QLatin1Char('\n'), 0, 0);
+        ChatBrain::setCurrent(mode);
+        applyBrain();
+        refreshBrains();
+        dialog->accept();
+        if (!mode.startsWith(ChatBrain::AcpPrefix())) {
+            // a model on this computer that still has to be set up: straight
+            // to the page that does it
+            if (!item->data(Qt::UserRole + 1).toBool()) {
+                if (auto *window = pCore ? pCore->window() : nullptr) {
+                    window->showPluginSettings(mode);
+                }
+                m_model.appendText(ChatMessage::Author::Assistant, i18n("Install %1 in the settings that just opened, then come back here.", name));
+            }
+            return;
+        }
+        const QString id = mode.mid(ChatBrain::AcpPrefix().size());
+        if (!ChatBrain::serverReady()) {
+            if (auto *window = pCore ? pCore->window() : nullptr) {
+                window->showPluginSettings(QString());
+            }
+            m_model.appendText(ChatMessage::Author::Assistant,
+                               i18n("%1 drives the editor through MCP, which is not installed yet. Install it in Settings, Plugins, on the MCP tab.",
+                                    name));
+        } else if (!AcpAgents::isInstalled(id)) {
+            m_model.appendText(ChatMessage::Author::Assistant, i18n("%1 is installed with your first message to it.", name));
+        }
+    });
+    dialog->show();
 }
